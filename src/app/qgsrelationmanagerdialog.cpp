@@ -58,26 +58,25 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setData( Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
   mRelationsTable->setItem( row, 0, item );
 
-  item = new QTableWidgetItem( rel.referencingLayer()->name() );
-  item->setFlags( Qt::ItemIsEditable );
+  item = new QTableWidgetItem( rel.referencedLayer()->name() );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
-  item->setFlags( Qt::ItemIsEditable );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 2, item );
 
-  item = new QTableWidgetItem( rel.referencedLayer()->name() );
-  item->setFlags( Qt::ItemIsEditable );
+  item = new QTableWidgetItem( rel.referencingLayer()->name() );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
-  item->setFlags( Qt::ItemIsEditable );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 4, item );
 
   item = new QTableWidgetItem( rel.id() );
-  item->setFlags( Qt::ItemIsEditable );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 5, item );
-
 
   if ( rel.strength() == QgsRelation::RelationStrength::Composition )
   {
@@ -87,7 +86,7 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   {
     item = new QTableWidgetItem( QStringLiteral( "Association" ) );
   }
-  item->setFlags( Qt::ItemIsEditable );
+  item->setFlags( Qt::ItemIsEnabled );
   mRelationsTable->setItem( row, 6, item );
 
   mRelationsTable->setSortingEnabled( true );

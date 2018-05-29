@@ -18,8 +18,9 @@
 #define QGSMAPTOOLREGULARPOLYGONCENTERPOINT_H
 
 #include "qgsmaptooladdregularpolygon.h"
+#include "qgis_app.h"
 
-class QgsMapToolRegularPolygonCenterPoint: public QgsMapToolAddRegularPolygon
+class APP_EXPORT QgsMapToolRegularPolygonCenterPoint: public QgsMapToolAddRegularPolygon
 {
     Q_OBJECT
 

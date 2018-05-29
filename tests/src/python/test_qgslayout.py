@@ -27,9 +27,11 @@ from qgis.core import (QgsUnitTypes,
                        QgsPrintLayout,
                        QgsLayoutItemGroup,
                        QgsLayoutItem,
+                       QgsLayoutItemHtml,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
+                       QgsLayoutFrame,
                        QgsFillSymbol,
                        QgsReadWriteContext,
                        QgsLayoutItemMap,
@@ -240,8 +242,27 @@ class TestQgsLayout(unittest.TestCase):
         item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item2)
 
-        uuids = {item1.uuid(), item2.uuid()}
-        original_uuids = {item1.uuid(), item2.uuid()}
+        # multiframe
+        multiframe1 = QgsLayoutItemHtml(l)
+        multiframe1.setHtml('mf1')
+        l.addMultiFrame(multiframe1)
+        frame1 = QgsLayoutFrame(l, multiframe1)
+        frame1.setId('frame1')
+        frame1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        frame1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        multiframe1.addFrame(frame1)
+
+        multiframe2 = QgsLayoutItemHtml(l)
+        multiframe2.setHtml('mf2')
+        l.addMultiFrame(multiframe2)
+        frame2 = QgsLayoutFrame(l, multiframe2)
+        frame2.setId('frame2')
+        frame2.attemptMove(QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        frame2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        multiframe2.addFrame(frame2)
+
+        uuids = {item1.uuid(), item2.uuid(), frame1.uuid(), frame2.uuid(), multiframe1.uuid(), multiframe2.uuid()}
+        original_uuids = {item1.uuid(), item2.uuid(), frame1.uuid(), frame2.uuid()}
 
         self.assertTrue(l.saveAsTemplate(tmpfile, QgsReadWriteContext()))
 
@@ -254,52 +275,115 @@ class TestQgsLayout(unittest.TestCase):
         # adding to existing items
         new_items, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
         self.assertTrue(ok)
-        self.assertEqual(len(new_items), 2)
+        self.assertEqual(len(new_items), 4)
         items = l2.items()
+        multiframes = l2.multiFrames()
+        self.assertEqual(len(multiframes), 2)
         self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
         self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue([i for i in items if i.id() == 'frame1'])
+        self.assertTrue([i for i in items if i.id() == 'frame2'])
+        self.assertTrue([i for i in multiframes if i.html() == 'mf1'])
+        self.assertTrue([i for i in multiframes if i.html() == 'mf2'])
         self.assertTrue(new_items[0] in l2.items())
         self.assertTrue(new_items[1] in l2.items())
+        self.assertTrue(new_items[2] in l2.items())
+        self.assertTrue(new_items[3] in l2.items())
+
         # double check that new items have a unique uid
         self.assertNotIn(new_items[0].uuid(), uuids)
-        self.assertIn(new_items[0].templateUuid(), original_uuids)
         uuids.add(new_items[0].uuid())
         self.assertNotIn(new_items[1].uuid(), uuids)
-        self.assertIn(new_items[1].templateUuid(), original_uuids)
         uuids.add(new_items[1].uuid())
+        self.assertNotIn(new_items[2].uuid(), uuids)
+        uuids.add(new_items[2].uuid())
+        self.assertNotIn(new_items[3].uuid(), uuids)
+        uuids.add(new_items[3].uuid())
+
+        self.assertNotIn(multiframes[0].uuid(), [multiframe1.uuid(), multiframe2.uuid()])
+        self.assertNotIn(multiframes[1].uuid(), [multiframe1.uuid(), multiframe2.uuid()])
+        new_multiframe1 = [i for i in multiframes if i.html() == 'mf1'][0]
+        self.assertEqual(new_multiframe1.layout(), l2)
+        new_multiframe2 = [i for i in multiframes if i.html() == 'mf2'][0]
+        self.assertEqual(new_multiframe2.layout(), l2)
+        new_frame1 = sip.cast([i for i in items if i.id() == 'frame1'][0], QgsLayoutFrame)
+        new_frame2 = sip.cast([i for i in items if i.id() == 'frame2'][0], QgsLayoutFrame)
+        self.assertEqual(new_frame1.multiFrame(), new_multiframe1)
+        self.assertEqual(new_multiframe1.frames()[0].uuid(), new_frame1.uuid())
+        self.assertEqual(new_frame2.multiFrame(), new_multiframe2)
+        self.assertEqual(new_multiframe2.frames()[0].uuid(), new_frame2.uuid())
 
         # adding to existing items
         new_items2, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
         self.assertTrue(ok)
-        self.assertEqual(len(new_items2), 2)
+        self.assertEqual(len(new_items2), 4)
         items = l2.items()
-        self.assertEqual(len(items), 4)
+        self.assertEqual(len(items), 8)
+        multiframes2 = l2.multiFrames()
+        self.assertEqual(len(multiframes2), 4)
+        multiframes2 = [m for m in l2.multiFrames() if not m.uuid() in [new_multiframe1.uuid(), new_multiframe2.uuid()]]
+        self.assertEqual(len(multiframes2), 2)
         self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
         self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue([i for i in items if i.id() == 'frame1'])
+        self.assertTrue([i for i in items if i.id() == 'frame2'])
+        self.assertTrue([i for i in multiframes2 if i.html() == 'mf1'])
+        self.assertTrue([i for i in multiframes2 if i.html() == 'mf2'])
         self.assertTrue(new_items[0] in l2.items())
         self.assertTrue(new_items[1] in l2.items())
+        self.assertTrue(new_items[2] in l2.items())
+        self.assertTrue(new_items[3] in l2.items())
         self.assertTrue(new_items2[0] in l2.items())
         self.assertTrue(new_items2[1] in l2.items())
+        self.assertTrue(new_items2[2] in l2.items())
+        self.assertTrue(new_items2[3] in l2.items())
         self.assertNotIn(new_items2[0].uuid(), uuids)
-        self.assertIn(new_items2[0].templateUuid(), original_uuids)
         uuids.add(new_items[0].uuid())
         self.assertNotIn(new_items2[1].uuid(), uuids)
-        self.assertIn(new_items2[1].templateUuid(), original_uuids)
         uuids.add(new_items[1].uuid())
+        self.assertNotIn(new_items2[2].uuid(), uuids)
+        uuids.add(new_items[2].uuid())
+        self.assertNotIn(new_items2[3].uuid(), uuids)
+        uuids.add(new_items[3].uuid())
+
+        self.assertNotIn(multiframes2[0].uuid(), [multiframe1.uuid(), multiframe2.uuid(), new_multiframe1.uuid(), new_multiframe2.uuid()])
+        self.assertNotIn(multiframes2[1].uuid(), [multiframe1.uuid(), multiframe2.uuid(), new_multiframe1.uuid(), new_multiframe2.uuid()])
+
+        new_multiframe1b = [i for i in multiframes2 if i.html() == 'mf1'][0]
+        self.assertEqual(new_multiframe1b.layout(), l2)
+        new_multiframe2b = [i for i in multiframes2 if i.html() == 'mf2'][0]
+        self.assertEqual(new_multiframe2b.layout(), l2)
+        new_frame1b = sip.cast([i for i in items if i.id() == 'frame1' and i.uuid() != new_frame1.uuid()][0], QgsLayoutFrame)
+        new_frame2b = sip.cast([i for i in items if i.id() == 'frame2' and i.uuid() != new_frame2.uuid()][0], QgsLayoutFrame)
+        self.assertEqual(new_frame1b.multiFrame(), new_multiframe1b)
+        self.assertEqual(new_multiframe1b.frames()[0].uuid(), new_frame1b.uuid())
+        self.assertEqual(new_frame2b.multiFrame(), new_multiframe2b)
+        self.assertEqual(new_multiframe2b.frames()[0].uuid(), new_frame2b.uuid())
 
         # clearing existing items
         new_items3, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), True)
+        new_multiframes = l2.multiFrames()
         self.assertTrue(ok)
-        self.assertEqual(len(new_items3), 3) # includes page
+        self.assertEqual(len(new_items3), 5) # includes page
+        self.assertEqual(len(new_multiframes), 2)
         items = l2.items()
         self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'xxyyxx'])
         self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'zzyyzz'])
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame1'])
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame2'])
         self.assertTrue(new_items3[0] in l2.items())
         self.assertTrue(new_items3[1] in l2.items())
-        self.assertIn(new_items3[0].templateUuid(), original_uuids)
-        self.assertIn(new_items3[1].templateUuid(), original_uuids)
-        self.assertEqual(l2.itemByUuid(new_items3[0].templateUuid(), True), new_items3[0])
-        self.assertEqual(l2.itemByUuid(new_items3[1].templateUuid(), True), new_items3[1])
+        self.assertTrue(new_items3[2] in l2.items())
+        self.assertTrue(new_items3[3] in l2.items())
+        new_multiframe1 = [i for i in new_multiframes if i.html() == 'mf1'][0]
+        new_multiframe2 = [i for i in new_multiframes if i.html() == 'mf2'][0]
+
+        new_frame1 = sip.cast([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame1'][0], QgsLayoutFrame)
+        new_frame2 = sip.cast([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame2'][0], QgsLayoutFrame)
+        self.assertEqual(new_frame1.multiFrame(), new_multiframe1)
+        self.assertEqual(new_multiframe1.frames()[0].uuid(), new_frame1.uuid())
+        self.assertEqual(new_frame2.multiFrame(), new_multiframe2)
+        self.assertEqual(new_multiframe2.frames()[0].uuid(), new_frame2.uuid())
 
     def testSelectedItems(self):
         p = QgsProject()

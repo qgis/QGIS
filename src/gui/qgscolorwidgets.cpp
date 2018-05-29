@@ -1410,7 +1410,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "ColorWidgets/textWidgetFormat" ), 0 ).toInt();
+  mFormat = settings.enumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), HexRgb );
 
   updateText();
 }
@@ -1509,7 +1509,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), ( int )mFormat );
+  settings.setEnumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), mFormat );
 
   updateText();
 }
@@ -1685,7 +1685,7 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *
 
 void QgsColorWidgetAction::onHover()
 {
-  //see https://bugreports.qt-project.org/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
+  //see https://bugreports.qt.io/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
   if ( mSuppressRecurse )
   {
     return;

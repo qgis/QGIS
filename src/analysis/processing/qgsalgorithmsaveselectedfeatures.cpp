@@ -21,7 +21,7 @@
 
 QgsProcessingAlgorithm::Flags QgsSaveSelectedFeatures::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
 }
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
@@ -69,18 +69,20 @@ QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
 QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !selectLayer )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
   int count = selectLayer->selectedFeatureCount();
   int current = 0;
   double step = count > 0 ? 100.0 / count : 1;
 
-  QgsFeatureIterator it = selectLayer->getSelectedFeatures();;
+  QgsFeatureIterator it = selectLayer->getSelectedFeatures();
   QgsFeature feat;
   while ( it.nextFeature( feat ) )
   {

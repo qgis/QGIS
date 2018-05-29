@@ -34,8 +34,8 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsCentroidAlgorithm() = default;
-    Flags flags() const override;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -43,6 +43,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsCentroidAlgorithm *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
 
@@ -50,7 +51,14 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessing::SourceType outputLayerType() const override { return QgsProcessing::TypeVectorPoint; }
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override { Q_UNUSED( inputWkbType ); return QgsWkbTypes::Point; }
 
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+
+    bool mAllParts = false;
+    bool mDynamicAllParts = false;
+    QgsProperty mAllPartsProperty;
 };
 
 ///@endcond PRIVATE

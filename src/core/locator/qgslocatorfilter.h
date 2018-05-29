@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLocatorResult
     {}
 
     /**
-     * Filter from which the result was obtained.
+     * Filter from which the result was obtained. This is automatically set.
      */
     QgsLocatorFilter *filter = nullptr;
 
@@ -82,6 +82,15 @@ class CORE_EXPORT QgsLocatorResult
      */
     double score = 0.5;
 
+    /**
+      * Group the results by categories
+      * If left as empty string, this means that results are all shown without being grouped.
+      * If a group is given, the results will be grouped by \a group under a header.
+      * \note This should be translated.
+      * \since 3.2
+      */
+    QString group = QString();
+
 };
 
 /**
@@ -106,10 +115,23 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       Lowest //!< Lowest priority
     };
 
+    //! Flags for locator behavior.
+    enum Flag
+    {
+      FlagFast = 1 << 1, //!< Filter finds results quickly and can be safely run in the main thread
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsLocatorFilter.
      */
     QgsLocatorFilter( QObject *parent = nullptr );
+
+    /**
+     * Creates a clone of the filter. New requests are always executed in a
+     * clone of the original filter.
+     */
+    virtual QgsLocatorFilter *clone() const = 0 SIP_FACTORY;
 
     /**
      * Returns the unique name for the filter. This should be an untranslated string identifying the filter.
@@ -122,6 +144,11 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see name()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns flags which specify the filter's behavior.
+     */
+    virtual QgsLocatorFilter::Flags flags() const;
 
     /**
      * Returns the priority for the filter, which controls how results are
@@ -137,8 +164,18 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * as these are reserved for core QGIS functions. If a plugin registers
      * a filter with a prefix shorter than 3 characters then the prefix will
      * be ignored.
+     * \note Prefixes might be overridden by user preferences.
+     * \see activePrefix()
      */
     virtual QString prefix() const { return QString(); }
+
+    /**
+     * Prepares the filter instance for an upcoming search for the specified \a string. This method is always called
+     * from the main thread, and individual filter subclasses should perform whatever
+     * tasks are required in order to allow a subsequent search to safely execute
+     * on a background thread.
+     */
+    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ); Q_UNUSED( context ); }
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context
@@ -151,6 +188,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Subclasses should periodically check the \a feedback object to determine
      * whether the query has been canceled. If so, the subclass should return
      * from this method as soon as possible.
+     *
+     * This will be called from a background thread unless flags() returns the
+     * QgsLocatorFilter::FlagFast flag.
      */
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 
@@ -179,6 +219,22 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     void setUseWithoutPrefix( bool useWithoutPrefix );
 
     /**
+     * Returns the prefix in use in the locator
+     * is entered.
+     * \see setActivePrefix()
+     * \since QGIS 3.2
+     */
+    QString activePrefix() const;
+
+    /**
+     * Sets the prefix as being used by the locator
+     * \see activePrefix()
+     * \note If activePrefix is empty, no prefix is used. If activePrefix is NULL, the default prefix is used.
+     * \since QGIS 3.2
+     */
+    void setActivePrefix( const QString &activePrefix ) SIP_SKIP;
+
+    /**
      * Tests a \a candidate string to see if it should be considered a match for
      * a specified \a search string.
      * Filter subclasses should use this method when comparing strings instead
@@ -200,7 +256,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     /**
      * Should return true if the filter has a configuration widget.
-     * \see createConfigWidget()
+     * \see openConfigWidget()
      */
     virtual bool hasConfigWidget() const;
 
@@ -215,6 +271,11 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
   signals:
 
     /**
+     * Emitted when the filter finishes fetching results.
+     */
+    void finished();
+
+    /**
      * Should be emitted by filters whenever they encounter a matching result
      * during within their fetchResults() implementation.
      */
@@ -224,10 +285,13 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     bool mEnabled = true;
     bool mUseWithoutPrefix = true;
+    QString mActivePrefifx = QString();
 
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLocatorFilter::Flags )
+
 
 #endif // QGSLOCATORFILTER_H
 

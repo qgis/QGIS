@@ -276,5 +276,5 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
         finally:
             QApplication.restoreOverrideCursor()
 
-        QMessageBox.information(self, "good!", "everything went fine!")
+        QMessageBox.information(self, "DB Manager", "Versioning was successfully created.")
         self.accept()

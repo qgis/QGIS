@@ -52,6 +52,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     QString svgIconPath() const override;
     QString shortHelpString() const override;
     QString helpUrl() const override;
+    Flags flags() const override;
 
     bool canExecute( QString *errorMessage SIP_OUT = nullptr ) const override;
     QString asPythonCommand( const QVariantMap &parameters, QgsProcessingContext &context ) const override;
@@ -301,8 +302,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     /**
      * Definition of a expression context variable available during model execution.
-     * \since QGIS 3.0
      * \ingroup core
+     * \since QGIS 3.0
      */
     class CORE_EXPORT VariableDefinition
     {
@@ -355,7 +356,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QgsProcessingAlgorithm *createInstance() const override SIP_FACTORY;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
   private:
 
@@ -401,6 +402,17 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * \see toVariant()
      */
     bool loadVariant( const QVariant &model );
+
+    /**
+     * Checks whether the output vector type given by \a outputType is compatible
+     * with the list of acceptable data types specified by \a acceptableDataTypes.
+     * Returns true if vector output is compatible.
+     *
+     * \note This method is intended to be "permissive" rather than "restrictive".
+     * I.e. we only reject outputs which we know can NEVER be acceptable, but
+     * if there's doubt then we default to returning true.
+     */
+    static bool vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType );
 
     friend class TestQgsProcessing;
 };

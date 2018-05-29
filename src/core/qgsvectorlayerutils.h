@@ -67,8 +67,47 @@ class CORE_EXPORT QgsVectorLayerUtils
          * To set info about duplicated features to the function feedback (layout and ids)
          * \since QGIS 3.0
          */
-        void setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids );
+        void setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids );
     };
+
+    /**
+     * Create a feature iterator for a specified field name or expression.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string
+     * \param ok will be set to false if field or expression is invalid, otherwise true
+     * \param selectedOnly set to true to get values from selected features only
+     * \returns feature iterator
+     * \since QGIS 3.0
+     */
+    static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
+
+    /**
+     * Fetches all values from a specified field name or expression.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string
+     * \param ok will be set to false if field or expression is invalid, otherwise true
+     * \param selectedOnly set to true to get values from selected features only
+     * \param feedback optional feedback object to allow cancelation
+     * \returns list of fetched values
+     * \see getDoubleValues
+     * \since QGIS 3.0
+     */
+    static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Fetches all double values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * \param layer vector layer to retrieve values from
+     * \param fieldOrExpression field name or an expression string evaluating to a double value
+     * \param ok will be set to false if field or expression is invalid, otherwise true
+     * \param selectedOnly set to true to get values from selected features only
+     * \param nullCount optional pointer to integer to store number of null values encountered in
+     * \param feedback optional feedback object to allow cancelation
+     * \returns list of fetched values
+     * \see getValues
+     * \since QGIS 3.0
+     */
+    static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr );
 
     /**
      * Returns true if the specified value already exists within a field. This method can be used to test for uniqueness

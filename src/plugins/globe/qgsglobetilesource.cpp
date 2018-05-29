@@ -18,7 +18,6 @@
 #include <osgEarth/Registry>
 #include <osgEarth/ImageUtils>
 
-#include "qgscrscache.h"
 #include "qgsglobetilesource.h"
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"

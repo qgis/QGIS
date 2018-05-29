@@ -97,7 +97,7 @@ class CORE_EXPORT QgsCoordinateFormatter
      *
      * Optional \a flags can be specified to control the output format.
      */
-    static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
 
     /**
      * Formats coordinates as an "\a x,\a y" pair, with optional decimal \a precision (number

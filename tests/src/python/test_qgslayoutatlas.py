@@ -96,7 +96,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.layout.initializeDefaults()
 
         # fix the renderer, fill with green
-        props = {"color": "0,127,0"}
+        props = {"color": "0,127,0", 'outline_color': 'black'}
         fillSymbol = QgsFillSymbol.createSimple(props)
         renderer = QgsSingleSymbolRenderer(fillSymbol)
         mVectorLayer.setRenderer(renderer)
@@ -124,7 +124,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.overview.setExtent(nextent)
 
         # set the fill symbol of the overview map
-        props2 = {"color": "127,0,0,127"}
+        props2 = {"color": "127,0,0,127", 'outline_color': 'black'}
         fillSymbol2 = QgsFillSymbol.createSimple(props2)
         self.overview.overview().setFrameSymbol(fillSymbol2)
 
@@ -527,8 +527,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         pr.addFeatures([f1, f2])
 
         # categorized symbology
-        r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0"}), "red"),
-                                                  QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
+        r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0", 'outline_color': 'black'}), "red"),
+                                                  QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255", 'outline_color': 'black'}), "blue")])
         ptLayer.setRenderer(r)
 
         QgsProject.instance().addMapLayer(ptLayer)

@@ -56,7 +56,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
   return loadLayerDefinition( doc, project, rootGroup, errorMessage, context );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
 
@@ -238,7 +238,7 @@ QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMap
   return doc;
 }
 
-QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context )
+QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context )
 {
   QList<QgsMapLayer *> layers;
   QDomNodeList layernodes = document.elementsByTagName( QStringLiteral( "maplayer" ) );

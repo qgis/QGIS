@@ -81,7 +81,7 @@ class BatchOutputSelectionPanel(QWidget):
         else:
             path = ''
         filename, selectedFileFilter = QFileDialog.getSaveFileName(self,
-                                                                   self.tr('Save file'), path, filefilter)
+                                                                   self.tr('Save File'), path, filefilter)
         if filename:
             if not filename.lower().endswith(
                     tuple(re.findall("\\*(\\.[a-z]{1,10})", filefilter))):
@@ -143,7 +143,7 @@ class BatchOutputSelectionPanel(QWidget):
             lastDir = ''
 
         dirName = QFileDialog.getExistingDirectory(self,
-                                                   self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+                                                   self.tr('Output Directory'), lastDir, QFileDialog.ShowDirsOnly)
 
         if dirName:
             self.table.cellWidget(self.row, self.col).setValue(dirName)

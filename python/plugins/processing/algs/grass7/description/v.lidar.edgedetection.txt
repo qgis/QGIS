@@ -1,7 +1,7 @@
 v.lidar.edgedetection
 Detects the object's edges from a LIDAR data set.
 Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|0|None|False
+QgsProcessingParameterFeatureSource|input|Input vector layer|0|None|False
 QgsProcessingParameterNumber|ew_step|Length of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|4.0|True|0.0|None
 QgsProcessingParameterNumber|ns_step|Length of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|4.0|True|0.0|None
 QgsProcessingParameterNumber|lambda_g|Regularization weight in gradient evaluation|QgsProcessingParameterNumber.Double|0.01|True|0.0|None

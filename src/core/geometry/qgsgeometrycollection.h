@@ -90,8 +90,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      */
     virtual bool removeGeometry( int nr );
 
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void draw( QPainter &p ) const override;
@@ -100,8 +99,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
 
     QgsRectangle boundingBox() const override;
@@ -140,6 +139,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
 
 #ifndef SIP_RUN
@@ -159,8 +159,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
 #endif
 
-  protected:
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
 

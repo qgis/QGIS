@@ -2,7 +2,7 @@
   QgsAttributeTableDialog.h - dialog for attribute table
   -------------------
          date                 : Feb 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -73,6 +73,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
                               bool alwaysShowFilter = false );
 
   private slots:
+
+    /**
+     * Cut selected rows to the clipboard
+     */
+    void mActionCutSelectedRows_triggered();
 
     /**
      * Copies selected rows to the clipboard
@@ -223,6 +228,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
   private:
     QMenu *mMenuActions = nullptr;
+    QToolButton *mActionFeatureActions = nullptr;
 
     QgsDockWidget *mDock = nullptr;
     QgsDistanceArea *myDa = nullptr;

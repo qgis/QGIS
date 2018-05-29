@@ -52,4 +52,9 @@ void QgsExpressionNode::cloneTo( QgsExpressionNode *target ) const
 {
   target->mHasCachedValue = mHasCachedValue;
   target->mCachedStaticValue = mCachedStaticValue;
+  target->parserLastColumn = parserLastColumn;
+  target->parserLastLine = parserLastLine;
+  target->parserFirstColumn = parserFirstColumn;
+  target->parserFirstLine = parserFirstLine;
 }
+

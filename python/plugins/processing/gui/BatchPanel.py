@@ -27,11 +27,13 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QTableWidgetItem, QComboBox, QHeaderView, QFileDialog, QMessageBox
 from qgis.PyQt.QtCore import QDir, QFileInfo
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
@@ -42,8 +44,11 @@ from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBatchPanel.ui'))
 
 
 class BatchPanel(BASE, WIDGET):
@@ -158,7 +163,7 @@ class BatchPanel(BASE, WIDGET):
                     if param.isDestination():
                         continue
                     if param.name() in params:
-                        value = params[param.name()].strip("'")
+                        value = eval(params[param.name()])
                         wrapper = self.wrappers[row][column]
                         wrapper.setValue(value)
                     column += 1
@@ -192,9 +197,9 @@ class BatchPanel(BASE, WIDGET):
                     continue
                 wrapper = self.wrappers[row][col]
                 if not param.checkValueIsAcceptable(wrapper.value(), context):
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
-                        level=QgsMessageBar.WARNING, duration=5)
+                        level=Qgis.Warning, duration=5)
                     return
                 algParams[param.name()] = param.valueAsPythonString(wrapper.value(), context)
                 col += 1
@@ -207,9 +212,9 @@ class BatchPanel(BASE, WIDGET):
                     algOutputs[out.name()] = text.strip()
                     col += 1
                 else:
-                    self.parent.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                    self.parent.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
                         out.description(), row + 1),
-                        level=QgsMessageBar.WARNING, duration=5)
+                        level=Qgis.Warning, duration=5)
                     return
             toSave.append({self.PARAMETERS: algParams, self.OUTPUTS: algOutputs})
 
@@ -281,6 +286,6 @@ class BatchPanel(BASE, WIDGET):
             self.wrappers[row][column].setValue(wrapper.value())
 
     def toggleAdvancedMode(self, checked):
-        for column, param in enumerate(self.alg.parameters):
+        for column, param in enumerate(self.alg.parameterDefinitions()):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, not checked)

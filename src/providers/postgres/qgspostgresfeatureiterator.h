@@ -44,7 +44,6 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QgsPostgresGeometryColumnType mSpatialColType;
     QString mRequestedSrid;
     QString mDetectedSrid;
-    bool mForce2d;
     QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
     QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
     QgsPostgresPrimaryKeyType mPrimaryKeyType;
@@ -108,7 +107,7 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! Number of retrieved features
     int mFetched;
 
-    //! Set to true, if geometry is in the requested columns
+    //! Sets to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
     bool mIsTransactionConnection = false;

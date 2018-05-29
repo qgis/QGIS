@@ -309,7 +309,7 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::Info );
 
     settings.remove( "/PythonPlugins/watchDog/" + packageName );
   }
@@ -325,11 +325,11 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
 
   QString baseName = QFileInfo( fullPathName ).baseName();
 
-  // first check to see if its already loaded
+  // first check to see if it's already loaded
   if ( isLoaded( baseName ) )
   {
     // plugin is loaded
-    // QMessageBox::warning(this, "Already Loaded", description + " is already loaded");
+    // QMessageBox::warning(this, "Loading Plugins", description + " is already loaded");
     return;
   }
 
@@ -367,7 +367,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
-          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName(), myLib.fileName() ), QObject::tr( "Plugins" ), Qgis::Info );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -399,7 +399,7 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
         else
         {
           // something went wrong
-          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Error Loading Plugin" ),
+          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Loading Plugins" ),
                                 QObject::tr( "There was an error loading a plugin. "
                                              "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
                                 .arg( myError ) );

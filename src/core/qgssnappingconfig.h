@@ -16,6 +16,8 @@
 #ifndef QGSPROJECTSNAPPINGSETTINGS_H
 #define QGSPROJECTSNAPPINGSETTINGS_H
 
+#include <QHash>
+
 #include "qgis_core.h"
 #include "qgstolerance.h"
 
@@ -46,6 +48,7 @@ class CORE_EXPORT QgsSnappingConfig
       AllLayers = 2, //!< On all vector layers
       AdvancedConfiguration = 3, //!< On a per layer configuration basis
     };
+    Q_ENUM( SnappingMode )
 
     /**
      * SnappingType defines on what object the snapping is performed
@@ -56,6 +59,7 @@ class CORE_EXPORT QgsSnappingConfig
       VertexAndSegment = 2, //!< Both on vertices and segments
       Segment = 3, //!< On segments only
     };
+    Q_ENUM( SnappingType )
 
     /**
      * \ingroup core
@@ -80,31 +84,31 @@ class CORE_EXPORT QgsSnappingConfig
          */
         IndividualLayerSettings() = default;
 
-        //! return if settings are valid
+        //! Returns if settings are valid
         bool valid() const;
 
-        //! return if snapping is enabled
+        //! Returns if snapping is enabled
         bool enabled() const;
 
         //! enables the snapping
         void setEnabled( bool enabled );
 
-        //! return the type (vertices and/or segments)
+        //! Returns the type (vertices and/or segments)
         QgsSnappingConfig::SnappingType type() const;
 
         //! define the type of snapping
         void setType( QgsSnappingConfig::SnappingType type );
 
-        //! return the tolerance
+        //! Returns the tolerance
         double tolerance() const;
 
-        //! set the tolerance
+        //! Sets the tolerance
         void setTolerance( double tolerance );
 
-        //! return the type of units
+        //! Returns the type of units
         QgsTolerance::UnitType units() const;
 
-        //! set the type of units
+        //! Sets the type of units
         void setUnits( QgsTolerance::UnitType units );
 
         /**
@@ -132,43 +136,43 @@ class CORE_EXPORT QgsSnappingConfig
     //! reset to default values
     void reset();
 
-    //! return if snapping is enabled
+    //! Returns if snapping is enabled
     bool enabled() const;
 
     //! enables the snapping
     void setEnabled( bool enabled );
 
-    //! return the mode (all layers, active layer, per layer settings)
+    //! Returns the mode (all layers, active layer, per layer settings)
     SnappingMode mode() const;
 
     //! define the mode of snapping
     void setMode( SnappingMode mode );
 
-    //! return the type (vertices and/or segments)
+    //! Returns the type (vertices and/or segments)
     SnappingType type() const;
 
     //! define the type of snapping
     void setType( SnappingType type );
 
-    //! return the tolerance
+    //! Returns the tolerance
     double tolerance() const;
 
-    //! set the tolerance
+    //! Sets the tolerance
     void setTolerance( double tolerance );
 
-    //! return the type of units
+    //! Returns the type of units
     QgsTolerance::UnitType units() const;
 
-    //! set the type of units
+    //! Sets the type of units
     void setUnits( QgsTolerance::UnitType units );
 
-    //! return if the snapping on intersection is enabled
+    //! Returns if the snapping on intersection is enabled
     bool intersectionSnapping() const;
 
-    //! set if the snapping on intersection is enabled
+    //! Sets if the snapping on intersection is enabled
     void setIntersectionSnapping( bool enabled );
 
-    //! return individual snapping settings for all layers
+    //! Returns individual snapping settings for all layers
 #ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
 #else
@@ -214,10 +218,10 @@ class CORE_EXPORT QgsSnappingConfig
     % End
 #endif
 
-    //! return individual layer snappings settings (applied if mode is AdvancedConfiguration)
+    //! Returns individual layer snappings settings (applied if mode is AdvancedConfiguration)
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 
-    //! set individual layer snappings settings (applied if mode is AdvancedConfiguration)
+    //! Sets individual layer snappings settings (applied if mode is AdvancedConfiguration)
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
 
     /**

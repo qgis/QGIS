@@ -15,19 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QThread>
 
 #include "qgslocatorfilter.h"
 #include "qgsstringutils.h"
+#include "qgsfeedback.h"
+
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
 {
+}
 
+QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
+{
+  return nullptr;
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
-  return candidate.contains( search, Qt::CaseInsensitive );
+  return !search.isEmpty() && candidate.contains( search, Qt::CaseInsensitive );
 }
 
 bool QgsLocatorFilter::enabled() const
@@ -59,3 +66,17 @@ void QgsLocatorFilter::setUseWithoutPrefix( bool useWithoutPrefix )
 {
   mUseWithoutPrefix = useWithoutPrefix;
 }
+
+QString QgsLocatorFilter::activePrefix() const
+{
+  if ( mActivePrefifx.isNull() )
+    return prefix();
+  else
+    return mActivePrefifx;
+}
+
+void QgsLocatorFilter::setActivePrefix( const QString &activePrefix )
+{
+  mActivePrefifx = activePrefix;
+}
+

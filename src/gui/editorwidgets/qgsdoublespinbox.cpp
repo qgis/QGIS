@@ -31,6 +31,7 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
+  // By default, group separator is off
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
@@ -132,6 +133,11 @@ double QgsDoubleSpinBox::clearValue() const
     return maximum();
   else
     return mCustomClearValue;
+}
+
+void QgsDoubleSpinBox::setLineEditAlignment( Qt::Alignment alignment )
+{
+  mLineEdit->setAlignment( alignment );
 }
 
 QString QgsDoubleSpinBox::stripped( const QString &originalText ) const

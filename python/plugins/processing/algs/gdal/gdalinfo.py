@@ -28,10 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -69,7 +69,6 @@ class gdalinfo(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('Layer information'),
                                                                 self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Layer information')))
 
     def name(self):
         return 'gdalinfo'
@@ -86,6 +85,9 @@ class gdalinfo(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
+    def commandName(self):
+        return 'gdalinfo'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         if self.parameterAsBool(parameters, self.MIN_MAX, context):
@@ -96,8 +98,12 @@ class gdalinfo(GdalAlgorithm):
             arguments.append('-nogcp')
         if self.parameterAsBool(parameters, self.NO_METADATA, context):
             arguments.append('-nomd')
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
-        return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]
 
     def processAlgorithm(self, parameters, context, feedback):
         GdalUtils.runGdal(self.getConsoleCommands(parameters, context, feedback), feedback)

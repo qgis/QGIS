@@ -29,6 +29,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsinterval.h"
+#include "qgsexpressionnode.h"
 
 class QgsFeature;
 class QgsGeometry;
@@ -41,7 +42,6 @@ class QgsDistanceArea;
 class QDomElement;
 class QgsExpressionContext;
 class QgsExpressionPrivate;
-class QgsExpressionNode;
 class QgsExpressionFunction;
 
 /**
@@ -116,6 +116,54 @@ class CORE_EXPORT QgsExpression
   public:
 
     /**
+     * Details about any parser errors that were found when parsing the expression.
+     * \since QGIS 3.0
+     */
+    struct CORE_EXPORT ParserError
+    {
+      enum ParserErrorType
+      {
+        Unknown = 0,  //!< Unknown error type.
+        FunctionUnknown = 1, //!< Function was unknown.
+        FunctionWrongArgs = 2, //!< Function was called with the wrong number of args.
+        FunctionInvalidParams = 3, //!< Function was called with invalid args.
+        FunctionNamedArgsError = 4 //!< Non named function arg used after named arg.
+      };
+
+      /**
+       * The type of parser error that was found.
+       */
+      ParserErrorType errorType = ParserErrorType::Unknown;
+
+      /**
+       * The message for the error at this location.
+       */
+      QString errorMsg;
+
+      /**
+       * The first line that contained the error in the parser.
+       * Depending on the error sometimes this doesn't mean anything.
+       */
+      int firstLine = 0;
+
+      /**
+       * The first column that contained the error in the parser.
+       * Depending on the error sometimes this doesn't mean anything.
+       */
+      int firstColumn = 0;
+
+      /**
+       * The last line that contained the error in the parser.
+       */
+      int lastLine = 0;
+
+      /**
+       * The last column that contained the error in the parser.
+       */
+      int lastColumn = 0;
+    };
+
+    /**
      * Creates a new expression based on the provided string.
      * The string will immediately be parsed. For optimization
      * prepare() should always be called before every
@@ -174,18 +222,24 @@ class CORE_EXPORT QgsExpression
     //! Returns parser error
     QString parserErrorString() const;
 
+    /**
+     * Returns parser error details including location of error.
+     * \since QGIS 3.0
+     */
+    QList<QgsExpression::ParserError> parserErrors() const;
+
     //! Returns root node of the expression. Root node is null is parsing has failed
     const QgsExpressionNode *rootNode() const;
 
     /**
-     * Get the expression ready for evaluation - find out column indexes.
+     * Gets the expression ready for evaluation - find out column indexes.
      * \param context context for preparing expression
      * \since QGIS 2.12
      */
     bool prepare( const QgsExpressionContext *context );
 
     /**
-     * Get list of columns referenced by the expression.
+     * Gets list of columns referenced by the expression.
      *
      * \note If the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
@@ -196,7 +250,7 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedColumns() const;
 
     /**
-     * Return a list of all variables which are used in this expression.
+     * Returns a list of all variables which are used in this expression.
      * If the list contains a NULL QString, there is a variable name used
      * which is determined at runtime.
      *
@@ -205,7 +259,45 @@ class CORE_EXPORT QgsExpression
     QSet<QString> referencedVariables() const;
 
     /**
-     * Return a list of field name indexes obtained from the provided fields.
+     * Returns a list of the names of all functions which are used in this expression.
+     *
+     * \since QGIS 3.2
+     */
+    QSet<QString> referencedFunctions() const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Returns a list of all nodes which are used in this expression
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    QList<const QgsExpressionNode *> nodes( ) const;
+
+    /**
+     * Returns a list of all nodes of the given class which are used in this expression
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    template <class T>
+    QList<const T *> findNodes( ) const
+    {
+      QList<const T *> lst;
+      const QList<const QgsExpressionNode *> allNodes( nodes() );
+      for ( const auto &node : allNodes )
+      {
+        const T *n = dynamic_cast<const T *>( node );
+        if ( n )
+          lst << n;
+      }
+      return lst;
+    }
+#endif
+
+    /**
+     * Returns a list of field name indexes obtained from the provided fields.
      *
      * \since QGIS 3.0
      */
@@ -235,7 +327,7 @@ class CORE_EXPORT QgsExpression
     bool hasEvalError() const;
     //! Returns evaluation error
     QString evalErrorString() const;
-    //! Set evaluation error (used internally by evaluation functions)
+    //! Sets evaluation error (used internally by evaluation functions)
     void setEvalErrorString( const QString &str );
 
     /**
@@ -262,14 +354,14 @@ class CORE_EXPORT QgsExpression
     void setExpression( const QString &expression );
 
     /**
-     * Return the original, unmodified expression string.
+     * Returns the original, unmodified expression string.
      * If there was none supplied because it was constructed by sole
      * API calls, dump() will be used to create one instead.
      */
     QString expression() const;
 
     /**
-     * Return an expression string, constructed from the internal
+     * Returns an expression string, constructed from the internal
      * abstract syntax tree. This does not contain any nice whitespace
      * formatting or comments. In general it is preferable to use
      * expression() instead.
@@ -277,7 +369,7 @@ class CORE_EXPORT QgsExpression
     QString dump() const;
 
     /**
-     * Return calculator used for distance and area calculations
+     * Returns calculator used for distance and area calculations
      * (used by $length, $area and $perimeter functions only)
      * \see setGeomCalculator()
      * \see distanceUnits()
@@ -299,36 +391,36 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see setDistanceUnits()
      * \see areaUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 
     /**
      * Sets the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
      * \note distances are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see distanceUnits()
      * \see setAreaUnits()
+     * \since QGIS 2.14
      */
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 
     /**
      * Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see setAreaUnits()
      * \see distanceUnits()
+     * \since QGIS 2.14
      */
     QgsUnitTypes::AreaUnit areaUnits() const;
 
     /**
      * Sets the desired areal units for calculations involving geomCalculator(), e.g., "$area".
      * \note areas are only converted when a geomCalculator() has been set
-     * \since QGIS 2.14
      * \see areaUnits()
      * \see setDistanceUnits()
+     * \since QGIS 2.14
      */
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 
@@ -347,14 +439,23 @@ class CORE_EXPORT QgsExpression
                                           const QgsDistanceArea *distanceArea = nullptr );
 
     /**
+     * This function returns variables in each expression between [% and %].
+     *
+     * \param text The source string in which variables should be searched.
+     *
+     * \since QGIS 3.2
+     */
+    static QSet<QString> referencedVariables( const QString &text );
+
+    /**
      * Attempts to evaluate a text string as an expression to a resultant double
      * value.
      * \param text text to evaluate as expression
      * \param fallbackValue value to return if text can not be evaluated as a double
      * \returns evaluated double value, or fallback value
-     * \since QGIS 2.7
      * \note this method is inefficient for bulk evaluation of expressions, it is intended
      * for one-off evaluations only.
+     * \since QGIS 2.7
      */
     static double evaluateToDouble( const QString &text, const double fallbackValue );
 
@@ -410,12 +511,12 @@ class CORE_EXPORT QgsExpression
     //! tells whether the identifier is a name of existing function
     static bool isFunctionName( const QString &name );
 
-    //! return index of the function in Functions array
+    //! Returns index of the function in Functions array
     static int functionIndex( const QString &name );
 
     /**
      * Returns the number of functions defined in the parser
-     *  \returns The number of function defined in the parser.
+     * \returns The number of function defined in the parser.
      */
     static int functionCount();
 
@@ -437,9 +538,9 @@ class CORE_EXPORT QgsExpression
      * Returns a string representation of a literal value, including appropriate
      * quotations where required.
      * \param value value to convert to a string representation
-     * \since QGIS 2.14
      * \see quotedString()
      * \see quotedColumnRef()
+     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value );
 
@@ -448,9 +549,9 @@ class CORE_EXPORT QgsExpression
      * quotations where required.
      * \param value value to convert to a string representation
      * \param type value type
-     * \since QGIS 2.14
      * \see quotedString()
      * \see quotedColumnRef()
+     * \since QGIS 2.14
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type );
 
@@ -467,8 +568,6 @@ class CORE_EXPORT QgsExpression
     /**
      * Returns the help text for a specified variable.
      * \param variableName name of variable
-     * \param showValue set to true to include current value of variable in help text
-     * \param value current value of variable to show in help text
      * \see helpText()
      * \since QGIS 2.12
      */

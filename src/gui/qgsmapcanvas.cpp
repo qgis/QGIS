@@ -2,7 +2,7 @@
 qgsmapcanvas.cpp  -  description
 ------------------ -
 begin                : Sun Jun 30 2002
-copyright            : ( C ) 2002 by Gary E.Sherman
+copyright            : (C) 2002 by Gary E.Sherman
 email                : sherman at mrcc.com
 ***************************************************************************/
 
@@ -65,6 +65,7 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include "qgsmapthemecollection.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgssvgcache.h"
 #include <cmath>
 
 /**
@@ -148,10 +149,13 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
     refresh();
   } );
 
+  // refresh canvas when a remote svg has finished downloading
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsMapCanvas::refreshAllLayers );
+
   //segmentation parameters
   QgsSettings settings;
   double segmentationTolerance = settings.value( QStringLiteral( "qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::SegmentationToleranceType( settings.value( QStringLiteral( "qgis/segmentationToleranceType" ), 0 ).toInt() );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( QStringLiteral( "qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   mSettings.setSegmentationTolerance( segmentationTolerance );
   mSettings.setSegmentationToleranceType( toleranceType );
 
@@ -209,6 +213,16 @@ QgsMapCanvas::~QgsMapCanvas()
   {
     whileBlocking( mJob )->cancel();
     delete mJob;
+  }
+
+  QList< QgsMapRendererQImageJob * >::const_iterator previewJob = mPreviewJobs.constBegin();
+  for ( ; previewJob != mPreviewJobs.constEnd(); ++previewJob )
+  {
+    if ( *previewJob )
+    {
+      whileBlocking( *previewJob )->cancel();
+      delete *previewJob;
+    }
   }
 
   // delete canvas items prior to deleting the canvas
@@ -499,10 +513,12 @@ void QgsMapCanvas::refreshMap()
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
+  mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
   {
@@ -891,7 +907,6 @@ void QgsMapCanvas::zoomToFullExtent()
 } // zoomToFullExtent
 
 
-
 void QgsMapCanvas::zoomToPreviousExtent()
 {
   if ( mLastExtentIndex > 0 )
@@ -947,7 +962,7 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer *layer )
   QgsRectangle rect = layer->boundingBoxOfSelected();
   if ( rect.isNull() )
   {
-    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Cannot zoom to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
     return;
   }
 
@@ -994,7 +1009,7 @@ void QgsMapCanvas::zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds 
   }
   else
   {
-    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Zoom to feature id failed" ), errorMsg, Qgis::Warning );
   }
 
 }
@@ -1015,7 +1030,7 @@ void QgsMapCanvas::panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &
   }
   else
   {
-    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Pan to feature id failed" ), errorMsg, Qgis::Warning );
   }
 }
 
@@ -1070,7 +1085,7 @@ void QgsMapCanvas::panToSelected( QgsVectorLayer *layer )
   QgsRectangle rect = layer->boundingBoxOfSelected();
   if ( rect.isNull() )
   {
-    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Cannot pan to selected feature(s)" ), tr( "No extent could be determined." ), Qgis::Warning );
     return;
   }
 
@@ -2087,9 +2102,12 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  emit selectionChanged( layer );
-  refresh();
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( layer )
+  {
+    emit selectionChanged( layer );
+    refresh();
+  }
 }
 
 void QgsMapCanvas::dragEnterEvent( QDragEnterEvent *e )
@@ -2276,7 +2294,6 @@ void QgsMapCanvas::schedulePreviewJob( int number )
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
   {
     startPreviewJob( number );
-  }
-                                   );
+  } );
   mPreviewTimer.start();
 }

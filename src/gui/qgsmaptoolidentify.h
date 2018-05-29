@@ -46,7 +46,6 @@ class QgsDistanceArea;
 class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 {
     Q_OBJECT
-    Q_FLAGS( LayerType )
 
   public:
 
@@ -58,6 +57,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       TopDownAll,
       LayerSelection
     };
+    Q_ENUM( IdentifyMode )
 
     enum Type
     {
@@ -66,6 +66,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       AllLayers = VectorLayer | RasterLayer
     };
     Q_DECLARE_FLAGS( LayerType, Type )
+    Q_FLAG( LayerType )
 
     struct IdentifyResult
     {
@@ -122,8 +123,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     \returns a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, LayerType layerType );
+    //! Performs identification based on a geometry (in map coordinates)
+    QList<QgsMapToolIdentify::IdentifyResult> identify( const QgsGeometry &geometry, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType );
+
+
     /**
-     * return a pointer to the identify menu which will be used in layer selection mode
+     * Returns a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized
      */
     QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}
@@ -160,35 +167,51 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
   private:
 
+    bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers );
+    bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel );
+    bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry );
+
     /**
      * Desired units for distance display.
-     * \since QGIS 2.14
      * \see displayAreaUnits()
+     * \since QGIS 2.14
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
     /**
      * Desired units for area display.
-     * \since QGIS 2.14
      * \see displayDistanceUnits()
+     * \since QGIS 2.14
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
     /**
      * Format a distance into a suitable string for display to the user
-     * \since QGIS 2.14
      * \see formatArea()
+     * \since QGIS 2.14
      */
     QString formatDistance( double distance ) const;
 
     /**
      * Format a distance into a suitable string for display to the user
-     * \since QGIS 2.14
      * \see formatDistance()
+     * \since QGIS 2.14
      */
     QString formatArea( double area ) const;
 
-    QMap< QString, QString > featureDerivedAttributes( QgsFeature *feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatArea()
+     */
+    QString formatDistance( double distance, QgsUnitTypes::DistanceUnit unit ) const;
+
+    /**
+     * Format a distance into a suitable string for display to the user
+     * \see formatDistance()
+     */
+    QString formatArea( double area, QgsUnitTypes::AreaUnit unit ) const;
+
+    QMap< QString, QString > featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 
     /**
      * Adds details of the closest vertex to derived attributes
@@ -199,8 +222,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;
     QString formatYCoordinate( const QgsPointXY &canvasPoint ) const;
 
-    // Last point in canvas CRS
-    QgsPointXY mLastPoint;
+    // Last geometry (point or polygon) in map CRS
+    QgsGeometry mLastGeometry;
 
     double mLastMapUnitsPerPixel;
 

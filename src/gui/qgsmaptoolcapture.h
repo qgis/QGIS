@@ -76,14 +76,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void clearCurve( );
 
     /**
-     * Get the capture curve
+     * Gets the capture curve
      *
      * \returns Capture curve
      */
     const QgsCompoundCurve *captureCurve() const { return &mCaptureCurve; }
 
     /**
-     * Return a list of matches for each point on the captureCurve.
+     * Returns a list of matches for each point on the captureCurve.
      *
      * \since QGIS 3.0
      */
@@ -146,6 +146,31 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     // TODO QGIS 3.0 returns an enum instead of a magic constant
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
+
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer). If the point is snapped, then the Z
+     * value is took from the snapped point.
+     *
+     * \param e A mouse event
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsMapMouseEvent &e ) const;
+
+    /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer).
+     *
+     * \param point A point in 2D
+     *
+     * \returns a point with ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint mapPoint( const QgsPointXY &point ) const;
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)

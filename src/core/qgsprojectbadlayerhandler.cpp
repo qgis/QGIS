@@ -22,10 +22,10 @@
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
-  QgsApplication::messageLog()->logMessage( QStringLiteral( "%1 bad layers dismissed:" ).arg( layers.size() ) );
+  QgsApplication::messageLog()->logMessage( QObject::tr( "%1 bad layers dismissed:" ).arg( layers.size() ) );
   Q_FOREACH ( const QDomNode &layer, layers )
   {
-    QgsApplication::messageLog()->logMessage( QStringLiteral( " * %1" ).arg( dataSource( layer ) ) );
+    QgsApplication::messageLog()->logMessage( QObject::tr( " * %1" ).arg( dataSource( layer ) ) );
   }
 }
 

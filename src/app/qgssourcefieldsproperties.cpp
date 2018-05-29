@@ -192,7 +192,7 @@ void QgsSourceFieldsProperties::setRow( int row, int idx, const QgsField &field 
       break;
 
     case QgsFields::OriginJoin:
-      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
+      dataItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.svg" ) ) );
       break;
 
     default:
@@ -274,7 +274,7 @@ bool QgsSourceFieldsProperties::addAttribute( const QgsField &field )
   else
   {
     mLayer->destroyEditCommand();
-    QMessageBox::critical( this, tr( "Failed to add field" ), tr( "Failed to add field '%1' of type '%2'. Is the field name unique?" ).arg( field.name(), field.typeName() ) );
+    QMessageBox::critical( this, tr( "Add Field" ), tr( "Failed to add field '%1' of type '%2'. Is the field name unique?" ).arg( field.name(), field.typeName() ) );
     return false;
   }
 }
@@ -387,7 +387,7 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
     else
     {
       mLayer->destroyEditCommand();
-      QMessageBox::critical( this, tr( "Failed to rename field" ), tr( "Failed to rename field to '%1'. Is the field name unique?" ).arg( nameItem->text() ) );
+      QMessageBox::critical( this, tr( "Rename Field" ), tr( "Failed to rename field to '%1'. Is the field name unique?" ).arg( nameItem->text() ) );
     }
   }
 }
@@ -433,4 +433,3 @@ void QgsSourceFieldsProperties::updateButtons()
     }
   }
 }
-

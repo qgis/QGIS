@@ -48,8 +48,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
 
     //curve interface
@@ -97,8 +97,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void addVertex( const QgsPoint &pt );
 
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -122,6 +121,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
@@ -142,10 +142,11 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     }
 #endif
 
+    QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;
-    QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
   private:
     QVector< QgsCurve * > mCurves;

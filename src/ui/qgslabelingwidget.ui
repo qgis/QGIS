@@ -14,16 +14,7 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -47,7 +38,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Show labels for this layer</string>
+         <string>Single labels</string>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
@@ -80,7 +71,7 @@
         <bool>true</bool>
        </property>
        <property name="toolTip">
-        <string>Automated placement settings (apply to all layers)</string>
+        <string>Automated placement settings (applies to all layers)</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">

@@ -153,6 +153,21 @@ class CORE_EXPORT QgsProcessingOutputLayerDefinition
      */
     QVariantMap createOptions;
 
+    /**
+     * Saves this output layer definition to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     * \see loadVariant()
+     * \since QGIS 3.2
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this output layer definition from a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     * \see toVariant()
+     * \since QGIS 3.2
+     */
+    bool loadVariant( const QVariantMap &map );
 
     //! Allows direct construction of QVariants.
     operator QVariant() const
@@ -206,6 +221,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       sipType = sipType_QgsProcessingParameterMultipleLayers;
     else if ( sipCpp->type() == QgsProcessingParameterNumber::typeName() )
       sipType = sipType_QgsProcessingParameterNumber;
+    else if ( sipCpp->type() == QgsProcessingParameterDistance::typeName() )
+      sipType = sipType_QgsProcessingParameterDistance;
     else if ( sipCpp->type() == QgsProcessingParameterRange::typeName() )
       sipType = sipType_QgsProcessingParameterRange;
     else if ( sipCpp->type() == QgsProcessingParameterRasterLayer::typeName() )
@@ -247,6 +264,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
       FlagAdvanced = 1 << 1, //!< Parameter is an advanced parameter which should be hidden from users by default
       FlagHidden = 1 << 2, //!< Parameter is hidden and should not be shown to users
       FlagOptional = 1 << 3, //!< Parameter is optional
+      FlagIsModelOutput = 1 << 4, //!< Destination parameter is final output. The parameter name will be used.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -326,7 +344,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      * Sets the \a flags associated with the parameter.
      * \see flags()
      */
-    void setFlags( const Flags &flags ) { mFlags = flags; }
+    void setFlags( Flags flags ) { mFlags = flags; }
 
     /**
      * Checks whether the specified \a input value is acceptable for the
@@ -366,7 +384,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see setMetadata()
      * \note not available in Python bindings.
      */
@@ -374,14 +392,14 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     /**
      * Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see setMetadata()
      */
     QVariantMap &metadata() { return mMetadata; }
 
     /**
      * Sets the parameter's freeform \a metadata. This is mostly used by parameter widget wrappers
-     * in order to customise their appearance and behavior.
+     * in order to customize their appearance and behavior.
      * \see metadata()
      */
     void setMetadata( const QVariantMap &metadata ) { mMetadata = metadata; }
@@ -486,7 +504,7 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     //! Parameter flags
     Flags mFlags;
 
-    //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
+    //! Freeform metadata for parameter. Mostly used by widget wrappers to customize their appearance and behavior.
     QVariantMap mMetadata;
 
     //! Pointer to algorithm which owns this parameter
@@ -994,7 +1012,7 @@ class CORE_EXPORT QgsProcessingParameterFile : public QgsProcessingParameterDefi
 /**
  * \class QgsProcessingParameterMatrix
  * \ingroup core
- * An table (matrix) parameter for processing algorithms.
+ * A table (matrix) parameter for processing algorithms.
   * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDefinition
@@ -1034,7 +1052,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Returns the fixed number of rows in the table. This parameter only has an
      * effect if hasFixedNumberRows() is true.
      * \see setNumberRows()
-     * \see setFixedNumberRows()
+     * \see setHasFixedNumberRows()
      */
     int numberRows() const;
 
@@ -1042,7 +1060,7 @@ class CORE_EXPORT QgsProcessingParameterMatrix : public QgsProcessingParameterDe
      * Sets the fixed number of \a rows in the table. This parameter only has an
      * effect if hasFixedNumberRows() is true.
      * \see numberRows()
-     * \see setFixedNumberRows()
+     * \see setHasFixedNumberRows()
      */
     void setNumberRows( int rows );
 
@@ -1216,7 +1234,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
      * Sets the acceptable data \a type for the parameter.
      * \see dataType()
      */
-    void setDataType( const Type &type );
+    void setDataType( Type type );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1231,6 +1249,58 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
     double mMin = -DBL_MAX + 1;
     double mMax = DBL_MAX;
     Type mDataType = Integer;
+};
+
+/**
+ * \class QgsProcessingParameterDistance
+ * \ingroup core
+ * A double numeric parameter for distance values. Linked to a source layer or CRS parameter
+ * to determine what units the distance values are in.
+  * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameterNumber
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingParameterDistance.
+     */
+    explicit QgsProcessingParameterDistance( const QString &name, const QString &description = QString(),
+        const QVariant &defaultValue = QVariant(),
+        const QString &parentParameterName = QString(),
+        bool optional = false,
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
+
+    /**
+     * Returns the type name for the parameter class.
+     */
+    static QString typeName() { return QStringLiteral( "distance" ); }
+
+    QgsProcessingParameterDistance *clone() const override SIP_FACTORY;
+
+    QString type() const override;
+    QStringList dependsOnOtherParameters() const override;
+
+    /**
+     * Returns the name of the parent parameter, or an empty string if this is not set.
+     * \see setParentParameterName()
+     */
+    QString parentParameterName() const;
+
+    /**
+     * Sets the name of the parent layer parameter. Use an empty string if this is not required.
+     * \see parentParameterName()
+     */
+    void setParentParameterName( const QString &parentParameterName );
+
+    QVariantMap toVariantMap() const override;
+    bool fromVariantMap( const QVariantMap &map ) override;
+
+  private:
+
+    QString mParentParameterName;
+
 };
 
 /**
@@ -1270,7 +1340,7 @@ class CORE_EXPORT QgsProcessingParameterRange : public QgsProcessingParameterDef
      * Sets the acceptable data \a type for the range.
      * \see dataType()
      */
-    void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+    void setDataType( QgsProcessingParameterNumber::Type dataType );
 
     QVariantMap toVariantMap() const override;
     bool fromVariantMap( const QVariantMap &map ) override;
@@ -1622,7 +1692,7 @@ class CORE_EXPORT QgsProcessingParameterField : public QgsProcessingParameterDef
      * Sets the acceptable data \a type for the field.
      * \see dataType()
      */
-    void setDataType( const DataType &type );
+    void setDataType( DataType type );
 
     /**
      * Returns whether multiple field selections are permitted.
@@ -1703,9 +1773,12 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
 
     /**
      * Constructor for QgsProcessingDestinationParameter.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then the destination
+     * output will not be created by default.
      */
     QgsProcessingDestinationParameter( const QString &name, const QString &description = QString(), const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 
     bool isDestination() const override { return true; }
     QVariantMap toVariantMap() const override;
@@ -1720,16 +1793,16 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     /**
      * Returns true if the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see setSupportsNonFileBasedOutputs()
+     * \see setSupportsNonFileBasedOutput()
      */
-    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+    bool supportsNonFileBasedOutput() const { return mSupportsNonFileBasedOutputs; }
 
     /**
      * Sets whether the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see supportsNonFileBasedOutputs()
+     * \see supportsNonFileBasedOutput()
      */
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutput; }
 
     /**
      * Returns the default file extension for destination file paths
@@ -1780,9 +1853,12 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
 
     /**
      * Constructor for QgsProcessingParameterFeatureSink.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterFeatureSink( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-                                       bool optional = false );
+                                       bool optional = false, bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1845,9 +1921,12 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
 
     /**
      * Constructor for QgsProcessingParameterVectorDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterVectorDestination( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry, const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false, bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1906,10 +1985,14 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
 
     /**
      * Constructor for QgsProcessingParameterRasterDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterRasterDestination( const QString &name, const QString &description = QString(),
         const QVariant &defaultValue = QVariant(),
-        bool optional = false );
+        bool optional = false,
+        bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.
@@ -1941,11 +2024,15 @@ class CORE_EXPORT QgsProcessingParameterFileDestination : public QgsProcessingDe
 
     /**
      * Constructor for QgsProcessingParameterFileDestination.
+     *
+     * If \a createByDefault is false and the parameter is \a optional, then this destination
+     * output will not be created by default.
      */
     QgsProcessingParameterFileDestination( const QString &name, const QString &description = QString(),
                                            const QString &fileFilter = QString(),
                                            const QVariant &defaultValue = QVariant(),
-                                           bool optional = false );
+                                           bool optional = false,
+                                           bool createByDefault = true );
 
     /**
      * Returns the type name for the parameter class.

@@ -196,6 +196,56 @@ bool LabelPosition::isIntersect( double *bbox )
     return false;
 }
 
+bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  try
+  {
+    if ( GEOSPreparedIntersects_r( QgsGeos::getGEOSHandler(), geometry, mGeos ) == 1 )
+    {
+      return true;
+    }
+    else if ( nextPart )
+    {
+      return nextPart->intersects( geometry );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+  }
+
+  return false;
+}
+
+bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  try
+  {
+    if ( GEOSPreparedContains_r( QgsGeos::getGEOSHandler(), geometry, mGeos ) != 1 )
+    {
+      return false;
+    }
+    else if ( nextPart )
+    {
+      return nextPart->within( geometry );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+  }
+
+  return true;
+}
+
 bool LabelPosition::isInside( double *bbox )
 {
   for ( int i = 0; i < 4; i++ )
@@ -230,7 +280,7 @@ bool LabelPosition::isInConflictSinglePart( LabelPosition *lp )
   if ( !lp->mGeos )
     lp->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     bool result = ( GEOSPreparedIntersects_r( geosctxt, preparedGeom(), lp->mGeos ) == 1 );
@@ -463,7 +513,7 @@ bool LabelPosition::crossesLine( PointSet *line ) const
   if ( !line->mGeos )
     line->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedIntersects_r( geosctxt, line->preparedGeom(), mGeos ) == 1 )
@@ -492,7 +542,7 @@ bool LabelPosition::crossesBoundary( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedOverlaps_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1
@@ -530,7 +580,7 @@ bool LabelPosition::intersectsWithPolygon( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     if ( GEOSPreparedIntersects_r( geosctxt, polygon->preparedGeom(), mGeos ) == 1 )
@@ -561,7 +611,7 @@ double LabelPosition::polygonIntersectionCostForParts( PointSet *polygon ) const
   if ( !polygon->mGeos )
     polygon->createGeosGeom();
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   double cost = 0;
   try
   {

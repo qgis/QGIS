@@ -211,7 +211,7 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return false;
 }
 
-void QgsAbstractFeatureIterator::setInterruptionChecker( QgsInterruptionChecker * )
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
 {
 }
 

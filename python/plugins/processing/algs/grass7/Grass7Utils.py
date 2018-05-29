@@ -31,7 +31,8 @@ import shlex
 import subprocess
 import os
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
@@ -139,14 +140,12 @@ class Grass7Utils:
             Inline function to search for grass binaries into a folder
             with os.walk
             """
-            command = None
             if os.path.exists(folder):
                 for root, dirs, files in os.walk(folder):
                     for cmd in cmdList:
                         if cmd in files:
-                            command = os.path.join(root, cmd)
-                            break
-            return command
+                            return os.path.join(root, cmd)
+            return None
 
         if Grass7Utils.command:
             return Grass7Utils.command
@@ -349,7 +348,7 @@ class Grass7Utils:
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrassExecution(commands)
-        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', QgsMessageLog.INFO)
+        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
         if isWindows():
@@ -408,7 +407,7 @@ class Grass7Utils:
                         feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.
@@ -457,7 +456,7 @@ class Grass7Utils:
                         'The specified GRASS 7 folder "{}" does not contain '
                         'a valid set of GRASS 7 modules.\nPlease, go to the '
                         'Processing settings dialog, and check that the '
-                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(path, 'bin')))
+                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(Grass7Utils.path, 'bin')))
             Grass7Utils.isGrassInstalled = True
             return
         # Return error messages

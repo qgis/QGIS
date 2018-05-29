@@ -70,7 +70,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     virtual void setModel( QgsFeatureListModel *featureListModel );
 
     /**
-     * Get the featureListModel used by this view
+     * Gets the featureListModel used by this view
      *
      * \returns The model in use
      */
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     QString parserErrorString();
 
     /**
-     * Get the currentEditSelection
+     * Gets the currentEditSelection
      *
      * \returns A list of edited feature ids
      */
@@ -184,8 +184,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     /**
      * Make sure, there is an edit selection. If there is none, choose the first item.
+     * If \a inSelection is set to true, the edit selection is done in selected entries if
+     * there is a selected entry visible.
+     *
      */
-    void ensureEditSelection();
+    void ensureEditSelection( bool inSelection = false );
 
   private:
     void selectRow( const QModelIndex &index, bool anchor );

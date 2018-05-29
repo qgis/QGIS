@@ -20,7 +20,13 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from ..data_model import TableDataModel, SqlResultModel
+from qgis.core import QgsMessageLog
+
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
+from ..plugin import BaseError
 
 
 class GPKGTableDataModel(TableDataModel):
@@ -45,6 +51,35 @@ class GPKGTableDataModel(TableDataModel):
 
     def rowCount(self, index=None):
         return self.fetchedCount
+
+
+class GPKGSqlResultModelTask(SqlResultModelTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__(db, sql, parent)
+
+    def run(self):
+        try:
+            self.model = GPKGSqlResultModel(self.db, self.sql, None)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+        return True
+
+    def cancel(self):
+        self.db.connector.cancel()
+        SqlResultModelTask.cancel(self)
+
+
+class GPKGSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        super().__init__()
+
+        self.task = GPKGSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
 
 
 class GPKGSqlResultModel(SqlResultModel):

@@ -70,7 +70,7 @@ for module in "${modules[@]}"; do
         # so "%Include 3d/xxxx.sip" is a syntax error but everything works with "%Include ./3d/xxxx.sip"
         sip="./$sip"
       fi
-      echo "%Include $sip" >> $file
+      echo "%Include auto_generated/$sip" >> $file
       if [[ ! -z $if_cond ]]; then
         echo "%End" >> $file
       fi

@@ -25,6 +25,7 @@ __copyright__ = '(C) 2014, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from math import sqrt
 
 from qgis.core import (QgsFeature,
@@ -78,16 +79,19 @@ class ConcaveHull(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsSource(parameters, ConcaveHull.INPUT, context)
+        if layer is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         alpha = self.parameterAsDouble(parameters, self.ALPHA, context)
         holes = self.parameterAsBool(parameters, self.HOLES, context)
         no_multigeom = self.parameterAsBool(parameters, self.NO_MULTIGEOMETRY, context)
 
         # Delaunay triangulation from input point layer
-        feedback.setProgressText(self.tr('Creating Delaunay triangles...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Creating Delaunay triangles…'))
         delaunay_layer = processing.run("qgis:delaunaytriangulation", {'INPUT': parameters[ConcaveHull.INPUT], 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
 
         # Get max edge length from Delaunay triangles
-        feedback.setProgressText(self.tr('Computing edges max length...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Computing edges max length…'))
 
         features = delaunay_layer.getFeatures()
         count = delaunay_layer.featureCount()
@@ -109,7 +113,7 @@ class ConcaveHull(QgisAlgorithm):
         max_length = max(lengths)
 
         # Get features with longest edge longer than alpha*max_length
-        feedback.setProgressText(self.tr('Removing features...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Removing features…'))
         counter = 50. / len(edges)
         i = 0
         ids = []
@@ -126,11 +130,11 @@ class ConcaveHull(QgisAlgorithm):
         delaunay_layer.dataProvider().deleteFeatures(ids)
 
         # Dissolve all Delaunay triangles
-        feedback.setProgressText(self.tr('Dissolving Delaunay triangles...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Dissolving Delaunay triangles…'))
         dissolved_layer = processing.run("native:dissolve", {'INPUT': delaunay_layer, 'OUTPUT': 'memory:'}, feedback=feedback, context=context)['OUTPUT']
 
         # Save result
-        feedback.setProgressText(self.tr('Saving data...'))
+        feedback.setProgressText(QCoreApplication.translate('ConcaveHull', 'Saving data…'))
         feat = QgsFeature()
         dissolved_layer.getFeatures().nextFeature(feat)
 
@@ -140,6 +144,8 @@ class ConcaveHull(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                layer.fields(), QgsWkbTypes.Polygon, layer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         geom = feat.geometry()
         if no_multigeom and geom.isMultipart():

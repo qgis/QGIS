@@ -24,6 +24,7 @@
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
 #include "qgserror.h"
 
 typedef int dataCapabilities_t(); // SIP_SKIP
@@ -58,6 +59,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       sipType = sipType_QgsRasterDataProvider;
     }
+    else if ( qobject_cast<QgsMeshDataProvider *>( sipCpp ) )
+    {
+      sipType = sipType_QgsMeshDataProvider;
+    }
     else
     {
       sipType = 0;
@@ -76,7 +81,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
       Database            = 1 << 2,
       Net                 = 1 << 3  // Internet source
     };
-    Q_ENUM( DataCapability );
+    Q_ENUM( DataCapability )
 
     /**
      * Properties are used to pass custom configuration options into data providers.
@@ -91,12 +96,26 @@ class CORE_EXPORT QgsDataProvider : public QObject
       CustomData   = 3000          //!< Custom properties for 3rd party providers or very provider-specific properties which are not expected to be of interest for other providers can be added starting from this value up.
     };
 
+
+    /**
+     * Setting options for creating vector data providers.
+     * \since QGIS 3.2
+     */
+    struct ProviderOptions
+    {
+      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
+    };
+
     /**
      * Create a new dataprovider with the specified in the \a uri.
+     *
+     * Additional creation options are specified within the \a options value.
      */
-    QgsDataProvider( const QString &uri = QString() )
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() )
       : mDataSourceURI( uri )
-    {}
+    {
+      Q_UNUSED( options );
+    }
 
     /**
      * Returns the coordinate system for the data source.
@@ -117,7 +136,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Get the data source specification. This may be a path or database
+     * Gets the data source specification. This may be a path or database
      * connection string
      * \param expandAuthConfig Whether to expand any assigned authentication configuration
      * \returns data source specification
@@ -149,7 +168,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     }
 
     /**
-     * Get the data source specification.
+     * Gets the data source specification.
      *
      * \since QGIS 3.0
      */
@@ -247,7 +266,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      */
     virtual uint subLayerCount() const
     {
@@ -286,7 +305,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return a provider name
+     * Returns a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -304,9 +323,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return description
+     * Returns description
      *
-     * Return a terse string describing what the provider is.
+     * Returns a terse string describing what the provider is.
      *
      * \note
      *
@@ -319,7 +338,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return vector file filter string
+     * Returns vector file filter string
      *
      * Returns a string suitable for a QFileDialog of vector file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -335,7 +354,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
 
 
     /**
-     * Return raster file filter string
+     * Returns raster file filter string
      *
      * Returns a string suitable for a QFileDialog of raster file formats
      * supported by the data provider.  Naturally this will be an empty string
@@ -362,7 +381,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
     /**
-     * Get current status error. This error describes some principal problem
+     * Gets current status error. This error describes some principal problem
      *  for which provider cannot work and thus is not valid. It is not last error
      *  after accessing data by block(), identify() etc.
      */
@@ -434,7 +453,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     void setProviderProperty( int property, const QVariant &value ); // SIP_SKIP
 
     /**
-     * Get the current value of a certain provider property.
+     * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
      * \since QGIS 2.16
@@ -442,7 +461,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 
     /**
-     * Get the current value of a certain provider property.
+     * Gets the current value of a certain provider property.
      * It depends on the provider which properties are supported.
      *
      * \since QGIS 2.16
@@ -486,11 +505,31 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
      *
-     * \since QGIS 3.0
      *
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
+
+    /**
+     * Returns layer metadata collected from the provider's source.
+     *
+     * Individual data providers must implement this method if they support collecting metadata.
+     *
+     * \see writeLayerMetadata()
+     * \since QGIS 3.0
+    */
+    virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); }
+
+    /**
+     * Writes layer \a metadata to the underlying provider source. Support depends
+     * on individual provider capabilities.
+     *
+     * Returns true if metadata was successfully written to the data provider.
+     * \see layerMetadata()
+     * \since QGIS 3.0
+    */
+    virtual bool writeLayerMetadata( const QgsLayerMetadata &metadata ) { Q_UNUSED( metadata ); return false; }
 
   signals:
 
@@ -533,7 +572,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     //! Add error message
     void appendError( const QgsErrorMessage &message ) { mError.append( message ); }
 
-    //! Set error message
+    //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
   private:

@@ -78,9 +78,9 @@ struct QgsPostgresLayerProperty
   QList<int>                    srids;
   unsigned int                  nSpCols;
   QString                       sql;
-  bool                          force2d;
   QString                       relKind;
-  bool                          isView;
+  bool                          isView = false;
+  bool                          isMaterializedView = false;
   QString                       tableComment;
 
 
@@ -109,9 +109,9 @@ struct QgsPostgresLayerProperty
     property.pkCols          = pkCols;
     property.nSpCols         = nSpCols;
     property.sql             = sql;
-    property.force2d         = force2d;
     property.relKind         = relKind;
     property.isView          = isView;
+    property.isMaterializedView = isMaterializedView;
     property.tableComment    = tableComment;
 
     return property;
@@ -135,7 +135,7 @@ struct QgsPostgresLayerProperty
       sridString += QString::number( srid );
     }
 
-    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8 force2d=%9" )
+    return QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pkCols=%6 sql=%7 nSpCols=%8" )
            .arg( schemaName,
                  tableName,
                  geometryColName,
@@ -143,8 +143,7 @@ struct QgsPostgresLayerProperty
                  sridString,
                  pkCols.join( QStringLiteral( "|" ) ),
                  sql )
-           .arg( nSpCols )
-           .arg( force2d ? "yes" : "no" );
+           .arg( nSpCols );
   }
 #endif
 };
@@ -198,22 +197,22 @@ class QgsPostgresConn : public QObject
     void ref() { ++mRef; }
     void unref();
 
-    //! get postgis version string
+    //! Gets postgis version string
     QString postgisVersion();
 
-    //! get status of GEOS capability
+    //! Gets status of GEOS capability
     bool hasGEOS();
 
-    //! get status of topology capability
+    //! Gets status of topology capability
     bool hasTopology();
 
-    //! get status of Pointcloud capability
+    //! Gets status of Pointcloud capability
     bool hasPointcloud();
 
-    //! get status of GIST capability
+    //! Gets status of GIST capability
     bool hasGIST();
 
-    //! get status of PROJ4 capability
+    //! Gets status of PROJ4 capability
     bool hasPROJ();
 
     //! encode wkb in hex
@@ -274,7 +273,7 @@ class QgsPostgresConn : public QObject
     static QString quotedValue( const QVariant &value );
 
     /**
-     * Get the list of supported layers
+     * Gets the list of supported layers
      * \param layers list to store layers in
      * \param searchGeometryColumnsOnly only look for geometry columns which are
      * contained in the geometry_columns metatable
@@ -290,7 +289,7 @@ class QgsPostgresConn : public QObject
                           const QString &schema = QString() );
 
     /**
-     * Get the list of database schemas
+     * Gets the list of database schemas
      * \param schemas list to store schemas in
      * \returns true if schemas where fetched successfully
      * \since QGIS 2.7
@@ -347,6 +346,7 @@ class QgsPostgresConn : public QObject
     static bool geometryColumnsOnly( const QString &connName );
     static bool dontResolveType( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
+    static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );
 
     //! A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback}

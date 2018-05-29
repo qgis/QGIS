@@ -132,24 +132,16 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns the whole config
-     *
-     * \returns The configuration
      */
     QVariantMap config() const;
 
     /**
      * Returns information about the context in which this widget is shown
-     *
-     * \returns context information
      */
     const QgsAttributeEditorContext &context() const;
 
     /**
-     * Access the QgsVectorLayer, you are working on
-     *
-     * \returns The layer
-     *
-     * \see field()
+     * Returns the vector layer associated with the widget.
      */
     QgsVectorLayer *layer() const;
 
@@ -161,7 +153,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     static QgsWidgetWrapper *fromWidget( QWidget *widget );
 
     /**
-     * Return true if the widget has been properly initialized.
+     * Returns true if the widget has been properly initialized.
      * This acts as hint for the calling party if this wrapper can be used
      * after initializing it.
      * If it cannot be used this is a hint to the caller that he may try to find
@@ -176,25 +168,25 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
      *
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
     /**
      * Sets the editor widget's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \since QGIS 3.0
      * \see dataDefinedProperties()
+     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 

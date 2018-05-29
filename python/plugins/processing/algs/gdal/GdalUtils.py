@@ -29,13 +29,16 @@ import os
 import subprocess
 import platform
 import re
+import warnings
 
 import psycopg2
 
-from osgeo import gdal
-from osgeo import ogr
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -47,7 +50,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal  # NOQA
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        from osgeo import gdal  # NOQA
 
     gdalAvailable = True
 except:
@@ -84,7 +89,7 @@ class GdalUtils:
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsMessageLog.logMessage(fused_command, 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
         feedback.pushInfo('GDAL command:')
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo('GDAL command output:')
@@ -114,7 +119,7 @@ class GdalUtils:
                         str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
                             len(loglines), u'\n'.join(loglines[-10:])))
 
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
             GdalUtils.consoleOutput = loglines
 
     @staticmethod
@@ -388,3 +393,39 @@ class GdalUtils:
         name = ly.GetName()
         ds = None
         return name
+
+    @staticmethod
+    def parseCreationOptions(value):
+        parts = value.split('|')
+        options = []
+        for p in parts:
+            options.extend(['-co', p])
+        return options
+
+    @staticmethod
+    def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
+        listFile = os.path.join(QgsProcessingUtils.tempFolder(), filename)
+        with open(listFile, 'w') as f:
+            if executing:
+                layers = []
+                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                    if quote:
+                        layers.append('"' + l.source() + '"')
+                    else:
+                        layers.append(l.source())
+                f.write('\n'.join(layers))
+        return listFile
+
+    @staticmethod
+    def gdal_crs_string(crs):
+        """
+        Converts a QgsCoordinateReferenceSystem to a string understandable
+        by GDAL
+        :param crs: crs to convert
+        :return: gdal friendly string
+        """
+        if crs.authid().upper().startswith('EPSG:'):
+            return crs.authid()
+
+        # fallback to proj4 string
+        return crs.toProj4()

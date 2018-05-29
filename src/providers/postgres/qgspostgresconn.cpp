@@ -40,6 +40,7 @@
 #include <netinet/in.h>
 #endif
 
+const int PG_DEFAULT_TIMEOUT = 30;
 
 QgsPostgresResult::~QgsPostgresResult()
 {
@@ -217,6 +218,18 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
   QgsDataSourceUri uri( conninfo );
   QString expandedConnectionInfo = uri.connectionInfo( true );
 
+  auto addDefaultTimeout = []( QString & connectString )
+  {
+    if ( !connectString.contains( QStringLiteral( "connect_timeout=" ) ) )
+    {
+      // add default timeout
+      QgsSettings settings;
+      int timeout = settings.value( QStringLiteral( "PostgreSQL/default_timeout" ), PG_DEFAULT_TIMEOUT, QgsSettings::Providers ).toInt();
+      connectString += QStringLiteral( " connect_timeout=%1" ).arg( timeout );
+    }
+  };
+  addDefaultTimeout( expandedConnectionInfo );
+
   mConn = PQconnectdb( expandedConnectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
 
   // remove temporary cert/key/CA if they exist
@@ -258,7 +271,9 @@ QgsPostgresConn::QgsPostgresConn( const QString &conninfo, bool readOnly, bool s
         uri.setPassword( password );
 
       QgsDebugMsg( "Connecting to " + uri.connectionInfo( false ) );
-      mConn = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+      QString connectString = uri.connectionInfo();
+      addDefaultTimeout( connectString );
+      mConn = PQconnectdb( connectString.toLocal8Bit() );
     }
 
     if ( PQstatus() == CONNECTION_OK )
@@ -503,6 +518,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       int dim = result.PQgetvalue( idx, 5 ).toInt();
       QString relkind = result.PQgetvalue( idx, 6 );
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
+      bool isMaterializedView = relkind == QLatin1String( "m" );
       QString comment = result.PQgetvalue( idx, 7 );
 
       int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
@@ -535,13 +551,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.sql.clear();
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
-      /*
-       * force2d may get a false negative value
-       * (dim == 2 but is not really constrained)
-       * http://trac.osgeo.org/postgis/ticket/3068
-       */
-      layerProperty.force2d = dim > 3;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
       if ( isView && layerProperty.pkCols.empty() )
@@ -629,6 +640,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind    = result.PQgetvalue( i, 3 ); // relation kind
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
+      bool isMaterializedView = relkind == QLatin1String( "m" );
       QString comment    = result.PQgetvalue( i, 5 ); // table comment
 
       //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
@@ -640,6 +652,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColName = column;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
       if ( coltype == QLatin1String( "geometry" ) )
       {
@@ -716,6 +729,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString schema  = result.PQgetvalue( i, 1 ); // nspname
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
       bool isView = relkind == QLatin1String( "v" ) || relkind == QLatin1String( "m" );
+      bool isMaterializedView = relkind == QLatin1String( "m" );
       QString comment = result.PQgetvalue( i, 3 ); // table comment
 
       //QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
@@ -728,6 +742,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.geometryColType = SctNone;
       layerProperty.relKind = relkind;
       layerProperty.isView = isView;
+      layerProperty.isMaterializedView = isMaterializedView;
       layerProperty.tableComment = comment;
 
       //check if we've already added this layer in some form
@@ -1465,14 +1480,6 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       query += QString::number( srid );
     }
 
-    if ( !layerProperty.force2d )
-    {
-      query += QStringLiteral( ",%1(%2%3)" )
-               .arg( majorVersion() < 2 ? "ndims" : "st_ndims",
-                     quotedIdentifier( layerProperty.geometryColName ),
-                     castToGeometry ?  "::geometry" : "" );
-    }
-
     query += " FROM " + table;
 
     //QgsDebugMsg( "Retrieving geometry types,srids and dims: " + query );
@@ -1485,11 +1492,6 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       {
         QString type = gresult.PQgetvalue( i, 0 );
         QString srid = gresult.PQgetvalue( i, 1 );
-
-        if ( !layerProperty.force2d && gresult.PQgetvalue( i, 2 ).toInt() > 3 )
-        {
-          layerProperty.force2d = true;
-        }
 
         if ( type.isEmpty() )
           continue;
@@ -1740,7 +1742,7 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   QString database = settings.value( key + "/database" ).toString();
 
   bool useEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
-  int sslmode = settings.value( key + "/sslmode", QgsDataSourceUri::SslPrefer ).toInt();
+  QgsDataSourceUri::SslMode sslmode = settings.enumValue( key + "/sslmode", QgsDataSourceUri::SslPrefer );
 
   QString username;
   QString password;
@@ -1776,11 +1778,11 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
   QgsDataSourceUri uri;
   if ( !service.isEmpty() )
   {
-    uri.setConnection( service, database, username, password, ( QgsDataSourceUri::SslMode ) sslmode, authcfg );
+    uri.setConnection( service, database, username, password, sslmode, authcfg );
   }
   else
   {
-    uri.setConnection( host, port, database, username, password, ( QgsDataSourceUri::SslMode ) sslmode, authcfg );
+    uri.setConnection( host, port, database, username, password, sslmode, authcfg );
   }
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
@@ -1811,6 +1813,12 @@ bool QgsPostgresConn::allowGeometrylessTables( const QString &connName )
 {
   QgsSettings settings;
   return settings.value( "/PostgreSQL/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
+}
+
+bool QgsPostgresConn::allowProjectsInDatabase( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/projectsInDatabase", false ).toBool();
 }
 
 void QgsPostgresConn::deleteConnection( const QString &connName )

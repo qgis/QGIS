@@ -70,6 +70,9 @@ class rasterize_over(GdalAlgorithm):
     def groupId(self):
         return 'vectorconversion'
 
+    def commandName(self):
+        return 'gdal_rasterize'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         context = dataobjects.createContext()
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
@@ -87,7 +90,4 @@ class rasterize_over(GdalAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 
-        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
-
-    def commandName(self):
-        return "gdal_rasterize"
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

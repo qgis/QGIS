@@ -1,3 +1,17 @@
+/***************************************************************************
+    quantizedmeshterraingenerator.cpp
+    ---------------------
+    begin                : July 2017
+    copyright            : (C) 2017 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "quantizedmeshterraingenerator.h"
 
 #include "map3d.h"
@@ -34,7 +48,7 @@ class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
       mapSettings.setExtent( mTerrain->terrainToMapTransform().transformBoundingBox( tileRect ) );
     }
 
-    virtual void load() override
+    void load() override
     {
       QuantizedMeshGeometry::downloadTileIfMissing( tx, ty, tz );
       qmt = QuantizedMeshGeometry::readTile( tx, ty, tz, tileRect );

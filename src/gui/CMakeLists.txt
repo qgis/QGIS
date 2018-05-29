@@ -159,6 +159,8 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
+  layertree/qgslayertreeviewindicator.cpp
+  layertree/qgslayertreeviewitemdelegate.cpp
 
   layout/qgslayoutcustomdrophandler.cpp
   layout/qgslayoutitemguiregistry.cpp
@@ -190,7 +192,10 @@ SET(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  processing/qgsprocessingalgorithmconfigurationwidget.cpp
   processing/qgsprocessingalgorithmdialogbase.cpp
+  processing/qgsprocessingconfigurationwidgets.cpp
+  processing/qgsprocessingguiregistry.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -314,6 +319,8 @@ SET(QGIS_GUI_SRCS
   qgsnewgeopackagelayerdialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
+  qgsoptionsdialoghighlightwidget.cpp
+  qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
   qgspanelwidget.cpp
@@ -328,6 +335,7 @@ SET(QGIS_GUI_SRCS
   qgsprojectionselectiontreewidget.cpp
   qgspropertyassistantwidget.cpp
   qgspropertyoverridebutton.cpp
+  qgsproxystyle.cpp
   qgsquerybuilder.cpp
   qgsrasterformatsaveoptionswidget.cpp
   qgsrasterlayersaveasdialog.cpp
@@ -479,6 +487,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewgeopackagelayerdialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
+  qgsoptionsdialoghighlightwidget.h
+  qgsoptionsdialoghighlightwidgetsimpl.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h
@@ -494,6 +504,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsprojectionselectiontreewidget.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
+  qgsproxystyle.h
   qgsquerybuilder.h
   qgsrasterformatsaveoptionswidget.h
   qgsrasterlayersaveasdialog.h
@@ -521,6 +532,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsunitselectionwidget.h
   qgsuserinputwidget.h
   qgsvariableeditorwidget.h
+  qgsvscrollarea.h
   qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
@@ -672,6 +684,8 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
+  layertree/qgslayertreeviewindicator.h
+  layertree/qgslayertreeviewitemdelegate.h
 
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
@@ -698,7 +712,9 @@ SET(QGIS_GUI_MOC_HDRS
 
   locator/qgslocatorwidget.h
 
+  processing/qgsprocessingalgorithmconfigurationwidget.h
   processing/qgsprocessingalgorithmdialogbase.h
+  processing/qgsprocessingconfigurationwidgets.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
@@ -743,7 +759,6 @@ SET(QGIS_GUI_HDRS
   qgswidgetstatehelper_p.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
-  qgsvscrollarea.h
 
   ogr/qgsogrhelperfunctions.h
   ogr/qgsnewogrconnection.h
@@ -798,6 +813,8 @@ SET(QGIS_GUI_HDRS
 
   layout/qgslayoutreportsectionlabel.h
   layout/qgslayoutviewmouseevent.h
+
+  processing/qgsprocessingguiregistry.h
 
   raster/qgsrasterrendererwidget.h
 
@@ -858,10 +875,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/effects
   ${CMAKE_SOURCE_DIR}/src/gui/layertree
   ${CMAKE_SOURCE_DIR}/src/gui/layout
-  ${CMAKE_SOURCE_DIR}/src/gui/effects
   ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/processing
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -871,6 +889,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
@@ -891,7 +911,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
 
@@ -964,10 +983,14 @@ ADD_DEPENDENCIES(qgis_gui ui)
 TARGET_LINK_LIBRARIES(qgis_gui
   qgis_core
   qgis_native
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5UiTools_LIBRARIES}
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_gui ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)

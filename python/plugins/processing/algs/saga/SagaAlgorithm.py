@@ -29,10 +29,13 @@ __revision__ = '$Format:%H$'
 import os
 import importlib
 from copy import deepcopy
-from qgis.core import (QgsProcessingUtils,
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
@@ -99,6 +102,16 @@ class SagaAlgorithm(SagaAlgorithmBase):
     def shortHelpString(self):
         return shortHelp.get(self.id(), None)
 
+    def icon(self):
+        return QgsApplication.getThemeIcon("/providerSaga.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("providerSaga.svg")
+
+    def flags(self):
+        # TODO - maybe it's safe to background thread this?
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def defineCharacteristicsFromFile(self):
         with open(self.description_file) as lines:
             line = lines.readline().strip('\n').strip()
@@ -135,11 +148,6 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     self.params.append(getParameterFromString(line))
                 elif line.startswith('AllowUnmatching'):
                     self.allow_nonmatching_grid_extents = True
-                elif line.startswith('Extent'):
-                    # An extent parameter that wraps 4 SAGA numerical parameters
-                    self.extentParamNames = line[6:].strip().split(' ')
-                    self.params.append(QgsProcessingParameterExtent(self.OUTPUT_EXTENT,
-                                                                    'Output extent'))
                 else:
                     pass # TODO
                     #self.addOutput(getOutputFromString(line))
@@ -185,6 +193,9 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                 if not crs:
                     source = self.parameterAsSource(parameters, param.name(), context)
+                    if source is None:
+                        raise QgsProcessingException(self.invalidSourceError(parameters, param.name()))
+
                     crs = source.sourceCrs()
 
                 layer_path = self.parameterAsCompatibleSourceLayerPath(parameters, param.name(), context, ['shp'], 'shp', feedback=feedback)
@@ -221,6 +232,9 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                         if not crs:
                             source = self.parameterAsSource(temp_params, param.name(), context)
+                            if source is None:
+                                raise QgsProcessingException(self.invalidSourceError(parameters, param.name()))
+
                             crs = source.sourceCrs()
 
                         layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, 'shp',
@@ -271,12 +285,12 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                 values = []
                 values.append(rect.xMinimum())
-                values.append(rect.yMinimum())
                 values.append(rect.xMaximum())
+                values.append(rect.yMinimum())
                 values.append(rect.yMaximum())
 
                 for i in range(4):
-                    command += ' -{} {}'.format(self.extentParamNames[i], float(values[i]) + offset[i])
+                    command += ' -{} {}'.format(param.name().split(' ')[i], float(values[i]) + offset[i])
             elif isinstance(param, QgsProcessingParameterNumber):
                 if param.dataType() == QgsProcessingParameterNumber.Integer:
                     command += ' -{} {}'.format(param.name(), self.parameterAsInt(parameters, param.name(), context))
@@ -318,7 +332,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
-            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), self.tr('Processing'), Qgis.Info)
         SagaUtils.executeSaga(feedback)
 
         if crs is not None:
@@ -400,17 +414,21 @@ class SagaAlgorithm(SagaAlgorithmBase):
         supported by SAGA, and that raster layers have the same grid extent
         """
         extent = None
-        layers = []
+        raster_layer_params = []
         for param in self.parameterDefinitions():
+            if param not in parameters or parameters[param.name()] is None:
+                continue
+
             if isinstance(param, QgsProcessingParameterRasterLayer):
-                layers.append(parameters[param.name()])
+                raster_layer_params.append(param.name())
             elif (isinstance(param, QgsProcessingParameterMultipleLayers) and
                     param.layerType() == QgsProcessing.TypeRaster):
-                if parameters[param.name()]:
-                    layers.extend(parameters[param.name()])
+                raster_layer_params.extend(param.name())
 
-        for layer in layers:
-            if layer is None or layer == '':
+        for layer_param in raster_layer_params:
+            layer = self.parameterAsRasterLayer(parameters, layer_param, context)
+
+            if layer is None:
                 continue
             if layer.bandCount() > 1:
                 return False, self.tr('Input layer {0} has more than one band.\n'

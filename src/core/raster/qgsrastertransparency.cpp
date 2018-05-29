@@ -24,25 +24,16 @@ email                : ersts@amnh.org
 #include <QDomDocument>
 #include <QDomElement>
 
-/**
-  Accessor for transparentSingleValuePixelList
-*/
 QList<QgsRasterTransparency::TransparentSingleValuePixel> QgsRasterTransparency::transparentSingleValuePixelList() const
 {
   return mTransparentSingleValuePixelList;
 }
 
-/**
-  Accessor for transparentThreeValuePixelList
-*/
 QList<QgsRasterTransparency::TransparentThreeValuePixel> QgsRasterTransparency::transparentThreeValuePixelList() const
 {
   return mTransparentThreeValuePixelList;
 }
 
-/**
-  Reset to the transparency list to a single value
-*/
 void QgsRasterTransparency::initializeTransparentPixelList( double value )
 {
   //clear the existing list
@@ -56,9 +47,6 @@ void QgsRasterTransparency::initializeTransparentPixelList( double value )
   mTransparentSingleValuePixelList.append( myTransparentSingleValuePixel );
 }
 
-/**
-  Reset to the transparency list to a single value
-*/
 void QgsRasterTransparency::initializeTransparentPixelList( double redValue, double greenValue, double blueValue )
 {
   //clearn the existing list
@@ -73,29 +61,16 @@ void QgsRasterTransparency::initializeTransparentPixelList( double redValue, dou
   mTransparentThreeValuePixelList.append( myTransparentThreeValuePixel );
 }
 
-
-/**
-  Mutator for transparentSingleValuePixelList, replaces the whole list
-*/
 void QgsRasterTransparency::setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList )
 {
   mTransparentSingleValuePixelList = newList;
 }
 
-/**
-  Mutator for transparentThreeValuePixelList, replaces the whole list
-*/
 void QgsRasterTransparency::setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList )
 {
   mTransparentThreeValuePixelList = newList;
 }
 
-/**
-  Searches through the transparency list, if a match is found, the global transparency value is scaled
-  by the stored transparency value.
-  @param value the needle to search for in the transparency hay stack
-  @param globalTransparency  the overal transparency level for the layer
-*/
 int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) const
 {
   //if NaN return 0, transparent
@@ -128,14 +103,6 @@ int QgsRasterTransparency::alphaValue( double value, int globalTransparency ) co
   return globalTransparency;
 }
 
-/**
-  Searches through the transparency list, if a match is found, the global transparency value is scaled
-  by the stored transparency value.
-  @param redValue the red portion of the needle to search for in the transparency hay stack
-  @param greenValue  the green portion of the needle to search for in the transparency hay stack
-  @param blueValue the green portion of the needle to search for in the transparency hay stack
-  @param globalTransparency  the overal transparency level for the layer
-*/
 int QgsRasterTransparency::alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency ) const
 {
   //if NaN return 0, transparent

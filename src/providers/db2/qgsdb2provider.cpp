@@ -35,8 +35,8 @@ static const QString PROVIDER_DESCRIPTION = QStringLiteral( "DB2 Spatial Extende
 
 int QgsDb2Provider::sConnectionId = 0;
 
-QgsDb2Provider::QgsDb2Provider( const QString &uri )
-  : QgsVectorDataProvider( uri )
+QgsDb2Provider::QgsDb2Provider( const QString &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mEnvironment( ENV_LUW )
 {
   QgsDebugMsg( "uri: " + uri );
@@ -1691,9 +1691,9 @@ QgsAttributeList QgsDb2Provider::pkAttributeIndexes() const
   return list;
 }
 
-QGISEXTERN QgsDb2Provider *classFactory( const QString *uri )
+QGISEXTERN QgsDb2Provider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDb2Provider( *uri );
+  return new QgsDb2Provider( *uri, options );
 }
 
 QGISEXTERN bool isProvider()

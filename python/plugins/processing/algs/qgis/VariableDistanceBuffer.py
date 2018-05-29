@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
@@ -111,6 +112,8 @@ class VariableDistanceBuffer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
         segments = self.parameterAsInt(parameters, self.SEGMENTS, context)
@@ -122,6 +125,8 @@ class VariableDistanceBuffer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         buff.buffering(feedback, context, sink, 0, field, True, source, dissolve, segments, end_cap_style,
                        join_style, miter_limit)

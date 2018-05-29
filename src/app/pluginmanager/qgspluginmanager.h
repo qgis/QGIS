@@ -65,7 +65,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Save plugin enabled/disabled state to QgsSettings
     void savePluginState( QString id, bool state );
 
-    //! Get metadata of C++ plugins
+    //! Gets metadata of C++ plugins
     void getCppPluginsMetadata();
 
     //! Create new spacer item for sorting by status in the plugin list view
@@ -83,7 +83,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Add a single plugin to the metadata registry
     void addPluginMetadata( const QString &key, const QMap<QString, QString> &metadata );
 
-    //! Return metadata of given plugin
+    //! Returns the metadata of given plugin
     const QMap<QString, QString> *pluginMetadata( const QString &key ) const;
 
     //! Select one of the vertical tabs programmatically
@@ -99,7 +99,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Close the dialog window (called when the "Close" button clicked)
     void reject() override;
 
-    //! Set tab of the stacked widget (called from the vertical list item)
+    //! Sets tab of the stacked widget (called from the vertical list item)
     void setCurrentTab( int idx );
 
     //! Update the window title according to the current filters
@@ -181,7 +181,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearRepositoryFilter();
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
+    void pushMessage( const QString &text, Qgis::MessageLevel level, int duration = -1 );
 
 #ifndef WITH_QTWEBKIT
     //! vote button was clicked
@@ -196,25 +196,25 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Load translated descriptions. Source strings implemented in external qgspluginmanager_texts.cpp
     void initTabDescriptions();
 
-    //! Return true if given plugin is enabled in QgsSettings
+    //! Returns true if given plugin is enabled in QgsSettings
     bool isPluginEnabled( QString key );
 
-    //! Return true if there are plugins available for download in the metadata registry
+    //! Returns true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins();
 
-    //! Return true if there are installed plugins also available for download in the metadata registry
+    //! Returns true if there are installed plugins also available for download in the metadata registry
     bool hasReinstallablePlugins();
 
-    //! Return true if there are upgradeable plugins in metadata the registry
+    //! Returns true if there are upgradeable plugins in metadata the registry
     bool hasUpgradeablePlugins();
 
-    //! Return true if there are new plugins in the metadata registry
+    //! Returns true if there are new plugins in the metadata registry
     bool hasNewPlugins();
 
-    //! Return true if there are plugins in the metadata registry that are newer installed than available
+    //! Returns true if there are plugins in the metadata registry that are newer installed than available
     bool hasNewerPlugins();
 
-    //! Return true if there are invalid plugins in the metadata registry
+    //! Returns true if there are invalid plugins in the metadata registry
     bool hasInvalidPlugins();
 
     //! send vote

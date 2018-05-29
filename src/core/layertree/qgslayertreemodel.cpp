@@ -242,11 +242,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
-      {
-        if ( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
-          return QVariant(); // do not show checkbox for non-spatial tables
-      }
+
+      if ( nodeLayer->layer() && !nodeLayer->layer()->isSpatial() )
+        return QVariant(); // do not show checkbox for non-spatial tables
+
       return nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
     else if ( QgsLayerTree::isGroup( node ) )
@@ -270,7 +269,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-      if ( !node->isVisible() || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
+      if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
         brush.setColor( Qt::lightGray );
       }
@@ -283,24 +282,37 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
       {
-        QStringList parts;
-        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
-        if ( title.isEmpty() )
-          title = layer->name();
-        title = "<b>" + title + "</b>";
+        QString title =
+          !layer->title().isEmpty() ? layer->title() :
+          !layer->shortName().isEmpty() ? layer->shortName() :
+          layer->name();
+
+        title = "<b>" + title.toHtmlEscaped() + "</b>";
+
         if ( layer->crs().isValid() )
         {
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
-            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+            title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() ).toHtmlEscaped();
           else
-            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+            title += tr( " (%1)" ).arg( layer->crs().authid() ).toHtmlEscaped();
         }
 
+        QStringList parts;
         parts << title;
 
         if ( !layer->abstract().isEmpty() )
-          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
-        parts << "<i>" + layer->publicSource() + "</i>";
+        {
+          parts << QString();
+          const QStringList abstractLines = layer->abstract().split( "\n" );
+          for ( const auto &l : abstractLines )
+          {
+            parts << l.toHtmlEscaped();
+          }
+          parts << QString();
+        }
+
+        parts << "<i>" + layer->publicSource().toHtmlEscaped() + "</i>";
+
         return parts.join( QStringLiteral( "<br/>" ) );
       }
     }

@@ -106,6 +106,8 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertEqual(QgsRasterFileWriter.driverForExtension('.tif'), 'GTiff')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('img'), 'HFA')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('.vrt'), 'VRT')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('.jpg'), 'JPEG')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('asc'), 'AAIGrid')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
 
@@ -113,6 +115,8 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('not format'), [])
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GTiff'), ['tiff', 'tif'])
         self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('JPEG'), ['jpg', 'jpeg'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('AAIGrid'), ['asc'])
 
     def testSupportedFiltersAndFormat(self):
         # test with formats in recommended order

@@ -23,6 +23,8 @@
 #include <qgsvectorlayer.h>
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsvaluerelationwidgetwrapper.h>
+#include <QTableWidget>
+#include <QComboBox>
 #include "qgsgui.h"
 
 class TestQgsValueRelationWidgetWrapper : public QObject
@@ -38,6 +40,8 @@ class TestQgsValueRelationWidgetWrapper : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void testScrollBarUnlocked();
+    void testDrillDown();
+    void testDrillDownMulti();
 };
 
 void TestQgsValueRelationWidgetWrapper::initTestCase()
@@ -58,6 +62,7 @@ void TestQgsValueRelationWidgetWrapper::init()
 
 void TestQgsValueRelationWidgetWrapper::cleanup()
 {
+
 }
 
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
@@ -76,10 +81,11 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setEnabled( true );
 
   // add an item virtually
-  QListWidgetItem item;
+  QTableWidgetItem item;
   item.setText( QStringLiteral( "MyText" ) );
-  w.mListWidget->addItem( &item );
-  QCOMPARE( w.mListWidget->item( 0 )->text(), QString( "MyText" ) );
+  w.mTableWidget->setItem( 0, 0, &item );
+
+  QCOMPARE( w.mTableWidget->item( 0, 0 )->text(), QString( "MyText" ) );
 
   // when the widget wrapper is enabled, the container should be enabled
   // as well as items
@@ -87,7 +93,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 
   QCOMPARE( w.widget()->isEnabled(), true );
 
-  bool itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  bool itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, true );
 
   // when the widget wrapper is disabled, the container should still be enabled
@@ -95,7 +101,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   // edition
   w.setEnabled( false );
 
-  itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, false );
 
   QCOMPARE( w.widget()->isEnabled(), true );
@@ -104,8 +110,205 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   w.setEnabled( true );
 
   QCOMPARE( w.widget()->isEnabled(), true );
-  itemEnabled = w.mListWidget->item( 0 )->flags() & Qt::ItemIsEnabled;
+  itemEnabled = w.mTableWidget->item( 0, 0 )->flags() & Qt::ItemIsEnabled;
   QCOMPARE( itemEnabled, true );
+}
+
+void TestQgsValueRelationWidgetWrapper::testDrillDown()
+{
+  // create a vector layer
+  QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+  // insert some features
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "province" ), 123 );
+  f1.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Some Place By The River" ) );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  QVERIFY( f1.isValid() );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
+  f2.setAttribute( QStringLiteral( "province" ), 245 );
+  f2.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Dreamland By The Clouds" ) );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 1 0, 1 1, 2 1, 2 0, 1 0 ))" ) ) );
+  QVERIFY( f2.isValid() );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( QStringLiteral( "fk_province" ), 123 );
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), 1 );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 0.5 0.5)" ) ) );
+  QVERIFY( f3.isValid() );
+  QVERIFY( f3.geometry().isGeosValid() );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  // build a value relation widget wrapper for municipality
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QVariantMap cfg_municipality;
+  cfg_municipality.insert( QStringLiteral( "Layer" ), vl1.id() );
+  cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_municipality.insert( QStringLiteral( "Value" ), QStringLiteral( "municipality" ) );
+  cfg_municipality.insert( QStringLiteral( "AllowMulti" ), false );
+  cfg_municipality.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_municipality.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_municipality.insert( QStringLiteral( "OrderByValue" ), true );
+  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" =  current_value('fk_province')" ) );
+  cfg_municipality.insert( QStringLiteral( "UseCompleter" ), false );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.widget();
+  w_municipality.setEnabled( true );
+
+  QCOMPARE( w_municipality.mCache.size(), 2 );
+  QCOMPARE( w_municipality.mComboBox->count(), 2 );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mCache.size(), 1 );
+
+  // Check first is selected
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "1" ) );
+
+  // Filter by geometry
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
+
+  // Move the point to 1.5 0.5
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 1.5 0.5)" ) ) );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mComboBox->count(), 1 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Dreamland By The Clouds" ) );
+
+  // Enlarge the buffer
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 3 ), $geometry)" );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mComboBox->count(), 2 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.mComboBox->itemText( 1 ), QStringLiteral( "Some Place By The River" ) );
+
+  // Check with allow null
+  cfg_municipality[QStringLiteral( "AllowNull" )] = true;
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( QgsFeature() );
+
+  // Check null is selected
+  QCOMPARE( w_municipality.mComboBox->count(), 3 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "(no selection)" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "" ) );
+
+  // Check order by value false
+  cfg_municipality[QStringLiteral( "AllowNull" )] = false;
+  cfg_municipality[QStringLiteral( "OrderByValue" )] = false;
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mComboBox->itemText( 1 ), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.mComboBox->itemText( 0 ), QStringLiteral( "Some Place By The River" ) );
+
+}
+
+
+void TestQgsValueRelationWidgetWrapper::testDrillDownMulti()
+{
+  // create a vector layer
+  QgsVectorLayer vl1( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer vl2( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( &vl1, false, false );
+  QgsProject::instance()->addMapLayer( &vl2, false, false );
+
+  // insert some features
+  QgsFeature f1( vl1.fields() );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "province" ), 123 );
+  f1.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Some Place By The River" ) );
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  QVERIFY( f1.isValid() );
+  QgsFeature f2( vl1.fields() );
+  f2.setAttribute( QStringLiteral( "pk" ), 2 );
+  f2.setAttribute( QStringLiteral( "province" ), 245 );
+  f2.setAttribute( QStringLiteral( "municipality" ), QStringLiteral( "Dreamland By The Clouds" ) );
+  f2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POLYGON(( 1 0, 1 1, 2 1, 2 0, 1 0 ))" ) ) );
+  QVERIFY( f2.isValid() );
+  QVERIFY( vl1.dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 ) );
+
+  QgsFeature f3( vl2.fields() );
+  f3.setAttribute( QStringLiteral( "fk_province" ), 123 );
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "{1}" ) );
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 0.5 0.5)" ) ) );
+  QVERIFY( f3.isValid() );
+  QVERIFY( f3.geometry().isGeosValid() );
+  QVERIFY( vl2.dataProvider()->addFeature( f3 ) );
+
+  // build a value relation widget wrapper for municipality
+  QgsValueRelationWidgetWrapper w_municipality( &vl2, vl2.fields().indexOf( QStringLiteral( "fk_municipality" ) ), nullptr, nullptr );
+  QVariantMap cfg_municipality;
+  cfg_municipality.insert( QStringLiteral( "Layer" ), vl1.id() );
+  cfg_municipality.insert( QStringLiteral( "Key" ),  QStringLiteral( "pk" ) );
+  cfg_municipality.insert( QStringLiteral( "Value" ), QStringLiteral( "municipality" ) );
+  cfg_municipality.insert( QStringLiteral( "AllowMulti" ), true );
+  cfg_municipality.insert( QStringLiteral( "NofColumns" ), 1 );
+  cfg_municipality.insert( QStringLiteral( "AllowNull" ), false );
+  cfg_municipality.insert( QStringLiteral( "OrderByValue" ), true );
+  cfg_municipality.insert( QStringLiteral( "FilterExpression" ), QStringLiteral( "\"province\" =  current_value('fk_province')" ) );
+  cfg_municipality.insert( QStringLiteral( "UseCompleter" ), false );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.widget();
+  w_municipality.setEnabled( true );
+
+  QCOMPARE( w_municipality.mCache.size(), 2 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 2 );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mCache.size(), 1 );
+
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "{1}" ) );
+
+  // Filter by geometry
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 1 ), $geometry)" );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
+
+  // Move the point to 1.5 0.5
+  f3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "POINT( 1.5 0.5)" ) ) );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 1 );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Dreamland By The Clouds" ) );
+
+  // Enlarge the buffer
+  cfg_municipality[ QStringLiteral( "FilterExpression" ) ] = QStringLiteral( "contains(buffer(@current_geometry, 3 ), $geometry)" );
+  w_municipality.setConfig( cfg_municipality );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 2 );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "2" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->data( Qt::UserRole ).toString(), QStringLiteral( "1" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "{1}" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Unchecked );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+  w_municipality.setValue( QStringLiteral( "{1,2}" ) );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "{2,1}" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+
+  // Check values are checked
+  f3.setAttribute( QStringLiteral( "fk_municipality" ), QStringLiteral( "{1,2}" ) );
+  w_municipality.setFeature( f3 );
+  QCOMPARE( w_municipality.mTableWidget->rowCount(), 2 );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->text(), QStringLiteral( "Dreamland By The Clouds" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->text(), QStringLiteral( "Some Place By The River" ) );
+  QCOMPARE( w_municipality.mTableWidget->item( 0, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_municipality.mTableWidget->item( 1, 0 )->checkState(), Qt::Checked );
+  QCOMPARE( w_municipality.value().toString(), QStringLiteral( "{2,1}" ) );
+
 }
 
 QGSTEST_MAIN( TestQgsValueRelationWidgetWrapper )

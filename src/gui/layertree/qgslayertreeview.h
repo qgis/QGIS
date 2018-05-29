@@ -26,6 +26,7 @@ class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeViewDefaultActions;
+class QgsLayerTreeViewIndicator;
 class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 
@@ -68,43 +69,85 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
     void setModel( QAbstractItemModel *model ) override;
 
-    //! Get access to the model casted to QgsLayerTreeModel
+    //! Gets access to the model casted to QgsLayerTreeModel
     QgsLayerTreeModel *layerTreeModel() const;
 
-    //! Get access to the default actions that may be used with the tree view
+    //! Gets access to the default actions that may be used with the tree view
     QgsLayerTreeViewDefaultActions *defaultActions();
 
-    //! Set provider for context menu. Takes ownership of the instance
+    //! Sets provider for context menu. Takes ownership of the instance
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
-    //! Return pointer to the context menu provider. May be null
+    //! Returns pointer to the context menu provider. May be null
     QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
 
-    //! Get currently selected layer. May be null
+    //! Gets currently selected layer. May be null
     QgsMapLayer *currentLayer() const;
-    //! Set currently selected layer. Null pointer will deselect any layer.
+    //! Sets currently selected layer. Null pointer will deselect any layer.
     void setCurrentLayer( QgsMapLayer *layer );
 
-    //! Get current node. May be null
+    //! Gets current node. May be null
     QgsLayerTreeNode *currentNode() const;
-    //! Get current group node. If a layer is current node, the function will return parent group. May be null.
+    //! Gets current group node. If a layer is current node, the function will return parent group. May be null.
     QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
-     * Get current legend node. May be null if current node is not a legend node.
+     * Gets current legend node. May be null if current node is not a legend node.
      * \since QGIS 2.14
      */
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
-     * Return list of selected nodes
+     * Returns list of selected nodes
      * \param skipInternal If true, will ignore nodes which have an ancestor in the selection
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
-    //! Return list of selected nodes filtered to just layer nodes
+    //! Returns list of selected nodes filtered to just layer nodes
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 
-    //! Get list of selected layers
+    //! Gets list of selected layers
     QList<QgsMapLayer *> selectedLayers() const;
+
+    /**
+     * Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
+     * in the layer tree view. They can be used to show extra information with tree nodes and they allow
+     * user interaction.
+     *
+     * Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
+     * \see removeIndicator
+     * \see indicators
+     * \since QGIS 3.2
+     */
+    void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+
+    /**
+     * Removes a previously added indicator to a layer tree node. Does not delete the indicator.
+     * \see addIndicator
+     * \see indicators
+     * \since QGIS 3.2
+     */
+    void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+
+    /**
+     * Returns list of indicators associated with a particular layer tree node.
+     * \see addIndicator
+     * \see removeIndicator
+     * \since QGIS 3.2
+     */
+    QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
+
+///@cond PRIVATE
+
+    /**
+     * Returns a list of custom property keys which are considered as related to view operations
+     * only. E.g. node expanded state.
+     *
+     * Changes to these keys will not mark a project as "dirty" and trigger unsaved changes
+     * warnings.
+     *
+     * \since QGIS 3.2
+     */
+    static QStringList viewOnlyCustomProperties() SIP_SKIP;
+///@endcond
 
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
@@ -138,7 +181,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     void dropEvent( QDropEvent *event ) override;
 
-
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -150,6 +192,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
     void onModelReset();
 
+  private slots:
+    void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
+
   protected:
     //! helper class with default actions. Lazily initialized.
     QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
@@ -157,6 +202,13 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewMenuProvider *mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
+    //! Storage of indicators used with the tree view
+    QHash< QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *> > mIndicators;
+    //! Used by the item delegate for identification of which indicator has been clicked
+    QPoint mLastReleaseMousePos;
+
+    // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
+    friend class QgsLayerTreeViewItemDelegate;
 };
 
 
@@ -173,7 +225,7 @@ class GUI_EXPORT QgsLayerTreeViewMenuProvider
   public:
     virtual ~QgsLayerTreeViewMenuProvider() = default;
 
-    //! Return a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu() = 0 SIP_FACTORY;
 };
 

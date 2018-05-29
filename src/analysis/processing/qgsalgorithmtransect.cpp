@@ -46,19 +46,24 @@ QString QgsTransectAlgorithm::groupId() const
   return QStringLiteral( "vectorgeometry" );
 }
 
-QgsProcessingAlgorithm::Flags QgsTransectAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int >() << QgsProcessing::TypeVectorLine ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect " ), QgsProcessingParameterNumber::Double,
-                5.0, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), QgsProcessingParameterNumber::Double,
-                90.0, false, 0, 360 ) );
+  std::unique_ptr< QgsProcessingParameterDistance > length = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ),
+      5.0, QStringLiteral( "INPUT" ), false, 0 );
+  length->setIsDynamic( true );
+  length->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "LENGTH" ), QObject::tr( "Length of the transect" ), QgsPropertyDefinition::DoublePositive ) );
+  length->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( length.release() );
+
+  std::unique_ptr< QgsProcessingParameterNumber > angle = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees from the original line at the vertices" ), QgsProcessingParameterNumber::Double,
+      90.0, false, 0, 360 );
+  angle->setIsDynamic( true );
+  angle->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Angle in degrees" ), QgsPropertyDefinition::Double ) );
+  angle->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( angle.release() );
+
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SIDE" ), QObject::tr( "Side to create the transects" ), QStringList() << QObject::tr( "Left" ) << QObject::tr( "Right" ) << QObject::tr( "Both" ), false ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Transect" ), QgsProcessing::TypeVectorLine ) );
 
@@ -89,14 +94,25 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 {
   Side orientation = static_cast< QgsTransectAlgorithm::Side >( parameterAsInt( parameters, QStringLiteral( "SIDE" ), context ) );
   double angle = fabs( parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context ) );
+  bool dynamicAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
+  QgsProperty angleProperty;
+  if ( dynamicAngle )
+    angleProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value< QgsProperty >();
+
   double length = parameterAsDouble( parameters, QStringLiteral( "LENGTH" ), context );
+  bool dynamicLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "LENGTH" ) );
+  QgsProperty lengthProperty;
+  if ( dynamicLength )
+    lengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value< QgsProperty >();
 
   if ( orientation == QgsTransectAlgorithm::Both )
     length /= 2.0;
 
   std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( source.get() ) );
 
   QgsFields fields = source->fields();
 
@@ -117,7 +133,7 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
                                           outputWkb, source->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsFeatureIterator features = source->getFeatures( );
 
@@ -141,6 +157,18 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
 
     QgsGeometry inputGeometry = feat.geometry();
 
+    if ( dynamicLength || dynamicAngle )
+    {
+      expressionContext.setFeature( feat );
+    }
+
+    double evaluatedLength = length;
+    if ( dynamicLength )
+      evaluatedLength = lengthProperty.valueAsDouble( context.expressionContext(), length );
+    double evaluatedAngle = angle;
+    if ( dynamicAngle )
+      evaluatedAngle = angleProperty.valueAsDouble( context.expressionContext(), angle );
+
     inputGeometry.convertToMultiType();
     const QgsMultiLineString *multiLine = static_cast< const QgsMultiLineString *  >( inputGeometry.constGet() );
     for ( int id = 0; id < multiLine->numGeometries(); ++id )
@@ -153,12 +181,12 @@ QVariantMap QgsTransectAlgorithm::processAlgorithm( const QVariantMap &parameter
         int i = vertexId.vertex;
         QgsFeature outFeat;
         QgsAttributes attrs = feat.attributes();
-        attrs << current << number << i + 1 << angle <<
-              ( ( orientation == QgsTransectAlgorithm::Both ) ? length * 2 : length ) <<
+        attrs << current << number << i + 1 << evaluatedAngle <<
+              ( ( orientation == QgsTransectAlgorithm::Both ) ? evaluatedLength * 2 : evaluatedLength ) <<
               orientation;
         outFeat.setAttributes( attrs );
         double angleAtVertex = line->vertexAngle( vertexId );
-        outFeat.setGeometry( calcTransect( *it, angleAtVertex, length, orientation, angle ) );
+        outFeat.setGeometry( calcTransect( *it, angleAtVertex, evaluatedLength, orientation, evaluatedAngle ) );
         sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
         number++;
         it++;

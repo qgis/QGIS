@@ -70,6 +70,8 @@ class QgsWCSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 9; }
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;

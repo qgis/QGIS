@@ -65,7 +65,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     else if ( error == 2 )
     {
       // problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
       return;
     }
 
@@ -121,7 +121,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         errorMessage = tr( "an unknown error occurred" );
       }
-      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
+      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), Qgis::Critical );
       vlayer->destroyEditCommand();
 
       return;
@@ -137,7 +137,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( fid == -1 )
     {
-      emit messageEmitted( tr( "No ring found to fill." ), QgsMessageBar::CRITICAL );
+      emit messageEmitted( tr( "No ring found to fill." ), Qgis::Critical );
       vlayer->destroyEditCommand();
       return;
     }

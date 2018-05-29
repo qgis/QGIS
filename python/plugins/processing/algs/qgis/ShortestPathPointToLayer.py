@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (NULL,
@@ -41,7 +41,9 @@ from qgis.core import (NULL,
                        QgsField,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
@@ -140,10 +142,9 @@ class ShortestPathPointToLayer(QgisAlgorithm):
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
                                                    5.0, False, 0, 99999999.99))
-        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
-                                                   self.tr('Topology tolerance'),
-                                                   QgsProcessingParameterNumber.Double,
-                                                   0.0, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterDistance(self.TOLERANCE,
+                                                     self.tr('Topology tolerance'),
+                                                     0.0, self.INPUT, False, 0, 99999999.99))
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -161,8 +162,14 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
         endPoints = self.parameterAsSource(parameters, self.END_POINTS, context)
+        if endPoints is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.END_POINTS))
+
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
         directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
@@ -184,6 +191,8 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, network.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         directionField = -1
         if directionFieldName:
@@ -214,7 +223,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading end points...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Loading end points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = endPoints.getFeatures(request)
@@ -237,10 +246,10 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest paths...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToLayer', 'Calculating shortest paths…'))
         graph = builder.graph()
 
         idxStart = graph.findVertex(snappedPoints[0])

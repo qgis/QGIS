@@ -140,17 +140,22 @@ void TestQgisAppClipboard::copyToText()
 
   // attributes only
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
   QString result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
 
   // attributes with WKT
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
   result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
 
+  // HTML test
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+  result = mQgisApp->clipboard()->data( "text/html" );
+  QCOMPARE( result, QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td><td>int_field</td><td>string_field</td></tr><tr><td>Point (5 6)</td><td>9</td><td>val</td></tr><tr><td>Point (7 8)</td><td>19</td><td>val2</td></tr></table></body></html>" ) );
+
   // GeoJSON
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   result = mQgisApp->clipboard()->generateClipboardText();
   QString expected = "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n"
                      "{\n   \"type\":\"Feature\",\n"

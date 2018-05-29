@@ -87,7 +87,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \brief Returns the current file path(s)
      * when multiple files are selected, they are quoted and separated
      * by a single space (for example: '"/path/foo" "path/bar"')
-     * \see filePaths
+     * \see splitFilePaths()
      */
     QString filePath();
 
@@ -124,7 +124,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     /**
      * Sets the selected filter when the file dialog opens.
      */
-    void setSelectedFilter( const QString selectedFilter ) { mSelectedFilter = selectedFilter; }
+    void setSelectedFilter( const QString &selectedFilter ) { mSelectedFilter = selectedFilter; }
 
     /**
      * Returns the selected filter from the last opened file dialog.
@@ -250,7 +250,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   private:
 
-    //! Return file name if object meets drop criteria.
+    //! Returns file name if object meets drop criteria.
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QStringList mAcceptableExtensions;

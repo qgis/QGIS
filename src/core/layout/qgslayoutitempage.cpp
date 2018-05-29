@@ -181,19 +181,19 @@ void QgsLayoutItemPage::redraw()
   mGrid->update();
 }
 
-void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
 {
-  if ( !context.painter() || !mLayout || !mLayout->renderContext().pagesVisible() )
+  if ( !context.renderContext().painter() || !mLayout || !mLayout->renderContext().pagesVisible() )
   {
     return;
   }
 
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QgsExpressionContext expressionContext = createExpressionContext();
-  context.setExpressionContext( expressionContext );
+  context.renderContext().setExpressionContext( expressionContext );
 
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
   if ( mLayout->renderContext().isPreviewRender() )
@@ -220,10 +220,10 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   }
 
   std::unique_ptr< QgsFillSymbol > symbol( mLayout->pageCollection()->pageStyleSymbol()->clone() );
-  symbol->startRender( context );
+  symbol->startRender( context.renderContext() );
 
   //get max bleed from symbol
-  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context );
+  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context.renderContext() );
 
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
@@ -238,8 +238,8 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
                                      std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
   QList<QPolygonF> rings; //empty list
 
-  symbol->renderPolygon( pagePolygon, &rings, nullptr, context );
-  symbol->stopRender( context );
+  symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
+  symbol->stopRender( context.renderContext() );
 
   painter->restore();
 }
@@ -329,7 +329,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel
-        halfCrossLength = 1 / itemStyle->matrix.m11();
+        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
       }
       else
       {

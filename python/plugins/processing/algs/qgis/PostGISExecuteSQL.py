@@ -52,7 +52,7 @@ class PostGISExecuteSQL(QgisAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
         self.addParameter(db_param)
-        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query')))
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), multiLine=True))
 
     def name(self):
         return 'postgisexecutesql'

@@ -44,16 +44,16 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
             )
 
     if (values[0] or values[2]) and (values[1] or values[3]):
-        return None
+        return True, None
 
-    return alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set!")
-
-
-def processCommand(alg, parameters, context):
-    incorporatePoints(alg, parameters, context)
+    return False, alg.tr("You need to set at least source/sink_where or source/sink_cats parameters for each set!")
 
 
-def processOutputs(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
+    incorporatePoints(alg, parameters, context, feedback)
+
+
+def processOutputs(alg, parameters, context, feedback):
     outputParameter = {'output': ['output', 'line', 1, True],
                        'cut': ['cut', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

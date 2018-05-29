@@ -92,7 +92,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     //! Geometry column index used when fetching geometry
     int mGeomColIdx = 1;
 
-    //! Set to true, if geometry is in the requested columns
+    //! Sets to true, if geometry is in the requested columns
     bool mFetchGeometry = true;
 
     bool mHasPrimaryKey;

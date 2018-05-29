@@ -22,11 +22,20 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import (Qt,
+                              QTime,
+                              QRegExp,
+                              QAbstractTableModel,
+                              pyqtSignal,
+                              QObject)
+from qgis.PyQt.QtGui import (QFont,
+                             QStandardItemModel,
+                             QStandardItem)
 from qgis.PyQt.QtWidgets import QApplication
 
-from .plugin import DbError
+from qgis.core import QgsTask
+
+from .plugin import DbError, BaseError
 
 
 class BaseTableModel(QAbstractTableModel):
@@ -125,7 +134,7 @@ class TableDataModel(BaseTableModel):
     def getData(self, row, col):
         if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
             margin = self.fetchedCount / 2
-            start = self.rowCount() - margin if row + margin >= self.rowCount() else row - margin
+            start = int(self.rowCount() - margin if row + margin >= self.rowCount() else row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
@@ -137,6 +146,43 @@ class TableDataModel(BaseTableModel):
     def rowCount(self, index=None):
         # case for tables with no columns ... any reason to use them? :-)
         return self.table.rowCount if self.table.rowCount is not None and self.columnCount(index) > 0 else 0
+
+
+class SqlResultModelAsync(QObject):
+
+    done = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.error = BaseError('')
+        self.status = None
+        self.model = None
+        self.task = None
+        self.canceled = False
+
+    def cancel(self):
+        self.canceled = True
+        if self.task:
+            self.task.cancel()
+
+    def modelDone(self):
+        if self.task:
+            self.status = self.task.status
+            self.model = self.task.model
+            self.error = self.task.error
+
+        self.done.emit()
+
+
+class SqlResultModelTask(QgsTask):
+
+    def __init__(self, db, sql, parent):
+        super().__init__()
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.model = None
 
 
 class SqlResultModel(BaseTableModel):
@@ -165,7 +211,7 @@ class SqlResultModel(BaseTableModel):
             data = []
             header = []
 
-        BaseTableModel.__init__(self, header, data, parent)
+        super().__init__(header, data, parent)
 
         # commit before closing the cursor to make sure that the changes are stored
         self.db._commit()
@@ -246,7 +292,7 @@ class TableFieldsModel(SimpleTableModel):
         fld.name = self.data(self.index(row, 0)) or ""
 
         typestr = self.data(self.index(row, 1)) or ""
-        regex = QRegExp("([^\(]+)\(([^\)]+)\)")
+        regex = QRegExp("([^\\(]+)\\(([^\\)]+)\\)")
         startpos = regex.indexIn(typestr)
         if startpos >= 0:
             fld.dataType = regex.cap(1).strip()

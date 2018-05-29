@@ -153,7 +153,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     //! QgsSymbolLayerRegistry cannot be copied.
     QgsSymbolLayerRegistry &operator=( const QgsSymbolLayerRegistry &rh ) = delete;
 
-    //! return metadata for specified symbol layer. Returns NULL if not found
+    //! Returns metadata for specified symbol layer. Returns NULL if not found
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 
     //! register a new symbol layer type. Takes ownership of the metadata instance.
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
      */
     void resolvePaths( const QString &name, QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
 
-    //! return a list of available symbol layers for a specified symbol type
+    //! Returns a list of available symbol layers for a specified symbol type
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings

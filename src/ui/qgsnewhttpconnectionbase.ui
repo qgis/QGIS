@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create a new connection</string>
+   <string>Create a New Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -118,7 +118,7 @@
       <item row="3" column="0" colspan="2">
        <widget class="QGroupBox" name="mWmsOptionsGroupBox">
         <property name="title">
-         <string>WMS Options</string>
+         <string>WMS/WMTS Options</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
          <item row="5" column="0" colspan="2">

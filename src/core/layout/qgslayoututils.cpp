@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgsrendercontext.h"
 #include "qgslayoutitemmap.h"
+#include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <cmath>
 
@@ -123,7 +124,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     QgsRectangle extent = map->extent();
     QSizeF mapSizeLayoutUnits = map->rect().size();
     QSizeF mapSizeMM = map->layout()->convertFromLayoutUnits( mapSizeLayoutUnits, QgsUnitTypes::LayoutMillimeters ).toQSizeF();
-    QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
+    QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi, false );
     QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
     if ( painter )
       context.setPainter( painter );
@@ -379,6 +380,40 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
   }
   ok = false;
   return QgsLayoutItemPage::Landscape; // default to landscape
+}
+
+double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
+{
+  // workaround Qt bug 66185
+
+  // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
+  // style given to QGraphicsItem::paint incorrectly uses the shear parameter of the matrix (m12)
+  // to store the current view scale, instead of the horizontal scale parameter (m11) which
+  // is used in all other cases
+
+  // TODO - ifdef this out if Qt fixes upstream
+  return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
+}
+
+QgsMapLayer *QgsLayoutUtils::mapLayerFromString( const QString &string, QgsProject *project )
+{
+  // Maybe it's a layer id?
+  if ( QgsMapLayer *ml = project->mapLayer( string ) )
+    return ml;
+
+  // Still nothing? Check for layer name
+  if ( QgsMapLayer *ml = project->mapLayersByName( string ).value( 0 ) )
+    return ml;
+
+  // Still nothing? Check for layer name, case-insensitive
+  const auto layers = project->mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
+  {
+    if ( it.value()->name().compare( string, Qt::CaseInsensitive ) == 0 )
+      return it.value();
+  }
+
+  return nullptr;
 }
 
 double QgsLayoutUtils::pointsToMM( const double pointSize )

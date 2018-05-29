@@ -75,9 +75,9 @@ class FeatureSourceTestCase(object):
         while it.nextFeature(f):
             # expect feature to be valid
             self.assertTrue(f.isValid())
-            # split off the first 5 attributes only - some source test datasets will include
-            # additional attributes which we ignore
-            attrs = f.attributes()[0:5]
+            # some source test datasets will include additional attributes which we ignore,
+            # so cherry pick desired attributes
+            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char']]
             # force the num_char attribute to be text - some sources (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
@@ -319,6 +319,10 @@ class FeatureSourceTestCase(object):
         request = QgsFeatureRequest().addOrderBy('name', False, False)
         values = [f['name'] for f in self.source.getFeatures(request)]
         self.assertEqual(values, ['Pear', 'Orange', 'Honey', 'Apple', NULL])
+
+        request = QgsFeatureRequest().addOrderBy('num_char', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [5, 4, 3, 2, 1])
 
         # Case sensitivity
         request = QgsFeatureRequest().addOrderBy('name2')
@@ -646,16 +650,16 @@ class FeatureSourceTestCase(object):
             self.assertTrue(f.isValid())
 
     def testUniqueValues(self):
-        self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(2)))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))), set([-200, 100, 200, 300, 400]))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
     def testMinimumValue(self):
-        self.assertEqual(self.source.minimumValue(1), -200)
-        self.assertEqual(self.source.minimumValue(2), 'Apple')
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
     def testMaximumValue(self):
-        self.assertEqual(self.source.maximumValue(1), 400)
-        self.assertEqual(self.source.maximumValue(2), 'Pear')
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
 
     def testAllFeatureIds(self):
         ids = set([f.id() for f in self.source.getFeatures()])

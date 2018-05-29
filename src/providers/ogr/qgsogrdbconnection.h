@@ -41,15 +41,15 @@ class QgsOgrDbConnection : public QObject
   public:
 
     /**
-     * Return the uri
+     * Returns the uri
      * \see QgsDataSourceUri
      */
     QgsDataSourceUri uri();
-    //! Return the path
+    //! Returns the path
     QString path( ) const { return mPath; }
     //! Returns the connection name
     QString name() const { return mConnName; }
-    //! Set the \a path fo the connection
+    //! Sets the \a path fo the connection
     void setPath( const QString &path );
     //! Store the connection data in the settings
     void save();

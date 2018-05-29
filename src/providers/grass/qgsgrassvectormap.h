@@ -63,7 +63,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int userCount() const;
 
     /**
-     * Get current number of lines.
+     * Gets current number of lines.
      *   \returns number of lines */
     int numLines();
     int numAreas();
@@ -90,7 +90,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
     /**
-     * Get geometry of line.
+     * Gets geometry of line.
      * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
@@ -116,7 +116,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void clearUndoCommands();
 
     /**
-     * Get layer, layer is created and loaded if not yet.
+     * Gets layer, layer is created and loaded if not yet.
      *  \param field
      *  \returns pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer *openLayer( int field );
@@ -148,7 +148,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QString toString();
 
     /**
-     * Get topology symbol code
+     * Gets topology symbol code
      * \param lid line or area number
      * \param type geometry type */
     TopoSymbol topoSymbol( int lid );
@@ -177,7 +177,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QgsGrassObject mGrassObject;
     // true if map is open, once the map is closed, valid is set to false and no more used
     bool mValid;
-    // Indicates if map is open, it may be open but invalide
+    // Indicates if map is open, it may be open but invalid
     bool mOpen;
     // Vector temporally disabled. Necessary for GRASS Tools on Windows
     bool mFrozen;
@@ -238,7 +238,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapStore
     /**
      * Open map.
      *  \param grassObject
-     *  \returns map, the map may be invalide  */
+     *  \returns map, the map may be invalid  */
     QgsGrassVectorMap *openMap( const QgsGrassObject &grassObject );
 
   private:

@@ -41,6 +41,11 @@ QString QgsProcessingProvider::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
+QString QgsProcessingProvider::helpId() const
+{
+  return id();
+}
+
 QString QgsProcessingProvider::longName() const
 {
   return name();
@@ -55,8 +60,11 @@ void QgsProcessingProvider::refreshAlgorithms()
 {
   qDeleteAll( mAlgorithms );
   mAlgorithms.clear();
-  loadAlgorithms();
-  emit algorithmsLoaded();
+  if ( isActive() )
+  {
+    loadAlgorithms();
+    emit algorithmsLoaded();
+  }
 }
 
 QList<const QgsProcessingAlgorithm *> QgsProcessingProvider::algorithms() const
@@ -75,7 +83,10 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
     return false;
 
   if ( mAlgorithms.contains( algorithm->name() ) )
+  {
+    QgsMessageLog::logMessage( tr( "Duplicate algorithm name %1 for provider %2" ).arg( algorithm->name(), id() ), QObject::tr( "Processing" ) );
     return false;
+  }
 
   // init the algorithm - this allows direct querying of the algorithm's parameters
   // and outputs from the provider's copy
@@ -136,4 +147,9 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
     // who knows? provider says it has no file support at all...
     return defaultExtension;
   }
+}
+
+bool QgsProcessingProvider::supportsNonFileBasedOutput() const
+{
+  return true;
 }

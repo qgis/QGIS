@@ -151,8 +151,8 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
                     "This could take a long time (depending on the DB size), "
                     "but implies better performance thereafter." ).arg( subKey );
   QMessageBox::StandardButton result =
-    QMessageBox::information( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result != QMessageBox::Ok )
+    QMessageBox::question( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result != QMessageBox::Yes )
     return;
 
   // trying to connect to SpatiaLite DB
@@ -365,8 +365,8 @@ void QgsSpatiaLiteSourceSelect::btnDelete_clicked()
 
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( subKey );
   QMessageBox::StandardButton result =
-    QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result != QMessageBox::Ok )
+    QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result != QMessageBox::Yes )
     return;
 
   QgsSpatiaLiteConnection::deleteConnection( subKey );

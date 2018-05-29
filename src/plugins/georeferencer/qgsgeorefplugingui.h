@@ -104,7 +104,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showGeorefConfigDialog();
 
     // plugin info
-    void contextHelp();
+    void showHelp();
 
     // comfort
     void jumpToGCP( uint theGCPIndex );

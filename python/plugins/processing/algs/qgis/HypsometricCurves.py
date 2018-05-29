@@ -34,6 +34,7 @@ from osgeo import gdal, ogr, osr
 from qgis.core import (QgsRectangle,
                        QgsGeometry,
                        QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsProcessing,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
@@ -87,6 +88,9 @@ class HypsometricCurves(QgisAlgorithm):
         rasterPath = raster_layer.source()
 
         source = self.parameterAsSource(parameters, self.BOUNDARY_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.BOUNDARY_LAYER))
+
         step = self.parameterAsDouble(parameters, self.STEP, context)
         percentage = self.parameterAsBool(parameters, self.USE_PERCENTAGE, context)
 

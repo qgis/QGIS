@@ -103,11 +103,11 @@ void QgsNewOgrConnection::testConnection()
   poDS = OGROpen( uri.toUtf8().constData(), false, &pahDriver );
   if ( !poDS )
   {
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QMessageBox::information( this, tr( "Test Connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
   }
   else
   {
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( uri ) );
+    QMessageBox::information( this, tr( "Test Connection" ), tr( "Connection to %1 was successful." ).arg( uri ) );
     OGRReleaseDataSource( poDS );
   }
 }

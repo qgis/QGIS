@@ -19,21 +19,7 @@
 #include "qgsfeaturerequest.h"
 #include "qgsindexedfeature.h"
 
-
-
-/**
- * \ingroup core
- * Interface that can be optionally attached to an iterator so its
- * nextFeature() implementaton can check if it must stop as soon as possible.
- * \since QGIS 2.16
- * \note not available in Python bindings
- */
-class CORE_EXPORT QgsInterruptionChecker SIP_SKIP
-{
-  public:
-    //! return true if the iterator must stop as soon as possible
-    virtual bool mustStop() const = 0;
-};
+class QgsFeedback;
 
 /**
  * \ingroup core
@@ -71,10 +57,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
-    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
+    virtual void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
     /**
      * Returns the status of expression compilation for filter expression requests.
@@ -153,12 +139,12 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
      * \since QGIS 3.0
      */
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
-    //! Set to true, as soon as the iterator is closed.
+    //! Sets to true, as soon as the iterator is closed.
     bool mClosed = false;
 
     /**
@@ -276,12 +262,15 @@ class CORE_EXPORT QgsFeatureIterator
 
     SIP_PYOBJECT __next__();
     % MethodCode
-    QgsFeature *f = new QgsFeature;
-    if ( sipCpp->nextFeature( *f ) )
-      sipRes = sipConvertFromType( f, sipType_QgsFeature, Py_None );
+    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    bool result = false;
+    Py_BEGIN_ALLOW_THREADS
+    result = ( sipCpp->nextFeature( *f ) );
+    Py_END_ALLOW_THREADS
+    if ( result )
+      sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
-      delete f;
       PyErr_SetString( PyExc_StopIteration, "" );
     }
     % End
@@ -323,10 +312,10 @@ class CORE_EXPORT QgsFeatureIterator
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
-    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) SIP_SKIP;
+    void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
     /**
      * Returns the status of expression compilation for filter expression requests.
@@ -401,7 +390,7 @@ inline bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator
   return !( fi1 == fi2 );
 }
 
-inline void QgsFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+inline void QgsFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   if ( mIter )
     mIter->setInterruptionChecker( interruptionChecker );

@@ -71,9 +71,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
      * Constructor of the vector provider
-     * \param uri  uniform resource locator (URI) for a dataset
+     * \param uri uniform resource locator (URI) for a dataset
+     * \param options generic data provider options
      */
-    explicit QgsSpatiaLiteProvider( QString const &uri = QString() );
+    explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
     ~ QgsSpatiaLiteProvider() override;
 
@@ -87,7 +88,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
 
     /**
-     * Return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      *
      * \note Should this be subLayerCount() instead?
      */
@@ -211,7 +212,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     QString geomParam() const;
 
-    //! get SpatiaLite version string
+    //! Gets SpatiaLite version string
     QString spatialiteVersion();
 
     /**

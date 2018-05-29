@@ -30,7 +30,7 @@ namespace QgsWms
                         QgsServerResponse &response );
 
   /**
-   * Return XML document for the 'GetContext' request
+   * Returns XML document for the 'GetContext' request
    */
   QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project,
                            const QString &version, const QgsServerRequest &request );

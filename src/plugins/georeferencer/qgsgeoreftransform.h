@@ -38,7 +38,7 @@ class QgsGeorefTransformInterface
     virtual int getMinimumGCPCount() const = 0;
 
     /**
-     * Return function pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      * Used by GDALwarp.
      */
     virtual GDALTransformerFunc  GDALTransformer()     const = 0;
@@ -115,7 +115,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     int getMinimumGCPCount() const override;
 
     /**
-     * \brief Return function pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      *
      * Used by the transform routines \ref transform, \ref transformRasterToWorld
      * \ref transformWorldToRaster and by the GDAL warping code

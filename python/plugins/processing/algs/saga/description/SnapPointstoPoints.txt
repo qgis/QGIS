@@ -4,4 +4,4 @@ QgsProcessingParameterFeatureSource|INPUT|Points|-1|None|False
 QgsProcessingParameterFeatureSource|SNAP|Snap Features|-1|None|False
 QgsProcessingParameterVectorDestination|OUTPUT|Result
 QgsProcessingParameterVectorDestination|MOVES|Moves
-QgsProcessingParameterNumber|DISTANCE|Search Distance|QgsProcessingParameterNumber.Double|0.000000|False| 0.000000|None
+QgsProcessingParameterNumber|DISTANCE|Search Distance|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None

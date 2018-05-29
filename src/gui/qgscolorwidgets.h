@@ -108,7 +108,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * \param component color component for widget
      * \see component
      */
-    virtual void setComponent( const ColorComponent component );
+    virtual void setComponent( const QgsColorWidget::ColorComponent component );
 
     /**
      * Alters the widget's color by setting the value for the widget's color component
@@ -677,6 +677,18 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
   public:
 
     /**
+     * Specifies the display format for a color
+     */
+    enum ColorTextFormat
+    {
+      HexRgb = 0, //!< \#RRGGBB in hexadecimal
+      HexRgbA, //!< \#RRGGBBAA in hexadecimal, with alpha
+      Rgb, //!< Rgb( r, g, b ) format
+      Rgba //!< Rgba( r, g, b, a ) format, with alpha
+    };
+    Q_ENUM( ColorTextFormat )
+
+    /**
      * Construct a new color line edit widget.
      * \param parent parent QWidget for the widget
      */
@@ -688,17 +700,6 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-
-    /**
-     * Specifies the display format for a color
-     */
-    enum ColorTextFormat
-    {
-      HexRgb = 0, //!< \#RRGGBB in hexadecimal
-      HexRgbA, //!< \#RRGGBBAA in hexadecimal, with alpha
-      Rgb, //!< Rgb( r, g, b ) format
-      Rgba //!< Rgba( r, g, b, a ) format, with alpha
-    };
 
     QLineEdit *mLineEdit = nullptr;
 

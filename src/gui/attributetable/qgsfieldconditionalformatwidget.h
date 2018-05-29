@@ -1,12 +1,10 @@
 /***************************************************************************
-                          qgsfieldconditionalformatwidget.h
-                             -------------------
-    begin                :
-    copyright            :
-    email                :
- ***************************************************************************/
-
-/***************************************************************************
+    qgsfieldconditionalformatwidget.h
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -14,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
 #ifndef QGSFIELDCONDITIONALFORMATWIDGET_H
 #define QGSFIELDCONDITIONALFORMATWIDGET_H
 
@@ -30,7 +27,7 @@
 /**
  * \ingroup gui
  * \class QgsFieldConditionalFormatWidget
- * A widget for customising conditional formatting options.
+ * A widget for customizing conditional formatting options.
  * \since QGIS 2.12
  */
 class GUI_EXPORT QgsFieldConditionalFormatWidget : public QWidget, private Ui::QgsFieldConditionalWidget

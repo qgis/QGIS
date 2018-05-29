@@ -4,12 +4,7 @@ PyQgsLocalServer
 PyQgsPalLabelingServer
 qgis_composermapgridtest
 qgis_composerutils
-ProcessingGrass7AlgorithmsImageryTest
-ProcessingGrass7AlgorithmsRasterTest
 PyQgsAppStartup
-
-# temporary during processing refactoring
-ProcessingParametersTest
 
 # code layout tests are run on separate build
 qgis_spelling
@@ -29,9 +24,6 @@ PyQgsSpatialiteProvider
 
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
-
-# Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=61670866&build=297397
-PyQgsLocator
 
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest

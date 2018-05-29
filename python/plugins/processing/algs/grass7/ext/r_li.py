@@ -60,7 +60,7 @@ def checkMovingWindow(alg, parameters, context, outputTxt=False):
     configTxt = alg.parameterAsString(parameters, 'config_txt', context)
     config = alg.parameterAsString(parameters, 'config', context)
     if configTxt and config:
-        return alg.tr("You need to set either inline configuration or a configuration file!")
+        return False, alg.tr("You need to set either inline configuration or a configuration file!")
 
     # Verify that configuration is in moving window
     movingWindow = False
@@ -76,15 +76,15 @@ def checkMovingWindow(alg, parameters, context, outputTxt=False):
                     movingWindow = True
 
     if not movingWindow and not outputTxt:
-        return alg.tr('Your configuration needs to be a "moving window" configuration!')
+        return False, alg.tr('Your configuration needs to be a "moving window" configuration!')
 
     if movingWindow and outputTxt:
-        return alg.tr('Your configuration needs to be a non "moving window" configuration!')
+        return False, alg.tr('Your configuration needs to be a non "moving window" configuration!')
 
-    return None
+    return True, None
 
 
-def configFile(alg, parameters, context, outputTxt=False):
+def configFile(alg, parameters, context, feedback, outputTxt=False):
     """Handle inline configuration
     :param parameters:
     """
@@ -125,7 +125,7 @@ def configFile(alg, parameters, context, outputTxt=False):
             False, False)
         alg.addParameter(param)
 
-    alg.processCommand(parameters, context, outputTxt)
+    alg.processCommand(parameters, context, feedback, outputTxt)
 
     # Remove Config file:
     removeConfigFile(alg, parameters, context)

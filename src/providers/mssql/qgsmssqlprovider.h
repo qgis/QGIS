@@ -50,7 +50,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsMssqlProvider( const QString &uri = QString() );
+    explicit QgsMssqlProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     ~QgsMssqlProvider() override;
 

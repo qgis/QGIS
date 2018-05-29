@@ -116,7 +116,8 @@ struct VTable
       , mCrs( -1 )
       , mValid( true )
     {
-      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source ) );
+      QgsDataProvider::ProviderOptions providerOptions;
+      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source, providerOptions ) );
       if ( !mProvider )
       {
         throw std::runtime_error( "Invalid provider" );
@@ -218,7 +219,7 @@ struct VTable
             typeName = QStringLiteral( "text" );
             break;
         }
-        sqlFields << field.name() + " " + typeName;
+        sqlFields << QStringLiteral( "%1 %2" ).arg( QgsExpression::quotedColumnRef( field.name() ), typeName );
       }
 
       QgsVectorDataProvider *provider = mLayer ? mLayer->dataProvider() : mProvider;
@@ -508,7 +509,7 @@ int vtableBestIndex( sqlite3_vtab *pvtab, sqlite3_index_info *indexInfo )
       indexInfo->idxNum = 3; // expression filter
       indexInfo->estimatedCost = 2.0; // probably better than no index
 
-      QString expr = vtab->fields().at( indexInfo->aConstraint[i].iColumn - 1 ).name();
+      QString expr = QgsExpression::quotedColumnRef( vtab->fields().at( indexInfo->aConstraint[i].iColumn - 1 ).name() );
       switch ( indexInfo->aConstraint[i].op )
       {
         case SQLITE_INDEX_CONSTRAINT_EQ:
@@ -585,7 +586,6 @@ int vtableClose( sqlite3_vtab_cursor *cursor )
 int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, int argc, sqlite3_value **argv )
 {
   Q_UNUSED( argc );
-  Q_UNUSED( idxStr );
 
   QgsFeatureRequest request;
   if ( idxNum == 1 )
@@ -619,7 +619,7 @@ int vtableFilter( sqlite3_vtab_cursor *cursor, int idxNum, const char *idxStr, i
         int n = sqlite3_value_bytes( argv[0] );
         const char *t = reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) );
         QString str = QString::fromUtf8( t, n );
-        expr += "'" + str.replace( QLatin1String( "'" ), QLatin1String( "''" ) ) + "'";
+        expr += QgsExpression::quotedString( str );
         break;
       }
       case SQLITE_NULL:

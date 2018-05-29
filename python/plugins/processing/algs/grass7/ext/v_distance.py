@@ -34,20 +34,20 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     uploads = alg.parameterAsEnums(parameters, 'upload', context)
     columns = alg.parameterAsFields(parameters, 'column', context)
     if len(columns) != len(uploads):
-        return alg.tr(u"The number of columns and the number of upload parameters should be equal!")
+        return False, alg.tr(u"The number of columns and the number of upload parameters should be equal!")
 
-    return None
+    return True, None
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # We need to disable only from_output parameter
     fromOutput = alg.parameterDefinition('from_output')
     fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
-    alg.processCommand(parameters, context, False)
+    alg.processCommand(parameters, context, feedback, False)
     fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     alg.vectorOutputType(parameters, context)
     alg.exportVectorLayerFromParameter('output', parameters, context)
     # for from_output, we export the initial layer

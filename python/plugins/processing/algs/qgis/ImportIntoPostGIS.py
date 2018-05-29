@@ -131,6 +131,8 @@ class ImportIntoPostGIS(QgisAlgorithm):
         encoding = self.parameterAsString(parameters, self.ENCODING, context)
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         table = self.parameterAsString(parameters, self.TABLENAME, context)
         if table:

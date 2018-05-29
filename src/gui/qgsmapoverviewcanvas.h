@@ -61,16 +61,6 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
 
     void updateFullExtent();
 
-  public slots:
-
-    // ### QGIS 3: make protected
-    //! used for overview canvas to reflect changed extent in main map canvas
-    void drawExtentRect();
-
-    // ### QGIS 3: make protected
-    //! Should be called when the canvas destination CRS is changed
-    void destinationCrsChanged();
-
   protected slots:
     void mapRenderingFinished();
 
@@ -80,6 +70,15 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     void layerRepaintRequested( bool deferred = false );
 
   protected:
+
+    //! used for overview canvas to reflect changed extent in main map canvas
+    void drawExtentRect();
+
+    //! Should be called when the canvas destination CRS is changed
+    void destinationCrsChanged();
+
+    //! Called when the canvas transform context is changed
+    void transformContextChanged();
 
     //! Overridden paint event
     void paintEvent( QPaintEvent *pe ) override;

@@ -162,8 +162,8 @@ typedef std::function<void ( QgsLayoutItem * )> QgsLayoutItemAddedToLayoutFunc S
 /**
  * \ingroup gui
  * Convenience metadata class that uses static functions to handle layout item GUI behavior.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetadata
 {
@@ -181,11 +181,11 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * If \a isNodeBased is true, then the corresponding item is a node based item.
      */
     QgsLayoutItemGuiMetadata( int type, const QString &visibleName, const QIcon &creationIcon,
-                              QgsLayoutItemWidgetFunc pfWidget = nullptr,
-                              QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(),
+                              const QgsLayoutItemWidgetFunc &pfWidget = nullptr,
+                              const QgsLayoutItemRubberBandFunc &pfRubberBand = nullptr, const QString &groupId = QString(),
                               bool isNodeBased = false,
                               QgsLayoutItemAbstractGuiMetadata::Flags flags = nullptr,
-                              QgsLayoutItemCreateFunc pfCreateFunc = nullptr )
+                              const QgsLayoutItemCreateFunc &pfCreateFunc = nullptr )
       : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
@@ -203,7 +203,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Sets the classes' configuration widget creation \a function.
      * \see widgetFunction()
      */
-    void setWidgetFunction( QgsLayoutItemWidgetFunc function ) { mWidgetFunc = function; }
+    void setWidgetFunction( const QgsLayoutItemWidgetFunc &function ) { mWidgetFunc = function; }
 
     /**
      * Returns the classes' rubber band creation function.
@@ -215,7 +215,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Sets the classes' rubber band creation \a function.
      * \see rubberBandCreationFunction()
      */
-    void setRubberBandCreationFunction( QgsLayoutItemRubberBandFunc function ) { mRubberBandFunc = function; }
+    void setRubberBandCreationFunction( const QgsLayoutItemRubberBandFunc &function ) { mRubberBandFunc = function; }
 
     /**
      * Returns the classes' node based rubber band creation function.
@@ -227,7 +227,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Sets the classes' node based rubber band creation \a function.
      * \see nodeRubberBandCreationFunction()
      */
-    void setNodeRubberBandCreationFunction( QgsLayoutNodeItemRubberBandFunc function ) { mNodeRubberBandFunc = function; }
+    void setNodeRubberBandCreationFunction( const QgsLayoutNodeItemRubberBandFunc &function ) { mNodeRubberBandFunc = function; }
 
     /**
      * Returns the classes' item creation function.
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Sets the classes' item creation \a function.
      * \see itemCreationFunction()
      */
-    void setItemCreationFunction( QgsLayoutItemCreateFunc function ) { mCreateFunc = function; }
+    void setItemCreationFunction( const QgsLayoutItemCreateFunc &function ) { mCreateFunc = function; }
 
     /**
      * Returns the classes' item added to layout function.
@@ -251,7 +251,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
      * Sets the classes' item creation \a function.
      * \see itemAddToLayoutFunction()
      */
-    void setItemAddedToLayoutFunction( QgsLayoutItemAddedToLayoutFunc function ) { mAddedToLayoutFunc = function; }
+    void setItemAddedToLayoutFunction( const QgsLayoutItemAddedToLayoutFunc &function ) { mAddedToLayoutFunc = function; }
 
     QIcon creationIcon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractGuiMetadata::creationIcon() : mIcon; }
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) override { return mWidgetFunc ? mWidgetFunc( item ) : nullptr; }

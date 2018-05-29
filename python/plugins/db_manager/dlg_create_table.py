@@ -212,7 +212,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         """ delete selected field """
         row = self.selectedField()
         if row is None:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("no field selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected."))
         else:
             self.fields.model().removeRows(row, 1)
 
@@ -222,10 +222,10 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         """ move selected field up """
         row = self.selectedField()
         if row is None:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("no field selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected."))
             return
         if row == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("field is at top already"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Field is already at the top."))
             return
 
         # take row and reinsert it
@@ -242,10 +242,10 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         """ move selected field down """
         row = self.selectedField()
         if row is None:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No field selected."))
             return
         if row == self.fields.model().rowCount() - 1:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("field is at bottom already"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Field is already at the bottom."))
             return
 
         # take row and reinsert it
@@ -265,24 +265,24 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         else:
             schema = str(self.cboSchema.currentText())
             if len(schema) == 0:
-                QMessageBox.information(self, self.tr("DB Manager"), self.tr("select schema!"))
+                QMessageBox.information(self, self.tr("DB Manager"), self.tr("A valid schema must be selected first."))
                 return
 
         table = str(self.editName.text())
         if len(table) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("enter table name!"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("A valid table name is required."))
             return
 
         m = self.fields.model()
         if m.rowCount() == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("add some fields!"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("At least one field is required."))
             return
 
         useGeomColumn = self.chkGeomColumn.isChecked()
         if useGeomColumn:
             geomColumn = str(self.editGeomColumn.text())
             if len(geomColumn) == 0:
-                QMessageBox.information(self, self.tr("DB Manager"), self.tr("set geometry column name"))
+                QMessageBox.information(self, self.tr("DB Manager"), self.tr("A name is required for the geometry column."))
                 return
 
             geomType = self.GEOM_TYPES[self.cboGeomType.currentIndex()]
@@ -311,4 +311,4 @@ class DlgCreateTable(QDialog, Ui_Dialog):
                 DlgDbError.showError(e, self)
             return
 
-        QMessageBox.information(self, self.tr("Good"), self.tr("everything went fine"))
+        QMessageBox.information(self, self.tr("DB Manager"), self.tr("Table created successfully."))

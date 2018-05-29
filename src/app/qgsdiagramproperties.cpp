@@ -52,7 +52,7 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
              << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
              << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -258,7 +258,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
         break;
 
       case QgsWkbTypes::PolygonGeometry:
-        radAroundCentroid->setChecked( true );
+        radOverCentroid->setChecked( true );
         break;
 
       case QgsWkbTypes::UnknownGeometry:
@@ -453,7 +453,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
       mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
       if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
-        QMessageBox::warning( this, tr( "Unknown diagram type." ),
+        QMessageBox::warning( this, tr( "Diagram Properties" ),
                               tr( "The diagram type '%1' is unknown. A default type is selected for you." ).arg( mDiagramType ), QMessageBox::Ok );
         mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( DIAGRAM_NAME_PIE ) );
       }
@@ -720,7 +720,7 @@ void QgsDiagramProperties::apply()
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Diagrams: No attributes added." ),
       tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ),
-      QgsMessageBar::WARNING );
+      Qgis::Warning );
   }
 
 #if 0
@@ -764,7 +764,7 @@ void QgsDiagramProperties::apply()
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Interpolation value" ),
         tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
-        QgsMessageBar::INFO,
+        Qgis::Info,
         5 );
 
       mMaxValueSpinBox->setValue( maxVal );
@@ -931,7 +931,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+          << QgsExpressionContextUtils::atlasScope( nullptr )
           << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
           << QgsExpressionContextUtils::layerScope( mLayer );
 

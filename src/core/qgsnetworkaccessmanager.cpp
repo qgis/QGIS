@@ -182,7 +182,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
   if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
-    QgsDebugMsg( "Adding trusted CA certs to request" );
+    QgsDebugMsgLevel( "Adding trusted CA certs to request", 3 );
     QSslConfiguration sslconfig( pReq->sslConfiguration() );
     // Merge trusted CAs with any additional CAs added by the authentication methods
     sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCertsCache(), sslconfig.caCertificates( ) ) );

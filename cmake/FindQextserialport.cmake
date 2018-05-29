@@ -18,10 +18,10 @@ FIND_PATH(QEXTSERIALPORT_INCLUDE_DIR NAMES qextserialport.h PATHS
   /usr/local/include
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
-  PATH_SUFFIXES QtExtSerialPort
+  PATH_SUFFIXES QtExtSerialPort qt/QtExtSerialPort
   )
 
-FIND_LIBRARY(QEXTSERIALPORT_LIBRARY NAMES qextserialport-1.2 PATHS
+FIND_LIBRARY(QEXTSERIALPORT_LIBRARY NAMES Qt5ExtSerialPort PATHS
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib"

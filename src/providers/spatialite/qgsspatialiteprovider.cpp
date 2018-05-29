@@ -357,7 +357,9 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 
   // use the provider to edit the table
   dsUri.setDataSource( QLatin1String( "" ), tableName, geometryColumn, QString(), primaryKey );
-  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri() );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     QgsDebugMsg( "The layer " + tableName + " just created is not valid or not supported by the provider." );
@@ -435,8 +437,8 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 }
 
 
-QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );
@@ -602,6 +604,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
                   << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
                 );
+  // Update extent and feature count
+  if ( ! mSubsetString.isEmpty() )
+    setSubsetString( mSubsetString, true );
+
   mValid = true;
 }
 
@@ -3490,7 +3496,7 @@ size_t QgsSpatiaLiteProvider::layerCount() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 {
@@ -3498,7 +3504,7 @@ QgsWkbTypes::Type QgsSpatiaLiteProvider::wkbType() const
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 long QgsSpatiaLiteProvider::featureCount() const
 {
@@ -5289,9 +5295,9 @@ void QgsSpatiaLiteProvider::invalidateConnections( const QString &connection )
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri )
+QGISEXTERN QgsSpatiaLiteProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsSpatiaLiteProvider( *uri );
+  return new QgsSpatiaLiteProvider( *uri, options );
 }
 
 /**
@@ -5936,7 +5942,7 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 
     QString providerKey() const override { return QStringLiteral( "spatialite" ); }
     QString text() const override { return QObject::tr( "SpatiaLite" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddSpatiaLiteLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

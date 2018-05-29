@@ -95,13 +95,13 @@ void QgsAddAttrDialog::accept()
 {
   if ( mIsShapeFile && mNameEdit->text().toLower() == QLatin1String( "shape" ) )
   {
-    QMessageBox::warning( this, tr( "Warning" ),
+    QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
   }
   if ( mNameEdit->text().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Warning" ),
+    QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "No name specified. Please specify a name to create a new field." ) );
     return;
   }

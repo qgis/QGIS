@@ -47,10 +47,11 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual void setProgressText( const QString &text ) { Q_UNUSED( text ); }
 
     /**
-     * Reports that the algorithm encountered an error which prevented it
-     * from successfully executing.
+     * Reports that the algorithm encountered an \a error while executing.
+     *
+     * If \a fatalError is true then the error prevented the algorithm from executing.
      */
-    virtual void reportError( const QString &error ) { QgsMessageLog::logMessage( error ); }
+    virtual void reportError( const QString &error, bool fatalError = false ) { Q_UNUSED( fatalError ); QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical ); }
 
     /**
      * Pushes a general informational message from the algorithm. This can
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes an informational message containing a command from the algorithm.
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushCommandInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushCommandInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes an informational message containing debugging helpers from
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushCommandInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushDebugInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushDebugInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes a console feedback message from the algorithm. This is used to
@@ -88,7 +89,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushCommandInfo()
      */
-    virtual void pushConsoleInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushConsoleInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
 };
 
@@ -125,7 +126,7 @@ class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
     void setCurrentStep( int step );
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error ) override;
+    void reportError( const QString &error, bool fatalError ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;

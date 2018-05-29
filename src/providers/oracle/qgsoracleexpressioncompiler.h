@@ -27,9 +27,10 @@ class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
     explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source );
 
   protected:
-    virtual Result compileNode( const QgsExpressionNode *node, QString &result ) override;
-    virtual QString quotedIdentifier( const QString &identifier ) override;
-    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
+    Result compileNode( const QgsExpressionNode *node, QString &result ) override;
+    QString quotedIdentifier( const QString &identifier ) override;
+    QString quotedValue( const QVariant &value, bool &ok ) override;
+    QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
 };
 
 #endif // QGSORACLEEXPRESSIONCOMPILER_H

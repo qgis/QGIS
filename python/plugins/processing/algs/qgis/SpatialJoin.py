@@ -35,6 +35,7 @@ from qgis.core import (QgsFields,
                        QgsGeometry,
                        QgsProcessing,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -55,9 +56,6 @@ class SpatialJoin(QgisAlgorithm):
     METHOD = "METHOD"
     DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
     OUTPUT = "OUTPUT"
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
 
     def group(self):
         return self.tr('Vector general')
@@ -87,8 +85,8 @@ class SpatialJoin(QgisAlgorithm):
                                     'crosses': 'crosses'}
 
         self.methods = [
-            self.tr('Create separate feature for each located feature'),
-            self.tr('Take attributes of the first located feature only')
+            self.tr('Create separate feature for each located feature (one-to-many)'),
+            self.tr('Take attributes of the first located feature only (one-to-one)')
         ]
 
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
@@ -131,7 +129,13 @@ class SpatialJoin(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         join_source = self.parameterAsSource(parameters, self.JOIN, context)
+        if join_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
@@ -153,6 +157,8 @@ class SpatialJoin(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # do the join
 

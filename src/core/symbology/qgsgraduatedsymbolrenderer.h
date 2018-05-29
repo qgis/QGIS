@@ -147,8 +147,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     ~QgsGraduatedSymbolRenderer() override;
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
@@ -232,7 +232,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
 
     /**
-     * Return the label format used to generate default classification labels
+     * Returns the label format used to generate default classification labels
      * \since QGIS 2.6
      */
     const QgsRendererRangeLabelFormat &labelFormat() const { return mLabelFormat; }
@@ -276,7 +276,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
@@ -331,13 +331,13 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setSymbolSizes( double minSize, double maxSize );
 
     /**
-     * return the min symbol size when graduated by size
+     * Returns the min symbol size when graduated by size
      * \since QGIS 2.10
      */
     double minSymbolSize() const;
 
     /**
-     * return the max symbol size when graduated by size
+     * Returns the max symbol size when graduated by size
      * \since QGIS 2.10
      */
     double maxSymbolSize() const;
@@ -349,7 +349,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     };
 
     /**
-     * return the method used for graduation (either size or color)
+     * Returns the method used for graduation (either size or color)
      * \since QGIS 2.10
      */
     GraduatedMethod graduatedMethod() const { return mGraduatedMethod; }
@@ -408,7 +408,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
-    QgsSymbol *symbolForValue( double value );
+    /**
+     * Gets the symbol which is used to represent \a value.
+     */
+    QgsSymbol *symbolForValue( double value ) const;
 
     /**
      * Returns the matching legend key for a value.
@@ -423,7 +426,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Returns calculated value used for classifying a feature.
      */
-    QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    QVariant valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     //! Returns list of legend symbol items from individual ranges
     QgsLegendSymbolList baseLegendSymbolItems() const;

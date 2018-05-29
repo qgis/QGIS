@@ -31,9 +31,9 @@ class QgsExpressionNode;
  *
  * This class is designed to be overridden by providers to take advantage of expression compilation,
  * so that feature requests can take advantage of the provider's native filtering support.
- * \since QGIS 2.14
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
+ * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsSqlExpressionCompiler
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
     /**
-     * Return the SQL function for the expression function.
+     * Returns the SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \returns the SQL function name
@@ -116,7 +116,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
     /**
-     * Return the Arguments for SQL function for the expression function.
+     * Returns the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \param fnArgs arguments from expression

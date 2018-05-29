@@ -132,7 +132,7 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
   if ( item )
   {
     QString widgetType = item->data( Qt::UserRole ).toString();
-    QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets[ widgetType ];
+    QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets.value( widgetType );
     if ( cfgWdg )
     {
       return cfgWdg->config();
@@ -147,7 +147,7 @@ void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
 
   mWidgetTypeComboBox->setCurrentIndex( mWidgetTypeComboBox->findData( type ) );
 
-  if ( mEditorConfigWidgets.contains( type ) )
+  if ( mEditorConfigWidgets.contains( type ) && mEditorConfigWidgets.value( type ) /* may be a null pointer */ )
   {
     stackedWidget->setCurrentWidget( mEditorConfigWidgets[type] );
   }

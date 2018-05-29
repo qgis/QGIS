@@ -196,6 +196,7 @@ QSizeF QgsLayoutTable::totalSize() const
 
 void QgsLayoutTable::refresh()
 {
+  QgsLayoutMultiFrame::refresh();
   refreshAttributes();
 }
 
@@ -279,8 +280,7 @@ QPair<int, int> QgsLayoutTable::rowRange( const int frameIndex ) const
   return qMakePair( firstVisible, lastVisible );
 }
 
-void QgsLayoutTable::render( QgsRenderContext &context, const QRectF &, const int frameIndex,
-                             const QStyleOptionGraphicsItem * )
+void QgsLayoutTable::render( QgsLayoutItemRenderContext &context, const QRectF &, const int frameIndex )
 {
   bool emptyTable = mTableContents.length() == 0;
   if ( emptyTable && mEmptyTableMode == QgsLayoutTable::HideTable )
@@ -327,10 +327,10 @@ void QgsLayoutTable::render( QgsRenderContext &context, const QRectF &, const in
     mergeCells = true;
   }
 
-  QPainter *p = context.painter();
+  QPainter *p = context.renderContext().painter();
   p->save();
   // painter is scaled to dots, so scale back to layout units
-  p->scale( context.scaleFactor(), context.scaleFactor() );
+  p->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   //draw the text
   p->setPen( Qt::SolidLine );

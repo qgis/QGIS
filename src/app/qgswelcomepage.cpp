@@ -149,7 +149,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       menu->addAction( pinAction );
     }
     QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
-    connect( openFolderAction, &QAction::triggered, this, [this, path]
+    connect( openFolderAction, &QAction::triggered, this, [path]
     {
       QFileInfo fi( path );
       QString folder = fi.path();

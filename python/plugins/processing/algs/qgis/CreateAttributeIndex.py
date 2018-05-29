@@ -27,6 +27,8 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsVectorDataProvider,
                        QgsFields,
+                       QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingOutputVectorLayer)
@@ -51,10 +53,14 @@ class CreateAttributeIndex(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
-                                                            self.tr('Input Layer')))
+                                                            self.tr('Input Layer'),
+                                                            types=[QgsProcessing.TypeVector]))
         self.addParameter(QgsProcessingParameterField(self.FIELD,
                                                       self.tr('Attribute to index'), None, self.INPUT))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def name(self):
         return 'createattributeindex'

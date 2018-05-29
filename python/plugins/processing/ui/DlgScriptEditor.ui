@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Script editor</string>
+   <string>Processing Script Editor</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -95,7 +95,7 @@
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -106,8 +106,6 @@
    <addaction name="actionOpenScript"/>
    <addaction name="actionSaveScript"/>
    <addaction name="actionSaveScriptAs"/>
-   <addaction name="separator"/>
-   <addaction name="actionEditScriptHelp"/>
    <addaction name="separator"/>
    <addaction name="actionRunScript"/>
    <addaction name="separator"/>
@@ -125,10 +123,10 @@
   </widget>
   <action name="actionOpenScript">
    <property name="text">
-    <string>Open script...</string>
+    <string>Open Script…</string>
    </property>
    <property name="toolTip">
-    <string>Open script</string>
+    <string>Open Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -136,10 +134,10 @@
   </action>
   <action name="actionSaveScript">
    <property name="text">
-    <string>Save script...</string>
+    <string>Save Script…</string>
    </property>
    <property name="toolTip">
-    <string>Save script...</string>
+    <string>Save Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -147,29 +145,21 @@
   </action>
   <action name="actionSaveScriptAs">
    <property name="text">
-    <string>Save script as...</string>
+    <string>Save Script as…</string>
    </property>
    <property name="toolTip">
-    <string>Save script as...</string>
+    <string>Save Script as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionEditScriptHelp">
-   <property name="text">
-    <string>Edit script help</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit script help</string>
-   </property>
-  </action>
   <action name="actionRunScript">
    <property name="text">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="toolTip">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -232,26 +222,29 @@
   </action>
   <action name="actionIncreaseFontSize">
    <property name="text">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
   </action>
   <action name="actionDecreaseFontSize">
    <property name="text">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
    </property>
   </action>
   <action name="actionFindReplace">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
    <property name="text">
-    <string>FindReplace</string>
+    <string>Find &amp;&amp; &amp;Replace</string>
    </property>
   </action>
  </widget>
@@ -259,7 +252,7 @@
   <customwidget>
    <class>ScriptEdit</class>
    <extends>QTextEdit</extends>
-   <header>processing.gui.ScriptEdit</header>
+   <header location="global">processing.script.ScriptEdit</header>
   </customwidget>
  </customwidgets>
  <resources/>

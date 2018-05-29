@@ -67,7 +67,7 @@ class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
     void toggled( bool t );
 
   public slots:
-    //! set values on the gui when a project is read or the gui first loaded
+    //! Sets values on the gui when a project is read or the gui first loaded
     virtual void projectRead();
     //! save values to the project
     virtual void saveToProject();

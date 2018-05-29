@@ -19,12 +19,12 @@
 #include <QWidget>
 
 #include "qgsmaptooledit.h"
+#include "qgsvertexmarker.h"
 #include "qgis_app.h"
 
 class QgsDoubleSpinBox;
 class QHBoxLayout;
 class QgsSpinBox;
-class QgsVertexMarker;
 
 class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 {
@@ -35,14 +35,16 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     explicit QgsAngleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setAngle( double angle );
-
-    double angle();
-
+    double angle() const;
     void setMagnet( int magnet );
+    int magnet() const;
+
+    QgsDoubleSpinBox *editor() const {return mAngleSpinBox;}
 
   signals:
     void angleChanged( double angle );
     void angleEditingFinished( double angle );
+    void angleEditingCanceled();
 
 
   public slots:
@@ -77,10 +79,14 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     void activate() override;
 
+    //! catch escape when active to cancel selection
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
   private slots:
     void updateRubberband( double rotation );
 
     void applyRotation( double rotation );
+    void cancel();
 
   private:
 
@@ -103,7 +109,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     double mRotationOffset;
 
     QPoint mStPoint;
-    QgsVertexMarker *mAnchorPoint = nullptr;
+    std::unique_ptr<QgsVertexMarker> mAnchorPoint = nullptr;
 
     bool mRotationActive;
 

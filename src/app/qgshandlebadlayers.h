@@ -55,7 +55,7 @@ class APP_EXPORT QgsHandleBadLayers
     void editAuthCfg();
     void apply();
     void accept() override;
-    void rejected();
+    void reject() override;
 
   private:
     QPushButton *mBrowseButton = nullptr;

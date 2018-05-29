@@ -44,7 +44,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool addLayer( QgsVectorLayer *layer );
 
     /**
-     * Get the set of layers currently managed by this transaction group.
+     * Gets the set of layers currently managed by this transaction group.
      *
      * \returns Layer set
      */
@@ -56,13 +56,13 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool modified() const;
 
     /**
-     * Return the connection string used by this transaction group.
+     * Returns the connection string used by this transaction group.
      * Layers need be compatible when added.
      */
     QString connString() const;
 
     /**
-     * Return the provider key used by this transaction group.
+     * Returns the provider key used by this transaction group.
      * Layers need be compatible when added.
      */
     QString providerKey() const;

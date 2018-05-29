@@ -31,28 +31,28 @@
 
 
 
-void gdal::OGRDataSourceDeleter::operator()( void *source )
+void gdal::OGRDataSourceDeleter::operator()( OGRDataSourceH source )
 {
   OGR_DS_Destroy( source );
 }
 
 
-void gdal::OGRGeometryDeleter::operator()( void *geometry )
+void gdal::OGRGeometryDeleter::operator()( OGRGeometryH geometry )
 {
   OGR_G_DestroyGeometry( geometry );
 }
 
-void gdal::OGRFldDeleter::operator()( void *definition )
+void gdal::OGRFldDeleter::operator()( OGRFieldDefnH definition )
 {
   OGR_Fld_Destroy( definition );
 }
 
-void gdal::OGRFeatureDeleter::operator()( void *feature )
+void gdal::OGRFeatureDeleter::operator()( OGRFeatureH feature )
 {
   OGR_F_Destroy( feature );
 }
 
-void gdal::GDALDatasetCloser::operator()( void *dataset )
+void gdal::GDALDatasetCloser::operator()( GDALDatasetH dataset )
 {
   GDALClose( dataset );
 }
@@ -422,5 +422,18 @@ QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encodi
   hDS.reset();
   VSIUnlink( randomFileName.toUtf8().constData() );
   return fields;
+}
+
+QStringList QgsOgrUtils::cStringListToQStringList( char **stringList )
+{
+  QStringList strings;
+
+  // presume null terminated string list
+  for ( qgssize i = 0; stringList[i]; ++i )
+  {
+    strings.append( QString::fromUtf8( stringList[i] ) );
+  }
+
+  return strings;
 }
 

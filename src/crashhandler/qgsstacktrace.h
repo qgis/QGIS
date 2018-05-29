@@ -19,11 +19,9 @@
 #include <QVector>
 #include "qgsconfig.h"
 
-#ifdef QGISDEBUG
 #ifdef WIN32
 #include <windows.h>
 #include <dbghelp.h>
-#endif
 #endif
 
 #include <QStringList>
@@ -75,7 +73,7 @@ class QgsStackTrace
     std::vector<HANDLE> threads;
 
     /**
-     * Return a demangled stack backtrace of the caller function.
+     * Returns a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */
@@ -85,7 +83,7 @@ class QgsStackTrace
 #ifdef Q_OS_LINUX
 
     /**
-    * Return a demangled stack backtrace of the caller function.
+    * Returns a demangled stack backtrace of the caller function.
      *
      * \since QGIS 3.0
      */

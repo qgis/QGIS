@@ -28,12 +28,14 @@ QgsWfsConnection::QgsWfsConnection( const QString &connName )
   const QString &version = settings.value( key + "/" + QgsWFSConstants::SETTINGS_VERSION ).toString();
   if ( !version.isEmpty() )
   {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_VERSION ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_VERSION, version );
   }
 
   const QString &maxnumfeatures = settings.value( key + "/" + QgsWFSConstants::SETTINGS_MAXNUMFEATURES ).toString();
   if ( !maxnumfeatures.isEmpty() )
   {
+    mUri.removeParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES ); // setParam allow for duplicates!
     mUri.setParam( QgsWFSConstants::URI_PARAM_MAXNUMFEATURES, maxnumfeatures );
   }
 

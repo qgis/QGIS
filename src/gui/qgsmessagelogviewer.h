@@ -48,7 +48,7 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     /**
      * Logs a \a message to the viewer.
      */
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
   protected:
     void closeEvent( QCloseEvent *e ) override;

@@ -150,13 +150,13 @@ double QgsLayoutItemShape::estimatedFrameBleed() const
   return mMaxSymbolBleed;
 }
 
-void QgsLayoutItemShape::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemShape::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
 
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QPolygonF shapePolygon;
 
@@ -206,9 +206,9 @@ void QgsLayoutItemShape::draw( QgsRenderContext &context, const QStyleOptionGrap
 
   QList<QPolygonF> rings; //empty list
 
-  symbol()->startRender( context );
-  symbol()->renderPolygon( shapePolygon, &rings, nullptr, context );
-  symbol()->stopRender( context );
+  symbol()->startRender( context.renderContext() );
+  symbol()->renderPolygon( shapePolygon, &rings, nullptr, context.renderContext() );
+  symbol()->stopRender( context.renderContext() );
 }
 
 bool QgsLayoutItemShape::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const

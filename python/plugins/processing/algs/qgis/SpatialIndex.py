@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsVectorDataProvider,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessing)
@@ -56,6 +57,9 @@ class SpatialIndex(QgisAlgorithm):
                                                             self.tr('Input Layer'),
                                                             [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine]))
         self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Indexed layer')))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def name(self):
         return 'createspatialindex'

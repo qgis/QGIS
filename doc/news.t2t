@@ -38,6 +38,160 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 3.0 'Girona'? =
+
+This release has following new features:
+
+- Expressions: Support aggregation of geometry in expressions
+- Expressions: New expression variables
+- Expressions: new global expression variable @qgis_locale
+- Expressions: item_variables expression function inside compositions
+- Expressions: New expression variables for map settings
+- Expressions: New expression functions
+- Expressions: Expose @parent variable in aggregate functions
+- User Interface: Improved consistency to the user interface
+- User Interface: Enable tabbed floating docks
+- User Interface: Add support for fine-resolution mouse wheel zooming
+- User Interface: add search bar to the Configure Shortcuts dialog
+- User Interface: Toggle visibility of opened panels in main window
+- User Interface: Locator bar
+- User Interface: More non-blocking, inline editing
+- User Interface: Add an option to show user color schemes menus
+- User Interface: Color setting for map canvas north arrow decoration
+- User Interface: Improved map canvas' save as image
+- Symbology: NEW MAP COLORING ALGORITHMS IN QGIS 3.0
+- Symbology:  New "preset" colors color ramp option
+- Symbology: Allow symbol layers to be temporarily disabled
+- Symbology: Data defined symbol layer visibility
+- Symbology: save and restore color ramp used for singleband pseudocolor rendering
+- Symbology: save and restore color ramp used for singleband pseudocolor rendering
+- Symbology: Add Points  and Inches to available symbol units
+- Symbology: New color ramp button widget
+- Symbology: Style management re-work and upgrade
+- Symbology: Show an alpha slider in color button drop-down menu
+- Symbology: Support setting of color and transparency on multiple items for raster renderers
+- Symbology: raster auto-stretching when updating canvas
+- Symbology: Raster stretch toolbar actions support for pseudocolor renderer
+- Symbology: Transparency support for paletted renderer
+- Symbology: Control over annotation contents margins
+- Symbology: Annotations can be styled using fill symbol styles
+- Symbology: Point cluster renderer
+- Labeling: Allow label font size in mm/pixels
+- Labeling: Custom labeling toolbar is now always enabled
+- Diagrams: Data definable properties
+- Rendering: Grid renderer for points displacement
+- Rendering: Live layer support
+- Rendering: Cache labeling result to avoid unnecessary redraws     when refreshing canvas
+- Digitizing: add functionality to copy/move feature to move feature map tool
+- Digitizing: Range vertex selection in node tool
+- Digitizing: Add default Z value option
+- Digitizing: Move feature now benefits from Advanced Digitizing
+- Digitizing: Tracing with offset
+- Data Management: Metadata overhaul
+- Data Management: Auxiliary Storage Support
+- Data Management: Pan to current feature in attribute table
+- Data Management: Map of CRS-extent in Project properties
+- Data Management: Unified data source manager dialog
+- Data Management: Unified data source manager dialog
+- Data Management: Unified data source manager dialog
+- Forms and Widgets: Allow controlling labels for individual edit widgets
+- Forms and Widgets: Smarter default edit widgets with plugins to pick them
+- Forms and Widgets: Allow configuring link/unlink feature buttons on relation editor widget
+- Forms and Widgets: conditional visibility for tabs and groupboxes
+- Forms and Widgets: Field constraints can be enforced or not
+- Forms and Widgets: Add layer scoped actions
+- Forms and Widgets: Add between/not between to numerical fields in select by form
+- Forms and Widgets: Show field values in autocompleter in form filter mode
+- Forms and Widgets: Add zoom to features and flash features shortcuts in select by form dialog
+- Forms and Widgets: Add between/not between to numerical fields in select by form
+- Layer Legend: Hide Deselected Layers action
+- Layer Legend: Change of ergonomy of the visibility of layers inside groups
+- Map Composer: Control over drawing of composer table grid horizontal & vertical lines
+- Map Composer: Map Composer Overhaul
+- Map Composer: Drag qpt to QGIS to create new composer from template
+- Map Composer: Allow customization of line spacing for composer legend item labels
+- Map Composer: Allow choice of CRS for map items
+- Map Composer: Data definable controls
+- Map Composer: Holding shift while drawing polyline/polygon constrains     line angles
+- Analysis Tools: Raster unique values count for processing
+- Processing:  New algorithm for offsetting lines
+- Processing: New algorithm for single sided buffers
+- Processing: Optimised points along geometry algorithm
+- Processing: Add choice of simplification method to simplify
+- Processing: support for output geometry types in models
+- Processing: Angle threshold for smooth algorithm
+- Processing: Better support for Z/M dimensions and curved geometries
+- Processing: Raster analysis algorithms added to Processing
+- Processing: New algorithm to extract specific nodes
+- Processing: expose zonal statistics from Zonal statistics plugin in toolbox
+- Processing: add a spatialite execute SQL algorithm
+- Processing: New algorithm to extend lines
+- Processing: New extract by expression algorithm
+- Processing: add import into spatialite algorithm
+- Processing: Interpolation algorithms
+- Processing: New algorithm to compute geometry by expression
+- Processing: Snap geometries to layer algorithm
+- Processing: New input type for expressions
+- Processing: SplitWithLines
+- Processing: pole of inaccessibility algorithm
+- Processing: Extract by attribute can extract for null/notnull values
+- Processing: Create attribute index algorithm
+- Processing: New 'drop geometries' algorithm
+- Processing: New universal 'basic stats for field' algorithm
+- Processing: Port heatmap plugin to processing algorithm
+- Processing: New algorithm to orthogonalize geometries
+- Processing: Network analysis algorithms
+- Processing: Export processing models as PDF/SVG
+- Processing: New algorithm to truncate tables
+- Processing: added ‘invalid feature handling’ option
+- Processing: algorithm to fix invalid geometries using native makeValid() implementation
+- Processing: add search to Get Scripts and Models dialog
+- Processing: Generic centroid algorithm
+- Processing: improved Extract nodes algorithm
+- Processing: New algorithm for translating (moving) points
+- Processing: Improved processing modeler window
+- Processing: New raster unique values report algorithm
+- Processing: remove TauDEM provider from core Processing
+- Processing: Download a file from Processing
+- Application and Project Options: New zipped project file format .qgz
+- Application and Project Options: Add support for user profiles
+- Browser: Drag'n'drop layers from layer tree view to browser dock
+- General: Remove dxf2shp converter plugin
+- General: Remove zonal stats plugin
+- General: Remove orphaned oracle raster plugin
+- General: Possibility to configure location of the QGIS help files
+- General: remove TauDEM provider from core Processing
+- General: removed otb and lidartools providers from processing
+- General: Migrate Photo, WebView and FileName widgets to Attachment
+- Data Providers: GeoPackage
+- Data Providers: Support all GDAL writable raster formats for 'Save as' dialog on raster layers
+- Data Providers: Add auto-discovery of relations for PostgresQL
+- Data Providers: Detect literal default values for spatialite provider
+- Data Providers: New unified 'add layer' dialog
+- Data Providers: Create attribute index support for spatialite provider
+- Data Providers: Add support for arrays
+- Data Providers: Support for HStore in PostGIS data provider
+- Data Providers: Data dependencies between layers
+- Data Providers: hstore support to the postgres provider
+- Data Providers: dxf export: support reprojection
+- Data Providers: Load/save style in database for GPKG and Spatialite
+- Data Providers: Unique and not-null constraint handling
+- Data Providers: support for Z/M geometries in memory provider
+- Data Providers: Support for Z/M geometries in spatialite provider
+- Data Providers: GeoNode integration
+- Data Providers: Improved handling of defaults
+- QGIS Server: QGIS Server overhaul
+- QGIS Server: Possibility to segmentize feature info geometry in server
+- Plugins: Remove trusted status from Plugin Manager
+- Plugins: Offline editing: Add flag to only copy selected features
+- Plugins: GDALTools moved to Processing
+- Plugins: allow installing plugins from local ZIP packages
+- Programmability: Geometry class updates
+- Programmability: Task manager
+- Programmability: API to allow drag'n'drop of custom browser items
+-
+
+
 = What's new in Version 2.18 'Las Palmas'? =
 
 This release has following new features:
@@ -273,7 +427,7 @@ This release has following new features:
 - Map Composer : Atlas navigation improvements
 - Map Composer : Custom format for grid annotations
 - Map Composer : Multiline text handling and automatic text wrapping in composer attribute tables
-- Map Composer : Advanced customisation of cell background color
+- Map Composer : Advanced customization of cell background color
 - Map Composer : Add fit page to contents option and options for cropping exports to contents
 - Map Composer : Force vector layers to render as a raster images
 - Map Composer : Data defined control over map layers and style presets
@@ -403,7 +557,7 @@ This is a minor release increment with the following new features:
 - HTML item improvements
 - Composer map grid improvements
 - Processing now has an online collection of models and scripts
-- Processing graphical modeller completely rewritten
+- Processing graphical modeler completely rewritten
 - API changes for QGIS widgets
 - Enhancements of searching with GetFeatureInfo request
 - Add a precision setting for GetFeatureInfo geometry attributes

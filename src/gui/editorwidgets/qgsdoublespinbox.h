@@ -102,7 +102,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
-    //! Set the current value to the value defined by the clear value.
+    //! Sets the current value to the value defined by the clear value.
     void clear() override;
 
     /**
@@ -125,6 +125,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * \see setClearValue()
      */
     double clearValue() const;
+
+    /**
+     * Set alignment in the embedded line edit widget
+     * \param alignment
+     */
+    void setLineEditAlignment( Qt::Alignment alignment );
 
     double valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;

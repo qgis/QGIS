@@ -30,13 +30,13 @@ QgsMapToolEllipseCenter2Points::QgsMapToolEllipseCenter2Points( QgsMapToolCaptur
 
 void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
 
     if ( mPoints.size() < 2 )
-      mPoints.append( mapPoint );
+      mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
@@ -56,7 +56,7 @@ void QgsMapToolEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 
 void QgsMapToolEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( mTempRubberBand )
   {
@@ -66,13 +66,13 @@ void QgsMapToolEllipseCenter2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         std::unique_ptr<QgsLineString> line( new QgsLineString() );
         line->addVertex( mPoints.at( 0 ) );
-        line->addVertex( mapPoint );
+        line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );
       }
       break;
       case 2:
       {
-        mEllipse = QgsEllipse().fromCenter2Points( mPoints.at( 0 ), mPoints.at( 1 ), mapPoint );
+        mEllipse = QgsEllipse().fromCenter2Points( mPoints.at( 0 ), mPoints.at( 1 ), point );
         mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
       }
       break;

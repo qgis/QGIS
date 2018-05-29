@@ -95,7 +95,7 @@ void QgsActionManager::onNotifyRunActions( const QString &message )
   }
 }
 
-void QgsActionManager::removeAction( const QUuid &actionId )
+void QgsActionManager::removeAction( QUuid actionId )
 {
   int i = 0;
   for ( const QgsAction &action : qgis::as_const( mActions ) )
@@ -123,7 +123,7 @@ void QgsActionManager::removeAction( const QUuid &actionId )
   }
 }
 
-void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex, const QgsExpressionContextScope &scope )
+void QgsActionManager::doAction( QUuid actionId, const QgsFeature &feature, int defaultValueIndex, const QgsExpressionContextScope &scope )
 {
   QgsExpressionContext context = createExpressionContext();
   QgsExpressionContextScope *actionScope = new QgsExpressionContextScope( scope );
@@ -135,7 +135,7 @@ void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &featur
   doAction( actionId, feature, context );
 }
 
-void QgsActionManager::doAction( const QUuid &actionId, const QgsFeature &feat, const QgsExpressionContext &context )
+void QgsActionManager::doAction( QUuid actionId, const QgsFeature &feat, const QgsExpressionContext &context )
 {
   QgsAction act = action( actionId );
 
@@ -267,7 +267,7 @@ bool QgsActionManager::readXml( const QDomNode &layer_node )
   return true;
 }
 
-QgsAction QgsActionManager::action( const QUuid &id )
+QgsAction QgsActionManager::action( QUuid id )
 {
   for ( const QgsAction &action : qgis::as_const( mActions ) )
   {
@@ -278,7 +278,7 @@ QgsAction QgsActionManager::action( const QUuid &id )
   return QgsAction();
 }
 
-void QgsActionManager::setDefaultAction( const QString &actionScope, const QUuid &actionId )
+void QgsActionManager::setDefaultAction( const QString &actionScope, QUuid actionId )
 {
   mDefaultActions[ actionScope ] = actionId;
 }

@@ -58,6 +58,7 @@ class APP_EXPORT QgsClipboard : public QObject
       AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
       GeoJSON, //!< GeoJSON FeatureCollection format
     };
+    Q_ENUM( CopyFormat )
 
     /**
      * Constructor for the clipboard.

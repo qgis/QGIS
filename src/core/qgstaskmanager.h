@@ -79,7 +79,7 @@ class CORE_EXPORT QgsTask : public QObject
      * \param description text description of task
      * \param flags task flags
      */
-    QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
+    QgsTask( const QString &description = QString(), QgsTask::Flags flags = AllFlags );
 
     ~QgsTask() override;
 
@@ -175,7 +175,7 @@ class CORE_EXPORT QgsTask : public QObject
     /**
      * Sets a list of layers on which the task depends. The task will automatically
      * be canceled if any of these layers are about to be removed.
-     * \see dependentLayerIds()
+     * \see dependentLayers()
      */
     void setDependentLayers( const QList<QgsMapLayer *> &dependentLayers );
 
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsTask : public QObject
 
     struct SubTask
     {
-      SubTask( QgsTask *task, QgsTaskList dependencies, SubTaskDependency dependency )
+      SubTask( QgsTask *task, const QgsTaskList &dependencies, SubTaskDependency dependency )
         : task( task )
         , dependencies( dependencies )
         , dependency( dependency )
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
        * Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
        * but will be transferred to a QgsTaskManager.
        */
-      explicit TaskDefinition( QgsTask *task, QgsTaskList dependentTasks = QgsTaskList() )
+      explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() )
         : task( task )
         , dependentTasks( dependentTasks )
       {}
@@ -405,7 +405,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * the task. The priority argument can be used to control the run queue's
      * order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * \returns unique task ID
+     * \returns unique task ID, or 0 if task could not be added
      */
     long addTask( QgsTask *task SIP_TRANSFER, int priority = 0 );
 
@@ -415,7 +415,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * manager will be responsible for starting the task. The priority argument can
      * be used to control the run queue's order of execution, with larger numbers
      * taking precedence over lower priority numbers.
-     * \returns unique task ID
+     * \returns unique task ID, or 0 if task could not be added
      */
     long addTask( const TaskDefinition &task SIP_TRANSFER, int priority = 0 );
 
@@ -559,6 +559,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     struct TaskInfo
     {
       TaskInfo( QgsTask *task = nullptr, int priority = 0 );
+      void createRunnable();
       QgsTask *task = nullptr;
       QAtomicInt added;
       int priority;
@@ -572,7 +573,7 @@ class CORE_EXPORT QgsTaskManager : public QObject
     QMap< long, QgsWeakMapLayerPointerList > mLayerDependencies;
 
     //! Tracks the next unique task ID
-    long mNextTaskId = 0;
+    long mNextTaskId = 1;
 
     //! List of active (queued or running) tasks. Includes subtasks.
     QSet< QgsTask * > mActiveTasks;

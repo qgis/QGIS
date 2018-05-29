@@ -25,7 +25,7 @@ from builtins import str
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsProject, QgsVectorLayer, QgsWkbTypes, QgsLayerTreeGroup
+from qgis.core import Qgis, QgsProject, QgsVectorLayer, QgsWkbTypes, QgsLayerTreeGroup
 from qgis.gui import QgsMessageBar
 
 import os
@@ -71,7 +71,7 @@ def run(item, action, mainwindow):
     isTopoSchema = False
 
     if not hasattr(item, 'schema'):
-        mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', QgsMessageBar.INFO,
+        mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', Qgis.Info,
                                        mainwindow.iface.messageTimeout())
         return False
 
@@ -85,12 +85,12 @@ def run(item, action, mainwindow):
     if not isTopoSchema:
         mainwindow.infoBar.pushMessage("Invalid topology",
                                        u'Schema "{0}" is not registered in topology.topology.'.format(
-                                           item.schema().name), QgsMessageBar.WARNING,
+                                           item.schema().name), Qgis.Warning,
                                        mainwindow.iface.messageTimeout())
         return False
 
     if (res[0] < 0):
-        mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), QgsMessageBar.WARNING, mainwindow.iface.messageTimeout())
+        mainwindow.infoBar.pushMessage("WARNING", u'Topology "{0}" is registered as having a srid of {1} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.Warning, mainwindow.iface.messageTimeout())
         toposrid = '0'
     else:
         toposrid = str(res[0])
@@ -235,19 +235,19 @@ def run(item, action, mainwindow):
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:
             nodeLayer = groupFaces.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         groupNodes = QgsLayerTreeGroup(u'Nodes')
         for layer in nodeLayers:
             nodeLayer = groupNodes.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         groupEdges = QgsLayerTreeGroup(u'Edges')
         for layer in edgeLayers:
             nodeLayer = groupEdges.addLayer(layer)
-            nodeLayer.setVisible(Qt.Unchecked)
+            nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
         supergroup = QgsLayerTreeGroup(u'Topology "%s"' % toponame)

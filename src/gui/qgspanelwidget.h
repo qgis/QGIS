@@ -73,7 +73,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     virtual void setDockMode( bool dockMode );
 
     /**
-     * Return the dock mode state.
+     * Returns the dock mode state.
      * \returns True if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.

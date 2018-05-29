@@ -45,7 +45,7 @@ void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, c
 }
 
 
-bool QgsPointDistanceRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker );
   Q_UNUSED( context );
@@ -193,7 +193,7 @@ void QgsPointDistanceRenderer::checkLegendSymbolItem( const QString &key, bool s
   if ( !mRenderer )
     return;
 
-  return mRenderer->checkLegendSymbolItem( key, state );
+  mRenderer->checkLegendSymbolItem( key, state );
 }
 
 QString QgsPointDistanceRenderer::filter( const QgsFields &fields )
@@ -227,7 +227,7 @@ QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()
   return mRenderer->capabilities();
 }
 
-QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -236,7 +236,7 @@ QgsSymbolList QgsPointDistanceRenderer::symbols( QgsRenderContext &context )
   return mRenderer->symbols( context );
 }
 
-QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -245,14 +245,14 @@ QgsSymbol *QgsPointDistanceRenderer::symbolForFeature( QgsFeature &feature, QgsR
   return mRenderer->symbolForFeature( feature, context );
 }
 
-QgsSymbol *QgsPointDistanceRenderer::originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbol *QgsPointDistanceRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return nullptr;
-  return mRenderer->originalSymbolForFeature( feat, context );
+  return mRenderer->originalSymbolForFeature( feature, context );
 }
 
-QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
@@ -261,27 +261,27 @@ QgsSymbolList QgsPointDistanceRenderer::symbolsForFeature( QgsFeature &feature, 
   return mRenderer->symbolsForFeature( feature, context );
 }
 
-QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsPointDistanceRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return QgsSymbolList();
-  return mRenderer->originalSymbolsForFeature( feat, context );
+  return mRenderer->originalSymbolsForFeature( feature, context );
 }
 
-QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( QgsFeature &feat, QgsRenderContext &context )
+QSet< QString > QgsPointDistanceRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
     return QSet< QString >() << QString();
-  return mRenderer->legendKeysForFeature( feat, context );
+  return mRenderer->legendKeysForFeature( feature, context );
 }
 
-bool QgsPointDistanceRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsPointDistanceRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   if ( !mRenderer )
   {
     return false;
   }
-  return mRenderer->willRenderFeature( feat, context );
+  return mRenderer->willRenderFeature( feature, context );
 }
 
 
@@ -459,10 +459,15 @@ QgsExpressionContextScope *QgsPointDistanceRenderer::createGroupScope( const Clu
 
     clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size(), true ) );
   }
+  if ( !group.empty() )
+  {
+    // data defined properties may require a feature in the expression context, so just use first feature in group
+    clusterScope->setFeature( group.at( 0 ).feature );
+  }
   return clusterScope;
 }
 
-QgsMarkerSymbol *QgsPointDistanceRenderer::firstSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsMarkerSymbol *QgsPointDistanceRenderer::firstSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context )
 {
   if ( !mRenderer )
   {

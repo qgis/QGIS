@@ -18,7 +18,7 @@
 # AUTHOR:       Maciej Sieczka, msieczka@sieczka.org, http://www.sieczka.org
 #
 # PURPOSE:      Create a QGIS srs.db-compliant SQL script with SRS, ellipsoid
-#               and projections defs based on the output of installed PROJ.4 and
+#               and projections defs based on the output of installed PROJ and
 #               GDAL.
 #
 # VERSION:      1.1.0, 2009.03.19

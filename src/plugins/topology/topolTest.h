@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -32,14 +32,13 @@ class WKTReader;
 
 enum ValidateType { ValidateAll, ValidateExtent, ValidateSelected };
 
-typedef ErrorList( topolTest::*testFunction )( double, QgsVectorLayer *, QgsVectorLayer *, bool );
+typedef ErrorList( topolTest::*testFunction )( QgsVectorLayer *, QgsVectorLayer *, bool );
 
 class TopologyRule
 {
   public:
     testFunction f;
     bool useSecondLayer;
-    bool useTolerance;
     bool useSpatialIndex;
     QList<QgsWkbTypes::GeometryType> layer1SupportedTypes;
     QList<QgsWkbTypes::GeometryType> layer2SupportedTypes;
@@ -57,18 +56,16 @@ class TopologyRule
 
     /**
      * Constructor
-     * initializes the test to use both layers and not to use the tolerance
+     * initializes the test to use both layers
      */
     explicit TopologyRule( testFunction f0 = nullptr,
                            bool useSecondLayer0 = true,
-                           bool useTolerance0 = false,
                            bool useSpatialIndex0 = false,
                            const QList<QgsWkbTypes::GeometryType> &layer1SupportedTypes0 = QList<QgsWkbTypes::GeometryType>(),
                            const QList<QgsWkbTypes::GeometryType> &layer2SupportedTypes0 = QList<QgsWkbTypes::GeometryType>()
                          )
       : f( f0 )
       , useSecondLayer( useSecondLayer0 )
-      , useTolerance( useTolerance0 )
       , useSpatialIndex( useSpatialIndex0 )
       , layer1SupportedTypes( layer1SupportedTypes0 )
       , layer2SupportedTypes( layer2SupportedTypes0 )
@@ -117,150 +114,104 @@ class topolTest: public QObject
      * \param layer1 pointer to the first layer
      * \param layer2 pointer to the second layer
      * \param type type what features to validate
-     * \param tolerance possible tolerance
      */
-    ErrorList runTest( const QString &testName, QgsVectorLayer *layer1, QgsVectorLayer *layer2, ValidateType type, double tolerance );
+    ErrorList runTest( const QString &testName, QgsVectorLayer *layer1, QgsVectorLayer *layer2, ValidateType type );
 
     /**
      * Checks for intersections of the two layers
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 pointer to the second layer
      */
-    ErrorList checkOverlapWithLayer( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
-
-    /**
-     * Checks for self-intersections in the layer
-     * \param tolerance not used
-     * \param layer1 pointer to the first layer
-     * \param layer2 not used
-     */
-    ErrorList checkSelfIntersections( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
-
-#if 0 //unused and broken
-
-    /**
-     * Checks for features that are too close
-     * \param tolerance allowed tolerance
-     * \param layer1 pointer to the first layer
-     * \param layer2 pointer to the second layer
-     */
-    ErrorList checkCloseFeature( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
-#endif
-
-    /**
-     * Checks for short segments
-     * \param tolerance tolerance - not used
-     * \param layer1 pointer to the first layer
-     * \param layer2 pointer to the second layer
-     */
-    ErrorList checkSegmentLength( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkOverlapWithLayer( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for dangling lines
-     * \param tolerance allowed tolerance
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkDanglingLines( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for points not covered by any segment
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 pointer to the second layer
      */
-    ErrorList checkPointCoveredBySegment( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkPointCoveredBySegment( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for invalid geometries
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkValid( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkValid( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for duplicate geometries
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkDuplicates( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkDuplicates( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for pseudo nodes
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkPseudos( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for overlaps of polygons from same layer
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkOverlaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkOverlaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for gaps among polygons from same layer
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for points form one layer that are not covered by line ends form another layer
-     * \param tolerance not used
      * \param layer1 pointer to the first point layer
      * \param layer2 pointer to the second line layer
      */
-    ErrorList checkPointCoveredByLineEnds( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkPointCoveredByLineEnds( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for points that are not inside any polygons from another layer
-     * \param tolerance not used
      * \param layer1 pointer to the first point layer
      * \param layer2 pointer to the second polygon layer
      */
-    ErrorList checkPointInPolygon( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkPointInPolygon( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for polygons that do not contain any points form another layer
-     * \param tolerance not used
      * \param layer1 pointer to the first polygon layer
      * \param layer2 pointer to the second point layer
      */
-    ErrorList checkPolygonContainsPoint( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkPolygonContainsPoint( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for multipart features
-     * \param tolerance not used
      * \param layer1 pointer to the first layer
      * \param layer2 not used
      */
-    ErrorList checkMultipart( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkMultipart( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
     /**
      * Checks for line features that do not have both ends covered by points from another layer
-     * \param tolerance not used
      * \param layer1 pointer to the first linelayer
      * \param layer2 pointer to the second point layer
      */
-    ErrorList checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
+    ErrorList checkyLineEndsCoveredByPoints( QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent );
 
 
   public slots:
 
-    /**
-     * Checks for invalid geometries
-     * \param tolerance not used
-     * \param layer1 pointer to the first layer
-     * \param layer2 not used
-     */
+    //! Cancels the test
     void setTestCanceled();
 
   private:

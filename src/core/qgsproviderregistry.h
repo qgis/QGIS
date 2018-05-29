@@ -25,11 +25,11 @@
 #include <QLibrary>
 #include <QString>
 
+#include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
 
-class QgsDataProvider;
 class QgsProviderMetadata;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
@@ -71,14 +71,14 @@ class CORE_EXPORT QgsProviderRegistry
     virtual ~QgsProviderRegistry();
 
     /**
-     * Return path for the library of the provider.
+     * Returns path for the library of the provider.
      *
      * If the provider uses direct provider function pointers instead of a library an empty string will
      * be returned.
      */
     QString library( const QString &providerKey ) const;
 
-    //! Return list of provider plugins found
+    //! Returns list of provider plugins found
     QString pluginList( bool asHtml = false ) const;
 
     /**
@@ -86,20 +86,22 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QDir libraryDirectory() const;
 
-    //! Set library directory where to search for plugins
+    //! Sets library directory where to search for plugins
     void setLibraryDirectory( const QDir &path );
 
     /**
      * Creates a new instance of a provider.
      * \param providerKey identificator of the provider
      * \param dataSource  string containing data source for the provider
+     * \param options provider options
      * \returns new instance of provider or NULL on error
      */
     QgsDataProvider *createProvider( const QString &providerKey,
-                                     const QString &dataSource ) SIP_FACTORY;
+                                     const QString &dataSource,
+                                     const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() ) SIP_FACTORY;
 
     /**
-     * Return the provider capabilities
+     * Returns the provider capabilities
         \param providerKey identificator of the provider
         \since QGIS 2.6
      */
@@ -116,7 +118,7 @@ class CORE_EXPORT QgsProviderRegistry
                                     QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
     /**
-     * Get pointer to provider function
+     * Gets pointer to provider function
      * \param providerKey identificator of the provider
      * \param functionName name of function
      * \returns pointer to function or NULL on error. If the provider uses direct provider
@@ -134,14 +136,14 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY;
 
-    //! Return list of available providers by their keys
+    //! Returns list of available providers by their keys
     QStringList providerList() const;
 
-    //! Return metadata of the provider or NULL if not found
+    //! Returns metadata of the provider or NULL if not found
     const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
     /**
-     * Return vector file filter string
+     * Returns vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -156,7 +158,7 @@ class CORE_EXPORT QgsProviderRegistry
     virtual QString fileVectorFilters() const;
 
     /**
-     * Return raster file filter string
+     * Returns raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -167,11 +169,12 @@ class CORE_EXPORT QgsProviderRegistry
       \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
-    //! Return a string containing the available database drivers
+
+    //! Returns a string containing the available database drivers
     virtual QString databaseDrivers() const;
-    //! Return a string containing the available directory drivers
+    //! Returns a string containing the available directory drivers
     virtual QString directoryDrivers() const;
-    //! Return a string containing the available protocol drivers
+    //! Returns a string containing the available protocol drivers
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );

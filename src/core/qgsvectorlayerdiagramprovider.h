@@ -34,12 +34,12 @@ class QgsDiagramLabelFeature : public QgsLabelFeature
 {
   public:
     //! Create label feature, takes ownership of the geometry instance
-    QgsDiagramLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
-      : QgsLabelFeature( id, geometry, size ) {}
+    QgsDiagramLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
+      : QgsLabelFeature( id, std::move( geometry ), size ) {}
 
     //! Store feature's attributes - used for rendering of diagrams
     void setAttributes( const QgsAttributes &attrs ) { mAttributes = attrs; }
-    //! Get feature's attributes - used for rendering of diagrams
+    //! Gets feature's attributes - used for rendering of diagrams
     const QgsAttributes &attributes() { return mAttributes; }
 
   protected:
@@ -55,9 +55,9 @@ class QgsAbstractFeatureSource;
  * \brief The QgsVectorLayerDiagramProvider class implements support for diagrams within
  * the labeling engine. Parameters for the diagrams are taken from the layer settings.
  *
- * \since QGIS 2.12
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvider
 {

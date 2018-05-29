@@ -41,7 +41,7 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "No active vector layer" ),
       QObject::tr( "To select features, choose a vector layer in the legend" ),
-      QgsMessageBar::INFO,
+      Qgis::Info,
       QgisApp::instance()->messageTimeout() );
   }
   return vlayer;
@@ -65,12 +65,10 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRe
   }
 }
 
-void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
-    QgsVectorLayer *vlayer,
-    QPoint point )
+QgsRectangle QgsMapToolSelectUtils::expandSelectRectangle( QgsPointXY mapPoint, QgsMapCanvas *canvas, QgsVectorLayer *vlayer )
 {
   int boxSize = 0;
-  if ( vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
+  if ( !vlayer || vlayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     //if point or line use an artificial bounding box of 10x10 pixels
     //to aid the user to click on a feature accurately
@@ -81,27 +79,29 @@ void QgsMapToolSelectUtils::expandSelectRectangle( QRect &selectRect,
     //otherwise just use the click point for polys
     boxSize = 1;
   }
-  selectRect.setLeft( point.x() - boxSize );
-  selectRect.setRight( point.x() + boxSize );
-  selectRect.setTop( point.y() - boxSize );
-  selectRect.setBottom( point.y() + boxSize );
+
+  const QgsMapToPixel *transform = canvas->getCoordinateTransform();
+  QgsPointXY point = transform->transform( mapPoint );
+  QgsPointXY ll = transform->toMapCoordinates( point.x() - boxSize, point.y() + boxSize );
+  QgsPointXY ur = transform->toMapCoordinates( point.x() + boxSize, point.y() - boxSize );
+  return QgsRectangle( ll, ur );
 }
 
-void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e )
+void QgsMapToolSelectUtils::selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
 {
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
-  if ( e->modifiers() & Qt::ShiftModifier && e->modifiers() & Qt::ControlModifier )
+  if ( modifiers & Qt::ShiftModifier && modifiers & Qt::ControlModifier )
     behavior = QgsVectorLayer::IntersectSelection;
-  else if ( e->modifiers() & Qt::ShiftModifier )
+  else if ( modifiers & Qt::ShiftModifier )
     behavior = QgsVectorLayer::AddToSelection;
-  else if ( e->modifiers() & Qt::ControlModifier )
+  else if ( modifiers & Qt::ControlModifier )
     behavior = QgsVectorLayer::RemoveFromSelection;
 
-  bool doContains = e->modifiers() & Qt::AltModifier;
+  bool doContains = modifiers & Qt::AltModifier;
   setSelectedFeatures( canvas, selectGeometry, behavior, doContains );
 }
 
-void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e )
+void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers )
 {
   QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( canvas );
   if ( !vlayer )
@@ -112,7 +112,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
   QgsFeatureIds selectedFeatures = getMatchingFeatures( canvas, selectGeometry, false, true );
   if ( selectedFeatures.isEmpty() )
   {
-    if ( !( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier ) )
+    if ( !( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier ) )
     {
       // if no modifiers then clicking outside features clears the selection
       // but if there's a shift or ctrl modifier, then it's likely the user was trying
@@ -127,7 +127,7 @@ void QgsMapToolSelectUtils::selectSingleFeature( QgsMapCanvas *canvas, const Qgs
   QgsVectorLayer::SelectBehavior behavior = QgsVectorLayer::SetSelection;
 
   //either shift or control modifier switches to "toggle" selection mode
-  if ( e->modifiers() & Qt::ShiftModifier || e->modifiers() & Qt::ControlModifier )
+  if ( modifiers & Qt::ShiftModifier || modifiers & Qt::ControlModifier )
   {
     QgsFeatureId selectId = *selectedFeatures.constBegin();
     QgsFeatureIds layerSelectedFeatures = vlayer->selectedFeatureIds();
@@ -219,7 +219,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     QgisApp::instance()->messageBar()->pushMessage(
       QObject::tr( "CRS Exception" ),
       QObject::tr( "Selection extends beyond layer's coordinate system" ),
-      QgsMessageBar::WARNING,
+      Qgis::Warning,
       QgisApp::instance()->messageTimeout() );
     return newSelectedFeatures;
   }
@@ -296,5 +296,4 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   return newSelectedFeatures;
 }
-
 

@@ -78,16 +78,16 @@ class DlgExportVector(QDialog, Ui_Dialog):
         lastUsedDir = settings.value(self.lastUsedVectorDirSettingsKey, ".")
 
         # get selected filter
-        selectedFilter = self.cboFileFormat.currentData()
+        selected_driver = self.cboFileFormat.currentData()
+        selected_filter = QgsVectorFileWriter.filterForDriver(selected_driver)
 
         # ask for a filename
         filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
-                                                       selectedFilter)
+                                                       selected_filter)
         if filename == "":
             return
 
-        filterString = QgsVectorFileWriter.filterForDriver(selectedFilter)
-        ext = filterString[filterString.find('.'):]
+        ext = selected_filter[selected_filter.find('.'):]
         ext = ext[:ext.find(' ')]
 
         if not filename.lower().endswith(ext):
@@ -112,8 +112,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
     def populateFileFilters(self):
         # populate the combo with supported vector file formats
-        for name, filt in list(QgsVectorFileWriter.ogrDriverList().items()):
-            self.cboFileFormat.addItem(name, filt)
+        for driver in QgsVectorFileWriter.ogrDriverList():
+            self.cboFileFormat.addItem(driver.longName, driver.driverName)
 
         # set the last used filter
         settings = QgsSettings()

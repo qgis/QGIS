@@ -76,6 +76,7 @@ class TestQgsMapToPixelGeometrySimplifier : public QObject
     void testWkbDimensionMismatch();
     void testCircularString();
     void testVisvalingam();
+    void testRingValidity();
 
 };
 
@@ -203,6 +204,17 @@ void TestQgsMapToPixelGeometrySimplifier::testVisvalingam()
   QString expectedWkt( QStringLiteral( "LineString (0 0, 40 0, 41 100, 42 0, 50 0)" ) );
 
   QCOMPARE( simplifier.simplify( g ).asWkt(), expectedWkt );
+}
+
+void TestQgsMapToPixelGeometrySimplifier::testRingValidity()
+{
+  QgsGeometry poly = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((0 0, 30 0, 30 30, 0 30, 0 0),(10.0001 10.00002, 10.0005 10.00002, 10.0005 10.00004, 10.00001 10.00004, 10.0001 10.00002 ))" ) );
+
+  int fl = QgsMapToPixelSimplifier::SimplifyGeometry | QgsMapToPixelSimplifier::SimplifyEnvelope;
+  QgsMapToPixelSimplifier simplifier( fl, 5 );
+  QgsGeometry ret = simplifier.simplify( poly );
+  QVERIFY( ret.isGeosValid() );
+
 }
 
 QGSTEST_MAIN( TestQgsMapToPixelGeometrySimplifier )

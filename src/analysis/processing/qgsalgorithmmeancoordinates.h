@@ -35,8 +35,9 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
   public:
 
     QgsMeanCoordinatesAlgorithm() = default;
-    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMeanCoordinates.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMeanCoordinates.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

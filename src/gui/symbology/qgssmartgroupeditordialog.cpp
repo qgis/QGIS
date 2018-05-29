@@ -194,7 +194,7 @@ void QgsSmartGroupEditorDialog::buttonBox_accepted()
 {
   if ( mNameLineEdit->text().isEmpty() )
   {
-    QMessageBox::critical( this, tr( "Invalid name" ), tr( "The smart group name field is empty. Kindly provide a name." ) );
+    QMessageBox::critical( this, tr( "Edit Smart Group" ), tr( "The smart group name field is empty. Kindly provide a name." ) );
     return;
   }
   accept();

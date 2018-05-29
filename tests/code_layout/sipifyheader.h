@@ -90,8 +90,8 @@ typedef QVector<QVariant> QgsSuperClass;
  * Documentation goes here
  *
  * Here's some comment mentioning another class QgsAutoAwesomemater::makeAwesome.
- * \since QGIS 3.0
  * \note some other note
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBaseClass
 {

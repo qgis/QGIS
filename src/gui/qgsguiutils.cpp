@@ -21,6 +21,7 @@
 
 #include <QImageWriter>
 #include <QFontDialog>
+#include <QApplication>
 
 
 namespace QgsGuiUtils
@@ -234,4 +235,28 @@ namespace QgsGuiUtils
     QString key = QStringLiteral( "Windows/%1/geometry" ).arg( subKey );
     return key;
   }
+}
+
+//
+// QgsTemporaryCursorOverride
+//
+
+QgsTemporaryCursorOverride::QgsTemporaryCursorOverride( const QCursor &cursor )
+{
+  QApplication::setOverrideCursor( cursor );
+}
+
+QgsTemporaryCursorOverride::~QgsTemporaryCursorOverride()
+{
+  if ( mHasOverride )
+    QApplication::restoreOverrideCursor();
+}
+
+void QgsTemporaryCursorOverride::release()
+{
+  if ( !mHasOverride )
+    return;
+
+  mHasOverride = false;
+  QApplication::restoreOverrideCursor();
 }

@@ -395,13 +395,13 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  geos::unique_ptr polyGeos( poly.exportToGeos() );
+  geos::unique_ptr polyGeos( QgsGeos::asGeos( poly ) );
   if ( !polyGeos )
   {
     return;
   }
 
-  GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
   if ( !polyGeosPrepared )
   {

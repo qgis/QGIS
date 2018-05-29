@@ -15,38 +15,44 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <QApplication>
+#include <QToolButton>
+#include <QHBoxLayout>
+
 #include "qgslocatoroptionswidget.h"
+
+#include "qgsapplication.h"
 #include "qgslocatorwidget.h"
 #include "qgssettings.h"
 
+
 QgsLocatorOptionsWidget::QgsLocatorOptionsWidget( QgsLocatorWidget *locator, QWidget *parent )
-  : QWidget( parent )
+  : QTreeView( parent )
   , mLocatorWidget( locator )
   , mLocator( locator->locator() )
 {
-  setupUi( this );
 
   mModel = new QgsLocatorFiltersModel( mLocator, this );
-  mFiltersTreeView->setModel( mModel );
+  setModel( mModel );
 
-  mFiltersTreeView->header()->setStretchLastSection( false );
-  mFiltersTreeView->header()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  header()->setStretchLastSection( false );
+  header()->setSectionResizeMode( QgsLocatorFiltersModel::Name, QHeaderView::Stretch );
 
-  mConfigureFilterButton->setEnabled( false );
-  connect( mFiltersTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, [ = ]( const QItemSelection & selected, const QItemSelection & )
+  setEditTriggers( QAbstractItemView::AllEditTriggers );
+  setAlternatingRowColors( true );
+  setSelectionMode( QAbstractItemView::NoSelection );
+
+  // add the config button
+  for ( int row = 0; row < mModel->rowCount(); ++row )
   {
-    if ( selected.count() == 0 || selected.at( 0 ).indexes().count() == 0 )
+    QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
+    QWidget *bt = mModel->configButton( index, this );
+    if ( bt )
     {
-      mConfigureFilterButton->setEnabled( false );
+      setIndexWidget( index, bt );
     }
-    else
-    {
-      QModelIndex sel = selected.at( 0 ).indexes().at( 0 );
-      QgsLocatorFilter *filter = mModel->filterForIndex( sel );
-      mConfigureFilterButton->setEnabled( filter->hasConfigWidget() );
-    }
-  } );
-  connect( mConfigureFilterButton, &QPushButton::clicked, this, &QgsLocatorOptionsWidget::configureCurrentFilter );
+  }
 }
 
 void QgsLocatorOptionsWidget::commitChanges()
@@ -55,22 +61,22 @@ void QgsLocatorOptionsWidget::commitChanges()
   mLocatorWidget->invalidateResults();
 }
 
-void QgsLocatorOptionsWidget::configureCurrentFilter()
+void QgsLocatorOptionsWidget::dataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )
 {
-  auto selected = mFiltersTreeView->selectionModel()->selection();
-  if ( selected.count() == 0 || selected.at( 0 ).indexes().count() == 0 )
+  for ( int row = topLeft.row(); row < bottomRight.row(); ++row )
   {
-    return;
+    QModelIndex index = mModel->index( row, QgsLocatorFiltersModel::Config );
+    if ( !indexWidget( index ) )
+    {
+      QWidget *bt = mModel->configButton( index, this );
+      if ( bt )
+      {
+        setIndexWidget( index, bt );
+      }
+    }
   }
-  else
-  {
-    QModelIndex sel = selected.at( 0 ).indexes().at( 0 );
-    QgsLocatorFilter *filter = mModel->filterForIndex( sel );
-    if ( filter )
-      filter->openConfigWidget();
-  }
+  QTreeView::dataChanged( topLeft, bottomRight, roles );
 }
-
 
 //
 // QgsLocatorFiltersModel
@@ -82,6 +88,36 @@ QgsLocatorFiltersModel::QgsLocatorFiltersModel( QgsLocator *locator, QObject *pa
   : QAbstractTableModel( parent )
   , mLocator( locator )
 {
+  mIconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() * 1.1, 24.0 ) );
+  mRowSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * QgsApplication::fontMetrics().height() * 1.1 * 4 / 3, 32.0 ) );
+}
+
+QWidget *QgsLocatorFiltersModel::configButton( const QModelIndex &index, QWidget *parent ) const
+{
+  if ( !index.isValid() )
+    return nullptr;
+
+  QgsLocatorFilter *filter = filterForIndex( index );
+  if ( filter && filter->hasConfigWidget() )
+  {
+    // use a layout to get the button center aligned
+    QWidget *w = new QWidget( parent );
+    QToolButton *bt = new QToolButton( );
+    QHBoxLayout *layout = new QHBoxLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( bt );
+    w->setLayout( layout );
+
+    connect( bt, &QToolButton::clicked, this, [ = ]() {filter->openConfigWidget( bt );} );
+    bt->setMaximumSize( mIconSize, mIconSize );
+    bt->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    bt->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+    return w;
+  }
+  else
+  {
+    return nullptr;
+  }
 }
 
 int QgsLocatorFiltersModel::rowCount( const QModelIndex &parent ) const
@@ -97,7 +133,7 @@ int QgsLocatorFiltersModel::columnCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return 4;
+  return 5;
 }
 
 QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) const
@@ -119,10 +155,11 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
           return filterForIndex( index )->displayName();
 
         case Prefix:
-          return filterForIndex( index )->prefix();
+          return mPrefixes.value( filterForIndex( index ), filterForIndex( index )->activePrefix() );
 
         case Active:
         case Default:
+        case Config:
           return QVariant();
       }
       break;
@@ -133,6 +170,7 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
       {
         case Name:
         case Prefix:
+        case Config:
           return QVariant();
 
         case Active:
@@ -152,6 +190,15 @@ QVariant QgsLocatorFiltersModel::data( const QModelIndex &index, int role ) cons
             return filterForIndex( index )->useWithoutPrefix() ? Qt::Checked : Qt::Unchecked;
       }
       break;
+
+    case Qt::SizeHintRole:
+      return QSize( mRowSize, mRowSize );
+
+    case Qt::TextAlignmentRole:
+      if ( index.column() == Config )
+        return Qt::AlignCenter;
+      break;
+
   }
 
   return QVariant();
@@ -165,6 +212,34 @@ bool QgsLocatorFiltersModel::setData( const QModelIndex &index, const QVariant &
 
   switch ( role )
   {
+    case Qt::EditRole:
+    {
+      switch ( index.column() )
+      {
+        case Name:
+        case Active:
+        case Default:
+          return false;
+
+        case Prefix:
+        {
+          QString prefix = value.toString();
+          if ( !prefix.isEmpty() )
+          {
+            mPrefixes.insert( filterForIndex( index ), prefix );
+          }
+          else
+          {
+            // reset to the native prefix
+            mPrefixes.insert( filterForIndex( index ), filterForIndex( index )->prefix() );
+          }
+          emit dataChanged( index, index );
+          return true;
+        }
+      }
+      return false;
+    }
+
     case Qt::CheckStateRole:
     {
       bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
@@ -203,7 +278,11 @@ Qt::ItemFlags QgsLocatorFiltersModel::flags( const QModelIndex &index ) const
   switch ( index.column() )
   {
     case Name:
+    case Config:
+      break;
+
     case Prefix:
+      flags = flags | Qt::ItemIsEditable;
       break;
 
     case Active:
@@ -232,6 +311,9 @@ QVariant QgsLocatorFiltersModel::headerData( int section, Qt::Orientation orient
 
       case Default:
         return tr( "Default" );
+
+      case Config:
+        return tr( "Configuration" );
     }
   }
 
@@ -242,6 +324,22 @@ void QgsLocatorFiltersModel::commitChanges()
 {
   QgsSettings settings;
 
+  QHash< QgsLocatorFilter *, QString >::const_iterator itp = mPrefixes.constBegin();
+  for ( ; itp != mPrefixes.constEnd(); ++itp )
+  {
+    QgsLocatorFilter *filter = itp.key();
+    QString activePrefix = itp.value();
+    if ( !activePrefix.isEmpty() && activePrefix != filter->prefix() )
+    {
+      filter->setActivePrefix( activePrefix );
+      settings.setValue( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), activePrefix, QgsSettings::Section::Gui );
+    }
+    else
+    {
+      filter->setActivePrefix( QString() );
+      settings.remove( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), QgsSettings::Section::Gui );
+    }
+  }
   QHash< QgsLocatorFilter *, bool >::const_iterator it = mEnabledChanges.constBegin();
   for ( ; it != mEnabledChanges.constEnd(); ++it )
   {

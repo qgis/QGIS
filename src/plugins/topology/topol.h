@@ -36,7 +36,7 @@
 #ifndef TOPOL_H
 #define TOPOL_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 
 //QGIS includes

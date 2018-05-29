@@ -44,11 +44,9 @@ class TestQgsLayoutMultiFrame : public QObject
     void displayName();
     void frameIsEmpty(); //test if frame is empty works
     void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
-#if 0 //TODO
     void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
     void undoRedoRemovedFrame2();
-#endif
     void registry();
     void deleteFrame();
     void writeReadXml();
@@ -76,8 +74,7 @@ class TestMultiFrame : public QgsLayoutMultiFrame
       return QgsLayoutItemRegistry::PluginItem + 1;
     }
 
-    void render( QgsRenderContext &, const QRectF &, int,
-                 const QStyleOptionGraphicsItem * ) override
+    void render( QgsLayoutItemRenderContext &, const QRectF &, int ) override
     {
 
     }
@@ -344,7 +341,7 @@ void TestQgsLayoutMultiFrame::addRemovePage()
   mLayout->removeMultiFrame( htmlItem );
   delete htmlItem;
 }
-#if 0//TODO
+
 void TestQgsLayoutMultiFrame::undoRedo()
 {
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
@@ -513,7 +510,7 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
   htmlItem->addFrame( frame1 );
 
 }
-#endif
+
 void TestQgsLayoutMultiFrame::registry()
 {
   // test QgsLayoutItemRegistry
@@ -524,7 +521,7 @@ void TestQgsLayoutMultiFrame::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createMultiFrame( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutMultiFrame*
+  auto create = []( QgsLayout * layout )->QgsLayoutMultiFrame *
   {
     return new TestMultiFrame( layout );
   };

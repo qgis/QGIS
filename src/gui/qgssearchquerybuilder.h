@@ -56,7 +56,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   private slots:
     void btnEqual_clicked();
-    void on_btnOk_clicked();
+    void btnOk_clicked();
     void btnLessThan_clicked();
     void btnGreaterThan_clicked();
     void btnLike_clicked();
@@ -82,13 +82,13 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnTest_clicked();
 
     /**
-     * Get all distinct values for the field. Values are inserted
+     * Gets all distinct values for the field. Values are inserted
      * into the value list box
      */
     void btnGetAllValues_clicked();
 
     /**
-     * Get sample distinct values for the selected field. The sample size is
+     * Gets sample distinct values for the selected field. The sample size is
      * limited to an arbitrary value (currently set to 25). The values
      * are inserted into the values list box.
      */
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void setupListViews();
 
     /**
-     * Get the number of records that would be returned by the current SQL
+     * Gets the number of records that would be returned by the current SQL
      * \returns Number of records or -1 if an error was encountered
      */
     long countRecords( const QString &sql );

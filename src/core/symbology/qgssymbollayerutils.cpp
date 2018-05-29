@@ -371,6 +371,56 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+QgsArrowSymbolLayer::HeadType QgsSymbolLayerUtils::decodeArrowHeadType( const QVariant &value, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+
+  bool intOk = false;
+  QString s = value.toString().toLower().trimmed();
+  if ( s == QLatin1String( "single" ) )
+    return QgsArrowSymbolLayer::HeadSingle;
+  else if ( s == QLatin1String( "reversed" ) )
+    return QgsArrowSymbolLayer::HeadReversed;
+  else if ( s == QLatin1String( "double" ) )
+    return QgsArrowSymbolLayer::HeadDouble;
+  else if ( value.toInt() == 1 )
+    return QgsArrowSymbolLayer::HeadReversed;
+  else if ( value.toInt() == 2 )
+    return QgsArrowSymbolLayer::HeadDouble;
+  else if ( value.toInt( &intOk ) == 0 && intOk )
+    return QgsArrowSymbolLayer::HeadSingle;
+
+  if ( ok )
+    *ok = false;
+  return QgsArrowSymbolLayer::HeadSingle;
+}
+
+QgsArrowSymbolLayer::ArrowType QgsSymbolLayerUtils::decodeArrowType( const QVariant &value, bool *ok )
+{
+  if ( ok )
+    *ok = true;
+
+  bool intOk = false;
+  QString s = value.toString().toLower().trimmed();
+  if ( s == QLatin1String( "plain" ) )
+    return QgsArrowSymbolLayer::ArrowPlain;
+  else if ( s == QLatin1String( "lefthalf" ) )
+    return QgsArrowSymbolLayer::ArrowLeftHalf;
+  else if ( s == QLatin1String( "righthalf" ) )
+    return QgsArrowSymbolLayer::ArrowRightHalf;
+  else if ( value.toInt() == 1 )
+    return QgsArrowSymbolLayer::ArrowLeftHalf;
+  else if ( value.toInt() == 2 )
+    return QgsArrowSymbolLayer::ArrowRightHalf;
+  else if ( value.toInt( &intOk ) == 0 && intOk )
+    return QgsArrowSymbolLayer::ArrowPlain;
+
+  if ( ok )
+    *ok = false;
+  return QgsArrowSymbolLayer::ArrowPlain;
+}
+
 QString QgsSymbolLayerUtils::encodePoint( QPointF point )
 {
   return QStringLiteral( "%1,%2" ).arg( qgsDoubleToString( point.x() ), qgsDoubleToString( point.y() ) );
@@ -1477,7 +1527,7 @@ bool QgsSymbolLayerUtils::convertPolygonSymbolizerToPointMarker( QDomElement &el
     int markIndex = -1;
     QColor fillColor, strokeColor;
     double strokeWidth = 1.0, size = 0.0, angle = 0.0;
-    QPointF anchor, offset;
+    QPointF offset;
 
     // Fill element can contain a GraphicFill element
     QDomElement graphicFillElem = fillElem.firstChildElement( QStringLiteral( "GraphicFill" ) );
@@ -3653,12 +3703,16 @@ QStringList QgsSymbolLayerUtils::listSvgFilesAt( const QString &directory )
 
 }
 
-QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver )
+QString QgsSymbolLayerUtils::svgSymbolNameToPath( const QString &n, const QgsPathResolver &pathResolver )
 {
-  // we might have a full path...
-  if ( QFileInfo::exists( name ) )
-    return QFileInfo( name ).canonicalFilePath();
+  if ( n.isEmpty() )
+    return QString();
 
+  // we might have a full path...
+  if ( QFileInfo::exists( n ) )
+    return QFileInfo( n ).canonicalFilePath();
+
+  QString name = n;
   // or it might be an url...
   if ( name.contains( QLatin1String( "://" ) ) )
   {
@@ -3693,7 +3747,7 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
       svgPath.chop( 1 );
     }
 
-    QgsDebugMsg( "SvgPath: " + svgPath );
+    QgsDebugMsgLevel( "SvgPath: " + svgPath, 3 );
     // Not sure why to lowest dir was used instead of full relative path, it was causing #8664
     //QFileInfo myInfo( name );
     //QString myFileName = myInfo.fileName(); // foo.svg
@@ -3701,10 +3755,10 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
     //QString myLocalPath = svgPath + QString( myLowestDir.isEmpty() ? "" : '/' + myLowestDir ) + '/' + myFileName;
     QString myLocalPath = svgPath + QDir::separator() + name;
 
-    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+    QgsDebugMsgLevel( "Alternative svg path: " + myLocalPath, 3 );
     if ( QFile( myLocalPath ).exists() )
     {
-      QgsDebugMsg( "Svg found in alternative path" );
+      QgsDebugMsgLevel( "Svg found in alternative path", 3 );
       return QFileInfo( myLocalPath ).canonicalFilePath();
     }
   }
@@ -3712,12 +3766,15 @@ QString QgsSymbolLayerUtils::svgSymbolNameToPath( QString name, const QgsPathRes
   return pathResolver.readPath( name );
 }
 
-QString QgsSymbolLayerUtils::svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver )
+QString QgsSymbolLayerUtils::svgSymbolPathToName( const QString &p, const QgsPathResolver &pathResolver )
 {
-  if ( !QFileInfo::exists( path ) )
-    return path;
+  if ( p.isEmpty() )
+    return QString();
 
-  path = QFileInfo( path ).canonicalFilePath();
+  if ( !QFileInfo::exists( p ) )
+    return p;
+
+  QString path = QFileInfo( p ).canonicalFilePath();
 
   QStringList svgPaths = QgsApplication::svgPaths();
 

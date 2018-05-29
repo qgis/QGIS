@@ -31,7 +31,7 @@ class QgsOgrDbTableModel : public QStandardItemModel
 
     QgsOgrDbTableModel();
 
-    //! Set the geometry type for the table
+    //! Sets the geometry type for the table
     void setGeometryTypesForTable( const QString &table, const QString &attribute, const QString &type );
 
     //! Adds entry for one database table to the model

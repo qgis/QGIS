@@ -47,7 +47,7 @@ class CORE_EXPORT QgsAnnotationMetadata
      * Constructor for QgsAnnotationMetadata. \a typeName should be a unique string
      * identifying the annotation type.
      */
-    QgsAnnotationMetadata( const QString &typeName, QgsCreateAnnotationFunc createFunc )
+    QgsAnnotationMetadata( const QString &typeName, const QgsCreateAnnotationFunc &createFunc )
       : mTypeName( typeName )
       , mCreateFunc( createFunc )
     {}

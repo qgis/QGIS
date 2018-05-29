@@ -103,8 +103,9 @@ class SERVER_EXPORT QgsServer
     //! Server initialization
     static bool init();
 
-    // All functions that where previously in the main file are now
-    // static methods of this class
+    /**
+     * Returns the configuration file path.
+     */
     static QString configPath( const QString &defaultConfigPath,
                                const QMap<QString, QString> &parameters );
 
@@ -115,11 +116,19 @@ class SERVER_EXPORT QgsServer
      */
     static void printRequestParameters(
       const QMap< QString, QString> &parameterMap,
-      QgsMessageLog::MessageLevel logLevel );
+      Qgis::MessageLevel logLevel );
 
+    /**
+     * Returns the default project file.
+     */
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
+
+    /**
+     * \brief QgsServer::setupNetworkAccessManager
+     */
     static void setupNetworkAccessManager();
+
     //! Create and return a request handler instance
     static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
 

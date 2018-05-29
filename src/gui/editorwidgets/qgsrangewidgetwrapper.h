@@ -29,6 +29,7 @@ class QSlider;
 class QDial;
 class QgsSlider;
 class QgsDial;
+class TestQgsRangeWidgetWrapper;
 
 /**
  * \ingroup gui
@@ -75,6 +76,8 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     QDial *mDial = nullptr;
     QgsSlider *mQgsSlider = nullptr;
     QgsDial *mQgsDial = nullptr;
+
+    friend class TestQgsRangeWidgetWrapper;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

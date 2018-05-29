@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday November 02, 2017</H3>
+<H3>Friday May 11, 2018</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday November 02, 2017
-Last Change : Thursday November 02, 2017
+Last Updated: Friday May 11, 2018
+Last Change : Friday May 11, 2018
 </P>
 <DIV CLASS="toc">
 
@@ -107,30 +107,31 @@ Last Change : Thursday November 02, 2017
     <LI><A HREF="#toc14">4.1. Building with Microsoft Visual Studio</A>
     <LI><A HREF="#toc15">4.2. Building using MinGW</A>
     <LI><A HREF="#toc16">4.3. Creation of MSYS environment for compilation of QGIS</A>
+    <LI><A HREF="#toc17">4.4. Building on Linux with mxe</A>
     </UL>
-  <LI><A HREF="#toc17">Building on MacOS X</A>
+  <LI><A HREF="#toc18">Building on MacOS X</A>
     <UL>
-    <LI><A HREF="#toc18">5.1. Install Developer Tools</A>
-    <LI><A HREF="#toc19">5.2. Install Qt4 from disk image</A>
-    <LI><A HREF="#toc20">5.3. Install CMake for OSX</A>
-    <LI><A HREF="#toc21">5.4. Install development frameworks for QGIS dependencies</A>
-    <LI><A HREF="#toc22">5.5. API documentation</A>
-    <LI><A HREF="#toc23">5.6. QGIS source</A>
-    <LI><A HREF="#toc24">5.7. Configure the build</A>
-    <LI><A HREF="#toc25">5.8. Building</A>
-    <LI><A HREF="#toc26">5.9. Post-Install</A>
+    <LI><A HREF="#toc19">5.1. Install Developer Tools</A>
+    <LI><A HREF="#toc20">5.2. Install Qt4 from disk image</A>
+    <LI><A HREF="#toc21">5.3. Install CMake for OSX</A>
+    <LI><A HREF="#toc22">5.4. Install development frameworks for QGIS dependencies</A>
+    <LI><A HREF="#toc23">5.5. API documentation</A>
+    <LI><A HREF="#toc24">5.6. QGIS source</A>
+    <LI><A HREF="#toc25">5.7. Configure the build</A>
+    <LI><A HREF="#toc26">5.8. Building</A>
+    <LI><A HREF="#toc27">5.9. Post-Install</A>
     </UL>
-  <LI><A HREF="#toc27">Setting up the WCS test server on GNU/Linux</A>
+  <LI><A HREF="#toc28">Setting up the WCS test server on GNU/Linux</A>
     <UL>
-    <LI><A HREF="#toc28">6.1. Preparation</A>
-    <LI><A HREF="#toc29">6.2. Setup mapserver</A>
-    <LI><A HREF="#toc30">6.3. Create a home page</A>
-    <LI><A HREF="#toc31">6.4. Now deploy it</A>
-    <LI><A HREF="#toc32">6.5. Debugging</A>
+    <LI><A HREF="#toc29">6.1. Preparation</A>
+    <LI><A HREF="#toc30">6.2. Setup mapserver</A>
+    <LI><A HREF="#toc31">6.3. Create a home page</A>
+    <LI><A HREF="#toc32">6.4. Now deploy it</A>
+    <LI><A HREF="#toc33">6.5. Debugging</A>
     </UL>
-  <LI><A HREF="#toc33">Setting up a Jenkins Build Server</A>
-  <LI><A HREF="#toc34">Debug output and running tests</A>
-  <LI><A HREF="#toc35">Authors and Acknowledgments</A>
+  <LI><A HREF="#toc34">Setting up a Jenkins Build Server</A>
+  <LI><A HREF="#toc35">Debug output and running tests</A>
+  <LI><A HREF="#toc36">Authors and Acknowledgments</A>
   </OL>
 
 </DIV>
@@ -206,7 +207,7 @@ Required build dependencies:
 <LI>Proj &gt;= 4.4.x
 <LI>GEOS &gt;= 3.4
 <LI>Sqlite3 &gt;= 3.0.0
-<LI>SpatiaLite
+<LI>SpatiaLite &gt;= 4.2.0
 <LI>libspatialindex
 <LI>GDAL/OGR &gt;= 2.1
 <LI>Qwt &gt;= 5.0 &amp; (&lt; 6.1 with internal QwtPolar)
@@ -310,27 +311,35 @@ sudo apt-get update
 </TR>
 <TR>
 <TD>stretch</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+</TR>
+<TR>
+<TD>buster</TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 <TR>
 <TD>xenial</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 <TR>
 <TD>yakkety</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 <TR>
 <TD>zesty</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 <TR>
 <TD>artful</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+</TR>
+<TR>
+<TD>bionic</TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 <TR>
 <TD>sid</TD>
-<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt3d-assimpsceneimport-plugin qt3d-defaultgeometryloader-plugin qt3d-gltfsceneio-plugin qt3d-scene2d-plugin qt3d5-dev qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
+<TD><CODE>apt-get install bison ca-certificates ccache cmake cmake-curses-gui dh-python doxygen expect flex gdal-bin git graphviz grass-dev libexpat1-dev libfcgi-dev libgdal-dev libgeos-dev libgsl-dev libosgearth-dev libpq-dev libproj-dev libqca-qt5-2-dev libqca-qt5-2-plugins libqt5opengl5-dev libqt5scintilla2-dev libqt5sql5-sqlite libqt5svg5-dev libqt5webkit5-dev libqt5xmlpatterns5-dev libqwt-qt5-dev libspatialindex-dev libspatialite-dev libsqlite3-dev libsqlite3-mod-spatialite libyaml-tiny-perl libzip-dev lighttpd locales ninja-build pkg-config poppler-utils pyqt5-dev pyqt5-dev-tools pyqt5.qsci-dev python-autopep8 python3-all-dev python3-dateutil python3-dev python3-future python3-gdal python3-httplib2 python3-jinja2 python3-markupsafe python3-mock python3-nose2 python3-owslib python3-plotly python3-psycopg2 python3-pygments python3-pyproj python3-pyqt5 python3-pyqt5.qsci python3-pyqt5.qtsql python3-pyqt5.qtsvg python3-requests python3-sip python3-sip-dev python3-six python3-termcolor python3-tz python3-yaml qt5-default qt5keychain-dev qtbase5-dev qtpositioning5-dev qttools5-dev qttools5-dev-tools spawn-fcgi txt2tags xauth xfonts-100dpi xfonts-75dpi xfonts-base xfonts-scalable xvfb</CODE></TD>
 </TR>
 </TABLE>
 
@@ -529,6 +538,24 @@ Build and install with ninja:
 ninja (uses all cores by default; also supports the above described -jX option)
 ninja install
 </PRE></div>
+
+<P>
+You can build just the targets you need using, for example :
+</P>
+
+<div class="code"><PRE>
+ninja qgis
+ninja pycore
+</PRE></div>
+
+<P>
+You can build just the targets you need using, for example:
+</P>
+
+<UL>
+<LI>ninja qgis
+<LI>ninja pycore
+</UL>
 
 <A NAME="toc11"></A>
 <H2>3.8. Building Debian packages</H2>
@@ -741,35 +768,7 @@ and from OSGeo4W (select <I>Advanced Installation</I>):
 </P>
 
 <UL>
-<LI>expat
-<LI>fcgi
-<LI>gdal
-<LI>grass
-<LI>gsl-devel
-<LI>iconv
-<LI>libzip-devel
-<LI>libspatialindex-devel
-<LI>pyqt5
-<LI>python3-devel
-<LI>python3-qscintilla
-<LI>python3-nose2
-<LI>python3-future
-<LI>python3-pyyaml
-<LI>python3-mock
-<LI>python3-six
-<LI>qca-qt5-devel
-<LI>qca-qt5-libs
-<LI>qscintilla-qt5
-<LI>qt5-devel
-<LI>qt5-libs-debug
-<LI>qtwebkit-qt5-devel
-<LI>qtwebkit-qt5-libs-debug
-<LI>qwt-devel-qt5
-<LI>sip-qt5
-<LI>spatialite
-<LI>oci
-<LI>qtkeychain
-<LI>libzip
+<LI>qgis-rel-deps
 </UL>
 
 <P>
@@ -1483,6 +1482,44 @@ of space and it's not necessary at all.
 </P>
 
 <A NAME="toc17"></A>
+<H2>4.4. Building on Linux with mxe</H2>
+
+<P>
+With this approach you can build a windows binary on Linux using mxe MXE (M cross environment).
+You can find the build script and a README file in the ms-windows/mxe directory.
+</P>
+<P>
+For now, Python buildings cannot be built with mxe.
+</P>
+
+<H3>4.4.1. Initial setup</H3>
+
+<P>
+Please follow the instructions on mxe website to setup your building toolchain <A HREF="http://mxe.cc/">http://mxe.cc/</A>,
+take note of the path where you have installed mxe.
+</P>
+
+<H3>4.4.2. Building the dependencies</H3>
+
+<P>
+Please see the README under ms-windows/mxe for a list of the dependencies that need to be
+built in mxe before attempting to build QGIS.
+</P>
+
+<H3>4.4.3. Cross-Building QGIS</H3>
+
+<P>
+Edit the build-mxe.sh script and change the path where your mxe installation is located, you
+can also change the build and release directory.
+</P>
+
+<H3>4.4.4. Testing QGIS</H3>
+
+<P>
+Copy and unzip the release package on a Windows machine and launch it!
+</P>
+
+<A NAME="toc18"></A>
 <H1>5. Building on MacOS X</H1>
 
 <P>
@@ -1549,7 +1586,7 @@ so it's just 'make', or using a smaller number.  Sometimes make can hiccup on to
 many threads.
 </P>
 
-<A NAME="toc18"></A>
+<A NAME="toc19"></A>
 <H2>5.1. Install Developer Tools</H2>
 
 <P>
@@ -1606,7 +1643,7 @@ If you have trouble building some of the dependencies listed below with clang
 (e.g. OSG &amp; osgEarth), try using only the LLVM compilers.
 </P>
 
-<A NAME="toc19"></A>
+<A NAME="toc20"></A>
 <H2>5.2. Install Qt4 from disk image</H2>
 
 <P>
@@ -1666,7 +1703,7 @@ may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
 CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
 </P>
 
-<A NAME="toc20"></A>
+<A NAME="toc21"></A>
 <H2>5.3. Install CMake for OSX</H2>
 
 <P>
@@ -1748,7 +1785,7 @@ If you have trouble building some of the dependencies listed below (e.g. OSG &am
 osgEarth), try bypassing ccache.
 </P>
 
-<A NAME="toc21"></A>
+<A NAME="toc22"></A>
 <H2>5.4. Install development frameworks for QGIS dependencies</H2>
 
 <P>
@@ -2421,7 +2458,7 @@ folder in the include/ folder to /Library/Application Support/OpenSceneGraph/Hea
 And as for OSG, you can leave the bin/ executables where they are.
 </P>
 
-<A NAME="toc22"></A>
+<A NAME="toc23"></A>
 <H2>5.5. API documentation</H2>
 
 <P>
@@ -2457,7 +2494,7 @@ QGIS.app bundling on install, inside the app in:
 QGIS.app/Contents/Resources/doc
 </P>
 
-<A NAME="toc23"></A>
+<A NAME="toc24"></A>
 <H2>5.6. QGIS source</H2>
 
 <P>
@@ -2492,7 +2529,7 @@ git merge qgisupstream
 
 </PRE></div>
 
-<A NAME="toc24"></A>
+<A NAME="toc25"></A>
 <H2>5.7. Configure the build</H2>
 
 <P>
@@ -2632,7 +2669,7 @@ non-standard, libs (ie postgres' libpq) set the bundle value to 2:
 -D QGIS_MACAPP_BUNDLE=2 \
 </PRE></div>
 
-<A NAME="toc25"></A>
+<A NAME="toc26"></A>
 <H2>5.8. Building</H2>
 
 <P>
@@ -2660,7 +2697,7 @@ or, for an /Applications build:
 sudo make install
 </PRE></div>
 
-<A NAME="toc26"></A>
+<A NAME="toc27"></A>
 <H2>5.9. Post-Install</H2>
 
 <P>
@@ -2696,7 +2733,7 @@ for instructions on setting up Apache fastcgi and testing qgis server, including
 installing the mod-fastcgi that is missing on Lion.
 </P>
 
-<A NAME="toc27"></A>
+<A NAME="toc28"></A>
 <H1>6. Setting up the WCS test server on GNU/Linux</H1>
 
 <P>
@@ -2707,7 +2744,7 @@ These notes are for Ubuntu - other versions and Debian derived distros may
 require slight variations in package names.
 </P>
 
-<A NAME="toc28"></A>
+<A NAME="toc29"></A>
 <H2>6.1. Preparation</H2>
 
 <P>
@@ -2727,7 +2764,7 @@ is integrated into master.
   cd cgi-bin/
 </P>
 
-<A NAME="toc29"></A>
+<A NAME="toc30"></A>
 <H2>6.2. Setup mapserver</H2>
 
 <P>
@@ -2793,7 +2830,7 @@ Then create /var/www/wcs/7-wcs.qgis.org.conf setting the contents to this:
   &lt;/VirtualHost&gt;
 </PRE></div>
 
-<A NAME="toc30"></A>
+<A NAME="toc31"></A>
 <H2>6.3. Create a home page</H2>
 
 <div class="code"><PRE>
@@ -2811,7 +2848,7 @@ Set the contents to:
   http://wcs.qgis.org/1.9.0/wcs
 </PRE></div>
 
-<A NAME="toc31"></A>
+<A NAME="toc32"></A>
 <H2>6.4. Now deploy it</H2>
 
 <div class="code"><PRE>
@@ -2824,14 +2861,14 @@ Set the contents to:
   sudo /etc/init.d/apache2 reload
 </PRE></div>
 
-<A NAME="toc32"></A>
+<A NAME="toc33"></A>
 <H2>6.5. Debugging</H2>
 
 <div class="code"><PRE>
   sudo tail -f /var/log/apache2/wcs_qgis.org/error.log
 </PRE></div>
 
-<A NAME="toc33"></A>
+<A NAME="toc34"></A>
 <H1>7. Setting up a Jenkins Build Server</H1>
 
 <P>
@@ -2933,7 +2970,7 @@ I based some of the set up from this nice blog article here:
 <A HREF="http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html">http://alexott.blogspot.com/2012/03/jenkins-cmakectest.html</A>
 </UL>
 
-<A NAME="toc34"></A>
+<A NAME="toc35"></A>
 <H1>8. Debug output and running tests</H1>
 
 <P>
@@ -2999,7 +3036,7 @@ ctest --show-only
 ctest --verbose --tests-regex SomeTestName
 </PRE></div>
 
-<A NAME="toc35"></A>
+<A NAME="toc36"></A>
 <H1>9. Authors and Acknowledgments</H1>
 
 <P>
@@ -3065,5 +3102,5 @@ The following people have contributed to this document:
 
 </DIV>
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build-master-qt5/doc/INSTALL.html -t html /home/fischer/src/qgis/doc/INSTALL.t2t -->
+<!-- cmdline: txt2tags -\-encoding=utf-8 -o/home/fischer/src/qgis/debian/build/doc/INSTALL.html -t html /home/fischer/src/qgis/doc/INSTALL.t2t -->
 </BODY></HTML>

@@ -25,6 +25,8 @@
 #include "qgis_gui.h"
 #include "qgsproject.h"
 
+class QgsMapCanvas;
+
 /**
  * \ingroup gui
  * This class contains context information for attribute editor widgets.
@@ -59,7 +61,9 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
+      , mFormFeature( parentContext.mFormFeature )
       , mFormMode( formMode )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
@@ -68,6 +72,7 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode )
       : mParentContext( &parentContext )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
       , mRelationMode( relationMode )
@@ -76,6 +81,11 @@ class GUI_EXPORT QgsAttributeEditorContext
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
+    /**
+     * Sets distance area object, \a distanceArea, for area/length calculations
+     * \see distanceArea()
+     * \since QGIS 2.2
+     */
     inline void setDistanceArea( const QgsDistanceArea &distanceArea )
     {
       if ( mLayer )
@@ -85,13 +95,67 @@ class GUI_EXPORT QgsAttributeEditorContext
       }
     }
 
+    /**
+     * Returns the distance area object used for area/length calculations.
+     * \see setDistanceArea()
+     * \since QGIS 2.2
+     */
     inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
+    /**
+     * Sets the associated map canvas, \a mapCanvas, (e.g. to zoom to related features).
+     * \see mapCanvas()
+     * \since QGIS 3.2
+     */
+    inline void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
+
+    /**
+     * Returns the associated map canvas (e.g. to zoom to related features).
+     * \see setMapCanvas()
+     * \since QGIS 3.2
+     */
+    inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+
+    /**
+     * Sets the associated vector layer tools.
+     * \param vlTools vector layer tools
+     * \see vectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
+    // TODO QGIS 4.0 - rename vlTools to tools
+
+    /**
+     * Returns the associated vector layer tools.
+     * \see setVectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
 
+    /**
+     * Set attribute relation and mode
+     * \param relation relation
+     * \param mode relation mode
+     * \see relation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+
+    /**
+     * Returns the attribute relation.
+     * \see setRelation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline const QgsRelation &relation() const { return mRelation; }
+
+    /**
+     * Returns the attribute relation mode.
+     * \see setRelation()
+     * \see relation()
+     * \since QGIS 2.6
+     */
     inline RelationMode relationMode() const { return mRelationMode; }
 
     /**
@@ -126,13 +190,31 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
+    /**
+     * Returns current feature from the currently edited form or table row
+     * \see setFormFeature()
+     * \since QGIS 3.2
+     */
+    QgsFeature formFeature() const { return mFormFeature; }
+
+    /**
+     * Set current \a feature for the currently edited form or table row
+     * \see formFeature()
+     * \since QGIS 3.2
+     */
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
+
+
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
+    //! Store the values of the currently edited form or table row
+    QgsFeature mFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
 };

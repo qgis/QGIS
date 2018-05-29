@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
@@ -40,10 +40,12 @@ from qgis.core import (QgsWkbTypes,
                        QgsField,
                        QgsPointXY,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -139,10 +141,9 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
                                                    5.0, False, 0, 99999999.99))
-        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
-                                                   self.tr('Topology tolerance'),
-                                                   QgsProcessingParameterNumber.Double,
-                                                   0.0, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterDistance(self.TOLERANCE,
+                                                     self.tr('Topology tolerance'),
+                                                     0.0, self.INPUT, False, 0, 99999999.99))
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -160,7 +161,13 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
+        if startPoints is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.START_POINTS))
+
         endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
@@ -183,6 +190,8 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, network.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         directionField = -1
         if directionFieldName:
@@ -213,7 +222,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading start points...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Loading start points…'))
         request = QgsFeatureRequest()
         request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
@@ -236,10 +245,10 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest paths...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathLayerToPoint', 'Calculating shortest paths…'))
         graph = builder.graph()
 
         idxEnd = graph.findVertex(snappedPoints[0])

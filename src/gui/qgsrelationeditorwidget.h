@@ -73,7 +73,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
 
-    //! Get the view mode for the dual view
+    //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
@@ -152,6 +152,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void deleteSelectedFeatures();
     void unlinkFeature( const QgsFeatureId featureid = QgsFeatureId() );
     void unlinkSelectedFeatures();
+    void zoomToSelectedFeatures();
     void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
@@ -175,6 +176,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mDeleteFeatureButton = nullptr;
     QToolButton *mLinkFeatureButton = nullptr;
     QToolButton *mUnlinkFeatureButton = nullptr;
+    QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;

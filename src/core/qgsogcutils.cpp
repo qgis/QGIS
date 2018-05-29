@@ -2191,7 +2191,10 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &exp,
       break;
     }
     default:
-      *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
+    {
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Node type not supported in expression translation: %1" ).arg( node->nodeType() );
+    }
   }
   // got an error
   return QDomElement();
@@ -2524,7 +2527,7 @@ QDomElement QgsOgcUtilsExprToFilter::expressionFunctionToOgcFilter( const QgsExp
     }
     else
     {
-      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('...'))" );
+      mErrorMessage = QObject::tr( "<BBOX> is currently supported only in form: bbox($geometry, geomFromWKT('…'))" );
       return QDomElement();
     }
   }

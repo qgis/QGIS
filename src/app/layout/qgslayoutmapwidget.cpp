@@ -75,7 +75,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mOverviewCheckBox_toggled );
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
-  setPanelTitle( tr( "Map properties" ) );
+  setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
   //add widget for general composer item properties
@@ -596,7 +596,7 @@ void QgsLayoutMapWidget::updateGuiElements()
   }
 
   blockAllSignals( true );
-  mLabel->setText( tr( "Map %1" ).arg( mMapItem->id() ) );
+  mLabel->setText( mMapItem->displayName() );
 
   whileBlocking( mCrsSelector )->setCrs( mMapItem->presetCrs() );
 
@@ -824,7 +824,7 @@ void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
   {
     return;
   }
-  mMapItem->invalidateCache();
+  mMapItem->refresh();
 }
 
 void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state )

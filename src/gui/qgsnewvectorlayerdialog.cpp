@@ -104,7 +104,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
   mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
-  mFileName->setDialogTitle( tr( "Select Layer as..." ) );
+  mFileName->setDialogTitle( tr( "Save Layer As" ) );
   mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
   connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
   {
@@ -270,7 +270,6 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.attributes( attributes );
 
   QgsSettings settings;
-  QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = geomDialog.filename();
   if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".shp" );

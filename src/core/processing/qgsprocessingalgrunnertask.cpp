@@ -41,10 +41,14 @@ QgsProcessingAlgRunnerTask::QgsProcessingAlgRunnerTask( const QgsProcessingAlgor
 void QgsProcessingAlgRunnerTask::cancel()
 {
   mFeedback->cancel();
+  QgsTask::cancel();
 }
 
 bool QgsProcessingAlgRunnerTask::run()
 {
+  if ( isCanceled() )
+    return false;
+
   connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsProcessingAlgRunnerTask::setProgress );
   bool ok = false;
   try
@@ -54,7 +58,7 @@ bool QgsProcessingAlgRunnerTask::run()
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     mFeedback->reportError( e.what() );
     return false;
   }

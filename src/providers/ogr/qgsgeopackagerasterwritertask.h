@@ -32,8 +32,8 @@
  * QgsTask task which performs a QgsGeoPackageRasterWriter layer saving operation as a background
  * task. This can be used to save a raster layer out to a file without blocking the
  * QGIS interface.
- * \since QGIS 3.0
  * \see QgsGeoPackageRasterWriterTask
+ * \since QGIS 3.0
  */
 class QgsGeoPackageRasterWriterTask : public QgsTask
 {

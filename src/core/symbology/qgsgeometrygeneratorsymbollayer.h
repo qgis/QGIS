@@ -64,7 +64,7 @@ class CORE_EXPORT QgsGeometryGeneratorSymbolLayer : public QgsSymbolLayer
     void setGeometryExpression( const QString &exp );
 
     /**
-     * Get the expression to generate this geometry.
+     * Gets the expression to generate this geometry.
      */
     QString geometryExpression() const { return mExpression->expression(); }
 

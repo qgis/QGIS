@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
-    //! Set the current value to the value defined by the clear value.
+    //! Sets the current value to the value defined by the clear value.
     void clear() override;
 
     /**
@@ -125,6 +125,12 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * \see setClearValue()
      */
     int clearValue() const;
+
+    /**
+     * Set alignment in the embedded line edit widget
+     * \param alignment
+     */
+    void setLineEditAlignment( Qt::Alignment alignment );
 
     int valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;

@@ -71,7 +71,7 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
   protected:
     bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
     bool _removeNode( const int nodeIndex ) override;
-    void _draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     void _readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context ) override;
     void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const override;
 

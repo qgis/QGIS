@@ -33,11 +33,11 @@
 #include <QSqlError>
 #include <QDomDocument>
 
-QgsVersionMigration *QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
+std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {
   if ( fromVersion == 20000 && toVersion >= 29900 )
   {
-    return new Qgs2To3Migration();
+    return qgis::make_unique< Qgs2To3Migration >();
   }
   return nullptr;
 }
@@ -95,8 +95,7 @@ bool Qgs2To3Migration::requiresMigration()
   }
   else
   {
-    QString msg = QString( "Can not open %1" ).arg( migrationFile.fileName() );
-    QgsDebugMsg( msg );
+    QgsDebugMsg( QString( "Can not open %1" ).arg( migrationFile.fileName() ) );
     mMigrationFileVersion = settingsMigrationVersion;
   }
 

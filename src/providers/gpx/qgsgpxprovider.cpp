@@ -67,8 +67,8 @@ const QString GPX_KEY = QStringLiteral( "gpx" );
 const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 
-QgsGPXProvider::QgsGPXProvider( const QString &uri )
-  : QgsVectorDataProvider( uri )
+QgsGPXProvider::QgsGPXProvider( const QString &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   // we always use UTF-8
   setEncoding( QStringLiteral( "utf8" ) );
@@ -139,7 +139,7 @@ QgsRectangle QgsGPXProvider::extent() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 {
@@ -154,7 +154,7 @@ QgsWkbTypes::Type QgsGPXProvider::wkbType() const
 
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 long QgsGPXProvider::featureCount() const
 {
@@ -216,7 +216,6 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   bool success = false;
   QgsGpsObject *obj = nullptr;
   QgsAttributes attrs = f.attributes();
-  QgsAttributeMap::const_iterator it;
 
   // is it a waypoint?
   if ( mFeatureType == WaypointType && geo && wkbType == QgsWkbTypes::Point )
@@ -547,9 +546,9 @@ QgsCoordinateReferenceSystem QgsGPXProvider::crs() const
  * Class factory to return a pointer to a newly created
  * QgsGPXProvider object
  */
-QGISEXTERN QgsGPXProvider *classFactory( const QString *uri )
+QGISEXTERN QgsGPXProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsGPXProvider( *uri );
+  return new QgsGPXProvider( *uri, options );
 }
 
 

@@ -51,7 +51,7 @@ bool QgsLayoutItemRegistry::populate()
 
 #if 0
   // add temporary item to register
-  auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem*
+  auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem *
   {
     return new TestLayoutItem( layout );
   };

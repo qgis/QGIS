@@ -171,7 +171,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
      * Returns the strength used for colorizing a picture. This is only used if
      * setColorizeOn() is set to true.
      * \returns colorization strength, between 0 and 100
-     * \see setColorizeStrengths
+     * \see setColorizeStrength
      * \see colorizeOn
      * \see colorizeColor
      */

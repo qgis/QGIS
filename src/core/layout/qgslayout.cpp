@@ -27,6 +27,7 @@
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
+#include "qgscompositionconverter.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -238,7 +239,20 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateU
   {
     if ( item->uuid() == uuid )
       return item;
-    else if ( includeTemplateUuids && item->templateUuid() == uuid )
+    else if ( includeTemplateUuids && item->mTemplateUuid == uuid )
+      return item;
+  }
+
+  return nullptr;
+}
+
+QgsLayoutItem *QgsLayout::itemByTemplateUuid( const QString &uuid ) const
+{
+  QList<QgsLayoutItem *> itemList;
+  layoutItems( itemList );
+  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
+  {
+    if ( item->mTemplateUuid == uuid )
       return item;
   }
 
@@ -259,14 +273,14 @@ QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
   return nullptr;
 }
 
-QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
+QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
     if ( mf->uuid() == uuid )
-    {
       return mf;
-    }
+    else if ( includeTemplateUuids && mf->mTemplateUuid == uuid )
+      return mf;
   }
 
   return nullptr;
@@ -379,6 +393,9 @@ QgsExpressionContext QgsLayout::createExpressionContext() const
   QgsExpressionContext context = QgsExpressionContext();
   context.appendScope( QgsExpressionContextUtils::globalScope() );
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
+  if ( mReportContext->layer() )
+    context.appendScope( QgsExpressionContextUtils::layerScope( mReportContext->layer() ) );
+
   context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
   return context;
 }
@@ -450,7 +467,7 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   //start with an empty rectangle
   QRectF bounds;
 
-  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  //add all layout items and pages which are in the layout
   Q_FOREACH ( const QGraphicsItem *item, items() )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
@@ -596,7 +613,17 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
     clear();
   }
 
-  QDomDocument doc = document;
+  QDomDocument doc;
+
+  // If this is a 2.x composition template, convert it to a layout template
+  if ( QgsCompositionConverter::isCompositionTemplate( document ) )
+  {
+    doc = QgsCompositionConverter::convertCompositionTemplate( document, mProject );
+  }
+  else
+  {
+    doc = document;
+  }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
   QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
@@ -606,6 +633,21 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
     if ( itemNode.isElement() )
     {
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameNodes.count(); ++i )
+  {
+    QDomNode multiFrameNode = multiFrameNodes.at( i );
+    if ( multiFrameNode.isElement() )
+    {
+      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      QDomNode itemNode = frameNodes.at( i );
+      if ( itemNode.isElement() )
+      {
+        itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      }
     }
   }
 
@@ -709,10 +751,6 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
-#if 0
-  emit composerItemGroupAdded( itemGroup );
-#endif
-
   mUndoStack->endMacro();
 
   return returnGroup;
@@ -739,10 +777,6 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 
   removeLayoutItem( group );
   mUndoStack->endMacro();
-
-#if 0 //TODO
-  removeComposerItem( group, false, false );
-#endif
 
   return ungroupedItems;
 }
@@ -1023,6 +1057,15 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
   {
     mf->finalizeRestoreFromXml();
+  }
+
+  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  {
+    item->mTemplateUuid.clear();
+  }
+  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  {
+    mf->mTemplateUuid.clear();
   }
 
   //Since this function adds items in an order which isn't the z-order, and each item is added to end of

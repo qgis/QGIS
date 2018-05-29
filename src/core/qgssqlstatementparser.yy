@@ -53,7 +53,7 @@ struct sqlstatement_parser_context
   // lexer context
   yyscan_t flex_scanner;
 
-  // varible where the parser error will be stored
+  // variable where the parser error will be stored
   QString errorMsg;
   // root node of the sqlstatement
   QgsSQLStatement::NodeSelect* rootNode;

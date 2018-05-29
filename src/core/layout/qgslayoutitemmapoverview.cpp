@@ -178,9 +178,9 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
 
   bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
-#if 0 //TODO
-  setFrameMapUuid( itemElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) ).toInt() );
-#endif
+  mFrameMapUuid = itemElem.attribute( QStringLiteral( "frameMap" ) );
+  setLinkedMap( nullptr );
+
   mBlendMode = QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
@@ -191,6 +191,14 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
     mFrameSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context ) );
   }
   return ok;
+}
+
+void QgsLayoutItemMapOverview::finalizeRestoreFromXml()
+{
+  if ( !mFrameMapUuid.isEmpty() )
+  {
+    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mFrameMapUuid, true ) ) );
+  }
 }
 
 bool QgsLayoutItemMapOverview::usesAdvancedEffects() const

@@ -62,7 +62,7 @@
 #include "eviseventidtool.h"
 
 //
-// Qt4 Related Includes
+// Qt Related Includes
 //
 #include <QMessageBox>
 #include <QToolBar>

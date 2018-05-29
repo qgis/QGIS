@@ -36,8 +36,6 @@ ADD_LIBRARY (wms MODULE ${wms_SRCS} ${wms_MOC_SRCS} ${wms_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
@@ -51,7 +49,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/gui

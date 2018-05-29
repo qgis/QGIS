@@ -53,17 +53,19 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
   public:
 
     //! Constructor for QgsSnappingUtils
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr, bool enableSnappingForInvisibleFeature = true );
     ~QgsSnappingUtils() override;
 
     // main actions
 
-    //! Get a point locator for the given layer. If such locator does not exist, it will be created
+    //! Gets a point locator for the given layer. If such locator does not exist, it will be created
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
     //! Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = nullptr );
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    //! Snap to current layer
 
     //! Snap to current layer
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = nullptr );
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void setMapSettings( const QgsMapSettings &settings );
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
-    //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+    //! Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
     void setCurrentLayer( QgsVectorLayer *layer );
     //! The current layer used if mode is SnapCurrentLayer
     QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
@@ -89,7 +91,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       IndexExtent         //!< For all layer build index of extent given in map settings
     };
 
-    //! Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+    //! Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
     //! Find out which strategy is used for indexing - by default hybrid indexing is used
     IndexingStrategy indexingStrategy() const { return mStrategy; }
@@ -147,7 +149,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
     /**
-     * Get extra information about the instance
+     * Gets extra information about the instance
      * \since QGIS 2.14
      */
     QString dump();
@@ -156,6 +158,15 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
      * The snapping configuration controls the behavior of this object
      */
     QgsSnappingConfig config() const;
+
+    /**
+     * Set if invisible features must be snapped or not.
+     *
+     * \param enable Enable or not this feature
+     *
+     * \since QGIS 3.2
+     */
+    void setEnableSnappingForInvisibleFeature( bool enable );
 
   public slots:
 
@@ -189,12 +200,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
-    //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
+    //! Gets destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! return a locator (temporary or not) according to the indexing strategy
+    //! Returns a locator (temporary or not) according to the indexing strategy
     QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
-    //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
+    //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
     typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;
@@ -240,6 +251,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! internal flag that an indexing process is going on. Prevents starting two processes in parallel.
     bool mIsIndexing = false;
+
+    //! Disable or not the snapping on all features. By default is always true except for non visible features on map canvas.
+    bool mEnableSnappingForInvisibleFeature = true;
+
 };
 
 

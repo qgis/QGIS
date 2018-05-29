@@ -20,7 +20,6 @@
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
 #include "qgsapplication.h"
-#include "qgsactionmenu.h"
 #include "qgssettings.h"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
@@ -46,12 +45,16 @@ QgsAttributeDialog::~QgsAttributeDialog()
 
 void QgsAttributeDialog::saveGeometry()
 {
-  QgsSettings().setValue( mSettingsPath + "geometry", QDialog::saveGeometry() );
+  // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
+  // is dynamic and is set to match the layer/feature combination.
+  QgsSettings().setValue( QStringLiteral( "Windows/AttributeDialog/geometry" ), QDialog::saveGeometry() );
 }
 
 void QgsAttributeDialog::restoreGeometry()
 {
-  QDialog::restoreGeometry( QgsSettings().value( mSettingsPath + "geometry" ).toByteArray() );
+  // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
+  // is dynamic and is set to match the layer/feature combination.
+  QDialog::restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/AttributeDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsAttributeDialog::setHighlight( QgsHighlight *h )
@@ -102,20 +105,22 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
-  if ( !menu->actions().isEmpty() )
+  mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
+  if ( !mMenu->actions().isEmpty() )
   {
     QMenuBar *menuBar = new QMenuBar( this );
-    menuBar->addMenu( menu );
+    menuBar->addMenu( mMenu );
     layout()->setMenuBar( menuBar );
-  }
-  else
-  {
-    delete menu;
   }
 
   restoreGeometry();
   focusNextChild();
+}
+
+void QgsAttributeDialog::setMode( QgsAttributeForm::Mode mode )
+{
+  mAttributeForm->setMode( mode );
+  mMenu->setMode( mode );
 }
 
 bool QgsAttributeDialog::event( QEvent *e )

@@ -538,6 +538,42 @@ QgsExpressionContext QgsLayoutItemAttributeTable::createExpressionContext() cons
   return context;
 }
 
+void QgsLayoutItemAttributeTable::finalizeRestoreFromXml()
+{
+  QgsLayoutTable::finalizeRestoreFromXml();
+  if ( !mMap && !mMapUuid.isEmpty() && mLayout )
+  {
+    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );
+    if ( mMap )
+    {
+      //if we have found a valid map item, listen out to extent changes on it and refresh the table
+      connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    }
+  }
+}
+
+void QgsLayoutItemAttributeTable::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
+{
+  QgsExpressionContext context = createExpressionContext();
+
+  if ( mSource == QgsLayoutItemAttributeTable::LayerAttributes &&
+       ( property == QgsLayoutObject::AttributeTableSourceLayer || property == QgsLayoutObject::AllProperties ) )
+  {
+    mDataDefinedVectorLayer = nullptr;
+
+    QString currentLayerIdentifier;
+    if ( QgsVectorLayer *currentLayer = mVectorLayer.get() )
+      currentLayerIdentifier = currentLayer->id();
+
+    const QString layerIdentifier = mDataDefinedProperties.valueAsString( QgsLayoutObject::AttributeTableSourceLayer, context, currentLayerIdentifier );
+    QgsVectorLayer *ddLayer = qobject_cast< QgsVectorLayer * >( QgsLayoutUtils::mapLayerFromString( layerIdentifier, mLayout->project() ) );
+    if ( ddLayer )
+      mDataDefinedVectorLayer = ddLayer;
+  }
+
+  QgsLayoutMultiFrame::refreshDataDefinedProperty( property );
+}
+
 QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant ) const
 {
   //avoid converting variants to string if not required (try to maintain original type for sorting)
@@ -556,7 +592,12 @@ QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
     case QgsLayoutItemAttributeTable::AtlasFeature:
       return mLayout->reportContext().layer();
     case QgsLayoutItemAttributeTable::LayerAttributes:
-      return mVectorLayer.get();
+    {
+      if ( mDataDefinedVectorLayer )
+        return mDataDefinedVectorLayer;
+      else
+        return mVectorLayer.get();
+    }
     case QgsLayoutItemAttributeTable::RelationChildren:
     {
       QgsRelation relation = mLayout->project()->relationManager()->relation( mRelationId );
@@ -683,21 +724,13 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
 
   //map
-  QString mapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
-  if ( !mLayout || mapUuid.isEmpty() )
-  {
-    mMap = nullptr;
-  }
-  else
-  {
-    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mapUuid, true ) );
-  }
-
+  mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
   if ( mMap )
   {
-    //if we have found a valid map item, listen out to extent changes on it and refresh the table
-    connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
+    mMap = nullptr;
   }
+  // setting new mMap occurs in finalizeRestoreFromXml
 
   //vector layer
   QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ) );

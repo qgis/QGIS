@@ -22,6 +22,7 @@ email                : hugo dot mercier at oslandia dot com
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import VLayerConnector
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
 
@@ -46,7 +47,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'Virtual Layers'
+        return QCoreApplication.translate('db_manager', 'Virtual Layers')
 
     @classmethod
     def providerName(self):
@@ -58,7 +59,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def connections(self):
-        return [VLayerDBPlugin('QGIS layers')]
+        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'QGIS layers'))]
 
     def databasesFactory(self, connection, uri):
         return FakeDatabase(connection, uri)
@@ -97,6 +98,10 @@ class FakeDatabase(Database):
     def sqlResultModel(self, sql, parent):
         from .data_model import LSqlResultModel
         return LSqlResultModel(self, sql, parent)
+
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import LSqlResultModelAsync
+        return LSqlResultModelAsync(self, sql, parent)
 
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, _filter=""):
         df = QgsVirtualLayerDefinition()

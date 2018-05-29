@@ -27,19 +27,24 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmcentroid.cpp
   processing/qgsalgorithmclip.cpp
   processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmexplode.cpp
   processing/qgsalgorithmextenttolayer.cpp
   processing/qgsalgorithmextractbyattribute.cpp
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
   processing/qgsalgorithmextractbylocation.cpp
-  processing/qgsalgorithmextractnodes.cpp
+  processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfilter.cpp
   processing/qgsalgorithmfixgeometries.cpp
+  processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
+  processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithmlineintersection.cpp
   processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
@@ -47,26 +52,40 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmergevector.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
+  processing/qgsalgorithmmultiringconstantbuffer.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmpackage.cpp
+  processing/qgsalgorithmpointonsurface.cpp
+  processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
-  processing/qgsalgorithmremoveduplicatenodes
+  processing/qgsalgorithmremoveduplicatevertices.cpp
+  processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
+  processing/qgsalgorithmsegmentize.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
   processing/qgsalgorithmsnaptogrid.cpp
   processing/qgsalgorithmsplitwithlines.cpp
   processing/qgsalgorithmstringconcatenation.cpp
+  processing/qgsalgorithmswapxy.cpp
   processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmsymmetricaldifference.cpp
+  processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmunion.cpp
+  processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmwedgebuffers.cpp
+  processing/qgsalgorithmzonalhistogram.cpp
 
   processing/qgsnativealgorithms.cpp
+  processing/qgsoverlayutils.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -127,6 +146,8 @@ SET(QGIS_ANALYSIS_MOC_HDRS
 
   network/qgsgraphdirector.h
   network/qgsvectorlayerdirector.h
+
+  processing/qgsalgorithmfiledownloader.h
 
   vector/geometry_checker/qgsfeaturepool.h
   vector/geometry_checker/qgsgeometrychecker.h
@@ -193,6 +214,8 @@ QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  processing/qgsalgorithmimportphotos.h
+
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
@@ -255,7 +278,6 @@ INCLUDE_DIRECTORIES(
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}

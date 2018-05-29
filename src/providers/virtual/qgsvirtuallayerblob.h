@@ -58,7 +58,7 @@ struct SpatialiteBlobHeader
 void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&blob, int &size );
 
 /**
- * Return the bounding box of a SpatiaLite geometry blob
+ * Returns the bounding box of a SpatiaLite geometry blob
  */
 QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 
@@ -68,7 +68,7 @@ QgsRectangle spatialiteBlobBbox( const char *blob, size_t size );
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size );
 
 /**
- * Get geometry type and srid from a SpatiaLite geometry blob
+ * Gets geometry type and srid from a SpatiaLite geometry blob
  */
 QPair<QgsWkbTypes::Type, long> spatialiteBlobGeometryType( const char *blob, size_t size );
 

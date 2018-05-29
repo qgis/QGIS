@@ -28,9 +28,9 @@ const QString AMS_KEY = QStringLiteral( "arcgismapserver" );
 const QString AMS_DESCRIPTION = QStringLiteral( "ArcGIS Map Server data provider" );
 
 
-QGISEXTERN QgsAmsProvider *classFactory( const QString *uri )
+QGISEXTERN QgsAmsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsAmsProvider( *uri );
+  return new QgsAmsProvider( *uri, options );
 }
 
 QGISEXTERN QString providerKey()

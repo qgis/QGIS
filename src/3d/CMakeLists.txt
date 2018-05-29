@@ -11,7 +11,6 @@ SET(QGIS_3D_SRCS
   qgstessellatedpolygongeometry.cpp
   qgstessellator.cpp
   qgstilingscheme.cpp
-  qgsvector3d.cpp
   qgsvectorlayer3drenderer.cpp
 
   chunks/qgschunkboundsentity_p.cpp
@@ -43,11 +42,11 @@ SET(QGIS_3D_SRCS
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
 
-  poly2tri/common/shapes.cc
-  poly2tri/sweep/advancing_front.cc
-  poly2tri/sweep/cdt.cc
-  poly2tri/sweep/sweep_context.cc
-  poly2tri/sweep/sweep.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 )
 
 SET(QGIS_3D_MOC_HDRS
@@ -85,7 +84,6 @@ SET(QGIS_3D_HDRS
   qgstessellatedpolygongeometry.h
   qgstessellator.h
   qgstilingscheme.h
-  qgsvector3d.h
   qgsvectorlayer3drenderer.h
 
   chunks/qgschunkboundsentity_p.h
@@ -129,11 +127,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/3d
+  ${CMAKE_SOURCE_DIR}/external/poly2tri
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/3d
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
@@ -144,7 +142,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 
 ADD_LIBRARY(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_MOC_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCC_SRCS})
 
-qt5_use_modules(qgis_3d 3DCore 3DRender 3DInput 3DLogic 3DExtras)
+TARGET_LINK_LIBRARIES(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d

@@ -40,6 +40,7 @@ class QgsScopedSqlite
     QgsScopedSqlite &operator=( QgsScopedSqlite &other );
     ~QgsScopedSqlite();
 
+    bool interrupt();
     sqlite3 *get() const;
     sqlite3 *release();
     void reset( sqlite3 *db );

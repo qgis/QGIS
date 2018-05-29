@@ -1,11 +1,16 @@
-INSTALL(FILES srs.db qgis.db symbology-style.xml spatialite.db customization.xml 2to3migration.txt
+INSTALL(FILES srs.db
+              qgis.db
+              symbology-style.xml
+              spatialite.db
+              customization.xml
+              2to3migration.txt
+              qgis_global_settings.ini
         DESTINATION ${QGIS_DATA_DIR}/resources)
-INSTALL(FILES qgis_global_settings.ini
-        DESTINATION ${QGIS_DATA_DIR})
 INSTALL(DIRECTORY cpt-city-qgis-min DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY themes DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY data DESTINATION ${QGIS_DATA_DIR}/resources)
 INSTALL(DIRECTORY metadata-ISO DESTINATION ${QGIS_DATA_DIR}/resources)
+INSTALL(DIRECTORY palettes DESTINATION ${QGIS_DATA_DIR}/resources)
 
 IF (WITH_SERVER)
         INSTALL(DIRECTORY server DESTINATION ${QGIS_DATA_DIR}/resources)

@@ -66,7 +66,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
     {
       //! name
       QString name;
-      //! return type, or empty if unknown
+      //! Returns type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
       int minArgs = -1;
@@ -98,6 +98,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QList<Function> functionList;
       bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
       QList< QString > outputFormats;
+      QgsStringMap operationGetEndpoints;
+      QgsStringMap operationPostEndpoints;
 
       QSet< QString > setAllTypenames;
       QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;
@@ -107,7 +109,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QString addPrefixIfNeeded( const QString &name ) const;
     };
 
-    //! return parsed capabilities - requestCapabilities() must be called before
+    //! Returns parsed capabilities - requestCapabilities() must be called before
     const Capabilities &capabilities() const { return mCaps; }
 
   signals:

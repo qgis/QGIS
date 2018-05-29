@@ -25,6 +25,7 @@ class QgsMapLayer;
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QDomElement;
 
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsMapLayerStyle
     //! Remove any stored style data (will get invalid)
     void clear();
 
-    //! Return XML content of the style
+    //! Returns XML content of the style
     QString xmlData() const;
 
     //! Store layer's active style information in the instance
@@ -96,10 +97,14 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    //! Construct a style manager associated with a map layer (must not be null)
-    QgsMapLayerStyleManager( QgsMapLayer *layer );
 
-    //! Get pointer to the associated map layer
+    /**
+     * Construct a style manager associated with a map layer (must not be null).
+     * The style manager will be parented to \a layer.
+     */
+    QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
+
+    //! Gets pointer to the associated map layer
     QgsMapLayer *layer() const { return mLayer; }
 
     //! Reset the style manager to a basic state - with one default style which is set as current
@@ -110,7 +115,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     //! Write configuration (for project saving)
     void writeXml( QDomElement &mgrElement ) const;
 
-    //! Return list of all defined style names
+    //! Returns list of all defined style names
     QStringList styles() const;
 
     /**
@@ -120,7 +125,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
      */
     QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
 
-    //! Return data of a stored style - accessed by its unique name
+    //! Returns data of a stored style - accessed by its unique name
     QgsMapLayerStyle style( const QString &name ) const;
 
     /**
@@ -147,7 +152,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
      */
     bool renameStyle( const QString &name, const QString &newName );
 
-    //! Return name of the current style
+    //! Returns name of the current style
     QString currentStyle() const;
 
     /**

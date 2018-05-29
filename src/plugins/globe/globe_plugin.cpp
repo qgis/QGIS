@@ -26,7 +26,6 @@
 #include "featuresource/qgsglobefeatureoptions.h"
 
 #include <qgisinterface.h>
-#include <qgscrscache.h>
 #include <qgslogger.h>
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
@@ -113,7 +112,7 @@ class ZoomControlHandler : public NavigationControlHandler
   public:
     ZoomControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy )
       : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       _manip->zoom( _dx, _dy );
     }
@@ -127,7 +126,7 @@ class HomeControlHandler : public NavigationControlHandler
 {
   public:
     HomeControlHandler( osgEarth::Util::EarthManipulator *manip ) : _manip( manip ) { }
-    virtual void onClick( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa ) override
+    void onClick( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionAdapter &aa ) override
     {
       _manip->home( ea, aa );
     }
@@ -139,7 +138,7 @@ class SyncExtentControlHandler : public NavigationControlHandler
 {
   public:
     SyncExtentControlHandler( GlobePlugin *globe ) : mGlobe( globe ) { }
-    virtual void onClick( const osgGA::GUIEventAdapter & /*ea*/, osgGA::GUIActionAdapter & /*aa*/ ) override
+    void onClick( const osgGA::GUIEventAdapter & /*ea*/, osgGA::GUIActionAdapter & /*aa*/ ) override
     {
       mGlobe->syncExtent();
     }
@@ -151,7 +150,7 @@ class PanControlHandler : public NavigationControlHandler
 {
   public:
     PanControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       _manip->pan( _dx, _dy );
     }
@@ -165,7 +164,7 @@ class RotateControlHandler : public NavigationControlHandler
 {
   public:
     RotateControlHandler( osgEarth::Util::EarthManipulator *manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown() override
+    void onMouseDown() override
     {
       if ( 0 == _dx && 0 == _dy )
         _manip->setRotation( osg::Quat() );
@@ -637,7 +636,7 @@ QgsRectangle GlobePlugin::getQGISLayerExtent() const
 void GlobePlugin::showCurrentCoordinates( const osgEarth::GeoPoint &geoPoint )
 {
   osg::Vec3d pos = geoPoint.vec3d();
-  emit xyCoordinates( QgsCoordinateTransformCache::instance()->transform( GEO_EPSG_CRS_AUTHID, mQGisIface->mapCanvas()->mapSettings().destinationCrs().authid() ).transform( QgsPointXY( pos.x(), pos.y() ) ) );
+  emit xyCoordinates( QgsCoordinateTransform( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), mQGisIface->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() ).transform( QgsPointXY( pos.x(), pos.y() ) ) );
 }
 
 void GlobePlugin::setSelectedCoordinates( const osg::Vec3d &coords )
@@ -666,11 +665,11 @@ void GlobePlugin::syncExtent()
   if ( mapSettings.destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
   {
     QgsCoordinateReferenceSystem srcCRS( mapSettings.destinationCrs() );
-    extent = QgsCoordinateTransform( srcCRS, globeCrs ).transformBoundingBox( extent );
+    extent = QgsCoordinateTransform( srcCRS, globeCrs, QgsProject::instance()->transformContext() ).transformBoundingBox( extent );
   }
 
   QgsDistanceArea dist;
-  dist.setSourceCrs( globeCrs );
+  dist.setSourceCrs( globeCrs, QgsProject::instance()->transformContext() );
   dist.setEllipsoid( "WGS84" );
 
   QgsPointXY ll = QgsPointXY( extent.xMinimum(), extent.yMinimum() );
@@ -958,7 +957,7 @@ void GlobePlugin::updateLayers()
       else
       {
         drapedLayers.append( mapLayer );
-        QgsRectangle extent = QgsCoordinateTransformCache::instance()->transform( mapLayer->crs().authid(), GEO_EPSG_CRS_AUTHID ).transform( mapLayer->extent() );
+        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
         mLayerExtents.insert( mapLayer->id(), extent );
       }
     }
@@ -1032,7 +1031,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
           }
         }
         mTileSource->setLayers( layers );
-        QgsRectangle extent = QgsCoordinateTransformCache::instance()->transform( mapLayer->crs().authid(), GEO_EPSG_CRS_AUTHID ).transform( mapLayer->extent() );
+        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
         mLayerExtents.insert( mapLayer->id(), extent );
       }
       // Remove any model layer of that layer, in case one existed
@@ -1041,7 +1040,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
 #else
       mMapNode->getMap()->removeModelLayer( mMapNode->getMap()->getModelLayerByName( mapLayer->id().toStdString() ) );
 #endif
-      QgsRectangle layerExtent = QgsCoordinateTransformCache::instance()->transform( mapLayer->crs().authid(), GEO_EPSG_CRS_AUTHID ).transform( mapLayer->extent() );
+      QgsRectangle layerExtent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
       QgsRectangle dirtyExtent = layerExtent;
       if ( mLayerExtents.contains( mapLayer->id() ) )
       {

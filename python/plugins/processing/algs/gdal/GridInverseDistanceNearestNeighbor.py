@@ -98,7 +98,7 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
                                                        self.tr('Maximum number of data points to use'),
                                                        type=QgsProcessingParameterNumber.Integer,
                                                        minValue=0,
-                                                       defaultValue=0))
+                                                       defaultValue=12))
         self.addParameter(QgsProcessingParameterNumber(self.MIN_POINTS,
                                                        self.tr('Minimum number of data points to use'),
                                                        type=QgsProcessingParameterNumber.Integer,
@@ -145,6 +145,9 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
+    def commandName(self):
+        return 'gdal_grid'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
@@ -175,10 +178,9 @@ class GridInverseDistanceNearestNeighbor(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append(ogrLayer)
         arguments.append(out)
 
-        return ['gdal_grid', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

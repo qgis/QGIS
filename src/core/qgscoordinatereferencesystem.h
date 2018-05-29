@@ -56,7 +56,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * Coordinate reference system object defines a specific map projection, as well as transformations
  * between different coordinate reference systems. There are various ways how a CRS can be defined:
- * using well-known text (WKT), PROJ.4 string or combination of authority and code (e.g. EPSG:4326).
+ * using well-known text (WKT), PROJ string or combination of authority and code (e.g. EPSG:4326).
  * QGIS comes with its internal database of coordinate reference systems (stored in SQLite) that
  * allows lookups of CRS and seamless conversions between the various definitions.
  *
@@ -69,7 +69,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *    Transverse Mercator or Albers Equal Area.
  *
  * Internally QGIS uses proj4 library for all the math behind coordinate transformations, so in case
- * of any troubles with projections it is best to examine the PROJ.4 representation within the object,
+ * of any troubles with projections it is best to examine the PROJ representation within the object,
  * as that is the representation that will be ultimately used.
  *
  * Methods that allow inspection of CRS instances include isValid(), authid(), description(),
@@ -83,7 +83,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  * crs = QgsCoordinateReferenceSystem("EPSG:27700")
  * if crs.isValid():
  *     print("CRS Description: {}".format(crs.description()))
- *     print("CRS PROJ.4 text: {}".format(crs.toProj4()))
+ *     print("CRS PROJ text: {}".format(crs.toProj4()))
  * else:
  *     print("Invalid CRS!")
  * \endcode
@@ -92,7 +92,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * \code
  * CRS Description: OSGB 1936 / British National Grid
- * CRS PROJ.4 text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
+ * CRS PROJ text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
  * \endcode
  *
  * CRS Definition Formats
@@ -115,7 +115,7 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  *    See authid() and createFromOgcWmsCrs() methods.
  *
- * 2. **PROJ.4 string.** This is a string consisting of a series of key/value pairs in the following
+ * 2. **PROJ string.** This is a string consisting of a series of key/value pairs in the following
  *    format: `+param1=value1 +param2=value2 [...]`. This is the format natively used by the
  *    underlying proj4 library. For example, the definition of WGS84 looks like this:
  *
@@ -259,8 +259,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromOgcWmsCrs()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
@@ -276,8 +276,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a proj4 style formatted string.
      * \param proj4 proj4 format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromProj4()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 
@@ -285,8 +285,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a WKT spatial ref sys definition string.
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromWkt()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
@@ -294,9 +294,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a specified QGIS SRS ID.
      * \param srsId internal QGIS SRS ID
      * \returns matching CRS, or an invalid CRS if ID could not be found
-     * \since QGIS 3.0
      * \see createFromSrsId()
      * \see validSrsIds()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool createFromSrsId( const long srsId );
 
     /**
-     * Sets this CRS by passing it a PROJ.4 style formatted string.
+     * Sets this CRS by passing it a PROJ style formatted string.
      *
      * The string will be parsed and the projection and ellipsoid
      * members set and the remainder of the proj4 string will be stored
@@ -401,7 +401,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Set up this CRS from various text formats.
      *
      * Valid formats: WKT string, "EPSG:n", "EPSGA:n", "AUTO:proj_id,unit_id,lon0,lat0",
-     * "urn:ogc:def:crs:EPSG::n", PROJ.4 string, filename (with WKT, XML or PROJ.4 string),
+     * "urn:ogc:def:crs:EPSG::n", PROJ string, filename (with WKT, XML or PROJ string),
      * well known name (such as NAD27, NAD83, WGS84 or WGS72),
      * ESRI::[WKT string] (directly or in a file), "IGNF:xxx"
      *
@@ -443,7 +443,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Walks the CRS databases (both system and user database) trying to match
-     *  stored PROJ.4 string to a database entry in order to fill in further
+     *  stored PROJ string to a database entry in order to fill in further
      *  pieces of information about CRS.
      *  \note The ellipsoid and projection acronyms must be set as well as the proj4string!
      *  \returns long the SrsId of the matched CRS, zero if no match was found
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setValidationHint( const QString &html );
 
     /**
-     * Get user hint for validation
+     * Gets user hint for validation
      */
     QString validationHint();
 
@@ -721,7 +721,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     typedef QMap<QString, QString> RecordMap;
 
     /**
-     * Get a record from the srs.db or qgis.db backends, given an sql statement.
+     * Gets a record from the srs.db or qgis.db backends, given an sql statement.
      * \param sql The sql query to execute
      * \returns An associative array of field name <-> value pairs
      * \note only handles queries that return a single record.

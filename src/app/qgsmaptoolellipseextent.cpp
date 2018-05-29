@@ -30,11 +30,11 @@ QgsMapToolEllipseExtent::QgsMapToolEllipseExtent( QgsMapToolCapture *parentTool,
 
 void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
-    mPoints.append( mapPoint );
+    mPoints.append( point );
 
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
@@ -54,7 +54,7 @@ void QgsMapToolEllipseExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( mTempRubberBand )
   {
@@ -64,13 +64,13 @@ void QgsMapToolEllipseExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
-          mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mapPoint );
+          mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), point );
           mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );
         }
         else
         {
-          double dist = mPoints.at( 0 ).distance( mapPoint );
-          double angle = mPoints.at( 0 ).azimuth( mapPoint );
+          double dist = mPoints.at( 0 ).distance( point );
+          double angle = mPoints.at( 0 ).azimuth( point );
 
           mEllipse = QgsEllipse().fromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
           mTempRubberBand->setGeometry( mEllipse.toPolygon( segments() ) );

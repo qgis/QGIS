@@ -18,6 +18,9 @@
     <layout class="QGridLayout" name="gridLayout_2">
      <item row="0" column="1">
       <widget class="QPushButton" name="mButtonEditHeader">
+       <property name="toolTip">
+        <string>Edit the report header layout</string>
+       </property>
        <property name="text">
         <string>Edit</string>
        </property>
@@ -25,6 +28,9 @@
      </item>
      <item row="0" column="0">
       <widget class="QCheckBox" name="mCheckShowHeader">
+       <property name="toolTip">
+        <string>Include a layout at the very beginning of the report</string>
+       </property>
        <property name="text">
         <string>Include report header</string>
        </property>
@@ -45,6 +51,9 @@
      </item>
      <item row="1" column="0">
       <widget class="QCheckBox" name="mCheckShowFooter">
+       <property name="toolTip">
+        <string>Include a layout at the very end of the report</string>
+       </property>
        <property name="text">
         <string>Include report footer</string>
        </property>
@@ -52,6 +61,9 @@
      </item>
      <item row="1" column="1">
       <widget class="QPushButton" name="mButtonEditFooter">
+       <property name="toolTip">
+        <string>Edit the report footer layout</string>
+       </property>
        <property name="text">
         <string>Edit</string>
        </property>
@@ -74,6 +86,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mCheckShowHeader</tabstop>
+  <tabstop>mButtonEditHeader</tabstop>
+  <tabstop>mCheckShowFooter</tabstop>
+  <tabstop>mButtonEditFooter</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

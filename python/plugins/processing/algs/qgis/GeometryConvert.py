@@ -77,6 +77,9 @@ class GeometryConvert(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         index = self.parameterAsEnum(parameters, self.TYPE, context)
 
         if index == 0:
@@ -108,6 +111,8 @@ class GeometryConvert(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), newType, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

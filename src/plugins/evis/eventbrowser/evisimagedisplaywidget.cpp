@@ -36,8 +36,8 @@
 
 /**
 * Constructor
-* @param parent - Pointer the to parent QWidget for modality
-* @param fl - Windown flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param fl - Windown flags
 */
 eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags fl )
   : QWidget( parent, fl )
@@ -124,7 +124,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 
 /**
 * Public method called to display an image loaded locally from disk
-* @param path - The path and filename of the image to load from disk
+* \param path - The path and filename of the image to load from disk
 */
 void eVisImageDisplayWidget::displayImage( const QString &path )
 {
@@ -181,7 +181,7 @@ void eVisImageDisplayWidget::displayImage()
 
 /**
 * Public method called to display an image loaded from a url
-* @param url - The url from which to load an image
+* \param url - The url from which to load an image
 */
 void eVisImageDisplayWidget::displayUrlImage( const QString &url )
 {
@@ -224,8 +224,8 @@ void eVisImageDisplayWidget::setScalers()
 
 /**
 * Slot called when a http request is complete
-* @param requestId - The id of the http request
-* @param error - Boolean denoting success of http request
+* \param requestId - The id of the http request
+* \param error - Boolean denoting success of http request
 */
 void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 {

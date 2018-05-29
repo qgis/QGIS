@@ -38,7 +38,7 @@
 /**
 * Constructor for the id style tool, this tool inherits the QgsMapTool and requires a pointer to
 * to the map canvas.
-* @param canvas - Pointer to the QGIS map canvas
+* \param canvas - Pointer to the QGIS map canvas
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -55,7 +55,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
 
 /**
 * Mouse release, i.e., select, event
-* @param mouseEvent - Pointer to a QMouseEvent
+* \param mouseEvent - Pointer to a QMouseEvent
 */
 void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
 {
@@ -72,18 +72,18 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
     }
     else
     {
-      QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "This tool only supports vector data" ) );
+      QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "This tool only supports vector data." ) );
     }
   }
   else
   {
-    QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "No active layers found" ) );
+    QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "No active layers found." ) );
   }
 }
 
 /**
 * Selection routine called by the mouse release event
-* @param point = QgsPointXY representing the x, y coordinates of the mouse release event
+* \param point = QgsPointXY representing the x, y coordinates of the mouse release event
 */
 void eVisEventIdTool::select( const QgsPointXY &point )
 {

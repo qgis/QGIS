@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
+import re
 import sys
 import shutil
 import tempfile
@@ -185,6 +186,37 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         # simple table with defaults
         sql = "CREATE TABLE test_defaults (id INTEGER NOT NULL PRIMARY KEY, name TEXT DEFAULT 'qgis ''is good', number INTEGER DEFAULT 5, number2 REAL DEFAULT 5.7, no_default REAL)"
+        cur.execute(sql)
+
+        # simple table with catgorized points
+        sql = "CREATE TABLE test_filter (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_filter', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (1, 'ext', GeomFromText('POINT(0 0)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (2, 'ext', GeomFromText('POINT(0 3)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (3, 'ext', GeomFromText('POINT(3 3)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (4, 'ext', GeomFromText('POINT(3 0)', 4326))"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (5, 'int', GeomFromText('POINT(1 1)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (6, 'int', GeomFromText('POINT(1 2)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (7, 'int', GeomFromText('POINT(2 2)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (8, 'int', GeomFromText('POINT(2 1)', 4326))"
         cur.execute(sql)
 
         cur.execute("COMMIT")
@@ -662,6 +694,52 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(set(indexed_columns), set(['name', 'number']))
         con.close()
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
+
+        subSetString = '"name" = \'int\''
+        subSet = ' sql=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 8)
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        self.assertNotEqual('Empty', unfiltered_extent)
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        self.assertEqual(subSet_vl2.featureCount(), 8)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.featureCount(), 4)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'spatialite')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(subSet_vl.featureCount(), 4)
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+        self.assertTrue(subSet_vl.setSubsetString(''))
+        self.assertEqual(subSet_vl.featureCount(), 8)
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
 
 if __name__ == '__main__':

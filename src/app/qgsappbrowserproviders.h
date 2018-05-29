@@ -50,6 +50,8 @@ class QgsQlrDataItemProvider : public QgsDataItemProvider
  */
 class QgsQlrDropHandler : public QgsCustomDropHandler
 {
+    Q_OBJECT
+
   public:
 
     QString customUriProviderKey() const override;
@@ -90,6 +92,8 @@ class QgsQptDataItemProvider : public QgsDataItemProvider
  */
 class QgsQptDropHandler : public QgsCustomDropHandler
 {
+    Q_OBJECT
+
   public:
 
     QString customUriProviderKey() const override;
@@ -133,6 +137,8 @@ class QgsPyDataItemProvider : public QgsDataItemProvider
  */
 class QgsPyDropHandler : public QgsCustomDropHandler
 {
+    Q_OBJECT
+
   public:
 
     QString customUriProviderKey() const override;

@@ -42,7 +42,6 @@ class QgsPointXY;
 class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
-    Q_FLAGS( CadCapacities )
 
   public:
 
@@ -58,6 +57,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
+    Q_FLAG( CadCapacities )
 
     /**
      * Additional constraints which can be enabled
@@ -121,8 +121,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         /**
          * Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * \since QGIS 2.16
          * \see setRepeatingLock()
+         * \since QGIS 2.16
          */
         bool isRepeatingLock() const { return mRepeatingLock; }
 
@@ -150,8 +150,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \param repeating set to true to set the lock to repeat automatically
-         * \since QGIS 2.16
          * \see isRepeatingLock()
+         * \since QGIS 2.16
          */
         void setRepeatingLock( bool repeating );
 
@@ -311,7 +311,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     QList<QgsPointXY> snappedSegment() const { return mSnappedSegment; }
 
-    //! return the action used to enable/disable the tools
+    //! Returns the action used to enable/disable the tools
     QAction *enableAction() { return mEnableAction; }
 
     /**
@@ -356,7 +356,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void pointChanged( const QgsPointXY &point );
 
   private slots:
-    //! set the additional constraint by clicking on the perpendicular/parallel buttons
+    //! Sets the additional constraint by clicking on the perpendicular/parallel buttons
     void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
@@ -374,10 +374,10 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     void constraintFocusOut();
 
-    //! set the relative properties of constraints
+    //! Sets the relative properties of constraints
     void setConstraintRelative( bool activate );
 
-    //! Set the repeating lock property of constraints
+    //! Sets the repeating lock property of constraints
     void setConstraintRepeatingLock( bool activate );
 
     /**

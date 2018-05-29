@@ -29,6 +29,8 @@ class QgsWfsRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 9; }
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;
@@ -84,7 +86,7 @@ class QgsWfsLayerItem : public QgsLayerItem
   private slots:
 
     /**
-     * Get style of the active data item (geonode layer item) and copy it to the clipboard.
+     * Gets style of the active data item (geonode layer item) and copy it to the clipboard.
      */
     void copyStyle();
 

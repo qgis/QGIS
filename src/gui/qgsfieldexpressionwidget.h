@@ -50,8 +50,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
     Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
-    Q_FLAGS( QgsFieldProxyModel::Filters )
-
   public:
 
     /**
@@ -62,7 +60,16 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
 
-    //! return the title used for the expression dialog
+    /**
+     * Appends a scope to the current expression context.
+     *
+     * \param scope The scope to add.
+     *
+     * \since QGIS 3.2
+     */
+    void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
+
+    //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
     //! setFilters allows fitering according to the type of field
@@ -73,7 +80,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
-    //! set the geometry calculator used in the expression dialog
+    //! Sets the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /**
@@ -84,7 +91,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Return true if the current expression is valid
+      * Returns true if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
@@ -94,7 +101,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     bool isExpression() const;
 
     /**
-      * Return the current text that is set in the expression area
+      * Returns the current text that is set in the expression area
       */
     QString currentText() const;
 

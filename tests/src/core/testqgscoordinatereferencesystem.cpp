@@ -79,6 +79,8 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void bounds();
     void saveAsUserCrs();
     void projectWithCustomCrs();
+    void projectEPSG25833();
+    void geoCcsDescription();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -117,7 +119,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
-  qDebug() << "PROJ.4 version:         " << PJ_VERSION;
+  qDebug() << "PROJ version:           " << PJ_VERSION;
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
@@ -337,11 +339,11 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
     return QStringLiteral( "test %1 crs is invalid" );
 #if 0
   if ( myCrs.toProj4() != myProj4Strings[i] )
-    return QString( "test %1 PROJ.4 = [ %2 ] expecting [ %3 ]"
+    return QString( "test %1 PROJ = [ %2 ] expecting [ %3 ]"
                   ).arg( i ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
 #endif
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
-    return QStringLiteral( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
+    return QStringLiteral( "test %1 [%2] not found, PROJ = [%3] expecting [%4]"
                          ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
   if ( myCrs.authid() != myAuthIdStrings[i] )
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
@@ -642,7 +644,7 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 {
 
   /**
-   * @todo implement this test
+   * \todo implement this test
   "QgsCoordinateReferenceSystem myCrs;
   static CUSTOM_CRS_VALIDATION customSrsValidation();
   QVERIFY( myCrs.isValid() );
@@ -882,5 +884,35 @@ void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
+void TestQgsCoordinateReferenceSystem::projectEPSG25833()
+{
+  // tests loading a 2.x project with a predefined EPSG that has non unique proj.4 string
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
+}
+
+void TestQgsCoordinateReferenceSystem::geoCcsDescription()
+{
+  // test that geoccs crs descriptions are correctly imported from GDAL
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:3822" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3822" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "TWD97" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4340" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4340" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "Australian Antarctic (geocentric)" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4348" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4348" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "GDA94 (geocentric)" ) );
+}
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

@@ -24,6 +24,8 @@
 #include "qgsfeedback.h"
 
 #include "SpatialIndex.h"
+#include <QMutex>
+#include <QMutexLocker>
 
 using namespace SpatialIndex;
 
@@ -183,11 +185,13 @@ class QgsSpatialIndexData : public QSharedData
     QgsSpatialIndexData( const QgsSpatialIndexData &other )
       : QSharedData( other )
     {
+      QMutexLocker locker( &other.mMutex );
+
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
-      double low[]  = { DBL_MIN, DBL_MIN };
-      double high[] = { DBL_MAX, DBL_MAX };
+      double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+      double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       SpatialIndex::Region query( low, high, 2 );
       QgsSpatialIndexCopyVisitor visitor( mRTree );
       other.mRTree->intersectsWithQuery( query, visitor );
@@ -216,7 +220,7 @@ class QgsSpatialIndexData : public QSharedData
       // create R-tree
       SpatialIndex::id_type indexId;
 
-      if ( inputStream )
+      if ( inputStream && inputStream->hasNext() )
         mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity,
                  leafCapacity, dimension, variant, indexId );
       else
@@ -229,6 +233,8 @@ class QgsSpatialIndexData : public QSharedData
 
     //! R-tree containing spatial index
     SpatialIndex::ISpatialIndex *mRTree = nullptr;
+
+    mutable QMutex mMutex;
 
 };
 
@@ -307,6 +313,8 @@ bool QgsSpatialIndex::insertFeature( QgsFeatureId id, const QgsRectangle &rect )
 {
   SpatialIndex::Region r( rectToRegion( rect ) );
 
+  QMutexLocker locker( &d->mMutex );
+
   // TODO: handle possible exceptions correctly
   try
   {
@@ -338,6 +346,7 @@ bool QgsSpatialIndex::deleteFeature( const QgsFeature &f )
   if ( !featureInfo( f, r, id ) )
     return false;
 
+  QMutexLocker locker( &d->mMutex );
   // TODO: handle exceptions
   return d->mRTree->deleteData( r, FID_TO_NUMBER( id ) );
 }
@@ -349,6 +358,7 @@ QList<QgsFeatureId> QgsSpatialIndex::intersects( const QgsRectangle &rect ) cons
 
   SpatialIndex::Region r = rectToRegion( rect );
 
+  QMutexLocker locker( &d->mMutex );
   d->mRTree->intersectsWithQuery( r, visitor );
 
   return list;
@@ -362,6 +372,7 @@ QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( const QgsPointXY &point, i
   double pt[2] = { point.x(), point.y() };
   Point p( pt, 2 );
 
+  QMutexLocker locker( &d->mMutex );
   d->mRTree->nearestNeighborQuery( neighbors, p, visitor );
 
   return list;

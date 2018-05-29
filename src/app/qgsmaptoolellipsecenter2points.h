@@ -18,8 +18,9 @@
 #define QGSMAPTOOLELLIPSECENTER2POINTS_H
 
 #include "qgsmaptooladdellipse.h"
+#include "qgis_app.h"
 
-class QgsMapToolEllipseCenter2Points: public QgsMapToolAddEllipse
+class APP_EXPORT QgsMapToolEllipseCenter2Points: public QgsMapToolAddEllipse
 {
     Q_OBJECT
 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsMetadataWidget</class>
- <widget class="QWidget" name="QgsMetadataWidget">
+ <class>QgsMetadataWidgetBase</class>
+ <widget class="QWidget" name="QgsMetadataWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>804</width>
-    <height>697</height>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>4</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -67,15 +67,15 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>798</width>
-            <height>668</height>
+            <width>786</width>
+            <height>721</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
            <item>
-            <widget class="QLabel" name="label_11">
+            <widget class="QLabel" name="mIdLabel">
              <property name="text">
-              <string>This page describes the basic attribution of the dataset. Please use the tooltips for more information.</string>
+              <string>Label text set in qgsmetadatawidget.cpp</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -88,7 +88,7 @@
               <string>A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.</string>
              </property>
              <property name="text">
-              <string>Parent Identifier</string>
+              <string>Parent identifier</string>
              </property>
             </widget>
            </item>
@@ -174,6 +174,73 @@
             </widget>
            </item>
            <item>
+            <widget class="QFrame" name="mAuthorFrame">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="topMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_13">
+                <property name="toolTip">
+                 <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+                </property>
+                <property name="text">
+                 <string>Creation date</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QDateTimeEdit" name="mCreationDateTimeEdit">
+                <property name="displayFormat">
+                 <string>yyyy-MM-dd HH:mm:ss</string>
+                </property>
+                <property name="calendarPopup">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QLineEdit" name="mLineEditAuthor">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_11">
+                <property name="toolTip">
+                 <string>Returns the human readable name of the resource, typically displayed in search results.</string>
+                </property>
+                <property name="text">
+                 <string>Author</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <widget class="QLabel" name="label_4">
              <property name="toolTip">
               <string>Usually the returned string will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA', however this is not a hard requirement and the caller must account for non compliant values.</string>
@@ -244,32 +311,59 @@
                <number>0</number>
               </property>
               <item>
-               <widget class="QLabel" name="label_24">
-                <property name="text">
-                 <string>Encoding</string>
+               <widget class="QFrame" name="mEncodingFrame">
+                <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
                 </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
+                </property>
+                <layout class="QVBoxLayout" name="verticalLayout_18">
+                 <property name="spacing">
+                  <number>6</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_24">
+                   <property name="text">
+                    <string>Encoding</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <layout class="QHBoxLayout" name="horizontalLayout_8">
+                   <item>
+                    <widget class="QComboBox" name="comboEncoding">
+                     <property name="sizePolicy">
+                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                       <horstretch>0</horstretch>
+                       <verstretch>0</verstretch>
+                      </sizepolicy>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="btnAutoEncoding">
+                     <property name="text">
+                      <string>Set from layer</string>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
                </widget>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_8">
-                <item>
-                 <widget class="QComboBox" name="comboEncoding">
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="btnAutoEncoding">
-                  <property name="text">
-                   <string>Set from layer</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
               </item>
              </layout>
             </widget>
@@ -286,9 +380,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_14">
        <item>
-        <widget class="QLabel" name="label_25">
+        <widget class="QLabel" name="mLabelCategories">
          <property name="text">
-          <string>Dataset categories.</string>
+          <string>Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -318,7 +412,7 @@
             <item>
              <widget class="QLabel" name="label_23">
               <property name="text">
-               <string>Available categories</string>
+               <string>ISO categories</string>
               </property>
              </widget>
             </item>
@@ -329,6 +423,9 @@
               </property>
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
               </property>
              </widget>
             </item>
@@ -350,20 +447,6 @@
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="btnNewCategory">
-              <property name="toolTip">
-               <string>Create a new category</string>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="icon">
-               <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-              </property>
-             </widget>
-            </item>
-            <item>
              <widget class="QPushButton" name="btnAddDefaultCategory">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -372,7 +455,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Add category to selection</string>
+               <string>Add selected ISO categories to metadata</string>
               </property>
               <property name="text">
                <string/>
@@ -381,11 +464,19 @@
                <iconset resource="../../images/images.qrc">
                 <normaloff>:/images/themes/default/mActionArrowRight.svg</normaloff>:/images/themes/default/mActionArrowRight.svg</iconset>
               </property>
-              <property name="iconSize">
-               <size>
-                <width>16</width>
-                <height>18</height>
-               </size>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnNewCategory">
+              <property name="toolTip">
+               <string>Add a new custom category to the metadata</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
             </item>
@@ -398,14 +489,14 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Remove category from selection</string>
+               <string>Remove selected categories from metadata</string>
               </property>
               <property name="text">
                <string/>
               </property>
               <property name="icon">
                <iconset resource="../../images/images.qrc">
-                <normaloff>:/images/themes/default/mActionArrowLeft.svg</normaloff>:/images/themes/default/mActionArrowLeft.svg</iconset>
+                <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
               </property>
              </widget>
             </item>
@@ -441,6 +532,9 @@
               <property name="editTriggers">
                <set>QAbstractItemView::NoEditTriggers</set>
               </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::ExtendedSelection</enum>
+              </property>
              </widget>
             </item>
            </layout>
@@ -456,9 +550,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QLabel" name="label_17">
+        <widget class="QLabel" name="labelKeywords">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Keywords are optional, and provide a way to provide additional descriptive information about the dataset. Edits made in the categories tab will update the category entry below. For the concept, we suggest to use a standard based vocabulary such as &lt;a href=&quot;https://www.eionet.europa.eu/gemet/en/inspire-themes/&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;GEMET.&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Label text set in qgsmetadatawidget.cpp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -574,8 +668,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>798</width>
-            <height>668</height>
+            <width>800</width>
+            <height>634</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -877,7 +971,7 @@
          <item>
           <widget class="QLabel" name="label_32">
            <property name="text">
-            <string>Z Maximum</string>
+            <string>Z maximum</string>
            </property>
           </widget>
          </item>
@@ -891,7 +985,7 @@
          <item>
           <widget class="QLabel" name="label_31">
            <property name="text">
-            <string>Z Minimum</string>
+            <string>Z minimum</string>
            </property>
           </widget>
          </item>
@@ -956,9 +1050,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
-        <widget class="QLabel" name="label_16">
+        <widget class="QLabel" name="mLabelContact">
          <property name="text">
-          <string>Contact describe the owner of the dataset.</string>
+          <string>Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -980,8 +1074,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>754</width>
-              <height>608</height>
+              <width>778</width>
+              <height>586</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -1235,12 +1329,12 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QLabel" name="label_13">
+        <widget class="QLabel" name="mLabelLinks">
          <property name="toolTip">
           <string>a list of online resources associated with the resource.</string>
          </property>
          <property name="text">
-          <string>Links describe ancillary resources and information related to this dataset.</string>
+          <string>Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -1310,9 +1404,9 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_17">
        <item>
-        <widget class="QLabel" name="label_30">
+        <widget class="QLabel" name="mLabelHistory">
          <property name="text">
-          <string>History about the dataset.</string>
+          <string>Label text set in qgsmetadatawidget.cpp</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -1414,7 +1508,93 @@
    <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>lineEditParentId</tabstop>
+  <tabstop>lineEditIdentifier</tabstop>
+  <tabstop>btnAutoSource</tabstop>
+  <tabstop>lineEditTitle</tabstop>
+  <tabstop>comboType</tabstop>
+  <tabstop>mLineEditAuthor</tabstop>
+  <tabstop>mCreationDateTimeEdit</tabstop>
+  <tabstop>comboLanguage</tabstop>
+  <tabstop>textEditAbstract</tabstop>
+  <tabstop>comboEncoding</tabstop>
+  <tabstop>btnAutoEncoding</tabstop>
+  <tabstop>listDefaultCategories</tabstop>
+  <tabstop>btnAddDefaultCategory</tabstop>
+  <tabstop>btnNewCategory</tabstop>
+  <tabstop>btnRemoveCategory</tabstop>
+  <tabstop>listCategories</tabstop>
+  <tabstop>btnAddVocabulary</tabstop>
+  <tabstop>btnRemoveVocabulary</tabstop>
+  <tabstop>tabKeywords</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>lineEditFees</tabstop>
+  <tabstop>btnAddLicence</tabstop>
+  <tabstop>btnRemoveLicence</tabstop>
+  <tabstop>tabLicenses</tabstop>
+  <tabstop>btnAddRight</tabstop>
+  <tabstop>btnRemoveRight</tabstop>
+  <tabstop>listRights</tabstop>
+  <tabstop>btnAddConstraint</tabstop>
+  <tabstop>btnRemoveConstraint</tabstop>
+  <tabstop>tabConstraints</tabstop>
+  <tabstop>btnSetCrsFromLayer</tabstop>
+  <tabstop>btnSetCrsFromProvider</tabstop>
+  <tabstop>spinBoxZMaximum</tabstop>
+  <tabstop>spinBoxZMinimum</tabstop>
+  <tabstop>dateTimeFrom</tabstop>
+  <tabstop>dateTimeTo</tabstop>
+  <tabstop>panelDetails</tabstop>
+  <tabstop>lineEditContactPosition</tabstop>
+  <tabstop>lineEditContactName</tabstop>
+  <tabstop>lineEditContactOrganization</tabstop>
+  <tabstop>lineEditContactVoice</tabstop>
+  <tabstop>lineEditContactFax</tabstop>
+  <tabstop>comboContactRole</tabstop>
+  <tabstop>lineEditContactEmail</tabstop>
+  <tabstop>tabAddresses</tabstop>
+  <tabstop>btnAddAddress</tabstop>
+  <tabstop>btnRemoveAddress</tabstop>
+  <tabstop>btnAddLink</tabstop>
+  <tabstop>btnRemoveLink</tabstop>
+  <tabstop>tabLinks</tabstop>
+  <tabstop>btnAddHistory</tabstop>
+  <tabstop>btnRemoveHistory</tabstop>
+  <tabstop>listHistory</tabstop>
+  <tabstop>resultsCheckMetadata</tabstop>
+ </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -111,24 +111,24 @@ void TestQgsAttributeForm::testFieldConstraint()
   // build a form for this feature
   QgsAttributeForm form2( layer );
   form2.setFeature( ft );
-  QSignalSpy spy( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
+  QSignalSpy spy( &form2, SIGNAL( widgetValueChanged( QString, QVariant, bool ) ) );
   ww = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[0] );
 
   // set value to 1
   ww->setValue( 1 );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set value to null
   spy.clear();
   ww->setValue( QVariant() );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), invalidLabel );
 
   // set value to 1
   spy.clear();
   ww->setValue( 1 );
-  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.count(), 1 );
   QCOMPARE( constraintsLabel( &form2, ww )->text(), validLabel );
 
   // set a soft constraint
@@ -205,11 +205,11 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ww1 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[1] );
   ww2 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[2] );
   ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form2.mWidgets[3] );
-  QSignalSpy spy2( &form2, SIGNAL( attributeChanged( QString, QVariant ) ) );
+  QSignalSpy spy2( &form2, SIGNAL( widgetValueChanged( QString, QVariant, bool ) ) );
 
   // change value
   ww0->setValue( 2 ); // update col0
-  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), inv ); // 2 < ( 1 + 2 )
   QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );
@@ -219,7 +219,7 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   // change value
   spy2.clear();
   ww0->setValue( 1 ); // update col0
-  QCOMPARE( spy2.count(), 2 );
+  QCOMPARE( spy2.count(), 1 );
 
   QCOMPARE( constraintsLabel( &form2, ww0 )->text(), val ); // 1 < ( 1 + 2 )
   QCOMPARE( constraintsLabel( &form2, ww1 )->text(), QString() );

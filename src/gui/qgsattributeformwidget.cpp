@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsattributeformwidget.cpp
+    ---------------------
+    begin                : November 2017
+    copyright            : (C) 2017 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsattributeformwidget.h"
 #include <QHBoxLayout>
 #include <QStackedWidget>
@@ -180,7 +194,7 @@ bool QgsAttributeFormWidget::searchWidgetToolButtonVisible() const
 
 void QgsAttributeFormWidget::setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible )
 {
-  return mSearchWidgetToolButton->setVisible( searchWidgetToolButtonVisible );
+  mSearchWidgetToolButton->setVisible( searchWidgetToolButtonVisible );
 }
 
 QWidget *QgsAttributeFormWidget::searchPage() const

@@ -230,7 +230,7 @@ bool QgsLayoutAttributeTableColumnModel::setData( const QModelIndex &index, cons
   switch ( index.column() )
   {
     case 0:
-      // also update column's heading, if it hasn't been customised
+      // also update column's heading, if it hasn't been customized
       if ( column->heading().isEmpty() || ( column->heading() == column->attribute() ) )
       {
         column->setHeading( value.toString() );
@@ -261,7 +261,7 @@ bool QgsLayoutAttributeTableColumnModel::setData( const QModelIndex &index, cons
 
 Qt::ItemFlags QgsLayoutAttributeTableColumnModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
   if ( index.isValid() )
   {
@@ -594,7 +594,7 @@ QVariant QgsLayoutTableSortColumnsProxyModel::headerData( int section, Qt::Orien
 
 Qt::ItemFlags QgsLayoutTableSortColumnsProxyModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QSortFilterProxyModel::flags( index );
 
   if ( index.column() == 1 )
   {

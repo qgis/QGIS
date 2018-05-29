@@ -26,14 +26,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgFixedTable.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgFixedTable.ui'))
 
 
 class FixedTableDialog(BASE, WIDGET):
@@ -63,7 +67,7 @@ class FixedTableDialog(BASE, WIDGET):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
-        if self.param.fixedNumOfRows:
+        if self.param.hasFixedNumberRows():
             self.btnAdd.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRemoveAll.setEnabled(False)
@@ -71,17 +75,17 @@ class FixedTableDialog(BASE, WIDGET):
         self.populateTable(table)
 
     def populateTable(self, table):
-        cols = len(self.param.cols)
+        cols = len(self.param.headers())
         rows = len(table)
         model = QStandardItemModel(rows, cols)
 
         # Set headers
-        model.setHorizontalHeaderLabels(self.param.cols)
+        model.setHorizontalHeaderLabels(self.param.headers())
 
         # Populate table
         for i in range(rows):
             for j in range(cols):
-                item = QStandardItem(table[i][j])
+                item = QStandardItem(str(table[i][j]))
                 model.setItem(i, j, item)
         self.tblView.setModel(model)
 
@@ -101,7 +105,7 @@ class FixedTableDialog(BASE, WIDGET):
     def removeRows(self, removeAll=False):
         if removeAll:
             self.tblView.model().clear()
-            self.tblView.model().setHorizontalHeaderLabels(self.param.cols)
+            self.tblView.model().setHorizontalHeaderLabels(self.param.headers())
         else:
             indexes = sorted(self.tblView.selectionModel().selectedRows())
             self.tblView.setUpdatesEnabled(False)

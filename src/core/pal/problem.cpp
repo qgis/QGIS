@@ -290,7 +290,7 @@ void Problem::init_sol_falp()
       {
         list->insert( label, mLabelPositions.at( label )->getNumOverlaps() );
       }
-      catch ( pal::InternalException::Full )
+      catch ( pal::InternalException::Full & )
       {
         continue;
       }
@@ -1082,7 +1082,7 @@ double Problem::popmusic_tabu( SubPart *part )
   delete[] best_sol;
   delete[] tabu_list;
 
-  /* Return delta */
+  /* Returns delta */
   return initial_cost - best_cost;
 }
 
@@ -2228,11 +2228,10 @@ bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
   return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
 }
 
-QList<LabelPosition *> *Problem::getSolution( bool returnInactive )
+QList<LabelPosition *> Problem::getSolution( bool returnInactive )
 {
-
   int i;
-  QList<LabelPosition *> *solList = new QList<LabelPosition *>();
+  QList<LabelPosition *> solList;
 
   if ( nbft == 0 )
   {
@@ -2243,20 +2242,20 @@ QList<LabelPosition *> *Problem::getSolution( bool returnInactive )
   {
     if ( sol->s[i] != -1 )
     {
-      solList->push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
+      solList.push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
     }
     else if ( returnInactive
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
     {
-      solList->push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
+      solList.push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
     }
   }
 
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )
   {
-    std::sort( solList->begin(), solList->end(), compareLabelArea );
+    std::sort( solList.begin(), solList.end(), compareLabelArea );
   }
 
   return solList;

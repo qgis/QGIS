@@ -35,9 +35,9 @@ class QgsMapCanvas;
  * A widget which allows the user to choose the minimum and maximum scale of an object in map units
  * and millimeters. This widget is designed to allow users to edit the properties of a
  * QgsMapUnitScale object.
- * \since QGIS 3.0
  * \see QgsMapUnitScaleDialog
  * \see QgsUnitSelectionWidget
+ * \since QGIS 3.0
 */
 class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsMapUnitScaleWidgetBase
 {
@@ -181,7 +181,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      */
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 
-    //! Get the selected unit index
+    //! Gets the selected unit index
     int getUnit() const { return mUnitCombo->currentIndex(); }
 
     /**

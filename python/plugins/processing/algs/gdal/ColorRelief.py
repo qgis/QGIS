@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -54,7 +55,8 @@ class ColorRelief(GdalAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.modes = ((self.tr('Use strict color matching'), '-exact_color_entry'),
-                      (self.tr('Use closest RGBA quadruplet'), '-nearest_color_entry'))
+                      (self.tr('Use closest RGBA quadruplet'), '-nearest_color_entry'),
+                      (self.tr('Use smoothly blended colors'), ''))
 
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
                                                             self.tr('Input layer')))
@@ -69,7 +71,7 @@ class ColorRelief(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.MATCH_MODE,
                                                      self.tr('Matching mode'),
                                                      options=[i[0] for i in self.modes],
-                                                     defaultValue=0))
+                                                     defaultValue=2))
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
                                                      defaultValue='',
@@ -95,9 +97,15 @@ class ColorRelief(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdaldem'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['color-relief']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsFile(parameters, self.COLOR_TABLE, context))
 
@@ -115,4 +123,4 @@ class ColorRelief(GdalAlgorithm):
 
         arguments.append(self.modes[self.parameterAsEnum(parameters, self.MATCH_MODE, context)][1])
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

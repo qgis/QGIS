@@ -598,6 +598,18 @@ void TestQgsExpressionContext::globalScope()
 void TestQgsExpressionContext::projectScope()
 {
   QgsProject *project = QgsProject::instance();
+  QgsProjectMetadata md;
+  md.setTitle( QStringLiteral( "project title" ) );
+  md.setAuthor( QStringLiteral( "project author" ) );
+  md.setAbstract( QStringLiteral( "project abstract" ) );
+  md.setCreationDateTime( QDateTime( QDate( 2011, 3, 5 ), QTime( 9, 5, 4 ) ) );
+  md.setIdentifier( QStringLiteral( "project identifier" ) );
+  QgsAbstractMetadataBase::KeywordMap keywords;
+  keywords.insert( QStringLiteral( "voc1" ), QStringList() << "a" << "b" );
+  keywords.insert( QStringLiteral( "voc2" ), QStringList() << "c" << "d" );
+  md.setKeywords( keywords );
+  project->setMetadata( md );
+
   QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "test" ), "testval" );
   QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "testdouble" ), 5.2 );
 
@@ -605,6 +617,18 @@ void TestQgsExpressionContext::projectScope()
   QgsExpressionContextScope *scope = QgsExpressionContextUtils::projectScope( project );
   context << scope;
   QCOMPARE( scope->name(), tr( "Project" ) );
+
+  // metadata variables
+  QCOMPARE( context.variable( "project_title" ).toString(), QStringLiteral( "project title" ) );
+  QCOMPARE( context.variable( "project_author" ).toString(), QStringLiteral( "project author" ) );
+  QCOMPARE( context.variable( "project_abstract" ).toString(), QStringLiteral( "project abstract" ) );
+  QCOMPARE( context.variable( "project_creation_date" ).toDateTime(),  QDateTime( QDate( 2011, 3, 5 ), QTime( 9, 5, 4 ) ) );
+  QCOMPARE( context.variable( "project_identifier" ).toString(), QStringLiteral( "project identifier" ) );
+  QVariantMap keywordsExpected;
+  keywordsExpected.insert( QStringLiteral( "voc1" ), QStringList() << "a" << "b" );
+  keywordsExpected.insert( QStringLiteral( "voc2" ), QStringList() << "c" << "d" );
+  QVariantMap keywordsResult = context.variable( "project_keywords" ).toMap();
+  QCOMPARE( keywordsResult, keywordsExpected );
 
   QCOMPARE( context.variable( "test" ).toString(), QString( "testval" ) );
   QCOMPARE( context.variable( "testdouble" ).toDouble(), 5.2 );

@@ -41,6 +41,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
 
   mSectionModel = new QgsReportSectionModel( mReport, this );
   mViewSections->setModel( mSectionModel );
+  mViewSections->header()->hide();
   mViewSections->expandAll();
 
 #ifdef ENABLE_MODELTEST
@@ -55,10 +56,12 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mViewSections->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
   QMenu *addMenu = new QMenu( mButtonAddSection );
-  QAction *layoutSection = new QAction( tr( "Single section" ), addMenu );
+  QAction *layoutSection = new QAction( tr( "Static layout section" ), addMenu );
+  layoutSection->setToolTip( tr( "A static layout report section which consists of a single layout inserted into the report" ) );
   addMenu->addAction( layoutSection );
   connect( layoutSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addLayoutSection );
-  QAction *fieldGroupSection = new QAction( tr( "Field group" ), addMenu );
+  QAction *fieldGroupSection = new QAction( tr( "Field group section" ), addMenu );
+  fieldGroupSection->setToolTip( tr( "A report section which is repeated for every matching feature within a layer" ) );
   addMenu->addAction( fieldGroupSection );
   connect( fieldGroupSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addFieldGroupSection );
 
@@ -67,6 +70,10 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mButtonAddSection->setMenu( addMenu );
   connect( mButtonRemoveSection, &QPushButton::clicked, this, &QgsReportOrganizerWidget::removeSection );
   mButtonRemoveSection->setEnabled( false ); //disable until section clicked
+
+  // initially select report section
+  QModelIndex reportIndex = mSectionModel->indexForSection( report );
+  mViewSections->setCurrentIndex( reportIndex );
 }
 
 void QgsReportOrganizerWidget::setMessageBar( QgsMessageBar *bar )

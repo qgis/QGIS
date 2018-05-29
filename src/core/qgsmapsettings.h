@@ -61,7 +61,7 @@ class CORE_EXPORT QgsMapSettings
     QgsMapSettings();
 
     /**
-     * Return geographical coordinates of the rectangle that should be rendered.
+     * Returns geographical coordinates of the rectangle that should be rendered.
      * The actual visible extent used for rendering could be slightly different
      * since the given extent may be expanded in order to fit the aspect ratio
      * of output size. Use visibleExtent() to get the resulting extent.
@@ -76,56 +76,56 @@ class CORE_EXPORT QgsMapSettings
      */
     void setExtent( const QgsRectangle &rect, bool magnified = true );
 
-    //! Return the size of the resulting map image
+    //! Returns the size of the resulting map image
     QSize outputSize() const;
-    //! Set the size of the resulting map image
+    //! Sets the size of the resulting map image
     void setOutputSize( QSize size );
 
     /**
      * Returns the rotation of the resulting map image, in degrees clockwise.
-     * \since QGIS 2.8
      * \see setRotation()
+     * \since QGIS 2.8
      */
     double rotation() const;
 
     /**
      * Sets the \a rotation of the resulting map image, in degrees clockwise.
-     * \since QGIS 2.8
      * \see rotation()
+     * \since QGIS 2.8
      */
     void setRotation( double rotation );
 
     /**
-     * Return DPI used for conversion between real world units (e.g. mm) and pixels
+     * Returns DPI used for conversion between real world units (e.g. mm) and pixels
      * Default value is 96
      */
     double outputDpi() const;
-    //! Set DPI used for conversion between real world units (e.g. mm) and pixels
+    //! Sets DPI used for conversion between real world units (e.g. mm) and pixels
     void setOutputDpi( double dpi );
 
     /**
      * Set the magnification factor.
      * \param factor the factor of magnification
-     * \since QGIS 2.16
      * \see magnificationFactor()
+     * \since QGIS 2.16
      */
     void setMagnificationFactor( double factor );
 
     /**
-     * Return the magnification factor.
-     * \since QGIS 2.16
+     * Returns the magnification factor.
      * \see setMagnificationFactor()
+     * \since QGIS 2.16
      */
     double magnificationFactor() const;
 
     /**
-     * Get list of layer IDs for map rendering
+     * Gets list of layer IDs for map rendering
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
      */
     QStringList layerIds() const;
 
     /**
-     * Get list of layers for map rendering
+     * Gets list of layers for map rendering
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
      */
     QList<QgsMapLayer *> layers() const;
@@ -133,11 +133,13 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set list of layers for map rendering. The layers must be registered in QgsProject.
      * The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
+     *
+     * \note Any non-spatial layers will be automatically stripped from the list (since they cannot be rendered!).
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
-     * Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+     * Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
      * \since QGIS 2.8
      */
     QMap<QString, QString> layerStyleOverrides() const;
@@ -149,18 +151,18 @@ class CORE_EXPORT QgsMapSettings
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
     /**
-     * Get custom rendering flags. Layers might honour these to alter their rendering.
+     * Gets custom rendering flags. Layers might honour these to alter their rendering.
      *  \returns custom flags strings, separated by ';'
-     * \since QGIS 2.16
      * \see setCustomRenderFlags()
+     * \since QGIS 2.16
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /**
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
-     * \since QGIS 2.16
      * \see customRenderFlags()
+     * \since QGIS 2.16
      */
     void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -169,7 +171,7 @@ class CORE_EXPORT QgsMapSettings
     //! returns CRS of destination coordinate reference system
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! Get units of map's geographical coordinates - used for scale calculation
+    //! Gets units of map's geographical coordinates - used for scale calculation
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
     /**
@@ -177,27 +179,27 @@ class CORE_EXPORT QgsMapSettings
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns true if ellipsoid was successfully set
-     * \since QGIS 3.0
      * \see ellipsoid()
+     * \since QGIS 3.0
      */
     bool setEllipsoid( const QString &ellipsoid );
 
     /**
      * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
-     * \since QGIS 3.0
      * \see setEllipsoid()
+     * \since QGIS 3.0
      */
     QString ellipsoid() const { return mEllipsoid; }
 
-    //! Set the background color of the map
+    //! Sets the background color of the map
     void setBackgroundColor( const QColor &color ) { mBackgroundColor = color; }
-    //! Get the background color of the map
+    //! Gets the background color of the map
     QColor backgroundColor() const { return mBackgroundColor; }
 
-    //! Set color that is used for drawing of selected vector features
+    //! Sets color that is used for drawing of selected vector features
     void setSelectionColor( const QColor &color ) { mSelectionColor = color; }
-    //! Get color that is used for drawing of selected vector features
+    //! Gets color that is used for drawing of selected vector features
     QColor selectionColor() const { return mSelectionColor; }
 
     //! Enumeration of flags that adjust the way the map is rendered
@@ -218,11 +220,11 @@ class CORE_EXPORT QgsMapSettings
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! Set combination of flags that will be used for rendering
+    //! Sets combination of flags that will be used for rendering
     void setFlags( QgsMapSettings::Flags flags );
     //! Enable or disable a particular flag (other flags are not affected)
     void setFlag( Flag flag, bool on = true );
-    //! Return combination of flags used for rendering
+    //! Returns combination of flags used for rendering
     Flags flags() const;
     //! Check whether a particular flag is enabled
     bool testFlag( Flag flag ) const;
@@ -234,15 +236,15 @@ class CORE_EXPORT QgsMapSettings
 
     //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
-    //! Return the actual extent derived from requested extent that takes takes output image size into account
+    //! Returns the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
 
     /**
-     * Return the visible area as a polygon (may be rotated)
+     * Returns the visible area as a polygon (may be rotated)
      * \since QGIS 2.8
      */
     QPolygonF visiblePolygon() const;
-    //! Return the distance in geographical coordinates that equals to one pixel in the map
+    //! Returns the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
 
     /**
@@ -272,8 +274,8 @@ class CORE_EXPORT QgsMapSettings
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see setTransformContext()
+     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -282,10 +284,28 @@ class CORE_EXPORT QgsMapSettings
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see transformContext()
+     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \see setPathResolver()
+     * \since QGIS 3.0
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \see pathResolver()
+     * \since QGIS 3.0
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
@@ -299,14 +319,14 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * \brief transform bounding box from layer's CRS to output CRS
-     * \see layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
+     * \see layerToMapCoordinates( const QgsMapLayer *, QgsRectangle ) const if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 
     /**
      * \brief transform bounding box from output CRS to layer's CRS
-     * \see mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
+     * \see mapToLayerCoordinates( const QgsMapLayer *, QgsRectangle ) const if you want to transform a rectangle
      * \returns a bounding box (aligned rectangle) containing the transformed extent
      */
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
@@ -338,8 +358,7 @@ class CORE_EXPORT QgsMapSettings
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 
     /**
-     * \brief Return coordinate transform from layer's CRS to destination CRS
-     * \param layer
+     * Returns the coordinate transform from layer's CRS to destination CRS
      * \returns transform - may be invalid if the transform is not needed
      */
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
@@ -423,6 +442,9 @@ class CORE_EXPORT QgsMapSettings
     QgsMapToPixel mMapToPixel;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsPathResolver mPathResolver;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif

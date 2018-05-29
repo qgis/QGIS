@@ -86,6 +86,11 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int 
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttribute( this, fid, field, newValue ) );
 }
 
+bool QgsVectorLayerEditPassthrough::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttributes( this, fid, newValues, oldValues ) );
+}
+
 bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
 {
   return modify( new QgsVectorLayerUndoPassthroughCommandAddAttribute( this, field ) );

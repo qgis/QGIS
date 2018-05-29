@@ -84,7 +84,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Custom, //!< Custom item type
     };
 
-    Q_ENUM( Type );
+    Q_ENUM( Type )
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
@@ -105,7 +105,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populating,   //!< Creating children in separate thread (populating or refreshing)
       Populated     //!< Children created
     };
-    Q_ENUM( State );
+    Q_ENUM( State )
 
     //! \since QGIS 2.8
     State state() const;
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool hasDragEnabled() const { return false; }
 
     /**
-     * Return mime URI for the data item.
+     * Returns mime URI for the data item.
      * Items that return valid URI will be returned in mime data when dragging a selection from browser model.
      * \see hasDragEnabled()
      * \since QGIS 3.0
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     Type type() const { return mType; }
 
     /**
-     * Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
+     * Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
      *  QObject hierarchy. */
     QgsDataItem *parent() const { return mParent; }
 
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setToolTip( const QString &msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
-    // deleteLater() items anc clear the vector
+    // deleteLater() items and clear the vector
     static void deleteLater( QVector<QgsDataItem *> &items );
 
     //! Move object and all its descendants to thread
@@ -422,10 +422,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       TableLayer,
       Database,
       Table,
-      Plugin     //!< Added in 2.10
+      Plugin,    //!< Added in 2.10
+      Mesh       //!< Added in 3.2
     };
 
-    Q_ENUM( LayerType );
+    Q_ENUM( LayerType )
 
     QgsLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
@@ -470,13 +471,13 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
      * Returns the string representation of the given \a layerType
      * \since QGIS 3
      */
-    static QString layerTypeAsString( const LayerType &layerType );
+    static QString layerTypeAsString( LayerType layerType );
 
     /**
      * Returns the icon name of the given \a layerType
      * \since QGIS 3
      */
-    static QString iconName( const LayerType &layerType );
+    static QString iconName( LayerType layerType );
 
   protected:
 
@@ -498,6 +499,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconTable();
     static QIcon iconRaster();
     static QIcon iconDefault();
+    //! Returns icon for mesh layer type
+    static QIcon iconMesh();
 
     //! \returns the layer name
     virtual QString layerName() const { return name(); }
@@ -597,6 +600,8 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     bool hasDragEnabled() const override { return true; }
+
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
 };
 
@@ -744,6 +749,9 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
     QIcon icon() override;
     QVariant sortKey() const override;
+
+    QList<QAction *> actions( QWidget *parent ) override;
+
 
 };
 

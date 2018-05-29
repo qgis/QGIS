@@ -29,6 +29,7 @@
 
 import json
 import os.path
+import warnings
 from urllib.request import build_opener, install_opener, ProxyHandler
 
 from qgis.PyQt.QtCore import Qt
@@ -43,7 +44,11 @@ from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
 from qgis.gui import QgsRubberBand
 from qgis.utils import OverrideCursor
 
-from owslib.csw import CatalogueServiceWeb # spellok
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=ResourceWarning)
+    warnings.filterwarnings("ignore", category=ImportWarning)
+    from owslib.csw import CatalogueServiceWeb # spellok
+
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
 

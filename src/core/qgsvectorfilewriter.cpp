@@ -674,1211 +674,1236 @@ OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QgsWkbTypes::Type wkbType
   return OGR_G_CreateGeometry( ogrTypeFromWkbType( wkbType ) );
 }
 
-QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
+///@cond PRIVATE
+class QgsVectorFileWriterMetadataContainer
 {
-  QMap<QString, MetaData> driverMetadata;
+  public:
 
-  QMap<QString, Option *> datasetOptions;
-  QMap<QString, Option *> layerOptions;
+    QgsVectorFileWriterMetadataContainer()
+    {
+      QMap<QString, QgsVectorFileWriter::Option *> datasetOptions;
+      QMap<QString, QgsVectorFileWriter::Option *> layerOptions;
 
-  // Arc/Info ASCII Coverage
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Arc/Info ASCII Coverage
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "AVCE00" ),
-                         MetaData(
-                           QStringLiteral( "Arc/Info ASCII Coverage" ),
-                           QObject::tr( "Arc/Info ASCII Coverage" ),
-                           QStringLiteral( "*.e00" ),
-                           QStringLiteral( "e00" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "AVCE00" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Arc/Info ASCII Coverage" ),
+                               QObject::tr( "Arc/Info ASCII Coverage" ),
+                               QStringLiteral( "*.e00" ),
+                               QStringLiteral( "e00" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // Atlas BNA
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Atlas BNA
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new SetOption(
-                           QObject::tr( "New BNA files are created by the "
-                                        "systems default line termination conventions. "
-                                        "This may be overridden here." ),
-                           QStringList()
-                           << QStringLiteral( "CRLF" )
-                           << QStringLiteral( "LF" ),
-                           QString(), // Default value
-                           true // Allow None
-                         ) );
+      datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "New BNA files are created by the "
+                                            "systems default line termination conventions. "
+                                            "This may be overridden here." ),
+                               QStringList()
+                               << QStringLiteral( "CRLF" )
+                               << QStringLiteral( "LF" ),
+                               QString(), // Default value
+                               true // Allow None
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "MULTILINE" ), new BoolOption(
-                           QObject::tr( "By default, BNA files are created in multi-line format. "
-                                        "For each record, the first line contains the identifiers and the "
-                                        "type/number of coordinates to follow. Each following line contains "
-                                        "a pair of coordinates." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "MULTILINE" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "By default, BNA files are created in multi-line format. "
+                                            "For each record, the first line contains the identifiers and the "
+                                            "type/number of coordinates to follow. Each following line contains "
+                                            "a pair of coordinates." ),
+                               true  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "NB_IDS" ), new SetOption(
-                           QObject::tr( "BNA records may contain from 2 to 4 identifiers per record. "
-                                        "Some software packages only support a precise number of identifiers. "
-                                        "You can override the default value (2) by a precise value." ),
-                           QStringList()
-                           << QStringLiteral( "2" )
-                           << QStringLiteral( "3" )
-                           << QStringLiteral( "4" )
-                           << QStringLiteral( "NB_SOURCE_FIELDS" ),
-                           QStringLiteral( "2" ) // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "NB_IDS" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "BNA records may contain from 2 to 4 identifiers per record. "
+                                            "Some software packages only support a precise number of identifiers. "
+                                            "You can override the default value (2) by a precise value." ),
+                               QStringList()
+                               << QStringLiteral( "2" )
+                               << QStringLiteral( "3" )
+                               << QStringLiteral( "4" )
+                               << QStringLiteral( "NB_SOURCE_FIELDS" ),
+                               QStringLiteral( "2" ) // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "ELLIPSES_AS_ELLIPSES" ), new BoolOption(
-                           QObject::tr( "The BNA writer will try to recognize ellipses and circles when writing a polygon. "
-                                        "This will only work if the feature has previously been read from a BNA file. "
-                                        "As some software packages do not support ellipses/circles in BNA data file, "
-                                        "it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not "
-                                        "to export them as such, but keep them as polygons." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "ELLIPSES_AS_ELLIPSES" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "The BNA writer will try to recognize ellipses and circles when writing a polygon. "
+                                            "This will only work if the feature has previously been read from a BNA file. "
+                                            "As some software packages do not support ellipses/circles in BNA data file, "
+                                            "it may be useful to tell the writer by specifying ELLIPSES_AS_ELLIPSES=NO not "
+                                            "to export them as such, but keep them as polygons." ),
+                               true  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "NB_PAIRS_PER_LINE" ), new IntOption(
-                           QObject::tr( "Limit the number of coordinate pairs per line in multiline format." ),
-                           2 // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "NB_PAIRS_PER_LINE" ), new QgsVectorFileWriter::IntOption(
+                               QObject::tr( "Limit the number of coordinate pairs per line in multiline format." ),
+                               2 // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new IntOption(
-                           QObject::tr( "Set the number of decimal for coordinates. Default value is 10." ),
-                           10 // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
+                               QObject::tr( "Set the number of decimal for coordinates. Default value is 10." ),
+                               10 // Default value
+                             ) );
 
-  driverMetadata.insert( QStringLiteral( "BNA" ),
-                         MetaData(
-                           QStringLiteral( "Atlas BNA" ),
-                           QObject::tr( "Atlas BNA" ),
-                           QStringLiteral( "*.bna" ),
-                           QStringLiteral( "bna" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "BNA" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Atlas BNA" ),
+                               QObject::tr( "Atlas BNA" ),
+                               QStringLiteral( "*.bna" ),
+                               QStringLiteral( "bna" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // Comma Separated Value
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Comma Separated Value
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "LINEFORMAT" ), new SetOption(
-                         QObject::tr( "By default when creating new .csv files they "
-                                      "are created with the line termination conventions "
-                                      "of the local platform (CR/LF on Win32 or LF on all other systems). "
-                                      "This may be overridden through the use of the LINEFORMAT option." ),
-                         QStringList()
-                         << QStringLiteral( "CRLF" )
-                         << QStringLiteral( "LF" ),
-                         QString(), // Default value
-                         true // Allow None
-                       ) );
+      layerOptions.insert( QStringLiteral( "LINEFORMAT" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default when creating new .csv files they "
+                                          "are created with the line termination conventions "
+                                          "of the local platform (CR/LF on Win32 or LF on all other systems). "
+                                          "This may be overridden through the use of the LINEFORMAT option." ),
+                             QStringList()
+                             << QStringLiteral( "CRLF" )
+                             << QStringLiteral( "LF" ),
+                             QString(), // Default value
+                             true // Allow None
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "GEOMETRY" ), new SetOption(
-                         QObject::tr( "By default, the geometry of a feature written to a .csv file is discarded. "
-                                      "It is possible to export the geometry in its WKT representation by "
-                                      "specifying GEOMETRY=AS_WKT. It is also possible to export point geometries "
-                                      "into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY "
-                                      "or GEOMETRY=AS_YX." ),
-                         QStringList()
-                         << QStringLiteral( "AS_WKT" )
-                         << QStringLiteral( "AS_XYZ" )
-                         << QStringLiteral( "AS_XY" )
-                         << QStringLiteral( "AS_YX" ),
-                         QString(), // Default value
-                         true // Allow None
-                       ) );
+      layerOptions.insert( QStringLiteral( "GEOMETRY" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default, the geometry of a feature written to a .csv file is discarded. "
+                                          "It is possible to export the geometry in its WKT representation by "
+                                          "specifying GEOMETRY=AS_WKT. It is also possible to export point geometries "
+                                          "into their X,Y,Z components by specifying GEOMETRY=AS_XYZ, GEOMETRY=AS_XY "
+                                          "or GEOMETRY=AS_YX." ),
+                             QStringList()
+                             << QStringLiteral( "AS_WKT" )
+                             << QStringLiteral( "AS_XYZ" )
+                             << QStringLiteral( "AS_XY" )
+                             << QStringLiteral( "AS_YX" ),
+                             QString(), // Default value
+                             true // Allow None
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "CREATE_CSVT" ), new BoolOption(
-                         QObject::tr( "Create the associated .csvt file to describe the type of each "
-                                      "column of the layer and its optional width and precision." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "CREATE_CSVT" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Create the associated .csvt file to describe the type of each "
+                                          "column of the layer and its optional width and precision." ),
+                             false  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "SEPARATOR" ), new SetOption(
-                         QObject::tr( "Field separator character." ),
-                         QStringList()
-                         << QStringLiteral( "COMMA" )
-                         << QStringLiteral( "SEMICOLON" )
-                         << QStringLiteral( "TAB" ),
-                         QStringLiteral( "COMMA" ) // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "SEPARATOR" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Field separator character." ),
+                             QStringList()
+                             << QStringLiteral( "COMMA" )
+                             << QStringLiteral( "SEMICOLON" )
+                             << QStringLiteral( "TAB" ),
+                             QStringLiteral( "COMMA" ) // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "WRITE_BOM" ), new BoolOption(
-                         QObject::tr( "Write a UTF-8 Byte Order Mark (BOM) at the start of the file." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "WRITE_BOM" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Write a UTF-8 Byte Order Mark (BOM) at the start of the file." ),
+                             false  // Default value
+                           ) );
 
-  driverMetadata.insert( QStringLiteral( "CSV" ),
-                         MetaData(
-                           QStringLiteral( "Comma Separated Value [CSV]" ),
-                           QObject::tr( "Comma Separated Value [CSV]" ),
-                           QStringLiteral( "*.csv" ),
-                           QStringLiteral( "csv" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "CSV" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Comma Separated Value [CSV]" ),
+                               QObject::tr( "Comma Separated Value [CSV]" ),
+                               QStringLiteral( "*.csv" ),
+                               QStringLiteral( "csv" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // ESRI Shapefile
-  datasetOptions.clear();
-  layerOptions.clear();
+      // ESRI Shapefile
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "SHPT" ), new SetOption(
-                         QObject::tr( "Override the type of shapefile created. "
-                                      "Can be one of NULL for a simple .dbf file with no .shp file, POINT, "
-                                      "ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or "
-                                      "MULTIPOINTZ for 3D;" ) +
-                         QObject::tr( " POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries"
-                                      " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
-                                      " geometries." ) +
+      layerOptions.insert( QStringLiteral( "SHPT" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Override the type of shapefile created. "
+                                          "Can be one of NULL for a simple .dbf file with no .shp file, POINT, "
+                                          "ARC, POLYGON or MULTIPOINT for 2D, or POINTZ, ARCZ, POLYGONZ or "
+                                          "MULTIPOINTZ for 3D;" ) +
+                             QObject::tr( " POINTM, ARCM, POLYGONM or MULTIPOINTM for measured geometries"
+                                          " and POINTZM, ARCZM, POLYGONZM or MULTIPOINTZM for 3D measured"
+                                          " geometries." ) +
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-                         QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) +
+                             QObject::tr( " MULTIPATCH files are supported since GDAL 2.2." ) +
 #endif
-                         ""
-                         , QStringList()
-                         << QStringLiteral( "NULL" )
-                         << QStringLiteral( "POINT" )
-                         << QStringLiteral( "ARC" )
-                         << QStringLiteral( "POLYGON" )
-                         << QStringLiteral( "MULTIPOINT" )
-                         << QStringLiteral( "POINTZ" )
-                         << QStringLiteral( "ARCZ" )
-                         << QStringLiteral( "POLYGONZ" )
-                         << QStringLiteral( "MULTIPOINTZ" )
-                         << QStringLiteral( "POINTM" )
-                         << QStringLiteral( "ARCM" )
-                         << QStringLiteral( "POLYGONM" )
-                         << QStringLiteral( "MULTIPOINTM" )
-                         << QStringLiteral( "POINTZM" )
-                         << QStringLiteral( "ARCZM" )
-                         << QStringLiteral( "POLYGONZM" )
-                         << QStringLiteral( "MULTIPOINTZM" )
+                             ""
+                             , QStringList()
+                             << QStringLiteral( "NULL" )
+                             << QStringLiteral( "POINT" )
+                             << QStringLiteral( "ARC" )
+                             << QStringLiteral( "POLYGON" )
+                             << QStringLiteral( "MULTIPOINT" )
+                             << QStringLiteral( "POINTZ" )
+                             << QStringLiteral( "ARCZ" )
+                             << QStringLiteral( "POLYGONZ" )
+                             << QStringLiteral( "MULTIPOINTZ" )
+                             << QStringLiteral( "POINTM" )
+                             << QStringLiteral( "ARCM" )
+                             << QStringLiteral( "POLYGONM" )
+                             << QStringLiteral( "MULTIPOINTM" )
+                             << QStringLiteral( "POINTZM" )
+                             << QStringLiteral( "ARCZM" )
+                             << QStringLiteral( "POLYGONZM" )
+                             << QStringLiteral( "MULTIPOINTZM" )
 #if defined(GDAL_COMPUTE_VERSION) && GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-                         << QStringLiteral( "MULTIPATCH" )
+                             << QStringLiteral( "MULTIPATCH" )
 #endif
-                         << QStringLiteral( "" ),
-                         QString(), // Default value
-                         true  // Allow None
-                       ) );
+                             << QStringLiteral( "" ),
+                             QString(), // Default value
+                             true  // Allow None
+                           ) );
 
-  // there does not seem to be a reason to provide this option to the user again
-  // as we set encoding for shapefiles based on "fileEncoding" parameter passed to the writer
+      // there does not seem to be a reason to provide this option to the user again
+      // as we set encoding for shapefiles based on "fileEncoding" parameter passed to the writer
 #if 0
-  layerOptions.insert( "ENCODING", new SetOption(
-                         QObject::tr( "Set the encoding value in the DBF file. "
-                                      "The default value is LDID/87. It is not clear "
-                                      "what other values may be appropriate." ),
-                         QStringList()
-                         << "LDID/87",
-                         "LDID/87" // Default value
-                       ) );
+      layerOptions.insert( "ENCODING", new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Set the encoding value in the DBF file. "
+                                          "The default value is LDID/87. It is not clear "
+                                          "what other values may be appropriate." ),
+                             QStringList()
+                             << "LDID/87",
+                             "LDID/87" // Default value
+                           ) );
 #endif
 
-  layerOptions.insert( QStringLiteral( "RESIZE" ), new BoolOption(
-                         QObject::tr( "Set to YES to resize fields to their optimal size." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "RESIZE" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Set to YES to resize fields to their optimal size." ),
+                             false  // Default value
+                           ) );
 
-  driverMetadata.insert( QStringLiteral( "ESRI" ),
-                         MetaData(
-                           QStringLiteral( "ESRI Shapefile" ),
-                           QObject::tr( "ESRI Shapefile" ),
-                           QStringLiteral( "*.shp" ),
-                           QStringLiteral( "shp" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "ESRI" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "ESRI Shapefile" ),
+                               QObject::tr( "ESRI Shapefile" ),
+                               QStringLiteral( "*.shp" ),
+                               QStringLiteral( "shp" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // DBF File
-  datasetOptions.clear();
-  layerOptions.clear();
+      // DBF File
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "DBF File" ),
-                         MetaData(
-                           QStringLiteral( "DBF File" ),
-                           QObject::tr( "DBF File" ),
-                           QStringLiteral( "*.dbf" ),
-                           QStringLiteral( "dbf" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "DBF File" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "DBF File" ),
+                               QObject::tr( "DBF File" ),
+                               QStringLiteral( "*.dbf" ),
+                               QStringLiteral( "dbf" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // FMEObjects Gateway
-  datasetOptions.clear();
-  layerOptions.clear();
+      // FMEObjects Gateway
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "FMEObjects Gateway" ),
-                         MetaData(
-                           QStringLiteral( "FMEObjects Gateway" ),
-                           QObject::tr( "FMEObjects Gateway" ),
-                           QStringLiteral( "*.fdd" ),
-                           QStringLiteral( "fdd" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "FMEObjects Gateway" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "FMEObjects Gateway" ),
+                               QObject::tr( "FMEObjects Gateway" ),
+                               QStringLiteral( "*.fdd" ),
+                               QStringLiteral( "fdd" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // GeoJSON
-  datasetOptions.clear();
-  layerOptions.clear();
+      // GeoJSON
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "WRITE_BBOX" ), new BoolOption(
-                         QObject::tr( "Set to YES to write a bbox property with the bounding box "
-                                      "of the geometries at the feature and feature collection level." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "WRITE_BBOX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Set to YES to write a bbox property with the bounding box "
+                                          "of the geometries at the feature and feature collection level." ),
+                             false  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new IntOption(
-                         QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
-                                      "Default to 15. Truncation will occur to remove trailing zeros." ),
-                         15 // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "COORDINATE_PRECISION" ), new QgsVectorFileWriter::IntOption(
+                             QObject::tr( "Maximum number of figures after decimal separator to write in coordinates. "
+                                          "Default to 15. Truncation will occur to remove trailing zeros." ),
+                             15 // Default value
+                           ) );
 
-  driverMetadata.insert( QStringLiteral( "GeoJSON" ),
-                         MetaData(
-                           QStringLiteral( "GeoJSON" ),
-                           QObject::tr( "GeoJSON" ),
-                           QStringLiteral( "*.geojson" ),
-                           QStringLiteral( "geojson" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GeoJSON" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GeoJSON" ),
+                               QObject::tr( "GeoJSON" ),
+                               QStringLiteral( "*.geojson" ),
+                               QStringLiteral( "geojson" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
 
-  // GeoRSS
-  datasetOptions.clear();
-  layerOptions.clear();
+      // GeoRSS
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  datasetOptions.insert( QStringLiteral( "FORMAT" ), new SetOption(
-                           QObject::tr( "whether the document must be in RSS 2.0 or Atom 1.0 format. "
-                                        "Default value : RSS" ),
-                           QStringList()
-                           << QStringLiteral( "RSS" )
-                           << QStringLiteral( "ATOM" ),
-                           QStringLiteral( "RSS" ) // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "FORMAT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "whether the document must be in RSS 2.0 or Atom 1.0 format. "
+                                            "Default value : RSS" ),
+                               QStringList()
+                               << QStringLiteral( "RSS" )
+                               << QStringLiteral( "ATOM" ),
+                               QStringLiteral( "RSS" ) // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "GEOM_DIALECT" ), new SetOption(
-                           QObject::tr( "The encoding of location information. Default value : SIMPLE. "
-                                        "W3C_GEO only supports point geometries. "
-                                        "SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates." ),
-                           QStringList()
-                           << QStringLiteral( "SIMPLE" )
-                           << QStringLiteral( "GML" )
-                           << QStringLiteral( "W3C_GEO" ),
-                           QStringLiteral( "SIMPLE" ) // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "GEOM_DIALECT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "The encoding of location information. Default value : SIMPLE. "
+                                            "W3C_GEO only supports point geometries. "
+                                            "SIMPLE or W3C_GEO only support geometries in geographic WGS84 coordinates." ),
+                               QStringList()
+                               << QStringLiteral( "SIMPLE" )
+                               << QStringLiteral( "GML" )
+                               << QStringLiteral( "W3C_GEO" ),
+                               QStringLiteral( "SIMPLE" ) // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "USE_EXTENSIONS" ), new BoolOption(
-                           QObject::tr( "If defined to YES, extension fields will be written. "
-                                        "If the field name not found in the base schema matches "
-                                        "the foo_bar pattern, foo will be considered as the namespace "
-                                        "of the element, and a <foo:bar> element will be written. "
-                                        "Otherwise, elements will be written in the <ogr:> namespace." ),
-                           false // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "USE_EXTENSIONS" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "If defined to YES, extension fields will be written. "
+                                            "If the field name not found in the base schema matches "
+                                            "the foo_bar pattern, foo will be considered as the namespace "
+                                            "of the element, and a <foo:bar> element will be written. "
+                                            "Otherwise, elements will be written in the <ogr:> namespace." ),
+                               false // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "WRITE_HEADER_AND_FOOTER" ), new BoolOption(
-                           QObject::tr( "If defined to NO, only <entry> or <item> elements will be written. "
-                                        "The user will have to provide the appropriate header and footer of the document." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "WRITE_HEADER_AND_FOOTER" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "If defined to NO, only <entry> or <item> elements will be written. "
+                                            "The user will have to provide the appropriate header and footer of the document." ),
+                               true  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "HEADER" ), new StringOption(
-                           QObject::tr( "XML content that will be put between the <channel> element and the "
-                                        "first <item> element for a RSS document, or between the xml tag and "
-                                        "the first <entry> element for an Atom document." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "HEADER" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "XML content that will be put between the <channel> element and the "
+                                            "first <item> element for a RSS document, or between the xml tag and "
+                                            "the first <entry> element for an Atom document." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "TITLE" ), new StringOption(
-                           QObject::tr( "Value put inside the <title> element in the header. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "TITLE" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <title> element in the header. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "DESCRIPTION" ), new StringOption(
-                           QObject::tr( "Value put inside the <description> element in the header. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "DESCRIPTION" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <description> element in the header. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "LINK" ), new StringOption(
-                           QObject::tr( "Value put inside the <link> element in the header. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "LINK" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <link> element in the header. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "UPDATED" ), new StringOption(
-                           QObject::tr( "Value put inside the <updated> element in the header. "
-                                        "Should be formatted as a XML datetime. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "UPDATED" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <updated> element in the header. "
+                                            "Should be formatted as a XML datetime. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "AUTHOR_NAME" ), new StringOption(
-                           QObject::tr( "Value put inside the <author><name> element in the header. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "AUTHOR_NAME" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <author><name> element in the header. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "ID" ), new StringOption(
-                           QObject::tr( "Value put inside the <id> element in the header. "
-                                        "If not provided, a dummy value will be used as that element is compulsory." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "ID" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Value put inside the <id> element in the header. "
+                                            "If not provided, a dummy value will be used as that element is compulsory." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
 
-  driverMetadata.insert( QStringLiteral( "GeoRSS" ),
-                         MetaData(
-                           QStringLiteral( "GeoRSS" ),
-                           QObject::tr( "GeoRSS" ),
-                           QStringLiteral( "*.xml" ),
-                           QStringLiteral( "xml" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GeoRSS" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GeoRSS" ),
+                               QObject::tr( "GeoRSS" ),
+                               QStringLiteral( "*.xml" ),
+                               QStringLiteral( "xml" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
 
-  // Geography Markup Language [GML]
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Geography Markup Language [GML]
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  datasetOptions.insert( QStringLiteral( "XSISCHEMAURI" ), new StringOption(
-                           QObject::tr( "If provided, this URI will be inserted as the schema location. "
-                                        "Note that the schema file isn't actually accessed by OGR, so it "
-                                        "is up to the user to ensure it will match the schema of the OGR "
-                                        "produced GML data file." ),
-                           QString()  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "XSISCHEMAURI" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "If provided, this URI will be inserted as the schema location. "
+                                            "Note that the schema file isn't actually accessed by OGR, so it "
+                                            "is up to the user to ensure it will match the schema of the OGR "
+                                            "produced GML data file." ),
+                               QString()  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "XSISCHEMA" ), new SetOption(
-                           QObject::tr( "This writes a GML application schema file to a corresponding "
-                                        ".xsd file (with the same basename). If INTERNAL is used the "
-                                        "schema is written within the GML file, but this is experimental "
-                                        "and almost certainly not valid XML. "
-                                        "OFF disables schema generation (and is implicit if XSISCHEMAURI is used)." ),
-                           QStringList()
-                           << QStringLiteral( "EXTERNAL" )
-                           << QStringLiteral( "INTERNAL" )
-                           << QStringLiteral( "OFF" ),
-                           QStringLiteral( "EXTERNAL" ) // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "XSISCHEMA" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "This writes a GML application schema file to a corresponding "
+                                            ".xsd file (with the same basename). If INTERNAL is used the "
+                                            "schema is written within the GML file, but this is experimental "
+                                            "and almost certainly not valid XML. "
+                                            "OFF disables schema generation (and is implicit if XSISCHEMAURI is used)." ),
+                               QStringList()
+                               << QStringLiteral( "EXTERNAL" )
+                               << QStringLiteral( "INTERNAL" )
+                               << QStringLiteral( "OFF" ),
+                               QStringLiteral( "EXTERNAL" ) // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "PREFIX" ), new StringOption(
-                           QObject::tr( "This is the prefix for the application target namespace." ),
-                           QStringLiteral( "ogr" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "PREFIX" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "This is the prefix for the application target namespace." ),
+                               QStringLiteral( "ogr" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "STRIP_PREFIX" ), new BoolOption(
-                           QObject::tr( "Can be set to TRUE to avoid writing the prefix of the "
-                                        "application target namespace in the GML file." ),
-                           false  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "STRIP_PREFIX" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Can be set to TRUE to avoid writing the prefix of the "
+                                            "application target namespace in the GML file." ),
+                               false  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "TARGET_NAMESPACE" ), new StringOption(
-                           QObject::tr( "Defaults to 'http://ogr.maptools.org/'. "
-                                        "This is the application target namespace." ),
-                           QStringLiteral( "http://ogr.maptools.org/" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "TARGET_NAMESPACE" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Defaults to 'http://ogr.maptools.org/'. "
+                                            "This is the application target namespace." ),
+                               QStringLiteral( "http://ogr.maptools.org/" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "FORMAT" ), new SetOption(
-                           QObject::tr( "If not specified, GML2 will be used." ),
-                           QStringList()
-                           << QStringLiteral( "GML3" )
-                           << QStringLiteral( "GML3Deegree" )
-                           << QStringLiteral( "GML3.2" ),
-                           QLatin1String( "" ), // Default value
-                           true // Allow None
-                         ) );
+      datasetOptions.insert( QStringLiteral( "FORMAT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "If not specified, GML2 will be used." ),
+                               QStringList()
+                               << QStringLiteral( "GML3" )
+                               << QStringLiteral( "GML3Deegree" )
+                               << QStringLiteral( "GML3.2" ),
+                               QLatin1String( "" ), // Default value
+                               true // Allow None
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new BoolOption(
-                           QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. " //needs review here
-                                        "If YES, SRS with EPSG authority will be written with the "
-                                        "'urn:ogc:def:crs:EPSG::' prefix. In the case the SRS is a "
-                                        "geographic SRS without explicit AXIS order, but that the same "
-                                        "SRS authority code imported with ImportFromEPSGA() should be "
-                                        "treated as lat/long, then the function will take care of coordinate "
-                                        "order swapping. If set to NO, SRS with EPSG authority will be "
-                                        "written with the 'EPSG:' prefix, even if they are in lat/long order." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. " //needs review here
+                                            "If YES, SRS with EPSG authority will be written with the "
+                                            "'urn:ogc:def:crs:EPSG::' prefix. In the case the SRS is a "
+                                            "geographic SRS without explicit AXIS order, but that the same "
+                                            "SRS authority code imported with ImportFromEPSGA() should be "
+                                            "treated as lat/long, then the function will take care of coordinate "
+                                            "order swapping. If set to NO, SRS with EPSG authority will be "
+                                            "written with the 'EPSG:' prefix, even if they are in lat/long order." ),
+                               true  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "WRITE_FEATURE_BOUNDED_BY" ), new BoolOption(
-                           QObject::tr( "only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. "
-                                        "If set to NO, the <gml:boundedBy> element will not be written for "
-                                        "each feature." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "WRITE_FEATURE_BOUNDED_BY" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. "
+                                            "If set to NO, the <gml:boundedBy> element will not be written for "
+                                            "each feature." ),
+                               true  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "SPACE_INDENTATION" ), new BoolOption(
-                           QObject::tr( "Default to YES. If YES, the output will be indented with spaces "
-                                        "for more readability, but at the expense of file size." ),
-                           true  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "SPACE_INDENTATION" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Default to YES. If YES, the output will be indented with spaces "
+                                            "for more readability, but at the expense of file size." ),
+                               true  // Default value
+                             ) );
 
 
-  driverMetadata.insert( QStringLiteral( "GML" ),
-                         MetaData(
-                           QStringLiteral( "Geography Markup Language [GML]" ),
-                           QObject::tr( "Geography Markup Language [GML]" ),
-                           QStringLiteral( "*.gml" ),
-                           QStringLiteral( "gml" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GML" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Geography Markup Language [GML]" ),
+                               QObject::tr( "Geography Markup Language [GML]" ),
+                               QStringLiteral( "*.gml" ),
+                               QStringLiteral( "gml" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
 
-  // GeoPackage
-  datasetOptions.clear();
-  layerOptions.clear();
+      // GeoPackage
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "IDENTIFIER" ), new StringOption(
-                         QObject::tr( "Human-readable identifier (e.g. short name) for the layer content" ),
-                         QLatin1String( "" )  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "IDENTIFIER" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Human-readable identifier (e.g. short name) for the layer content" ),
+                             QLatin1String( "" )  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "DESCRIPTION" ), new StringOption(
-                         QObject::tr( "Human-readable description for the layer content" ),
-                         QLatin1String( "" )  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "DESCRIPTION" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Human-readable description for the layer content" ),
+                             QLatin1String( "" )  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "FID" ), new StringOption(
-                         QObject::tr( "Name for the feature identifier column" ),
-                         QStringLiteral( "fid" )  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the feature identifier column" ),
+                             QStringLiteral( "fid" )  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new StringOption(
-                         QObject::tr( "Name for the geometry column" ),
-                         QStringLiteral( "geom" )  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name for the geometry column" ),
+                             QStringLiteral( "geom" )  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new BoolOption(
-                         QObject::tr( "If a spatial index must be created." ),
-                         true  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "If a spatial index must be created." ),
+                             true  // Default value
+                           ) );
 
-  driverMetadata.insert( QStringLiteral( "GPKG" ),
-                         MetaData(
-                           QStringLiteral( "GeoPackage" ),
-                           QObject::tr( "GeoPackage" ),
-                           QStringLiteral( "*.gpkg" ),
-                           QStringLiteral( "gpkg" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GPKG" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GeoPackage" ),
+                               QObject::tr( "GeoPackage" ),
+                               QStringLiteral( "*.gpkg" ),
+                               QStringLiteral( "gpkg" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
 
-  // Generic Mapping Tools [GMT]
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Generic Mapping Tools [GMT]
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "GMT" ),
-                         MetaData(
-                           QStringLiteral( "Generic Mapping Tools [GMT]" ),
-                           QObject::tr( "Generic Mapping Tools [GMT]" ),
-                           QStringLiteral( "*.gmt" ),
-                           QStringLiteral( "gmt" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GMT" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Generic Mapping Tools [GMT]" ),
+                               QObject::tr( "Generic Mapping Tools [GMT]" ),
+                               QStringLiteral( "*.gmt" ),
+                               QStringLiteral( "gmt" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // GPS eXchange Format [GPX]
-  datasetOptions.clear();
-  layerOptions.clear();
+      // GPS eXchange Format [GPX]
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  layerOptions.insert( QStringLiteral( "FORCE_GPX_TRACK" ), new BoolOption(
-                         QObject::tr( "By default when writing a layer whose features are of "
-                                      "type wkbLineString, the GPX driver chooses to write "
-                                      "them as routes. If FORCE_GPX_TRACK=YES is specified, "
-                                      "they will be written as tracks." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "FORCE_GPX_TRACK" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "By default when writing a layer whose features are of "
+                                          "type wkbLineString, the GPX driver chooses to write "
+                                          "them as routes. If FORCE_GPX_TRACK=YES is specified, "
+                                          "they will be written as tracks." ),
+                             false  // Default value
+                           ) );
 
-  layerOptions.insert( QStringLiteral( "FORCE_GPX_ROUTE" ), new BoolOption(
-                         QObject::tr( "By default when writing a layer whose features are of "
-                                      "type wkbMultiLineString, the GPX driver chooses to write "
-                                      "them as tracks. If FORCE_GPX_ROUTE=YES is specified, "
-                                      "they will be written as routes, provided that the multilines "
-                                      "are composed of only one single line." ),
-                         false  // Default value
-                       ) );
+      layerOptions.insert( QStringLiteral( "FORCE_GPX_ROUTE" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "By default when writing a layer whose features are of "
+                                          "type wkbMultiLineString, the GPX driver chooses to write "
+                                          "them as tracks. If FORCE_GPX_ROUTE=YES is specified, "
+                                          "they will be written as routes, provided that the multilines "
+                                          "are composed of only one single line." ),
+                             false  // Default value
+                           ) );
 
-  datasetOptions.insert( QStringLiteral( "GPX_USE_EXTENSIONS" ), new BoolOption(
-                           QObject::tr( "If GPX_USE_EXTENSIONS=YES is specified, "
-                                        "extra fields will be written inside the <extensions> tag." ),
-                           false // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "GPX_USE_EXTENSIONS" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "If GPX_USE_EXTENSIONS=YES is specified, "
+                                            "extra fields will be written inside the <extensions> tag." ),
+                               false // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "GPX_EXTENSIONS_NS" ), new StringOption(
-                           QObject::tr( "Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL "
-                                        "is set. The namespace value used for extension tags. By default, 'ogr'." ),
-                           QStringLiteral( "ogr" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "GPX_EXTENSIONS_NS" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS_URL "
+                                            "is set. The namespace value used for extension tags. By default, 'ogr'." ),
+                               QStringLiteral( "ogr" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "GPX_EXTENSIONS_NS_URL" ), new StringOption(
-                           QObject::tr( "Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS "
-                                        "is set. The namespace URI. By default, 'http://osgeo.org/gdal'." ),
-                           QStringLiteral( "http://osgeo.org/gdal" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "GPX_EXTENSIONS_NS_URL" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Only used if GPX_USE_EXTENSIONS=YES and GPX_EXTENSIONS_NS "
+                                            "is set. The namespace URI. By default, 'http://osgeo.org/gdal'." ),
+                               QStringLiteral( "http://osgeo.org/gdal" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new SetOption(
-                           QObject::tr( "By default files are created with the line termination "
-                                        "conventions of the local platform (CR/LF on win32 or LF "
-                                        "on all other systems). This may be overridden through use "
-                                        "of the LINEFORMAT layer creation option which may have a value "
-                                        "of CRLF (DOS format) or LF (Unix format)." ),
-                           QStringList()
-                           << QStringLiteral( "CRLF" )
-                           << QStringLiteral( "LF" ),
-                           QLatin1String( "" ), // Default value
-                           true // Allow None
-                         ) );
+      datasetOptions.insert( QStringLiteral( "LINEFORMAT" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "By default files are created with the line termination "
+                                            "conventions of the local platform (CR/LF on win32 or LF "
+                                            "on all other systems). This may be overridden through use "
+                                            "of the LINEFORMAT layer creation option which may have a value "
+                                            "of CRLF (DOS format) or LF (Unix format)." ),
+                               QStringList()
+                               << QStringLiteral( "CRLF" )
+                               << QStringLiteral( "LF" ),
+                               QLatin1String( "" ), // Default value
+                               true // Allow None
+                             ) );
 
-  driverMetadata.insert( QStringLiteral( "GPX" ),
-                         MetaData(
-                           QStringLiteral( "GPS eXchange Format [GPX]" ),
-                           QObject::tr( "GPS eXchange Format [GPX]" ),
-                           QStringLiteral( "*.gpx" ),
-                           QStringLiteral( "gpx" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "GPX" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "GPS eXchange Format [GPX]" ),
+                               QObject::tr( "GPS eXchange Format [GPX]" ),
+                               QStringLiteral( "*.gpx" ),
+                               QStringLiteral( "gpx" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
 
-  // INTERLIS 1
-  datasetOptions.clear();
-  layerOptions.clear();
+      // INTERLIS 1
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "Interlis 1" ),
-                         MetaData(
-                           QStringLiteral( "INTERLIS 1" ),
-                           QObject::tr( "INTERLIS 1" ),
-                           QStringLiteral( "*.itf *.xml *.ili" ),
-                           QStringLiteral( "ili" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "Interlis 1" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "INTERLIS 1" ),
+                               QObject::tr( "INTERLIS 1" ),
+                               QStringLiteral( "*.itf *.xml *.ili" ),
+                               QStringLiteral( "ili" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // INTERLIS 2
-  datasetOptions.clear();
-  layerOptions.clear();
+      // INTERLIS 2
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  driverMetadata.insert( QStringLiteral( "Interlis 2" ),
-                         MetaData(
-                           QStringLiteral( "INTERLIS 2" ),
-                           QObject::tr( "INTERLIS 2" ),
-                           QStringLiteral( "*.xtf *.xml *.ili" ),
-                           QStringLiteral( "ili" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
+      driverMetadata.insert( QStringLiteral( "Interlis 2" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "INTERLIS 2" ),
+                               QObject::tr( "INTERLIS 2" ),
+                               QStringLiteral( "*.xtf *.xml *.ili" ),
+                               QStringLiteral( "ili" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
 
-  // Keyhole Markup Language [KML]
-  datasetOptions.clear();
-  layerOptions.clear();
+      // Keyhole Markup Language [KML]
+      datasetOptions.clear();
+      layerOptions.clear();
 
-  datasetOptions.insert( QStringLiteral( "NameField" ), new StringOption(
-                           QObject::tr( "Allows you to specify the field to use for the KML <name> element." ),
-                           QStringLiteral( "Name" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "NameField" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Allows you to specify the field to use for the KML <name> element." ),
+                               QStringLiteral( "Name" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "DescriptionField" ), new StringOption(
-                           QObject::tr( "Allows you to specify the field to use for the KML <description> element." ),
-                           QStringLiteral( "Description" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "DescriptionField" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Allows you to specify the field to use for the KML <description> element." ),
+                               QStringLiteral( "Description" )  // Default value
+                             ) );
 
-  datasetOptions.insert( QStringLiteral( "AltitudeMode" ), new SetOption(
-                           QObject::tr( "Allows you to specify the AltitudeMode to use for KML geometries. "
-                                        "This will only affect 3D geometries and must be one of the valid KML options." ),
-                           QStringList()
-                           << QStringLiteral( "clampToGround" )
-                           << QStringLiteral( "relativeToGround" )
-                           << QStringLiteral( "absolute" ),
-                           QStringLiteral( "relativeToGround" ) // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "AltitudeMode" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Allows you to specify the AltitudeMode to use for KML geometries. "
+                                            "This will only affect 3D geometries and must be one of the valid KML options." ),
+                               QStringList()
+                               << QStringLiteral( "clampToGround" )
+                               << QStringLiteral( "relativeToGround" )
+                               << QStringLiteral( "absolute" ),
+                               QStringLiteral( "relativeToGround" ) // Default value
+                             ) );
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,2,0)
-  datasetOptions.insert( QStringLiteral( "DOCUMENT_ID" ), new StringOption(
-                           QObject::tr( "The DOCUMENT_ID datasource creation option can be used to specified "
-                                        "the id of the root <Document> node. The default value is root_doc." ),
-                           QStringLiteral( "root_doc" )  // Default value
-                         ) );
+      datasetOptions.insert( QStringLiteral( "DOCUMENT_ID" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "The DOCUMENT_ID datasource creation option can be used to specified "
+                                            "the id of the root <Document> node. The default value is root_doc." ),
+                               QStringLiteral( "root_doc" )  // Default value
+                             ) );
 #endif
 
-  driverMetadata.insert( QStringLiteral( "KML" ),
-                         MetaData(
-                           QStringLiteral( "Keyhole Markup Language [KML]" ),
-                           QObject::tr( "Keyhole Markup Language [KML]" ),
-                           QStringLiteral( "*.kml" ),
-                           QStringLiteral( "kml" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-
-  // Mapinfo
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "SPATIAL_INDEX_MODE" ), new SetOption(
-                           QObject::tr( "Use this to turn on 'quick spatial index mode'. "
-                                        "In this mode writing files can be about 5 times faster, "
-                                        "but spatial queries can be up to 30 times slower." ),
-                           QStringList()
-                           << QStringLiteral( "QUICK" )
-                           << QStringLiteral( "OPTIMIZED" ),
-                           QStringLiteral( "QUICK" ), // Default value
-                           true // Allow None
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "BLOCK_SIZE" ), new IntOption(
-                           QObject::tr( "(multiples of 512): Block size for .map files. Defaults "
-                                        "to 512. MapInfo 15.2 and above creates .tab files with a "
-                                        "blocksize of 16384 bytes. Any MapInfo version should be "
-                                        "able to handle block sizes from 512 to 32256." ),
-                           512
-                         ) );
-  layerOptions.insert( QStringLiteral( "BOUNDS" ), new StringOption(
-                         QObject::tr( "xmin,ymin,xmax,ymax: Define custom layer bounds to increase the "
-                                      "accuracy of the coordinates. Note: the geometry of written "
-                                      "features must be within the defined box." ),
-                         QLatin1String( "" ) // Default value
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "MapInfo File" ),
-                         MetaData(
-                           QStringLiteral( "Mapinfo" ),
-                           QObject::tr( "Mapinfo TAB" ),
-                           QStringLiteral( "*.tab" ),
-                           QStringLiteral( "tab" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // QGIS internal alias for MIF files
-  driverMetadata.insert( QStringLiteral( "MapInfo MIF" ),
-                         MetaData(
-                           QStringLiteral( "Mapinfo" ),
-                           QObject::tr( "Mapinfo MIF" ),
-                           QStringLiteral( "*.mif" ),
-                           QStringLiteral( "mif" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // Microstation DGN
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "3D" ), new BoolOption(
-                           QObject::tr( "Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) "
-                                        "seed file should be used. This option is ignored if the SEED option is provided." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "SEED" ), new StringOption(
-                           QObject::tr( "Override the seed file to use." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "COPY_WHOLE_SEED_FILE" ), new BoolOption(
-                           QObject::tr( "Indicate whether the whole seed file should be copied. "
-                                        "If not, only the first three elements will be copied." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "COPY_SEED_FILE_COLOR_TABLE" ), new BoolOption(
-                           QObject::tr( "Indicates whether the color table should be copied from the seed file." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "MASTER_UNIT_NAME" ), new StringOption(
-                           QObject::tr( "Override the master unit name from the seed file with "
-                                        "the provided one or two character unit name." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "SUB_UNIT_NAME" ), new StringOption(
-                           QObject::tr( "Override the sub unit name from the seed file with the provided "
-                                        "one or two character unit name." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "SUB_UNITS_PER_MASTER_UNIT" ), new IntOption(
-                           QObject::tr( "Override the number of subunits per master unit. "
-                                        "By default the seed file value is used." ),
-                           0 // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "UOR_PER_SUB_UNIT" ), new IntOption(
-                           QObject::tr( "Override the number of UORs (Units of Resolution) "
-                                        "per sub unit. By default the seed file value is used." ),
-                           0 // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "ORIGIN" ), new StringOption(
-                           QObject::tr( "ORIGIN=x,y,z: Override the origin of the design plane. "
-                                        "By default the origin from the seed file is used." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  driverMetadata.insert( QStringLiteral( "DGN" ),
-                         MetaData(
-                           QStringLiteral( "Microstation DGN" ),
-                           QObject::tr( "Microstation DGN" ),
-                           QStringLiteral( "*.dgn" ),
-                           QStringLiteral( "dgn" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // S-57 Base file
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "UPDATES" ), new SetOption(
-                           QObject::tr( "Should update files be incorporated into the base data on the fly." ),
-                           QStringList()
-                           << QStringLiteral( "APPLY" )
-                           << QStringLiteral( "IGNORE" ),
-                           QStringLiteral( "APPLY" ) // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "SPLIT_MULTIPOINT" ), new BoolOption(
-                           QObject::tr( "Should multipoint soundings be split into many single point sounding features. "
-                                        "Multipoint geometries are not well handled by many formats, "
-                                        "so it can be convenient to split single sounding features with many points "
-                                        "into many single point features." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "ADD_SOUNDG_DEPTH" ), new BoolOption(
-                           QObject::tr( "Should a DEPTH attribute be added on SOUNDG features and assign the depth "
-                                        "of the sounding. This should only be enabled when SPLIT_MULTIPOINT is "
-                                        "also enabled." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "RETURN_PRIMITIVES" ), new BoolOption(
-                           QObject::tr( "Should all the low level geometry primitives be returned as special "
-                                        "IsolatedNode, ConnectedNode, Edge and Face layers." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "PRESERVE_EMPTY_NUMBERS" ), new BoolOption(
-                           QObject::tr( "If enabled, numeric attributes assigned an empty string as a value will "
-                                        "be preserved as a special numeric value. This option should not generally "
-                                        "be needed, but may be useful when translated S-57 to S-57 losslessly." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "LNAM_REFS" ), new BoolOption(
-                           QObject::tr( "Should LNAM and LNAM_REFS fields be attached to features capturing "
-                                        "the feature to feature relationships in the FFPT group of the S-57 file." ),
-                           true  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "RETURN_LINKAGES" ), new BoolOption(
-                           QObject::tr( "Should additional attributes relating features to their underlying "
-                                        "geometric primitives be attached. These are the values of the FSPT group, "
-                                        "and are primarily needed when doing S-57 to S-57 translations." ),
-                           false  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "RECODE_BY_DSSI" ), new BoolOption(
-                           QObject::tr( "Should attribute values be recoded to UTF-8 from the character encoding "
-                                        "specified in the S57 DSSI record." ),
-                           false  // Default value
-                         ) );
-
-  // set OGR_S57_OPTIONS = "RETURN_PRIMITIVES=ON,RETURN_LINKAGES=ON,LNAM_REFS=ON"
-
-  driverMetadata.insert( QStringLiteral( "S57" ),
-                         MetaData(
-                           QStringLiteral( "S-57 Base file" ),
-                           QObject::tr( "S-57 Base file" ),
-                           QStringLiteral( "*.000" ),
-                           QStringLiteral( "000" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // Spatial Data Transfer Standard [SDTS]
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  driverMetadata.insert( QStringLiteral( "SDTS" ),
-                         MetaData(
-                           QStringLiteral( "Spatial Data Transfer Standard [SDTS]" ),
-                           QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
-                           QStringLiteral( "*catd.ddf" ),
-                           QStringLiteral( "ddf" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // SQLite
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "METADATA" ), new BoolOption(
-                           QObject::tr( "Can be used to avoid creating the geometry_columns and spatial_ref_sys "
-                                        "tables in a new database. By default these metadata tables are created "
-                                        "when a new database is created." ),
-                           true  // Default value
-                         ) );
-
-  // Will handle the SpatiaLite alias
-  datasetOptions.insert( QStringLiteral( "SPATIALITE" ), new HiddenOption(
-                           QStringLiteral( "NO" )
-                         ) );
-
-
-  datasetOptions.insert( QStringLiteral( "INIT_WITH_EPSG" ), new HiddenOption(
-                           QStringLiteral( "NO" )
-                         ) );
-
-  layerOptions.insert( QStringLiteral( "FORMAT" ), new SetOption(
-                         QObject::tr( "Controls the format used for the geometry column. Defaults to WKB. "
-                                      "This is generally more space and processing efficient, but harder "
-                                      "to inspect or use in simple applications than WKT (Well Known Text)." ),
-                         QStringList()
-                         << QStringLiteral( "WKB" )
-                         << QStringLiteral( "WKT" ),
-                         QStringLiteral( "WKB" ) // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "LAUNDER" ), new BoolOption(
-                         QObject::tr( "Controls whether layer and field names will be laundered for easier use "
-                                      "in SQLite. Laundered names will be converted to lower case and some special "
-                                      "characters(' - #) will be changed to underscores." ),
-                         true  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new HiddenOption(
-                         QStringLiteral( "NO" )
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new HiddenOption(
-                         QStringLiteral( "NO" )
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "SRID" ), new HiddenOption(
-                         QLatin1String( "" )
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new StringOption(
-                         QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
-                                      "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
-                                      "for databases that have big string blobs. However, use with care, since "
-                                      "the value of such columns will be seen as compressed binary content with "
-                                      "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
-                                      "modifying or querying compressed columns, compression/decompression is "
-                                      "done transparently. However, such columns cannot be (easily) queried with "
-                                      "an attribute filter or WHERE clause. Note: in table definition, such columns "
-                                      "have the 'VARCHAR_deflate' declaration type." ),
-                         QLatin1String( "" )  // Default value
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "SQLite" ),
-                         MetaData(
-                           QStringLiteral( "SQLite" ),
-                           QObject::tr( "SQLite" ),
-                           QStringLiteral( "*.sqlite" ),
-                           QStringLiteral( "sqlite" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-
-  // SpatiaLite
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "METADATA" ), new BoolOption(
-                           QObject::tr( "Can be used to avoid creating the geometry_columns and spatial_ref_sys "
-                                        "tables in a new database. By default these metadata tables are created "
-                                        "when a new database is created." ),
-                           true  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "SPATIALITE" ), new HiddenOption(
-                           QStringLiteral( "YES" )
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "INIT_WITH_EPSG" ), new BoolOption(
-                           QObject::tr( "Insert the content of the EPSG CSV files into the spatial_ref_sys table. "
-                                        "Set to NO for regular SQLite databases." ),
-                           true  // Default value
-                         ) );
-
-  layerOptions.insert( QStringLiteral( "FORMAT" ), new HiddenOption(
-                         QStringLiteral( "SPATIALITE" )
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "LAUNDER" ), new BoolOption(
-                         QObject::tr( "Controls whether layer and field names will be laundered for easier use "
-                                      "in SQLite. Laundered names will be converted to lower case and some special "
-                                      "characters(' - #) will be changed to underscores." ),
-                         true  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new BoolOption(
-                         QObject::tr( "If the database is of the SpatiaLite flavor, and if OGR is linked "
-                                      "against libspatialite, this option can be used to control if a spatial "
-                                      "index must be created." ),
-                         true  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new BoolOption(
-                         QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
-                                      "this option can be used to control if the compressed format for "
-                                      "geometries (LINESTRINGs, POLYGONs) must be used." ),
-                         false  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "SRID" ), new StringOption(
-                         QObject::tr( "Used to force the SRID number of the SRS associated with the layer. "
-                                      "When this option isn't specified and that a SRS is associated with the "
-                                      "layer, a search is made in the spatial_ref_sys to find a match for the "
-                                      "SRS, and, if there is no match, a new entry is inserted for the SRS in "
-                                      "the spatial_ref_sys table. When the SRID option is specified, this "
-                                      "search (and the eventual insertion of a new entry) will not be done: "
-                                      "the specified SRID is used as such." ),
-                         QLatin1String( "" )  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new StringOption(
-                         QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
-                                      "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
-                                      "for databases that have big string blobs. However, use with care, since "
-                                      "the value of such columns will be seen as compressed binary content with "
-                                      "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
-                                      "modifying or queryings compressed columns, compression/decompression is "
-                                      "done transparently. However, such columns cannot be (easily) queried with "
-                                      "an attribute filter or WHERE clause. Note: in table definition, such columns "
-                                      "have the 'VARCHAR_deflate' declaration type." ),
-                         QLatin1String( "" )  // Default value
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "SpatiaLite" ),
-                         MetaData(
-                           QStringLiteral( "SpatiaLite" ),
-                           QObject::tr( "SpatiaLite" ),
-                           QStringLiteral( "*.sqlite" ),
-                           QStringLiteral( "sqlite" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-  // AutoCAD DXF
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "HEADER" ), new StringOption(
-                           QObject::tr( "Override the header file used - in place of header.dxf." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "TRAILER" ), new StringOption(
-                           QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  driverMetadata.insert( QStringLiteral( "DXF" ),
-                         MetaData(
-                           QStringLiteral( "AutoCAD DXF" ),
-                           QObject::tr( "AutoCAD DXF" ),
-                           QStringLiteral( "*.dxf" ),
-                           QStringLiteral( "dxf" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // Geoconcept
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  datasetOptions.insert( QStringLiteral( "EXTENSION" ), new SetOption(
-                           QObject::tr( "Indicates the GeoConcept export file extension. "
-                                        "TXT was used by earlier releases of GeoConcept. GXT is currently used." ),
-                           QStringList()
-                           << QStringLiteral( "GXT" )
-                           << QStringLiteral( "TXT" ),
-                           QStringLiteral( "GXT" ) // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "CONFIG" ), new StringOption(
-                           QObject::tr( "Path to the GCT: the GCT file describes the GeoConcept types definitions: "
-                                        "In this file, every line must start with //# followed by a keyword. "
-                                        "Lines starting with // are comments." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new StringOption(
-                           QObject::tr( "Defines the feature to be created. The TYPE corresponds to one of the Name "
-                                        "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
-                                        "the Name found in the GCT file for a sub-type section within the previous "
-                                        "type section." ),
-                           QLatin1String( "" )  // Default value
-                         ) );
-
-  driverMetadata.insert( QStringLiteral( "Geoconcept" ),
-                         MetaData(
-                           QStringLiteral( "Geoconcept" ),
-                           QObject::tr( "Geoconcept" ),
-                           QStringLiteral( "*.gxt *.txt" ),
-                           QStringLiteral( "gxt" ),
-                           datasetOptions,
-                           layerOptions
-                         )
-                       );
-
-  // ESRI FileGDB
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new StringOption(
-                         QObject::tr( "When this option is set, the new layer will be created inside the named "
-                                      "FeatureDataset folder. If the folder does not already exist, it will be created." ),
-                         QLatin1String( "" )  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new StringOption(
-                         QObject::tr( "Set name of geometry column in new layer. Defaults to 'SHAPE'." ),
-                         QStringLiteral( "SHAPE" )  // Default value
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "FID" ), new StringOption(
-                         QObject::tr( "Name of the OID column to create. Defaults to 'OBJECTID'." ),
-                         QStringLiteral( "OBJECTID" )  // Default value
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "FileGDB" ),
-                         MetaData(
-                           QStringLiteral( "ESRI FileGDB" ),
-                           QObject::tr( "ESRI FileGDB" ),
-                           QStringLiteral( "*.gdb" ),
-                           QStringLiteral( "gdb" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-
-  // XLSX
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  layerOptions.insert( QStringLiteral( "OGR_XLSX_FIELD_TYPES" ), new SetOption(
-                         QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
-                                      "to STRING, all fields will be of String type." ),
-                         QStringList()
-                         << QStringLiteral( "AUTO" )
-                         << QStringLiteral( "STRING" ),
-                         QStringLiteral( "AUTO" ), // Default value
-                         false // Allow None
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "OGR_XLSX_HEADERS" ), new SetOption(
-                         QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
-                                      "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line as the header line. If set to "
-                                      "DISABLE, it will be considered as the first feature. Otherwise "
-                                      "auto-detection will occur." ),
-                         QStringList()
-                         << QStringLiteral( "FORCE" )
-                         << QStringLiteral( "DISABLE" )
-                         << QStringLiteral( "AUTO" ),
-                         QStringLiteral( "AUTO" ), // Default value
-                         false // Allow None
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "XLSX" ),
-                         MetaData(
-                           QStringLiteral( "MS Office Open XML spreadsheet" ),
-                           QObject::tr( "MS Office Open XML spreadsheet" ),
-                           QStringLiteral( "*.xlsx" ),
-                           QStringLiteral( "xlsx" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-
-  // ODS
-  datasetOptions.clear();
-  layerOptions.clear();
-
-  layerOptions.insert( QStringLiteral( "OGR_ODS_FIELD_TYPES" ), new SetOption(
-                         QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
-                                      "to STRING, all fields will be of String type." ),
-                         QStringList()
-                         << QStringLiteral( "AUTO" )
-                         << QStringLiteral( "STRING" ),
-                         QStringLiteral( "AUTO" ), // Default value
-                         false // Allow None
-                       ) );
-
-  layerOptions.insert( QStringLiteral( "OGR_ODS_HEADERS" ), new SetOption(
-                         QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
-                                      "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line as the header line. If set to "
-                                      "DISABLE, it will be considered as the first feature. Otherwise "
-                                      "auto-detection will occur." ),
-                         QStringList()
-                         << QStringLiteral( "FORCE" )
-                         << QStringLiteral( "DISABLE" )
-                         << QStringLiteral( "AUTO" ),
-                         QStringLiteral( "AUTO" ), // Default value
-                         false // Allow None
-                       ) );
-
-  driverMetadata.insert( QStringLiteral( "ODS" ),
-                         MetaData(
-                           QStringLiteral( "Open Document Spreadsheet" ),
-                           QObject::tr( "Open Document Spreadsheet" ),
-                           QStringLiteral( "*.ods" ),
-                           QStringLiteral( "ods" ),
-                           datasetOptions,
-                           layerOptions,
-                           QStringLiteral( "UTF-8" )
-                         )
-                       );
-
-  return driverMetadata;
-}
+      driverMetadata.insert( QStringLiteral( "KML" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Keyhole Markup Language [KML]" ),
+                               QObject::tr( "Keyhole Markup Language [KML]" ),
+                               QStringLiteral( "*.kml" ),
+                               QStringLiteral( "kml" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // Mapinfo
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      auto insertMapInfoOptions = []( QMap<QString, QgsVectorFileWriter::Option *> &datasetOptions, QMap<QString, QgsVectorFileWriter::Option *> &layerOptions )
+      {
+        datasetOptions.insert( QStringLiteral( "SPATIAL_INDEX_MODE" ), new QgsVectorFileWriter::SetOption(
+                                 QObject::tr( "Use this to turn on 'quick spatial index mode'. "
+                                              "In this mode writing files can be about 5 times faster, "
+                                              "but spatial queries can be up to 30 times slower." ),
+                                 QStringList()
+                                 << QStringLiteral( "QUICK" )
+                                 << QStringLiteral( "OPTIMIZED" ),
+                                 QStringLiteral( "QUICK" ), // Default value
+                                 true // Allow None
+                               ) );
+
+        datasetOptions.insert( QStringLiteral( "BLOCK_SIZE" ), new QgsVectorFileWriter::IntOption(
+                                 QObject::tr( "(multiples of 512): Block size for .map files. Defaults "
+                                              "to 512. MapInfo 15.2 and above creates .tab files with a "
+                                              "blocksize of 16384 bytes. Any MapInfo version should be "
+                                              "able to handle block sizes from 512 to 32256." ),
+                                 512
+                               ) );
+        layerOptions.insert( QStringLiteral( "BOUNDS" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "xmin,ymin,xmax,ymax: Define custom layer bounds to increase the "
+                                            "accuracy of the coordinates. Note: the geometry of written "
+                                            "features must be within the defined box." ),
+                               QLatin1String( "" ) // Default value
+                             ) );
+      };
+      insertMapInfoOptions( datasetOptions, layerOptions );
+
+      driverMetadata.insert( QStringLiteral( "MapInfo File" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Mapinfo" ),
+                               QObject::tr( "Mapinfo TAB" ),
+                               QStringLiteral( "*.tab" ),
+                               QStringLiteral( "tab" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+      datasetOptions.clear();
+      layerOptions.clear();
+      insertMapInfoOptions( datasetOptions, layerOptions );
+
+      // QGIS internal alias for MIF files
+      driverMetadata.insert( QStringLiteral( "MapInfo MIF" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Mapinfo" ),
+                               QObject::tr( "Mapinfo MIF" ),
+                               QStringLiteral( "*.mif" ),
+                               QStringLiteral( "mif" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // Microstation DGN
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "3D" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) "
+                                            "seed file should be used. This option is ignored if the SEED option is provided." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "SEED" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Override the seed file to use." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "COPY_WHOLE_SEED_FILE" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Indicate whether the whole seed file should be copied. "
+                                            "If not, only the first three elements will be copied." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "COPY_SEED_FILE_COLOR_TABLE" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Indicates whether the color table should be copied from the seed file." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "MASTER_UNIT_NAME" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Override the master unit name from the seed file with "
+                                            "the provided one or two character unit name." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "SUB_UNIT_NAME" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Override the sub unit name from the seed file with the provided "
+                                            "one or two character unit name." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "SUB_UNITS_PER_MASTER_UNIT" ), new QgsVectorFileWriter::IntOption(
+                               QObject::tr( "Override the number of subunits per master unit. "
+                                            "By default the seed file value is used." ),
+                               0 // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "UOR_PER_SUB_UNIT" ), new QgsVectorFileWriter::IntOption(
+                               QObject::tr( "Override the number of UORs (Units of Resolution) "
+                                            "per sub unit. By default the seed file value is used." ),
+                               0 // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "ORIGIN" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "ORIGIN=x,y,z: Override the origin of the design plane. "
+                                            "By default the origin from the seed file is used." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      driverMetadata.insert( QStringLiteral( "DGN" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Microstation DGN" ),
+                               QObject::tr( "Microstation DGN" ),
+                               QStringLiteral( "*.dgn" ),
+                               QStringLiteral( "dgn" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // S-57 Base file
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "UPDATES" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Should update files be incorporated into the base data on the fly." ),
+                               QStringList()
+                               << QStringLiteral( "APPLY" )
+                               << QStringLiteral( "IGNORE" ),
+                               QStringLiteral( "APPLY" ) // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "SPLIT_MULTIPOINT" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should multipoint soundings be split into many single point sounding features. "
+                                            "Multipoint geometries are not well handled by many formats, "
+                                            "so it can be convenient to split single sounding features with many points "
+                                            "into many single point features." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "ADD_SOUNDG_DEPTH" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should a DEPTH attribute be added on SOUNDG features and assign the depth "
+                                            "of the sounding. This should only be enabled when SPLIT_MULTIPOINT is "
+                                            "also enabled." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "RETURN_PRIMITIVES" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should all the low level geometry primitives be returned as special "
+                                            "IsolatedNode, ConnectedNode, Edge and Face layers." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "PRESERVE_EMPTY_NUMBERS" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "If enabled, numeric attributes assigned an empty string as a value will "
+                                            "be preserved as a special numeric value. This option should not generally "
+                                            "be needed, but may be useful when translated S-57 to S-57 losslessly." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "LNAM_REFS" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should LNAM and LNAM_REFS fields be attached to features capturing "
+                                            "the feature to feature relationships in the FFPT group of the S-57 file." ),
+                               true  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "RETURN_LINKAGES" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should additional attributes relating features to their underlying "
+                                            "geometric primitives be attached. These are the values of the FSPT group, "
+                                            "and are primarily needed when doing S-57 to S-57 translations." ),
+                               false  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "RECODE_BY_DSSI" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Should attribute values be recoded to UTF-8 from the character encoding "
+                                            "specified in the S57 DSSI record." ),
+                               false  // Default value
+                             ) );
+
+      // set OGR_S57_OPTIONS = "RETURN_PRIMITIVES=ON,RETURN_LINKAGES=ON,LNAM_REFS=ON"
+
+      driverMetadata.insert( QStringLiteral( "S57" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "S-57 Base file" ),
+                               QObject::tr( "S-57 Base file" ),
+                               QStringLiteral( "*.000" ),
+                               QStringLiteral( "000" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // Spatial Data Transfer Standard [SDTS]
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      driverMetadata.insert( QStringLiteral( "SDTS" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Spatial Data Transfer Standard [SDTS]" ),
+                               QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
+                               QStringLiteral( "*catd.ddf" ),
+                               QStringLiteral( "ddf" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // SQLite
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "METADATA" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Can be used to avoid creating the geometry_columns and spatial_ref_sys "
+                                            "tables in a new database. By default these metadata tables are created "
+                                            "when a new database is created." ),
+                               true  // Default value
+                             ) );
+
+      // Will handle the SpatiaLite alias
+      datasetOptions.insert( QStringLiteral( "SPATIALITE" ), new QgsVectorFileWriter::HiddenOption(
+                               QStringLiteral( "NO" )
+                             ) );
+
+
+      datasetOptions.insert( QStringLiteral( "INIT_WITH_EPSG" ), new QgsVectorFileWriter::HiddenOption(
+                               QStringLiteral( "NO" )
+                             ) );
+
+      layerOptions.insert( QStringLiteral( "FORMAT" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "Controls the format used for the geometry column. Defaults to WKB. "
+                                          "This is generally more space and processing efficient, but harder "
+                                          "to inspect or use in simple applications than WKT (Well Known Text)." ),
+                             QStringList()
+                             << QStringLiteral( "WKB" )
+                             << QStringLiteral( "WKT" ),
+                             QStringLiteral( "WKB" ) // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "LAUNDER" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Controls whether layer and field names will be laundered for easier use "
+                                          "in SQLite. Laundered names will be converted to lower case and some special "
+                                          "characters(' - #) will be changed to underscores." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new QgsVectorFileWriter::HiddenOption(
+                             QStringLiteral( "NO" )
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new QgsVectorFileWriter::HiddenOption(
+                             QStringLiteral( "NO" )
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "SRID" ), new QgsVectorFileWriter::HiddenOption(
+                             QLatin1String( "" )
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
+                                          "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
+                                          "for databases that have big string blobs. However, use with care, since "
+                                          "the value of such columns will be seen as compressed binary content with "
+                                          "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
+                                          "modifying or querying compressed columns, compression/decompression is "
+                                          "done transparently. However, such columns cannot be (easily) queried with "
+                                          "an attribute filter or WHERE clause. Note: in table definition, such columns "
+                                          "have the 'VARCHAR_deflate' declaration type." ),
+                             QLatin1String( "" )  // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "SQLite" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "SQLite" ),
+                               QObject::tr( "SQLite" ),
+                               QStringLiteral( "*.sqlite" ),
+                               QStringLiteral( "sqlite" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // SpatiaLite
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "METADATA" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Can be used to avoid creating the geometry_columns and spatial_ref_sys "
+                                            "tables in a new database. By default these metadata tables are created "
+                                            "when a new database is created." ),
+                               true  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "SPATIALITE" ), new QgsVectorFileWriter::HiddenOption(
+                               QStringLiteral( "YES" )
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "INIT_WITH_EPSG" ), new QgsVectorFileWriter::BoolOption(
+                               QObject::tr( "Insert the content of the EPSG CSV files into the spatial_ref_sys table. "
+                                            "Set to NO for regular SQLite databases." ),
+                               true  // Default value
+                             ) );
+
+      layerOptions.insert( QStringLiteral( "FORMAT" ), new QgsVectorFileWriter::HiddenOption(
+                             QStringLiteral( "SPATIALITE" )
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "LAUNDER" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "Controls whether layer and field names will be laundered for easier use "
+                                          "in SQLite. Laundered names will be converted to lower case and some special "
+                                          "characters(' - #) will be changed to underscores." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "SPATIAL_INDEX" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "If the database is of the SpatiaLite flavor, and if OGR is linked "
+                                          "against libspatialite, this option can be used to control if a spatial "
+                                          "index must be created." ),
+                             true  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new QgsVectorFileWriter::BoolOption(
+                             QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
+                                          "this option can be used to control if the compressed format for "
+                                          "geometries (LINESTRINGs, POLYGONs) must be used." ),
+                             false  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "SRID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Used to force the SRID number of the SRS associated with the layer. "
+                                          "When this option isn't specified and that a SRS is associated with the "
+                                          "layer, a search is made in the spatial_ref_sys to find a match for the "
+                                          "SRS, and, if there is no match, a new entry is inserted for the SRS in "
+                                          "the spatial_ref_sys table. When the SRID option is specified, this "
+                                          "search (and the eventual insertion of a new entry) will not be done: "
+                                          "the specified SRID is used as such." ),
+                             QLatin1String( "" )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "COMPRESS_COLUMNS" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "column_name1[,column_name2, ...] A list of (String) columns that "
+                                          "must be compressed with ZLib DEFLATE algorithm. This might be beneficial "
+                                          "for databases that have big string blobs. However, use with care, since "
+                                          "the value of such columns will be seen as compressed binary content with "
+                                          "other SQLite utilities (or previous OGR versions). With OGR, when inserting, "
+                                          "modifying or queryings compressed columns, compression/decompression is "
+                                          "done transparently. However, such columns cannot be (easily) queried with "
+                                          "an attribute filter or WHERE clause. Note: in table definition, such columns "
+                                          "have the 'VARCHAR_deflate' declaration type." ),
+                             QLatin1String( "" )  // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "SpatiaLite" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "SpatiaLite" ),
+                               QObject::tr( "SpatiaLite" ),
+                               QStringLiteral( "*.sqlite" ),
+                               QStringLiteral( "sqlite" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+      // AutoCAD DXF
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "HEADER" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Override the header file used - in place of header.dxf." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "TRAILER" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Override the trailer file used - in place of trailer.dxf." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      driverMetadata.insert( QStringLiteral( "DXF" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "AutoCAD DXF" ),
+                               QObject::tr( "AutoCAD DXF" ),
+                               QStringLiteral( "*.dxf" ),
+                               QStringLiteral( "dxf" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // Geoconcept
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      datasetOptions.insert( QStringLiteral( "EXTENSION" ), new QgsVectorFileWriter::SetOption(
+                               QObject::tr( "Indicates the GeoConcept export file extension. "
+                                            "TXT was used by earlier releases of GeoConcept. GXT is currently used." ),
+                               QStringList()
+                               << QStringLiteral( "GXT" )
+                               << QStringLiteral( "TXT" ),
+                               QStringLiteral( "GXT" ) // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "CONFIG" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Path to the GCT: the GCT file describes the GeoConcept types definitions: "
+                                            "In this file, every line must start with //# followed by a keyword. "
+                                            "Lines starting with // are comments." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new QgsVectorFileWriter::StringOption(
+                               QObject::tr( "Defines the feature to be created. The TYPE corresponds to one of the Name "
+                                            "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
+                                            "the Name found in the GCT file for a sub-type section within the previous "
+                                            "type section." ),
+                               QLatin1String( "" )  // Default value
+                             ) );
+
+      driverMetadata.insert( QStringLiteral( "Geoconcept" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Geoconcept" ),
+                               QObject::tr( "Geoconcept" ),
+                               QStringLiteral( "*.gxt *.txt" ),
+                               QStringLiteral( "gxt" ),
+                               datasetOptions,
+                               layerOptions
+                             )
+                           );
+
+      // ESRI FileGDB
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "FEATURE_DATASET" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "When this option is set, the new layer will be created inside the named "
+                                          "FeatureDataset folder. If the folder does not already exist, it will be created." ),
+                             QLatin1String( "" )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "GEOMETRY_NAME" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Set name of geometry column in new layer. Defaults to 'SHAPE'." ),
+                             QStringLiteral( "SHAPE" )  // Default value
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "FID" ), new QgsVectorFileWriter::StringOption(
+                             QObject::tr( "Name of the OID column to create. Defaults to 'OBJECTID'." ),
+                             QStringLiteral( "OBJECTID" )  // Default value
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "FileGDB" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "ESRI FileGDB" ),
+                               QObject::tr( "ESRI FileGDB" ),
+                               QStringLiteral( "*.gdb" ),
+                               QStringLiteral( "gdb" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // XLSX
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "OGR_XLSX_FIELD_TYPES" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
+                                          "to STRING, all fields will be of String type." ),
+                             QStringList()
+                             << QStringLiteral( "AUTO" )
+                             << QStringLiteral( "STRING" ),
+                             QStringLiteral( "AUTO" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "OGR_XLSX_HEADERS" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
+                                          "if the first line might be the name of columns. If set to FORCE, the driver "
+                                          "will consider the first line as the header line. If set to "
+                                          "DISABLE, it will be considered as the first feature. Otherwise "
+                                          "auto-detection will occur." ),
+                             QStringList()
+                             << QStringLiteral( "FORCE" )
+                             << QStringLiteral( "DISABLE" )
+                             << QStringLiteral( "AUTO" ),
+                             QStringLiteral( "AUTO" ), // Default value
+                             false // Allow None
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "XLSX" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "MS Office Open XML spreadsheet" ),
+                               QObject::tr( "MS Office Open XML spreadsheet" ),
+                               QStringLiteral( "*.xlsx" ),
+                               QStringLiteral( "xlsx" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+
+      // ODS
+      datasetOptions.clear();
+      layerOptions.clear();
+
+      layerOptions.insert( QStringLiteral( "OGR_ODS_FIELD_TYPES" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default, the driver will try to detect the data type of fields. If set "
+                                          "to STRING, all fields will be of String type." ),
+                             QStringList()
+                             << QStringLiteral( "AUTO" )
+                             << QStringLiteral( "STRING" ),
+                             QStringLiteral( "AUTO" ), // Default value
+                             false // Allow None
+                           ) );
+
+      layerOptions.insert( QStringLiteral( "OGR_ODS_HEADERS" ), new QgsVectorFileWriter::SetOption(
+                             QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
+                                          "if the first line might be the name of columns. If set to FORCE, the driver "
+                                          "will consider the first line as the header line. If set to "
+                                          "DISABLE, it will be considered as the first feature. Otherwise "
+                                          "auto-detection will occur." ),
+                             QStringList()
+                             << QStringLiteral( "FORCE" )
+                             << QStringLiteral( "DISABLE" )
+                             << QStringLiteral( "AUTO" ),
+                             QStringLiteral( "AUTO" ), // Default value
+                             false // Allow None
+                           ) );
+
+      driverMetadata.insert( QStringLiteral( "ODS" ),
+                             QgsVectorFileWriter::MetaData(
+                               QStringLiteral( "Open Document Spreadsheet" ),
+                               QObject::tr( "Open Document Spreadsheet" ),
+                               QStringLiteral( "*.ods" ),
+                               QStringLiteral( "ods" ),
+                               datasetOptions,
+                               layerOptions,
+                               QStringLiteral( "UTF-8" )
+                             )
+                           );
+    }
+
+    QgsVectorFileWriterMetadataContainer( const QgsVectorFileWriterMetadataContainer &other ) = delete;
+    QgsVectorFileWriterMetadataContainer &operator=( const QgsVectorFileWriterMetadataContainer &other ) = delete;
+    ~QgsVectorFileWriterMetadataContainer()
+    {
+      for ( auto it = driverMetadata.constBegin(); it != driverMetadata.constEnd(); ++it )
+      {
+        for ( auto optionIt = it.value().driverOptions.constBegin(); optionIt != it.value().driverOptions.constEnd(); ++optionIt )
+          delete optionIt.value();
+        for ( auto optionIt = it.value().layerOptions.constBegin(); optionIt != it.value().layerOptions.constEnd(); ++optionIt )
+          delete optionIt.value();
+      }
+    }
+
+    QMap<QString,  QgsVectorFileWriter::MetaData> driverMetadata;
+
+};
+///@endcond
 
 bool QgsVectorFileWriter::driverMetadata( const QString &driverName, QgsVectorFileWriter::MetaData &driverMetadata )
 {
-  static const QMap<QString, MetaData> sDriverMetadata = initMetaData();
+  static QgsVectorFileWriterMetadataContainer sDriverMetadata;
+  QMap<QString, MetaData>::ConstIterator it = sDriverMetadata.driverMetadata.constBegin();
 
-  QMap<QString, MetaData>::ConstIterator it = sDriverMetadata.constBegin();
-
-  for ( ; it != sDriverMetadata.constEnd(); ++it )
+  for ( ; it != sDriverMetadata.driverMetadata.constEnd(); ++it )
   {
     if ( it.key().startsWith( driverName ) || it.value().longName.startsWith( driverName ) )
     {
@@ -2223,7 +2248,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     }
     else
     {
-      OGR_F_SetGeometry( poFeature.get(), createEmptyGeometry( mWkbType ) );
+      OGR_F_SetGeometryDirectly( poFeature.get(), createEmptyGeometry( mWkbType ) );
     }
   }
   return poFeature;
@@ -2347,78 +2372,164 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
   return writeAsVectorFormat( layer, fileName, options, newFilename, errorMessage );
 }
 
+
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
   : driverName( QStringLiteral( "GPKG" ) )
 {
 }
 
-QgsVectorFileWriter::WriterError
-QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
-    const QString &fileName,
-    const SaveVectorOptions &options,
-    QString *newFilename,
-    QString *errorMessage )
+
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::prepareWriteAsVectorFormat( QgsVectorLayer *layer, const QgsVectorFileWriter::SaveVectorOptions &options, QgsVectorFileWriter::PreparedWriterDetails &details )
 {
   if ( !layer )
   {
     return ErrInvalidLayer;
   }
 
-  bool shallTransform = false;
-  QgsCoordinateReferenceSystem outputCRS;
+
+  if ( layer->renderer() )
+    details.renderer.reset( layer->renderer()->clone() );
+  details.sourceCrs = layer->crs();
+  details.sourceWkbType = layer->wkbType();
+  details.sourceFields = layer->fields();
+  details.providerType = layer->providerType();
+  details.featureCount = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+  if ( layer->dataProvider() )
+    details.dataSourceUri = layer->dataProvider()->dataSourceUri();
+  details.storageType = layer->storageType();
+  details.selectedFeatureIds = layer->selectedFeatureIds();
+
+  if ( details.storageType == QLatin1String( "ESRI Shapefile" ) )
+  {
+    QgsFeatureRequest req;
+    if ( options.onlySelectedFeatures )
+    {
+      req.setFilterFids( details.selectedFeatureIds );
+    }
+    req.setSubsetOfAttributes( QgsAttributeList() );
+    details.geometryTypeScanIterator = layer->getFeatures( req );
+  }
+
+  details.expressionContext = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+  details.renderContext.setExpressionContext( details.expressionContext );
+  details.renderContext.setRendererScale( options.symbologyScale );
+
+  details.shallTransform = false;
   if ( options.ct.isValid() )
   {
     // This means we should transform
-    outputCRS = options.ct.destinationCrs();
-    shallTransform = true;
+    details.outputCrs = options.ct.destinationCrs();
+    details.shallTransform = true;
   }
   else
   {
     // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = layer->crs();
+    details.outputCrs = details.sourceCrs;
   }
 
-  QgsWkbTypes::Type destWkbType = layer->wkbType();
+  details.destWkbType = details.sourceWkbType;
   if ( options.overrideGeometryType != QgsWkbTypes::Unknown )
   {
-    destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
+    details.destWkbType = QgsWkbTypes::flatType( options.overrideGeometryType );
     if ( QgsWkbTypes::hasZ( options.overrideGeometryType ) || options.includeZ )
-      destWkbType = QgsWkbTypes::addZ( destWkbType );
+      details.destWkbType = QgsWkbTypes::addZ( details.destWkbType );
   }
   if ( options.forceMulti )
   {
-    destWkbType = QgsWkbTypes::multiType( destWkbType );
+    details.destWkbType = QgsWkbTypes::multiType( details.destWkbType );
   }
 
-  QgsAttributeList attributes( options.attributes );
+  details.attributes = options.attributes;
   if ( options.skipAttributeCreation )
-    attributes.clear();
-  else if ( attributes.isEmpty() )
+    details.attributes.clear();
+  else if ( details.attributes.isEmpty() )
   {
-    Q_FOREACH ( int idx, layer->attributeList() )
+    const QgsAttributeList allAttributes = details.sourceFields.allAttributesList();
+    for ( int idx : allAttributes )
     {
-      QgsField fld = layer->fields().at( idx );
-      if ( layer->providerType() == QLatin1String( "oracle" ) && fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) )
+      QgsField fld = details.sourceFields.at( idx );
+      if ( details.providerType == QLatin1String( "oracle" ) && fld.typeName().contains( QLatin1String( "SDO_GEOMETRY" ) ) )
         continue;
-      attributes.append( idx );
+      details.attributes.append( idx );
     }
   }
 
-  QgsFields fields;
-  if ( !attributes.isEmpty() )
+  if ( !details.attributes.isEmpty() )
   {
-    Q_FOREACH ( int attrIdx, attributes )
+    for ( int attrIdx : qgis::as_const( details.attributes ) )
     {
-      fields.append( layer->fields().at( attrIdx ) );
+      details.outputFields.append( details.sourceFields.at( attrIdx ) );
     }
   }
+
+  // not ideal - would be nice to avoid this happening in the preparation step if possible,
+  // but currently requires access to the layer's minimumValue/maximumValue methods
+  if ( details.providerType == QLatin1String( "spatialite" ) )
+  {
+    for ( int i = 0; i < details.outputFields.size(); i++ )
+    {
+      if ( details.outputFields.at( i ).type() == QVariant::LongLong )
+      {
+        QVariant min = layer->minimumValue( i );
+        QVariant max = layer->maximumValue( i );
+        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
+        {
+          details.outputFields[i].setType( QVariant::Int );
+        }
+      }
+    }
+  }
+
+
+  //add possible attributes needed by renderer
+  addRendererAttributes( details.renderer.get(), details.renderContext, details.sourceFields, details.attributes );
+
+  QgsFeatureRequest req;
+  req.setSubsetOfAttributes( details.attributes );
+  if ( options.onlySelectedFeatures )
+    req.setFilterFids( details.selectedFeatureIds );
+
+  if ( !options.filterExtent.isNull() )
+  {
+    QgsRectangle filterRect = options.filterExtent;
+    bool useFilterRect = true;
+    if ( details.shallTransform )
+    {
+      try
+      {
+        // map filter rect back from destination CRS to layer CRS
+        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        useFilterRect = false;
+      }
+    }
+    if ( useFilterRect )
+    {
+      req.setFilterRect( filterRect );
+    }
+    details.filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
+    details.filterRectEngine.reset( QgsGeometry::createGeometryEngine( details.filterRectGeometry.constGet() ) );
+    details.filterRectEngine->prepareGeometry();
+  }
+  details.sourceFeatureIterator = layer->getFeatures( req );
+
+  return NoError;
+}
+
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( PreparedWriterDetails &details, const QString &fileName, const QgsVectorFileWriter::SaveVectorOptions &options, QString *newFilename, QString *errorMessage )
+{
+
+  QgsWkbTypes::Type destWkbType = details.destWkbType;
 
   int lastProgressReport = 0;
-  long total = options.onlySelectedFeatures ? layer->selectedFeatureCount() : layer->featureCount();
+  long total = details.featureCount;
 
-  if ( layer->providerType() == QLatin1String( "ogr" ) && layer->dataProvider() )
+  if ( details.providerType == QLatin1String( "ogr" ) && !details.dataSourceUri.isEmpty() )
   {
-    QStringList theURIParts = layer->dataProvider()->dataSourceUri().split( '|' );
+    QStringList theURIParts = details.dataSourceUri.split( '|' );
     QString srcFileName = theURIParts[0];
 
     if ( QFile::exists( srcFileName ) && QFileInfo( fileName ).canonicalFilePath() == QFileInfo( srcFileName ).canonicalFilePath() )
@@ -2429,15 +2540,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     }
 
     // Shapefiles might contain multi types although wkbType() only reports singles
-    if ( layer->storageType() == QLatin1String( "ESRI Shapefile" ) && !QgsWkbTypes::isMultiType( destWkbType ) )
+    if ( details.storageType == QLatin1String( "ESRI Shapefile" ) && !QgsWkbTypes::isMultiType( destWkbType ) )
     {
-      QgsFeatureRequest req;
-      if ( options.onlySelectedFeatures )
-      {
-        req.setFilterFids( layer->selectedFeatureIds() );
-      }
-      req.setSubsetOfAttributes( QgsAttributeList() );
-      QgsFeatureIterator fit = layer->getFeatures( req );
+      QgsFeatureIterator fit = details.geometryTypeScanIterator;
       QgsFeature fet;
       long scanned = 0;
       while ( fit.nextFeature( fet ) )
@@ -2466,33 +2571,18 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
   }
-  else if ( layer->providerType() == QLatin1String( "spatialite" ) )
-  {
-    for ( int i = 0; i < fields.size(); i++ )
-    {
-      if ( fields.at( i ).type() == QVariant::LongLong )
-      {
-        QVariant min = layer->minimumValue( i );
-        QVariant max = layer->maximumValue( i );
-        if ( std::max( std::llabs( min.toLongLong() ), std::llabs( max.toLongLong() ) ) < INT_MAX )
-        {
-          fields[i].setType( QVariant::Int );
-        }
-      }
-    }
-  }
 
-  QgsVectorFileWriter *writer =
-    new QgsVectorFileWriter( fileName,
-                             options.fileEncoding, fields, destWkbType,
-                             outputCRS, options.driverName,
-                             options.datasourceOptions,
-                             options.layerOptions,
-                             newFilename,
-                             options.symbologyExport,
-                             options.fieldValueConverter,
-                             options.layerName,
-                             options.actionOnExistingFile );
+  std::unique_ptr< QgsVectorFileWriter > writer =
+    qgis::make_unique< QgsVectorFileWriter >( fileName,
+        options.fileEncoding, details.outputFields, destWkbType,
+        details.outputCrs, options.driverName,
+        options.datasourceOptions,
+        options.layerOptions,
+        newFilename,
+        options.symbologyExport,
+        options.fieldValueConverter,
+        options.layerName,
+        options.actionOnExistingFile );
   writer->setSymbologyScale( options.symbologyScale );
 
   if ( newFilename )
@@ -2506,7 +2596,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   {
     if ( errorMessage )
       *errorMessage = writer->errorMessage();
-    delete writer;
     return err;
   }
 
@@ -2517,47 +2606,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
 
   QgsFeature fet;
 
-  //add possible attributes needed by renderer
-  writer->addRendererAttributes( layer, attributes );
-
-  QgsFeatureRequest req;
-  if ( layer->wkbType() == QgsWkbTypes::NoGeometry )
-  {
-    req.setFlags( QgsFeatureRequest::NoGeometry );
-  }
-  req.setSubsetOfAttributes( attributes );
-  if ( options.onlySelectedFeatures )
-    req.setFilterFids( layer->selectedFeatureIds() );
-
-  QgsGeometry filterRectGeometry;
-  std::unique_ptr< QgsGeometryEngine  > filterRectEngine;
-  if ( !options.filterExtent.isNull() )
-  {
-    QgsRectangle filterRect = options.filterExtent;
-    bool useFilterRect = true;
-    if ( shallTransform )
-    {
-      try
-      {
-        // map filter rect back from destination CRS to layer CRS
-        filterRect = options.ct.transformBoundingBox( filterRect, QgsCoordinateTransform::ReverseTransform );
-      }
-      catch ( QgsCsException & )
-      {
-        useFilterRect = false;
-      }
-    }
-    if ( useFilterRect )
-    {
-      req.setFilterRect( filterRect );
-    }
-    filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
-    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.constGet() ) );
-    filterRectEngine->prepareGeometry();
-  }
-
-  QgsFeatureIterator fit = layer->getFeatures( req );
-
   //create symbol table if needed
   if ( writer->symbologyExport() != NoSymbology )
   {
@@ -2566,12 +2614,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
 
   if ( writer->symbologyExport() == SymbolLayerSymbology )
   {
-    QgsFeatureRenderer *r = layer->renderer();
-    if ( r->capabilities() & QgsFeatureRenderer::SymbolLevels
+    QgsFeatureRenderer *r = details.renderer.get();
+    if ( r && r->capabilities() & QgsFeatureRenderer::SymbolLevels
          && r->usingSymbolLevels() )
     {
-      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( layer, fit, options.ct, errorMessage );
-      delete writer;
+      QgsVectorFileWriter::WriterError error = writer->exportFeaturesSymbolLevels( details, details.sourceFeatureIterator, options.ct, errorMessage );
       return ( error == NoError ) ? NoError : ErrFeatureWriteFailed;
     }
   }
@@ -2579,26 +2626,25 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   int n = 0, errors = 0;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( options.ct.isValid() )
   {
     mapUnits = options.ct.destinationCrs().mapUnits();
   }
 
-  writer->startRender( layer );
+  writer->startRender( details.renderer.get(), details.sourceFields );
 
-  writer->resetMap( attributes );
+  writer->resetMap( details.attributes );
   // Reset mFields to layer fields, and not just exported fields
-  writer->mFields = layer->fields();
+  writer->mFields = details.sourceFields;
 
   // write all features
   long saved = 0;
   int initialProgress = lastProgressReport;
-  while ( fit.nextFeature( fet ) )
+  while ( details.sourceFeatureIterator.nextFeature( fet ) )
   {
     if ( options.feedback && options.feedback->isCanceled() )
     {
-      delete writer;
       return Canceled;
     }
 
@@ -2614,7 +2660,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( shallTransform )
+    if ( details.shallTransform )
     {
       try
       {
@@ -2627,8 +2673,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
       catch ( QgsCsException &e )
       {
-        delete writer;
-
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature with ID '%1'. Writing stopped. (Exception: %2)" )
                       .arg( fet.id() ).arg( e.what() );
         QgsLogger::warning( msg );
@@ -2639,15 +2683,15 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().constGet() ) )
+    if ( fet.hasGeometry() && details.filterRectEngine && !details.filterRectEngine->intersects( fet.geometry().constGet() ) )
       continue;
 
-    if ( attributes.empty() && options.skipAttributeCreation )
+    if ( details.attributes.empty() && options.skipAttributeCreation )
     {
       fet.initAttributes( 0 );
     }
 
-    if ( !writer->addFeatureWithStyle( fet, layer->renderer(), mapUnits ) )
+    if ( !writer->addFeatureWithStyle( fet, writer->mRenderer.get(), mapUnits ) )
     {
       WriterError err = writer->hasError();
       if ( err != NoError && errorMessage )
@@ -2675,7 +2719,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   writer->stopRender();
-  delete writer;
 
   if ( errors > 0 && errorMessage && n > 0 )
   {
@@ -2683,6 +2726,21 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   return errors == 0 ? NoError : ErrFeatureWriteFailed;
+}
+
+QgsVectorFileWriter::WriterError
+QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
+    const QString &fileName,
+    const SaveVectorOptions &options,
+    QString *newFilename,
+    QString *errorMessage )
+{
+  QgsVectorFileWriter::PreparedWriterDetails details;
+  WriterError err = prepareWriteAsVectorFormat( layer, options, details );
+  if ( err != NoError )
+    return err;
+
+  return writeAsVectorFormat( details, fileName, options, newFilename, errorMessage );
 }
 
 
@@ -3037,28 +3095,24 @@ void QgsVectorFileWriter::createSymbolLayerTable( QgsVectorLayer *vl,  const Qgs
   OGR_DS_SetStyleTableDirectly( ds, ogrStyleTable );
 }
 
-QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( QgsVectorLayer *layer, QgsFeatureIterator &fit,
+QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels( const PreparedWriterDetails &details, QgsFeatureIterator &fit,
     const QgsCoordinateTransform &ct, QString *errorMessage )
 {
-  if ( !layer )
+  if ( !details.renderer )
     return ErrInvalidLayer;
 
-  mRenderContext.expressionContext() = QgsExpressionContext( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-
-  QgsFeatureRenderer *renderer = layer->renderer();
-  if ( !renderer )
-    return ErrInvalidLayer;
+  mRenderContext.expressionContext() = details.expressionContext;
 
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   //unit type
-  QgsUnitTypes::DistanceUnit mapUnits = layer->crs().mapUnits();
+  QgsUnitTypes::DistanceUnit mapUnits = details.sourceCrs.mapUnits();
   if ( ct.isValid() )
   {
     mapUnits = ct.destinationCrs().mapUnits();
   }
 
-  startRender( layer );
+  startRender( details.renderer.get(), details.sourceFields );
 
   //fetch features
   QgsFeature fet;
@@ -3089,7 +3143,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     }
     mRenderContext.expressionContext().setFeature( fet );
 
-    featureSymbol = renderer->symbolForFeature( fet, mRenderContext );
+    featureSymbol = mRenderer->symbolForFeature( fet, mRenderContext );
     if ( !featureSymbol )
     {
       continue;
@@ -3105,7 +3159,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
 
   //find out order
   QgsSymbolLevelOrder levels;
-  QgsSymbolList symbols = renderer->symbols( mRenderContext );
+  QgsSymbolList symbols = mRenderer->symbols( mRenderContext );
   for ( int i = 0; i < symbols.count(); i++ )
   {
     QgsSymbol *sym = symbols[i];
@@ -3211,15 +3265,15 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::Rend
   return 1.0;
 }
 
-void QgsVectorFileWriter::startRender( QgsVectorLayer *vl )
+void QgsVectorFileWriter::startRender( QgsFeatureRenderer *sourceRenderer, const QgsFields &fields )
 {
-  mRenderer = createSymbologyRenderer( vl );
+  mRenderer = createSymbologyRenderer( sourceRenderer );
   if ( !mRenderer )
   {
     return;
   }
 
-  mRenderer->startRender( mRenderContext, vl->fields() );
+  mRenderer->startRender( mRenderContext,  fields );
 }
 
 void QgsVectorFileWriter::stopRender()
@@ -3232,28 +3286,28 @@ void QgsVectorFileWriter::stopRender()
   mRenderer->stopRender( mRenderContext );
 }
 
-std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsVectorLayer *vl ) const
+std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsFeatureRenderer *sourceRenderer ) const
 {
   if ( mSymbologyExport == NoSymbology )
   {
     return nullptr;
   }
-  if ( !vl || !vl->renderer() )
+  if ( !sourceRenderer )
   {
     return nullptr;
   }
 
-  return std::unique_ptr< QgsFeatureRenderer >( vl->renderer()->clone() );
+  return std::unique_ptr< QgsFeatureRenderer >( sourceRenderer->clone() );
 }
 
-void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList )
+void QgsVectorFileWriter::addRendererAttributes( QgsFeatureRenderer *renderer, QgsRenderContext &context, const QgsFields &fields, QgsAttributeList &attList )
 {
-  if ( mRenderer )
+  if ( renderer )
   {
-    const QSet<QString> rendererAttributes = mRenderer->usedAttributes( mRenderContext );
+    const QSet<QString> rendererAttributes = renderer->usedAttributes( context );
     for ( const QString &attr : rendererAttributes )
     {
-      int index = vl->fields().lookupField( attr );
+      int index = fields.lookupField( attr );
       if ( index != -1 )
       {
         attList.append( index );
@@ -3397,4 +3451,3 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
   }
   return ret;
 }
-

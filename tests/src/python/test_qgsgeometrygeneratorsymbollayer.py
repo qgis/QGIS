@@ -28,7 +28,7 @@ import qgis  # NOQA
 import os
 
 from qgis.PyQt.QtCore import QSize
-
+from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     QgsVectorLayer,
     QgsSingleSymbolRenderer,
@@ -68,9 +68,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         QgsProject.instance().addMapLayer(self.points_layer)
 
         # Create style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
         sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
-        sym3 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f'})
+        sym3 = QgsMarkerSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
 
         self.polys_layer.setRenderer(QgsSingleSymbolRenderer(sym1))
         self.lines_layer.setRenderer(QgsSingleSymbolRenderer(sym2))
@@ -88,6 +88,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         sym = self.polys_layer.renderer().symbol()
         sym_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
         sym_layer.setSymbolType(QgsSymbol.Marker)
+        sym_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         sym.changeSymbolLayer(0, sym_layer)
 
         rendered_layers = [self.polys_layer]
@@ -101,12 +102,14 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_mixed(self):
         sym = self.polys_layer.renderer().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)', 'outline_color': 'black'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
+        buffer_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
-        marker_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)'})
+        marker_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'centroid($geometry)', 'outline_color': 'black'})
         marker_layer.setSymbolType(QgsSymbol.Marker)
+        marker_layer.subSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         sym.appendSymbolLayer(marker_layer)
 
         rendered_layers = [self.polys_layer]
@@ -120,7 +123,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_buffer_lines(self):
         sym = self.lines_layer.renderer().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "value"/15)', 'outline_color': 'black'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)
@@ -136,7 +139,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
     def test_buffer_points(self):
         sym = self.points_layer.renderer().symbol()
 
-        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "staff"/15)'})
+        buffer_layer = QgsGeometryGeneratorSymbolLayer.create({'geometryModifier': 'buffer($geometry, "staff"/15)', 'outline_color': 'black'})
         buffer_layer.setSymbolType(QgsSymbol.Fill)
         self.assertIsNotNone(buffer_layer.subSymbol())
         sym.appendSymbolLayer(buffer_layer)

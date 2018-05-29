@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add Vector join</string>
+   <string>Add Vector Join</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">

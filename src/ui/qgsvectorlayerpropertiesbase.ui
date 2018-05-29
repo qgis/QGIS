@@ -201,7 +201,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/join.svg</normaloff>:/images/themes/default/propertyicons/join.svg</iconset>
           </property>
          </item>
          <item>
@@ -303,7 +303,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/overlay.svg</normaloff>:/images/themes/default/propertyicons/overlay.svg</iconset>
           </property>
          </item>
         </widget>
@@ -345,7 +345,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -421,8 +421,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>537</height>
+                <width>285</width>
+                <height>405</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -663,6 +663,19 @@ border-radius: 2px;</string>
                  <zorder>pbnQueryBuilder</zorder>
                 </widget>
                </item>
+               <item>
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
               </layout>
              </widget>
             </widget>
@@ -696,8 +709,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>537</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -882,8 +895,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>537</height>
+                <width>653</width>
+                <height>536</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1277,8 +1290,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>537</height>
+                <width>653</width>
+                <height>536</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1451,8 +1464,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>696</width>
-                <height>521</height>
+                <width>671</width>
+                <height>522</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1865,7 +1878,10 @@ border-radius: 2px;</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QGroupBox" name="groupBox_3">
+            <widget class="QgsVectorLayerLegendWidget" name="mLegendWidget" native="true"/>
+           </item>
+           <item>
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
              <property name="title">
               <string>Embedded widgets in legend</string>
              </property>
@@ -1905,8 +1921,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>651</width>
-                <height>537</height>
+                <width>639</width>
+                <height>656</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -1953,10 +1969,10 @@ border-radius: 2px;</string>
                     <item>
                      <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
                       <property name="toolTip">
-                       <string>An URL of the data presentation.</string>
+                       <string>A URL of the data presentation.</string>
                       </property>
                       <property name="placeholderText">
-                       <string>An URL of the data presentation.</string>
+                       <string>A URL of the data presentation.</string>
                       </property>
                      </widget>
                     </item>
@@ -2036,7 +2052,7 @@ border-radius: 2px;</string>
                    </widget>
                   </item>
                   <item row="3" column="1">
-                   <widget class="QTextEdit" name="mLayerAbstractTextEdit">
+                   <widget class="QPlainTextEdit" name="mLayerAbstractTextEdit">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
                       <horstretch>0</horstretch>
@@ -2046,7 +2062,7 @@ border-radius: 2px;</string>
                     <property name="maximumSize">
                      <size>
                       <width>16777215</width>
-                      <height>50</height>
+                      <height>150</height>
                      </size>
                     </property>
                     <property name="toolTip">
@@ -2226,10 +2242,10 @@ border-radius: 2px;</string>
                     <item>
                      <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
                       <property name="toolTip">
-                       <string>An URL of the legend image.</string>
+                       <string>A URL of the legend image.</string>
                       </property>
                       <property name="placeholderText">
-                       <string>An URL of the legend image.</string>
+                       <string>A URL of the legend image.</string>
                       </property>
                      </widget>
                     </item>
@@ -2259,11 +2275,6 @@ border-radius: 2px;</string>
                       <item>
                        <property name="text">
                         <string>image/jpeg</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>image/jpg</string>
                        </property>
                       </item>
                      </widget>
@@ -2403,6 +2414,12 @@ border-radius: 2px;</string>
    <extends>QWidget</extends>
    <header>qgscodeeditorhtml.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsVectorLayerLegendWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsvectorlayerlegendwidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSearchLineEdit</tabstop>
@@ -2466,6 +2483,35 @@ border-radius: 2px;</string>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

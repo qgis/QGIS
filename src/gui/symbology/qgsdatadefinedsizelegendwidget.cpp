@@ -36,7 +36,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   , mMapCanvas( canvas )
 {
   setupUi( this );
-  setPanelTitle( tr( "Data-defined size legend" ) );
+  setPanelTitle( tr( "Data-defined Size Legend" ) );
 
   QgsMarkerSymbol *symbol = nullptr;
 
@@ -178,7 +178,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   QgsExpressionContext ec;
   ec << QgsExpressionContextUtils::globalScope()
      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-     << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+     << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
     ec << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );
   context.setExpressionContext( &ec );

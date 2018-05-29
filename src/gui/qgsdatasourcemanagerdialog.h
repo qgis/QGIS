@@ -40,8 +40,8 @@ class QgsBrowserModel;
  * the provider dialogs.
  * The dialog does not handle layer addition directly but emits signals that
  * need to be forwarded to the QGIS application to be handled.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, private Ui::QgsDataSourceManagerDialog
 {
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     //! Emitted when a DB layer was selected for addition: for signal forwarding to QgisApp
     void addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey );
     //! Emitted when a file needs to be opened
-    void openFile( const QString & );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     //! Emitted when drop uri list needs to be handled from the browser
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Update project home directory

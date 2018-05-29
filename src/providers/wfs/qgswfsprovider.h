@@ -63,7 +63,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    explicit QgsWFSProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
     ~QgsWFSProvider() override;
 
     /* Inherited from QgsVectorDataProvider */

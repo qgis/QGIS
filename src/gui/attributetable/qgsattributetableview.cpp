@@ -109,7 +109,7 @@ void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConf
 void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel )
 {
   mFilterModel = filterModel;
-  QTableView::setModel( filterModel );
+  QTableView::setModel( mFilterModel );
 
   if ( mFilterModel )
   {
@@ -120,7 +120,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
   delete mFeatureSelectionModel;
   mFeatureSelectionModel = nullptr;
 
-  if ( filterModel )
+  if ( mFilterModel )
   {
     if ( !mFeatureSelectionManager )
     {
@@ -134,6 +134,10 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
              this, static_cast<void ( QgsAttributeTableView::* )( const QModelIndexList &indexes )>( &QgsAttributeTableView::repaintRequested ) );
     connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ),
              this, static_cast<void ( QgsAttributeTableView::* )()>( &QgsAttributeTableView::repaintRequested ) );
+
+    connect( mFilterModel->layer(), &QgsVectorLayer::editingStarted, this, &QgsAttributeTableView::recreateActionWidgets );
+    connect( mFilterModel->layer(), &QgsVectorLayer::editingStopped, this, &QgsAttributeTableView::recreateActionWidgets );
+    connect( mFilterModel->layer(), &QgsVectorLayer::readOnlyChanged, this, &QgsAttributeTableView::recreateActionWidgets );
   }
 }
 
@@ -176,6 +180,9 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
   Q_FOREACH ( const QgsAction &action, actions )
   {
+    if ( !mFilterModel->layer()->isEditable() && action.isEnabledOnlyWhenEditable() )
+      continue;
+
     QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QLatin1String( "" );
     QAction *act = new QAction( action.icon(), actionTitle, container );
     act->setToolTip( action.name() );
@@ -442,14 +449,13 @@ void QgsAttributeTableView::onActionColumnItemPainted( const QModelIndex &index 
 
 void QgsAttributeTableView::recreateActionWidgets()
 {
-  QMap< QModelIndex, QWidget * > newWidgets;
   QMap< QModelIndex, QWidget * >::const_iterator it = mActionWidgets.constBegin();
   for ( ; it != mActionWidgets.constEnd(); ++it )
   {
-    it.value()->deleteLater(); //?
-    QWidget *widget = createActionWidget( mFilterModel->data( it.key(), QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
-    newWidgets.insert( it.key(), widget );
-    setIndexWidget( it.key(), widget );
+    // ownership of widget was transferred by initial call to setIndexWidget - clearing
+    // the index widget will delete the old widget safely
+    // they should then be recreated by onActionColumnItemPainted
+    setIndexWidget( it.key(), nullptr );
   }
-  mActionWidgets = newWidgets;
+  mActionWidgets.clear();
 }

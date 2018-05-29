@@ -60,7 +60,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     /**
      * Sets a map \a canvas to associate with the widget. This allows the
-     * widget to customise the searches performed by its locator(), such
+     * widget to customize the searches performed by its locator(), such
      * as prioritizing results which are near the current canvas extent.
      */
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -133,6 +133,9 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
   public:
 
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
+
+    QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
+    QgsLocatorFilter::Flags flags() const override;
 
     QString name() const override { return QStringLiteral( "filters" );}
     QString displayName() const override { return QString(); }

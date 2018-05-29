@@ -36,7 +36,7 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
@@ -44,18 +44,26 @@ class TestQgsServerWFS(QgsServerTestBase):
 
     """QGIS Server WFS Tests"""
 
-    def wfs_request_compare(self, request, version=''):
+    def wfs_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WFS&REQUEST=%s' % (urllib.parse.quote(project), request)
         if version:
             query_string += '&VERSION=%s' % version
+
+        if extra_query_string:
+            query_string += '&%s' % extra_query_string
+
         header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
 
-        reference_name = 'wfs_' + request.lower()
+        if reference_base_name is not None:
+            reference_name = reference_base_name
+        else:
+            reference_name = 'wfs_' + request.lower()
+
         if version == '1.0.0':
             reference_name += '_1_0_0'
         reference_name += '.txt'
@@ -211,8 +219,8 @@ class TestQgsServerWFS(QgsServerTestBase):
       <ogc:BBOX>
         <ogc:PropertyName>geometry</ogc:PropertyName>
         <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
-          <gml:lowerCorner>8 44</gml:lowerCorner>
-          <gml:upperCorner>9 45</gml:upperCorner>
+          <gml:lowerCorner>890555.92634619 5465442.18332275</gml:lowerCorner>
+          <gml:upperCorner>1001875.41713946 5621521.48619207</gml:upperCorner>
         </gml:Envelope>
       </ogc:BBOX>
     </ogc:Filter>
@@ -244,8 +252,57 @@ class TestQgsServerWFS(QgsServerTestBase):
 """
         tests.append(('sortby_post', sortTemplate.format("")))
 
+        andBboxTemplate = """<?xml version="1.0" encoding="UTF-8"?>
+<wfs:GetFeature service="WFS" version="1.0.0" {} xmlns:wfs="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+  <wfs:Query typeName="testlayer" srsName="EPSG:3857" xmlns:feature="http://www.qgis.org/gml">
+    <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
+      <ogc:And>
+        <ogc:BBOX>
+          <ogc:PropertyName>geometry</ogc:PropertyName>
+          <gml:Envelope xmlns:gml="http://www.opengis.net/gml">
+            <gml:lowerCorner>890555.92634619 5465442.18332275</gml:lowerCorner>
+            <gml:upperCorner>1001875.41713946 5621521.48619207</gml:upperCorner>
+          </gml:Envelope>
+        </ogc:BBOX>
+        <ogc:PropertyIsGreaterThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>1</ogc:Literal>
+        </ogc:PropertyIsGreaterThan>
+        <ogc:PropertyIsLessThan>
+          <ogc:PropertyName>id</ogc:PropertyName>
+          <ogc:Literal>3</ogc:Literal>
+        </ogc:PropertyIsLessThan>
+      </ogc:And>
+    </ogc:Filter>
+  </wfs:Query>
+</wfs:GetFeature>
+"""
+        tests.append(('bbox_inside_and_post', andBboxTemplate.format("")))
+
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
+
+    def test_getFeatureBBOX(self):
+        """Test with (1.1.0) and without (1.0.0) CRS"""
+
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493,EPSG:4326", 'wfs_getFeature_1_0_0_epsgbbox_1_feature')
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.203127,44.9012765,8.204138,44.901632,EPSG:4326", 'wfs_getFeature_1_0_0_epsgbbox_3_feature')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493,EPSG:4326", 'wfs_getFeature_1_1_0_epsgbbox_1_feature')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.203127,44.9012765,8.204138,44.901632,EPSG:4326", 'wfs_getFeature_1_1_0_epsgbbox_3_feature')
+
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_1_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_1_feature_3857')
+
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:3857&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:3857&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_1_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:3857&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:3857&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_1_feature_3857')
+
+    def test_getFeatureFeatureId(self):
+        """Test GetFeature with featureid"""
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&FEATUREID=testlayer.0", 'wfs_getFeature_1_0_0_featureid_0')
 
 
 if __name__ == '__main__':

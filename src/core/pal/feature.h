@@ -130,13 +130,12 @@ namespace pal
       /**
        * Generic method to generate label candidates for the feature.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
-       * \param bboxMin min values of the map extent
-       * \param bboxMax max values of the map extent
+       * \param mapBoundary map boundary geometry
        * \param mapShape generate candidates for this spatial entity
        * \param candidates index for candidates
        * \returns the number of candidates generated in lPos
        */
-      int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
+      int createCandidates( QList<LabelPosition *> &lPos, const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
       /**
        * Generate candidates for point feature, located around a specified point.
@@ -274,9 +273,9 @@ namespace pal
       //! Returns the distance between repeating labels for this feature
       double repeatDistance() const { return mLF->repeatDistance(); }
 
-      //! Get number of holes (inner rings) - they are considered as obstacles
+      //! Gets number of holes (inner rings) - they are considered as obstacles
       int getNumSelfObstacles() const { return mHoles.count(); }
-      //! Get hole (inner ring) - considered as obstacle
+      //! Gets hole (inner ring) - considered as obstacle
       FeaturePart *getSelfObstacle( int i ) { return mHoles.at( i ); }
 
       //! Check whether this part is connected with some other part
@@ -284,7 +283,7 @@ namespace pal
 
       /**
        * Merge other (connected) part with this one and save the result in this part (other is unchanged).
-       * Return true on success, false if the feature wasn't modified */
+       * Returns true on success, false if the feature wasn't modified */
       bool mergeWithFeaturePart( FeaturePart *other );
 
       void addSizePenalty( int nbp, QList<LabelPosition *> &lPos, double bbx[4], double bby[4] );
@@ -292,8 +291,6 @@ namespace pal
       /**
        * Calculates the priority for the feature. This will be the feature's priority if set,
        * otherwise the layer's default priority.
-       * \see Feature::setPriority
-       * \see Feature::priority
        */
       double calculatePriority() const;
 

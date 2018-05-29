@@ -165,6 +165,10 @@ class GPKGDBConnector(DBConnector):
             self._rollback()
             raise DbError(e)
 
+    def cancel(self):
+        if self.connection:
+            self.connection.interrupt()
+
     @classmethod
     def isValidDatabase(cls, path):
         if hasattr(gdal, 'OpenEx'):

@@ -363,7 +363,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see size()
      * \see setSizeType()
      */
-    void setSize( const QSizeF &size );
+    void setSize( QSizeF size );
 
     /**
      * Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
@@ -445,7 +445,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see offset()
      * \see setOffsetUnit()
      */
-    void setOffset( const QPointF &offset );
+    void setOffset( QPointF offset );
 
     /**
      * Returns the units used for the shape's offset.
@@ -495,7 +495,7 @@ class CORE_EXPORT QgsTextBackgroundSettings
      * \see radii()
      * \see setRadiiUnit()
      */
-    void setRadii( const QSizeF &radii );
+    void setRadii( QSizeF radii );
 
     /**
      * Returns the units used for the shape's radii.
@@ -1055,6 +1055,7 @@ class CORE_EXPORT QgsTextFormat
      * \see scaledFont()
      * \see setFont()
      * \see namedStyle()
+     * \see toQFont()
      */
     QFont font() const;
 
@@ -1075,6 +1076,7 @@ class CORE_EXPORT QgsTextFormat
      * \param font desired font
      * \see font()
      * \see setNamedStyle()
+     * \see fromQFont()
      */
     void setFont( const QFont &font );
 
@@ -1225,6 +1227,24 @@ class CORE_EXPORT QgsTextFormat
     QMimeData *toMimeData() const SIP_FACTORY;
 
     /**
+     * Returns a text format matching the settings from an input \a font.
+     * Unlike setFont(), this method also handles the size and size units
+     * from \a font.
+     * \see toQFont()
+     * \since QGIS 3.2
+     */
+    static QgsTextFormat fromQFont( const QFont &font );
+
+    /**
+     * Returns a QFont matching the relevant settings from this text format.
+     * Unlike font(), this method also handles the size and size units
+     * from the text format.
+     * \see fromQFont()
+     * \since QGIS 3.2
+     */
+    QFont toQFont() const;
+
+    /**
      * Attempts to parse the provided mime \a data as a QgsTextFormat.
      * If data can be parsed as a text format, \a ok will be set to true.
      * \see toMimeData()
@@ -1276,6 +1296,14 @@ class CORE_EXPORT QgsTextFormat
 class CORE_EXPORT QgsTextRenderer
 {
   public:
+
+    //! Draw mode to calculate width and height
+    enum DrawMode
+    {
+      Rect = 0, //!< Text within rectangle draw mode
+      Point, //!< Text at point of origin draw mode
+      Label, //!< Label-specific draw mode
+    };
 
     //! Components of text
     enum TextPart
@@ -1332,7 +1360,7 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawText( const QPointF &point, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 
@@ -1370,18 +1398,40 @@ class CORE_EXPORT QgsTextRenderer
      * formats like SVG to maintain text as text objects, but at the cost of degraded
      * rendering and may result in side effects like misaligned text buffers.
      */
-    static void drawPart( const QPointF &origin, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 
-  private:
+    /**
+     * Returns the font metrics for the given text \a format, when rendered
+     * in the specified render \a context. The font metrics will take into account
+     * all scaling required by the render context.
+     * \since QGIS 3.2
+     */
+    static QFontMetricsF fontMetrics( QgsRenderContext &context, const QgsTextFormat &format );
 
-    enum DrawMode
-    {
-      Rect = 0,
-      Point,
-      Label,
-    };
+    /**
+     * Returns the width of a text based on a given format.
+     * \param context render context
+     * \param format text format
+     * \param textLines list of lines of text to calculate width from
+     * \param fontMetrics font metrics
+     */
+    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
+                             QFontMetricsF *fontMetrics = nullptr );
+
+    /**
+     * Returns the height of a text based on a given format.
+     * \param context render context
+     * \param format text format
+     * \param textLines list of lines of text to calculate width from
+     * \param mode draw mode
+     * \param fontMetrics font metrics
+     */
+    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
+                              QFontMetricsF *fontMetrics = nullptr );
+
+  private:
 
     struct Component
     {
@@ -1447,11 +1497,6 @@ class CORE_EXPORT QgsTextRenderer
     friend class QgsLabelPreview;
 
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
-
-    static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
-                             QFontMetricsF *fm = nullptr );
-    static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
-                              QFontMetricsF *fm = nullptr );
 
 
 };

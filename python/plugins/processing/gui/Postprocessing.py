@@ -30,7 +30,8 @@ import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMapLayer,
@@ -76,11 +77,16 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
                 if style:
                     layer.loadNamedStyle(style)
+
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+
+                if details.postProcessor():
+                    details.postProcessor().postProcessLayer(layer, context, feedback)
+
             else:
                 wrongLayers.append(str(l))
         except Exception:
-            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', Qgis.Critical)
             wrongLayers.append(str(l))
         i += 1
 

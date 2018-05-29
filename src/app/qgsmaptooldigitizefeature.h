@@ -31,8 +31,8 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 
     virtual void digitized( QgsFeature &f );
 
-    virtual void activate() override;
-    virtual void deactivate() override;
+    void activate() override;
+    void deactivate() override;
 
   signals:
     void digitizingCompleted( const QgsFeature & );

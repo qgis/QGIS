@@ -29,6 +29,7 @@ import os
 import re
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingOutputVectorLayer)
@@ -55,7 +56,7 @@ class DefineProjection(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
                                                             self.tr('Input Layer'), types=[QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS'))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'CRS'))
         self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
                                                       self.tr('Layer with projection')))
 
@@ -63,7 +64,10 @@ class DefineProjection(QgisAlgorithm):
         return 'definecurrentprojection'
 
     def displayName(self):
-        return self.tr('Define current projection')
+        return self.tr('Define layer projection')
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
@@ -77,14 +81,16 @@ class DefineProjection(QgisAlgorithm):
         if dsPath.lower().endswith('.shp'):
             dsPath = dsPath[:-4]
 
-        wkt = crs.toWkt()
-        with open(dsPath + '.prj', 'w') as f:
-            f.write(wkt)
-
-        qpjFile = dsPath + '.qpj'
-        if os.path.exists(qpjFile):
-            with open(qpjFile, 'w') as f:
+            wkt = crs.toWkt()
+            with open(dsPath + '.prj', 'w') as f:
                 f.write(wkt)
+
+            qpjFile = dsPath + '.qpj'
+            if os.path.exists(qpjFile):
+                with open(qpjFile, 'w') as f:
+                    f.write(wkt)
+        else:
+            feedback.pushConsoleInfo(tr("Data source isn't a shapefile, skipping .prj/.qpj creation"))
 
         layer.setCrs(crs)
         layer.triggerRepaint()

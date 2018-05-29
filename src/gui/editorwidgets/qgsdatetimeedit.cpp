@@ -26,6 +26,8 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
+
+
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QDateTimeEdit( parent )
 {
@@ -70,6 +72,10 @@ void QgsDateTimeEdit::clear()
     disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
     emit dateTimeChanged( QDateTime() );
     connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+
+    // otherwise, NULL is not displayed in the line edit
+    // this might not be the right way to do it
+    clearFocus();
   }
 }
 
@@ -81,7 +87,7 @@ void QgsDateTimeEdit::setEmpty()
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
-  // catch mouse press on the button
+  // catch mouse press on the button (when the current value is null)
   // in non-calendar mode: modifiy the date  so it leads to showing current date (don't bother about time)
   // in calendar mode: be sure NULL is displayed when needed and show page of current date in calendar widget
 
@@ -89,23 +95,37 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 
   if ( mIsNull )
   {
-    QStyleOptionSpinBox opt;
-    this->initStyleOption( &opt );
-    const QRect buttonUpRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxUp );
-    const QRect buttonDownRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxDown );
-    if ( buttonUpRect.contains( event->pos() ) || buttonDownRect.contains( event->pos() ) )
+    QStyle::SubControl control;
+    if ( calendarPopup() )
     {
-      if ( calendarPopup() && calendarWidget() )
+      QStyleOptionComboBox optCombo;
+      optCombo.init( this );
+      optCombo.editable = true;
+      optCombo.subControls = QStyle::SC_All;
+      control = style()->hitTestComplexControl( QStyle::CC_ComboBox, &optCombo, event->pos(), this );
+
+      if ( control == QStyle::SC_ComboBoxArrow && calendarWidget() )
       {
+        mCurrentPressEvent = true;
         // ensure the line edit still displays NULL
-        displayNull( true );
         updateCalendar = true;
+        displayNull( updateCalendar );
+        mCurrentPressEvent = false;
       }
-      else
+    }
+    else
+    {
+      QStyleOptionSpinBox opt;
+      this->initStyleOption( &opt );
+      control  = style()->hitTestComplexControl( QStyle::CC_SpinBox, &opt, event->pos(), this );
+
+      if ( control == QStyle::SC_SpinBoxDown || control == QStyle::SC_SpinBoxUp )
       {
-        blockSignals( true );
-        resetBeforeChange( buttonUpRect.contains( event->pos() ) ? -1 : 1 );
-        blockSignals( false );
+        mCurrentPressEvent = true;
+        disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+        resetBeforeChange( control == QStyle::SC_SpinBoxDown ? -1 : 1 );
+        connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+        mCurrentPressEvent = false;
       }
     }
   }
@@ -121,13 +141,13 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 
 void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
 {
-  if ( mAllowNull && mIsNull )
+  if ( mAllowNull && mIsNull && !mCurrentPressEvent )
   {
+    QAbstractSpinBox::focusOutEvent( event );
     if ( lineEdit()->text() != QgsApplication::nullRepresentation() )
     {
       displayNull();
     }
-    QWidget::focusOutEvent( event );
     emit editingFinished();
   }
   else
@@ -169,7 +189,7 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
       {
         mOriginalStyleSheet = lineEdit()->styleSheet();
       }
-      lineEdit()->setStyleSheet( QStringLiteral( "font-style: italic; color: grey; }" ) );
+      lineEdit()->setStyleSheet( QStringLiteral( "QLineEdit { font-style: italic; color: grey; }" ) );
     }
     else
     {
@@ -184,7 +204,7 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 
 void QgsDateTimeEdit::displayNull( bool updateCalendar )
 {
-  blockSignals( true );
+  disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
   if ( updateCalendar )
   {
     // set current time to minimum date time to avoid having
@@ -192,7 +212,7 @@ void QgsDateTimeEdit::displayNull( bool updateCalendar )
     QDateTimeEdit::setDateTime( minimumDateTime() );
   }
   lineEdit()->setText( QgsApplication::nullRepresentation() );
-  blockSignals( false );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 }
 
 void QgsDateTimeEdit::resetBeforeChange( int delta )

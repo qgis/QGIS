@@ -19,6 +19,9 @@ from qgis.core import (QgsProject,
                        QgsUnitTypes,
                        QgsLayoutItemPicture,
                        QgsLayoutItemLabel,
+                       QgsLayoutItemHtml,
+                       QgsLayoutItemRegistry,
+                       QgsLayoutFrame,
                        QgsLayoutPoint,
                        QgsLayoutSize,
                        QgsLayoutAligner)
@@ -686,6 +689,30 @@ class TestQgsLayoutView(unittest.TestCase):
         l.addLayoutItem(item2)
         item2.setSelected(True)
 
+        # multiframes
+        multiframe1 = QgsLayoutItemHtml(l)
+        multiframe1.setHtml('mf1')
+        l.addMultiFrame(multiframe1)
+        frame1 = QgsLayoutFrame(l, multiframe1)
+        frame1.setId('frame1a')
+        multiframe1.addFrame(frame1)
+        frame1b = QgsLayoutFrame(l, multiframe1)
+        frame1b.setId('frame1b')
+        multiframe1.addFrame(frame1b) # not selected
+        frame1c = QgsLayoutFrame(l, multiframe1)
+        frame1c.setId('frame1b')
+        multiframe1.addFrame(frame1c) # not selected
+
+        multiframe2 = QgsLayoutItemHtml(l)
+        multiframe2.setHtml('mf2')
+        l.addMultiFrame(multiframe2)
+        frame2 = QgsLayoutFrame(l, multiframe2)
+        frame2.setId('frame2')
+        multiframe2.addFrame(frame2)
+
+        frame1.setSelected(True)
+        frame2.setSelected(True)
+
         view = QgsLayoutView()
         view.setCurrentLayout(l)
         self.assertFalse(view.hasItemsInClipboard())
@@ -694,11 +721,30 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertTrue(view.hasItemsInClipboard())
 
         pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
-        self.assertEqual(len(pasted), 2)
+        self.assertEqual(len(pasted), 4)
+
+        new_multiframes = [m for m in l.multiFrames() if m not in [multiframe1, multiframe2]]
+        self.assertEqual(len(new_multiframes), 2)
+
         self.assertIn(pasted[0], l.items())
         self.assertIn(pasted[1], l.items())
-        self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
-        self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        labels = [p for p in pasted if p.type() == QgsLayoutItemRegistry.LayoutLabel]
+        self.assertIn(sip.cast(labels[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        self.assertIn(sip.cast(labels[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        frames = [p for p in pasted if p.type() == QgsLayoutItemRegistry.LayoutFrame]
+        pasted_frame1 = sip.cast(frames[0], QgsLayoutFrame)
+        pasted_frame2 = sip.cast(frames[1], QgsLayoutFrame)
+        self.assertIn(pasted_frame1.multiFrame(), new_multiframes)
+        self.assertIn(new_multiframes[0].frames()[0].uuid(), (pasted_frame1.uuid(), pasted_frame2.uuid()))
+        self.assertIn(pasted_frame2.multiFrame(), new_multiframes)
+        self.assertIn(new_multiframes[1].frames()[0].uuid(), (pasted_frame1.uuid(), pasted_frame2.uuid()))
+
+        self.assertEqual(frame1.multiFrame(), multiframe1)
+        self.assertCountEqual(multiframe1.frames(), [frame1, frame1b, frame1c])
+        self.assertEqual(frame1b.multiFrame(), multiframe1)
+        self.assertEqual(frame1c.multiFrame(), multiframe1)
+        self.assertEqual(frame2.multiFrame(), multiframe2)
+        self.assertCountEqual(multiframe2.frames(), [frame2])
 
         # copy specific item
         view.copyItems([item2], QgsLayoutView.ClipboardCopy)

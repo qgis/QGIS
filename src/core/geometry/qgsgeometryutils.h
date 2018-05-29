@@ -21,6 +21,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgspoint.h"
+#include "qgsabstractgeometry.h"
+#include "qgsvector3d.h"
 
 
 class QgsLineString;
@@ -90,7 +92,9 @@ class CORE_EXPORT QgsGeometryUtils
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon );
 
     /**
-     * \brief Compute the intersection between two lines
+     * Computes the intersection between two lines. Z dimension is
+     * supported and is retrieved from the first 3D point amongst \a p1 and
+     * \a p2.
      * \param p1 Point on the first line
      * \param v1 Direction vector of the first line
      * \param p2 Point on the second line
@@ -137,13 +141,75 @@ class CORE_EXPORT QgsGeometryUtils
     static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
+     * \brief Compute the intersection of a line and a circle.
+     * If the intersection has two solutions (points),
+     * the closest point to the initial \a intersection point is returned.
+     * \param center the center of the circle
+     * \param radius the radius of the circle
+     * \param linePoint1 a first point on the line
+     * \param linePoint2 a second point on the line
+     * \param intersection the initial point and the returned intersection point
+     * \return true if an intersection has been found
+     */
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+                                        QgsPointXY &intersection SIP_INOUT );
+
+    /**
+     * Calculates the intersections points between the circle with center \a center1 and
+     * radius \a radius1 and the circle with center \a center2 and radius \a radius2.
+     *
+     * If found, the intersection points will be stored in \a intersection1 and \a intersection2.
+     *
+     * \returns number of intersection points found.
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleIntersections( QgsPointXY center1, double radius1,
+                                          QgsPointXY center2, double radius2,
+                                          QgsPointXY &intersection1 SIP_OUT, QgsPointXY &intersection2 SIP_OUT );
+
+    /**
+     * Calculates the tangent points between the circle with the specified \a center and \a radius
+     * and the point \a p.
+     *
+     * If found, the tangent points will be stored in \a pt1 and \a pt2.
+     *
+     * \since QGIS 3.2
+     */
+    static bool tangentPointAndCircle( const QgsPointXY &center, double radius,
+                                       const QgsPointXY &p, QgsPointXY &pt1 SIP_OUT, QgsPointXY &pt2 SIP_OUT );
+
+    /**
+     * Calculates the outer tangent points for two circles, centered at \a center1 and
+     * \a center2 and with radii of \a radius1 and \a radius2 respectively.
+     *
+     * The outer tangent points correspond to the points at which the two lines
+     * which are drawn so that they are tangential to both circles touch
+     * the circles.
+     *
+     * The first tangent line is described by the points
+     * stored in \a line1P1 and \a line1P2,
+     * and the second line is described by the points stored in \a line2P1
+     * and \a line2P2.
+     *
+     * Returns the number of tangents (either 0 or 2).
+     *
+     * \since QGIS 3.2
+     */
+    static int circleCircleOuterTangents(
+      const QgsPointXY &center1, double radius1, const QgsPointXY &center2, double radius2,
+      QgsPointXY &line1P1 SIP_OUT, QgsPointXY &line1P2 SIP_OUT,
+      QgsPointXY &line2P1 SIP_OUT, QgsPointXY &line2P2 SIP_OUT );
+
+    /**
      * \brief Project the point on a segment
      * \param p The point
      * \param s1 The segment start point
      * \param s2 The segment end point
      * \returns The projection of the point on the segment
      */
-    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
     {
       double nx = s2.y() - s1.y();
       double ny = -( s2.x() - s1.x() );
@@ -169,7 +235,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
+    static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
      * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
@@ -210,8 +276,26 @@ class CORE_EXPORT QgsGeometryUtils
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 );
 
-    //! Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
+    /**
+     * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
+     * the given coordinate \a mousePos. Z dimension is supported and is retrieved from the
+     * first 3D point amongst \a p1 and \a p2.
+     * \see segmentMidPointFromCenter()
+     */
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result SIP_OUT, double radius, const QgsPoint &mousePos );
+
+    /**
+     * Calculates the midpoint on the circle passing through \a p1 and \a p2,
+     * with the specified \a center coordinate.
+     *
+     * If \a useShortestArc is true, then the midpoint returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * to \a p2 will be used (i.e. winding the other way around the circle).
+     *
+     * \see segmentMidPoint()
+     * \since QGIS 3.2
+     */
+    static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
 
     //! Calculates the direction angle of a circle tangent (clockwise from north in radians)
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -260,13 +344,13 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns a gml::coordinates DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns ) SIP_SKIP;
+    static QDomElement pointsToGML2( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a gml::posList DOM element.
      * \note not available in Python bindings
      */
-    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D ) SIP_SKIP;
+    static QDomElement pointsToGML3( const QgsPointSequence &points, QDomDocument &doc, int precision, const QString &ns, bool is3D, const QgsAbstractGeometry::AxisOrder &axisOrder = QgsAbstractGeometry::AxisOrder::XY ) SIP_SKIP;
 
     /**
      * Returns a geoJSON coordinates string.
@@ -316,7 +400,10 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static double linePerpendicularAngle( double x1, double y1, double x2, double y2 );
 
-    //! Angle between two linear segments
+    /**
+     * Calculates the average angle (in radians) between the two linear segments from
+     * (\a x1, \a y1) to (\a x2, \a y2) and (\a x2, \a y2) to (\a x3, \a y3).
+     */
     static double averageAngle( double x1, double y1, double x2, double y2, double x3, double y3 );
 
     /**
@@ -366,7 +453,54 @@ class CORE_EXPORT QgsGeometryUtils
     static QgsPoint midpoint( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
-     * Return the gradient of a line defined by points \a pt1 and \a pt2.
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from (\a x1, \a y1) to (\a x2, \a y2).
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a x1, \a y1) and 1 represents
+     * the end of the line (\a x2, \a y2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
+     */
+    static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
+
+    /**
+     * Interpolates the position of a point a \a fraction of the way along
+     * the line from \a p1 to \a p2.
+     *
+     * Usually the \a fraction should be between 0 and 1, where 0 represents the
+     * point at the start of the line (\a p1) and 1 represents
+     * the end of the line (\a p2). However, it is possible to
+     * use a \a fraction < 0 or > 1, in which case the returned point
+     * is extrapolated from the supplied line.
+     *
+     * Any Z or M values present in the input points will also be interpolated
+     * and present in the returned point.
+     *
+     * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
+     */
+    static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
+
+    /**
+     * Interpolates the position of a point along the line from (\a x1, \a y1)
+     * to (\a x2, \a y2).
+     *
+     * The position is interpolated using a supplied target \a value and the value
+     * at the start of the line (\a v1) and end of the line (\a v2). The returned
+     * point will be linearly interpolated to match position corresponding to
+     * the target \a value.
+     *
+     * \see interpolatePointOnLine()
+     * \since QGIS 3.0.2
+     */
+    static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
+
+    /**
+     * Returns the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
@@ -375,7 +509,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
-     * Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
+     * Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \param a Output parameter, a coefficient of the equation.
@@ -394,6 +528,83 @@ class CORE_EXPORT QgsGeometryUtils
      * \returns A line (segment) from p to perpendicular point on segment [s1, s2]
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+
+
+    /**
+     * An algorithm to calculate the shortest distance between two skew lines.
+     * \param P1 is the first point of the first line,
+     * \param P12 is the second point on the first line,
+     * \param P2 is the first point on the second line,
+     * \param P22 is the second point on the second line.
+     * \return the shortest distance
+     */
+    static double skewLinesDistance( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22 );
+
+    /**
+     * A method to project one skew line onto another.
+     * \param P1 is a first point that belonds to first skew line,
+     * \param P12 is the second point that belongs to first skew line,
+     * \param P2 is the first point that belongs to second skew line,
+     * \param P22 is the second point that belongs to second skew line,
+     * \param X1 is the result projection point of line P2P22 onto line P1P12,
+     * \param epsilon the tolerance to use.
+     * \return true if such point exists, false - otherwise.
+     */
+    static bool skewLinesProjection( const QgsVector3D &P1, const QgsVector3D &P12,
+                                     const QgsVector3D &P2, const QgsVector3D &P22,
+                                     QgsVector3D &X1  SIP_OUT,
+                                     double epsilon = 0.0001 );
+
+    /**
+     * An algorithm to calculate an (approximate) intersection of two lines in 3D.
+     * \param La1 is the first point on the first line,
+     * \param La2 is the second point on the first line,
+     * \param Lb1 is the first point on the second line,
+     * \param Lb2 is the second point on the second line,
+     * \param intersection is the result intersection, of it can be found.
+     * \return true if the intersection can be found, false - otherwise.
+     * example:
+     * \code{.py}
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,3,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(0,1,0), QgsVector3D(0,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,3,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(5,1,0), QgsVector3D(5,0,0))
+     *   # (False, PyQt5.QtGui.QgsVector3D(0.0, 0.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,1,0), QgsVector3D(3,2,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(1,1,0), QgsVector3D(2,2,0), QgsVector3D(3,2,0), QgsVector3D(3,1,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(3.0, 3.0, 0.0))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(5,5,5), QgsVector3D(0,0,0), QgsVector3D(0,5,5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(0,5,0), QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0))
+     *   # (True, PyQt5.QtGui.QgsVector3D(2.5, 2.5, 2.5))
+     *   QgsGeometryUtils.linesIntersection3D(QgsVector3D(2.5,2.5,2.5), QgsVector3D(5,0,0), QgsVector3D(0,5,5), QgsVector3D(5,5,5))
+     *   # (True, PyQt5.QtGui.QgsVector3D(0.0, 5.0, 5.0))
+     *   \endcode
+     */
+    static bool linesIntersection3D( const QgsVector3D &La1, const QgsVector3D &La2,
+                                     const QgsVector3D &Lb1, const QgsVector3D &Lb2,
+                                     QgsVector3D &intersection  SIP_OUT );
+
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns true if the point is updated, false otherwise
+     *
+     * \since QGIS 3.0
+     */
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
 
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP

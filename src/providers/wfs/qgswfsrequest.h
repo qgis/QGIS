@@ -27,7 +27,7 @@ class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString &uri );
+    explicit QgsWfsRequest( const QgsWFSDataSourceURI &uri );
 
     ~QgsWfsRequest() override;
 
@@ -45,14 +45,17 @@ class QgsWfsRequest : public QObject
                      WFSVersionNotSupported
                    };
 
-    //! \brief Return error code (after download/post)
+    //! Returns the error code (after download/post)
     ErrorCode errorCode() const { return mErrorCode; }
 
-    //! \brief Return error message (after download/post)
+    //! Returns the error message (after download/post)
     QString errorMessage() const { return mErrorMessage; }
 
-    //! \brief Return server response (after download/post)
+    //! Returns the server response (after download/post)
     QByteArray response() const { return mResponse; }
+
+    //! Returns the url for a WFS request
+    QUrl requestUrl( const QString &request ) const;
 
   public slots:
     //! Abort network request immediately
@@ -100,15 +103,13 @@ class QgsWfsRequest : public QObject
 
   protected:
 
-    //! base service URL
-    QUrl baseURL() const { return mUri.baseURL(); }
-
     /**
-     * Return (translated) error message, composed with a
-        (possibly translated, but sometimes coming from server) reason  */
+     * Returns (translated) error message, composed with a
+     * (possibly translated, but sometimes coming from server) reason
+     */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
-    //! Return experiation delay in second
+    //! Returns experiation delay in second
     virtual int defaultExpirationInSec() { return 0; }
 
   private:

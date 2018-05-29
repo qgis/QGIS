@@ -32,7 +32,9 @@ class QgsReportSectionFieldGroupWidget: public QWidget, private Ui::QgsReportWid
   private slots:
 
     void toggleHeader( bool enabled );
+    void toggleHeaderAlwaysVisible( bool enabled );
     void toggleFooter( bool enabled );
+    void toggleFooterAlwaysVisible( bool enabled );
     void editHeader();
     void editFooter();
     void toggleBody( bool enabled );

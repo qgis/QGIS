@@ -28,6 +28,8 @@
 #include "qgsgui.h"
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
+#include "qgsreadwritecontext.h"
+#include "qgshelp.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -70,23 +72,14 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mLayoutListView->setModel( mProxyModel );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsLayoutManagerDialog::toggleButtons );
   connect( mLayoutListView, &QListView::doubleClicked, this, &QgsLayoutManagerDialog::itemDoubleClicked );
 
-  mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
   connect( mShowButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::showClicked );
-
-  mCreateReportButton = mButtonBox->addButton( tr( "Create &Report" ), QDialogButtonBox::ActionRole );
-  connect( mCreateReportButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::createReport );
-
-  mDuplicateButton = mButtonBox->addButton( tr( "&Duplicate" ), QDialogButtonBox::ActionRole );
   connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::duplicateClicked );
-
-  mRemoveButton = mButtonBox->addButton( tr( "&Remove" ), QDialogButtonBox::ActionRole );
   connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::removeClicked );
-
-  mRenameButton = mButtonBox->addButton( tr( "Re&name" ), QDialogButtonBox::ActionRole );
   connect( mRenameButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::renameClicked );
 
 #ifdef Q_OS_MAC
@@ -96,6 +89,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 #endif
 
   mTemplate->addItem( tr( "Empty layout" ) );
+  mTemplate->addItem( tr( "Empty report" ) );
   mTemplate->addItem( tr( "Specific" ) );
 
   mUserTemplatesDir = QgsApplication::qgisSettingsDirPath() + "/composer_templates";
@@ -207,12 +201,12 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
 void QgsLayoutManagerDialog::mAddButton_clicked()
 {
   QFile templateFile;
-  bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
+  bool loadingTemplate = ( mTemplate->currentIndex() > 1 );
   QDomDocument templateDoc;
   QString storedTitle;
   if ( loadingTemplate )
   {
-    if ( mTemplate->currentIndex() == 1 )
+    if ( mTemplate->currentIndex() == 2 )
     {
       templateFile.setFileName( mTemplateFileWidget->filePath() );
     }
@@ -223,12 +217,12 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 
     if ( !templateFile.exists() )
     {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Template file “%1” not found." ).arg( templateFile.fileName() ) );
+      QMessageBox::warning( this, tr( "Create Layout" ), tr( "Template file “%1” not found." ).arg( templateFile.fileName() ) );
       return;
     }
     if ( !templateFile.open( QIODevice::ReadOnly ) )
     {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Could not read template file “%1”." ).arg( templateFile.fileName() ) );
+      QMessageBox::warning( this, tr( "Create Layout" ), tr( "Could not read template file “%1”." ).arg( templateFile.fileName() ) );
       return;
     }
 
@@ -241,44 +235,51 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     }
   }
 
-  QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout, storedTitle ) )
+  if ( mTemplate->currentIndex() == 1 ) // if it's an empty report
   {
-    return;
-  }
-
-  if ( title.isEmpty() )
-  {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
-  }
-
-  std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
-  if ( loadingTemplate )
-  {
-    bool loadedOK = false;
-    ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
-    if ( !loadedOK )
-    {
-      QMessageBox::warning( this, tr( "Create layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
-      layout.reset();
-    }
+    createReport();
   }
   else
   {
-    layout->initializeDefaults();
-  }
+    QString title;
+    if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout, storedTitle ) )
+    {
+      return;
+    }
 
-  if ( layout )
-  {
-    layout->setName( title );
-    QgisApp::instance()->openLayoutDesignerDialog( layout.get() );
-    QgsProject::instance()->layoutManager()->addLayout( layout.release() );
+    if ( title.isEmpty() )
+    {
+      title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
+    }
+
+    std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+    if ( loadingTemplate )
+    {
+      bool loadedOK = false;
+      ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
+      if ( !loadedOK )
+      {
+        QMessageBox::warning( this, tr( "Create Layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
+        layout.reset();
+      }
+    }
+    else
+    {
+      layout->initializeDefaults();
+    }
+
+    if ( layout )
+    {
+      layout->setName( title );
+      QgisApp::instance()->openLayoutDesignerDialog( layout.get() );
+      QgsProject::instance()->layoutManager()->addLayout( layout.release() );
+    }
   }
 }
 
 void QgsLayoutManagerDialog::mTemplate_currentIndexChanged( int indx )
 {
-  bool specific = ( indx == 1 ); // comes just after empty template
+  bool specific = ( indx == 2 ); // comes just after empty templates
   mTemplateFileWidget->setEnabled( specific );
 }
 
@@ -322,7 +323,7 @@ void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
   QDir localDir;
   if ( !localDir.mkpath( localDirPath ) )
   {
-    QMessageBox::warning( this, tr( "Open directory" ), tr( "Could not open or create local directory “%1”." ).arg( localDirPath ) );
+    QMessageBox::warning( this, tr( "Open Directory" ), tr( "Could not open or create local directory “%1”." ).arg( localDirPath ) );
   }
   else
   {
@@ -369,13 +370,13 @@ void QgsLayoutManagerDialog::removeClicked()
   QString message;
   if ( layoutItems.count() == 1 )
   {
-    title = tr( "Remove layout" );
+    title = tr( "Remove Layout" );
     message = tr( "Do you really want to remove the print layout “%1”?" ).arg(
                 mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
   }
   else
   {
-    title = tr( "Remove layouts" );
+    title = tr( "Remove Layouts" );
     message = tr( "Do you really want to remove all selected print layouts?" );
   }
 
@@ -445,7 +446,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
 
   if ( !newDialog )
   {
-    QMessageBox::warning( this, tr( "Duplicate layout" ),
+    QMessageBox::warning( this, tr( "Duplicate Layout" ),
                           tr( "Layout duplication failed." ) );
   }
   else
@@ -480,6 +481,11 @@ void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
   {
     QgisApp::instance()->openLayoutDesignerDialog( l );
   }
+}
+
+void QgsLayoutManagerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#the-layout-manager" ) );
 }
 
 //
@@ -568,7 +574,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
   if ( layoutNames.contains( value.toString() ) )
   {
     //name exists!
-    QMessageBox::warning( nullptr, tr( "Rename layout" ), tr( "There is already a layout named “%1”." ).arg( value.toString() ) );
+    QMessageBox::warning( nullptr, tr( "Rename Layout" ), tr( "There is already a layout named “%1”." ).arg( value.toString() ) );
     return false;
   }
 

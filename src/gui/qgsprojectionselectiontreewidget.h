@@ -53,8 +53,8 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Returns the CRS currently selected in the widget.
-     * \since QGIS 3.0
      * \see setCrs()
+     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -76,15 +76,15 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * \since QGIS 3.0
      * \see setShowNoProjection()
+     * \since QGIS 3.0
      */
     bool showNoProjection() const;
 
     /**
      * Returns whether the bounds preview map is shown.
-     * \since QGIS 3.0
      * \see setShowBoundsMap()
+     * \since QGIS 3.0
      */
     bool showBoundsMap() const;
 
@@ -100,22 +100,22 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     /**
      * Sets the initial \a crs to show within the dialog.
-     * \since QGIS 3.0
      * \see crs()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
     /**
      * Sets the initial "preview" rectangle for the bounds overview map.
-     * \since QGIS 3.0
      * \see previewRect()
+     * \since QGIS 3.0
      */
     void setPreviewRect( const QgsRectangle &rect );
 
     /**
      * The initial "preview" rectangle for the bounds overview map.
-     * \since QGIS 3.0
      * \see previewRect()
+     * \since QGIS 3.0
      */
     QgsRectangle previewRect() const;
 
@@ -235,6 +235,12 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
     //! Show the user a warning if the srs database could not be found
     void showDBMissingWarning( const QString &fileName );
+
+    enum Roles
+    {
+      RoleDeprecated = Qt::UserRole,
+    };
+
     // List view nodes for the tree view of projections
     //! User defined projections node
     QTreeWidgetItem *mUserProjList = nullptr;
@@ -293,7 +299,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
 
 
   private slots:
-    //! get list of authorities
+    //! Gets list of authorities
     void updateBoundsPreview();
     QStringList authorities();
 
@@ -302,8 +308,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void lstRecent_itemDoubleClicked( QTreeWidgetItem *current, int column );
     void lstCoordinateSystems_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
     void lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
-    void cbxHideDeprecated_stateChanged();
-    void leSearch_textChanged( const QString & );
+    void updateFilter();
 };
 
 #endif

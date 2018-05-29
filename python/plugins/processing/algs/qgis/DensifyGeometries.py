@@ -38,7 +38,7 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
     VERTICES = 'VERTICES'
 
     def tags(self):
-        return self.tr('add,vertices,points').split(',')
+        return self.tr('add,vertex,vertices,points,nodes').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
@@ -75,4 +75,4 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByCount(self.vertices)
             feature.setGeometry(new_geometry)
-        return feature
+        return [feature]

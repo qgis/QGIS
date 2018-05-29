@@ -28,13 +28,20 @@ QgsAttributeFormRelationEditorWidget::QgsAttributeFormRelationEditorWidget( QgsR
 
 void QgsAttributeFormRelationEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
 {
-  Q_UNUSED( context )
-  mSearchWidget = new QgsRelationAggregateSearchWidgetWrapper( layer(), mWrapper, form() );
+  if ( context.parentContext() )
+  {
+    mSearchWidget = new QgsRelationAggregateSearchWidgetWrapper( layer(), mWrapper, form() );
+    mSearchWidget->setContext( context );
 
-  setSearchWidgetWrapper( mSearchWidget );
+    setSearchWidgetWrapper( mSearchWidget );
+  }
 }
 
 QString QgsAttributeFormRelationEditorWidget::currentFilterExpression() const
 {
-  return mSearchWidget->expression();
+  QString filterExpression;
+  if ( mSearchWidget )
+    filterExpression = mSearchWidget->expression();
+
+  return filterExpression;
 }

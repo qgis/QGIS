@@ -66,7 +66,7 @@ class QgisPlugin
       TOOLBAR_BUTTON,
     };
 
-    @todo XXX this may be a hint that there should be subclasses
+    \todo XXX this may be a hint that there should be subclasses
 #endif
 
     enum PluginType
@@ -94,7 +94,7 @@ class QgisPlugin
 
     virtual ~QgisPlugin() = default;
 
-    //! Get the name of the plugin
+    //! Gets the name of the plugin
     QString const &name() const
     {
       return mName;
@@ -177,7 +177,7 @@ class QgisPlugin
     /// UI or MAPLAYER plug-in
 
     /**
-      @todo Really, might be indicative that this needs to split into
+      \todo Really, might be indicative that this needs to split into
       maplayer vs. ui plug-in vs. other kind of plug-in
       */
     PluginType mType;

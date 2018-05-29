@@ -66,7 +66,7 @@ class SERVER_EXPORT QgsRequestHandler
      */
     void sendResponse();
 
-    //! Set an HTTP response header
+    //! Sets an HTTP response header
     void setResponseHeader( const QString &name, const QString &value );
 
     //! Remove an HTTP response header
@@ -75,10 +75,10 @@ class SERVER_EXPORT QgsRequestHandler
     //! Retrieve response header value
     QString responseHeader( const QString &name ) const;
 
-    //! Return the response headers
+    //! Returns the response headers
     QMap<QString, QString> responseHeaders() const;
 
-    //! Set an HTTP request header
+    //! Sets an HTTP request header
     void setRequestHeader( const QString &name, const QString &value );
 
     //! Remove an HTTP request header
@@ -87,13 +87,13 @@ class SERVER_EXPORT QgsRequestHandler
     //! Retrieve request header value
     QString requestHeader( const QString &name ) const;
 
-    //! Return the Request headers
+    //! Returns the the Request headers
     QMap<QString, QString> requestHeaders() const;
 
     //! Clears the response body and headers
     void clear();
 
-    //! Set the info format string such as "text/xml"
+    //! Sets the info format string such as "text/xml"
     void appendBody( const QByteArray &body );
 
     //! Pointer to last raised exception
@@ -102,32 +102,32 @@ class SERVER_EXPORT QgsRequestHandler
     //! Clear response buffer
     void clearBody();
 
-    //! Return response body data
+    //! Returns the response body data
     QByteArray body() const;
 
-    //! Return request POST data (can be null)
+    //! Returns the request POST data (can be null)
     QByteArray data() const;
 
-    //! Return request url
+    //! Returns the request url
     QString url() const;
 
-    //! Set response http status code
+    //! Sets response http status code
     void setStatusCode( int code );
 
-    //! Return response http status code
+    //! Returns the response http status code
     int statusCode() const;
 
     /**
-     * Return the parsed parameters as a key-value pair, to modify
+     * Returns the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
     QMap<QString, QString> parameterMap() const;
 
-    //! Set a request parameter
+    //! Sets a request parameter
     void setParameter( const QString &key, const QString &value );
 
-    //! Return a request parameter
+    //! Returns a request parameter
     QString parameter( const QString &key ) const;
 
     //! Remove a request parameter
@@ -139,10 +139,10 @@ class SERVER_EXPORT QgsRequestHandler
      */
     void parseInput() SIP_SKIP;
 
-    //! Return the requested format string
+    //! Returns the requested format string
     QString format() const { return mFormat; }
 
-    //! Return true if the HTTP headers were already sent to the client
+    //! Returns true if the HTTP headers were already sent to the client
     bool headersSent() const;
 
   private:

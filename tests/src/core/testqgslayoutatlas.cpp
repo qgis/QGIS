@@ -130,6 +130,7 @@ void TestQgsLayoutAtlas::init()
   // fix the renderer, fill with green
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "0,127,0" ) );
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
   QgsFillSymbol *fillSymbol = QgsFillSymbol::createSimple( props );
   QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( fillSymbol );
   mVectorLayer->setRenderer( renderer );
@@ -157,6 +158,7 @@ void TestQgsLayoutAtlas::init()
   // set the fill symbol of the overview map
   QgsStringMap props2;
   props2.insert( QStringLiteral( "color" ), QStringLiteral( "127,0,0,127" ) );
+  props2.insert( QStringLiteral( "outline_color" ), QStringLiteral( "0,0,0" ) );
   QgsFillSymbol *fillSymbol2 = QgsFillSymbol::createSimple( props2 );
   mOverview->overview()->setFrameSymbol( fillSymbol2 );
 

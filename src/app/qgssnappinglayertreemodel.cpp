@@ -49,6 +49,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   if ( index.column() == QgsSnappingLayerTreeModel::ToleranceColumn )
   {
     QDoubleSpinBox *w = new QDoubleSpinBox( parent );
+    w->setMaximum( 99999999.990000 );
     QVariant val = index.model()->data( index.model()->sibling( index.row(), QgsSnappingLayerTreeModel::UnitsColumn, index ), Qt::UserRole );
     if ( val.isValid() )
     {

@@ -436,6 +436,7 @@ alternativly:alternatively
 alternitives:alternatives
 altho:although
 althought:although
+altitide:altitude
 altough:although
 alusion:allusion
 alway:always
@@ -466,6 +467,7 @@ amung:among
 amunition:ammunition
 an other:another
 analagous:analogous
+analise:analyze
 analitic:analytic
 analogeous:analogous
 analysator:analyzer
@@ -873,6 +875,7 @@ avaluates:evaluates
 avaluating:evaluating
 avaoided:avoided
 avation:aviation
+avdanced:advanced
 avengence:a vengeance
 averageed:averaged
 aviable:available
@@ -1052,6 +1055,7 @@ cacluates:calculates
 cacluating:calculating
 cacluation:calculation
 cacluations:calculations
+caclulating:calculating
 caculate:calculate
 caculated:calculated
 caculater:calculator
@@ -1756,6 +1760,7 @@ conveting:converting
 convets:converts
 conveyer:conveyor
 conviced:convinced
+convience:convenience
 convienient:convenient
 convieniently:conveniently
 convinience:convenience
@@ -1830,6 +1835,7 @@ coult:could
 councellor:councillor
 councellors:councillors
 cound:could
+counding:counting
 counries:countries
 countains:contains
 countires:countries
@@ -1877,9 +1883,14 @@ curch:church
 curcuit:circuit
 curcumstance:circumstance
 curcumstances:circumstances
+curent:current
 curently:currently
 currenly:currently
+currnt:current
 curriculem:curriculum
+customicable:customizable
+customisation:customization
+customise:customize
 cxan:cyan
 cyclinder:cylinder
 cymk:CMYK
@@ -1955,6 +1966,7 @@ defenition:definition
 defenitions:definitions
 defered:deferred
 deffensively:defensively
+defferent:different
 deffine:define
 deffined:defined
 defiend:defined
@@ -3167,6 +3179,7 @@ genreating:generating
 genric:generic
 geographich:geographic
 geographicial:geographical
+geoemtry:geometry
 geometrician:geometer
 geometricians:geometers
 geomtry:geometry
@@ -3365,6 +3378,7 @@ highligt:highlight
 highligted:highlighted
 highligting:highlighting
 highligts:highlights
+hight:height
 hightlight:highlight
 hightlighted:highlighted
 hightlighting:highlighting
@@ -4001,6 +4015,7 @@ intutively:intuitively
 inudstry:industry
 inumerable:enumerable
 invaid:invalid
+invalide:invalid
 invaild:invalid
 invalud:invalid
 invarient:invariant
@@ -4017,6 +4032,7 @@ invokved:invoked
 invokves:invokes
 invokving:invoking
 involvment:involvement
+iput:input
 irelevent:irrelevant
 iresistable:irresistible
 iresistably:irresistibly
@@ -4229,6 +4245,7 @@ lukid:likud
 lveo:love
 lvoe:love
 Lybia:Libya
+mach:match
 machanism:mechanism
 machanisms:mechanisms
 machinary:machinery
@@ -4474,6 +4491,7 @@ mkaes:makes
 mkaing:making
 mkea:make
 mmnemonic:mnemonic
+modeller:modeler
 moderm:modem
 modfied:modified
 modfies:modifies
@@ -4553,6 +4571,7 @@ muscial:musical
 muscician:musician
 muscicians:musicians
 musn't:mustn't
+mustator:mutator
 muste:must
 mutiliated:mutilated
 mutiple:multiple
@@ -5042,6 +5061,7 @@ percepted:perceived
 percieve:perceive
 percieved:perceived
 perenially:perennially
+perferred:preferred
 perfom:perform
 perfomance:performance
 perfomed:performed
@@ -5888,6 +5908,7 @@ repostiories:repositories
 repostiory:repository
 repport:report
 represantative:representative
+represenation:representation
 representaion:representation
 representaions:representations
 representiative:representative
@@ -6359,6 +6380,7 @@ skiped:skipped
 skiping:skipping
 slashs:slashes
 slaugterhouses:slaughterhouses
+slection:selection
 slighly:slightly
 sligth:slight
 sligthly:slightly
@@ -6631,6 +6653,7 @@ succedes:succeeds
 succeding:succeeding
 succeds:succeeds
 succeedes:succeeds
+succes:success:*
 succesful:successful
 succesfull:successful
 succesfully:successfully
@@ -7046,6 +7069,7 @@ transending:transcending
 transesxuals:transsexuals
 transfered:transferred
 transfering:transferring
+transfom:transform
 transformaton:transformation
 transfrom:transform
 transfromation:transformation
@@ -7381,6 +7405,7 @@ variabes:variables
 variantions:variations
 varibale:variable
 varibales:variables
+varible:variable
 varient:variant
 variey:variety
 varing:varying
@@ -7531,6 +7556,7 @@ wiew:view
 wih:with
 wihout:without
 wiht:with
+wihtin:within
 wiil:will
 wilcard:wildcard
 wilcards:wildcards
@@ -7572,6 +7598,7 @@ woudn't:wouldn't
 would'nt:wouldn't
 would't:wouldn't
 wouldnt:wouldn't
+wraper:wrapper
 wresters:wrestlers
 wriet:write
 writeable:writable

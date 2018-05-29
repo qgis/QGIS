@@ -39,11 +39,6 @@ QString QgsExtractByAttributeAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractByAttributeAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsExtractByAttributeAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorselection" );
@@ -55,7 +50,7 @@ void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ), QObject::tr( "Selection attribute" ), QVariant(), QStringLiteral( "INPUT" ) ) );
   addParameter( new QgsProcessingParameterEnum( QStringLiteral( "OPERATOR" ), QObject::tr( "Operator" ), QStringList()
                 << QObject::tr( "=" )
-                << QObject::trUtf8( "≠" )
+                << QObject::tr( "≠" )
                 << QObject::tr( ">" )
                 << QObject::tr( ">=" )
                 << QObject::tr( "<" )
@@ -88,9 +83,9 @@ QgsExtractByAttributeAlgorithm *QgsExtractByAttributeAlgorithm::createInstance()
 
 QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString fieldName = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   Operation op = static_cast< Operation >( parameterAsEnum( parameters, QStringLiteral( "OPERATOR" ), context ) );
@@ -100,7 +95,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   std::unique_ptr< QgsFeatureSink > matchingSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, matchingSinkId, source->fields(),
       source->wkbType(), source->sourceCrs() ) );
   if ( !matchingSink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QString nonMatchingSinkId;
   std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
@@ -178,7 +173,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     throw QgsProcessingException( expression.parserErrorString() );
   }
 
-  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( source.get() ) );
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, source.get() );
 
   long count = source->featureCount();
 
@@ -192,7 +187,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     req.setFilterExpression( expr );
     req.setExpressionContext( expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures( req );
+    QgsFeatureIterator it = source->getFeatures( req, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {
@@ -213,7 +208,7 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
     expressionContext.setFields( source->fields() );
     expression.prepare( &expressionContext );
 
-    QgsFeatureIterator it = source->getFeatures();
+    QgsFeatureIterator it = source->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {

@@ -57,14 +57,27 @@ class CORE_EXPORT QgsAction
      * \param description   A human readable description string
      * \param command       The action text. Its interpretation depends on the type
      * \param capture       If this is set to true, the output will be captured when an action is run
+     * \param enabledOnlyWhenEditable if true then action is only enable in editmode
      */
+#ifndef SIP_RUN
+    QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false, bool enabledOnlyWhenEditable = false )
+      : mType( type )
+      , mDescription( description )
+      , mCommand( command )
+      , mCaptureOutput( capture )
+      , mId( QUuid::createUuid() )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
+    {}
+#else
     QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false )
       : mType( type )
       , mDescription( description )
       , mCommand( command )
       , mCaptureOutput( capture )
       , mId( QUuid::createUuid() )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
     {}
+#endif
 
     /**
      * Create a new QgsAction
@@ -77,7 +90,22 @@ class CORE_EXPORT QgsAction
      * \param shortTitle           A short string used to label user interface elements like buttons
      * \param actionScopes         A set of scopes in which this action will be available
      * \param notificationMessage  A particular message which reception will trigger the action
+     * \param enabledOnlyWhenEditable if true then action is only enable in editmode
      */
+#ifndef SIP_RUN
+    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString(), bool enabledOnlyWhenEditable = false )
+      : mType( type )
+      , mDescription( description )
+      , mShortTitle( shortTitle )
+      , mIcon( icon )
+      , mCommand( action )
+      , mCaptureOutput( capture )
+      , mActionScopes( actionScopes )
+      , mNotificationMessage( notificationMessage )
+      , mId( QUuid::createUuid() )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
+    {}
+#else
     QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() )
       : mType( type )
       , mDescription( description )
@@ -88,7 +116,9 @@ class CORE_EXPORT QgsAction
       , mActionScopes( actionScopes )
       , mNotificationMessage( notificationMessage )
       , mId( QUuid::createUuid() )
+      , mIsEnabledOnlyWhenEditable( enabledOnlyWhenEditable )
     {}
+#endif
 
     //! The name of the action. This may be a longer description.
     QString name() const { return mDescription; }
@@ -137,6 +167,11 @@ class CORE_EXPORT QgsAction
 
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
+
+
+    //! Returns whether only enabled in editable mode
+    bool isEnabledOnlyWhenEditable() const { return mIsEnabledOnlyWhenEditable; }
+
 
     //! Checks if the action is runable on the current platform
     bool runable() const;
@@ -216,6 +251,7 @@ class CORE_EXPORT QgsAction
     mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
     QgsExpressionContextScope mExpressionContextScope;
+    bool mIsEnabledOnlyWhenEditable = false;
 };
 
 Q_DECLARE_METATYPE( QgsAction )

@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsAssignProjectionAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsAssignProjectionAlgorithm::name() const
 {
   return QStringLiteral( "assignprojection" );
@@ -72,15 +67,20 @@ void QgsAssignProjectionAlgorithm::initParameters( const QVariantMap & )
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Assigned CRS" ), QStringLiteral( "EPSG:4326" ) ) );
 }
 
+QgsProcessingFeatureSource::Flag QgsAssignProjectionAlgorithm::sourceFlags() const
+{
+  return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;
+}
+
 bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mDestCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
   return true;
 }
 
-QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-  return feature;
+  return QgsFeatureList() << feature;
 }
 
 ///@endcond

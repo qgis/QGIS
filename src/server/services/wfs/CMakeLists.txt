@@ -28,8 +28,6 @@ ADD_LIBRARY (wfs MODULE ${wfs_SRCS} ${wfs_MOC_SRCS} ${wfs_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
 )
 
@@ -46,7 +44,6 @@ INCLUDE_DIRECTORIES(
   ../../../core/metadata
   ../../../core/raster
   ../../../core/symbology
-  ../../../core/composer
   ../../../core/layertree
   ../..
   ..

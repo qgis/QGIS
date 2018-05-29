@@ -85,7 +85,7 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    //! Return the layer type from \a geometryType
+    //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
     //! Delete a geopackage layer
@@ -135,6 +135,9 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+    QVariant sortKey() const override { return 1; }
+
 
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;

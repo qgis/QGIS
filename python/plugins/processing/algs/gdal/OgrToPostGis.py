@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterCrs,
@@ -189,10 +190,13 @@ class OgrToPostGis(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        if not layername:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
-        ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
-        tsrs = self.parameterAsCrs(parameters, self.T_SRS, context).authid()
-        asrs = self.parameterAsCrs(parameters, self.A_SRS, context).authid()
+        ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
+        tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
+        asrs = self.parameterAsCrs(parameters, self.A_SRS, context)
         table = self.parameterAsString(parameters, self.TABLE, context)
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
         pk = self.parameterAsString(parameters, self.PK, context)
@@ -261,15 +265,15 @@ class OgrToPostGis(GdalAlgorithm):
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')
         arguments.append(table)
-        if len(ssrs) > 0:
+        if ssrs.isValid():
             arguments.append('-s_srs')
-            arguments.append(ssrs)
-        if len(tsrs) > 0:
+            arguments.append(GdalUtils.gdal_crs_string(ssrs))
+        if tsrs.isValid():
             arguments.append('-t_srs')
-            arguments.append(tsrs)
-        if len(asrs) > 0:
+            arguments.append(GdalUtils.gdal_crs_string(tsrs))
+        if asrs.isValid():
             arguments.append('-a_srs')
-            arguments.append(asrs)
+            arguments.append(GdalUtils.gdal_crs_string(asrs))
         if not spat.isNull():
             arguments.append('-spat')
             arguments.append(spat.xMinimum())

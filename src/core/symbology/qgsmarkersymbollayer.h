@@ -23,7 +23,7 @@
 
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
-#define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
+#define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor( 35, 35, 35 )
 #define DEFAULT_SIMPLEMARKER_JOINSTYLE    Qt::BevelJoin
 #define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
@@ -135,13 +135,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
 
     /**
      * Prepares the layer for drawing the specified shape (QPolygonF version)
-     * \note not available in Python bindings
      */
     bool prepareMarkerShape( Shape shape );
 
     /**
      * Prepares the layer for drawing the specified shape (QPainterPath version)
-     * \note not available in Python bindings
      */
     bool prepareMarkerPath( Shape symbol );
 
@@ -150,7 +148,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param shape shape to create
      * \param polygon destination polygon for shape
      * \returns true if shape was successfully stored in polygon
-     * \note not available in Python bindings
      */
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 
@@ -159,7 +156,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param context symbol render context
      * \param hasDataDefinedSize will be set to true if marker uses data defined sizes
      * \returns marker size, in original size units
-     * \note not available in Python bindings
      */
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 
@@ -170,7 +166,6 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerBase : public QgsMarkerSymbolLayer
      * \param hasDataDefinedRotation will be set to true if marker has data defined rotation
      * \param offset will be set to calculated marker offset (in painter units)
      * \param angle will be set to calculated marker angle
-     * \note not available in Python bindings
      */
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 
@@ -280,39 +275,39 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayer : public QgsSimpleMarkerSymbolLayer
 
     /**
      * Returns the marker's stroke style (e.g., solid, dashed, etc)
-     * \since QGIS 2.4
      * \see setStrokeStyle()
      * \see strokeColor()
      * \see penJoinStyle()
+     * \since QGIS 2.4
     */
     Qt::PenStyle strokeStyle() const { return mStrokeStyle; }
 
     /**
      * Sets the marker's stroke style (e.g., solid, dashed, etc)
      * \param strokeStyle style
-     * \since QGIS 2.4
      * \see strokeStyle()
      * \see setStrokeColor()
      * \see setPenJoinStyle()
+     * \since QGIS 2.4
     */
     void setStrokeStyle( Qt::PenStyle strokeStyle ) { mStrokeStyle = strokeStyle; }
 
     /**
      * Returns the marker's stroke join style (e.g., miter, bevel, etc).
-     * \since QGIS 2.16
      * \see setPenJoinStyle()
      * \see strokeColor()
      * \see strokeStyle()
+     * \since QGIS 2.16
     */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 
     /**
      * Sets the marker's stroke join style (e.g., miter, bevel, etc).
      * \param style join style
-     * \since QGIS 2.16
      * \see penJoinStyle()
      * \see setStrokeColor()
      * \see setStrokeStyle()
+     * \since QGIS 2.16
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
@@ -618,7 +613,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
      * \param context symbol render context
      * \param scaledSize size of symbol to render
      * \param hasDataDefinedAspectRatio will be set to true if marker has data defined aspectRatio
-     * \note not available in Python bindings
      */
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 
@@ -650,7 +644,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayer : public QgsMarkerSymbolLayer
 #define DEFAULT_FONTMARKER_FONT   "Dingbats"
 #define DEFAULT_FONTMARKER_CHR    QChar('A')
 #define DEFAULT_FONTMARKER_SIZE   POINT2MM(12)
-#define DEFAULT_FONTMARKER_COLOR  QColor(Qt::black)
+#define DEFAULT_FONTMARKER_COLOR  QColor( 35, 35, 35 )
 #define DEFAULT_FONTMARKER_BORDERCOLOR  QColor(Qt::white)
 #define DEFAULT_FONTMARKER_JOINSTYLE    Qt::MiterJoin
 #define DEFAULT_FONTMARKER_ANGLE  0
@@ -703,7 +697,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeColor( const QColor &color ) override { mStrokeColor = color; }
 
     /**
-     * Get stroke width.
+     * Gets stroke width.
      * \since QGIS 2.16 */
     double strokeWidth() const { return mStrokeWidth; }
 
@@ -713,7 +707,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidth( double width ) { mStrokeWidth = width; }
 
     /**
-     * Get stroke width unit.
+     * Gets stroke width unit.
      * \since QGIS 2.16 */
     QgsUnitTypes::RenderUnit strokeWidthUnit() const { return mStrokeWidthUnit; }
 
@@ -723,7 +717,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit ) { mStrokeWidthUnit = unit; }
 
     /**
-     * Get stroke width map unit scale.
+     * Gets stroke width map unit scale.
      * \since QGIS 2.16 */
     const QgsMapUnitScale &strokeWidthMapUnitScale() const { return mStrokeWidthMapUnitScale; }
 
@@ -733,7 +727,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale ) { mStrokeWidthMapUnitScale = scale; }
 
     /**
-     * Get stroke join style.
+     * Gets stroke join style.
      * \since QGIS 2.16 */
     Qt::PenJoinStyle penJoinStyle() const { return mPenJoinStyle; }
 

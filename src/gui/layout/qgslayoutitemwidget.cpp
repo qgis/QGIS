@@ -21,6 +21,8 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 
+#include <QButtonGroup>
+
 //
 // QgsLayoutConfigObject
 //
@@ -145,13 +147,24 @@ QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
 
 bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
 {
+  QgsLayoutObject *oldObject = mObject;
+  QgsLayoutConfigObject *oldConfigObject = mConfigObject;
+  // have to set new mObject/mConfigObject here, because setNewItem methods require access to them
+  mObject = item;
+  mConfigObject = new QgsLayoutConfigObject( this, mObject );
   if ( setNewItem( item ) )
   {
-    mObject = item;
+    oldConfigObject->deleteLater();
     return true;
   }
-
-  return false;
+  else
+  {
+    // revert object change since it was unsuccessful
+    mObject = oldObject;
+    mConfigObject->deleteLater();
+    mConfigObject = oldConfigObject;
+    return false;
+  }
 }
 
 void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
@@ -190,6 +203,9 @@ QgsLayoutAtlas *QgsLayoutItemBaseWidget::layoutAtlas() const
 
 void QgsLayoutItemPropertiesWidget::updateVariables()
 {
+  if ( !mItem )
+    return;
+
   QgsExpressionContext context = mItem->createExpressionContext();
   mVariableEditor->setContext( &context );
   int editableIndex = context.indexOfScope( tr( "Layout Item" ) );
@@ -295,8 +311,11 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
     disconnect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
   }
   mItem = item;
-  connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-  connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  if ( mItem )
+  {
+    connect( mItem, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
+    connect( mItem, &QgsLayoutObject::changed, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements );
+  }
 
   setValuesForGuiElements();
 }
@@ -329,6 +348,9 @@ void QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged( const Q
 
 void QgsLayoutItemPropertiesWidget::changeItemPosition()
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
 
   QgsLayoutPoint point( mXPosSpin->value(), mYPosSpin->value(), mPosUnitsComboBox->unit() );
@@ -339,6 +361,9 @@ void QgsLayoutItemPropertiesWidget::changeItemPosition()
 
 void QgsLayoutItemPropertiesWidget::changeItemReference( QgsLayoutItem::ReferencePoint point )
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Item Reference" ) );
   mItem->setReferencePoint( point );
   mItem->layout()->undoStack()->endCommand();
@@ -346,6 +371,9 @@ void QgsLayoutItemPropertiesWidget::changeItemReference( QgsLayoutItem::Referenc
 
 void QgsLayoutItemPropertiesWidget::changeItemSize()
 {
+  if ( !mItem )
+    return;
+
   mItem->layout()->undoStack()->beginCommand( mItem, tr( "Resize Item" ), QgsLayoutItem::UndoIncrementalResize );
 
   QgsLayoutSize size( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() );
@@ -356,6 +384,9 @@ void QgsLayoutItemPropertiesWidget::changeItemSize()
 
 void QgsLayoutItemPropertiesWidget::variablesChanged()
 {
+  if ( !mItem )
+    return;
+
   QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
 }
 

@@ -45,8 +45,8 @@ QList< QPair<QString, QString> > QgsGpsDetector::availablePorts()
 #ifdef Q_OS_LINUX
   // look for linux serial devices
   const QStringList devices { QStringLiteral( "/dev/ttyS%1" ),
-          QStringLiteral( "/dev/ttyUSB%1" ),
-          QStringLiteral( "/dev/rfcomm%1" ), QStringLiteral( "/dev/ttyACM%1" ) };
+                              QStringLiteral( "/dev/ttyUSB%1" ),
+                              QStringLiteral( "/dev/rfcomm%1" ), QStringLiteral( "/dev/ttyACM%1" ) };
   for ( const QString &linuxDev : devices )
   {
     for ( int i = 0; i < 10; ++i )

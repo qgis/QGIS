@@ -52,7 +52,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
       BottomMiddle, //!< Bottom center of widget
       BottomRight, //!< Bottom-right of widget
     };
-    Q_ENUM( AnchorPoint );
+    Q_ENUM( AnchorPoint )
 
     /**
      * Constructor for QgsFloatingWidget.
@@ -112,10 +112,10 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
     void anchorWidgetChanged( QWidget *widget );
 
     //! Emitted when the anchor point changes
-    void anchorPointChanged( AnchorPoint point );
+    void anchorPointChanged( QgsFloatingWidget::AnchorPoint point );
 
     //! Emitted when the anchor widget point changes
-    void anchorWidgetPointChanged( AnchorPoint point );
+    void anchorWidgetPointChanged( QgsFloatingWidget::AnchorPoint point );
 
   protected:
     void showEvent( QShowEvent *e ) override;

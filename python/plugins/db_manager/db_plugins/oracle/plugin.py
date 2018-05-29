@@ -28,7 +28,7 @@ from builtins import range
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
@@ -59,7 +59,7 @@ class OracleDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'Oracle Spatial'
+        return QCoreApplication.translate('db_manager', 'Oracle Spatial')
 
     @classmethod
     def providerName(self):
@@ -192,6 +192,11 @@ class ORDatabase(Database):
         from .data_model import ORSqlResultModel
         return ORSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import ORSqlResultModelAsync
+
+        return ORSqlResultModelAsync(self, sql, parent)
+
     def toSqlLayer(self, sql, geomCol, uniqueCol,
                    layerName=u"QueryLayer", layerType=None,
                    avoidSelectById=False, filter=""):
@@ -225,36 +230,36 @@ class ORDatabase(Database):
 
         if self.schemas():
             action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Create schema"), self)
+                "DBManagerPlugin", "&Create Schema…"), self)
             mainWindow.registerAction(action, QApplication.translate(
                 "DBManagerPlugin", "&Schema"), self.createSchemaActionSlot)
             action = QAction(QApplication.translate(
-                "DBManagerPlugin", "&Delete (empty) schema"), self)
+                "DBManagerPlugin", "&Delete (Empty) Schema…"), self)
             mainWindow.registerAction(action, QApplication.translate(
                 "DBManagerPlugin", "&Schema"), self.deleteSchemaActionSlot)
 
         action = QAction(QApplication.translate(
-            "DBManagerPlugin", "Delete selected item"), self)
+            "DBManagerPlugin", "Delete Selected Item"), self)
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
         action = QAction(QIcon(":/db_manager/actions/create_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Create table"), self)
+                             "DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.createTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/edit_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Edit table"), self)
+                             "DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.editTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/del_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Delete table/view"), self)
+                             "DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.deleteTableActionSlot)
         action = QAction(QApplication.translate(
-            "DBManagerPlugin", "&Empty table"), self)
+            "DBManagerPlugin", "&Empty Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.emptyTableActionSlot)
 

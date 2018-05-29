@@ -37,7 +37,7 @@ class DBManagerPlugin(object):
         self.dlg = None
 
     def initGui(self):
-        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager"),
+        self.action = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "DB Manager…"),
                               self.iface.mainWindow())
 
         self.action.setObjectName("dbManager")
@@ -48,11 +48,11 @@ class DBManagerPlugin(object):
         else:
             self.iface.addToolBarIcon(self.action)
         if hasattr(self.iface, 'addPluginToDatabaseMenu'):
-            self.iface.addPluginToDatabaseMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
+            self.iface.addPluginToDatabaseMenu(QApplication.translate("DBManagerPlugin", None), self.action)
         else:
             self.iface.addPluginToMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
 
-        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update Sql Layer"),
+        self.layerAction = QAction(QgsApplication.getThemeIcon('dbmanager.svg'), QApplication.translate("DBManagerPlugin", "Update SQL Layer…"),
                                    self.iface.mainWindow())
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
@@ -63,8 +63,8 @@ class DBManagerPlugin(object):
 
     def unload(self):
         # Remove the plugin menu item and icon
-        if hasattr(self.iface, 'removePluginDatabaseMenu'):
-            self.iface.removePluginDatabaseMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
+        if hasattr(self.iface, 'databaseMenu'):
+            self.iface.databaseMenu().removeAction(self.action)
         else:
             self.iface.removePluginMenu(QApplication.translate("DBManagerPlugin", "DB Manager"), self.action)
         if hasattr(self.iface, 'removeDatabaseToolBarIcon'):

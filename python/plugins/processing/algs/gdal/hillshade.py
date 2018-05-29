@@ -29,6 +29,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -123,9 +124,15 @@ class hillshade(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdaldem'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['hillshade']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -160,7 +167,6 @@ class hillshade(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
-        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

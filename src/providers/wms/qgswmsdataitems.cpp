@@ -27,19 +27,21 @@
 #include "qgsnewhttpconnection.h"
 #include "qgstilescalewidget.h"
 #include "qgsxyzconnectiondialog.h"
+#include "qgsmanageconnectionsdialog.h"
 #endif
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
 #include "qgssettings.h"
 
 #include <QInputDialog>
+#include <QFileDialog>
 
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri )
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
   mCapabilitiesDownload = new QgsWmsCapabilitiesDownload( false );
 }
@@ -203,7 +205,7 @@ QList<QAction *> QgsWMSConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsWMSConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -375,7 +377,7 @@ QList<QAction *> QgsWMSRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsWMSRootItem::newConnection );
   lst.append( actionNew );
 
@@ -420,7 +422,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
   QgsDebugMsg( "path = " + path );
   if ( path.isEmpty() )
   {
-    return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS" ), QStringLiteral( "wms:" ) );
+    return new QgsWMSRootItem( parentItem, QStringLiteral( "WMS/WMTS" ), QStringLiteral( "wms:" ) );
   }
 
   // path schema: wms:/connection name (used by OWS)
@@ -430,7 +432,7 @@ QgsDataItem *QgsWmsDataItemProvider::createDataItem( const QString &path, QgsDat
     if ( QgsWMSConnection::connectionList().contains( connectionName ) )
     {
       QgsWMSConnection connection( connectionName );
-      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS" ), path, connection.uri().encodedUri() );
+      return new QgsWMSConnectionItem( parentItem, QStringLiteral( "WMS/WMTS" ), path, connection.uri().encodedUri() );
     }
   }
 
@@ -474,9 +476,20 @@ QVector<QgsDataItem *> QgsXyzTileRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsXyzTileRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QList<QAction *> lst;
+
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsXyzTileRootItem::newConnection );
-  return QList<QAction *>() << actionNew;
+  QAction *saveXyzTilesServers = new QAction( tr( "Save Connections…" ), parent );
+  connect( saveXyzTilesServers, &QAction::triggered, this, &QgsXyzTileRootItem::saveXyzTilesServers );
+  QAction *loadXyzTilesServers = new QAction( tr( "Load Connections…" ), parent );
+  connect( loadXyzTilesServers, &QAction::triggered, this, &QgsXyzTileRootItem::loadXyzTilesServers );
+
+  lst.append( actionNew );
+  lst.append( saveXyzTilesServers );
+  lst.append( loadXyzTilesServers );
+
+  return lst;
 }
 
 void QgsXyzTileRootItem::newConnection()
@@ -486,6 +499,26 @@ void QgsXyzTileRootItem::newConnection()
     return;
 
   QgsXyzConnectionUtils::addConnection( dlg.connection() );
+  refreshConnections();
+}
+
+void QgsXyzTileRootItem::saveXyzTilesServers()
+{
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::XyzTiles );
+  dlg.exec();
+}
+
+void QgsXyzTileRootItem::loadXyzTilesServers()
+{
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QgsManageConnectionsDialog dlg( nullptr, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::XyzTiles, fileName );
+  dlg.exec();
   refreshConnections();
 }
 #endif
@@ -505,7 +538,7 @@ QList<QAction *> QgsXyzLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst = QgsLayerItem::actions( parent );
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsXyzLayerItem::editConnection );
   lst << actionEdit;
 

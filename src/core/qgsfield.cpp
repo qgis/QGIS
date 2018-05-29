@@ -205,7 +205,6 @@ QString QgsField::displayString( const QVariant &v ) const
 {
   if ( v.isNull() )
   {
-    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 

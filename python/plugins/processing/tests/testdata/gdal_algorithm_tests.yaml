@@ -61,11 +61,28 @@ tests:
       MASK:
         name: custom/polygon_mask.gml
         type: vector
-      NODATA: 0.0
       OPTIONS: ''
     results:
       OUTPUT:
         hash: 4f4720e4efe59a7f238f622659917bbeb5262369d15d5e2917dbcf8b
+        type: rasterhash
+
+  - algorithm: gdal:colorrelief
+    name: Color relief (gdaldem)
+    params:
+      BAND: 1
+      COLOR_TABLE:
+        name: custom/color_relief.txt
+        type: file
+      COMPUTE_EDGES: false
+      INPUT:
+        name: dem.tif
+        type: raster
+      MATCH_MODE: 2
+      OPTIONS: ''
+    results:
+      OUTPUT:
+        hash: f714597fadc9cfc3f5263dc0e35f7c6ba285de238dce439e4988faac
         type: rasterhash
 
   - algorithm: gdal:colorrelief
@@ -250,6 +267,7 @@ tests:
         hash:
         - aca7c839c679613f4910cbdea660359f1551c104c57fea9a61795668
         - 57e2bc100ec9836e2aa7df4ccf6b5715bd3f3524a524ce47bec52f68
+        - e607570f34b1c61bc622751b324023b67642b657ef4b91a80d9057cb
         type: rasterhash
 
   - algorithm: gdal:gridnearestneighbor
@@ -303,7 +321,7 @@ tests:
         hash: fff4a08498e93494f3f2cf1a9074451e6fd68341849aedc9e2c45e6a
         type: rasterhash
 
-# Disabled as gdal2_poligonize.py is not available on Travis
+# Disabled as gdal_poligonize.py is not available on Travis
 #  - algorithm: gdal:polygonize
 #    name: Polygonize
 #    params:
@@ -318,7 +336,7 @@ tests:
 #        name: expected/gdal/polygonize.gml
 #        type: vector
 
-# Disabled as gdal2_proximity.py is not available on Travis
+# Disabled as gdal_proximity.py is not available on Travis
 #  - algorithm: gdal:proximity
 #    name: Proximity
 #    params:
@@ -337,6 +355,28 @@ tests:
 #      OUTPUT:
 #        hash: 32802271d1ce083ca14078bfefaef6300ae8809af11f6a4270583d0c
 #        type: rasterhash
+
+  - algorithm: gdal:rasterize
+    name: Test (gdal:rasterize)
+    params:
+      BURN: 0.0
+      DATA_TYPE: 5
+      EXTENT: -1.0,10.0,-3.0,6.0 [EPSG:4326]
+      FIELD: intval
+      HEIGHT: 10.0
+      INIT: 0.0
+      INPUT:
+        name: polys.gml
+        type: vector
+      INVERT: false
+      NODATA: 0.0
+      OPTIONS: ''
+      UNITS: 0
+      WIDTH: 10.0
+    results:
+      OUTPUT:
+        hash: 30409eb496900df4ceeab37200a91552c350dbc7761eb089dd75a329
+        type: rasterhash
 
   - algorithm: gdal:roughness
     name: Roughness

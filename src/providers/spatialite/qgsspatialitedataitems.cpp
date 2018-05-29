@@ -169,7 +169,7 @@ QList<QAction *> QgsSLConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  //QAction* actionEdit = new QAction( tr( "Edit..." ), parent );
+  //QAction* actionEdit = new QAction( tr( "Edit…" ), parent );
   //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
   //lst.append( actionEdit );
 
@@ -299,11 +299,11 @@ QList<QAction *> QgsSLRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsSLRootItem::newConnection );
   lst.append( actionNew );
 
-  QAction *actionCreateDatabase = new QAction( tr( "Create Database..." ), parent );
+  QAction *actionCreateDatabase = new QAction( tr( "Create Database…" ), parent );
   connect( actionCreateDatabase, &QAction::triggered, this, &QgsSLRootItem::createDatabase );
   lst.append( actionCreateDatabase );
 

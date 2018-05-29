@@ -39,8 +39,8 @@ class QgsRenderContext;
  * \brief A collection of grids which is drawn above the map content in a
  * QgsLayoutItemMap. The grid stack controls which grids are drawn and the
  * order they are drawn in.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapGrid
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 {
@@ -87,19 +87,16 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 
     /**
      * Returns a reference to a grid with matching \a gridId within the stack.
-     * \see constGrid()
      */
     QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
-     * \see constGrid()
      */
     QgsLayoutItemMapGrid *grid( int index ) const;
 
     /**
      * Returns a reference to a grid at the specified \a index within the stack.
-     * \see constGrid()
      * \see grid()
      */
     QgsLayoutItemMapGrid &operator[]( int index );
@@ -136,8 +133,8 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
  * \class QgsLayoutItemMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsLayoutItemMap.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapGridStack
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 {
@@ -971,7 +968,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     BorderSide borderForLineCoord( QPointF p, const AnnotationCoordinate coordinateType ) const;
 
-    //! Get parameters for drawing grid in CRS different to map CRS
+    //! Gets parameters for drawing grid in CRS different to map CRS
     int crsGridParams( QgsRectangle &crsRect, QgsCoordinateTransform &inverseTransform ) const;
 
     static QList<QPolygonF> trimLinesToMap( const QPolygonF &line, const QgsRectangle &rect );

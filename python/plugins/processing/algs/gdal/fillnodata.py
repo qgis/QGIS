@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterNumber,
@@ -89,6 +90,9 @@ class fillnodata(GdalAlgorithm):
     def groupId(self):
         return 'rasteranalysis'
 
+    def commandName(self):
+        return 'gdal_fillnodata'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-md')
@@ -113,15 +117,19 @@ class fillnodata(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
 
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
         arguments.append(out)
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_fillnodata.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_fillnodata.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

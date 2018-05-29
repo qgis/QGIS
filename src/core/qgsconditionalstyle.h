@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsconditionalstyle.h
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
@@ -118,7 +132,7 @@ class CORE_EXPORT QgsConditionalStyle
     void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
 
     /**
-     * \brief Set the font for the the style
+     * \brief Set the font for the style
      * \param value QFont to be used for text
      */
     void setFont( const QFont &value ) { mFont = value; mValid = true; }

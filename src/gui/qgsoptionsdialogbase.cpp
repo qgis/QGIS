@@ -16,12 +16,8 @@
 
 #include "qgsoptionsdialogbase.h"
 
-#include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
-#include <QEvent>
-#include <QGroupBox>
-#include <QLabel>
 #include <QLayout>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -31,12 +27,12 @@
 #include <QSplitter>
 #include <QStackedWidget>
 #include <QTimer>
-#include <QTreeView>
-#include <QAbstractItemModel>
 
 #include "qgsfilterlineedit.h"
 #include "qgsmessagebaritem.h"
 #include "qgslogger.h"
+#include "qgsoptionsdialoghighlightwidget.h"
+#include "qgsoptionswidgetfactory.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -211,6 +207,8 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
+  const int minimumTextLength = 3;
+
   mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
 
   if ( !mOptStackedWidget )
@@ -223,18 +221,13 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   // hide all page if text has to be search, show them all otherwise
   for ( int r = 0; r < mOptListWidget->count(); ++r )
   {
-    mOptListWidget->setRowHidden( r, !text.isEmpty() );
+    mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
   }
 
-  for ( const QPair< QgsSearchHighlightOptionWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
+  for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
   {
-    rsw.first->reset();
-    if ( !text.isEmpty() && rsw.first->searchHighlight( text ) )
+    if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
     {
-      QgsDebugMsgLevel( QString( "Found %1 in %2 (tab: %3)" )
-                        .arg( text )
-                        .arg( rsw.first->isValid() ? rsw.first->widget()->objectName() : "no widget" )
-                        .arg( mOptListWidget->item( rsw.second )->text() ), 4 );
       mOptListWidget->setRowHidden( rsw.second, false );
     }
   }
@@ -265,12 +258,26 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   {
     Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
-      // do not register message bar content, items disappear and causes QGIS to crash
-      if ( qobject_cast< QgsMessageBarItem * >( w ) || qobject_cast< QgsMessageBarItem * >( w->parentWidget() ) )
-        continue;
 
-      QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
-      if ( shw->isValid() )
+      // get custom highlight widget in user added pages
+      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
+      QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
+      if ( opw )
+      {
+        customHighlightWidgets = opw->registeredHighlightWidgets();
+      }
+      QgsOptionsDialogHighlightWidget *shw = nullptr;
+      // take custom if exists
+      if ( customHighlightWidgets.contains( w ) )
+      {
+        shw = customHighlightWidgets.value( w );
+      }
+      // try to construct one otherwise
+      if ( !shw || !shw->isValid() )
+      {
+        shw = QgsOptionsDialogHighlightWidget::createWidget( w );
+      }
+      if ( shw && shw->isValid() )
       {
         QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
@@ -374,7 +381,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
   // will need to take item first, if widgets are set for item in future
   delete mOptListWidget->item( index );
 
-  QList<QPair< QgsSearchHighlightOptionWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
+  QList<QPair< QgsOptionsDialogHighlightWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
   while ( it != mRegisteredSearchWidgets.end() )
   {
     if ( ( *it ).second == index )
@@ -386,7 +393,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
 {
-  QMessageBox::warning( nullptr, tr( "Missing objects" ),
+  QMessageBox::warning( nullptr, tr( "Missing Objects" ),
                         tr( "Base options dialog could not be initialized.\n\n"
                             "Missing some of the .ui template objects:\n" )
                         + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
@@ -394,130 +401,3 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
                         QMessageBox::Ok );
 }
 
-
-QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
-  : QObject( widget )
-  , mWidget( widget )
-  , mText( [ = ]() {return QString();} )
-{
-  if ( qobject_cast<QLabel *>( widget ) )
-  {
-    mStyleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QLabel *>( mWidget )->text();};
-  }
-  else if ( qobject_cast<QCheckBox *>( widget ) )
-  {
-    mStyleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QCheckBox *>( mWidget )->text();};
-  }
-  else if ( qobject_cast<QAbstractButton *>( widget ) )
-  {
-    mStyleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QAbstractButton *>( mWidget )->text();};
-  }
-  else if ( qobject_cast<QGroupBox *>( widget ) )
-  {
-    mStyleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QGroupBox *>( mWidget )->title();};
-  }
-  else if ( qobject_cast<QTreeView *>( widget ) )
-  {
-    // TODO - style individual matching items
-  }
-  else
-  {
-    mValid = false;
-  }
-  if ( mValid )
-  {
-    mStyleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
-    QgsDebugMsgLevel( mStyleSheet, 4 );
-    connect( mWidget, &QWidget::destroyed, this, &QgsSearchHighlightOptionWidget::widgetDestroyed );
-  }
-}
-
-bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText )
-{
-  bool found = false;
-  if ( !mWidget )
-    return found;
-
-  if ( !searchText.isEmpty() )
-  {
-    if ( QTreeView *tree = qobject_cast<QTreeView *>( mWidget ) )
-    {
-      QModelIndexList hits = tree->model()->match( tree->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
-      found = !hits.isEmpty();
-    }
-    else
-    {
-      QString origText = mText();
-      if ( origText.contains( searchText, Qt::CaseInsensitive ) )
-      {
-        found = true;
-      }
-    }
-  }
-
-  if ( found && !mChangedStyle )
-  {
-    if ( !mWidget->isVisible() )
-    {
-      // show the widget to get initial stylesheet in case it's modified
-      QgsDebugMsg( QString( "installing event filter on: %1 (%2)" )
-                   .arg( mWidget->objectName() )
-                   .arg( qobject_cast<QLabel *>( mWidget ) ? qobject_cast<QLabel *>( mWidget )->text() : QString() ) );
-      mWidget->installEventFilter( this );
-      mInstalledFilter = true;
-    }
-    else
-    {
-      mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
-      mChangedStyle = true;
-    }
-  }
-
-  return found;
-}
-
-bool QgsSearchHighlightOptionWidget::eventFilter( QObject *obj, QEvent *event )
-{
-  if ( mInstalledFilter && event->type() == QEvent::Show && obj == mWidget )
-  {
-    removeEventFilter( mWidget );
-    mInstalledFilter = false;
-    mWidget->show();
-    //QTimer::singleShot( 500, this, [ = ]
-    //{
-    mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
-    mChangedStyle = true;
-    //} );
-    return true;
-  }
-  return QObject::eventFilter( obj, event );
-}
-
-void QgsSearchHighlightOptionWidget::reset()
-{
-  if ( mWidget && mValid )
-  {
-    if ( mChangedStyle )
-    {
-      QString ss = mWidget->styleSheet();
-      ss.remove( mStyleSheet );
-      mWidget->setStyleSheet( ss );
-      mChangedStyle = false;
-    }
-    else if ( mInstalledFilter )
-    {
-      removeEventFilter( mWidget );
-      mInstalledFilter = false;
-    }
-  }
-}
-
-void QgsSearchHighlightOptionWidget::widgetDestroyed()
-{
-  mWidget = nullptr;
-  mValid = false;
-}

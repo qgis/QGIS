@@ -166,20 +166,13 @@ class CORE_EXPORT QgsProcessingUtils
      * SIP bindings. c++ code should call the other createFeatureSink() version.
      * \note available in Python bindings as createFeatureSink()
      */
-    static void createFeatureSinkPython(
-      QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK,
-      QString &destination SIP_INOUT,
-      QgsProcessingContext &context,
-      const QgsFields &fields,
-      QgsWkbTypes::Type geometryType,
-      const QgsCoordinateReferenceSystem &crs,
-      const QVariantMap &createOptions = QVariantMap() ) SIP_PYNAME( createFeatureSink );
+    static void createFeatureSinkPython( QgsFeatureSink **sink SIP_OUT SIP_TRANSFERBACK, QString &destination SIP_INOUT, QgsProcessingContext &context, const QgsFields &fields, QgsWkbTypes::Type geometryType, const QgsCoordinateReferenceSystem &crs, const QVariantMap &createOptions = QVariantMap() ) SIP_THROW( QgsProcessingException ) SIP_PYNAME( createFeatureSink );
 
     /**
      * Combines the extent of several map \a layers. If specified, the target \a crs
      * will be used to transform the layer's extent to the desired output reference system.
      */
-    static QgsRectangle combineLayerExtents( const QList< QgsMapLayer *> layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
+    static QgsRectangle combineLayerExtents( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     /**
      * Converts an \a input parameter value for use in source iterating mode, where one individual sink
@@ -191,7 +184,7 @@ class CORE_EXPORT QgsProcessingUtils
 
     /**
      * Returns a session specific processing temporary folder for use in processing algorithms.
-     * \see generateTempFileName()
+     * \see generateTempFilename()
      */
     static QString tempFolder();
 
@@ -240,6 +233,19 @@ class CORE_EXPORT QgsProcessingUtils
      * be truncated when saving to these formats.
      */
     static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
+
+    /**
+     * Returns a list of field indices parsed from the given list of field names. Unknown field names are ignored.
+     * If the list of field names is empty, it is assumed that all fields are required.
+     * \since QGIS 3.2
+     */
+    static QList<int> fieldNamesToIndices( const QStringList &fieldNames, const QgsFields &fields );
+
+    /**
+     * Returns a subset of fields based on the indices of desired fields.
+     * \since QGIS 3.2
+     */
+    static QgsFields indicesToFields( const QList<int> &indices, const QgsFields &fields );
 
   private:
 
@@ -335,6 +341,48 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \class QgsProcessingFeatureSink
+ * \ingroup core
+ * QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
+ * \note Not available in Python bindings.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
+{
+  public:
+
+
+    /**
+     * Constructor for QgsProcessingFeatureSink, accepting an original feature sink \a originalSink
+     * and processing \a context. Any added features are added to the \a originalSink, with feature
+     * writing errors being reports to \a context.
+     *
+     * The \a context must exist for the lifetime of this object.
+     *
+     * The \a sinkName is used to identify the destination sink when reporting errors.
+     *
+     * Ownership of \a originalSink is dictated by \a ownsOriginalSource. If \a ownsOriginalSink is false,
+     * ownership is not transferred, and callers must ensure that \a originalSink exists for the lifetime of this object.
+     * If \a ownsOriginalSink is true, then this object will take ownership of \a originalSink.
+     */
+    QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
+    ~QgsProcessingFeatureSink();
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr ) override;
+
+  private:
+
+    QgsProcessingContext &mContext;
+    QString mSinkName;
+    bool mOwnsSink = false;
+
+};
+#endif
 
 #endif // QGSPROCESSINGUTILS_H
 

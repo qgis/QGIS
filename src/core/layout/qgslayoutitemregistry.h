@@ -103,8 +103,8 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 /**
  * \ingroup core
  * Convenience metadata class that uses static functions to create layout items and their configuration widgets.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
 {
@@ -115,8 +115,8 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      * and \a visibleName, and function pointers for the various item creation functions.
      */
     QgsLayoutItemMetadata( int type, const QString &visibleName,
-                           QgsLayoutItemCreateFunc pfCreate,
-                           QgsLayoutItemPathResolverFunc pfPathResolver = nullptr )
+                           const QgsLayoutItemCreateFunc &pfCreate,
+                           const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
@@ -224,8 +224,8 @@ typedef std::function<void( QVariantMap &, const QgsPathResolver &, bool )> QgsL
 /**
  * \ingroup core
  * Convenience metadata class that uses static functions to create layout multiframes and their configuration widgets.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstractMetadata
 {
@@ -236,8 +236,8 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
      * and \a visibleName, and function pointers for the various item creation functions.
      */
     QgsLayoutMultiFrameMetadata( int type, const QString &visibleName,
-                                 QgsLayoutMultiFrameCreateFunc pfCreate,
-                                 QgsLayoutMultiFramePathResolverFunc pfPathResolver = nullptr )
+                                 const QgsLayoutMultiFrameCreateFunc &pfCreate,
+                                 const QgsLayoutMultiFramePathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutMultiFrameAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
@@ -296,6 +296,10 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutGroup, //!< Grouped item
 
       // known item types
+
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
+
       LayoutPage, //!< Page items
       LayoutMap, //!< Map item
       LayoutPicture, //!< Picture item
@@ -308,12 +312,16 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
       // known multi-frame types
+
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
+
       LayoutHtml, //!< Html multiframe item
       LayoutAttributeTable, //!< Attribute table
       LayoutTextTable, //!< Preset text table
 
       // item types provided by plugins
-      PluginItem = LayoutTextTable + 1000, //!< Starting point for plugin item types
+      PluginItem = LayoutTextTable + 10000, //!< Starting point for plugin item types
     };
 
     /**

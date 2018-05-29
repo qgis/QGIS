@@ -81,7 +81,7 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     virtual ~QgsAttributeEditorElement() = default;
 
     /**
-     * Return the name of this element
+     * Returns the name of this element
      *
      * \returns The name for this element
      */
@@ -95,14 +95,14 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
     AttributeEditorType type() const { return mType; }
 
     /**
-     * Get the parent of this element.
+     * Gets the parent of this element.
      *
      * \since QGIS 3.0
      */
     QgsAttributeEditorElement *parent() const { return mParent; }
 
     /**
-     * Get the XML Dom element to save this element.
+     * Gets the XML Dom element to save this element.
      *
      * \param doc The QDomDocument which is used to create new XML elements
      *
@@ -204,7 +204,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     virtual bool isGroupBox() const { return mIsGroupBox; }
 
     /**
-     * Get a list of the children elements of this container
+     * Gets a list of the children elements of this container
      *
      * \returns A list of elements
      */
@@ -230,7 +230,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     void setName( const QString &name );
 
     /**
-     * Get the number of columns in this group
+     * Gets the number of columns in this group
      */
     int columnCount() const;
 
@@ -295,8 +295,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
     {}
 
     /**
-     * Return the index of the field
-     * \returns
+     * Returns the index of the field.
      */
     int idx() const { return mIdx; }
 
@@ -317,36 +316,48 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
   public:
 
     /**
-     * Creates a new element which embeds a relation.
-     *
-     * \param name         The name of this element
-     * \param relationId   The id of the relation to embed
-     * \param parent       The parent (used as container)
+     * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QString &relationId, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relationId )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
-     * Creates a new element which embeds a relation.
-     *
-     * \param name         The name of this element
-     * \param relation     The relation to embed
-     * \param parent       The parent (used as container)
+     * \deprecated since QGIS 3.0.2. The name parameter is not used for anything and overwritten by the relationId internally.
      */
-    QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
+    Q_DECL_DEPRECATED QgsAttributeEditorRelation( const QString &name, const QgsRelation &relation, QgsAttributeEditorElement *parent )
       : QgsAttributeEditorElement( AeTypeRelation, name, parent )
       , mRelationId( relation.id() )
       , mRelation( relation )
-      , mShowLinkButton( true )
-      , mShowUnlinkButton( true )
     {}
 
     /**
-     * Get the id of the relation which shall be embedded
+     * Creates a new element which embeds a relation.
+     *
+     * \param relationId   The id of the relation to embed
+     * \param parent       The parent (used as container)
+     */
+    QgsAttributeEditorRelation( const QString &relationId, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, relationId, parent )
+      , mRelationId( relationId )
+    {}
+
+    /**
+     * Creates a new element which embeds a relation.
+     *
+     * \param relation     The relation to embed
+     * \param parent       The parent (used as container)
+     */
+    QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeRelation, relation.id(), parent )
+      , mRelationId( relation.id() )
+      , mRelation( relation )
+    {}
+
+
+    /**
+     * Gets the id of the relation which shall be embedded
      *
      * \returns the id
      */
@@ -396,8 +407,8 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     QString typeIdentifier() const override;
     QString mRelationId;
     QgsRelation mRelation;
-    bool mShowLinkButton;
-    bool mShowUnlinkButton;
+    bool mShowLinkButton = true;
+    bool mShowUnlinkButton = true;
 };
 
 

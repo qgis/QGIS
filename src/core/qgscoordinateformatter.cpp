@@ -58,10 +58,10 @@ QString QgsCoordinateFormatter::formatY( double y, QgsCoordinateFormatter::Forma
   return QString(); //avoid warnings
 }
 
-QString QgsCoordinateFormatter::format( QgsPointXY point, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags )
+QString QgsCoordinateFormatter::format( const QgsPointXY &point, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags )
 {
   return QStringLiteral( "%1,%2" ).arg( formatX( point.x(), format, precision, flags ),
-                                        formatY( point.x(), format, precision, flags ) );
+                                        formatY( point.y(), format, precision, flags ) );
 }
 
 QString QgsCoordinateFormatter::asPair( double x, double y, int precision )

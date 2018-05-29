@@ -37,8 +37,8 @@ class QgsLayoutItemMapOverview;
  * \brief A collection of overviews which are drawn above the map content in a
  * QgsLayoutItemMap. The overview stack controls which overviews are drawn and the
  * order they are drawn in.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapOverview
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemStack
 {
@@ -86,19 +86,16 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
 
     /**
      * Returns a reference to an overview with matching overviewId within the stack.
-     * \see constOverview()
      */
     QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
-     * \see constOverview()
      */
     QgsLayoutItemMapOverview *overview( const int index ) const;
 
     /**
      * Returns a reference to an overview at the specified \a index within the stack.
-     * \see constOverview()
      * \see overview()
      */
     QgsLayoutItemMapOverview &operator[]( int index );
@@ -116,8 +113,8 @@ class CORE_EXPORT QgsLayoutItemMapOverviewStack : public QgsLayoutItemMapItemSta
  * \class QgsLayoutItemMapOverview
  * \brief An individual overview which is drawn above the map content in a
  * QgsLayoutItemMap, and shows the extent of another QgsLayoutItemMap.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapOverviewStack
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
 {
@@ -135,6 +132,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
     void draw( QPainter *painter ) override;
     bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    void finalizeRestoreFromXml() override;
     bool usesAdvancedEffects() const override;
 
     /**
@@ -224,6 +222,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
 
     QgsLayoutItemMapOverview() = delete;
 
+    QString mFrameMapUuid;
     QPointer< QgsLayoutItemMap > mFrameMap;
 
     //! Drawing style for overview farme

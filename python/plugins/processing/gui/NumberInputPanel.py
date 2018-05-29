@@ -28,13 +28,18 @@ __revision__ = '$Format:%H$'
 import os
 import math
 import sip
+import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtCore import pyqtSignal, QSize
+from qgis.PyQt.QtWidgets import QDialog, QLabel
 
-from qgis.core import (QgsExpression,
+from qgis.core import (QgsApplication,
+                       QgsExpression,
                        QgsProperty,
+                       QgsUnitTypes,
+                       QgsMapLayer,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
                        QgsProcessingParameterDefinition,
@@ -45,16 +50,18 @@ from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class ModellerNumberInputPanel(BASE, WIDGET):
+class ModelerNumberInputPanel(BASE, WIDGET):
 
     """
-    Number input panel for use inside the modeller - this input panel
+    Number input panel for use inside the modeler - this input panel
     is based off the base input panel and includes a text based line input
     for entering values. This allows expressions and other non-numeric
     values to be set, which are later evalauted to numbers when the model
@@ -64,7 +71,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self, param, modelParametersDialog):
-        super(ModellerNumberInputPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.param = param
@@ -85,7 +92,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
-        dlg.setWindowTitle(self.tr('Expression based input'))
+        dlg.setWindowTitle(self.tr('Expression Based Input'))
         if dlg.exec_() == QDialog.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
@@ -126,7 +133,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     """
-    Number input panel for use outside the modeller - this input panel
+    Number input panel for use outside the modeler - this input panel
     contains a user friendly spin box for entering values.
     """
 
@@ -203,15 +210,18 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
     def setDynamicLayer(self, layer):
-        context = createContext()
         try:
-            if isinstance(layer, QgsProcessingFeatureSourceDefinition):
-                layer, ok = layer.source.valueAsString(context.expressionContext())
-            if isinstance(layer, str):
-                layer = QgsProcessingUtils.mapLayerFromString(layer, context)
-            self.btnDataDefined.setVectorLayer(layer)
+            self.btnDataDefined.setVectorLayer(self.getLayerFromValue(layer))
         except:
             pass
+
+    def getLayerFromValue(self, value):
+        context = createContext()
+        if isinstance(value, QgsProcessingFeatureSourceDefinition):
+            value, ok = value.source.valueAsString(context.expressionContext())
+        if isinstance(value, str):
+            value = QgsProcessingUtils.mapLayerFromString(value, context)
+        return value
 
     def getValue(self):
         if self.btnDataDefined is not None and self.btnDataDefined.isActive():
@@ -235,3 +245,45 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             return round(step, -int(math.floor(math.log10(step))))
         else:
             return 1.0
+
+
+class DistanceInputPanel(NumberInputPanel):
+
+    """
+    Distance input panel for use outside the modeler - this input panel
+    contains a label showing the distance unit.
+    """
+
+    def __init__(self, param):
+        super().__init__(param)
+
+        self.label = QLabel('')
+        label_margin = self.fontMetrics().width('X')
+        self.layout().insertSpacing(1, label_margin / 2)
+        self.layout().insertWidget(2, self.label)
+        self.layout().insertSpacing(3, label_margin / 2)
+        self.warning_label = QLabel()
+        icon = QgsApplication.getThemeIcon('mIconWarning.svg')
+        size = max(24, self.spnValue.height() * 0.5)
+        self.warning_label.setPixmap(icon.pixmap(icon.actualSize(QSize(size, size))))
+        self.warning_label.setToolTip(self.tr('Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results.'))
+        self.layout().insertWidget(4, self.warning_label)
+        self.layout().insertSpacing(5, label_margin)
+        self.setUnits(QgsUnitTypes.DistanceUnknownUnit)
+
+    def setUnits(self, units):
+        self.label.setText(QgsUnitTypes.toString(units))
+        self.warning_label.setVisible(units == QgsUnitTypes.DistanceDegrees)
+
+    def setUnitParameterValue(self, value):
+        units = QgsUnitTypes.DistanceUnknownUnit
+        layer = self.getLayerFromValue(value)
+        if isinstance(layer, QgsMapLayer):
+            units = layer.crs().mapUnits()
+        elif isinstance(value, QgsCoordinateReferenceSystem):
+            units = value.mapUnits()
+        elif isinstance(value, str):
+            crs = QgsCoordinateReferenceSystem(value)
+            if crs.isValid():
+                units = crs.mapUnits()
+        self.setUnits(units)

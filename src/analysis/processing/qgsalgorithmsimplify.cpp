@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsSimplifyAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsSimplifyAlgorithm::name() const
 {
   return QStringLiteral( "simplifygeometries" );
@@ -83,14 +78,21 @@ void QgsSimplifyAlgorithm::initParameters( const QVariantMap & )
                   QStringLiteral( "METHOD" ),
                   QObject::tr( "Simplification method" ),
                   methods, false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ),
-                QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
-                1.0, false, 0, 10000000.0 ) );
+  std::unique_ptr< QgsProcessingParameterDistance > tolerance = qgis::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "TOLERANCE" ),
+      QObject::tr( "Tolerance" ), 1.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  tolerance->setIsDynamic( true );
+  tolerance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Tolerance" ), QObject::tr( "Tolerance distance" ), QgsPropertyDefinition::DoublePositive ) );
+  tolerance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( tolerance.release() );
 }
 
 bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mDynamicTolerance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "TOLERANCE" ) );
+  if ( mDynamicTolerance )
+    mToleranceProperty = parameters.value( QStringLiteral( "TOLERANCE" ) ).value< QgsProperty >();
+
   mMethod = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
   if ( mMethod != QgsMapToPixelSimplifier::Distance )
     mSimplifier.reset( new QgsMapToPixelSimplifier( QgsMapToPixelSimplifier::SimplifyGeometry, mTolerance, mMethod ) );
@@ -98,7 +100,7 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   return true;
 }
 
-QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeatureList QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -107,15 +109,27 @@ QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsP
     QgsGeometry outputGeometry;
     if ( mMethod == QgsMapToPixelSimplifier::Distance )
     {
-      outputGeometry = inputGeometry.simplify( mTolerance );
+      double tolerance = mTolerance;
+      if ( mDynamicTolerance )
+        tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), tolerance );
+      outputGeometry = inputGeometry.simplify( tolerance );
     }
     else
     {
-      outputGeometry = mSimplifier->simplify( inputGeometry );
+      if ( !mDynamicTolerance )
+      {
+        outputGeometry = mSimplifier->simplify( inputGeometry );
+      }
+      else
+      {
+        double tolerance = mToleranceProperty.valueAsDouble( context.expressionContext(), mTolerance );
+        QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
+        outputGeometry = simplifier.simplify( inputGeometry );
+      }
     }
     f.setGeometry( outputGeometry );
   }
-  return f;
+  return QgsFeatureList() << f;
 }
 
 ///@endcond

@@ -44,7 +44,7 @@ void QgsAggregateToolButton::aboutToShowMenu()
   mMenu->clear();
 
   QAction *action = mMenu->addAction( tr( "Exclude" ) );
-  connect( action, &QAction::triggered, [ this ]
+  connect( action, &QAction::triggered, this, [ this ]
   {
     setActive( false );
   } );
@@ -52,7 +52,7 @@ void QgsAggregateToolButton::aboutToShowMenu()
   for ( const auto &aggregate : qgis::as_const( mAvailableAggregates ) )
   {
     QAction *action = mMenu->addAction( aggregate.name );
-    connect( action, &QAction::triggered, [ this, aggregate ]
+    connect( action, &QAction::triggered, this, [ this, aggregate ]
     {
       setText( aggregate.name );
       setAggregate( aggregate.function );

@@ -88,7 +88,16 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
       proj.setInput( it->raster->dataProvider() );
       proj.setPrecision( QgsRasterProjector::Exact );
 
-      block = proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
+      QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
+      QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
+      block = proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows, rasterBlockFeedback );
+      if ( rasterBlockFeedback->isCanceled() )
+      {
+        delete block;
+        delete calcNode;
+        qDeleteAll( inputBlocks );
+        return static_cast< int >( Canceled );
+      }
     }
     else
     {
@@ -112,6 +121,11 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
+  if ( !outputDataset )
+  {
+    return static_cast< int >( CreateOutputError );
+  }
+
   GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 

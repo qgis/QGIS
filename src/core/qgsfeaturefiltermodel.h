@@ -261,7 +261,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
 
   private:
     QSet<QString> requestedAttributes() const;
-    void setExtraIdentifierValueIndex( int index );
+    void setExtraIdentifierValueIndex( int index, bool force = false );
     void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
     void reload();
     void reloadCurrentFeature();
@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     {
       Entry() = default;
 
-      Entry( QVariant _identifierValue, const QString &_value, const QgsFeature &_feature )
+      Entry( const QVariant &_identifierValue, const QString &_value, const QgsFeature &_feature )
         : identifierValue( _identifierValue )
         , value( _value )
         , feature( _feature )
@@ -298,6 +298,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     bool mShouldReloadCurrentFeature = false;
     bool mExtraValueDoesNotExist = false;
     bool mAllowNull = false;
+    bool mIsSettingExtraIdentifierValue = false;
 
     QString mIdentifierField;
 

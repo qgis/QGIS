@@ -19,6 +19,8 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsgui.h"
 
+#include <QButtonGroup>
+
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
@@ -42,7 +44,7 @@ QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Q
   QgsSettings settings;
   double lastWidth = settings.value( QStringLiteral( "LayoutDesigner/lastItemWidth" ), QStringLiteral( "50" ) ).toDouble();
   double lastHeight = settings.value( QStringLiteral( "LayoutDesigner/lastItemHeight" ), QStringLiteral( "50" ) ).toDouble();
-  QgsUnitTypes::LayoutUnit lastSizeUnit = static_cast< QgsUnitTypes::LayoutUnit >( settings.value( QStringLiteral( "LayoutDesigner/lastSizeUnit" ) ).toInt() );
+  QgsUnitTypes::LayoutUnit lastSizeUnit = settings.enumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), QgsUnitTypes::LayoutMillimeters );
   setItemSize( QgsLayoutSize( lastWidth, lastHeight, lastSizeUnit ) );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );

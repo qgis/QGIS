@@ -88,7 +88,7 @@ void QgsMapToolCapture::validationFinished()
   QString msgFinished = tr( "Validation finished" );
   if ( !mValidationWarnings.isEmpty() )
   {
-    emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ).append( "\n" ).append( msgFinished ), QgsMessageBar::WARNING );
+    emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ).append( "\n" ).append( msgFinished ), Qgis::Warning );
   }
 }
 
@@ -399,7 +399,20 @@ int QgsMapToolCapture::fetchLayerPoint( const QgsPointLocator::Match &match, Qgs
       QgsVertexId vId;
       if ( !f.geometry().vertexIdFromVertexNr( match.vertexIndex(), vId ) )
         return 2;
+
       layerPoint = f.geometry().constGet()->vertexAt( vId );
+
+      // ZM support depends on the target layer
+      if ( !QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+      {
+        layerPoint.dropZValue();
+      }
+
+      if ( !QgsWkbTypes::hasM( vlayer->wkbType() ) )
+      {
+        layerPoint.dropMValue();
+      }
+
       return 0;
     }
     else
@@ -741,7 +754,7 @@ void QgsMapToolCapture::addError( QgsGeometry::Error e )
   }
 
   emit messageDiscarded();
-  emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ), QgsMessageBar::WARNING );
+  emit messageEmitted( mValidationWarnings.join( QStringLiteral( "\n" ) ), Qgis::Warning );
 }
 
 int QgsMapToolCapture::size()
@@ -768,3 +781,62 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
     mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
+QgsPoint QgsMapToolCapture::mapPoint( const QgsPointXY &point ) const
+{
+  QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
+
+  // get current layer
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( !vlayer )
+  {
+    return newPoint;
+  }
+
+  // convert to the corresponding type for a full ZM support
+  const QgsWkbTypes::Type type = vlayer->wkbType();
+  if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointZ );
+  }
+  else if ( !QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointM );
+  }
+  else if ( QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointZM );
+  }
+
+  // set z value if necessary
+  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
+  {
+    newPoint.setZ( defaultZValue() );
+  }
+
+  return newPoint;
+}
+
+QgsPoint QgsMapToolCapture::mapPoint( const QgsMapMouseEvent &e ) const
+{
+  QgsPoint newPoint = mapPoint( e.mapPoint() );
+
+  // set z value from snapped point if necessary
+  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
+  {
+    // if snapped, z dimension is taken from the corresponding snapped
+    // point.
+    if ( e.isSnapped() )
+    {
+      const QgsPointLocator::Match match = e.mapPointMatch();
+      const QgsWkbTypes::Type snappedType = match.layer()->wkbType();
+
+      if ( QgsWkbTypes::hasZ( snappedType ) )
+      {
+        const QgsFeature ft = match.layer()->getFeature( match.featureId() );
+        newPoint.setZ( ft.geometry().vertexAt( match.vertexIndex() ).z() );
+      }
+    }
+  }
+
+  return newPoint;
+}

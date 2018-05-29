@@ -31,15 +31,15 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     height = alg.parameterAsDouble(parameters, 'height', context)
     column = alg.parameterAsString(parameters, 'column', context)
     if (height and column) or (not height and not column):
-        return alg.tr("You need to set either a fixed height value or the height column!")
+        return False, alg.tr("You need to set either a fixed height value or the height column!")
 
-    return None
+    return True, None
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'input' in alg.exportedLayers:
         return
 
     # We need to import the vector layer with v.in.ogr
-    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
     alg.postInputs()

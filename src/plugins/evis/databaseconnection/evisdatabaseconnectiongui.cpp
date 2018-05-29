@@ -42,8 +42,8 @@
 
 /**
 * Constructor
-* @param parent - Pointer the to parent QWidget for modality
-* @param fl - Windown flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param fl - Windown flags
 */
 eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile *> *temporaryFileList, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -105,9 +105,9 @@ eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui()
 
 /**
 * Slot called after the user selects the x, y fields in the field selection gui component
-* @param layerName - Name to display in the legend
-* @param xCoordinate - Name of the field containing the x coordinate
-* @param yCoordinate - Name of the field containing the y coordinate
+* \param layerName - Name to display in the legend
+* \param xCoordinate - Name of the field containing the x coordinate
+* \param yCoordinate - Name of the field containing the y coordinate
 */
 void eVisDatabaseConnectionGui::drawNewVectorLayer( const QString &layerName, const QString &xCoordinate, const QString &yCoordinate )
 {
@@ -155,7 +155,7 @@ void eVisDatabaseConnectionGui::buttonBox_accepted()
 
 /**
 * Slot called when the cboxDatabaseType combo box index changes
-* @param currentIndex - The new index of the currently selected field
+* \param currentIndex - The new index of the currently selected field
 */
 void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
@@ -227,7 +227,7 @@ void eVisDatabaseConnectionGui::cboxDatabaseType_currentIndexChanged( int curren
 */
 void eVisDatabaseConnectionGui::pbtnConnect_clicked()
 {
-  teditConsole->append( tr( "New Database connection requested..." ) );
+  teditConsole->append( tr( "New Database connection requested…" ) );
   bool errors = false;
 
   if ( cboxDatabaseType->currentText() == tr( "Undefined" ) )
@@ -428,7 +428,7 @@ void eVisDatabaseConnectionGui::pbtnLoadPredefinedQueries_clicked()
 
 /**
 * Slot called when cboxPredefinedQueryList combo box index changes
-* @param index - The current index of the selected item
+* \param index - The current index of the selected item
 */
 void eVisDatabaseConnectionGui::cboxPredefinedQueryList_currentIndexChanged( int index )
 {

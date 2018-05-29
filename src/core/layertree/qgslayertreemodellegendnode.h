@@ -56,19 +56,19 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
       ParentRuleKeyRole               //!< Rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
-    //! Return pointer to the parent layer node
+    //! Returns pointer to the parent layer node
     QgsLayerTreeLayer *layerNode() const { return mLayerNode; }
 
-    //! Return pointer to model owning this legend node
+    //! Returns pointer to model owning this legend node
     QgsLayerTreeModel *model() const;
 
-    //! Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
+    //! Returns item flags associated with the item. Default implementation returns Qt::ItemIsEnabled.
     virtual Qt::ItemFlags flags() const;
 
-    //! Return data associated with the item. Must be implemented in derived class.
+    //! Returns data associated with the item. Must be implemented in derived class.
     virtual QVariant data( int role ) const = 0;
 
-    //! Set some data associated with the item. Default implementation does nothing and returns false.
+    //! Sets some data associated with the item. Default implementation does nothing and returns false.
     virtual bool setData( const QVariant &value, int role );
 
     virtual bool isEmbeddedInParent() const { return mEmbeddedInParent; }
@@ -144,6 +144,7 @@ class CORE_EXPORT QgsLayerTreeModelLegendNode : public QObject
 };
 
 #include "qgslegendsymbolitem.h"
+#include "qgstextrenderer.h"
 
 /**
  * \ingroup core
@@ -221,19 +222,43 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     void setSymbol( QgsSymbol *symbol );
 
+    /**
+     * Returns label of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    QString textOnSymbolLabel() const { return mTextOnSymbolLabel; }
+
+    /**
+     * Sets label of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolLabel( const QString &label ) { mTextOnSymbolLabel = label; }
+
+    /**
+     * Returns text format of the label to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textOnSymbolTextFormat() const { return mTextOnSymbolTextFormat; }
+
+    /**
+     * Sets format of text to be shown on top of the symbol.
+     * \since QGIS 3.2
+     */
+    void setTextOnSymbolTextFormat( const QgsTextFormat &format ) { mTextOnSymbolTextFormat = format; }
+
   public slots:
 
     /**
      * Checks all items belonging to the same layer as this node.
-     * \since QGIS 2.14
      * \see uncheckAllItems()
+     * \since QGIS 2.14
      */
     void checkAllItems();
 
     /**
      * Unchecks all items belonging to the same layer as this node.
-     * \since QGIS 2.14
      * \see checkAllItems()
+     * \since QGIS 2.14
      */
     void uncheckAllItems();
 
@@ -246,6 +271,9 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mSymbolUsesMapUnits;
     QSize mIconSize;
+
+    QString mTextOnSymbolLabel;
+    QgsTextFormat mTextOnSymbolTextFormat;
 
     // ident the symbol icon to make it look like a tree structure
     static const int INDENT_SIZE = 20;

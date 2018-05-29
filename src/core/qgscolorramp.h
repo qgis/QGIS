@@ -315,7 +315,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
     int count() const override { return mCount; }
 
     /**
-     * Get a list of random colors
+     * Gets a list of random colors
      * \since QGIS 2.4
      */
     static QList<QColor> randomColors( int count,
@@ -481,7 +481,6 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     /**
      * Constructor for QgsPresetColorRamp.
      * \param colors list of named colors in ramp
-     * \note not available in Python bindings - use setColors instead
      */
     QgsPresetSchemeColorRamp( const QgsNamedColorList &colors );
 

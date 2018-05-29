@@ -25,6 +25,7 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsFields,
                        QgsFeature,
                        QgsFeatureSink,
@@ -32,6 +33,7 @@ from qgis.core import (QgsFields,
                        QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
@@ -71,6 +73,9 @@ class Polygonize(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         if self.parameterAsBool(parameters, self.KEEP_FIELDS, context):
             fields = source.fields()
         else:
@@ -78,10 +83,12 @@ class Polygonize(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         allLinesList = []
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
-        feedback.pushInfo(self.tr('Processing lines...'))
+        feedback.pushInfo(QCoreApplication.translate('Polygonize', 'Processing lines…'))
         total = (40.0 / source.featureCount()) if source.featureCount() else 1
         for current, inFeat in enumerate(features):
             if feedback.isCanceled():
@@ -93,20 +100,20 @@ class Polygonize(QgisAlgorithm):
 
         feedback.setProgress(40)
 
-        feedback.pushInfo(self.tr('Noding lines...'))
+        feedback.pushInfo(QCoreApplication.translate('Polygonize', 'Noding lines…'))
         allLines = QgsGeometry.unaryUnion(allLinesList)
         if feedback.isCanceled():
             return {}
 
         feedback.setProgress(45)
-        feedback.pushInfo(self.tr('Polygonizing...'))
+        feedback.pushInfo(QCoreApplication.translate('Polygonize', 'Polygonizing…'))
         polygons = QgsGeometry.polygonize([allLines])
         if polygons.isEmpty():
             feedback.reportError(self.tr('No polygons were created!'))
         feedback.setProgress(50)
 
         if not polygons.isEmpty():
-            feedback.pushInfo('Saving polygons...')
+            feedback.pushInfo(QCoreApplication.translate('Polygonize', 'Saving polygons…'))
             total = 50.0 / polygons.constGet().numGeometries()
             for i in range(polygons.constGet().numGeometries()):
                 if feedback.isCanceled():

@@ -115,9 +115,9 @@ void QgsDb2NewConnection::accept()
   settings.setValue( baseKey + "/port", txtPort->text() );
   settings.setValue( baseKey + "/driver", txtDriver->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) && !hasAuthConfigID ? mAuthSettings->username( ) : QLatin1String( "" ) );
+  settings.setValue( baseKey + "/username", mAuthSettings->storeUsernameIsChecked( ) ? mAuthSettings->username( ) : QLatin1String( "" ) );
   settings.setValue( baseKey + "/password", mAuthSettings->storePasswordIsChecked( ) && !hasAuthConfigID ? mAuthSettings->password( ) : QLatin1String( "" ) );
-  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() && !hasAuthConfigID ? "true" : "false" );
+  settings.setValue( baseKey + "/saveUsername", mAuthSettings->storeUsernameIsChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", mAuthSettings->storePasswordIsChecked( )  && !hasAuthConfigID ? "true" : "false" );
   settings.setValue( baseKey + "/authcfg", mAuthSettings->configId() );
 
@@ -129,7 +129,7 @@ void QgsDb2NewConnection::btnConnect_clicked()
   testConnection();
 }
 
-void QgsDb2NewConnection::on_btnListDatabase_clicked()
+void QgsDb2NewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
@@ -167,7 +167,7 @@ bool QgsDb2NewConnection::testConnection()
   if ( !rc )
   {
     bar->pushMessage( tr( "Error: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     QgsDebugMsg( "errMsg: " + errMsg );
     return false;
   }
@@ -177,14 +177,14 @@ bool QgsDb2NewConnection::testConnection()
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+                      Qgis::Info );
     return true;
   }
   else
   {
     QgsDebugMsg( "connection open failed: " + errMsg );
     bar->pushMessage( tr( "Connection failed: %1." ).arg( errMsg ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
     return false;
   }
 }

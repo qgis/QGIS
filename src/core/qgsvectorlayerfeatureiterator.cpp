@@ -402,7 +402,7 @@ bool QgsVectorLayerFeatureIterator::close()
   return true;
 }
 
-void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mProviderIterator.setInterruptionChecker( interruptionChecker );
   mInterruptionChecker = interruptionChecker;
@@ -761,7 +761,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     {
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
         if ( mRequest.invalidGeometryCallback() )
         {
           mRequest.invalidGeometryCallback()( feature );
@@ -774,7 +774,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     case QgsFeatureRequest::GeometryAbortOnInvalid:
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
         close();
         if ( mRequest.invalidGeometryCallback() )
         {
@@ -1083,6 +1083,7 @@ QgsVectorLayerSelectedFeatureSource::QgsVectorLayerSelectedFeatureSource( QgsVec
   , mSelectedFeatureIds( layer->selectedFeatureIds() )
   , mWkbType( layer->wkbType() )
   , mName( layer->name() )
+  , mLayer( layer )
 {}
 
 QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
@@ -1126,4 +1127,12 @@ long QgsVectorLayerSelectedFeatureSource::featureCount() const
 QString QgsVectorLayerSelectedFeatureSource::sourceName() const
 {
   return mName;
+}
+
+QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpressionContextScope() const
+{
+  if ( mLayer )
+    return mLayer->createExpressionContextScope();
+  else
+    return nullptr;
 }

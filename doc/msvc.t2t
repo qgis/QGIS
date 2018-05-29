@@ -36,38 +36,8 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select //Advanced Installation//):
 
-- expat
-- fcgi
-- gdal
-- grass
-- gsl-devel
-- iconv
-- libzip-devel
-- libspatialindex-devel
-- pyqt5
-- python3-devel
-- python3-qscintilla
-- python3-nose2
-- python3-future
-- python3-pyyaml
-- python3-mock
-- python3-six
-- qca-qt5-devel
-- qca-qt5-libs
-- qscintilla-qt5
-- qt5-devel
-- qt5-libs-debug
-- qtwebkit-qt5-devel
-- qtwebkit-qt5-libs-debug
-- qwt-devel-qt5
-- sip-qt5
-- spatialite
-- oci
-- qtkeychain
-- libzip
+- qgis-rel-deps
 -
-
-
 
 This will also select packages the above packages depend on.
 

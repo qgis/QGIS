@@ -23,16 +23,21 @@
 #include "qgis_sip.h"
 #include <QList>
 #include <QVector>
-#include "pointset.h"
-#include "labelposition.h"
 #include "qgspallabeling.h"
 #include "rtree.hpp"
 
 class QgsPointXY;
 
+#ifndef SIP_RUN
+namespace pal
+{
+  class LabelPosition;
+}
+#endif
+
 /**
  * \ingroup core
- * A class to query the labeling structure at a given point (small wraper around pal RTree class)
+ * A class to query the labeling structure at a given point (small wrapper around pal RTree class)
  */
 class CORE_EXPORT QgsLabelSearchTree
 {

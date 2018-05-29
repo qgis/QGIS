@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
@@ -142,8 +143,6 @@ class gdal2tiles(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
 
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
-
     def name(self):
         return 'gdal2tiles'
 
@@ -155,6 +154,9 @@ class gdal2tiles(GdalAlgorithm):
 
     def groupId(self):
         return 'rastermiscellaneous'
+
+    def commandName(self):
+        return 'gdal2tiles'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
@@ -186,10 +188,10 @@ class gdal2tiles(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         if crs.isValid():
             arguments.append('-s')
-            arguments.append(crs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(crs))
 
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
-        if nodata:
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
             arguments.append('-a')
             arguments.append(str(nodata))
 
@@ -218,15 +220,18 @@ class gdal2tiles(GdalAlgorithm):
             arguments.append('-n')
 
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         arguments.append(inLayer.source())
         arguments.append(self.parameterAsString(parameters, self.OUTPUT, context))
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal2tiles.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal2tiles.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

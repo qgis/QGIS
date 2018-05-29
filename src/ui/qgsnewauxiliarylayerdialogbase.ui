@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Auxiliary storage : choose primary key</string>
+   <string>Auxiliary Storage : Choose Primary Key</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">

@@ -53,7 +53,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
 
         self.renderer = QgsSingleSymbolRenderer(sym1)
         layer.setRenderer(self.renderer)

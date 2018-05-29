@@ -19,8 +19,8 @@
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsproxystyle.h"
 #include <QStandardItem>
-#include <QProxyStyle>
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 #include "qgis_gui.h"
@@ -66,12 +66,12 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
 };
 
 // View style which shows drop indicator line between items
-class QgsGraduatedSymbolRendererViewStyle: public QProxyStyle
+class QgsGraduatedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
   public:
-    explicit QgsGraduatedSymbolRendererViewStyle( QStyle *style = nullptr );
+    explicit QgsGraduatedSymbolRendererViewStyle( QWidget *parent );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
@@ -138,7 +138,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void updateGraduatedSymbolIcon();
 
-    //! return a list of indexes for the classes under selection
+    //! Returns a list of indexes for the classes under selection
     QList<int> selectedClasses();
     QgsRangeList selectedRanges();
 
@@ -146,6 +146,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void changeRange( int rangeIdx );
 
     void changeSelectedSymbols();
+    //! Applies current symbol to selected ranges, or to all ranges if none is selected
+    void applyChangeToSymbol();
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
@@ -154,9 +156,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    QgsGraduatedSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
-    QgsSymbol *mGraduatedSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mGraduatedSymbol;
 
     int mRowSelected;
 

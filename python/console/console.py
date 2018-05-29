@@ -18,12 +18,10 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import str
-from builtins import range
 import os
 
 from qgis.PyQt.QtCore import Qt, QTimer, QCoreApplication, QSize, QByteArray, QFileInfo, QUrl, QDir
-from qgis.PyQt.QtWidgets import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
+from qgis.PyQt.QtWidgets import QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication, QShortcut
 from qgis.PyQt.QtGui import QDesktopServices, QKeySequence
 from qgis.PyQt.QtWidgets import QVBoxLayout
 from qgis.utils import iface
@@ -32,7 +30,7 @@ from .console_output import ShellOutputScintilla
 from .console_editor import EditorTabWidget
 from .console_settings import optionsDialog
 from qgis.core import QgsApplication, QgsSettings
-from qgis.gui import QgsFilterLineEdit, QgsHelp
+from qgis.gui import QgsFilterLineEdit, QgsHelp, QgsDockWidget
 from functools import partial
 
 import sys
@@ -46,14 +44,17 @@ def show_console():
     if _console is None:
         parent = iface.mainWindow() if iface else None
         _console = PythonConsole(parent)
+        if iface:
+            _console.visibilityChanged.connect(iface.actionShowPythonDialog().setChecked)
+
         _console.show()  # force show even if it was restored as hidden
         # set focus to the console so the user can start typing
         # defer the set focus event so it works also whether the console not visible yet
         QTimer.singleShot(0, _console.activate)
     else:
-        _console.setVisible(not _console.isVisible())
+        _console.setUserVisible(not _console.isUserVisible())
         # set focus to the console so the user can start typing
-        if _console.isVisible():
+        if _console.isUserVisible():
             _console.activate()
 
     return _console
@@ -70,10 +71,10 @@ def console_displayhook(obj):
     _console_output = obj
 
 
-class PythonConsole(QDockWidget):
+class PythonConsole(QgsDockWidget):
 
     def __init__(self, parent=None):
-        QDockWidget.__init__(self, parent)
+        super().__init__(parent)
         self.setObjectName("PythonConsole")
         self.setWindowTitle(QCoreApplication.translate("PythonConsole", "Python Console"))
         # self.setAllowedAreas(Qt.BottomDockWidgetArea)
@@ -89,7 +90,7 @@ class PythonConsole(QDockWidget):
     def activate(self):
         self.activateWindow()
         self.raise_()
-        QDockWidget.setFocus(self)
+        QgsDockWidget.setFocus(self)
 
     def closeEvent(self, event):
         self.console.saveSettingsConsole()
@@ -168,11 +169,11 @@ class PythonConsoleWidget(QWidget):
         # ------------------Toolbar Editor-------------------------------------
 
         # Action for Open File
-        openFileBt = QCoreApplication.translate("PythonConsole", "Open Script...")
+        openFileBt = QCoreApplication.translate("PythonConsole", "Open Script…")
         self.openFileButton = QAction(self)
         self.openFileButton.setCheckable(False)
         self.openFileButton.setEnabled(True)
-        self.openFileButton.setIcon(QgsApplication.getThemeIcon("console/iconOpenConsole.png"))
+        self.openFileButton.setIcon(QgsApplication.getThemeIcon("mActionScriptOpen.svg"))
         self.openFileButton.setMenuRole(QAction.PreferencesRole)
         self.openFileButton.setIconVisibleInMenu(True)
         self.openFileButton.setToolTip(openFileBt)
@@ -182,7 +183,7 @@ class PythonConsoleWidget(QWidget):
         self.openInEditorButton = QAction(self)
         self.openInEditorButton.setCheckable(False)
         self.openInEditorButton.setEnabled(True)
-        self.openInEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.png"))
+        self.openInEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"))
         self.openInEditorButton.setMenuRole(QAction.PreferencesRole)
         self.openInEditorButton.setIconVisibleInMenu(True)
         self.openInEditorButton.setToolTip(openExtEditorBt)
@@ -192,17 +193,17 @@ class PythonConsoleWidget(QWidget):
         self.saveFileButton = QAction(self)
         self.saveFileButton.setCheckable(False)
         self.saveFileButton.setEnabled(False)
-        self.saveFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveConsole.png"))
+        self.saveFileButton.setIcon(QgsApplication.getThemeIcon("mActionFileSave.svg"))
         self.saveFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveFileButton.setIconVisibleInMenu(True)
         self.saveFileButton.setToolTip(saveFileBt)
         self.saveFileButton.setText(saveFileBt)
         # Action for Save File As
-        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As...")
+        saveAsFileBt = QCoreApplication.translate("PythonConsole", "Save As…")
         self.saveAsFileButton = QAction(self)
         self.saveAsFileButton.setCheckable(False)
         self.saveAsFileButton.setEnabled(True)
-        self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("console/iconSaveAsConsole.png"))
+        self.saveAsFileButton.setIcon(QgsApplication.getThemeIcon("mActionFileSaveAs.svg"))
         self.saveAsFileButton.setMenuRole(QAction.PreferencesRole)
         self.saveAsFileButton.setIconVisibleInMenu(True)
         self.saveAsFileButton.setToolTip(saveAsFileBt)
@@ -242,7 +243,7 @@ class PythonConsoleWidget(QWidget):
         self.runScriptEditorButton = QAction(self)
         self.runScriptEditorButton.setCheckable(False)
         self.runScriptEditorButton.setEnabled(True)
-        self.runScriptEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconRunScriptConsole.png"))
+        self.runScriptEditorButton.setIcon(QgsApplication.getThemeIcon("mActionStart.svg"))
         self.runScriptEditorButton.setMenuRole(QAction.PreferencesRole)
         self.runScriptEditorButton.setIconVisibleInMenu(True)
         self.runScriptEditorButton.setToolTip(runScriptEditorBt)
@@ -252,7 +253,7 @@ class PythonConsoleWidget(QWidget):
         self.commentEditorButton = QAction(self)
         self.commentEditorButton.setCheckable(False)
         self.commentEditorButton.setEnabled(True)
-        self.commentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png"))
+        self.commentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg"))
         self.commentEditorButton.setMenuRole(QAction.PreferencesRole)
         self.commentEditorButton.setIconVisibleInMenu(True)
         self.commentEditorButton.setToolTip(commentEditorBt)
@@ -262,18 +263,18 @@ class PythonConsoleWidget(QWidget):
         self.uncommentEditorButton = QAction(self)
         self.uncommentEditorButton.setCheckable(False)
         self.uncommentEditorButton.setEnabled(True)
-        self.uncommentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.png"))
+        self.uncommentEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg"))
         self.uncommentEditorButton.setMenuRole(QAction.PreferencesRole)
         self.uncommentEditorButton.setIconVisibleInMenu(True)
         self.uncommentEditorButton.setToolTip(uncommentEditorBt)
         self.uncommentEditorButton.setText(uncommentEditorBt)
         # Action for Object browser
-        objList = QCoreApplication.translate("PythonConsole", "Object Inspector...")
+        objList = QCoreApplication.translate("PythonConsole", "Object Inspector…")
         self.objectListButton = QAction(self)
         self.objectListButton.setCheckable(True)
         self.objectListButton.setEnabled(self.settings.value("pythonConsole/enableObjectInsp",
                                                              False, type=bool))
-        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.png"))
+        self.objectListButton.setIcon(QgsApplication.getThemeIcon("console/iconClassBrowserConsole.svg"))
         self.objectListButton.setMenuRole(QAction.PreferencesRole)
         self.objectListButton.setIconVisibleInMenu(True)
         self.objectListButton.setToolTip(objList)
@@ -283,7 +284,7 @@ class PythonConsoleWidget(QWidget):
         self.findTextButton = QAction(self)
         self.findTextButton.setCheckable(True)
         self.findTextButton.setEnabled(True)
-        self.findTextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.png"))
+        self.findTextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchEditorConsole.svg"))
         self.findTextButton.setMenuRole(QAction.PreferencesRole)
         self.findTextButton.setIconVisibleInMenu(True)
         self.findTextButton.setToolTip(findText)
@@ -296,7 +297,7 @@ class PythonConsoleWidget(QWidget):
         self.showEditorButton = QAction(self)
         self.showEditorButton.setEnabled(True)
         self.showEditorButton.setCheckable(True)
-        self.showEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.png"))
+        self.showEditorButton.setIcon(QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"))
         self.showEditorButton.setMenuRole(QAction.PreferencesRole)
         self.showEditorButton.setIconVisibleInMenu(True)
         self.showEditorButton.setToolTip(showEditor)
@@ -306,17 +307,17 @@ class PythonConsoleWidget(QWidget):
         self.clearButton = QAction(self)
         self.clearButton.setCheckable(False)
         self.clearButton.setEnabled(True)
-        self.clearButton.setIcon(QgsApplication.getThemeIcon("console/iconClearConsole.png"))
+        self.clearButton.setIcon(QgsApplication.getThemeIcon("console/iconClearConsole.svg"))
         self.clearButton.setMenuRole(QAction.PreferencesRole)
         self.clearButton.setIconVisibleInMenu(True)
         self.clearButton.setToolTip(clearBt)
         self.clearButton.setText(clearBt)
         # Action for settings
-        optionsBt = QCoreApplication.translate("PythonConsole", "Options...")
+        optionsBt = QCoreApplication.translate("PythonConsole", "Options…")
         self.optionsButton = QAction(self)
         self.optionsButton.setCheckable(False)
         self.optionsButton.setEnabled(True)
-        self.optionsButton.setIcon(QgsApplication.getThemeIcon("console/iconSettingsConsole.png"))
+        self.optionsButton.setIcon(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"))
         self.optionsButton.setMenuRole(QAction.PreferencesRole)
         self.optionsButton.setIconVisibleInMenu(True)
         self.optionsButton.setToolTip(optionsBt)
@@ -332,11 +333,11 @@ class PythonConsoleWidget(QWidget):
         self.runButton.setToolTip(runBt)
         self.runButton.setText(runBt)
         # Help action
-        helpBt = QCoreApplication.translate("PythonConsole", "Help...")
+        helpBt = QCoreApplication.translate("PythonConsole", "Help…")
         self.helpButton = QAction(self)
         self.helpButton.setCheckable(False)
         self.helpButton.setEnabled(True)
-        self.helpButton.setIcon(QgsApplication.getThemeIcon("console/iconHelpConsole.png"))
+        self.helpButton.setIcon(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"))
         self.helpButton.setMenuRole(QAction.PreferencesRole)
         self.helpButton.setIconVisibleInMenu(True)
         self.helpButton.setToolTip(helpBt)
@@ -374,11 +375,11 @@ class PythonConsoleWidget(QWidget):
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.runScriptEditorButton)
         self.toolBarEditor.addSeparator()
-        self.toolBarEditor.addAction(self.findTextButton)
-        self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.cutEditorButton)
         self.toolBarEditor.addAction(self.copyEditorButton)
         self.toolBarEditor.addAction(self.pasteEditorButton)
+        self.toolBarEditor.addSeparator()
+        self.toolBarEditor.addAction(self.findTextButton)
         self.toolBarEditor.addSeparator()
         self.toolBarEditor.addAction(self.commentEditorButton)
         self.toolBarEditor.addAction(self.uncommentEditorButton)
@@ -430,7 +431,7 @@ class PythonConsoleWidget(QWidget):
         self.layoutFind = QGridLayout(self.widgetFind)
         self.layoutFind.setContentsMargins(0, 0, 0, 0)
         self.lineEditFind = QgsFilterLineEdit()
-        placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find...")
+        placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find…")
 
         self.lineEditFind.setPlaceholderText(placeHolderTxt)
         self.toolBarFindText = QToolBar()
@@ -439,12 +440,12 @@ class PythonConsoleWidget(QWidget):
         self.findNextButton.setEnabled(False)
         toolTipfindNext = QCoreApplication.translate("PythonConsole", "Find Next")
         self.findNextButton.setToolTip(toolTipfindNext)
-        self.findNextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchNextEditorConsole.png"))
+        self.findNextButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchNextEditorConsole.svg"))
         self.findPrevButton = QAction(self)
         self.findPrevButton.setEnabled(False)
         toolTipfindPrev = QCoreApplication.translate("PythonConsole", "Find Previous")
         self.findPrevButton.setToolTip(toolTipfindPrev)
-        self.findPrevButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchPrevEditorConsole.png"))
+        self.findPrevButton.setIcon(QgsApplication.getThemeIcon("console/iconSearchPrevEditorConsole.svg"))
         self.caseSensitive = QCheckBox()
         caseSensTr = QCoreApplication.translate("PythonConsole", "Case Sensitive")
         self.caseSensitive.setText(caseSensTr)

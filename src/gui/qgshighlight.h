@@ -103,7 +103,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setMinWidth( double width ) { mMinWidth = width; }
 
     /**
-     * Return the layer for which this highlight has been created.
+     * Returns the layer for which this highlight has been created.
      */
     QgsMapLayer *layer() const { return mLayer; }
 
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void init();
     void setSymbol( QgsSymbol *symbol, const QgsRenderContext &context, const QColor &color, const QColor &fillColor );
     double getSymbolWidth( const QgsRenderContext &context, double width, QgsUnitTypes::RenderUnit unit );
-    //! Get renderer for current color mode and colors. The renderer should be freed by caller.
+    //! Gets renderer for current color mode and colors. The renderer should be freed by caller.
     std::unique_ptr< QgsFeatureRenderer > createRenderer( QgsRenderContext &context, const QColor &color, const QColor &fillColor );
     void paintPoint( QPainter *p, const QgsPointXY &point );
     void paintLine( QPainter *p, QgsPolylineXY line );

@@ -30,6 +30,7 @@ class QgsTaskManager;
 class QgsFieldFormatterRegistry;
 class QgsColorSchemeRegistry;
 class QgsPaintEffectRegistry;
+class QgsProjectStorageRegistry;
 class QgsRendererRegistry;
 class QgsSvgCache;
 class QgsSymbolLayerRegistry;
@@ -45,6 +46,7 @@ class QgsUserProfileManager;
 class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
+class QgsNetworkContentFetcherRegistry;
 
 /**
  * \ingroup core
@@ -169,7 +171,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Catch exceptions when sending event to receiver.
     bool notify( QObject *receiver, QEvent *event ) override;
 
-    //! Set the FileOpen event receiver
+    //! Sets the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject *receiver );
 
     /**
@@ -183,6 +185,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * be reverted to 'default'.
      */
     static void setThemeName( const QString &themeName );
+
+    /**
+     * Calculate the application pkg path
+     * \return the resolved pkg path
+     */
+    static QString resolvePkgPath( );
 
     /**
      * Set the active theme to the specified theme.
@@ -335,7 +343,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Cursors are automatically scaled to look like a 16px cursor on 96dpi
      * screens.
      */
-    static QCursor getThemeCursor( const Cursor &cursor );
+    static QCursor getThemeCursor( Cursor cursor );
 
     /**
      * Helper to get a theme icon as a pixmap. It will fall back to the
@@ -351,29 +359,29 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the user's operating system login account name.
-     * \since QGIS 2.14
      * \see userFullName()
+     * \since QGIS 2.14
      */
     static QString userLoginName();
 
     /**
      * Returns the user's operating system login account full display name.
-     * \since QGIS 2.14
      * \see userLoginName()
+     * \since QGIS 2.14
      */
     static QString userFullName();
 
     /**
      * Returns a string name of the operating system QGIS is running on.
-     * \since QGIS 2.14
      * \see platform()
+     * \since QGIS 2.14
      */
     static QString osName();
 
     /**
      * Returns the QGIS platform name, e.g., "desktop" or "server".
-     * \since QGIS 2.14
      * \see osName()
+     * \since QGIS 2.14
      */
     static QString platform();
 
@@ -397,6 +405,14 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns the path with utility executables (help viewer, crssync, ...)
     static QString libexecPath();
+
+    /**
+     * Returns the path where QML components are installed for QGIS Quick library. Returns
+     * empty string when QGIS is built without Quick support
+     *
+     * \since QGIS 3.2
+     */
+    static QString qmlImportPath();
 
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
@@ -425,7 +441,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
-    //! get application icon
+    //! Gets application icon
     static QString appIconPath();
 
     //! Constants for endian-ness
@@ -456,10 +472,12 @@ class CORE_EXPORT QgsApplication : public QApplication
 #endif
 
     /**
-     * \brief get a standard css style sheet for reports.
+     * Returns a standard css style sheet for reports.
+     *
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     *
      * \returns QString containing the CSS 2.1 compliant stylesheet.
      * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
@@ -523,7 +541,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void applyGdalSkippedDrivers();
 
     /**
-     * Get maximum concurrent thread count
+     * Gets maximum concurrent thread count
      * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
@@ -560,8 +578,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
@@ -578,6 +596,12 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.0
      */
     static QgsSvgCache *svgCache();
+
+    /**
+     * Returns the application's network content registry used for fetching temporary files during QGIS session
+     * \since QGIS 3.2
+     */
+    static QgsNetworkContentFetcherRegistry *networkContentFetcherRegistry();
 
     /**
      * Returns the application's symbol layer registry, used for managing symbol layers.
@@ -632,8 +656,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 
@@ -651,16 +675,21 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRuntimeProfiler *profiler();
 
     /**
-     * Get the registry of available field formatters.
+     * Gets the registry of available field formatters.
      */
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 
     /**
      * Returns registry of available 3D renderers.
-     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry();
+
+    /**
+     * Returns registry of available project storage implementations.
+     * \since QGIS 3.2
+     */
+    static QgsProjectStorageRegistry *projectStorageRegistry();
 
     /**
      * This string is used to represent the value `NULL` throughout QGIS.
@@ -681,7 +710,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * This does not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static QVariantMap customVariables();
@@ -690,7 +719,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * Do not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );
@@ -732,17 +761,21 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QObject *ABISYM( mFileOpenEventReceiver );
     static QStringList ABISYM( mFileOpenEventList );
 
+    static QString ABISYM( mProfilePath );
     static QString ABISYM( mUIThemeName );
     static QString ABISYM( mPrefixPath );
     static QString ABISYM( mPluginPath );
     static QString ABISYM( mPkgDataPath );
     static QString ABISYM( mLibraryPath );
     static QString ABISYM( mLibexecPath );
+    static QString ABISYM( mQmlImportPath );
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
     static QMap<QString, QString> ABISYM( mSystemEnvVars );
 
     static QString ABISYM( mConfigPath );
+
+    static bool ABISYM( mInitialized );
 
     //! True when running from build directory, i.e. without 'make install'
     static bool ABISYM( mRunningFromBuildDir );
@@ -786,10 +819,12 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
       QgsFieldFormatterRegistry *mFieldFormatterRegistry = nullptr;
       QgsGpsConnectionRegistry *mGpsConnectionRegistry = nullptr;
+      QgsNetworkContentFetcherRegistry *mNetworkContentFetcherRegistry = nullptr;
       QgsMessageLog *mMessageLog = nullptr;
       QgsPaintEffectRegistry *mPaintEffectRegistry = nullptr;
       QgsPluginLayerRegistry *mPluginLayerRegistry = nullptr;
       QgsProcessingRegistry *mProcessingRegistry = nullptr;
+      QgsProjectStorageRegistry *mProjectStorageRegistry = nullptr;
       QgsPageSizeRegistry *mPageSizeRegistry = nullptr;
       QgsRasterRendererRegistry *mRasterRendererRegistry = nullptr;
       QgsRendererRegistry *mRendererRegistry = nullptr;

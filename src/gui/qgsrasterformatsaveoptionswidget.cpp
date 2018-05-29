@@ -378,7 +378,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
   }
   else if ( ! createOptions.isEmpty() )
   {
-    QMessageBox::information( this, QLatin1String( "" ), tr( "Cannot validate creation options" ), QMessageBox::Close );
+    QMessageBox::information( this, QLatin1String( "" ), tr( "Cannot validate creation options." ), QMessageBox::Close );
     if ( tmpLayer )
       delete rasterLayer;
     return QString();

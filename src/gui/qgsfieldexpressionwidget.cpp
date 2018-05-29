@@ -173,7 +173,10 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 void QgsFieldExpressionWidget::setField( const QString &fieldName )
 {
   if ( fieldName.isEmpty() )
+  {
+    setRow( -1 );
     return;
+  }
 
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
@@ -342,4 +345,9 @@ bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )
   QgsExpression expression( expressionStr );
   expression.prepare( &mExpressionContext );
   return !expression.hasParserError();
+}
+
+void QgsFieldExpressionWidget::appendScope( QgsExpressionContextScope *scope )
+{
+  mExpressionContext.appendScope( scope );
 }

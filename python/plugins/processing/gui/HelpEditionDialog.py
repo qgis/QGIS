@@ -27,18 +27,23 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from qgis.core import (QgsMessageLog,
+from qgis.core import (Qgis,
+                       QgsMessageLog,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
                        QgsProcessingModelAlgorithm)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgHelpEdition.ui'))
 
 
 class HelpEditionDialog(BASE, WIDGET):
@@ -64,7 +69,7 @@ class HelpEditionDialog(BASE, WIDGET):
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
                     except Exception:
-                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), QgsMessageLog.WARNING)
+                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), Qgis.Warning)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:

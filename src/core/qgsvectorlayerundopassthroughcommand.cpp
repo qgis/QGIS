@@ -26,7 +26,7 @@
 
 #include <QUuid>
 
-//@todo use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
+// TODO use setObsolete instead of mHasError when upgrading qt version, this will allow auto removal of the command
 // for the moment a errored command is left on the stack
 
 QgsVectorLayerUndoPassthroughCommand::QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate )
@@ -177,7 +177,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::redo()
   }
 }
 
-QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, const QgsFeatureId &fid, const QgsGeometry &geom )
+QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsGeometry &geom )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change geometry" ) )
   , mFid( fid )
   , mNewGeom( geom )
@@ -400,6 +400,38 @@ void QgsVectorLayerUndoPassthroughCommandUpdate::redo()
     {
       setErrorMessage( errorMessage );
       setError();
+    }
+  }
+}
+
+QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change attribute value" ) )
+  , mFid( fid )
+  , mNewValues( newValues )
+  , mOldValues( oldValues )
+{
+}
+
+void QgsVectorLayerUndoPassthroughCommandChangeAttributes::undo()
+{
+  if ( rollBackToSavePoint() )
+  {
+    for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
+    {
+      emit mBuffer->attributeValueChanged( mFid, it.key(), it.value() );
+    }
+  }
+}
+
+void QgsVectorLayerUndoPassthroughCommandChangeAttributes::redo()
+{
+  QgsChangedAttributesMap attribMap;
+  attribMap.insert( mFid, mNewValues );
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) )
+  {
+    for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
+    {
+      emit mBuffer->attributeValueChanged( mFid, it.key(), it.value() );
     }
   }
 }

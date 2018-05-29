@@ -18,18 +18,43 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import range
 
-from qgis.PyQt.QtCore import QCoreApplication, QSize, QFileInfo, Qt
+from qgis.PyQt.QtCore import QCoreApplication, QSize, Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QTableWidgetItem
 from qgis.PyQt.QtGui import QIcon, QFont, QColor, QFontDatabase
-from .console_compile_apis import PrepareAPIDialog
 
-from .ui_console_settings import Ui_SettingsDialogPythonConsole
 from qgis.core import QgsSettings
+
+from .console_compile_apis import PrepareAPIDialog
+from .ui_console_settings import Ui_SettingsDialogPythonConsole
 
 
 class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
+
+    DEFAULT_COLOR = "#4d4d4c"
+    KEYWORD_COLOR = "#8959a8"
+    CLASS_COLOR = "#4271ae"
+    METHOD_COLOR = "#4271ae"
+    DECORATION_COLOR = "#3e999f"
+    NUMBER_COLOR = "#c82829"
+    COMMENT_COLOR = "#8e908c"
+    COMMENT_BLOCK_COLOR = "#8e908c"
+    BACKGROUND_COLOR = "#ffffff"
+    CURSOR_COLOR = "#636363"
+    CARET_LINE_COLOR = "#efefef"
+    SINGLE_QUOTE_COLOR = "#718c00"
+    DOUBLE_QUOTE_COLOR = "#718c00"
+    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
+    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
+    MARGIN_BACKGROUND_COLOR = "#efefef"
+    MARGIN_FOREGROUND_COLOR = "#636363"
+    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
+    SELECTION_FOREGROUND_COLOR = "#303030"
+    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
+    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
+    EDGE_COLOR = "#efefef"
+    FOLD_COLOR = "#efefef"
+    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, parent):
         QDialog.__init__(self, parent)
@@ -54,9 +79,9 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         self.removeAPIpath.clicked.connect(self.removeAPI)
         self.compileAPIs.clicked.connect(self._prepareAPI)
 
-        self.resetFontColor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.png"))
+        self.resetFontColor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
         self.resetFontColor.setIconSize(QSize(18, 18))
-        self.resetFontColorEditor.setIcon(QIcon(":/images/themes/default/console/iconResetColorConsole.png"))
+        self.resetFontColorEditor.setIcon(QIcon(":/images/themes/default/mActionUndo.svg"))
         self.resetFontColorEditor.setIconSize(QSize(18, 18))
         self.resetFontColor.clicked.connect(self._resetFontColor)
         self.resetFontColorEditor.clicked.connect(self._resetFontColorEditor)
@@ -119,7 +144,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
                 not self.lineEdit.text():
             QMessageBox.information(
                 self, self.tr("Warning!"),
-                self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
+                QCoreApplication.translate('optionsDialog', 'The APIs file was not compiled, click on "Compile APIs…"')
+            )
             return
         self.saveSettings()
         self.listPath = []
@@ -198,6 +224,8 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/keywordFontColorEditor", self.keywordFontColorEditor.color())
         settings.setValue("pythonConsole/decorFontColor", self.decorFontColor.color())
         settings.setValue("pythonConsole/decorFontColorEditor", self.decorFontColorEditor.color())
+        settings.setValue("pythonConsole/numberFontColor", self.numberFontColor.color())
+        settings.setValue("pythonConsole/numberFontColorEditor", self.numberFontColorEditor.color())
         settings.setValue("pythonConsole/methodFontColor", self.methodFontColor.color())
         settings.setValue("pythonConsole/methodFontColorEditor", self.methodFontColorEditor.color())
         settings.setValue("pythonConsole/commentFontColor", self.commentFontColor.color())
@@ -222,6 +250,20 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColor", self.tripleDoubleQuoteFontColor.color())
         settings.setValue("pythonConsole/tripleDoubleQuoteFontColorEditor",
                           self.tripleDoubleQuoteFontColorEditor.color())
+        settings.setValue("pythonConsole/edgeColorEditor", self.edgeColorEditor.color())
+        settings.setValue("pythonConsole/marginBackgroundColor", self.marginBackgroundColor.color())
+        settings.setValue("pythonConsole/marginBackgroundColorEditor", self.marginBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/marginForegroundColor", self.marginForegroundColor.color())
+        settings.setValue("pythonConsole/marginForegroundColorEditor", self.marginForegroundColorEditor.color())
+        settings.setValue("pythonConsole/foldColorEditor", self.foldColorEditor.color())
+        settings.setValue("pythonConsole/selectionBackgroundColor", self.selectionBackgroundColor.color())
+        settings.setValue("pythonConsole/selectionBackgroundColorEditor", self.selectionBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/selectionForegroundColor", self.selectionForegroundColor.color())
+        settings.setValue("pythonConsole/selectionForegroundColorEditor", self.selectionForegroundColorEditor.color())
+        settings.setValue("pythonConsole/matchedBraceBackgroundColor", self.matchedBraceBackgroundColor.color())
+        settings.setValue("pythonConsole/matchedBraceBackgroundColorEditor", self.matchedBraceBackgroundColorEditor.color())
+        settings.setValue("pythonConsole/matchedBraceForegroundColor", self.matchedBraceForegroundColor.color())
+        settings.setValue("pythonConsole/matchedBraceForegroundColorEditor", self.matchedBraceForegroundColorEditor.color())
 
     def restoreSettings(self):
         settings = QgsSettings()
@@ -274,86 +316,118 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
             self.autoCompFromDocAPIEditor.setChecked(True)
 
         # Setting font lexer color
-        self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
+        self.defaultFontColor.setColor(QColor(settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
         self.defaultFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
-        self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))))
+            QColor(settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))))
+        self.keywordFontColor.setColor(QColor(settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))))
         self.keywordFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))))
-        self.classFontColor.setColor(QColor(settings.value("pythonConsole/classFontColor", QColor(Qt.blue))))
+            QColor(settings.value("pythonConsole/keywordFontColorEditor", QColor(self.KEYWORD_COLOR))))
+        self.classFontColor.setColor(QColor(settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))))
         self.classFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))))
-        self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))))
+            QColor(settings.value("pythonConsole/classFontColorEditor", QColor(self.CLASS_COLOR))))
+        self.methodFontColor.setColor(QColor(settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))))
         self.methodFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))))
-        self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))))
+            QColor(settings.value("pythonConsole/methodFontColorEditor", QColor(self.METHOD_COLOR))))
+        self.decorFontColor.setColor(QColor(settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))))
         self.decorFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))))
-        self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))))
+            QColor(settings.value("pythonConsole/decorFontColorEditor", QColor(self.DECORATION_COLOR))))
+        self.numberFontColor.setColor(QColor(settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))))
+        self.numberFontColorEditor.setColor(
+            QColor(settings.value("pythonConsole/numberFontColorEditor", QColor(self.NUMBER_COLOR))))
+        self.commentFontColor.setColor(QColor(settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))))
         self.commentFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))))
+            QColor(settings.value("pythonConsole/commentFontColorEditor", QColor(self.COMMENT_COLOR))))
         self.commentBlockFontColor.setColor(
-            QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))))
+            QColor(settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))))
         self.commentBlockFontColorEditor.setColor(
-            QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))))
+            QColor(settings.value("pythonConsole/commentBlockFontColorEditor", QColor(self.COMMENT_BLOCK_COLOR))))
         self.paperBackgroundColor.setColor(
-            QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white))))
+            QColor(settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR))))
         self.paperBackgroundColorEditor.setColor(
-            QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white))))
-        self.caretLineColor.setColor(QColor(settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))))
+            QColor(settings.value("pythonConsole/paperBackgroundColorEditor", QColor(self.BACKGROUND_COLOR))))
+        self.caretLineColor.setColor(QColor(settings.value("pythonConsole/caretLineColor", QColor(self.CARET_LINE_COLOR))))
         self.caretLineColorEditor.setColor(
-            QColor(settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))))
-        self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(Qt.black))))
-        self.cursorColorEditor.setColor(QColor(settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))))
-        self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(Qt.red))))
-
-        self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue)))
+            QColor(settings.value("pythonConsole/caretLineColorEditor", QColor(self.CARET_LINE_COLOR))))
+        self.cursorColor.setColor(QColor(settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))))
+        self.cursorColorEditor.setColor(QColor(settings.value("pythonConsole/cursorColorEditor", QColor(self.CURSOR_COLOR))))
+        self.singleQuoteFontColor.setColor(settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR)))
         self.singleQuoteFontColorEditor.setColor(
-            settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue)))
-        self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue)))
+            settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(self.SINGLE_QUOTE_COLOR)))
+        self.doubleQuoteFontColor.setColor(settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR)))
         self.doubleQuoteFontColorEditor.setColor(
-            settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue)))
+            settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(self.DOUBLE_QUOTE_COLOR)))
         self.tripleSingleQuoteFontColor.setColor(
-            settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue)))
+            settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR)))
         self.tripleSingleQuoteFontColorEditor.setColor(
-            settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue)))
+            settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR)))
         self.tripleDoubleQuoteFontColor.setColor(
-            settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue)))
+            settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR)))
         self.tripleDoubleQuoteFontColorEditor.setColor(
-            settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue)))
+            settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR)))
+        self.marginBackgroundColor.setColor(settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR)))
+        self.marginBackgroundColorEditor.setColor(settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR)))
+        self.marginForegroundColor.setColor(settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR)))
+        self.marginForegroundColorEditor.setColor(settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR)))
+        self.selectionForegroundColor.setColor(settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR)))
+        self.selectionForegroundColorEditor.setColor(settings.value("pythonConsole/selectionForegroundColorEditor", QColor(self.SELECTION_FOREGROUND_COLOR)))
+        self.selectionBackgroundColor.setColor(settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR)))
+        self.selectionBackgroundColorEditor.setColor(settings.value("pythonConsole/selectionBackgroundColorEditor", QColor(self.SELECTION_BACKGROUND_COLOR)))
+        self.matchedBraceForegroundColor.setColor(settings.value("pythonConsole/matchedBraceForegroundColor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR)))
+        self.matchedBraceForegroundColorEditor.setColor(settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR)))
+        self.matchedBraceBackgroundColor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR)))
+        self.matchedBraceBackgroundColorEditor.setColor(settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR)))
+        self.stderrFontColor.setColor(QColor(settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR))))
+        self.edgeColorEditor.setColor(settings.value("pythonConsole/edgeColorEditor", QColor(self.EDGE_COLOR)))
+        self.foldColorEditor.setColor(settings.value("pythonConsole/foldColorEditor", QColor(self.FOLD_COLOR)))
 
     def _resetFontColor(self):
-        self.defaultFontColor.setColor(QColor(Qt.black))
-        self.keywordFontColor.setColor(QColor(Qt.darkGreen))
-        self.classFontColor.setColor(QColor(Qt.blue))
-        self.methodFontColor.setColor(QColor(Qt.darkGray))
-        self.decorFontColor.setColor(QColor(Qt.darkBlue))
-        self.commentFontColor.setColor(QColor(Qt.gray))
-        self.commentBlockFontColor.setColor(QColor(Qt.gray))
-        self.stderrFontColor.setColor(QColor(Qt.red))
-        self.paperBackgroundColor.setColor(QColor(Qt.white))
-        self.cursorColor.setColor(QColor(Qt.black))
-        self.caretLineColor.setColor(QColor("#fcf3ed"))
-        self.singleQuoteFontColor.setColor(QColor(Qt.blue))
-        self.doubleQuoteFontColor.setColor(QColor(Qt.blue))
-        self.tripleSingleQuoteFontColor.setColor(QColor(Qt.blue))
-        self.tripleDoubleQuoteFontColor.setColor(QColor(Qt.blue))
+        self.defaultFontColor.setColor(QColor(self.DEFAULT_COLOR))
+        self.keywordFontColor.setColor(QColor(self.KEYWORD_COLOR))
+        self.classFontColor.setColor(QColor(self.CLASS_COLOR))
+        self.methodFontColor.setColor(QColor(self.METHOD_COLOR))
+        self.decorFontColor.setColor(QColor(self.DECORATION_COLOR))
+        self.numberFontColor.setColor(QColor(self.NUMBER_COLOR))
+        self.commentFontColor.setColor(QColor(self.COMMENT_COLOR))
+        self.commentBlockFontColor.setColor(QColor(self.COMMENT_BLOCK_COLOR))
+        self.paperBackgroundColor.setColor(QColor(self.BACKGROUND_COLOR))
+        self.cursorColor.setColor(QColor(self.CURSOR_COLOR))
+        self.caretLineColor.setColor(QColor(self.CARET_LINE_COLOR))
+        self.singleQuoteFontColor.setColor(QColor(self.SINGLE_QUOTE_COLOR))
+        self.doubleQuoteFontColor.setColor(QColor(self.DOUBLE_QUOTE_COLOR))
+        self.tripleSingleQuoteFontColor.setColor(QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))
+        self.tripleDoubleQuoteFontColor.setColor(QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))
+        self.marginBackgroundColor.setColor(QColor(self.MARGIN_BACKGROUND_COLOR))
+        self.marginForegroundColor.setColor(QColor(self.MARGIN_FOREGROUND_COLOR))
+        self.selectionBackgroundColor.setColor(QColor(self.SELECTION_BACKGROUND_COLOR))
+        self.selectionForegroundColor.setColor(QColor(self.SELECTION_FOREGROUND_COLOR))
+        self.matchedBraceBackgroundColor.setColor(QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))
+        self.matchedBraceForegroundColor.setColor(QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))
+        self.stderrFontColor.setColor(QColor(self.ERROR_COLOR))
 
     def _resetFontColorEditor(self):
-        self.defaultFontColorEditor.setColor(QColor(Qt.black))
-        self.keywordFontColorEditor.setColor(QColor(Qt.darkGreen))
-        self.classFontColorEditor.setColor(QColor(Qt.blue))
-        self.methodFontColorEditor.setColor(QColor(Qt.darkGray))
-        self.decorFontColorEditor.setColor(QColor(Qt.darkBlue))
-        self.commentFontColorEditor.setColor(QColor(Qt.gray))
-        self.commentBlockFontColorEditor.setColor(QColor(Qt.gray))
-        self.paperBackgroundColorEditor.setColor(QColor(Qt.white))
-        self.cursorColorEditor.setColor(QColor(Qt.black))
-        self.caretLineColorEditor.setColor(QColor("#fcf3ed"))
-        self.singleQuoteFontColorEditor.setColor(QColor(Qt.blue))
-        self.doubleQuoteFontColorEditor.setColor(QColor(Qt.blue))
-        self.tripleSingleQuoteFontColorEditor.setColor(QColor(Qt.blue))
-        self.tripleDoubleQuoteFontColorEditor.setColor(QColor(Qt.blue))
+        self.defaultFontColorEditor.setColor(QColor(self.DEFAULT_COLOR))
+        self.keywordFontColorEditor.setColor(QColor(self.KEYWORD_COLOR))
+        self.classFontColorEditor.setColor(QColor(self.CLASS_COLOR))
+        self.methodFontColorEditor.setColor(QColor(self.METHOD_COLOR))
+        self.decorFontColorEditor.setColor(QColor(self.DECORATION_COLOR))
+        self.numberFontColorEditor.setColor(QColor(self.NUMBER_COLOR))
+        self.commentFontColorEditor.setColor(QColor(self.COMMENT_COLOR))
+        self.commentBlockFontColorEditor.setColor(QColor(self.COMMENT_BLOCK_COLOR))
+        self.paperBackgroundColorEditor.setColor(QColor(self.BACKGROUND_COLOR))
+        self.cursorColorEditor.setColor(QColor(self.CURSOR_COLOR))
+        self.caretLineColorEditor.setColor(QColor(self.CARET_LINE_COLOR))
+        self.singleQuoteFontColorEditor.setColor(QColor(self.SINGLE_QUOTE_COLOR))
+        self.doubleQuoteFontColorEditor.setColor(QColor(self.DOUBLE_QUOTE_COLOR))
+        self.tripleSingleQuoteFontColorEditor.setColor(QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))
+        self.tripleDoubleQuoteFontColorEditor.setColor(QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))
+        self.marginBackgroundColorEditor.setColor(QColor(self.MARGIN_BACKGROUND_COLOR))
+        self.marginForegroundColorEditor.setColor(QColor(self.MARGIN_FOREGROUND_COLOR))
+        self.selectionBackgroundColorEditor.setColor(QColor(self.SELECTION_BACKGROUND_COLOR))
+        self.selectionForegroundColorEditor.setColor(QColor(self.SELECTION_FOREGROUND_COLOR))
+        self.matchedBraceBackgroundColorEditor.setColor(QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))
+        self.matchedBraceForegroundColorEditor.setColor(QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))
+        self.edgeColorEditor.setColor(QColor(self.EDGE_COLOR))
+        self.foldColorEditor.setColor(QColor(self.FOLD_COLOR))
 
     def reject(self):
         self.restoreSettings()

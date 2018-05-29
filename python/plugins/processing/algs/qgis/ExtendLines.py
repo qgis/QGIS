@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterNumber,
+from qgis.core import (QgsProcessingParameterDistance,
                        QgsProcessingException,
                        QgsProcessing)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -48,10 +48,10 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
         self.end_distance = None
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.START_DISTANCE,
-                                                       self.tr('Start distance'), type=QgsProcessingParameterNumber.Double, defaultValue=0.0))
-        self.addParameter(QgsProcessingParameterNumber(self.END_DISTANCE,
-                                                       self.tr('End distance'), type=QgsProcessingParameterNumber.Double, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterDistance(self.START_DISTANCE,
+                                                         self.tr('Start distance'), defaultValue=0.0, parentParameterName='INPUT'))
+        self.addParameter(QgsProcessingParameterDistance(self.END_DISTANCE,
+                                                         self.tr('End distance'), defaultValue=0.0, parentParameterName='INPUT'))
 
     def name(self):
         return 'extendlines'
@@ -80,4 +80,4 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(output_geometry)
 
-        return feature
+        return [feature]

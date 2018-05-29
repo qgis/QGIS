@@ -57,6 +57,7 @@ class QImage;
 class QPaintDevice;
 class QPainter;
 class QStandardItem;
+class QgsLayerTreeGroup;
 
 /**
  * This class handles requestsi that share rendering:
@@ -135,6 +136,8 @@ namespace QgsWms
 
       // Init a map with nickname for layers' project
       void initNicknameLayers();
+
+      void initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName );
 
       // Return the nickname of the layer (short name, id or name according to
       // the project configuration)
@@ -297,14 +300,15 @@ namespace QgsWms
       QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QMap<QString, QList<QgsMapLayer *> > mLayerGroups;
       QList<QgsMapLayer *> mTemporaryLayers;
 
     public:
 
-      //! Return the image quality to use for getMap request
+      //! Returns the image quality to use for getMap request
       int getImageQuality() const;
 
-      //! Return precision to use for GetFeatureInfo request
+      //! Returns the precision to use for GetFeatureInfo request
       int getWMSPrecision() const;
 
   };

@@ -30,6 +30,8 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsDateTimeStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsApplication,
+                       QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
                        QgsFields,
@@ -39,6 +41,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingFeatureSource,
                        NULL)
 from qgis.PyQt.QtCore import QVariant
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -57,6 +60,16 @@ class StatisticsByCategories(QgisAlgorithm):
 
     def groupId(self):
         return 'vectoranalysis'
+
+    def tags(self):
+        return self.tr('groups,stats,statistics,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct,summarygit di').split(',')
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def __init__(self):
         super().__init__()
@@ -84,6 +97,9 @@ class StatisticsByCategories(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         value_field_name = self.parameterAsString(parameters, self.VALUES_FIELD_NAME, context)
         category_field_names = self.parameterAsFields(parameters, self.CATEGORIES_FIELD_NAME, context)
 
@@ -155,7 +171,7 @@ class StatisticsByCategories(QgisAlgorithm):
             attrs = []
         attrs.extend(category_field_indexes)
         request.setSubsetOfAttributes(attrs)
-        features = source.getFeatures(request)
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         total = 50.0 / source.featureCount() if source.featureCount() else 0
         if field_type == 'none':
             values = defaultdict(lambda: 0)
@@ -189,6 +205,8 @@ class StatisticsByCategories(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         if field_type == 'none':
             self.saveCounts(values, sink, feedback)

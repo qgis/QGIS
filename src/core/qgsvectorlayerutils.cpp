@@ -13,12 +13,129 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QRegularExpression>
+
+#include "qgsexpressioncontext.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
-#include <QRegularExpression>
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgslogger.h"
+#include "qgsfeedback.h"
+
+QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
+{
+  std::unique_ptr<QgsExpression> expression;
+  QgsExpressionContext context;
+
+  int attrNum = layer->fields().lookupField( fieldOrExpression );
+  if ( attrNum == -1 )
+  {
+    // try to use expression
+    expression.reset( new QgsExpression( fieldOrExpression ) );
+    context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+
+    if ( expression->hasParserError() || !expression->prepare( &context ) )
+    {
+      ok = false;
+      return QgsFeatureIterator();
+    }
+  }
+
+  QSet<QString> lst;
+  if ( !expression )
+    lst.insert( fieldOrExpression );
+  else
+    lst = expression->referencedColumns();
+
+  QgsFeatureRequest request = QgsFeatureRequest()
+                              .setFlags( ( expression && expression->needsGeometry() ) ?
+                                         QgsFeatureRequest::NoFlags :
+                                         QgsFeatureRequest::NoGeometry )
+                              .setSubsetOfAttributes( lst, layer->fields() );
+
+  ok = true;
+  if ( !selectedOnly )
+  {
+    return layer->getFeatures( request );
+  }
+  else
+  {
+    return layer->getSelectedFeatures( request );
+  }
+}
+
+QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, QgsFeedback *feedback )
+{
+  QList<QVariant> values;
+  QgsFeatureIterator fit = getValuesIterator( layer, fieldOrExpression, ok, selectedOnly );
+  if ( ok )
+  {
+    std::unique_ptr<QgsExpression> expression;
+    QgsExpressionContext context;
+
+    int attrNum = layer->fields().lookupField( fieldOrExpression );
+    if ( attrNum == -1 )
+    {
+      // use expression, already validated in the getValuesIterator() function
+      expression.reset( new QgsExpression( fieldOrExpression ) );
+      context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    }
+
+    QgsFeature f;
+    while ( fit.nextFeature( f ) )
+    {
+      if ( expression )
+      {
+        context.setFeature( f );
+        QVariant v = expression->evaluate( &context );
+        values << v;
+      }
+      else
+      {
+        values << f.attribute( attrNum );
+      }
+      if ( feedback && feedback->isCanceled() )
+      {
+        ok = false;
+        return values;
+      }
+    }
+  }
+  return values;
+}
+
+QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, int *nullCount, QgsFeedback *feedback )
+{
+  QList<double> values;
+
+  if ( nullCount )
+    *nullCount = 0;
+
+  QList<QVariant> variantValues = getValues( layer, fieldOrExpression, ok, selectedOnly, feedback );
+  if ( !ok )
+    return values;
+
+  bool convertOk;
+  Q_FOREACH ( const QVariant &value, variantValues )
+  {
+    double val = value.toDouble( &convertOk );
+    if ( convertOk )
+      values << val;
+    else if ( value.isNull() )
+    {
+      if ( nullCount )
+        *nullCount += 1;
+    }
+    if ( feedback && feedback->isCanceled() )
+    {
+      ok = false;
+      return values;
+    }
+  }
+  return values;
+}
 
 bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds )
 {
@@ -362,7 +479,8 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
         //set childlayer editable
         relation.referencingLayer()->startEditing();
         //change the fk of the child to the id of the new parent
-        for ( const QgsRelation::FieldPair &fieldPair : relation.fieldPairs() )
+        const auto pairs = relation.fieldPairs();
+        for ( const QgsRelation::FieldPair &fieldPair : pairs )
         {
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
@@ -394,7 +512,7 @@ QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeature
   return mDuplicatedFeatures[layer];
 }
 
-void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids )
+void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
   mDuplicatedFeatures.insert( layer, ids );
 }

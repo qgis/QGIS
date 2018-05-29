@@ -39,8 +39,12 @@ class QgsBox3d;
 class CORE_EXPORT QgsRectangle
 {
   public:
+
+    //! Constructor for a null rectangle
+    QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
+
     //! Constructor
-    QgsRectangle( double xMin = 0, double yMin = 0, double xMax = 0, double yMax = 0 );
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
@@ -146,17 +150,17 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns the area of the rectangle.
-     * \since QGIS 3.0
      * \see width()
      * \see height()
      * \see perimeter()
+     * \since QGIS 3.0
      */
     double area() const { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
 
     /**
      * Returns the perimeter of the rectangle.
-     * \since QGIS 3.0
      * \see area()
+     * \since QGIS 3.0
      */
     double perimeter() const { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
 
@@ -187,15 +191,15 @@ class CORE_EXPORT QgsRectangle
     void include( const QgsPointXY &p );
 
     /**
-     * Get rectangle enlarged by buffer.
+     * Gets rectangle enlarged by buffer.
      * \note In earlier QGIS releases this method was named buffer().
-     * \since QGIS 3.0
      * \see grow()
+     * \since QGIS 3.0
     */
     QgsRectangle buffered( double width ) const;
 
     /**
-     * Return the intersection with the given rectangle.
+     * Returns the intersection with the given rectangle.
      */
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 
@@ -205,12 +209,12 @@ class CORE_EXPORT QgsRectangle
     bool intersects( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains other rectangle.
+     * Returns true when rectangle contains other rectangle.
      */
     bool contains( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains a point.
+     * Returns true when rectangle contains a point.
      */
     bool contains( const QgsPointXY &p ) const;
 
@@ -332,10 +336,10 @@ class CORE_EXPORT QgsRectangle
 
   private:
 
-    double mXmin;
-    double mYmin;
-    double mXmax;
-    double mYmax;
+    double mXmin = 0.0;
+    double mYmin = 0.0;
+    double mXmax = 0.0;
+    double mYmax = 0.0;
 
 };
 

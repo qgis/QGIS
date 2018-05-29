@@ -79,6 +79,9 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, inputWkb):
         return QgsWkbTypes.addZ(inputWkb)
 
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
     def prepareAlgorithm(self, parameters, context, feedback):
         self.z_value = self.parameterAsDouble(parameters, self.Z_VALUE, context)
         self.dynamic_z = QgsProcessingParameters.isDynamic(parameters, self.Z_VALUE)
@@ -101,4 +104,4 @@ class SetZValue(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return feature
+        return [feature]

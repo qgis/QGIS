@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SpatialJoin.py
+    SpatialJoinSummary.py
     ---------------------
     Date                 : September 2017
     Copyright            : (C) 2017 by Nyall Dawson
@@ -32,6 +32,7 @@ from collections import defaultdict
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (NULL,
+                       QgsApplication,
                        QgsField,
                        QgsFields,
                        QgsFeatureSink,
@@ -43,6 +44,7 @@ from qgis.core import (NULL,
                        QgsStringStatisticalSummary,
                        QgsProcessing,
                        QgsProcessingUtils,
+                       QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
@@ -64,9 +66,6 @@ class SpatialJoinSummary(QgisAlgorithm):
     DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
     OUTPUT = "OUTPUT"
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'join_location.png'))
-
     def group(self):
         return self.tr('Vector general')
 
@@ -75,6 +74,12 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def initAlgorithm(self, config=None):
         self.predicates = (
@@ -146,12 +151,19 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def tags(self):
         return self.tr(
-            "summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial").split(
-            ',')
+            "summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial,"
+            "stats,statistics,sum,maximum,minimum,mean,average,standard,deviation,"
+            "count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct").split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         join_source = self.parameterAsSource(parameters, self.JOIN, context)
+        if join_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.JOIN))
+
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
         summaries = [self.statistics[i][0] for i in
@@ -254,6 +266,8 @@ class SpatialJoinSummary(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                out_fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # do the join
         predicates = [self.predicates[i][0] for i in self.parameterAsEnums(parameters, self.PREDICATE, context)]
@@ -270,6 +284,13 @@ class SpatialJoinSummary(QgisAlgorithm):
 
             if not f.hasGeometry():
                 if not discard_nomatch:
+                    # ensure consistent count of attributes - otherwise non matching
+                    # features will have incorrect attribute length
+                    # and provider may reject them
+                    attrs = f.attributes()
+                    if len(attrs) < len(out_fields):
+                        attrs += [NULL] * (len(out_fields) - len(attrs))
+                    f.setAttributes(attrs)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                 continue
 
@@ -302,6 +323,13 @@ class SpatialJoinSummary(QgisAlgorithm):
                 if discard_nomatch:
                     continue
                 else:
+                    # ensure consistent count of attributes - otherwise non matching
+                    # features will have incorrect attribute length
+                    # and provider may reject them
+                    attrs = f.attributes()
+                    if len(attrs) < len(out_fields):
+                        attrs += [NULL] * (len(out_fields) - len(attrs))
+                    f.setAttributes(attrs)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
                 attrs = f.attributes()

@@ -29,10 +29,10 @@ import plotly as plt
 import plotly.graph_objs as go
 import numpy as np
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -62,7 +62,6 @@ class PolarPlot(QgisAlgorithm):
                                                       self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Polar plot')))
 
     def name(self):
         return 'polarplot'
@@ -72,6 +71,9 @@ class PolarPlot(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)  # NOQA  FIXME unused?
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
 

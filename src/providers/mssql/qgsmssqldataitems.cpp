@@ -339,7 +339,7 @@ QList<QAction *> QgsMssqlConnectionItem::actions( QWidget *parent )
   connect( actionShowNoGeom, &QAction::toggled, this, &QgsMssqlConnectionItem::setAllowGeometrylessTables );
   lst.append( actionShowNoGeom );
 
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsMssqlConnectionItem::editConnection );
   lst.append( actionEdit );
 
@@ -505,7 +505,7 @@ QString QgsMssqlLayerItem::createUri()
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mIconName = QStringLiteral( "mIconDbSchema.png" );
+  mIconName = QStringLiteral( "mIconDbSchema.svg" );
   //not fertile, since children are created by QgsMssqlConnectionItem
   mCapabilities &= ~( Fertile );
 }
@@ -608,7 +608,7 @@ QList<QAction *> QgsMssqlRootItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsMssqlRootItem::newConnection );
   lst.append( actionNew );
 

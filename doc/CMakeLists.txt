@@ -15,7 +15,8 @@ IF(TXT2TAGS_EXECUTABLE)
   IF(WITH_TXT2TAGS_PDF)
     ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t news.t2t)
   ENDIF(WITH_TXT2TAGS_PDF)
-  ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES})
+  FILE(GLOB t2tfiles doc/*.t2t)
+  ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES} ${t2tfiles})
 ELSE(TXT2TAGS_EXECUTABLE)
   SET(QGIS_DOC_FILES
     ${CMAKE_SOURCE_DIR}/INSTALL
@@ -56,10 +57,10 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
-      ${CMAKE_SOURCE_DIR}/src/core/composer
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects
+      ${CMAKE_SOURCE_DIR}/src/core/expression
       ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
       ${CMAKE_SOURCE_DIR}/src/core/geometry
       ${CMAKE_SOURCE_DIR}/src/core/geocms
@@ -69,6 +70,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/layout
       ${CMAKE_SOURCE_DIR}/src/core/locator
       ${CMAKE_SOURCE_DIR}/src/core/metadata
+      ${CMAKE_SOURCE_DIR}/src/core/mesh
       ${CMAKE_SOURCE_DIR}/src/core/pal
       ${CMAKE_SOURCE_DIR}/src/core/processing
       ${CMAKE_SOURCE_DIR}/src/core/providers
@@ -84,6 +86,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/gui/effects
       ${CMAKE_SOURCE_DIR}/src/gui/layertree
       ${CMAKE_SOURCE_DIR}/src/gui/locator
+      ${CMAKE_SOURCE_DIR}/src/gui/processing
       ${CMAKE_SOURCE_DIR}/src/gui/raster
       ${CMAKE_SOURCE_DIR}/src/gui/symbology
       ${CMAKE_SOURCE_DIR}/src/analysis
@@ -97,6 +100,8 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/3d/symbols
       ${CMAKE_SOURCE_DIR}/src/3d/terrain
       ${CMAKE_SOURCE_DIR}/src/plugins
+      ${CMAKE_SOURCE_DIR}/src/quickgui
+      ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
     IF(WITH_SERVER_PLUGINS)

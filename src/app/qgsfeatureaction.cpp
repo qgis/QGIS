@@ -62,6 +62,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
@@ -80,6 +81,9 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     Q_FOREACH ( const QgsAction &action, actions )
     {
       if ( !action.runable() )
+        continue;
+
+      if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );

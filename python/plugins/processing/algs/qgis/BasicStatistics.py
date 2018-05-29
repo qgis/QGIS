@@ -31,15 +31,17 @@ import codecs
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsStatisticalSummary,
+from qgis.core import (QgsApplication,
+                       QgsStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsDateTimeStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
-                       QgsProcessingOutputNumber)
+                       QgsProcessingOutputNumber,
+                       QgsProcessingFeatureSource)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -74,11 +76,14 @@ class BasicStatisticsForField(QgisAlgorithm):
     IQR = 'IQR'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def tags(self):
-        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,maximum,minimum,mean,average,standard,deviation,'
-                       'count,distinct,unique,variance,median,quartile,range,majority,minority').split(',')
+        return self.tr('stats,statistics,date,time,datetime,string,number,text,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority,summary').split(',')
 
     def group(self):
         return self.tr('Vector analysis')
@@ -98,7 +103,6 @@ class BasicStatisticsForField(QgisAlgorithm):
                                                       None, self.INPUT_LAYER, QgsProcessingParameterField.Any))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 
         self.addOutput(QgsProcessingOutputNumber(self.COUNT, self.tr('Count')))
         self.addOutput(QgsProcessingOutputNumber(self.UNIQUE, self.tr('Number of unique values')))
@@ -129,13 +133,16 @@ class BasicStatisticsForField(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
+
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field = source.fields().at(source.fields().lookupField(field_name))
 
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes([field_name], source.fields())
-        features = source.getFeatures(request)
+        features = source.getFeatures(request, QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         count = source.featureCount()
 
         data = []

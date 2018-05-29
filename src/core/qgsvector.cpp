@@ -99,6 +99,11 @@ double QgsVector::angle( QgsVector v ) const
   return v.angle() - angle();
 }
 
+double QgsVector::crossProduct( QgsVector v ) const
+{
+  return mX * v.y() - mY * v.x();
+}
+
 QgsVector QgsVector::rotateBy( double rot ) const
 {
   double angle = std::atan2( mY, mX ) + rot;

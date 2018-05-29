@@ -18,15 +18,18 @@
 #ifndef QGSLOCATOR_H
 #define QGSLOCATOR_H
 
+#include <QObject>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QMap>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslocatorfilter.h"
 #include "qgsfeedback.h"
 #include "qgslocatorcontext.h"
-#include <QObject>
-#include <QFuture>
-#include <QFutureWatcher>
-#include <memory>
+
 
 /**
  * \class QgsLocator
@@ -56,6 +59,9 @@ class CORE_EXPORT QgsLocator : public QObject
     Q_OBJECT
 
   public:
+
+    //! List of core filters (i.e. not plugin filters)
+    static const QList<QString> CORE_FILTERS;
 
     /**
      * Constructor for QgsLocator.
@@ -89,16 +95,18 @@ class CORE_EXPORT QgsLocator : public QObject
 
     /**
      * Returns the list of filters registered in the locator.
+     * \param prefix If prefix is not empty, the list returned corresponds to the filter with the given active prefix
      * \see prefixedFilters()
      */
-    QList< QgsLocatorFilter *> filters();
+    QList< QgsLocatorFilter *> filters( const QString &prefix = QString() );
 
     /**
      * Returns a map of prefix to filter, for all registered filters
      * with valid prefixes.
      * \see filters()
+     * \deprecated since QGIS 3.2 use filters() instead
      */
-    QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
+    Q_DECL_DEPRECATED QMap<QString, QgsLocatorFilter *> prefixedFilters() const;
 
     /**
      * Triggers the background fetching of filter results for a specified search \a string.
@@ -155,10 +163,7 @@ class CORE_EXPORT QgsLocator : public QObject
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
     QList< QgsLocatorFilter * > mFilters;
-    QList< QgsLocatorFilter * > mActiveFilters;
-    QMap< QString, QgsLocatorFilter *> mPrefixedFilters;
-    QFuture< void > mFuture;
-    QFutureWatcher< void > mFutureWatcher;
+    QList< QThread * > mActiveThreads;
 
     void cancelRunningQuery();
 

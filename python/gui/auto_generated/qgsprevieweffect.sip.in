@@ -1,0 +1,68 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprevieweffect.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsPreviewEffect: QGraphicsEffect
+{
+%Docstring
+A graphics effect which can be applied to a widget to simulate various printing and
+color blindness modes.
+%End
+
+%TypeHeaderCode
+#include "qgsprevieweffect.h"
+%End
+  public:
+    enum PreviewMode
+    {
+      PreviewGrayscale,
+      PreviewMono,
+      PreviewProtanope,
+      PreviewDeuteranope
+    };
+
+    QgsPreviewEffect( QObject *parent /TransferThis/ );
+
+    void setMode( PreviewMode mode );
+%Docstring
+Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+
+:param mode: PreviewMode to use to draw the widget
+
+.. seealso:: :py:func:`mode`
+
+.. versionadded:: 2.3
+%End
+
+    PreviewMode mode() const;
+%Docstring
+Returns the mode used for the preview effect.
+
+:return: PreviewMode currently used by the effect
+
+.. seealso:: :py:func:`setMode`
+
+.. versionadded:: 2.3
+%End
+
+  protected:
+    virtual void draw( QPainter *painter );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsprevieweffect.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

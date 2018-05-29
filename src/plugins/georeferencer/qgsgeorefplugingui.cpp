@@ -34,12 +34,13 @@
 #include "qgisinterface.h"
 #include "qgsapplication.h"
 
-#include "qgscomposition.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposermap.h"
-#include "qgscomposertexttable.h"
-#include "qgscomposertablecolumn.h"
-#include "qgscomposerframe.h"
+#include "qgslayout.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemtexttable.h"
+#include "qgslayouttablecolumn.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutpagecollection.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaptoolzoom.h"
@@ -246,7 +247,7 @@ void QgsGeorefPluginGui::openRaster()
   QString filters = QgsProviderRegistry::instance()->fileRasterFilters();
   filters.prepend( otherFiles + ";;" );
   filters.chop( otherFiles.size() + 2 );
-  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open raster" ), dir, filters, &lastUsedFilter );
+  mRasterFileName = QFileDialog::getOpenFileName( this, tr( "Open Raster" ), dir, filters, &lastUsedFilter );
   mModifiedRasterFileName.clear();
 
   if ( mRasterFileName.isEmpty() )
@@ -255,12 +256,12 @@ void QgsGeorefPluginGui::openRaster()
   QString errMsg;
   if ( !QgsRasterLayer::isValidRasterFileName( mRasterFileName, errMsg ) )
   {
-    QString msg = tr( "%1 is not a supported raster data source" ).arg( mRasterFileName );
+    QString msg = tr( "%1 is not a supported raster data source." ).arg( mRasterFileName );
 
     if ( !errMsg.isEmpty() )
       msg += '\n' + errMsg;
 
-    QMessageBox::information( this, tr( "Unsupported Data Source" ), msg );
+    QMessageBox::information( this, tr( "Open Raster" ), msg );
     return;
   }
 
@@ -305,7 +306,7 @@ void QgsGeorefPluginGui::doGeoreference()
 {
   if ( georeference() )
   {
-    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), QgsMessageBar::INFO, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Georeference Successful" ), tr( "Raster was successfully georeferenced." ), Qgis::Info, messageTimeout() );
     if ( mLoadInQgis )
     {
       if ( mModifiedRasterFileName.isEmpty() )
@@ -398,7 +399,7 @@ void QgsGeorefPluginGui::generateGDALScript()
     default:
       mMessageBar->pushMessage( tr( "Invalid Transform" ), tr( "GDAL scripting is not supported for %1 transformation." )
                                 .arg( convertTransformEnumToString( mTransformParam ) )
-                                , QgsMessageBar::WARNING, messageTimeout() );
+                                , Qgis::Warning, messageTimeout() );
   }
 }
 
@@ -593,18 +594,18 @@ void QgsGeorefPluginGui::showCoordDialog( const QgsPointXY &pixelCoords )
 void QgsGeorefPluginGui::loadGCPsDialog()
 {
   QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
-  mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP points" ),
+  mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP Points" ),
                        selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
   if ( !loadGCPs() )
   {
-    mMessageBar->pushMessage( tr( "Invalid GCP file" ), tr( "GCP file could not be read." ), QgsMessageBar::WARNING, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "Invalid GCP file. File could not be read." ), Qgis::Warning, messageTimeout() );
   }
   else
   {
-    mMessageBar->pushMessage( tr( "GCPs loaded" ), tr( "GCP file successfully loaded." ), QgsMessageBar::INFO, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Load GCP Points" ), tr( "GCP file successfully loaded." ), Qgis::Info, messageTimeout() );
   }
 }
 
@@ -612,12 +613,12 @@ void QgsGeorefPluginGui::saveGCPsDialog()
 {
   if ( mPoints.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "No GCP Points" ), tr( "No GCP points are available to save." ), QgsMessageBar::WARNING, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Save GCP Points" ), tr( "No GCP points are available to save." ), Qgis::Warning, messageTimeout() );
     return;
   }
 
   QString selectedFile = mRasterFileName.isEmpty() ? QLatin1String( "" ) : mRasterFileName + ".points";
-  mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP points" ),
+  mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP Points" ),
                        selectedFile,
                        tr( "GCP file" ) + " (*.points)" );
 
@@ -639,7 +640,7 @@ void QgsGeorefPluginGui::showRasterPropertiesDialog()
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), QgsMessageBar::INFO, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Raster Properties" ), tr( "Please load raster to be georeferenced." ), Qgis::Info, messageTimeout() );
   }
 }
 
@@ -687,10 +688,9 @@ void QgsGeorefPluginGui::localHistogramStretch()
 }
 
 // Info slots
-void QgsGeorefPluginGui::contextHelp()
+void QgsGeorefPluginGui::showHelp()
 {
-  QgsGeorefDescriptionDialog dlg( this );
-  dlg.exec();
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins_georeferencer.html#defining-the-transformation-settings" ) );
 }
 
 // Comfort slots
@@ -913,7 +913,7 @@ void QgsGeorefPluginGui::createActions()
 
   // Help actions
   mActionHelp = new QAction( tr( "Help" ), this );
-  connect( mActionHelp, &QAction::triggered, this, &QgsGeorefPluginGui::contextHelp );
+  connect( mActionHelp, &QAction::triggered, this, &QgsGeorefPluginGui::showHelp );
 
   mActionQuit->setIcon( getThemeIcon( QStringLiteral( "/mActionQuit.png" ) ) );
   mActionQuit->setShortcuts( QList<QKeySequence>() << QKeySequence( Qt::CTRL + Qt::Key_Q )
@@ -1020,12 +1020,10 @@ void QgsGeorefPluginGui::createMenus()
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
 
-  QgsSettings s;
-  int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
-  toolBarFile->setIconSize( QSize( size, size ) );
-  toolBarEdit->setIconSize( QSize( size, size ) );
-  toolBarView->setIconSize( QSize( size, size ) );
-  toolBarHistogramStretch->setIconSize( QSize( size, size ) );
+  toolBarFile->setIconSize( mIface->iconSize() );
+  toolBarEdit->setIconSize( mIface->iconSize() );
+  toolBarView->setIconSize( mIface->iconSize() );
+  toolBarHistogramStretch->setIconSize( mIface->iconSize() );
 
   // View menu
   if ( layout != QDialogButtonBox::KdeLayout )
@@ -1297,7 +1295,7 @@ void QgsGeorefPluginGui::saveGCPs()
   }
   else
   {
-    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), QgsMessageBar::WARNING, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Write Error" ), tr( "Could not write to GCP points file %1." ).arg( mGCPpointsFileName ), Qgis::Warning, messageTimeout() );
     return;
   }
 
@@ -1311,7 +1309,7 @@ QgsGeorefPluginGui::SaveGCPs QgsGeorefPluginGui::checkNeedGCPSave()
 
   if ( !equalGCPlists( mInitialPoints, mPoints ) )
   {
-    QMessageBox::StandardButton a = QMessageBox::information( this, tr( "Save GCPs" ),
+    QMessageBox::StandardButton a = QMessageBox::question( this, tr( "Save GCPs" ),
                                     tr( "Save GCP points?" ),
                                     QMessageBox::Save | QMessageBox::Discard
                                     | QMessageBox::Cancel );
@@ -1345,7 +1343,7 @@ bool QgsGeorefPluginGui::georeference()
     double pixelXSize, pixelYSize, rotation;
     if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), QgsMessageBar::WARNING, messageTimeout() );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to calculate linear transform parameters." ), Qgis::Warning, messageTimeout() );
       return false;
     }
 
@@ -1353,7 +1351,7 @@ bool QgsGeorefPluginGui::georeference()
     {
       if ( QFile::exists( mWorldFileName ) )
       {
-        int r = QMessageBox::question( this, tr( "World file exists" ),
+        int r = QMessageBox::question( this, tr( "Georeference" ),
                                        tr( "<p>The selected file already seems to have a "
                                            "world file! Do you want to replace it with the "
                                            "new world file?</p>" ),
@@ -1393,7 +1391,7 @@ bool QgsGeorefPluginGui::georeference()
     if ( res == 0 ) // fault to compute GCP transform
     {
       //TODO: be more specific in the error message
-      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), QgsMessageBar::WARNING, messageTimeout() );
+      mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Warning, messageTimeout() );
       return false;
     }
     else if ( res == -1 ) // operation canceled
@@ -1423,7 +1421,7 @@ bool QgsGeorefPluginGui::writeWorldFile( const QgsPointXY &origin, double pixelX
   QFile file( mWorldFileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
-    mMessageBar->pushMessage( tr( "Error" ), tr( "Could not write to %1." ).arg( mWorldFileName ), QgsMessageBar::CRITICAL, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Save World File" ), tr( "Could not write to %1." ).arg( mWorldFileName ), Qgis::Critical, messageTimeout() );
     return false;
   }
 
@@ -1509,41 +1507,42 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeor
   }
   double mapRatio = rlayer->extent().width() / rlayer->extent().height();
 
-  QPrinter printer;
-  printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( fileName );
-
   QgsSettings s;
   double paperWidth = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), "297" ).toDouble();
   double paperHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
 
-  //create composition
-  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
-  if ( mapRatio >= 1 )
-  {
-    composition->setPaperSize( paperHeight, paperWidth );
-  }
-  else
-  {
-    composition->setPaperSize( paperWidth, paperHeight );
-  }
-  composition->setPrintResolution( 300 );
-  printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
+  //create layout
+  QgsLayout layout( QgsProject::instance() );
+  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
 
   double leftMargin = 8;
   double topMargin = 8;
-  double contentWidth = composition->paperWidth() - 2 * leftMargin;
-  double contentHeight = composition->paperHeight() - 2 * topMargin;
+  double contentWidth = 0.0;
+  double contentHeight = 0.0;
 
-  //composer map
-  QgsComposerMap *composerMap = new QgsComposerMap( composition, leftMargin, topMargin, contentWidth, contentHeight );
-  composerMap->setKeepLayerSet( true );
+  if ( mapRatio >= 1 )
+  {
+    page->setPageSize( QgsLayoutSize( paperHeight, paperWidth ) );
+    contentWidth = paperHeight - 2 * leftMargin;
+    contentHeight = paperWidth - 2 * topMargin;
+  }
+  else
+  {
+    page->setPageSize( QgsLayoutSize( paperWidth, paperHeight ) );
+    contentWidth = paperWidth - 2 * leftMargin;
+    contentHeight = paperHeight - 2 * topMargin;
+  }
+  layout.pageCollection()->addPage( page.release() );
+
+  //layout map
+  QgsLayoutItemMap *layoutMap = new QgsLayoutItemMap( &layout );
+  layoutMap->attemptSetSceneRect( QRectF( leftMargin, topMargin, contentWidth, contentHeight ) );
+  layoutMap->setKeepLayerSet( true );
   QgsMapLayer *firstLayer = mCanvas->mapSettings().layers()[0];
-  composerMap->setLayers( QList<QgsMapLayer *>() << firstLayer );
-  composerMap->zoomToExtent( rlayer->extent() );
-  composition->addItem( composerMap );
-  printer.setFullPage( true );
-  printer.setColorMode( QPrinter::Color );
+  layoutMap->setLayers( QList<QgsMapLayer *>() << firstLayer );
+  layoutMap->setCrs( rlayer->crs() );
+  layoutMap->zoomToExtent( rlayer->extent() );
+  layout.addLayoutItem( layoutMap );
 
   QString residualUnits;
   if ( s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/ResidualUnits" ) ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
@@ -1556,23 +1555,17 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeor
   }
 
   //residual plot
-  QgsResidualPlotItem *resPlotItem = new QgsResidualPlotItem( composition );
-  composition->addItem( resPlotItem );
-  resPlotItem->setSceneRect( QRectF( leftMargin, topMargin, contentWidth, contentHeight ) );
-  resPlotItem->setExtent( composerMap->extent() );
+  QgsResidualPlotItem *resPlotItem = new QgsResidualPlotItem( &layout );
+  layout.addLayoutItem( resPlotItem );
+  resPlotItem->attemptSetSceneRect( QRectF( leftMargin, topMargin, contentWidth, contentHeight ) );
+  resPlotItem->setExtent( layoutMap->extent() );
   resPlotItem->setGCPList( mPoints );
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
-  printer.setResolution( composition->printResolution() );
-  QPainter p( &printer );
-  composition->setPlotStyle( QgsComposition::Print );
-  QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
-  QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
-  composition->render( &p, paperRectPixel, paperRectMM );
-
-  delete resPlotItem;
-  delete composerMap;
-  delete composition;
+  QgsLayoutExporter exporter( &layout );
+  QgsLayoutExporter::PdfExportSettings settings;
+  settings.dpi = 300;
+  exporter.exportToPdf( fileName, settings );
 
   return true;
 }
@@ -1584,11 +1577,15 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
     return false;
   }
 
-  //create composition A4 with 300 dpi
-  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
-  composition->setPaperSize( 210, 297 ); //A4
-  composition->setPrintResolution( 300 );
-  composition->setNumPages( 2 );
+  //create layout A4 with 300 dpi
+  QgsLayout layout( QgsProject::instance() );
+
+  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
+  page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
+  layout.pageCollection()->addPage( page.release() );
+  std::unique_ptr< QgsLayoutItemPage > page2 = qgis::make_unique< QgsLayoutItemPage >( &layout );
+  page2->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4
+  layout.pageCollection()->addPage( page2.release() );
 
   QFont titleFont;
   titleFont.setPointSize( 9 );
@@ -1606,14 +1603,14 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
 
   //title
   QFileInfo rasterFi( mRasterFileName );
-  QgsComposerLabel *titleLabel = new QgsComposerLabel( composition );
+  QgsLayoutItemLabel *titleLabel = new QgsLayoutItemLabel( &layout );
   titleLabel->setFont( titleFont );
   titleLabel->setText( rasterFi.fileName() );
-  composition->addItem( titleLabel );
-  titleLabel->setSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
+  layout.addLayoutItem( titleLabel );
+  titleLabel->attemptSetSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
   titleLabel->setFrameEnabled( false );
 
-  //composer map
+  //layout map
   QgsRasterLayer *rLayer = ( QgsRasterLayer * ) mCanvas->layer( 0 );
   if ( !rLayer )
   {
@@ -1636,16 +1633,18 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
     mapWidthMM = 70 / layerExtent.height() * layerExtent.width();
   }
 
-  QgsComposerMap *composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM );
-  composerMap->setLayers( mCanvas->mapSettings().layers() );
-  composerMap->zoomToExtent( layerExtent );
-  composition->addItem( composerMap );
+  QgsLayoutItemMap *layoutMap = new QgsLayoutItemMap( &layout );
+  layoutMap->attemptSetSceneRect( QRectF( leftMargin, titleLabel->rect().bottom() + titleLabel->pos().y(), mapWidthMM, mapHeightMM ) );
+  layoutMap->setLayers( mCanvas->mapSettings().layers() );
+  layoutMap->setCrs( rLayer->crs() );
+  layoutMap->zoomToExtent( layerExtent );
+  layout.addLayoutItem( layoutMap );
 
-  QgsComposerTextTableV2 *parameterTable = nullptr;
+  QgsLayoutItemTextTable *parameterTable = nullptr;
   double scaleX, scaleY, rotation;
   QgsPointXY origin;
 
-  QgsComposerLabel *parameterLabel = nullptr;
+  QgsLayoutItemLabel *parameterLabel = nullptr;
   //transformation that involves only scaling and rotation (linear or helmert) ?
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 
@@ -1659,84 +1658,84 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
     residualUnits = tr( "pixels" );
   }
 
-  QGraphicsRectItem *previousItem = composerMap;
+  QGraphicsRectItem *previousItem = layoutMap;
   if ( wldTransform )
   {
     QString parameterTitle = tr( "Transformation parameters" ) + QStringLiteral( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QStringLiteral( ")" );
-    parameterLabel = new QgsComposerLabel( composition );
+    parameterLabel = new QgsLayoutItemLabel( &layout );
     parameterLabel->setFont( titleFont );
     parameterLabel->setText( parameterTitle );
     parameterLabel->adjustSizeToText();
-    composition->addItem( parameterLabel );
-    parameterLabel->setSceneRect( QRectF( leftMargin, composerMap->rect().bottom() + composerMap->pos().y() + 5, contentWidth, 8 ) );
+    layout.addLayoutItem( parameterLabel );
+    parameterLabel->attemptSetSceneRect( QRectF( leftMargin, layoutMap->rect().bottom() + layoutMap->pos().y() + 5, contentWidth, 8 ) );
     parameterLabel->setFrameEnabled( false );
 
     //calculate mean error
     double meanError = 0;
     calculateMeanError( meanError );
 
-    parameterTable = new QgsComposerTextTableV2( composition, false );
+    parameterTable = new QgsLayoutItemTextTable( &layout );
     parameterTable->setHeaderFont( tableHeaderFont );
     parameterTable->setContentFont( tableContentFont );
 
-    QgsComposerTableColumns columns;
-    columns << new QgsComposerTableColumn( tr( "Translation x" ) )
-            << new QgsComposerTableColumn( tr( "Translation y" ) )
-            << new QgsComposerTableColumn( tr( "Scale x" ) )
-            << new QgsComposerTableColumn( tr( "Scale y" ) )
-            << new QgsComposerTableColumn( tr( "Rotation [degrees]" ) )
-            << new QgsComposerTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
+    QgsLayoutTableColumns columns;
+    columns << new QgsLayoutTableColumn( tr( "Translation x" ) )
+            << new QgsLayoutTableColumn( tr( "Translation y" ) )
+            << new QgsLayoutTableColumn( tr( "Scale x" ) )
+            << new QgsLayoutTableColumn( tr( "Scale y" ) )
+            << new QgsLayoutTableColumn( tr( "Rotation [degrees]" ) )
+            << new QgsLayoutTableColumn( tr( "Mean error [%1]" ).arg( residualUnits ) );
 
     parameterTable->setColumns( columns );
     QStringList row;
     row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
     parameterTable->addRow( row );
 
-    QgsComposerFrame *tableFrame = new QgsComposerFrame( composition, parameterTable, leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 );
+    QgsLayoutFrame *tableFrame = new QgsLayoutFrame( &layout, parameterTable );
+    tableFrame->attemptSetSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->pos().y() + 5, contentWidth, 12 ) );
     parameterTable->addFrame( tableFrame );
 
-    composition->addItem( tableFrame );
     parameterTable->setGridStrokeWidth( 0.1 );
 
     previousItem = tableFrame;
   }
 
-  QgsComposerLabel *residualLabel = new QgsComposerLabel( composition );
+  QgsLayoutItemLabel *residualLabel = new QgsLayoutItemLabel( &layout );
   residualLabel->setFont( titleFont );
   residualLabel->setText( tr( "Residuals" ) );
-  composition->addItem( residualLabel );
-  residualLabel->setSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->pos().y() + 5, contentWidth, 6 ) );
+  layout.addLayoutItem( residualLabel );
+  residualLabel->attemptSetSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->pos().y() + 5, contentWidth, 6 ) );
   residualLabel->setFrameEnabled( false );
 
   //residual plot
-  QgsResidualPlotItem *resPlotItem = new QgsResidualPlotItem( composition );
-  composition->addItem( resPlotItem );
-  resPlotItem->setSceneRect( QRectF( leftMargin, residualLabel->rect().bottom() + residualLabel->pos().y() + 5, contentWidth, composerMap->rect().height() ) );
-  resPlotItem->setExtent( composerMap->extent() );
+  QgsResidualPlotItem *resPlotItem = new QgsResidualPlotItem( &layout );
+  layout.addLayoutItem( resPlotItem );
+  resPlotItem->attemptSetSceneRect( QRectF( leftMargin, residualLabel->rect().bottom() + residualLabel->pos().y() + 5, contentWidth, layoutMap->rect().height() ) );
+  resPlotItem->setExtent( layoutMap->extent() );
   resPlotItem->setGCPList( mPoints );
 
   //necessary for the correct scale bar unit label
   resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
-  QgsComposerTextTableV2 *gcpTable = new QgsComposerTextTableV2( composition, false );
+  QgsLayoutItemTextTable *gcpTable = new QgsLayoutItemTextTable( &layout );
   gcpTable->setHeaderFont( tableHeaderFont );
   gcpTable->setContentFont( tableContentFont );
-  gcpTable->setHeaderMode( QgsComposerTableV2::AllFrames );
-  QgsComposerTableColumns columns;
-  columns << new QgsComposerTableColumn( tr( "ID" ) )
-          << new QgsComposerTableColumn( tr( "Enabled" ) )
-          << new QgsComposerTableColumn( tr( "Pixel X" ) )
-          << new QgsComposerTableColumn( tr( "Pixel Y" ) )
-          << new QgsComposerTableColumn( tr( "Map X" ) )
-          << new QgsComposerTableColumn( tr( "Map Y" ) )
-          << new QgsComposerTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
-          << new QgsComposerTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
-          << new QgsComposerTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
+  gcpTable->setHeaderMode( QgsLayoutTable::AllFrames );
+  QgsLayoutTableColumns columns;
+  columns << new QgsLayoutTableColumn( tr( "ID" ) )
+          << new QgsLayoutTableColumn( tr( "Enabled" ) )
+          << new QgsLayoutTableColumn( tr( "Pixel X" ) )
+          << new QgsLayoutTableColumn( tr( "Pixel Y" ) )
+          << new QgsLayoutTableColumn( tr( "Map X" ) )
+          << new QgsLayoutTableColumn( tr( "Map Y" ) )
+          << new QgsLayoutTableColumn( tr( "Res X (%1)" ).arg( residualUnits ) )
+          << new QgsLayoutTableColumn( tr( "Res Y (%1)" ).arg( residualUnits ) )
+          << new QgsLayoutTableColumn( tr( "Res Total (%1)" ).arg( residualUnits ) );
 
   gcpTable->setColumns( columns );
 
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
-  QList< QStringList > gcpTableContents;
+  QVector< QStringList > gcpTableContents;
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
   {
     QStringList currentGCPStrings;
@@ -1761,27 +1760,24 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
 
   double firstFrameY = resPlotItem->rect().bottom() + resPlotItem->pos().y() + 5;
   double firstFrameHeight = 287 - firstFrameY;
-  QgsComposerFrame *gcpFirstFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, firstFrameY, contentWidth, firstFrameHeight );
+  QgsLayoutFrame *gcpFirstFrame = new QgsLayoutFrame( &layout, gcpTable );
+  gcpFirstFrame->attemptSetSceneRect( QRectF( leftMargin, firstFrameY, contentWidth, firstFrameHeight ) );
   gcpTable->addFrame( gcpFirstFrame );
-  composition->addItem( gcpFirstFrame );
 
-  QgsComposerFrame *gcpSecondFrame = new QgsComposerFrame( composition, gcpTable, leftMargin, 10, contentWidth, 277.0 );
-  gcpSecondFrame->setItemPosition( leftMargin, 10, QgsComposerItem::UpperLeft, 2 );
+  QgsLayoutFrame *gcpSecondFrame = new QgsLayoutFrame( &layout, gcpTable );
+  gcpSecondFrame->attemptSetSceneRect( QRectF( leftMargin, 10, contentWidth, 277.0 ) );
+  gcpSecondFrame->attemptMove( QgsLayoutPoint( leftMargin, 10 ), true, false, 1 );
   gcpSecondFrame->setHidePageIfEmpty( true );
   gcpTable->addFrame( gcpSecondFrame );
-  composition->addItem( gcpSecondFrame );
 
   gcpTable->setGridStrokeWidth( 0.1 );
-  gcpTable->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
+  gcpTable->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
 
-  composition->exportAsPDF( fileName );
+  QgsLayoutExporter exporter( &layout );
+  QgsLayoutExporter::PdfExportSettings settings;
+  settings.dpi = 300;
+  exporter.exportToPdf( fileName, settings );
 
-  delete titleLabel;
-  delete parameterLabel;
-  delete residualLabel;
-  delete resPlotItem;
-  delete composerMap;
-  delete composition;
   return true;
 }
 
@@ -1918,13 +1914,13 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
 {
   if ( mRasterFileName.isEmpty() )
   {
-    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced" ), QgsMessageBar::WARNING, messageTimeout() );
+    mMessageBar->pushMessage( tr( "No Raster Loaded" ), tr( "Please load raster to be georeferenced." ), Qgis::Warning, messageTimeout() );
     return false;
   }
 
   if ( QgsGeorefTransform::InvalidTransform == mTransformParam )
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Please set transformation type" ) );
+    QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set transformation type." ) );
     getTransformSettings();
     return false;
   }
@@ -1932,7 +1928,7 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
   //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
   if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Please set output raster name" ) );
+    QMessageBox::information( this, tr( "Georeferencer" ), tr( "Please set output raster name." ) );
     getTransformSettings();
     return false;
   }
@@ -1941,14 +1937,14 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
   {
     mMessageBar->pushMessage( tr( "Not Enough GCPs" ), tr( "%1 transformation requires at least %2 GCPs. Please define more." )
                               .arg( convertTransformEnumToString( mTransformParam ) ).arg( mGeorefTransform.getMinimumGCPCount() )
-                              , QgsMessageBar::WARNING, messageTimeout() );
+                              , Qgis::Warning, messageTimeout() );
     return false;
   }
 
   // Update the transform if necessary
   if ( !updateGeorefTransform() )
   {
-    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), QgsMessageBar::WARNING, messageTimeout() );
+    mMessageBar->pushMessage( tr( "Transform Failed" ), tr( "Failed to compute GCP transform: Transform is not solvable." ), Qgis::Warning, messageTimeout() );
     //    logRequaredGCPs();
     return false;
   }

@@ -22,7 +22,6 @@
 #include "qgslayoutmodel.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
@@ -49,7 +48,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mDistanceArea.reset( new QgsDistanceArea() );
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
-  //get default composer font from settings
+  //get default layout font from settings
   QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
@@ -98,13 +97,13 @@ QIcon QgsLayoutItemLabel::icon() const
   return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLabel.svg" ) );
 }
 
-void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemLabel::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
@@ -152,7 +151,7 @@ void QgsLayoutItemLabel::contentChanged()
       //set this to true after html is loaded.
       mHtmlLoaded = false;
 
-      const QUrl baseUrl = QUrl::fromLocalFile( mLayout->project()->fileInfo().absoluteFilePath() );
+      const QUrl baseUrl = QUrl::fromLocalFile( mLayout->project()->absoluteFilePath() );
       mWebPage->mainFrame()->setHtml( textToDraw, baseUrl );
 
       //For very basic html labels with no external assets, the html load will already be
@@ -345,26 +344,26 @@ QFont QgsLayoutItemLabel::font() const
   return mFont;
 }
 
-bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &composerLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
+bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  composerLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
 
-  composerLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
-  composerLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
-  composerLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
-  composerLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
-  composerLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
-  composerLabelElem.appendChild( labelFontElem );
+  layoutLabelElem.appendChild( labelFontElem );
 
   //font color
   QDomElement fontColorElem = doc.createElement( QStringLiteral( "FontColor" ) );
   fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
   fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
   fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
-  composerLabelElem.appendChild( fontColorElem );
+  layoutLabelElem.appendChild( fontColorElem );
 
   return true;
 }
@@ -442,7 +441,7 @@ QString QgsLayoutItemLabel::displayName() const
       }
       if ( text.length() > 25 )
       {
-        return QString( tr( "%1..." ) ).arg( text.left( 25 ).simplified() );
+        return QString( tr( "%1…" ) ).arg( text.left( 25 ).simplified() );
       }
       else
       {

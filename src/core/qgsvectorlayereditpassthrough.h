@@ -38,6 +38,14 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool deleteFeatures( const QgsFeatureIds &fids ) override;
     bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom ) override;
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) override;
+
+    /**
+     * Changes values of attributes (but does not commit it).
+     * \returns true if attributes are well updated, false otherwise
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues ) override;
+
     bool addAttribute( const QgsField &field ) override;
     bool deleteAttribute( int attr ) override;
     bool renameAttribute( int attr, const QString &newName ) override;

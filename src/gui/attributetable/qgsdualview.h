@@ -67,7 +67,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
       AttributeEditor = 1
     };
 
-    Q_ENUM( ViewMode );
+    Q_ENUM( ViewMode )
 
     /**
      * \brief Constructor
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
     /**
-     * Get the filter mode
+     * Gets the filter mode
      *
      * \returns the filter mode
      */
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 
     /**
-     * Get a list of currently visible feature ids.
+     * Gets a list of currently visible feature ids.
      */
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
-     * Get the expression used for sorting the table and feature list.
+     * Gets the expression used for sorting the table and feature list.
      */
     QString sortExpression() const;
 
@@ -327,7 +327,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * Will forward this signal to the feature list to visually represent
      * that there has been an edit event.
      */
-    void featureFormAttributeChanged();
+    void featureFormAttributeChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be called periodically, when loading layers from slow data providers.
@@ -382,7 +382,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QString mDisplayExpression;
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
     // If the current feature is set, while the form is still not initialized
     // we will temporarily save it in here and set it on init
     QgsFeature mTempAttributeFormFeature;
@@ -406,7 +405,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
      *
      * \since QGIS 3.0
      */
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QUuid &action, const QModelIndex &fieldIdx )
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx )
       : QAction( name, dualView )
       , mDualView( dualView )
       , mAction( action )

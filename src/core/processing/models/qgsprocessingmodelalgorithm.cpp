@@ -78,14 +78,17 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
+QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
+{
+  // TODO - check child algorithms, if they all support threading, then the model supports threading...
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;
   Q_FOREACH ( const QgsProcessingParameterDefinition *def, child.algorithm()->parameterDefinitions() )
   {
-    if ( def->flags() & QgsProcessingParameterDefinition::FlagHidden )
-      continue;
-
     if ( !def->isDestination() )
     {
       if ( !child.parameterSources().contains( def->name() ) )
@@ -93,6 +96,7 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
 
       QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
+      QString expressionText;
       QVariantList paramParts;
       Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramSources )
       {
@@ -119,9 +123,19 @@ QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsP
             paramParts << exp.evaluate( &expressionContext );
             break;
           }
+          case QgsProcessingModelChildParameterSource::ExpressionText:
+          {
+            expressionText = QgsExpression::replaceExpressionText( source.expressionText(), &expressionContext );
+            break;
+          }
         }
       }
-      if ( paramParts.count() == 1 )
+
+      if ( ! expressionText.isEmpty() )
+      {
+        childParams.insert( def->name(), expressionText );
+      }
+      else if ( paramParts.count() == 1 )
         childParams.insert( def->name(), paramParts.at( 0 ) );
       else
         childParams.insert( def->name(), paramParts );
@@ -282,7 +296,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
 
       bool ok = false;
       std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
+      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok, child.configuration() );
       childAlg.reset( nullptr );
       if ( !ok )
       {
@@ -461,6 +475,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
     };
@@ -505,6 +520,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
 
@@ -552,6 +568,7 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       }
 
       case QgsProcessingModelChildParameterSource::Expression:
+      case QgsProcessingModelChildParameterSource::ExpressionText:
       case QgsProcessingModelChildParameterSource::StaticValue:
         continue;
 
@@ -671,9 +688,9 @@ QgsProcessingModelChildParameterSources QgsProcessingModelAlgorithm::availableSo
           {
             const QgsProcessingOutputVectorLayer *vectorOut = static_cast< const QgsProcessingOutputVectorLayer *>( out );
 
-            if ( !( dataTypes.contains( vectorOut->dataType() ) || vectorOut->dataType() == QgsProcessing::TypeMapLayer || vectorOut->dataType() == QgsProcessing::TypeVector
-                    || vectorOut->dataType() == QgsProcessing::TypeVectorAnyGeometry ) )
+            if ( !vectorOutputIsCompatibleType( dataTypes, vectorOut->dataType() ) )
             {
+              //unacceptable output
               continue;
             }
           }
@@ -766,17 +783,14 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
         continue;
 
       std::unique_ptr< QgsProcessingParameterDefinition > param( source->clone() );
+      // Even if an output was hidden in a child algorithm, we want to show it here for the final
+      // outputs.
+      param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagHidden );
+      if ( outputIt->isMandatory() )
+        param->setFlags( param->flags() & ~QgsProcessingParameterDefinition::FlagOptional );
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
-
-      if ( const QgsProcessingDestinationParameter *destParam = dynamic_cast< const QgsProcessingDestinationParameter *>( param.get() ) )
-      {
-        std::unique_ptr< QgsProcessingOutputDefinition > output( destParam->toOutputDefinition() );
-        if ( output )
-        {
-          addOutput( output.release() );
-        }
-      }
+      param->setDefaultValue( outputIt->defaultValue() );
       addParameter( param.release() );
     }
   }
@@ -862,11 +876,36 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
     // with no way for users to repair them
     if ( param )
       addParameter( param.release() );
+    else
+    {
+      QVariantMap map = paramDefIt.value().toMap();
+      QString type = map.value( QStringLiteral( "parameter_type" ) ).toString();
+      QString name = map.value( QStringLiteral( "name" ) ).toString();
+
+      QgsMessageLog::logMessage( QCoreApplication::translate( "Processing", "Could not load parameter %1 of type %2." ).arg( name, type ), QCoreApplication::translate( "Processing", "Processing" ) );
+    }
   }
 
   updateDestinationParameters();
 
   return true;
+}
+
+bool QgsProcessingModelAlgorithm::vectorOutputIsCompatibleType( const QList<int> &acceptableDataTypes, QgsProcessing::SourceType outputType )
+{
+  // This method is intended to be "permissive" rather than "restrictive".
+  // I.e. we only reject outputs which we know can NEVER be acceptable, but
+  // if there's doubt then we default to returning true.
+  return ( acceptableDataTypes.empty()
+           || acceptableDataTypes.contains( outputType )
+           || outputType == QgsProcessing::TypeMapLayer
+           || outputType == QgsProcessing::TypeVector
+           || outputType == QgsProcessing::TypeVectorAnyGeometry
+           || acceptableDataTypes.contains( QgsProcessing::TypeVector )
+           || acceptableDataTypes.contains( QgsProcessing::TypeMapLayer )
+           || ( acceptableDataTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && ( outputType == QgsProcessing::TypeVectorPoint ||
+                outputType == QgsProcessing::TypeVectorLine ||
+                outputType == QgsProcessing::TypeVectorPolygon ) ) );
 }
 
 bool QgsProcessingModelAlgorithm::toFile( const QString &path ) const
@@ -964,8 +1003,8 @@ bool QgsProcessingModelAlgorithm::activateChildAlgorithm( const QString &id )
 
 void QgsProcessingModelAlgorithm::addModelParameter( QgsProcessingParameterDefinition *definition, const QgsProcessingModelParameter &component )
 {
-  addParameter( definition );
-  mParameterComponents.insert( definition->name(), component );
+  if ( addParameter( definition ) )
+    mParameterComponents.insert( definition->name(), component );
 }
 
 void QgsProcessingModelAlgorithm::updateModelParameter( QgsProcessingParameterDefinition *definition )
@@ -1048,7 +1087,7 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
              && source.outputChildId() == childId )
         {
           depends.insert( childIt->childId() );
-          dependsOnChildAlgorithmsRecursive( childIt->childId(), depends );
+          dependentChildAlgorithmsRecursive( childIt->childId(), depends );
           break;
         }
       }

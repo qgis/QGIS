@@ -67,7 +67,8 @@ namespace QgsWms
         }
 
         // Set the default version
-        if ( versionString.isEmpty() )
+        const bool valid = versionString.compare( "1.1.1" ) == 0 || versionString.compare( "1.3.0" ) == 0;
+        if ( versionString.isEmpty() || !valid )
         {
           versionString = mVersion;
         }

@@ -92,7 +92,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     int joinedFieldsOffset( const QgsVectorLayerJoinInfo *info, const QgsFields &fields );
 
     /**
-     * Return a vector of indices for use in join based on field names from the layer
+     * Returns a vector of indices for use in join based on field names from the layer
      * \since QGIS 2.6
      */
     static QVector<int> joinSubsetIndices( QgsVectorLayer *joinLayer, const QStringList &joinFieldsSubset );
@@ -172,6 +172,22 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /**
+     * Changes attributes' values in joined layers. The feature id given in
+     * parameter is the one added in target layer. If the corresponding joined
+     * feature does not exist in a joined layer, then it's automatically
+     * created if its fields are not empty.
+     *
+     * \param fid The feature id
+     * \param newValues The new values for attributes
+     * \param oldValues The old values for attributes
+     *
+     * \returns false if an error happened, true otherwise
+     *
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+
+    /**
      * Deletes a feature from joined layers. The feature id given in
      * parameter is the one coming from the target layer.
      *
@@ -185,7 +201,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
 
     /**
      * Deletes a list of features from joined layers. Feature ids given
-     * in aprameter are those coming from the target layer.
+     * in a parameter are those coming from the target layer.
      *
      * \param fids Feature ids from the target layer to delete
      *

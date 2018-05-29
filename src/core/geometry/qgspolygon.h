@@ -82,9 +82,9 @@ class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
     }
 #endif
 
-  protected:
-
     QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
 
     friend class QgsCurvePolygon;
 

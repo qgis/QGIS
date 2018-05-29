@@ -39,8 +39,10 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmarkersymbollayer.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
+#include "qgslayout.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 
 //qgis test includes
 #include "qgsmultirenderchecker.h"
@@ -117,7 +119,7 @@ class TestQgsPaintEffect: public QObject
     void layerEffectMarker();
     void vectorLayerEffect();
     void mapUnits();
-    void composer();
+    void layout();
 
   private:
     bool imageCheck( const QString &testName, QImage &image, int mismatchCount = 0 );
@@ -944,9 +946,9 @@ void TestQgsPaintEffect::mapUnits()
   delete lineLayer;
 }
 
-void TestQgsPaintEffect::composer()
+void TestQgsPaintEffect::layout()
 {
-  //test rendering an effect inside a composer (tests DPI scaling of effects)
+  //test rendering an effect inside a layout (tests DPI scaling of effects)
 
   QString linesFileName = mTestDataDir + "lines.shp";
   QFileInfo lineFileInfo( linesFileName );
@@ -970,25 +972,28 @@ void TestQgsPaintEffect::composer()
 
   lineLayer->setRenderer( renderer );
 
-  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
-  composition->setPaperSize( 50, 50 );
-  QgsComposerMap *composerMap = new QgsComposerMap( composition, 1, 1, 48, 48 );
-  composerMap->setFrameEnabled( true );
-  composition->addComposerMap( composerMap );
-  composerMap->setNewExtent( lineLayer->extent() );
-  composerMap->setLayers( QList<QgsMapLayer *>() << lineLayer );
+  QgsLayout l( QgsProject::instance() );
+  std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &l );
+  page->setPageSize( QgsLayoutSize( 50, 50 ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 1, 1, 48, 48 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( lineLayer->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << lineLayer );
 
   QImage outputImage( 591, 591, QImage::Format_RGB32 );
-  composition->setPlotStyle( QgsComposition::Print );
   outputImage.setDotsPerMeterX( 300 / 25.4 * 1000 );
   outputImage.setDotsPerMeterY( 300 / 25.4 * 1000 );
   QgsMultiRenderChecker::drawBackground( &outputImage );
   QPainter p( &outputImage );
-  composition->renderPage( &p, 0 );
+  QgsLayoutExporter exporter( &l );
+  exporter.renderPage( &p, 0 );
   p.end();
 
   bool result = imageCheck( QStringLiteral( "painteffect_composer" ), outputImage );
-  delete composition;
   QVERIFY( result );
   delete lineLayer;
 }

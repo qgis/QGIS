@@ -263,23 +263,23 @@ QString QgsLayoutItemPolyline::displayName() const
   return tr( "<Polyline>" );
 }
 
-void QgsLayoutItemPolyline::_draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPolyline::_draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  context.painter()->save();
+  context.renderContext().painter()->save();
   //setup painter scaling to dots so that raster symbology is drawn to scale
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
 
-  mPolylineStyleSymbol->startRender( context );
-  mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context );
-  mPolylineStyleSymbol->stopRender( context );
+  mPolylineStyleSymbol->startRender( context.renderContext() );
+  mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context.renderContext() );
+  mPolylineStyleSymbol->stopRender( context.renderContext() );
 
   // painter is scaled to dots, so scale back to layout units
-  context.painter()->scale( context.scaleFactor(), context.scaleFactor() );
+  context.renderContext().painter()->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
-  drawStartMarker( context.painter() );
-  drawEndMarker( context.painter() );
-  context.painter()->restore();
+  drawStartMarker( context.renderContext().painter() );
+  drawEndMarker( context.renderContext().painter() );
+  context.renderContext().painter()->restore();
 }
 
 void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )

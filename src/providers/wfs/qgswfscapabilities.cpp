@@ -28,14 +28,14 @@
 #include <QStringList>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
-  : QgsWfsRequest( uri )
+  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
 {
   connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
-  QUrl url( baseURL() );
+  QUrl url( mUri.baseURL( ) );
   url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
   const QString &version = mUri.version();
@@ -98,13 +98,13 @@ class CPLXMLTreeUniquePointer
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * @return the node pointer */
+     * \return the node pointer */
     CPLXMLNode *get() const { return the_data_; }
 
     /**
      * Returns the node pointer/
      * Modifying the contents pointed to by the return is allowed.
-     * @return the node pointer */
+     * \return the node pointer */
     CPLXMLNode *operator->() const { return get(); }
 
   private:
@@ -249,7 +249,28 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     for ( int i = 0; i < operationList.size(); ++i )
     {
       QDomElement operation = operationList.at( i ).toElement();
-      if ( operation.attribute( QStringLiteral( "name" ) ) == QLatin1String( "GetFeature" ) )
+      QString name = operation.attribute( QStringLiteral( "name" ) );
+
+      // Search for DCP/HTTP
+      QDomNodeList operationHttpList = operation.elementsByTagName( QStringLiteral( "HTTP" ) );
+      for ( int j = 0; j < operationHttpList.size(); ++j )
+      {
+        QDomElement value = operationHttpList.at( j ).toElement();
+        QDomNodeList httpGetMethodList = value.elementsByTagName( QStringLiteral( "Get" ) );
+        QDomNodeList httpPostMethodList = value.elementsByTagName( QStringLiteral( "Post" ) );
+        if ( httpGetMethodList.size() > 0 )
+        {
+          mCaps.operationGetEndpoints[name] = httpGetMethodList.at( 0 ).toElement().attribute( QStringLiteral( "href" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Adding DCP Get %1 %2" ).arg( name, mCaps.operationGetEndpoints[name] ), 3 );
+        }
+        if ( httpPostMethodList.size() > 0 )
+        {
+          mCaps.operationPostEndpoints[name] = httpPostMethodList.at( 0 ).toElement().attribute( QStringLiteral( "href" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Adding DCP Post %1 %2" ).arg( name, mCaps.operationPostEndpoints[name] ), 3 );
+        }
+      }
+
+      if ( name == QLatin1String( "GetFeature" ) )
       {
         QDomNodeList operationContraintList = operation.elementsByTagName( QStringLiteral( "Constraint" ) );
         for ( int j = 0; j < operationContraintList.size(); ++j )

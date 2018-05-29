@@ -218,7 +218,7 @@ namespace pal
       /**
        * Sets how upside down labels will be handled within the layer.
        * \param ud upside down label handling mode
-       * \see upsideDownLabels
+       * \see upsidedownLabels
        */
       void setUpsidedownLabels( UpsideDownLabels ud ) { mUpsidedownLabels = ud; }
 

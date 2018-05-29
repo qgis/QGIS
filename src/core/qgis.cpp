@@ -84,6 +84,10 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
+
+const QgsTolerance::UnitType Qgis::DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
+
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;
 #else

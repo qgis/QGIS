@@ -33,6 +33,8 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
 {
   public:
 
+    virtual ~QgsEditorWidgetAutoConfPlugin() {}
+
     /**
      * Typical scores are:
      *   * 0: no matching type found.
@@ -58,8 +60,8 @@ class GUI_EXPORT QgsEditorWidgetAutoConfPlugin
  * This class has only one instance, owned by the QgsEditorWidgetRegistry singleton
  *
  * The plugins are instances of QgsEditorWidgetAutoConfPlugin.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsEditorWidgetAutoConf SIP_SKIP
 {

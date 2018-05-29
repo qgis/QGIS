@@ -290,6 +290,9 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
 
     QgsExpressionContext createExpressionContext() const override;
+    void finalizeRestoreFromXml() override;
+
+    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
 
@@ -302,6 +305,10 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     ContentSource mSource = LayerAttributes;
     //! Associated vector layer
     QgsVectorLayerRef mVectorLayer;
+
+    //! Data defined vector layer - only
+    QPointer< QgsVectorLayer > mDataDefinedVectorLayer;
+
     //! Relation id, if in relation children mode
     QString mRelationId;
 
@@ -310,6 +317,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     //! Associated map (used to display the visible features)
     QgsLayoutItemMap *mMap = nullptr;
+    QString mMapUuid;
 
     //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures = 30;

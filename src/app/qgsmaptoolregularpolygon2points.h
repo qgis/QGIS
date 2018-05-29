@@ -18,8 +18,9 @@
 #define QGSMAPTOOLREGULARPOLYGON2POINTS_H
 
 #include "qgsmaptooladdregularpolygon.h"
+#include "qgis_app.h"
 
-class QgsMapToolRegularPolygon2Points: public QgsMapToolAddRegularPolygon
+class APP_EXPORT QgsMapToolRegularPolygon2Points: public QgsMapToolAddRegularPolygon
 {
     Q_OBJECT
 

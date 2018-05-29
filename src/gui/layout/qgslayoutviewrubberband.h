@@ -160,6 +160,8 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
  */
 class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubberBand
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -191,6 +193,8 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
  */
 class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberBand
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -222,6 +226,8 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
  */
 class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBand
 {
+    Q_OBJECT
+
   public:
 
     /**

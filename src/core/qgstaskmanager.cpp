@@ -25,7 +25,7 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name, const Flags &flags )
+QgsTask::QgsTask( const QString &name, Flags flags )
   : mFlags( flags )
   , mDescription( name )
 {
@@ -212,8 +212,11 @@ void QgsTask::setProgress( double progress )
     progress = ( progress + totalProgress ) / ( mSubTasks.count() + 1 );
   }
 
+  // avoid flooding with too many events
+  if ( static_cast< int >( mTotalProgress  * 10 ) != static_cast< int >( progress * 10 ) )
+    emit progressChanged( progress );
+
   mTotalProgress = progress;
-  emit progressChanged( mTotalProgress );
 }
 
 void QgsTask::completed()
@@ -387,6 +390,9 @@ long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, 
 
 long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bool isSubTask, int priority )
 {
+  if ( !task )
+    return 0;
+
   long taskId = mNextTaskId++;
 
   mTaskMutex->lock();
@@ -644,7 +650,8 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  QThreadPool::globalInstance()->cancel( runnable );
+  if ( runnable )
+    QThreadPool::globalInstance()->cancel( runnable );
 #endif
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
@@ -748,7 +755,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   else
   {
 #if QT_VERSION >= 0x050500
-    QThreadPool::globalInstance()->cancel( runnable );
+    if ( runnable )
+      QThreadPool::globalInstance()->cancel( runnable );
 #endif
     if ( isParent )
     {
@@ -780,6 +788,7 @@ void QgsTaskManager::processQueue()
     QgsTask *task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
+      it.value().createRunnable();
       QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
     }
 
@@ -834,5 +843,10 @@ QgsTaskManager::TaskInfo::TaskInfo( QgsTask *task, int priority )
   : task( task )
   , added( 0 )
   , priority( priority )
-  , runnable( new QgsTaskRunnableWrapper( task ) )
 {}
+
+void QgsTaskManager::TaskInfo::createRunnable()
+{
+  Q_ASSERT( !runnable );
+  runnable = new QgsTaskRunnableWrapper( task ); // auto deleted
+}

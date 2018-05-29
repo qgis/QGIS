@@ -49,7 +49,10 @@ def algorithmHelp(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         print('{} ({})\n'.format(alg.displayName(), alg.id()))
-        print(alg.shortHelpString())
+        if alg.shortDescription():
+            print(alg.shortDescription() + '\n')
+        if alg.shortHelpString():
+            print(alg.shortHelpString() + '\n')
         print('\n----------------')
         print('Input parameters')
         print('----------------')
@@ -154,4 +157,6 @@ def execAlgorithmDialog(algOrName, parameters={}):
         canvas.setMapTool(prevMapTool)
 
     results = dlg.results()
+    # make sure the dialog is destroyed and not only hidden on pressing Esc
+    dlg.close()
     return results

@@ -477,8 +477,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QSizeF totalSize() const override;
-    void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
-                 const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void render( QgsLayoutItemRenderContext &context, const QRectF &renderExtent, int frameIndex ) override;
 
   public slots:
 
@@ -488,7 +487,6 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Refreshes the contents shown in the table by querying for new data.
      * This also causes the column widths and size of the table to change to accommodate the
      * new data.
-     * \see adjustFrameToSize()
      */
     virtual void refreshAttributes();
 

@@ -20,6 +20,8 @@
 #include "ui_qgslayoutscalebarwidgetbase.h"
 #include "qgslayoutitemwidget.h"
 
+#include <QButtonGroup>
+
 class QgsLayoutItemScaleBar;
 
 /**
@@ -46,7 +48,6 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     void mNumberOfSegmentsSpinBox_valueChanged( int i );
     void mUnitLabelLineEdit_textChanged( const QString &text );
     void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
-    void mFontColorButton_colorChanged( const QColor &newColor );
     void mFillColorButton_colorChanged( const QColor &newColor );
     void mFillColor2Button_colorChanged( const QColor &newColor );
     void mStrokeColorButton_colorChanged( const QColor &newColor );
@@ -64,7 +65,7 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     void setGuiElements();
     void segmentSizeRadioChanged( QAbstractButton *radio );
     void mapChanged( QgsLayoutItem *item );
-    void fontChanged();
+    void textFormatChanged();
 
   private:
     QPointer< QgsLayoutItemScaleBar > mScalebar;

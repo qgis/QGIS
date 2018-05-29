@@ -18,8 +18,6 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import bytes
-from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication, QFile, QSize
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QShortcut, QApplication
@@ -42,6 +40,28 @@ _historyFile = os.path.join(QgsApplication.qgisSettingsDirPath(), "console_histo
 
 
 class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
+
+    DEFAULT_COLOR = "#4d4d4c"
+    KEYWORD_COLOR = "#8959a8"
+    CLASS_COLOR = "#4271ae"
+    METHOD_COLOR = "#4271ae"
+    DECORATION_COLOR = "#3e999f"
+    NUMBER_COLOR = "#c82829"
+    COMMENT_COLOR = "#8e908c"
+    COMMENT_BLOCK_COLOR = "#8e908c"
+    BACKGROUND_COLOR = "#ffffff"
+    CURSOR_COLOR = "#636363"
+    CARET_LINE_COLOR = "#efefef"
+    SINGLE_QUOTE_COLOR = "#718c00"
+    DOUBLE_QUOTE_COLOR = "#718c00"
+    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
+    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
+    MARGIN_BACKGROUND_COLOR = "#efefef"
+    MARGIN_FOREGROUND_COLOR = "#636363"
+    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
+    SELECTION_FOREGROUND_COLOR = "#303030"
+    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
+    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
 
     def __init__(self, parent=None):
         super(ShellScintilla, self).__init__(parent)
@@ -80,7 +100,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         # Brace matching: enable for a brace immediately before or after
         # the current position
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Current line visible with special background color
         self.setCaretWidth(2)
@@ -138,8 +157,12 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
+        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
         self.setCaretForegroundColor(cursorColor)
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
+        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
 
         # Sets minimum height for input area based of font metric
         self._setMinimumHeight()
@@ -187,23 +210,26 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
+        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
@@ -246,7 +272,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
     def get_end_pos(self):
         """Return (line, index) position of the last character"""
         line = self.lines() - 1
-        return (line, len(self.text(line)))
+        return line, len(self.text(line))
 
     def is_cursor_at_end(self):
         """Return True if cursor is at the end of text"""
@@ -378,9 +404,16 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if not self.is_cursor_on_edition_zone() or startLine < endLine:
             # allow copying and selecting
             if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
-                if e.key() in (Qt.Key_C, Qt.Key_A):
+                if e.key() == Qt.Key_C:
+                    # only catch and return from Ctrl-C here if there's a selection
+                    if self.hasSelectedText():
+                        QsciScintilla.keyPressEvent(self, e)
+                        return
+                elif e.key() == Qt.Key_A:
                     QsciScintilla.keyPressEvent(self, e)
-                return
+                    return
+                else:
+                    return
             # allow selection
             if e.modifiers() & Qt.ShiftModifier:
                 if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
@@ -388,6 +421,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 return
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
+
+        if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+            # keyboard interrupt
+            sys.stdout.fire_keyboard_interrupt = True
+            return
 
         line, index = self.getCursorPosition()
         cmd = self.text(line)
@@ -550,8 +588,9 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             if pasteList[-1] != "":
                 line = pasteList[-1]
                 cleanLine = line.replace(">>> ", "").replace("... ", "")
+                curpos = self.getCursorPosition()
                 self.insert(cleanLine)
-                self.move_cursor_to_end()
+                self.setCursorPosition(curpos[0], curpos[1] + len(cleanLine))
 
     def insertTextFromFile(self, listOpenFile):
         for line in listOpenFile[:-1]:
@@ -588,7 +627,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             more = False
         else:
             self.buffer.append(cmd)
-            src = u"\n".join(self.buffer)
+            src = "\n".join(self.buffer)
             more = self.runsource(src)
             if not more:
                 self.buffer = []
@@ -602,16 +641,20 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         sys.stderr.write(txt)
 
     def writeCMD(self, txt):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
             getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         hook = sys.excepthook
         try:
             def excepthook(etype, value, tb):
-                self.write(u"".join(traceback.format_exception(etype, value, tb)))
+                self.write("".join(traceback.format_exception(etype, value, tb)))
 
             sys.excepthook = excepthook
 

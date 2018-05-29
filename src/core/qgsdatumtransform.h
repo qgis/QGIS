@@ -65,12 +65,12 @@ class CORE_EXPORT QgsDatumTransform
        */
       int destinationTransformId = -1;
 
-      bool operator==( const QgsDatumTransform::TransformPair &other ) const
+      bool operator==( QgsDatumTransform::TransformPair other ) const
       {
         return other.sourceTransformId == sourceTransformId && other.destinationTransformId == destinationTransformId;
       }
 
-      bool operator!=( const QgsDatumTransform::TransformPair &other ) const
+      bool operator!=( QgsDatumTransform::TransformPair other ) const
       {
         return other.sourceTransformId != sourceTransformId || other.destinationTransformId != destinationTransformId;
       }

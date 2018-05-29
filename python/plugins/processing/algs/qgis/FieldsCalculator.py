@@ -94,6 +94,9 @@ class FieldsCalculator(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
@@ -118,14 +121,14 @@ class FieldsCalculator(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         exp_context = self.createExpressionContext(parameters, context)
         if layer is not None:
             exp_context.appendScope(QgsExpressionContextUtils.layerScope(layer))
 
-        if not expression.prepare(exp_context):
-            raise QgsProcessingException(
-                self.tr('Evaluation error: {0}').format(expression.parserErrorString()))
+        expression.prepare(exp_context)
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

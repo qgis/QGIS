@@ -38,10 +38,13 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 
 void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
 {
-  mContentLoaded = false;
+  fetchContent( QNetworkRequest( url ) );
+}
 
-  //get contents
-  QNetworkRequest request( url );
+void QgsNetworkContentFetcher::fetchContent( const QNetworkRequest &request )
+{
+  mContentLoaded = false;
+  mIsCanceled = false;
 
   if ( mReply )
   {
@@ -53,6 +56,7 @@ void QgsNetworkContentFetcher::fetchContent( const QUrl &url )
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
   connect( mReply, &QNetworkReply::finished, this, [ = ] { contentLoaded(); } );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsNetworkContentFetcher::downloadProgress );
 }
 
 QNetworkReply *QgsNetworkContentFetcher::reply()
@@ -79,10 +83,23 @@ QString QgsNetworkContentFetcher::contentAsString() const
   return codec->toUnicode( array );
 }
 
+void QgsNetworkContentFetcher::cancel()
+{
+  mIsCanceled = true;
+
+  if ( mReply )
+  {
+    //cancel any in progress requests
+    mReply->abort();
+    mReply->deleteLater();
+    mReply = nullptr;
+  }
+}
+
 QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 {
   //QTextCodec::codecForHtml fails to detect "<meta charset="utf-8"/>" type tags
-  //see https://bugreports.qt-project.org/browse/QTBUG-41011
+  //see https://bugreports.qt.io/browse/QTBUG-41011
   //so test for that ourselves
 
   //basic check
@@ -121,6 +138,12 @@ QTextCodec *QgsNetworkContentFetcher::codecForHtml( QByteArray &array ) const
 void QgsNetworkContentFetcher::contentLoaded( bool ok )
 {
   Q_UNUSED( ok );
+
+  if ( mIsCanceled )
+  {
+    emit finished();
+    return;
+  }
 
   if ( mReply->error() != QNetworkReply::NoError )
   {

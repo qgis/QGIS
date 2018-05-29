@@ -1,7 +1,7 @@
 v.db.select
 Prints vector map attributes
 Vector (v.*)
-QgsProcessingParameterVectorLayer|map|Input vector map |-1|None|False
+QgsProcessingParameterFeatureSource|map|Input vector map |-1|None|False
 QgsProcessingParameterNumber|layer|Layer Number|QgsProcessingParameterNumber.Double|1|False|None|1
 QgsProcessingParameterString|columns|Name of attribute column(s), comma separated|None|False|True
 *QgsProcessingParameterBoolean|-c|Do not include column names in output|False

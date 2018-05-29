@@ -41,16 +41,16 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mCancelButton->hide();
 
   mContextMenu = new QMenu( tr( "Options" ), this );
-  mContextMenu->addAction( tr( "Change color" ), this, SLOT( changeColor() ) );
-  mContextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeOpacity() ) );
-  mContextMenu->addAction( tr( "Change label" ), this, SLOT( changeLabel() ) );
+  mContextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeColor() ) );
+  mContextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
+  mContextMenu->addAction( tr( "Change Label…" ), this, SLOT( changeLabel() ) );
 
-  mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
-  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load classes from layer" ) );
+  mAdvancedMenu = new QMenu( tr( "Advanced Options" ), this );
+  QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load Classes from Layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
-  QAction *loadFromFile = mAdvancedMenu->addAction( trUtf8( "Load color map from file…" ) );
+  QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load Color Map from File…" ) );
   connect( loadFromFile, &QAction::triggered, this, &QgsPalettedRendererWidget::loadColorTable );
-  QAction *exportToFile = mAdvancedMenu->addAction( trUtf8( "Export color map to file…" ) );
+  QAction *exportToFile = mAdvancedMenu->addAction( tr( "Export Color Map to File…" ) );
   connect( exportToFile, &QAction::triggered, this, &QgsPalettedRendererWidget::saveColorTable );
 
 
@@ -76,7 +76,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & ) { mContextMenu->exec( QCursor::pos() ); }
+  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { mContextMenu->exec( QCursor::pos() ); }
          );
 
   btnColorRamp->setShowRandomColorRamp( true );
@@ -231,7 +231,7 @@ void QgsPalettedRendererWidget::changeColor()
   if ( panel && panel->dockMode() )
   {
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
-    colorWidget->setPanelTitle( tr( "Select color" ) );
+    colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
     connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color ) { setSelectionColor( sel, color ); } );
     panel->openPanel( colorWidget );
@@ -350,7 +350,7 @@ void QgsPalettedRendererWidget::loadColorTable()
 {
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Color Table from File" ), lastDir );
   if ( !fileName.isEmpty() )
   {
     QgsPalettedRasterRenderer::ClassData classes = QgsPalettedRasterRenderer::classDataFromFile( fileName );
@@ -363,7 +363,7 @@ void QgsPalettedRendererWidget::loadColorTable()
     }
     else
     {
-      QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Could not interpret file as a raster color table." ) );
+      QMessageBox::critical( nullptr, tr( "Load Color Table" ), tr( "Could not interpret file as a raster color table." ) );
     }
   }
 }
@@ -372,7 +372,7 @@ void QgsPalettedRendererWidget::saveColorTable()
 {
   QgsSettings settings;
   QString lastDir = settings.value( QStringLiteral( "lastColorMapDir" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Text (*.clr)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Color Table as File" ), lastDir, tr( "Text (*.clr)" ) );
   if ( !fileName.isEmpty() )
   {
     if ( !fileName.endsWith( QLatin1String( ".clr" ), Qt::CaseInsensitive ) )
@@ -393,7 +393,7 @@ void QgsPalettedRendererWidget::saveColorTable()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+      QMessageBox::warning( this, tr( "Save Color Table as File" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
     }
   }
 }
@@ -423,7 +423,7 @@ void QgsPalettedRendererWidget::classify()
 
     connect( mGatherer, &QgsPalettedRendererClassGatherer::collectedClasses, this, &QgsPalettedRendererWidget::gatheredClasses );
     connect( mGatherer, &QgsPalettedRendererClassGatherer::finished, this, &QgsPalettedRendererWidget::gathererThreadFinished );
-    mClassifyButton->setText( tr( "Calculating..." ) );
+    mClassifyButton->setText( tr( "Calculating…" ) );
     mClassifyButton->setEnabled( false );
     mGatherer->start();
   }
@@ -454,7 +454,7 @@ void QgsPalettedRendererWidget::bandChanged( int band )
   if ( !mModel->classData().isEmpty() )
   {
     int res = QMessageBox::question( this,
-                                     tr( "Confirm Delete" ),
+                                     tr( "Delete Classification" ),
                                      tr( "The classification band was changed from %1 to %2.\n"
                                          "Should the existing classes be deleted?" ).arg( mBand ).arg( band ),
                                      QMessageBox::Yes | QMessageBox::No );
@@ -803,5 +803,40 @@ void QgsPalettedRendererModel::deleteAll()
   emit classesChanged();
 }
 
-///@endcond PRIVATE
+void QgsPalettedRendererClassGatherer::run()
+{
+  mWasCanceled = false;
 
+  // allow responsive cancelation
+  mFeedback = new QgsRasterBlockFeedback();
+  connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
+
+  QgsPalettedRasterRenderer::ClassData newClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
+
+  // combine existing classes with new classes
+  QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
+  for ( ; classIt != newClasses.end(); ++classIt )
+  {
+    // check if existing classes contains this same class
+    for ( const QgsPalettedRasterRenderer::Class &existingClass : qgis::as_const( mClasses ) )
+    {
+      if ( existingClass.value == classIt->value )
+      {
+        classIt->color = existingClass.color;
+        classIt->label = existingClass.label;
+        break;
+      }
+    }
+  }
+  mClasses = newClasses;
+
+  // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
+  mFeedbackMutex.lock();
+  delete mFeedback;
+  mFeedback = nullptr;
+  mFeedbackMutex.unlock();
+
+  emit collectedClasses();
+}
+
+///@endcond PRIVATE

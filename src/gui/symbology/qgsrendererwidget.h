@@ -47,7 +47,7 @@ class GUI_EXPORT QgsRendererWidget : public QgsPanelWidget
   public:
     QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style );
 
-    //! return pointer to the renderer (no transfer of ownership)
+    //! Returns pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRenderer *renderer() = 0;
 
     //! show a dialog with renderer's symbol level settings

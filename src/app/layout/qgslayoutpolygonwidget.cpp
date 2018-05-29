@@ -27,7 +27,7 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   , mPolygon( polygon )
 {
   setupUi( this );
-  setPanelTitle( tr( "Polygon properties" ) );
+  setPanelTitle( tr( "Polygon Properties" ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, polygon );

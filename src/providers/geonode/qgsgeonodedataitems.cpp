@@ -28,7 +28,7 @@ QgsGeoNodeConnectionItem::QgsGeoNodeConnectionItem( QgsDataItem *parent, QString
   , mUri( conn->uri().uri() )
 {
   mConnection = std::move( conn );
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
 QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
@@ -68,7 +68,7 @@ QVector<QgsDataItem *> QgsGeoNodeConnectionItem::createChildren()
 
 QList<QAction *> QgsGeoNodeConnectionItem::actions( QWidget *parent )
 {
-  QAction *actionEdit = new QAction( tr( "Edit Connection..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit Connection…" ), parent );
   QAction *actionDelete = new QAction( tr( "Delete Connection" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsGeoNodeConnectionItem::editConnection );
   connect( actionDelete, &QAction::triggered, this, &QgsGeoNodeConnectionItem::deleteConnection );
@@ -241,7 +241,7 @@ QVector<QgsDataItem *> QgsGeoNodeRootItem::createChildren()
 
 QList<QAction *> QgsGeoNodeRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsGeoNodeRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }

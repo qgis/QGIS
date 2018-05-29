@@ -33,6 +33,76 @@ class QPainter;
 class QgsLayoutItemGroup;
 class QgsLayoutEffect;
 
+
+/**
+ * \ingroup core
+ * \class QgsLayoutItemRenderContext
+ * Contains settings and helpers relating to a render of a QgsLayoutItem.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsLayoutItemRenderContext
+{
+  public:
+
+    /**
+     * Constructor for QgsLayoutItemRenderContext.
+     *
+     * The \a renderContext parameter specifies a QgsRenderContext for use within
+     * the QgsLayoutItemRenderContext.
+     *
+     * The \a viewScaleFactor gives the current view zoom (scale factor). It can be
+     * used to scale render graphics so that they always appear a constant size,
+     * regardless of the current view zoom.
+     */
+    QgsLayoutItemRenderContext( QgsRenderContext &context, double viewScaleFactor = 1.0 );
+
+    //! QgsLayoutItemRenderContext cannot be copied.
+    QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &other ) = delete;
+
+    //! QgsLayoutItemRenderContext cannot be copied.
+    QgsLayoutItemRenderContext &operator=( const QgsLayoutItemRenderContext &other ) = delete;
+
+    /**
+     * Returns a reference to the context's render context.
+     *
+     * Note that the context's painter has been scaled so that painter units are pixels.
+     * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+     */
+    QgsRenderContext &renderContext() { return mRenderContext; }
+
+    /**
+     * Returns a reference to the context's render context.
+     *
+     * Note that the context's painter has been scaled so that painter units are pixels.
+     * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
+     *
+     * \note Not available in Python bindings.
+     */
+    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+
+    /**
+     * Returns the current view zoom (scale factor). It can be
+     * used to scale render graphics so that they always appear a constant size,
+     * regardless of the current view zoom.
+     *
+     * E.g. a value of 0.5 indicates that the view is zoomed out to 50% size, so rendered
+     * items must be scaled by 200% in order to have a constant visible size. A value
+     * of 2.0 indicates that the view is zoomed in 200%, so rendered items must be
+     * scaled by 50% in order to have a constant visible size.
+     */
+    double viewScaleFactor() const { return mViewScaleFactor; }
+
+  private:
+
+#ifdef SIP_RUN
+    QgsLayoutItemRenderContext( const QgsLayoutItemRenderContext &rh ) SIP_FORCE;
+#endif
+
+    QgsRenderContext &mRenderContext;
+    double mViewScaleFactor = 1.0;
+};
+
+
 /**
  * \ingroup core
  * \class QgsLayoutItem
@@ -243,18 +313,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \note There is no corresponding setter for the uuid - it's created automatically.
      * \see id()
      * \see setId()
-     * \see templateUuid()
     */
     virtual QString uuid() const { return mUuid; }
-
-    /**
-     * Returns the item's original identification string. This may differ from the item's uuid()
-     * for items which have been added to an existing layout from a template. In this case
-     * templateUuid() returns the original item UUID at the time the template was created,
-     * while uuid() returns the current instance of the item's unique identifier.
-     * \see uuid()
-    */
-    QString templateUuid() const { return mTemplateUuid; }
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -273,7 +333,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setId( const QString &id );
 
     /**
-     * Get item display name. This is the item's id if set, and if
+     * Gets item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
      * \see id()
      * \see setId()
@@ -775,6 +835,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     bool shouldDrawItem() const;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   public slots:
 
     /**
@@ -819,8 +881,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
-    QgsExpressionContext createExpressionContext() const override;
-
   signals:
 
     /**
@@ -855,11 +915,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void drawDebugRect( QPainter *painter );
 
     /**
-     * Draws the item's contents using the specified render \a context.
+     * Draws the item's contents using the specified item render \a context.
+     *
      * Note that the context's painter has been scaled so that painter units are pixels.
      * Use the QgsRenderContext methods to convert from millimeters or other units to the painter's units.
      */
-    virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+    virtual void draw( QgsLayoutItemRenderContext &context ) = 0;
 
     /**
      * Draws the frame around the item.
@@ -1083,6 +1144,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;
+    friend class QgsLayout;
     friend class QgsLayoutItemGroup;
     friend class QgsCompositionConverter;
 };

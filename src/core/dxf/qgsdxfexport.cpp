@@ -398,18 +398,18 @@ QgsDxfExport::Flags QgsDxfExport::flags() const
   return mFlags;
 }
 
-void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
+void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 {
   QList<QgsMapLayer *> layerList;
 
   mLayerNameAttribute.clear();
 
-  QList< QPair< QgsVectorLayer *, int > >::const_iterator layerIt = layers.constBegin();
+  QList< DxfLayer >::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    layerList << layerIt->first;
-    if ( layerIt->second >= 0 )
-      mLayerNameAttribute.insert( layerIt->first->id(), layerIt->second );
+    layerList << layerIt->layer();
+    if ( layerIt->layerOutputAttributeIndex() >= 0 )
+      mLayerNameAttribute.insert( layerIt->layer()->id(), layerIt->layerOutputAttributeIndex() );
   }
 
   mMapSettings.setLayers( layerList );
@@ -1009,7 +1009,7 @@ void QgsDxfExport::writeEntities()
       attributes << layerAttr;
     }
 
-    const QgsAbstractVectorLayerLabeling *labeling = vl->labeling();
+    const QgsAbstractVectorLayerLabeling *labeling = vl->labelsEnabled() ? vl->labeling() : nullptr;
     QgsDxfLabelProvider *lp = nullptr;
     QgsDxfRuleBasedLabelProvider *rblp = nullptr;
     if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling ) )
@@ -1071,12 +1071,9 @@ void QgsDxfExport::writeEntities()
       else
       {
         QgsSymbolList symbolList = renderer->symbolsForFeature( fet, ctx );
-        if ( symbolList.empty() )
-        {
-          continue;
-        }
+        bool hasSymbology = symbolList.size() > 0;
 
-        if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
+        if ( hasSymbology && mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
         {
           QgsSymbolList::iterator symbolIt = symbolList.begin();
           for ( ; symbolIt != symbolList.end(); ++symbolIt )
@@ -1088,7 +1085,7 @@ void QgsDxfExport::writeEntities()
             }
           }
         }
-        else
+        else if ( hasSymbology )
         {
           // take first symbollayer from first symbol
           QgsSymbol *s = symbolList.first();
@@ -3669,7 +3666,7 @@ void QgsDxfExport::writeMText( const QString &layer, const QString &text, const 
     writeGroup( 3, t.left( 250 ) );
     t = t.mid( 250 );
   }
-  writeGroup( 1, text );
+  writeGroup( 1, t );
 
   writeGroup( 50, angle );        // Rotation angle in radians
   writeGroup( 41, width * 1.1 );  // Reference rectangle width
@@ -4417,6 +4414,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   else
   {
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
+    txt.replace( " ", "\\~" );
 
     if ( tmpLyr.format().font().underline() )
     {

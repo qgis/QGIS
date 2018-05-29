@@ -31,7 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "providers/memory/qgsmemoryprovider.h"
-
+#include "mesh/qgsmeshmemorydataprovider.h"
 
 // typedefs for provider plugin functions of interest
 typedef QString providerkey_t();
@@ -42,6 +42,7 @@ typedef void buildsupportedrasterfilefilter_t( QString &fileFiltersString );
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
+typedef void initProviderFunction_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
 
@@ -86,6 +87,7 @@ void QgsProviderRegistry::init()
 {
   // add standard providers
   mProviders[ QgsMemoryProvider::providerKey() ] = new QgsProviderMetadata( QgsMemoryProvider::providerKey(), QgsMemoryProvider::providerDescription(), &QgsMemoryProvider::createProvider );
+  mProviders[ QgsMeshMemoryDataProvider::providerKey() ] = new QgsProviderMetadata( QgsMeshMemoryDataProvider::providerKey(), QgsMeshMemoryDataProvider::providerDescription(), &QgsMeshMemoryDataProvider::createProvider );
 
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
@@ -228,6 +230,11 @@ void QgsProviderRegistry::init()
 
       QgsDebugMsg( QString( "Checking %1: ...loaded OK (%2 file filters)" ).arg( myLib.fileName() ).arg( fileRasterFilters.split( ";;" ).count() ) );
     }
+
+    // call initProvider() if such function is available - allows provider to register its services to QGIS
+    initProviderFunction_t *initFunc = reinterpret_cast< initProviderFunction_t * >( cast_to_fptr( myLib.resolve( "initProvider" ) ) );
+    if ( initFunc )
+      initFunc();
   }
 } // QgsProviderRegistry ctor
 
@@ -355,7 +362,7 @@ QDir QgsProviderRegistry::libraryDirectory() const
 
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider *classFactoryFunction_t( const QString * );
+typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataProvider::ProviderOptions &options );
 
 
 /* Copied from QgsVectorLayer::setDataProvider
@@ -365,7 +372,7 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource )
+QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource, const QgsDataProvider::ProviderOptions &options )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -379,7 +386,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
 
   if ( metadata->createFunction() )
   {
-    return metadata->createFunction()( dataSource );
+    return metadata->createFunction()( dataSource, options );
   }
 
   // load the plugin
@@ -419,7 +426,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  QgsDataProvider *dataProvider = classFactory( &dataSource );
+  QgsDataProvider *dataProvider = classFactory( &dataSource, options );
   if ( !dataProvider )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the data provider plugin %1" ).arg( lib ) );

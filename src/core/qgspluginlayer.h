@@ -17,7 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
-
+#include "qgsdataprovider.h"
 
 /**
  * \ingroup core
@@ -43,10 +43,10 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      */
     QgsPluginLayer *clone() const override = 0;
 
-    //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
+    //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
 
-    //! Set extent of the layer
+    //! Sets extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
     /**
@@ -55,8 +55,38 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      */
     void setSource( const QString &source );
 
+    QgsDataProvider *dataProvider() override;
+    const QgsDataProvider *dataProvider() const override SIP_SKIP;
+
   protected:
     QString mPluginLayerType;
+    QgsDataProvider *mDataProvider;
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * A minimal data provider for plugin layers
+ */
+class QgsPluginLayerDataProvider : public QgsDataProvider
+{
+    Q_OBJECT
+
+  public:
+    QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &options );
+    void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
+    QString description() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
+
+  private:
+    QString mName;
+    QgsRectangle mExtent;
+};
+///@endcond
+#endif
 
 #endif // QGSPLUGINLAYER_H

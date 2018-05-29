@@ -36,8 +36,8 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QgsMultiPoint *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
     void clear() override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
     int nCoordinates() const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
@@ -62,8 +62,11 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
       return nullptr;
     }
 #endif
-  protected:
+
     QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     bool wktOmitChildType() const override;
 
 };

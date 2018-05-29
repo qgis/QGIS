@@ -99,6 +99,13 @@ class TestQgsSpatialIndex : public QObject
       QVERIFY( fids2.contains( 3 ) );
     }
 
+    void testInitFromEmptyIterator()
+    {
+      QgsFeatureIterator it;
+      QgsSpatialIndex index( it );
+      // we just test that we survive the above command without exception from libspatialindex raised
+    }
+
     void testCopy()
     {
       QgsSpatialIndex *index = new QgsSpatialIndex;

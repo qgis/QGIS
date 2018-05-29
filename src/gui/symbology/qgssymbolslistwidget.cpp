@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgsnewauxiliarylayerdialog.h"
 #include "qgsauxiliarystorage.h"
+#include "qgssvgcache.h"
 
 #include <QAction>
 #include <QString>
@@ -68,7 +69,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   {
     btnAdvanced->setMenu( new QMenu( this ) );
   }
-  mClipFeaturesAction = new QAction( tr( "Clip features to canvas extent" ), this );
+  mClipFeaturesAction = new QAction( tr( "Clip Features to Canvas Extent" ), this );
   mClipFeaturesAction->setCheckable( true );
   connect( mClipFeaturesAction, &QAction::toggled, this, &QgsSymbolsListWidget::clipFeaturesToggled );
 
@@ -114,6 +115,13 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( btnSaveSymbol, &QPushButton::clicked, this, &QgsSymbolsListWidget::saveSymbol );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsSymbolsListWidget::opacityChanged );
+
+  // when a remote svg has been fetched, update the widget's previews
+  // this is required if the symbol utilizes remote svgs, and the current previews
+  // have been generated using the temporary "downloading" svg. In this case
+  // we require the preview to be regenerated to use the correct fetched
+  // svg
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, &QgsSymbolsListWidget::populateSymbolView );
 }
 
 QgsSymbolsListWidget::~QgsSymbolsListWidget()
@@ -439,7 +447,7 @@ void QgsSymbolsListWidget::symbolAddedToStyle( const QString &name, QgsSymbol *s
 void QgsSymbolsListWidget::addSymbolToStyle()
 {
   bool ok;
-  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+  QString name = QInputDialog::getText( this, tr( "Save Symbol" ),
                                         tr( "Please enter name for the symbol:" ), QLineEdit::Normal, tr( "New symbol" ), &ok );
   if ( !ok || name.isEmpty() )
     return;
@@ -447,7 +455,7 @@ void QgsSymbolsListWidget::addSymbolToStyle()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( name ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                     tr( "Symbol with name '%1' already exists. Overwrite?" )
                                     .arg( name ),
                                     QMessageBox::Yes | QMessageBox::No );
@@ -477,7 +485,7 @@ void QgsSymbolsListWidget::saveSymbol()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save symbol" ),
+    int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                     tr( "Symbol with name '%1' already exists. Overwrite?" )
                                     .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );
@@ -601,15 +609,22 @@ void QgsSymbolsListWidget::updateSymbolInfo()
 
   mOpacityWidget->setOpacity( mSymbol->opacity() );
 
+  // Remove all previous clip actions
+  const QList<QAction *> actionList( btnAdvanced->menu()->actions() );
+  for ( const auto &action : actionList )
+  {
+    if ( mClipFeaturesAction->text() == action->text() )
+    {
+      btnAdvanced->menu()->removeAction( action );
+    }
+  }
+
   if ( mSymbol->type() == QgsSymbol::Line || mSymbol->type() == QgsSymbol::Fill )
   {
     //add clip features option for line or fill symbols
     btnAdvanced->menu()->addAction( mClipFeaturesAction );
   }
-  else
-  {
-    btnAdvanced->menu()->removeAction( mClipFeaturesAction );
-  }
+
   btnAdvanced->setVisible( mAdvancedMenu || !btnAdvanced->menu()->isEmpty() );
 
   mClipFeaturesAction->blockSignals( true );

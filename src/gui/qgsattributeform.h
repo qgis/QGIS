@@ -55,6 +55,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
+      IdentifyMode //!< Identify the feature \since QGIS 3.0
     };
 
     //! Filter types
@@ -116,16 +117,16 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Returns the current mode of the form.
-     * \since QGIS 2.16
      * \see setMode()
+     * \since QGIS 2.16
      */
     Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
      * \param mode form mode
-     * \since QGIS 2.16
      * \see mode()
+     * \since QGIS 2.16
      */
     void setMode( Mode mode );
 
@@ -173,12 +174,24 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
   signals:
 
     /**
+     * Notifies about changes of attributes, this signal is not emitted when the value is set
+     * back to the original one.
+     *
+     * \param attribute The name of the attribute that changed.
+     * \param value     The new value of the attribute.
+     * \deprecated since 3.0
+     */
+    Q_DECL_DEPRECATED void attributeChanged( const QString &attribute, const QVariant &value ) SIP_DEPRECATED;
+
+    /**
      * Notifies about changes of attributes
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
+     * \param attributeChanged If true, it corresponds to an actual change of the feature attribute
+     * \since QGIS 3.0.1
      */
-    void attributeChanged( const QString &attribute, const QVariant &value );
+    void widgetValueChanged( const QString &attribute, const QVariant &value, bool attributeChanged );
 
     /**
      * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
@@ -364,6 +377,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
+    bool mValuesInitialized = false;
+    bool mDirty = false;
+    bool mIsSettingFeature = false;
 
     struct ContainerInformation
     {
@@ -403,7 +419,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int mFormNr;
     QString mPyFormVarName;
 
-    //! Set to true while saving to prevent recursive saves
+    //! Sets to true while saving to prevent recursive saves
     bool mIsSaving;
 
     //! Flag to prevent refreshFeature() to change mFeature

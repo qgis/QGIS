@@ -118,7 +118,7 @@ void QgsGrassEditRenderer::setMarkerRenderer( QgsFeatureRenderer *renderer )
   mMarkerRenderer = renderer;
 }
 
-QgsSymbol *QgsGrassEditRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGrassEditRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   int symbolCode = feature.attribute( QStringLiteral( "topo_symbol" ) ).toInt();
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
@@ -190,7 +190,7 @@ QgsFeatureRenderer *QgsGrassEditRenderer::clone() const
   return r;
 }
 
-QgsSymbolList QgsGrassEditRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsGrassEditRenderer::symbols( QgsRenderContext &context ) const
 {
   return mLineRenderer->symbols( context );
 }

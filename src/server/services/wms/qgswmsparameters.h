@@ -334,6 +334,12 @@ namespace QgsWms
       QString infoFormatAsString() const;
 
       /**
+       * Check if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
+       * \returns true if the INFO_FORMAT is an image format
+       */
+      bool infoFormatIsImage() const;
+
+      /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
        *  default value is text/plain.
        * \returns infoFormat
@@ -892,7 +898,7 @@ namespace QgsWms
        * \returns dpi parameter
        * \throws QgsBadRequestException
        */
-      int dpiAsInt() const;
+      double dpiAsDouble() const;
 
       /**
        * Returns TEMPLATE parameter or an empty string if not defined.
@@ -912,9 +918,9 @@ namespace QgsWms
       QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
       /**
-       * Return the external WMS uri
+       * Returns the external WMS uri
        * \param id the id of the external wms
-       * @return uri string or an empty string if the external wms id does not exist
+       * \return uri string or an empty string if the external wms id does not exist
        */
       QString externalWMSUri( const QString &id ) const;
 

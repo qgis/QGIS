@@ -77,7 +77,7 @@ class TestQgsEditorWidgetRegistry: public QObject
 
     void doubleType()
     {
-      checkSimple( QStringLiteral( "double" ), QStringLiteral( "Range" ) );
+      checkSimple( QStringLiteral( "double" ), QStringLiteral( "TextEdit" ) );
     }
 
     void arrayType()

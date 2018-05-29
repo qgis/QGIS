@@ -37,7 +37,7 @@ class QToolBar;
 
 /**
 * \class QgsGrassPlugin
-* \brief OpenModeller plugin for QGIS
+* \brief OpenModeller plugin for QGIS  //#spellok
 *
 */
 class QgsGrassPlugin : public QObject, public QgisPlugin
@@ -75,13 +75,13 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     virtual QString category();
 
     /**
-     * Return the plugin type
+     * Returns the plugin type
      */
     virtual int type();
 
     ~QgsGrassPlugin() override;
 
-    //! Get an icon from the active theme if possible
+    //! Gets an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &name );
 
   public slots:

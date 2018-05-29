@@ -17,6 +17,7 @@
 #include "qgsgeometrycheckerplugin.h"
 #include "qgisinterface.h"
 #include "qgsgeometrycheckerdialog.h"
+#include <QMenu>
 
 QgsGeometryCheckerPlugin::QgsGeometryCheckerPlugin( QgisInterface *iface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
@@ -28,10 +29,10 @@ void QgsGeometryCheckerPlugin::initGui()
 {
   mDialog = new QgsGeometryCheckerDialog( mIface, mIface->mainWindow() );
   mDialog->setWindowModality( Qt::NonModal );
-  mMenuAction = new QAction( QIcon( ":/geometrychecker/icons/geometrychecker.png" ), QApplication::translate( "QgsGeometryCheckerPlugin", "Check Geometries" ), this );
+  mMenuAction = new QAction( QIcon( ":/geometrychecker/icons/geometrychecker.png" ), QApplication::translate( "QgsGeometryCheckerPlugin", "Check Geometries…" ), this );
   connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::show );
   connect( mMenuAction, &QAction::triggered, mDialog, &QWidget::raise );
-  mIface->addPluginToVectorMenu( QApplication::translate( "QgsGeometryCheckerPlugin", "G&eometry Tools" ), mMenuAction );
+  mIface->addPluginToVectorMenu( QString(), mMenuAction );
 }
 
 void QgsGeometryCheckerPlugin::unload()
@@ -40,7 +41,7 @@ void QgsGeometryCheckerPlugin::unload()
   mDialog = nullptr;
   delete mMenuAction;
   mMenuAction = nullptr;
-  mIface->removePluginVectorMenu( QApplication::translate( "QgsGeometryCheckerPlugin", "G&eometry Tools" ), mMenuAction );
+  mIface->vectorMenu()->removeAction( mMenuAction );
 }
 
 

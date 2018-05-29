@@ -177,7 +177,8 @@ void QgsBrowserModel::initialize()
   if ( ! mInitialized )
   {
     connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-    connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
     addRootItems();
     mInitialized = true;
   }
@@ -466,16 +467,6 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     if ( index.isValid() )
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
-      if ( ptr->type() == QgsDataItem::Project )
-      {
-        QMimeData *mimeData = new QMimeData();
-        QUrl url = QUrl::fromLocalFile( ptr->path() );
-        QList<QUrl> urls;
-        urls << url;
-        mimeData->setUrls( urls );
-        return mimeData;
-      }
-
       QgsMimeDataUtils::Uri uri = ptr->mimeUri();
       if ( uri.isValid() )
         lst.append( uri );

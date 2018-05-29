@@ -27,8 +27,8 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
  * \ingroup gui
  * A Python editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 {

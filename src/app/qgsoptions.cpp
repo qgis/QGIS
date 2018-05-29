@@ -388,7 +388,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbAttrTableBehavior->addItem( tr( "Show all features" ), QgsAttributeTableFilterModel::ShowAll );
   cmbAttrTableBehavior->addItem( tr( "Show selected features" ), QgsAttributeTableFilterModel::ShowSelected );
   cmbAttrTableBehavior->addItem( tr( "Show features visible on map" ), QgsAttributeTableFilterModel::ShowVisible );
-  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->value( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() ) );
+  cmbAttrTableBehavior->setCurrentIndex( cmbAttrTableBehavior->findData( mSettings->enumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ) ) );
 
   mAttrTableViewComboBox->clear();
   mAttrTableViewComboBox->addItem( tr( "Remember last view" ), -1 );
@@ -576,14 +576,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   spinMaxThreads->setValue( QgsApplication::maxThreads() );
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( mSettings->value( QStringLiteral( "/qgis/simplifyDrawingHints" ), ( int )QgsVectorSimplifyMethod::GeometrySimplification ).toInt() != QgsVectorSimplifyMethod::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( mSettings->enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), QgsVectorSimplifyMethod::GeometrySimplification ) != QgsVectorSimplifyMethod::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/simplifyDrawingTol" ), Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD ).toFloat() );
   mSimplifyDrawingAtProvider->setChecked( !mSettings->value( QStringLiteral( "/qgis/simplifyLocal" ), true ).toBool() );
 
   //segmentation tolerance type
-  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), 0 );
-  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), 1 );
-  int toleranceType = mSettings->value( QStringLiteral( "/qgis/segmentationToleranceType" ), "0" ).toInt();
+  mToleranceTypeComboBox->addItem( tr( "Maximum angle" ), QgsAbstractGeometry::MaximumAngle );
+  mToleranceTypeComboBox->addItem( tr( "Maximum difference" ), QgsAbstractGeometry::MaximumDifference );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = mSettings->enumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
   int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
   if ( toleranceTypeIndex != -1 )
   {
@@ -591,7 +591,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   double tolerance = mSettings->value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
-  if ( toleranceType == 0 )
+  if ( toleranceType == QgsAbstractGeometry::MaximumAngle )
   {
     tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
   }
@@ -616,7 +616,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSimplifyAlgorithmComboBox->addItem( tr( "Distance" ), ( int )QgsVectorSimplifyMethod::Distance );
   mSimplifyAlgorithmComboBox->addItem( tr( "SnapToGrid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
   mSimplifyAlgorithmComboBox->addItem( tr( "Visvalingam" ), ( int )QgsVectorSimplifyMethod::Visvalingam );
-  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->value( QStringLiteral( "/qgis/simplifyAlgorithm" ), 0 ).toInt() ) );
+  mSimplifyAlgorithmComboBox->setCurrentIndex( mSimplifyAlgorithmComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), QgsVectorSimplifyMethod::NoSimplification ) ) );
 
   // Slightly awkard here at the settings value is true to use QImage,
   // but the checkbox is true to use QPixmap
@@ -633,11 +633,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mComboCopyFeatureFormat->addItem( tr( "Plain text, no geometry" ), QgsClipboard::AttributesOnly );
   mComboCopyFeatureFormat->addItem( tr( "Plain text, WKT geometry" ), QgsClipboard::AttributesWithWKT );
   mComboCopyFeatureFormat->addItem( tr( "GeoJSON" ), QgsClipboard::GeoJSON );
-  if ( mSettings->contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyFeatureFormat" ), true ).toInt() ) );
-  else
-    mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->value( QStringLiteral( "/qgis/copyGeometryAsWKT" ), true ).toBool() ?
-        QgsClipboard::AttributesWithWKT : QgsClipboard::AttributesOnly ) );
+  mComboCopyFeatureFormat->setCurrentIndex( mComboCopyFeatureFormat->findData( mSettings->enumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT ) ) );
   leNullValue->setText( QgsApplication::nullRepresentation() );
   cbxIgnoreShapeEncoding->setChecked( mSettings->value( QStringLiteral( "/qgis/ignoreShapeEncoding" ), true ).toBool() );
 
@@ -645,6 +641,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   // WMS getLegendGraphic setting
   mLegendGraphicResolutionSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), 0 ).toInt() );
+
+  // Map Tips delay
+  mMapTipsDelaySpinBox->setValue( mSettings->value( QStringLiteral( "qgis/mapTipsDelay" ), 850 ).toInt() );
 
   //
   // Raster properties
@@ -735,8 +734,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString scalePaths = mSettings->value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
   if ( !scalePaths.isEmpty() )
   {
-    const QStringList ScalesList = scalePaths.split( ',' );
-    for ( const QString &scale : ScalesList )
+    const QStringList scalesList = scalePaths.split( ',' );
+    for ( const QString &scale : scalesList )
     {
       addScaleToScaleList( scale );
     }
@@ -744,7 +743,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mListGlobalScales, &QListWidget::itemChanged, this, &QgsOptions::scaleItemChanged );
   connect( pbnAddScale, &QAbstractButton::clicked, this, &QgsOptions::addScale );
   connect( pbnRemoveScale, &QAbstractButton::clicked, this, &QgsOptions::removeScale );
-  connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
+  connect( pbnExportScales, &QAbstractButton::clicked, this, &QgsOptions::exportScales );
   connect( pbnImportScales, &QAbstractButton::clicked, this, &QgsOptions::importScales );
   connect( pbnDefaultScaleValues, &QAbstractButton::clicked, this, &QgsOptions::restoreDefaultScaleValues );
 
@@ -758,13 +757,91 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mButtonImportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showImportColorsDialog );
   connect( mButtonExportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showExportColorsDialog );
 
+  connect( mActionImportPalette, &QAction::triggered, this, [ = ]
+  {
+    if ( QgsCompoundColorWidget::importUserPaletteFromFile( this ) )
+    {
+      //refresh combobox
+      refreshSchemeComboBox();
+      mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->count() - 1 );
+    }
+  } );
+  connect( mActionRemovePalette, &QAction::triggered, this, [ = ]
+  {
+    //get current scheme
+    QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+    int prevIndex = mColorSchemesComboBox->currentIndex();
+    if ( prevIndex >= schemeList.length() )
+    {
+      return;
+    }
+
+    //make user scheme is a user removable scheme
+    QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( schemeList.at( prevIndex ) );
+    if ( !userScheme )
+    {
+      return;
+    }
+
+    if ( QgsCompoundColorWidget::removeUserPalette( userScheme, this ) )
+    {
+      refreshSchemeComboBox();
+      prevIndex = std::max( std::min( prevIndex, mColorSchemesComboBox->count() - 1 ), 0 );
+      mColorSchemesComboBox->setCurrentIndex( prevIndex );
+    }
+  } );
+  connect( mActionNewPalette, &QAction::triggered, this, [ = ]
+  {
+    if ( QgsCompoundColorWidget::createNewUserPalette( this ) )
+    {
+      //refresh combobox
+      refreshSchemeComboBox();
+      mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->count() - 1 );
+    }
+  } );
+
+  connect( mActionShowInButtons, &QAction::toggled, this, [ = ]( bool state )
+  {
+    QgsUserColorScheme *scheme = dynamic_cast< QgsUserColorScheme * >( mTreeCustomColors->scheme() );
+    if ( scheme )
+    {
+      scheme->setShowSchemeInMenu( state );
+    }
+  } );
+
+  QMenu *schemeMenu = new QMenu( mSchemeToolButton );
+  schemeMenu->addAction( mActionNewPalette );
+  schemeMenu->addAction( mActionImportPalette );
+  schemeMenu->addAction( mActionRemovePalette );
+  schemeMenu->addSeparator();
+  schemeMenu->addAction( mActionShowInButtons );
+  mSchemeToolButton->setMenu( schemeMenu );
+
   //find custom color scheme from registry
+  refreshSchemeComboBox();
   QList<QgsCustomColorScheme *> customSchemes;
   QgsApplication::colorSchemeRegistry()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
     mTreeCustomColors->setScheme( customSchemes.at( 0 ) );
+    mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->findText( customSchemes.at( 0 )->schemeName() ) );
+    updateActionsForCurrentColorScheme( customSchemes.at( 0 ) );
   }
+  connect( mColorSchemesComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    //save changes to scheme
+    if ( mTreeCustomColors->isDirty() )
+    {
+      mTreeCustomColors->saveColorsToScheme();
+    }
+
+    QgsColorScheme *scheme = QgsApplication::colorSchemeRegistry()->schemes().value( index );
+    if ( scheme )
+    {
+      mTreeCustomColors->setScheme( scheme );
+      updateActionsForCurrentColorScheme( scheme );
+    }
+  } );
 
   //
   // Layout settings
@@ -871,10 +948,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex" ), QgsSnappingConfig::Vertex );
   mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
-  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() ) );
-  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
+  mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ) ) );
+  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt();
+  QgsTolerance::UnitType defSnapUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS );
   if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );
@@ -884,7 +961,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  int defRadiusUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt();
+  QgsTolerance::UnitType defRadiusUnits = mSettings->enumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels );
   if ( defRadiusUnits == QgsTolerance::ProjectUnits || defRadiusUnits == QgsTolerance::LayerUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
@@ -934,10 +1011,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mSnappingMainDialogComboBox->addItem( tr( "Dock" ), "dock" );
   mSnappingMainDialogComboBox->setCurrentIndex( mSnappingMainDialogComboBox->findData( mSettings->value( QStringLiteral( "/qgis/mainSnappingWidgetMode" ), "dialog" ).toString() ) );
 
-  mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
-  mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), 1 );
-  mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
-  mOffsetJoinStyleComboBox->setCurrentIndex( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  mOffsetJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
+  mOffsetJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
+  mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
+  mOffsetJoinStyleComboBox->setCurrentIndex( ( int )mSettings->enumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ) );
   mOffsetQuadSegSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt() );
   mCurveOffsetMiterLimitComboBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble() );
 
@@ -990,6 +1067,20 @@ QgsOptions::~QgsOptions()
   delete mSettings;
 }
 
+QMap< QString, QString > QgsOptions::pageWidgetNameMap()
+{
+  QMap< QString, QString > pageNames;
+  for ( int idx = 0; idx < mOptionsListWidget->count(); ++idx )
+  {
+    QWidget *currentPage = mOptionsStackedWidget->widget( idx );
+    QListWidgetItem *item = mOptionsListWidget->item( idx );
+    QString title = item->text();
+    QString name = currentPage->objectName();
+    pageNames.insert( title, name );
+  }
+  return pageNames;
+}
+
 void QgsOptions::setCurrentPage( const QString &pageWidgetName )
 {
   //find the page with a matching widget name
@@ -1017,7 +1108,7 @@ void QgsOptions::cbxProjectDefaultNew_toggled( bool checked )
     QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
     if ( ! QFile::exists( fileName ) )
     {
-      QMessageBox::information( nullptr, tr( "Save default project" ), tr( "You must set a default project" ) );
+      QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "You must set a default project" ) );
       cbxProjectDefaultNew->setChecked( false );
     }
   }
@@ -1028,11 +1119,11 @@ void QgsOptions::setCurrentProjectDefault()
   QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
   if ( QgsProject::instance()->write( fileName ) )
   {
-    QMessageBox::information( nullptr, tr( "Save default project" ), tr( "Current project saved as default" ) );
+    QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "Current project saved as default" ) );
   }
   else
   {
-    QMessageBox::critical( nullptr, tr( "Save default project" ), tr( "Error saving current project as default" ) );
+    QMessageBox::critical( nullptr, tr( "Save Default Project" ), tr( "Error saving current project as default" ) );
   }
 }
 
@@ -1222,7 +1313,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/dataSourceManagerNonModal" ), mDataSourceManagerNonModal->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/checkVersion" ), cbxCheckVersion->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/dockAttributeTable" ), cbxAttributeTableDocked->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), cmbAttrTableBehavior->currentData() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/attributeTableBehavior" ), ( QgsAttributeTableFilterModel::FilterMode )cmbAttrTableBehavior->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableView" ), mAttrTableViewComboBox->currentData() );
   mSettings->setValue( QStringLiteral( "/qgis/attributeTableRowCache" ), spinBoxAttrTableRowCache->value() );
   mSettings->setValue( QStringLiteral( "/qgis/promptForRasterSublayers" ), cmbPromptRasterSublayers->currentIndex() );
@@ -1237,7 +1328,9 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/addOracleDC" ), cbxAddOracleDC->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/compileExpressions" ), cbxCompileExpressions->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/defaultLegendGraphicResolution" ), mLegendGraphicResolutionSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), mComboCopyFeatureFormat->currentData().toInt() );
+  mSettings->setValue( QStringLiteral( "/qgis/mapTipsDelay" ), mMapTipsDelaySpinBox->value() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), ( QgsClipboard::CopyFormat )mComboCopyFeatureFormat->currentData().toInt() );
+  QgisApp::instance()->setMapTipsDelay( mMapTipsDelaySpinBox->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/new_layers_visible" ), chkAddedVisibility->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/enable_anti_aliasing" ), chkAntiAliasing->isChecked() );
@@ -1257,8 +1350,8 @@ void QgsOptions::saveOptions()
     simplifyHints |= QgsVectorSimplifyMethod::GeometrySimplification;
     if ( mSimplifyDrawingSpinBox->value() > 1 ) simplifyHints |= QgsVectorSimplifyMethod::AntialiasingSimplification;
   }
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), ( int ) simplifyHints );
-  mSettings->setValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), mSimplifyAlgorithmComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), simplifyHints );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/simplifyAlgorithm" ), ( QgsVectorSimplifyMethod::SimplifyHints )mSimplifyAlgorithmComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyDrawingTol" ), mSimplifyDrawingSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyLocal" ), !mSimplifyDrawingAtProvider->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/simplifyMaxScale" ), mSimplifyMaximumScaleComboBox->scale() );
@@ -1267,10 +1360,10 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/magnifier_factor_default" ), doubleSpinBoxMagnifierDefault->value() / 100 );
 
   //curve segmentation
-  int segmentationType = mToleranceTypeComboBox->currentData().toInt();
-  mSettings->setValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
+  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
+  mSettings->setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
-  if ( segmentationType == 0 )
+  if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
   {
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
@@ -1399,16 +1492,17 @@ void QgsOptions::saveOptions()
 
   //default snap mode
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_enabled" ), mSnappingEnabledDefault->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), mDefaultSnapModeComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snap_type" ), ( QgsSnappingConfig::SnappingType )mDefaultSnapModeComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), mDefaultSnappingToleranceSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), mSearchRadiusVertexEditSpinBox->value() );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
-                       ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
-                       ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ),
+                           ( mDefaultSnappingToleranceComboBox->currentIndex() == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit_unit" ),
+                           ( mSearchRadiusVertexEditComboBox->currentIndex()  == 0 ? QgsTolerance::ProjectUnits : QgsTolerance::Pixels ) );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_color" ), mSnappingMarkerColorButton->color() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_tooltip" ), mSnappingTooltipsCheckbox->isChecked() );
+  mSettings->setValue( QStringLiteral( "/qgis/digitizing/snap_invisible_feature" ), mEnableSnappingOnInvisibleFeatureCheckbox->isChecked() );
 
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), mMarkersOnlyForSelectedCheckBox->isChecked() );
 
@@ -1431,7 +1525,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/disable_enter_attribute_values_dialog" ), chkDisableAttributeValuesDlg->isChecked() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/validate_geometries" ), mValidateGeometries->currentIndex() );
 
-  mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), mOffsetJoinStyleComboBox->currentData().toInt() );
+  mSettings->setEnumValue( QStringLiteral( "/qgis/digitizing/offset_join_style" ), ( QgsGeometry::JoinStyle )mOffsetJoinStyleComboBox->currentData().toInt() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), mOffsetQuadSegSpinBox->value() );
   mSettings->setValue( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), mCurveOffsetMiterLimitComboBox->value() );
 
@@ -1920,13 +2014,13 @@ void QgsOptions::browseCacheDirectory()
 void QgsOptions::clearCache()
 {
   QgsNetworkAccessManager::instance()->cache()->clear();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Content cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Content cache has been cleared." ) );
 }
 
 void QgsOptions::clearAccessCache()
 {
   QgsNetworkAccessManager::instance()->clearAccessCache();
-  QMessageBox::information( this, tr( "Cache cleared" ), tr( "Connection authentication cache has been cleared" ) );
+  QMessageBox::information( this, tr( "Clear Cache" ), tr( "Connection authentication cache has been cleared." ) );
 }
 
 void QgsOptions::optionsStackedWidget_CurrentChanged( int index )
@@ -2168,11 +2262,11 @@ void QgsOptions::initContrastEnhancement( QComboBox *cbox, const QString &name, 
   //add items to the color enhanceContrast combo boxes
   cbox->addItem( tr( "No Stretch" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::NoEnhancement ) );
-  cbox->addItem( tr( "Stretch To MinMax" ),
+  cbox->addItem( tr( "Stretch to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchToMinimumMaximum ) );
-  cbox->addItem( tr( "Stretch And Clip To MinMax" ),
+  cbox->addItem( tr( "Stretch and Clip to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::StretchAndClipToMinimumMaximum ) );
-  cbox->addItem( tr( "Clip To MinMax" ),
+  cbox->addItem( tr( "Clip to MinMax" ),
                  QgsContrastEnhancement::contrastEnhancementAlgorithmString( QgsContrastEnhancement::ClipToMinimumMaximum ) );
 
   QString contrastEnhancement = mSettings->value( "/Raster/defaultContrastEnhancementAlgorithm/" + name, defaultVal ).toString();
@@ -2248,6 +2342,43 @@ void QgsOptions::addScaleToScaleList( QListWidgetItem *newItem )
   mListGlobalScales->insertItem( i, newItem );
 }
 
+void QgsOptions::refreshSchemeComboBox()
+{
+  mColorSchemesComboBox->blockSignals( true );
+  mColorSchemesComboBox->clear();
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
+  {
+    mColorSchemesComboBox->addItem( ( *schemeIt )->schemeName() );
+  }
+  mColorSchemesComboBox->blockSignals( false );
+}
+
+void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
+{
+  if ( !scheme )
+    return;
+
+  mButtonImportColors->setEnabled( scheme->isEditable() );
+  mButtonPasteColors->setEnabled( scheme->isEditable() );
+  mButtonAddColor->setEnabled( scheme->isEditable() );
+  mButtonRemoveColor->setEnabled( scheme->isEditable() );
+
+  QgsUserColorScheme *userScheme = dynamic_cast<QgsUserColorScheme *>( scheme );
+  mActionRemovePalette->setEnabled( static_cast< bool >( userScheme ) && userScheme->isEditable() );
+  if ( userScheme )
+  {
+    mActionShowInButtons->setEnabled( true );
+    whileBlocking( mActionShowInButtons )->setChecked( userScheme->flags() & QgsColorScheme::ShowInColorButtonMenu );
+  }
+  else
+  {
+    whileBlocking( mActionShowInButtons )->setChecked( false );
+    mActionShowInButtons->setEnabled( false );
+  }
+}
+
 void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
 {
   // Check if the new value is valid, restore the old value if not.
@@ -2260,7 +2391,7 @@ void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )
   }
   else
   {
-    QMessageBox::warning( this, tr( "Invalid scale" ), tr( "The text you entered is not a valid scale." ) );
+    QMessageBox::warning( this, tr( "Set Scale" ), tr( "The text you entered is not a valid scale." ) );
     changedScaleItem->setText( changedScaleItem->data( Qt::UserRole ).toString() );
   }
 

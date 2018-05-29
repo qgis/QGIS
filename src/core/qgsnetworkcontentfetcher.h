@@ -26,14 +26,14 @@
 #include "qgis_core.h"
 
 /**
-  \class QgsNetworkContentFetcher
-  \ingroup core
-  \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
-  and converting the content to standard formats. Url redirects are automatically
-  handled.
-  \since 2.5
+ * \class QgsNetworkContentFetcher
+ * \ingroup core
+ * \brief HTTP network content fetcher. A simple method for fetching remote HTTP content
+ * and converting the content to standard formats. Url redirects are automatically
+ * handled.
+ * \see QgsNetworkContentFetcherTask
+ * \since QGIS 2.5
 */
-
 class CORE_EXPORT QgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
@@ -55,6 +55,14 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
     void fetchContent( const QUrl &url );
 
     /**
+     * Fetches content using a network \a request and handles redirects. The finished()
+     * signal will be emitted when content has been fetched.
+     *
+     * \since QGIS 3.2
+     */
+    void fetchContent( const QNetworkRequest &request );
+
+    /**
      * Returns a reference to the network reply
      * \returns QNetworkReply for fetched URL content
      */
@@ -66,6 +74,12 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     QString contentAsString() const;
 
+    /**
+     * Cancels any ongoing request.
+     * \since QGIS 3.2
+     */
+    void cancel();
+
   signals:
 
     /**
@@ -73,11 +87,19 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     void finished();
 
+    /**
+     * Emitted when data is received.
+     * \since QGIS 3.2
+     */
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+
   private:
 
     QNetworkReply *mReply = nullptr;
 
     bool mContentLoaded = false;
+
+    bool mIsCanceled = false;
 
     /**
      * Tries to create a text codec for decoding html content. Works around bugs in Qt's built in method.

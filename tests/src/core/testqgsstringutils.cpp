@@ -34,6 +34,8 @@ class TestQgsStringUtils : public QObject
     void hammingDistance();
     void soundex();
     void insertLinks();
+    void titleCase_data();
+    void titleCase();
 
 };
 
@@ -152,6 +154,33 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QString( "is a@a an email?" ), &found ), QString( "is a@a an email?" ) );
   QVERIFY( !found );
+}
+
+void TestQgsStringUtils::titleCase_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  // invalid strings
+  QTest::newRow( "empty string" ) << "" << "";
+  QTest::newRow( "single character" ) << "a" << "A";
+  QTest::newRow( "string 1" ) << "follow step-by-step instructions" << "Follow Step-by-Step Instructions";
+  QTest::newRow( "string 2" ) << "this sub-phrase is nice" << "This Sub-Phrase Is Nice";
+  QTest::newRow( "" ) << "catchy title: a subtitle" << "Catchy Title: A Subtitle";
+  QTest::newRow( "string 3" ) << "all words capitalized" << "All Words Capitalized";
+  QTest::newRow( "string 4" ) << "small words are for by and of lowercase" << "Small Words Are for by and of Lowercase";
+  QTest::newRow( "string 5" ) << "a small word starts" << "A Small Word Starts";
+  QTest::newRow( "last word" ) << "a small word it ends on" << "A Small Word It Ends On";
+  QTest::newRow( "last word2" ) << "Ends with small word of" << "Ends With Small Word Of";
+  QTest::newRow( "string 6" ) << "Merge VRT(s)" << "Merge VRT(s)";
+  QTest::newRow( "string 6" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
+}
+
+void TestQgsStringUtils::titleCase()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+  QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
 }
 
 

@@ -22,6 +22,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgsfontutils.h"
 #include "qgsrenderchecker.h"
+#include <QStyleOptionGraphicsItem>
 
 class TestQgsLayoutUtils: public QObject
 {
@@ -52,6 +53,8 @@ class TestQgsLayoutUtils: public QObject
     void drawTextRect(); //test drawing text in a rect
     void largestRotatedRect(); //test largest rotated rect helper function
     void decodePaperOrientation();
+    void scaleFactorFromItemStyle();
+    void mapLayerFromString();
 
   private:
 
@@ -625,6 +628,37 @@ void TestQgsLayoutUtils::decodePaperOrientation()
   orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( " LANDSCAPE  " ), ok );
   QVERIFY( ok );
   QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
+}
+
+void TestQgsLayoutUtils::scaleFactorFromItemStyle()
+{
+  QStyleOptionGraphicsItem style;
+  style.matrix = QMatrix( 2, 0, 0, 0, 0, 0 );
+  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
+  style.matrix = QMatrix( 0, 2, 0, 0, 0, 0 );
+  QCOMPARE( QgsLayoutUtils::scaleFactorFromItemStyle( &style ), 2.0 );
+}
+
+void TestQgsLayoutUtils::mapLayerFromString()
+{
+  // add some layers to a project
+  QgsVectorLayer *l1 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "layer 1" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l2 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "layer 2" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *l2a = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "LAYER 2" ), QStringLiteral( "memory" ) );
+  QgsProject p;
+  p.addMapLayer( l1 );
+  p.addMapLayer( l2 );
+  p.addMapLayer( l2a );
+
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( "layer 1", &p ), l1 );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( "LAYER 1", &p ), l1 );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( "layer 2", &p ), l2 );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( "LAYER 2", &p ), l2a );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( l1->id(), &p ), l1 );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( l2->id(), &p ), l2 );
+  QCOMPARE( QgsLayoutUtils::mapLayerFromString( l2a->id(), &p ), l2a );
+  QVERIFY( !QgsLayoutUtils::mapLayerFromString( "none", &p ) );
+
 }
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )

@@ -67,7 +67,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
       ShowDialog = 0, //!< Show a color picker dialog when clicked
       SignalOnly //!< Emit colorClicked signal only, no dialog
     };
-    Q_ENUM( Behavior );
+    Q_ENUM( Behavior )
 
     /**
      * Construct a new color ramp button.
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QSize sizeHint() const override;
 
     /**
-     * Return the currently selected color.
+     * Returns the currently selected color.
      * \returns currently selected color
      * \see setColor
      */
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see showNoColor
      * \see setNoColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     void setShowNoColor( const bool showNoColorOption ) { mShowNoColorOption = showNoColorOption; }
 
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see setShowNoColor
      * \see noColorString
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     bool showNoColor() const { return mShowNoColorOption; }
 
@@ -196,32 +196,32 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see noColorString
      * \see setShowNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     void setNoColorString( const QString &noColorString ) { mNoColorString = noColorString; }
 
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
      * \param showNull set to true to show a null option
-     * \since QGIS 2.16
      * \see showNull()
      * \see isNull()
+     * \since QGIS 2.16
      */
     void setShowNull( bool showNull );
 
     /**
      * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
-     * \since QGIS 2.16
      * \see setShowNull()
      * \see isNull()
+     * \since QGIS 2.16
      */
     bool showNull() const;
 
     /**
      * Returns true if the current color is null.
-     * \since QGIS 2.16
      * \see setShowNull()
      * \see showNull()
+     * \since QGIS 2.16
      */
     bool isNull() const;
 
@@ -231,13 +231,13 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see setNoColorString
      * \see showNoColor
      * \note The "no color" option is only shown if the color button is set to show an alpha channel in the color
-     * dialog (see setColorDialogOptions)
+     * dialog
      */
     QString noColorString() const { return mNoColorString; }
 
     /**
      * Sets the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \param context context string for the color button's color swatch grids
      * \see context
@@ -246,7 +246,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Returns the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \returns context string for the color button's color swatch grids
      * \see setContext
@@ -312,7 +312,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets color to a totally transparent color.
      * \note If the color button is not set to show an opacity channel in the color
-     * dialog (see setColorDialogOptions) then the color will not be changed.
+     * dialog  then the color will not be changed.
      * \see setToNull()
      */
     void setToNoColor();
@@ -399,7 +399,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
-    static QScreen *findScreenAt( const QPoint &pos );
+
+    QColor sampleColor( QPoint point ) const;
+
+    static QScreen *findScreenAt( QPoint pos );
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;
@@ -408,6 +411,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QgsColorSchemeRegistry *mColorSchemeRegistry = nullptr;
 
     QColor mDefaultColor;
+
+    //! Store current color when start picking
+    QColor mCurrentColor;
+
     QString mContext;
     bool mAllowOpacity = false;
     bool mColorSet = false;
@@ -436,10 +443,10 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Ends a color picking operation
      * \param eventPos global position of pixel to sample color from
-     * \param sampleColor set to true to actually sample the color, false to just cancel
+     * \param samplingColor set to true to actually sample the color, false to just cancel
      * the color picking operation
      */
-    void stopPicking( QPointF eventPos, bool sampleColor = true );
+    void stopPicking( QPoint eventPos, bool samplingColor = true );
 
     /**
      * Create a color icon for display in the drop-down menu

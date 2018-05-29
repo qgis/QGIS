@@ -36,7 +36,9 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
-from processing.script.ScriptUtils import ScriptUtils
+from PyQt5.QtCore import QCoreApplication
+
+from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
 
@@ -53,26 +55,21 @@ from .DefineProjection import DefineProjection
 from .Delaunay import Delaunay
 from .DeleteColumn import DeleteColumn
 from .DeleteDuplicateGeometries import DeleteDuplicateGeometries
-from .DeleteHoles import DeleteHoles
 from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
-from .Difference import Difference
 from .EliminateSelection import EliminateSelection
-from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
-from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtractSpecificNodes import ExtractSpecificNodes
+from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .GridLine import GridLine
-from .GridPolygon import GridPolygon
+from .Grid import Grid
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
@@ -81,14 +78,13 @@ from .HypsometricCurves import HypsometricCurves
 from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
-from .Intersection import Intersection
+from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
-from .PointOnSurface import PointOnSurface
 from .PointsAlongGeometry import PointsAlongGeometry
 from .PointsDisplacement import PointsDisplacement
 from .PointsFromLines import PointsFromLines
@@ -137,12 +133,10 @@ from .SpatialJoin import SpatialJoin
 from .SpatialJoinSummary import SpatialJoinSummary
 from .StatisticsByCategories import StatisticsByCategories
 from .SumLines import SumLines
-from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
 from .TruncateTable import TruncateTable
-from .Union import Union
 from .UniqueValues import UniqueValues
 from .VariableDistanceBuffer import VariableDistanceBuffer
 from .VectorSplit import VectorSplit
@@ -155,6 +149,7 @@ pluginPath = os.path.normpath(os.path.join(
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
+    fieldMappingParameterName = QCoreApplication.translate('Processing', 'Fields Mapper')
 
     def __init__(self):
         super().__init__()
@@ -175,26 +170,21 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Delaunay(),
                 DeleteColumn(),
                 DeleteDuplicateGeometries(),
-                DeleteHoles(),
                 DensifyGeometries(),
                 DensifyGeometriesInterval(),
-                Difference(),
                 EliminateSelection(),
-                EquivalentNumField(),
                 ExecuteSQL(),
-                Explode(),
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtractSpecificNodes(),
+                ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                GridLine(),
-                GridPolygon(),
+                Grid(),
                 Heatmap(),
                 Hillshade(),
                 HubDistanceLines(),
@@ -203,14 +193,13 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 IdwInterpolation(),
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
-                Intersection(),
+                KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
-                PointOnSurface(),
                 PointsAlongGeometry(),
                 PointsDisplacement(),
                 PointsFromLines(),
@@ -259,12 +248,10 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SpatialJoinSummary(),
                 StatisticsByCategories(),
                 SumLines(),
-                SymmetricalDifference(),
                 TextToFloat(),
                 TinInterpolation(),
                 TopoColor(),
                 TruncateTable(),
-                Union(),
                 UniqueValues(),
                 VariableDistanceBuffer(),
                 VectorSplit(),
@@ -292,11 +279,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                          VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:
-            script.allowEdit = False
-        algs.extend(scripts)
+        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        #scripts = ScriptUtils.loadFromFolder(folder)
+        #for script in scripts:
+        #    script.allowEdit = False
+        #algs.extend(scripts)
 
         return algs
 
@@ -318,6 +305,20 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
         for a in self.externalAlgs:
             self.addAlgorithm(a)
+
+    def load(self):
+        success = super().load()
+
+        if success:
+            self.parameterTypeFieldsMapping = FieldsMapper.ParameterFieldsMappingType()
+            QgsApplication.instance().processingRegistry().addParameterType(self.parameterTypeFieldsMapping)
+
+        return success
+
+    def unload(self):
+        super().unload()
+
+        QgsApplication.instance().processingRegistry().removeParameterType(self.parameterTypeFieldsMapping)
 
     def supportsNonFileBasedOutput(self):
         return True

@@ -39,6 +39,18 @@ class QgsVectorLayerLabelProvider;
  */
 class CORE_EXPORT QgsAbstractVectorLayerLabeling
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->type() == "simple" )
+      sipType = sipType_QgsVectorLayerSimpleLabeling;
+    else if ( sipCpp->type() == "rule-based" )
+      sipType = sipType_QgsRuleBasedLabeling;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
   public:
     //! Default constructor
     QgsAbstractVectorLayerLabeling() = default;
@@ -47,7 +59,7 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     //! Unique type string of the labeling configuration implementation
     virtual QString type() const = 0;
 
-    //! Return a new copy of the object
+    //! Returns a new copy of the object
     virtual QgsAbstractVectorLayerLabeling *clone() const = 0 SIP_FACTORY;
 
     /**
@@ -56,14 +68,14 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
      */
     virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const SIP_SKIP { Q_UNUSED( layer ); return nullptr; }
 
-    //! Return labeling configuration as XML element
+    //! Returns labeling configuration as XML element
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 
-    //! Get list of sub-providers within the layer's labeling.
+    //! Gets list of sub-providers within the layer's labeling.
     virtual QStringList subProviders() const { return QStringList( QString() ); }
 
     /**
-     * Get associated label settings. In case of multiple sub-providers with different settings,
+     * Gets associated label settings. In case of multiple sub-providers with different settings,
      * they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
      */
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;

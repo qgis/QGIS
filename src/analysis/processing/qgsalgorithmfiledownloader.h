@@ -30,11 +30,12 @@ class QgsProcessingFeedback;
 /**
  * Native file downloader algorithm.
  */
-class QgsFileDownloaderAlgorithm : public QgsProcessingAlgorithm, public QObject
+class QgsFileDownloaderAlgorithm : public QObject, public QgsProcessingAlgorithm
 {
+    Q_OBJECT
+
   public:
     QgsFileDownloaderAlgorithm() = default;
-    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -54,7 +55,7 @@ class QgsFileDownloaderAlgorithm : public QgsProcessingAlgorithm, public QObject
     QString mReceived;
     QgsProcessingFeedback *mFeedback = nullptr;
     QString mLastReport;
-    void reportErrors( QStringList errors );
+    void reportErrors( const QStringList &errors );
     void receiveProgressFromDownloader( qint64 bytesReceived, qint64 bytesTotal );
     void sendProgressFeedback();
 };

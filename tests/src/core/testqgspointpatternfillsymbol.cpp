@@ -133,6 +133,7 @@ void TestQgsPointPatternFillSymbol::pointPatternFillSymbol()
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
@@ -147,6 +148,7 @@ void TestQgsPointPatternFillSymbol::dataDefinedSubSymbol()
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
+  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
   properties.insert( QStringLiteral( "size" ), QStringLiteral( "5.0" ) );
   QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );

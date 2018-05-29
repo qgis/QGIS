@@ -131,9 +131,20 @@ void QgsRendererCategory::toSld( QDomDocument &doc, QDomElement &element, QgsStr
   ruleElem.appendChild( descrElem );
 
   // create the ogc:Filter for the range
-  QString filterFunc = QStringLiteral( "%1 = '%2'" )
-                       .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
-                             mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  QString filterFunc;
+  if ( mValue.isNull() || mValue.toString().isEmpty() )
+  {
+    filterFunc = QStringLiteral( "%1 = '%2' or %1 is null" )
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  }
+  else
+  {
+    filterFunc = QStringLiteral( "%1 = '%2'" )
+                 .arg( attrName.replace( '\"', QLatin1String( "\"\"" ) ),
+                       mValue.toString().replace( '\'', QLatin1String( "''" ) ) );
+  }
+
   QgsSymbolLayerUtils::createFunctionElement( doc, ruleElem, filterFunc );
 
   // add the mix/max scale denoms if we got any from the callers
@@ -168,21 +179,25 @@ void QgsCategorizedSymbolRenderer::rebuildHash()
   for ( int i = 0; i < mCategories.size(); ++i )
   {
     const QgsRendererCategory &cat = mCategories.at( i );
-    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : skipRender() );
+    mSymbolHash.insert( cat.value().toString(), ( cat.renderState() || mCounting ) ? cat.symbol() : nullptr );
   }
 }
 
 QgsSymbol *QgsCategorizedSymbolRenderer::skipRender()
 {
-  static QgsMarkerSymbol *skipRender = nullptr;
-  if ( !skipRender )
-    skipRender = new QgsMarkerSymbol();
-
-  return skipRender;
+  return nullptr;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value )
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value ) const
 {
+  bool found = false;
+  return symbolForValue( value, found );
+}
+
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value, bool &foundMatchingSymbol ) const
+{
+  foundMatchingSymbol = false;
+
   // TODO: special case for int, double
   QHash<QString, QgsSymbol *>::const_iterator it = mSymbolHash.constFind( value.isNull() ? QLatin1String( "" ) : value.toString() );
   if ( it == mSymbolHash.constEnd() )
@@ -198,15 +213,17 @@ QgsSymbol *QgsCategorizedSymbolRenderer::symbolForValue( const QVariant &value )
     return nullptr;
   }
 
+  foundMatchingSymbol = true;
+
   return *it;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsCategorizedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
 
-QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QVariant QgsCategorizedSymbolRenderer::valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
@@ -224,19 +241,18 @@ QVariant QgsCategorizedSymbolRenderer::valueForFeature( QgsFeature &feature, Qgs
   return value;
 }
 
-QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsCategorizedSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
+  bool foundCategory = false;
   // find the right symbol for the category
-  QgsSymbol *symbol = symbolForValue( value );
-  if ( symbol == skipRender() )
-    return nullptr;
+  QgsSymbol *symbol = symbolForValue( value, foundCategory );
 
-  if ( !symbol )
+  if ( !foundCategory )
   {
-    // if no symbol found use default one
-    return symbolForValue( QVariant( "" ) );
+    // if no symbol found, use default symbol
+    return symbolForValue( QVariant( "" ), foundCategory );
   }
 
   return symbol;
@@ -542,7 +558,7 @@ QString QgsCategorizedSymbolRenderer::filter( const QgsFields &fields )
   }
 }
 
-QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsCategorizedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -784,7 +800,7 @@ QgsLegendSymbolList QgsCategorizedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QString value = valueForFeature( feature, context ).toString();
   int i = 0;
@@ -793,7 +809,7 @@ QSet<QString> QgsCategorizedSymbolRenderer::legendKeysForFeature( QgsFeature &fe
   {
     if ( value == cat.value() )
     {
-      if ( cat.renderState() )
+      if ( cat.renderState() || mCounting )
         return QSet< QString >() << QString::number( i );
       else
         return QSet< QString >();

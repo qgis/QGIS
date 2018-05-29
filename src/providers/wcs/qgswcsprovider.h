@@ -60,7 +60,7 @@ struct QgsWcsAuthorization
     , mAuthCfg( authcfg )
   {}
 
-  //! set authorization header
+  //! Sets authorization header
   bool setAuthorization( QNetworkRequest &request ) const
   {
     if ( !mAuthCfg.isEmpty() )
@@ -74,7 +74,7 @@ struct QgsWcsAuthorization
     return true;
   }
 
-  //! set authorization reply
+  //! Sets authorization reply
   bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
@@ -112,11 +112,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     * \param uri HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
-     *
+     * \param options generic data provider options
      */
-    explicit QgsWcsProvider( const QString &uri = QString() );
+    explicit QgsWcsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
 
     ~QgsWcsProvider() override;
@@ -126,7 +126,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsCoordinateReferenceSystem crs() const override;
 
     /**
-     * Get the coverage format used in the transfer from the WCS server
+     * Gets the coverage format used in the transfer from the WCS server
      */
     QString format() const;
 
@@ -160,7 +160,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     virtual QString baseUrl() const;
 
-    //! get WCS version string
+    //! Gets WCS version string
     QString wcsVersion();
 
     // Reimplemented QgsRasterDataProvider virtual methods

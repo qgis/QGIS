@@ -74,7 +74,7 @@ void QgsPoint3DSymbolWidget::onChooseModelClicked( bool )
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Invalid File" ), tr( "Error, file does not exist or is not readable." ) );
     return;
   }
 

@@ -166,6 +166,8 @@ class Handler(BaseHTTPRequestHandler):
         headers = {}
         for k, v in self.headers.items():
             headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
+        if not self.path.startswith('http'):
+            self.path = "%s://%s:%s%s" % ('https' if https else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
         request = QgsBufferServerRequest(self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
         response = QgsBufferServerResponse()
         qgs_server.handleRequest(request, response)

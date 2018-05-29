@@ -28,8 +28,10 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessingProvider,
+from qgis.core import (Qgis,
+                       QgsProcessingProvider,
                        QgsProcessingUtils,
+                       QgsApplication,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows, isMac
@@ -40,6 +42,8 @@ from . import SagaUtils
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
+
+REQUIRED_VERSION = '2.3.'
 
 
 class SagaAlgorithmProvider(QgsProcessingProvider):
@@ -80,13 +84,13 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
             QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'),
-                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                     self.tr('Processing'), Qgis.Critical)
             return
 
-        if not version.startswith('2.3.'):
-            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version found.'),
+        if not version.startswith(REQUIRED_VERSION):
+            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
                                      self.tr('Processing'),
-                                     QgsMessageLog.CRITICAL)
+                                     Qgis.Critical)
             return
 
         self.algs = []
@@ -99,10 +103,10 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                         self.algs.append(alg)
                     else:
                         QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)),
-                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                                 self.tr('Processing'), Qgis.Critical)
                 except Exception as e:
                     QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))),
-                                             self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                             self.tr('Processing'), Qgis.Critical)
 
         self.algs.append(SplitRGBBands())
         for a in self.algs:
@@ -127,8 +131,14 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def supportedOutputTableExtensions(self):
         return ['dbf']
 
+    def supportsNonFileBasedOutput(self):
+        """
+        SAGA Provider doesn't support non file based outputs
+        """
+        return False
+
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        return QgsApplication.getThemeIcon("/providerSaga.svg")
 
     def tr(self, string, context=''):
         if context == '':

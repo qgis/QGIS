@@ -85,7 +85,7 @@ FeaturePart::~FeaturePart()
 void FeaturePart::extractCoords( const GEOSGeometry *geom )
 {
   const GEOSCoordSequence *coordSeq = nullptr;
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   type = GEOSGeomTypeId_r( geosctxt, geom );
 
@@ -856,11 +856,16 @@ int FeaturePart::createCandidatesAlongLineNearMidpoint( QList<LabelPosition *> &
   {
     lineStepDistance = std::min( std::min( labelHeight, labelWidth ), lineStepDistance / mLF->layer()->pal->line_p );
   }
-  else // line length < label width => centering label position
+  else if ( !line->isClosed() ) // line length < label width => centering label position
   {
     currentDistanceAlongLine = - ( labelWidth - totalLineLength ) / 2.0;
     lineStepDistance = -1;
     totalLineLength = labelWidth;
+  }
+  else
+  {
+    // closed line, not long enough for label => no candidates!
+    currentDistanceAlongLine = std::numeric_limits< double >::max();
   }
 
   double candidateLength;
@@ -1512,16 +1517,9 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
 }
 
 int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
-                                   double bboxMin[2], double bboxMax[2],
+                                   const GEOSPreparedGeometry *mapBoundary,
                                    PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates )
 {
-  double bbox[4];
-
-  bbox[0] = bboxMin[0];
-  bbox[1] = bboxMin[1];
-  bbox[2] = bboxMax[0];
-  bbox[3] = bboxMax[1];
-
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
   if ( mLF->hasFixedPosition() )
@@ -1579,10 +1577,11 @@ int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
   {
     LabelPosition *pos = i.next();
     bool outside = false;
+
     if ( mLF->layer()->pal->getShowPartial() )
-      outside = !pos->isIntersect( bbox );
+      outside = !pos->intersects( mapBoundary );
     else
-      outside = !pos->isInside( bbox );
+      outside = !pos->within( mapBoundary );
     if ( outside )
     {
       i.remove();
@@ -1603,7 +1602,7 @@ void FeaturePart::addSizePenalty( int nbp, QList< LabelPosition * > &lPos, doubl
   if ( !mGeos )
     createGeosGeom();
 
-  GEOSContextHandle_t ctxt = geosContext();
+  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
   int geomType = GEOSGeomTypeId_r( ctxt, mGeos );
 
   double sizeCost = 0;
@@ -1662,7 +1661,7 @@ bool FeaturePart::isConnected( FeaturePart *p2 )
 
   try
   {
-    return ( GEOSPreparedTouches_r( geosContext(), preparedGeom(), p2->mGeos ) == 1 );
+    return ( GEOSPreparedTouches_r( QgsGeos::getGEOSHandler(), preparedGeom(), p2->mGeos ) == 1 );
   }
   catch ( GEOSException &e )
   {
@@ -1678,7 +1677,7 @@ bool FeaturePart::mergeWithFeaturePart( FeaturePart *other )
   if ( !other->mGeos )
     other->createGeosGeom();
 
-  GEOSContextHandle_t ctxt = geosContext();
+  GEOSContextHandle_t ctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSGeometry *g1 = GEOSGeom_clone_r( ctxt, mGeos );

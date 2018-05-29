@@ -1,7 +1,3 @@
-# Standard includes and utils to compile into all tests.
-#SET (util_SRCS qgscompositionchecker.cpp)
-
-
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
@@ -10,7 +6,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
@@ -25,6 +20,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
@@ -56,10 +52,10 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
   SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -82,7 +78,6 @@ SET(TESTS
  testqgsclipper.cpp
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
- testqgscomposermultiframe.cpp
  testqgscompositionconverter.cpp
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
@@ -113,6 +108,7 @@ SET(TESTS
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
@@ -147,6 +143,7 @@ SET(TESTS
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
@@ -161,6 +158,7 @@ SET(TESTS
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
  testqgsproject.cpp
+ testqgsprojectstorage.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
@@ -171,6 +169,7 @@ SET(TESTS
  testqgsrectangle.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
  testqgssnappingutils.cpp
@@ -184,12 +183,15 @@ SET(TESTS
  testqgstaskmanager.cpp
  testqgstracer.cpp
  testqgsfontutils.cpp
+ testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testziplayer.cpp
-    )
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerrenderer.cpp
+   )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}

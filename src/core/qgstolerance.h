@@ -16,8 +16,10 @@
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
 
+#include <QObject>
+
 #include "qgis_core.h"
-#include "qgis.h"
+#include "qgis_sip.h"
 
 class QgsMapSettings;
 class QgsMapLayer;
@@ -29,7 +31,7 @@ class QgsPointXY;
  */
 class CORE_EXPORT QgsTolerance
 {
-
+    Q_GADGET
   public:
 
     /**
@@ -44,6 +46,7 @@ class CORE_EXPORT QgsTolerance
       //! Map (project) units. Added in 2.8
       ProjectUnits
     };
+    Q_ENUM( UnitType )
 
     /**
      * Static function to get vertex tolerance value.

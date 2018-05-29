@@ -250,7 +250,7 @@ void TestQgsFileDownloader::testLacksWritePermissionsError()
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QVERIFY( ! QFileInfo( fileName ).exists( ) );
+  QVERIFY( ! QFileInfo::exists( fileName ) );
 }
 
 

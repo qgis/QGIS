@@ -93,7 +93,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Returns the path of the source image. Data defined picture source may override
      * this value. The path can either be a local path or a remote (http) path.
      * \returns path for the source image
-     * \see usePictureExpression()
      * \see setPicturePath()
      */
     QString picturePath() const;
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Returns the rotation used for drawing the picture within the item's frame,
      * in degrees clockwise.
      * \see setPictureRotation()
-     * \see rotationMap()
+     * \see linkedMap()
      */
     double pictureRotation() const { return mPictureRotation; }
 
@@ -203,7 +202,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param color stroke color.
      * \note This setting only has an effect on parametrized SVG files, and is ignored for
      * non-parametrized SVG files.
-     * \see svgStrokelColor()
+     * \see svgStrokeColor()
      * \see setSvgFillColor()
      */
     void setSvgStrokeColor( const QColor &color );
@@ -245,7 +244,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param mode ResizeMode to use for image file
      * \see resizeMode
      */
-    void setResizeMode( ResizeMode mode );
+    void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
      * Recalculates the source image (if using an expression for picture's source)
@@ -268,7 +267,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -297,7 +296,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    int mRotationMapId = -1;
     //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
@@ -340,6 +338,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Loads a local picture for the item
      */
     void loadLocalPicture( const QString &path );
+
+    void disconnectMap( QgsLayoutItemMap *map );
 
   private slots:
 

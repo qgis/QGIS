@@ -20,12 +20,19 @@
 #include <QtConcurrent>
 #include <functional>
 
+const QList<QString> QgsLocator::CORE_FILTERS = QList<QString>() << QStringLiteral( "actions" )
+    <<  QStringLiteral( "processing_alg" )
+    <<  QStringLiteral( "layertree" )
+    <<  QStringLiteral( "layouts" )
+    <<  QStringLiteral( "features" )
+    <<  QStringLiteral( "calculator" )
+    <<  QStringLiteral( "bookmarks" )
+    <<  QStringLiteral( "optionpages" );
+
 QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
 {
   qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-
-  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsLocator::finished );
 }
 
 QgsLocator::~QgsLocator()
@@ -38,54 +45,83 @@ void QgsLocator::deregisterFilter( QgsLocatorFilter *filter )
 {
   cancelRunningQuery();
   mFilters.removeAll( filter );
-  QString key = mPrefixedFilters.key( filter );
-  if ( !key.isEmpty() )
-    mPrefixedFilters.remove( key );
   delete filter;
 }
 
-QList<QgsLocatorFilter *> QgsLocator::filters()
+QList<QgsLocatorFilter *> QgsLocator::filters( const QString &prefix )
 {
-  return mFilters;
+  if ( !prefix.isEmpty() )
+  {
+    QList<QgsLocatorFilter *> filters =  QList<QgsLocatorFilter *>();
+    for ( QgsLocatorFilter *filter : mFilters )
+    {
+      if ( !filter->activePrefix().isEmpty() && filter->activePrefix() == prefix )
+      {
+        filters << filter;
+      }
+    }
+    return filters;
+  }
+  else
+  {
+    return mFilters;
+  }
 }
 
 QMap<QString, QgsLocatorFilter *> QgsLocator::prefixedFilters() const
 {
-  return mPrefixedFilters;
+  QMap<QString, QgsLocatorFilter *> filters = QMap<QString, QgsLocatorFilter *>();
+  for ( QgsLocatorFilter *filter : mFilters )
+  {
+    if ( !filter->activePrefix().isEmpty() && filter->enabled() )
+    {
+      filters.insertMulti( filter->activePrefix(), filter );
+    }
+  }
+  return filters;
 }
 
 void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 {
   mFilters.append( filter );
   filter->setParent( this );
-  connect( filter, &QgsLocatorFilter::resultFetched, this, &QgsLocator::filterSentResult, Qt::QueuedConnection );
-
-  if ( !filter->prefix().isEmpty() )
-  {
-    if ( filter->name() == QStringLiteral( "actions" ) || filter->name() == QStringLiteral( "processing_alg" )
-         || filter->name() == QStringLiteral( "layertree" ) || filter->name() == QStringLiteral( "layouts" )
-         || filter->name() == QStringLiteral( "features" ) )
-    {
-      //inbuilt filter, no prefix check
-      mPrefixedFilters.insert( filter->prefix(), filter );
-    }
-    else if ( filter->prefix().length() >= 3 )
-    {
-      mPrefixedFilters.insert( filter->prefix(), filter );
-    }
-  }
 
   // restore settings
   QgsSettings settings;
   bool enabled = settings.value( QStringLiteral( "locator_filters/enabled_%1" ).arg( filter->name() ), true, QgsSettings::Section::Gui ).toBool();
   bool byDefault = settings.value( QStringLiteral( "locator_filters/default_%1" ).arg( filter->name() ), filter->useWithoutPrefix(), QgsSettings::Section::Gui ).toBool();
+  QString prefix = settings.value( QStringLiteral( "locator_filters/prefix_%1" ).arg( filter->name() ), filter->prefix(), QgsSettings::Section::Gui ).toString();
+  if ( prefix.isEmpty() )
+  {
+    prefix = filter->prefix();
+  }
+
+  if ( !prefix.isEmpty() )
+  {
+    if ( CORE_FILTERS.contains( filter->name() ) )
+    {
+      //inbuilt filter, no prefix check
+      filter->setActivePrefix( prefix );
+    }
+    else if ( prefix.length() >= 3 || prefix != filter->prefix() )
+    {
+      // for plugins either the native prefix is >3 char or it has been customized by user
+      filter->setActivePrefix( prefix );
+    }
+    else
+    {
+      // otherwise set it to empty string (not NULL)
+      filter->setActivePrefix( QString( "" ) );
+    }
+  }
 
   filter->setEnabled( enabled );
   filter->setUseWithoutPrefix( byDefault );
 }
 
-void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c, QgsFeedback *feedback )
 {
+  QgsLocatorContext context( c );
   // ideally this should not be required, as well behaved callers
   // will NOT fire up a new fetchResults call while an existing one is
   // operating/waiting to be canceled...
@@ -104,34 +140,84 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  mActiveFilters.clear();
+  QList< QgsLocatorFilter * > activeFilters;
   QString searchString = string;
-  if ( searchString.indexOf( ' ' ) > 0 )
+  QString prefix = searchString.left( std::max( searchString.indexOf( ' ' ), 0 ) );
+  if ( !prefix.isEmpty() )
   {
-    QString prefix = searchString.left( searchString.indexOf( ' ' ) );
-    if ( mPrefixedFilters.contains( prefix ) && mPrefixedFilters.value( prefix )->enabled() )
+    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
-      mActiveFilters << mPrefixedFilters.value( prefix );
-      searchString = searchString.mid( prefix.length() + 1 );
+      if ( filter->activePrefix() == prefix && filter->enabled() )
+      {
+        activeFilters << filter;
+      }
     }
+    context.usingPrefix = !activeFilters.empty();
   }
-  if ( mActiveFilters.isEmpty() )
+  if ( !activeFilters.isEmpty() )
   {
-    Q_FOREACH ( QgsLocatorFilter *filter, mFilters )
+    searchString = searchString.mid( prefix.length() + 1 );
+  }
+  else
+  {
+    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
       if ( filter->useWithoutPrefix() && filter->enabled() )
-        mActiveFilters << filter;
+      {
+        activeFilters << filter;
+      }
     }
   }
 
-  auto gatherFilterResults = [searchString, context, feedback]( QgsLocatorFilter * filter )
+  QList< QgsLocatorFilter *> threadedFilters;
+  for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
   {
-    if ( !feedback->isCanceled() )
-      filter->fetchResults( searchString, context, feedback );
-  };
+    std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
+    connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
+    {
+      result.filter = filter;
+      emit filterSentResult( result );
+    } );
+    clone->prepare( searchString, context );
 
-  mFuture = QtConcurrent::map( mActiveFilters, gatherFilterResults );
-  mFutureWatcher.setFuture( mFuture );
+    if ( clone->flags() & QgsLocatorFilter::FlagFast )
+    {
+      // filter is fast enough to fetch results on the main thread
+      clone->fetchResults( searchString, context, feedback );
+    }
+    else
+    {
+      // run filter in background
+      threadedFilters.append( clone.release() );
+    }
+  }
+
+  mActiveThreads.clear();
+  for ( QgsLocatorFilter *filter : qgis::as_const( threadedFilters ) )
+  {
+    QThread *thread = new QThread();
+    mActiveThreads.append( thread );
+    filter->moveToThread( thread );
+    connect( thread, &QThread::started, filter, [filter, searchString, context, feedback]
+    {
+      if ( !feedback->isCanceled() )
+        filter->fetchResults( searchString, context, feedback );
+      filter->emit finished();
+    }, Qt::QueuedConnection );
+    connect( filter, &QgsLocatorFilter::finished, thread, &QThread::quit );
+    connect( filter, &QgsLocatorFilter::finished, filter, &QgsLocatorFilter::deleteLater );
+    connect( thread, &QThread::finished, thread, [this, thread]
+    {
+      mActiveThreads.removeAll( thread );
+      if ( mActiveThreads.empty() )
+        emit finished();
+    } );
+    connect( thread, &QThread::finished, thread, &QThread::deleteLater );
+    thread->start();
+  }
+
+  if ( mActiveThreads.empty() )
+    emit finished();
 }
 
 void QgsLocator::cancel()
@@ -147,7 +233,7 @@ void QgsLocator::cancelWithoutBlocking()
 
 bool QgsLocator::isRunning() const
 {
-  return mFuture.isRunning();
+  return !mActiveThreads.empty();
 }
 
 void QgsLocator::filterSentResult( QgsLocatorResult result )
@@ -156,22 +242,18 @@ void QgsLocator::filterSentResult( QgsLocatorResult result )
   if ( mFeedback->isCanceled() )
     return;
 
-  if ( !result.filter )
-  {
-    // filter forgot to set itself
-    result.filter = qobject_cast< QgsLocatorFilter *>( sender() );
-  }
-
   emit foundResult( result );
 }
 
 void QgsLocator::cancelRunningQuery()
 {
-  if ( mFuture.isRunning() )
+  if ( !mActiveThreads.empty() )
   {
     // cancel existing job
     mFeedback->cancel();
-    mFuture.cancel();
-    mFuture.waitForFinished();
+    while ( !mActiveThreads.empty() )
+    {
+      QCoreApplication::processEvents();
+    }
   }
 }

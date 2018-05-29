@@ -106,6 +106,24 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \see setPathResolver()
+     * \since QGIS 3.0
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \see pathResolver()
+     * \since QGIS 3.0
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
+
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
     //! Returns background color of the 3D map view
@@ -259,6 +277,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
+    QgsPathResolver mPathResolver;
 };
 
 

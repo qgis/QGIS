@@ -56,11 +56,11 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     //! Select valid labels to pin or unpin
     void showHideLabels( QMouseEvent *e );
 
-    //! Return features intersecting rubberband
+    //! Returns the features intersecting rubberband
     bool selectedFeatures( QgsVectorLayer *vlayer,
                            QgsFeatureIds &selectedFeatIds );
 
-    //! Return label features intersecting rubberband
+    //! Returns the label features intersecting rubberband
     bool selectedLabelFeatures( QgsVectorLayer *vlayer,
                                 QList<QgsLabelPosition> &listPos );
 

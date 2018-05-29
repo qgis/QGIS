@@ -35,7 +35,8 @@ class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsConvexHullAlgorithm() = default;
-    Flags flags() const override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmConvexHull.svg" ) ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmConvexHull.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -48,7 +49,7 @@ class QgsConvexHullAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

@@ -36,7 +36,9 @@ from qgis.core import (
     QgsCoordinateTransform,
     QgsRectangle,
     QgsWkbTypes,
-    QgsRenderChecker
+    QgsRenderChecker,
+    QgsCoordinateReferenceSystem,
+    QgsProject
 )
 from qgis.PyQt.QtCore import QDir
 from qgis.PyQt.QtGui import QImage, QPainter, QPen, QColor, QBrush, QPainterPath
@@ -468,7 +470,7 @@ class TestQgsGeometry(unittest.TestCase):
                 myFeatures.append(myNewFeature)
 
         myNewMemoryLayer = QgsVectorLayer(
-            ('LineString?crs=epsg:4326&field=name:string(20)&index=yes'),
+            ('Polygon?crs=epsg:4326&field=name:string(20)&index=yes'),
             'clip-out',
             'memory')
         myNewProvider = myNewMemoryLayer.dataProvider()
@@ -1196,33 +1198,89 @@ class TestQgsGeometry(unittest.TestCase):
 
         polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))")
         self.assertEqual(polygon.translate(1, 2), 0, "Translate failed")
-        expwkt = "MultiPolygon (((1 2, 2 2, 2 3, 3 3, 3 4, 1 4, 1 2)),((5 2, 6 2, 6 2, 4 4, 4 3, 5 3, 5 2)))"
+        expwkt = "MultiPolygon (((1 2, 2 2, 2 3, 3 3, 3 4, 1 4, 1 2)),((5 2, 6 2, 6 4, 4 4, 4 3, 5 3, 5 2)))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
+    def testTransform(self):
+        # null transform
         ct = QgsCoordinateTransform()
 
         point = QgsGeometry.fromWkt("Point (1 1)")
-        self.assertEqual(point.transform(ct), 0, "Translate failed")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
         expwkt = "Point (1 1)"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         point = QgsGeometry.fromWkt("MultiPoint ((1 1),(2 2),(3 3))")
-        self.assertEqual(point.transform(ct), 0, "Translate failed")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
         expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
         wkt = point.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         linestring = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
-        self.assertEqual(linestring.transform(ct), 0, "Translate failed")
+        self.assertEqual(linestring.transform(ct), 0, "Transform failed")
         expwkt = "LineString (1 0, 2 0)"
         wkt = linestring.asWkt()
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         polygon = QgsGeometry.fromWkt("MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))")
-        self.assertEqual(polygon.transform(ct), 0, "Translate failed")
+        self.assertEqual(polygon.transform(ct), 0, "Transform failed")
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # valid transform
+        ct = QgsCoordinateTransform(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(3857), QgsProject.instance())
+
+        point = QgsGeometry.fromWkt("Point (1 1)")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
+        expwkt = "Point (111319 111325)"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        point = QgsGeometry.fromWkt("MultiPoint ((1 1),(2 2),(3 3))")
+        self.assertEqual(point.transform(ct), 0, "Transform failed")
+        expwkt = "MultiPoint ((111319 111325),(222638 222684),(333958 334111))"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        linestring = QgsGeometry.fromWkt("LineString (1 0, 2 0)")
+        self.assertEqual(linestring.transform(ct), 0, "Transform failed")
+        expwkt = "LineString (111319 0, 222638 0)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        polygon = QgsGeometry.fromWkt("MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))")
+        self.assertEqual(polygon.transform(ct), 0, "Transform failed")
+        expwkt = "MultiPolygon (((0 0, 111319 0, 111319 111325, 222638 111325, 222638 222684, 0 222684, 0 0)),((445277 0, 556597 0, 556597 222684, 333958 222684, 333958 111325, 445277 111325, 445277 0)))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt, tol=100), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # reverse transform
+        point = QgsGeometry.fromWkt("Point (111319 111325)")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "Point (1 1)"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        point = QgsGeometry.fromWkt("MultiPoint ((111319 111325),(222638 222684),(333958 334111))")
+        self.assertEqual(point.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
+        wkt = point.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        linestring = QgsGeometry.fromWkt("LineString (111319 0, 222638 0)")
+        self.assertEqual(linestring.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "LineString (1 0, 2 0)"
+        wkt = linestring.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        polygon = QgsGeometry.fromWkt("MultiPolygon (((0 0, 111319 0, 111319 111325, 222638 111325, 222638 222684, 0 222684, 0 0)),((445277 0, 556597 0, 556597 222684, 333958 222684, 333958 111325, 445277 111325, 445277 0)))")
+        self.assertEqual(polygon.transform(ct, QgsCoordinateTransform.ReverseTransform), 0, "Transform failed")
+        expwkt = "MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt, tol=0.01), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
     def testExtrude(self):
         # test with empty geometry
@@ -1507,6 +1565,22 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(polygon.addPoints(points2), QgsGeometry.Success)
         expwkt = "MultiPolygonZ (((0 0 4, 1 0 4, 1 1 4, 2 1 4, 2 2 4, 0 2 4, 0 0 4)),((4 0 3, 5 0 3, 5 2 3, 3 2 3, 3 1 3, 4 1 3, 4 0 3)))"
         wkt = polygon.asWkt()
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a part to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((0 0,0 1,1 1,0 0)))')
+        g2 = QgsGeometry.fromWkt('CurvePolygon ((0 0,0 1,1 1,0 0))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
+        assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
+
+        # test adding a multisurface to a multisurface
+        geom = QgsGeometry.fromWkt('MultiSurface(((20 0,20 1,21 1,20 0)))')
+        g2 = QgsGeometry.fromWkt('MultiSurface (Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))')
+        geom.addPart(g2.get().clone())
+        wkt = geom.asWkt()
+        expwkt = 'MultiSurface (Polygon ((20 0, 20 1, 21 1, 20 0)),Polygon ((0 0, 0 1, 1 1, 0 0)),CurvePolygon ((0 0, 0 1, 1 1, 0 0)))'
         assert compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt)
 
         # Test adding parts to empty geometry, should become first part
@@ -3509,6 +3583,30 @@ class TestQgsGeometry(unittest.TestCase):
         exp = 'MultiLineString((0 0, 10 10),(12 2, 14 4))'
         self.assertTrue(compareWkt(result, exp, 0.00001), "Merge lines: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testCurveSinuosity(self):
+        """
+        Test curve straightDistance2d() and sinuosity()
+        """
+        linestring = QgsGeometry.fromWkt('LineString()')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 0.0)
+        self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0)')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 10.0)
+        self.assertEqual(linestring.constGet().sinuosity(), 1.0)
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 10, 5 0)')
+        self.assertAlmostEqual(linestring.constGet().straightDistance2d(), 5.0, 4)
+        self.assertAlmostEqual(linestring.constGet().sinuosity(), 5.06449510, 4)
+        linestring = QgsGeometry.fromWkt('LineString(0 0, 10 0, 10 10, 0 10, 0 0)')
+        self.assertEqual(linestring.constGet().straightDistance2d(), 0.0)
+        self.assertTrue(math.isnan(linestring.constGet().sinuosity()))
+
+        curve = QgsGeometry.fromWkt('CircularString (20 30, 50 30, 50 90)')
+        self.assertAlmostEqual(curve.constGet().straightDistance2d(), 67.08203932, 4)
+        self.assertAlmostEqual(curve.constGet().sinuosity(), 1.57079632, 4)
+        curve = QgsGeometry.fromWkt('CircularString (20 30, 50 30, 20 30)')
+        self.assertAlmostEqual(curve.constGet().straightDistance2d(), 0.0, 4)
+        self.assertTrue(math.isnan(curve.constGet().sinuosity()))
+
     def testLineLocatePoint(self):
         """ test QgsGeometry.lineLocatePoint() """
 
@@ -4258,6 +4356,72 @@ class TestQgsGeometry(unittest.TestCase):
             self.assertTrue(compareWkt(result, exp, 0.00001),
                             "clipped: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
 
+    def testCreateWedgeBuffer(self):
+        tests = [[QgsPoint(1, 11), 0, 45, 2, 0, 'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1 11),(1 11, 0.23463313526982044 12.84775906502257392)))'],
+                 [QgsPoint(1, 11), 90, 45, 2, 0,
+                  'CurvePolygon (CompoundCurve (CircularString (2.84775906502257348 11.76536686473017923, 3 11, 2.84775906502257348 10.23463313526982077),(2.84775906502257348 10.23463313526982077, 1 11),(1 11, 2.84775906502257348 11.76536686473017923)))'],
+                 [QgsPoint(1, 11), 180, 90, 2, 0,
+                  'CurvePolygon (CompoundCurve (CircularString (2.41421356237309492 9.58578643762690419, 1.00000000000000022 9, -0.41421356237309492 9.58578643762690419),(-0.41421356237309492 9.58578643762690419, 1 11),(1 11, 2.41421356237309492 9.58578643762690419)))'],
+                 [QgsPoint(1, 11), 0, 200, 2, 0,
+                  'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1 11),(1 11, -0.96961550602441604 10.65270364466613984)))'],
+                 [QgsPoint(1, 11), 0, 45, 2, 1,
+                  'CurvePolygon (CompoundCurve (CircularString (0.23463313526982044 12.84775906502257392, 1 13, 1.76536686473017967 12.84775906502257392),(1.76536686473017967 12.84775906502257392, 1.38268343236508984 11.92387953251128607),CircularString (1.38268343236508984 11.92387953251128607, 0.99999999999999978 12, 0.61731656763491016 11.92387953251128607),(0.61731656763491016 11.92387953251128607, 0.23463313526982044 12.84775906502257392)))'],
+                 [QgsPoint(1, 11), 0, 200, 2, 1,
+                  'CurvePolygon (CompoundCurve (CircularString (-0.96961550602441604 10.65270364466613984, 0.99999999999999956 13, 2.96961550602441626 10.65270364466613984),(2.96961550602441626 10.65270364466613984, 1.98480775301220813 10.82635182233306992),CircularString (1.98480775301220813 10.82635182233306992, 0.99999999999999978 12, 0.01519224698779198 10.82635182233306992),(0.01519224698779198 10.82635182233306992, -0.96961550602441604 10.65270364466613984)))'],
+                 [QgsPoint(1, 11, 3), 0, 45, 2, 0,
+                  'CurvePolygonZ (CompoundCurveZ (CircularStringZ (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))'],
+                 [QgsPoint(1, 11, m=3), 0, 45, 2, 0,
+                  'CurvePolygonM (CompoundCurveM (CircularStringM (0.23463313526982044 12.84775906502257392 3, 1 13 3, 1.76536686473017967 12.84775906502257392 3),(1.76536686473017967 12.84775906502257392 3, 1 11 3),(1 11 3, 0.23463313526982044 12.84775906502257392 3)))']
+                 ]
+        for t in tests:
+            input = t[0]
+            azimuth = t[1]
+            width = t[2]
+            outer = t[3]
+            inner = t[4]
+            o = QgsGeometry.createWedgeBuffer(input, azimuth, width, outer, inner)
+            exp = t[5]
+            result = o.asWkt()
+            self.assertTrue(compareWkt(result, exp, 0.01),
+                            "wedge buffer: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testTaperedBuffer(self):
+        tests = [['LineString (6 2, 9 2, 9 3, 11 5)', 1, 2, 3, 'MultiPolygon (((6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.23175255221825708 2.66341629715358597, 8.20710678118654791 3, 8.31333433001913669 3.39644660940672605, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.76603613070954424 2.63321666219915951, 9.71966991411008863 1.99999999999999978, 9.62325242795870217 1.64016504294495569, 9.35983495705504431 1.37674757204129761, 9 1.28033008588991049, 6 1.5)))'],
+                 ['LineString (6 2, 9 2, 9 3, 11 5)', 1, 1, 3,
+                  'MultiPolygon (((6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.5 2.5, 8.5 3, 8.56698729810778126 3.24999999999999956, 8.75 3.43301270189221919, 10.75 5.43301270189221963, 11 5.5, 11.25 5.43301270189221874, 11.43301270189221874 5.25, 11.5 5, 11.43301270189221874 4.75, 11.25 4.56698729810778037, 9.5 2.81698729810778081, 9.5 2, 9.43301270189221874 1.75000000000000022, 9.25 1.56698729810778081, 9 1.5, 6 1.5)))'],
+                 ['LineString (6 2, 9 2, 9 3, 11 5)', 2, 1, 3,
+                  'MultiPolygon (((6 1, 5.5 1.13397459621556118, 5.13397459621556163 1.49999999999999978, 5 2, 5.13397459621556074 2.49999999999999956, 5.5 2.86602540378443837, 6 3, 8.28066508549441238 2.83300216551852069, 8.29289321881345209 3, 8.38762756430420531 3.35355339059327351, 8.64644660940672694 3.61237243569579425, 10.75 5.43301270189221963, 11 5.5, 11.25 5.43301270189221874, 11.43301270189221874 5.25, 11.5 5, 11.43301270189221874 4.75, 9.72358625835961909 2.77494218213953703, 9.78033008588991137 1.99999999999999978, 9.67578567771795583 1.60983495705504498, 9.39016504294495569 1.32421432228204461, 9 1.21966991411008951, 6 1)))'],
+                 ['MultiLineString ((2 0, 2 2, 3 2, 3 3),(2.94433781190019195 4.04721689059500989, 5.45950095969289784 4.11976967370441471),(3 3, 5.5804222648752404 2.94683301343570214))', 1, 2, 3,
+                  'MultiPolygon (((2.5 -0.00000000000000012, 2.43301270189221963 -0.24999999999999983, 2.25 -0.4330127018922193, 2 -0.5, 1.75 -0.43301270189221935, 1.56698729810778081 -0.25000000000000011, 1.5 0.00000000000000006, 1.25 2, 1.35048094716167078 2.37499999999999956, 1.62499999999999978 2.649519052838329, 2 2.75, 2.03076923076923066 2.75384615384615383, 2 3, 2.13397459621556118 3.49999999999999956, 2.5 3.86602540378443837, 3.00000000000000044 4, 3.50000000000000044 3.86602540378443837, 3.86602540378443837 3.5, 4 3, 3.875 1.99999999999999978, 3.75777222831138413 1.56250000000000044, 3.4375 1.24222777168861631, 3 1.125, 2.64615384615384608 1.1692307692307693, 2.5 -0.00000000000000012)),((2.94433781190019195 3.54721689059500989, 2.69433781190019195 3.6142041887027907, 2.51132511000797276 3.79721689059500989, 2.44433781190019195 4.04721689059500989, 2.51132511000797232 4.29721689059500989, 2.69433781190019195 4.48022959248722952, 2.94433781190019195 4.54721689059500989, 5.45950095969289784 5.11976967370441471, 5.95950095969289784 4.98579507748885309, 6.32552636347733621 4.61976967370441471, 6.45950095969289784 4.11976967370441471, 6.3255263634773371 3.61976967370441516, 5.95950095969289784 3.25374426991997634, 5.45950095969289784 3.11976967370441471, 2.94433781190019195 3.54721689059500989)),((5.5804222648752404 3.94683301343570214, 6.0804222648752404 3.81285841722014052, 6.44644766865967878 3.44683301343570214, 6.5804222648752404 2.94683301343570214, 6.44644766865967966 2.44683301343570259, 6.0804222648752404 2.08080760965126377, 5.5804222648752404 1.94683301343570214, 3 2.5, 2.75 2.56698729810778081, 2.56698729810778081 2.75, 2.5 3, 2.56698729810778037 3.24999999999999956, 2.75 3.43301270189221919, 3 3.5, 5.5804222648752404 3.94683301343570214)))'],
+                 ['LineString (6 2, 9 2, 9 3, 11 5)', 2, 7, 3,
+                  'MultiPolygon (((10.86920158655618174 1.1448080812814232, 10.81722403411685463 0.95082521472477743, 10.04917478527522334 0.18277596588314599, 9 -0.09834957055044669, 7.95082521472477666 0.18277596588314587, 5.5 1.13397459621556118, 5.13397459621556163 1.49999999999999978, 5 2, 5.13397459621556074 2.49999999999999956, 5.5 2.86602540378443837, 6.61565808125483201 3.29902749321661304, 6.86570975577233966 4.23223304703362935, 7.96891108675446347 6.74999999999999822, 9.25 8.03108891324553475, 11 8.5, 12.75000000000000178 8.03108891324553475, 14.03108891324553475 6.75, 14.5 4.99999999999999911, 14.03108891324553653 3.25000000000000133, 12.75 1.9689110867544648, 10.86920158655618174 1.1448080812814232)))'],
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            start = t[1]
+            end = t[2]
+            segments = t[3]
+            o = QgsGeometry.taperedBuffer(input, start, end, segments)
+            exp = t[4]
+            result = o.asWkt()
+            self.assertTrue(compareWkt(result, exp, 0.01),
+                            "tapered buffer: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
+    def testVariableWidthBufferByM(self):
+        tests = [['LineString (6 2, 9 2, 9 3, 11 5)', 3, 'GeometryCollection ()'],
+                 ['LineStringM (6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2)', 3, 'MultiPolygon (((6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5)))'],
+                 ['MultiLineStringM ((6 2 1, 9 2 1.5, 9 3 0.5, 11 5 2),(1 2 0.5, 3 2 0.2))', 3,
+                  'MultiPolygon (((6 1.5, 5.75 1.56698729810778059, 5.56698729810778037 1.75, 5.5 2, 5.56698729810778037 2.24999999999999956, 5.75 2.43301270189221919, 6 2.5, 8.54510095773215994 2.71209174647768014, 8.78349364905388974 3.125, 10.13397459621556074 5.49999999999999911, 10.5 5.86602540378443837, 11 6, 11.5 5.86602540378443837, 11.86602540378443926 5.5, 12 5, 11.86602540378443926 4.5, 11.5 4.13397459621556163, 9.34232758349701164 2.90707123255090094, 9.649519052838329 2.375, 9.75 1.99999999999999978, 9.649519052838329 1.62500000000000022, 9.375 1.350480947161671, 9 1.25, 6 1.5)),((1 1.75, 0.875 1.78349364905389041, 0.78349364905389041 1.875, 0.75 2, 0.7834936490538903 2.125, 0.875 2.21650635094610982, 1 2.25, 3 2.10000000000000009, 3.04999999999999982 2.08660254037844384, 3.08660254037844384 2.04999999999999982, 3.10000000000000009 2, 3.08660254037844384 1.94999999999999996, 3.04999999999999982 1.91339745962155616, 3 1.89999999999999991, 1 1.75)))']
+                 ]
+        for t in tests:
+            input = QgsGeometry.fromWkt(t[0])
+            segments = t[1]
+            o = QgsGeometry.variableWidthBufferByM(input, segments)
+            exp = t[2]
+            result = o.asWkt()
+            self.assertTrue(compareWkt(result, exp, 0.01),
+                            "tapered buffer: mismatch Expected:\n{}\nGot:\n{}\n".format(exp, result))
+
     def testHausdorff(self):
         tests = [["POLYGON((0 0, 0 2, 1 2, 2 2, 2 0, 0 0))", "POLYGON((0.5 0.5, 0.5 2.5, 1.5 2.5, 2.5 2.5, 2.5 0.5, 0.5 0.5))", 0.707106781186548],
                  ["LINESTRING (0 0, 2 1)", "LINESTRING (0 0, 2 0)", 1],
@@ -4285,6 +4449,33 @@ class TestQgsGeometry(unittest.TestCase):
             exp = t[3]
             self.assertAlmostEqual(o, exp, 5,
                                    "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(t[0], t[1], exp, o))
+
+    def testBoundingBoxIntersects(self):
+        tests = [
+            ["LINESTRING (0 0, 100 100)", "LINESTRING (90 0, 100 0)", True],
+            ["LINESTRING (0 0, 100 100)", "LINESTRING (101 0, 102 0)", False],
+            ["POINT(20 1)", "LINESTRING( 0 0, 100 100 )", True],
+            ["POINT(20 1)", "POINT(21 1)", False],
+            ["POINT(20 1)", "POINT(20 1)", True]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            g2 = QgsGeometry.fromWkt(t[1])
+            res = g1.boundingBoxIntersects(g2)
+            self.assertEqual(res, t[2], "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(g1.asWkt(), g2.asWkt(), t[2], res))
+
+    def testBoundingBoxIntersectsRectangle(self):
+        tests = [
+            ["LINESTRING (0 0, 100 100)", QgsRectangle(90, 0, 100, 10), True],
+            ["LINESTRING (0 0, 100 100)", QgsRectangle(101, 0, 102, 10), False],
+            ["POINT(20 1)", QgsRectangle(0, 0, 100, 100), True],
+            ["POINT(20 1)", QgsRectangle(21, 1, 21, 1), False],
+            ["POINT(20 1)", QgsRectangle(20, 1, 20, 1), True]
+        ]
+        for t in tests:
+            g1 = QgsGeometry.fromWkt(t[0])
+            res = g1.boundingBoxIntersects(t[1])
+            self.assertEqual(res, t[2], "mismatch for {} to {}, expected:\n{}\nGot:\n{}\n".format(g1.asWkt(), t[1].toString(), t[2], res))
 
     def renderGeometry(self, geom, use_pen, as_polygon=False, as_painter_path=False):
         image = QImage(200, 200, QImage.Format_RGB32)

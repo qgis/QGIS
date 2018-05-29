@@ -65,16 +65,25 @@ class CORE_EXPORT QgsContrastEnhancement
      * Static methods
      *
      */
-    //! \brief Helper function that returns the maximum possible value for a GDAL data type
+
+    /**
+     * Helper function that returns the maximum possible value for a GDAL data type.
+     */
     static double maximumValuePossible( Qgis::DataType );
 
-    //! \brief Helper function that returns the minimum possible value for a GDAL data type
+    /**
+     * Helper function that returns the minimum possible value for a GDAL data type.
+     */
     static double minimumValuePossible( Qgis::DataType );
 
-    //! \brief Return a string to serialize ContrastEnhancementAlgorithm
+    /**
+     * Returns a string to serialize ContrastEnhancementAlgorithm.
+     */
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 
-    //! \brief Deserialize ContrastEnhancementAlgorithm
+    /**
+     * Deserialize ContrastEnhancementAlgorithm.
+     */
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
 
     /*
@@ -82,10 +91,10 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static Inline methods
      *
      */
-    //! \brief Return the maximum value for the contrast enhancement range.
+    //! Returns the maximum value for the contrast enhancement range.
     double maximumValue() const { return mMaximumValue; }
 
-    //! \brief Return the minimum value for the contrast enhancement range.
+    //! Returns the minimum value for the contrast enhancement range.
     double minimumValue() const { return mMinimumValue; }
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
@@ -95,23 +104,56 @@ class CORE_EXPORT QgsContrastEnhancement
      * Non-Static methods
      *
      */
-    //! \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed
-    int enhanceContrast( double );
 
-    //! \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped)
-    bool isValueInDisplayableRange( double );
+    /**
+     * Applies the contrast enhancement to a \a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+     */
+    int enhanceContrast( double value );
 
-    //! \brief Set the contrast enhancement algorithm
-    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
+    /**
+     * Returns true if a pixel \a value is in displayable range, false if pixel
+     * is outside of range (i.e. clipped).
+     */
+    bool isValueInDisplayableRange( double value );
 
-    //! \brief A public method that allows the user to set their own custom contrast enhancement function
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
+    /**
+     * Sets the contrast enhancement \a algorithm.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the Minimum or Maximum value, you
+     * can elect to not generate the lookup tale. By default it will be generated.
+    */
+    void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm algorithm, bool generateTable = true );
 
-    //! \brief Set the maximum value for the contrast enhancement range.
-    void setMaximumValue( double, bool generateTable = true );
+    /**
+     * Allows the user to set their own custom contrast enhancement \a function. Ownership of
+     * \a function is transferred.
+    */
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction *function SIP_TRANSFER );
 
-    //! \brief Return the minimum value for the contrast enhancement range.
-    void setMinimumValue( double, bool generateTable = true );
+    /**
+     * Sets the maximum \a value for the contrast enhancement range.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the minimum value or the contrast
+     * enhancement algorithm, you can elect to not generate the lookup table.
+     * By default it will be generated.
+     *
+     * \see setMinimumValue()
+    */
+    void setMaximumValue( double value, bool generateTable = true );
+
+    /**
+     * Sets the minimum \a value for the contrast enhancement range.
+     *
+     * The \a generateTable parameter is optional and is for performance improvements.
+     * If you know you are immediately going to set the maximum value or the contrast
+     * enhancement algorithm, you can elect to not generate the lookup table.
+     * By default it will be generated.
+     *
+     * \see setMaximumValue()
+    */
+    void setMinimumValue( double value, bool generateTable = true );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
@@ -149,7 +191,7 @@ class CORE_EXPORT QgsContrastEnhancement
     //! \brief Maximum range of values for a given data type
     double mRasterDataTypeRange;
 
-    //! \brief Method to generate a new lookup table
+    //! Generates a new lookup table
     bool generateLookupTable();
 
     //! \brief Method to calculate the actual enhanceContrasted value(s)

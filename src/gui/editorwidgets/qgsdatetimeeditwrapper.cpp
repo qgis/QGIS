@@ -59,7 +59,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   if ( !mQDateTimeEdit )
   {
     QgsDebugMsg( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." );
-    QgsMessageLog::logMessage( QStringLiteral( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ), QStringLiteral( "UI forms" ), QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( tr( "Date/time edit widget could not be initialized because provided widget is not a QDateTimeEdit." ), tr( "UI forms" ), Qgis::Warning );
     return;
   }
 
@@ -88,7 +88,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   {
     QgsApplication::messageLog()->logMessage( tr( "The usual date/time widget QDateTimeEdit cannot be configured to allow NULL values. "
         "For that the QGIS custom widget QgsDateTimeEdit needs to be used." ),
-        QStringLiteral( "field widgets" ) );
+        tr( "field widgets" ) );
   }
 
   if ( mQgsDateTimeEdit )
@@ -126,15 +126,22 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
       emit valueChanged( dateTime.time() );
       break;
     default:
-      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-      if ( fieldIsoFormat )
+      if ( !dateTime.isValid() || dateTime.isNull() )
       {
-        emit valueChanged( dateTime.toString( Qt::ISODate ) );
+        emit valueChanged( QVariant( field().type() ) );
       }
       else
       {
-        emit valueChanged( dateTime.toString( fieldFormat ) );
+        const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+        const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+        if ( fieldIsoFormat )
+        {
+          emit valueChanged( dateTime.toString( Qt::ISODate ) );
+        }
+        else
+        {
+          emit valueChanged( dateTime.toString( fieldFormat ) );
+        }
       }
       break;
   }

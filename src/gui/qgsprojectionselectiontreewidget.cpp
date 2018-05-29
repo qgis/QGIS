@@ -37,12 +37,14 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 {
   setupUi( this );
 
+  leSearch->setShowSearchIcon( true );
+
   connect( lstCoordinateSystems, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_itemDoubleClicked );
   connect( lstRecent, &QTreeWidget::itemDoubleClicked, this, &QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked );
   connect( lstCoordinateSystems, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystems_currentItemChanged );
   connect( lstRecent, &QTreeWidget::currentItemChanged, this, &QgsProjectionSelectionTreeWidget::lstRecent_currentItemChanged );
-  connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::cbxHideDeprecated_stateChanged );
-  connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::leSearch_textChanged );
+  connect( cbxHideDeprecated, &QCheckBox::stateChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
+  connect( leSearch, &QgsFilterLineEdit::textChanged, this, &QgsProjectionSelectionTreeWidget::updateFilter );
 
   mPreviewBand = new QgsRubberBand( mAreaCanvas, QgsWkbTypes::PolygonGeometry );
   mPreviewBand->setWidth( 4 );
@@ -439,8 +441,8 @@ QString QgsProjectionSelectionTreeWidget::getSelectedExpression( const QString &
   if ( rc )
   {
     QgsMessageLog::logMessage( tr( "Resource Location Error" ), tr( "Error reading database file from: \n %1\n"
-                               "Because of this the projection selector will not work..." ).arg( databaseFileName ),
-                               QgsMessageLog::CRITICAL );
+                               "Because of this the projection selector will not work…" ).arg( databaseFileName ),
+                               Qgis::Critical );
     return QString();
   }
 
@@ -736,7 +738,7 @@ void QgsProjectionSelectionTreeWidget::loadCrsList( QSet<QString> *crsFilter )
       }
 
       // display the qgis deprecated in the user data of the item
-      newItem->setData( 0, Qt::UserRole, QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 6 ) ) );
+      newItem->setData( 0, RoleDeprecated, QString::fromUtf8( ( char * )sqlite3_column_text( stmt, 6 ) ) );
       newItem->setHidden( cbxHideDeprecated->isChecked() );
     }
     mProjList->setExpanded( true );
@@ -848,96 +850,62 @@ void QgsProjectionSelectionTreeWidget::lstRecent_itemDoubleClicked( QTreeWidgetI
     emit projectionDoubleClicked();
 }
 
-void QgsProjectionSelectionTreeWidget::hideDeprecated( QTreeWidgetItem *item )
+void QgsProjectionSelectionTreeWidget::updateFilter()
 {
-  if ( item->data( 0, Qt::UserRole ).toBool() )
-  {
-    item->setHidden( cbxHideDeprecated->isChecked() );
-    if ( item->isSelected() && item->isHidden() )
-    {
-      item->setSelected( false );
-      teProjection->clear();
-      teSelected->clear();
-    }
-  }
-
-  for ( int i = 0; i < item->childCount(); i++ )
-    hideDeprecated( item->child( i ) );
-}
-
-void QgsProjectionSelectionTreeWidget::cbxHideDeprecated_stateChanged()
-{
-  for ( int i = 0; i < lstCoordinateSystems->topLevelItemCount(); i++ )
-    hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
-}
-
-void QgsProjectionSelectionTreeWidget::leSearch_textChanged( const QString &filterTxt )
-{
-  QString filterTxtCopy = filterTxt;
+  QString filterTxtCopy = leSearch->text();
   filterTxtCopy.replace( QRegExp( "\\s+" ), QStringLiteral( ".*" ) );
   QRegExp re( filterTxtCopy, Qt::CaseInsensitive );
 
-  // filter recent crs's
-  QTreeWidgetItemIterator itr( lstRecent );
-  while ( *itr )
+  const bool hideDeprecated = cbxHideDeprecated->isChecked();
+
+  auto filterTreeWidget = [ = ]( QTreeWidget * tree )
   {
-    if ( ( *itr )->childCount() == 0 ) // it's an end node aka a projection
+    QTreeWidgetItemIterator itr( tree );
+    while ( *itr )
     {
-      if ( ( *itr )->text( NameColumn ).contains( re )
-           || ( *itr )->text( AuthidColumn ).contains( re )
-         )
+      if ( ( *itr )->childCount() == 0 ) // it's an end node aka a projection
       {
-        ( *itr )->setHidden( false );
-        QTreeWidgetItem *parent = ( *itr )->parent();
-        while ( parent )
+        if ( hideDeprecated && ( *itr )->data( 0, RoleDeprecated ).toBool() )
         {
-          parent->setExpanded( true );
-          parent->setHidden( false );
-          parent = parent->parent();
+          ( *itr )->setHidden( true );
+          if ( ( *itr )->isSelected() )
+          {
+            ( *itr )->setSelected( false );
+            teProjection->clear();
+            teSelected->clear();
+          }
+        }
+        else if ( ( *itr )->text( NameColumn ).contains( re )
+                  || ( *itr )->text( AuthidColumn ).contains( re )
+                )
+        {
+          ( *itr )->setHidden( false );
+          QTreeWidgetItem *parent = ( *itr )->parent();
+          while ( parent )
+          {
+            parent->setExpanded( true );
+            parent->setHidden( false );
+            parent = parent->parent();
+          }
+        }
+        else
+        {
+          ( *itr )->setHidden( true );
         }
       }
       else
       {
         ( *itr )->setHidden( true );
       }
+      ++itr;
     }
-    else
-    {
-      ( *itr )->setHidden( true );
-    }
-    ++itr;
-  }
+  };
+
+  // filter recent crs's
+  filterTreeWidget( lstRecent );
 
   // filter crs's
-  QTreeWidgetItemIterator it( lstCoordinateSystems );
-  while ( *it )
-  {
-    if ( ( *it )->childCount() == 0 ) // it's an end node aka a projection
-    {
-      if ( ( *it )->text( NameColumn ).contains( re )
-           || ( *it )->text( AuthidColumn ).contains( re )
-         )
-      {
-        ( *it )->setHidden( false );
-        QTreeWidgetItem *parent = ( *it )->parent();
-        while ( parent )
-        {
-          parent->setExpanded( true );
-          parent->setHidden( false );
-          parent = parent->parent();
-        }
-      }
-      else
-      {
-        ( *it )->setHidden( true );
-      }
-    }
-    else
-    {
-      ( *it )->setHidden( true );
-    }
-    ++it;
-  }
+  filterTreeWidget( lstCoordinateSystems );
 }
 
 
@@ -1116,6 +1084,6 @@ void QgsProjectionSelectionTreeWidget::showDBMissingWarning( const QString &file
 
   QMessageBox::critical( this, tr( "Resource Location Error" ),
                          tr( "Error reading database file from: \n %1\n"
-                             "Because of this the projection selector will not work..." )
+                             "Because of this the projection selector will not work…" )
                          .arg( fileName ) );
 }

@@ -62,11 +62,14 @@
          <property name="floatable">
           <bool>false</bool>
          </property>
+         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mExpandAction"/>
          <addaction name="mCollapseAction"/>
          <addaction name="mExpandNewAction"/>
-         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
+         <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
         </widget>
@@ -285,13 +288,13 @@
     <string>Expand New Results</string>
    </property>
    <property name="toolTip">
-    <string>New results will be expanded by default.</string>
+    <string>Expand New Results by Default</string>
    </property>
   </action>
   <action name="mOpenFormAction">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPropertyItem.svg</normaloff>:/images/themes/default/mActionPropertyItem.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
    </property>
    <property name="text">
     <string>Open Form</string>
@@ -321,7 +324,7 @@
     <string>Copy Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy selected feature to clipboard.</string>
+    <string>Copy Selected Feature to Clipboard </string>
    </property>
   </action>
   <action name="mActionPrint">
@@ -333,7 +336,46 @@
     <string>Print Response</string>
    </property>
    <property name="toolTip">
-    <string>Print selected HTML response.</string>
+    <string>Print Selected HTML Response</string>
+   </property>
+  </action>
+  <action name="mActionSelectFeatures">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</normaloff>:/images/themes/default/mActionIdentifyByRectangle.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Feature(s)</string>
+   </property>
+   <property name="toolTip">
+    <string>Identify Features by area or single click</string>
+   </property>
+  </action>
+  <action name="mActionSelectPolygon">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</normaloff>:/images/themes/default/mActionIdentifyByPolygon.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Polygon</string>
+   </property>
+  </action>
+  <action name="mActionSelectFreehand">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</normaloff>:/images/themes/default/mActionIdentifyByFreehand.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Freehand</string>
+   </property>
+  </action>
+  <action name="mActionSelectRadius">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</normaloff>:/images/themes/default/mActionIdentifyByRadius.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Identify Features by Radius</string>
    </property>
   </action>
  </widget>
@@ -347,6 +389,34 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

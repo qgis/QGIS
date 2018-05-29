@@ -19,7 +19,6 @@
 #define QGIS_H
 
 #include <QEvent>
-#include "qgis_sip.h"
 #include <QString>
 #include <QRegExp>
 #include <QMetaType>
@@ -35,6 +34,7 @@
 #include <cmath>
 #include <qnumeric.h>
 
+#include "qgstolerance.h"
 #include "qgswkbtypes.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -70,6 +70,19 @@ class CORE_EXPORT Qgis
 
     // Enumerations
     //
+
+    /**
+     * \brief Level for messages
+     * This will be used both for message log and message bar in application.
+     */
+    enum MessageLevel
+    {
+      Info = 0,
+      Warning = 1,
+      Critical = 2,
+      Success = 3,
+      None = 4
+    };
 
     /**
      * Raster data types.
@@ -137,6 +150,17 @@ class CORE_EXPORT Qgis
     */
     static const double UI_SCALE_FACTOR;
 
+    /**
+     * Default snapping distance tolerance.
+     *  \since QGIS 3.0
+    */
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    /**
+     * Default snapping distance units.
+     *  \since QGIS 3.0
+    */
+    static const QgsTolerance::UnitType DEFAULT_SNAP_UNITS;
 };
 
 // hack to workaround warnings when casting void pointers
@@ -151,8 +175,8 @@ class CORE_EXPORT Qgis
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
- * \since QGIS 2.16
  * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
@@ -192,9 +216,9 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  *
  * No signals will be emitted when calling these methods.
  *
- * \since QGIS 2.16
  * \see QgsSignalBlocker
  * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
@@ -275,9 +299,10 @@ inline double qgsRound( double number, double places )
 ///@cond PRIVATE
 
 /**
- * Contains "polyfills" for backporting c++ features from standards > c++11.
+ * Contains "polyfills" for backporting c++ features from standards > c++11 and Qt global methods
+ * added later than our minimum version.
  *
- * To be removed when minimum c++ build requirement includes the std implementation
+ * To be removed when minimum c++ or Qt build requirement includes the std implementation
  * for these features.
  *
  * \note not available in Python bindings.
@@ -291,8 +316,8 @@ namespace qgis
    *
    * To be used as a proxy for std::as_const until we target c++17 minimum.
    *
-   * \since QGIS 3.0
    * \note not available in Python bindings
+   * \since QGIS 3.0
    */
   template <typename T> struct QgsAddConst { typedef const T Type; };
 
@@ -337,6 +362,27 @@ namespace qgis
   template<class T, class... Args>
   typename _Unique_if<T>::_Known_bound
   make_unique( Args &&... ) = delete;
+
+  /**
+   * Used for new-style Qt connects to overloaded signals, avoiding the usual horrible connect syntax required
+   * in these circumstances.
+   *
+   * Example usage:
+   *
+   * connect( mSpinBox, qgis::overload< int >::of( &QSpinBox::valueChanged ), this, &MyClass::mySlot );
+   *
+   * This is an alternative to qOverload, which was implemented in Qt 5.7.
+   *
+   * See https://stackoverflow.com/a/16795664/1861260
+   */
+  template<typename... Args> struct overload
+  {
+    template<typename C, typename R>
+    static constexpr auto of( R( C::*pmf )( Args... ) ) -> decltype( pmf )
+    {
+      return pmf;
+    }
+  };
 }
 ///@endcond
 #endif
@@ -347,8 +393,8 @@ namespace qgis
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
  * \returns string converted to double if possible
- * \since QGIS 2.9
  * \see permissiveToInt
+ * \since QGIS 2.9
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
@@ -358,8 +404,8 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
  * \returns string converted to int if possible
- * \since QGIS 2.9
  * \see permissiveToDouble
+ * \since QGIS 2.9
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 
@@ -523,5 +569,42 @@ typedef unsigned long long qgssize;
 #else
 #define FALLTHROUGH
 #endif
+
+// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
+#if __cplusplus >= 201703L
+#define NODISCARD [[nodiscard]]
+#elif defined(__clang__)
+#define NODISCARD [[nodiscard]]
+#elif defined(_MSC_VER)
+#define NODISCARD // no support
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(nodiscard)
+#define NODISCARD [[nodiscard]]
+#elif __has_cpp_attribute(gnu::warn_unused_result)
+#define NODISCARD [[gnu::warn_unused_result]]
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+#else
+#define NODISCARD Q_REQUIRED_RESULT
+#endif
+
+#if __cplusplus >= 201703L
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(__clang__)
+#define MAYBE_UNUSED [[maybe_unused]]
+#elif defined(_MSC_VER)
+#define MAYBE_UNUSED // no support
+#elif defined(__has_cpp_attribute)
+#if __has_cpp_attribute(gnu::unused)
+#define MAYBE_UNUSED [[gnu::unused]]
+#else
+#define MAYBE_UNUSED
+#endif
+#else
+#define MAYBE_UNUSED
+#endif
+
+
 
 

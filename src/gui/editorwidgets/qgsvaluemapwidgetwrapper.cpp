@@ -58,14 +58,7 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
-    QVariantMap::ConstIterator it = map.constBegin();
-
-    while ( it != map.constEnd() )
-    {
-      mComboBox->addItem( it.key(), it.value() );
-      ++it;
-    }
+    QgsValueMapConfigDlg::populateComboBox( mComboBox, config(), false );
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
              this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }

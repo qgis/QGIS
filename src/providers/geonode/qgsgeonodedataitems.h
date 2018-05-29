@@ -69,6 +69,8 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QList<QAction *> actions( QWidget *parent ) override;
 
+    QVariant sortKey() const override { return 13; }
+
   private slots:
     void newConnection();
 };

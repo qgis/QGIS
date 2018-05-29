@@ -8,9 +8,9 @@ matrix:
       env:
         - TRAVIS_CONFIG=linux
         - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
+        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
         - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
-        - DOCKER_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
-        - DOCKER_DEPS_IMAGE_REBUILD=$( [[ $TRAVIS_COMMIT_MESSAGE =~ '[docker] update dependencies' ]] && echo "true" || echo "false" )
+        - TRAVIS_TIMESTAMP=$(date +%s)
         - CCACHE_DIR=${HOME}/.ccache
       dist: trusty
       sudo: false

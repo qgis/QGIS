@@ -25,7 +25,9 @@ __copyright__ = '(C) 2014, Michael Douchin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsExpression,
+                       QgsProcessing,
                        QgsVectorLayer,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterExpression,
@@ -50,13 +52,16 @@ class SelectByExpression(QgisAlgorithm):
     def __init__(self):
         super().__init__()
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def initAlgorithm(self, config=None):
         self.methods = [self.tr('creating new selection'),
                         self.tr('adding to current selection'),
                         self.tr('removing from current selection'),
                         self.tr('selecting within current selection')]
 
-        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT, self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
 
         self.addParameter(QgsProcessingParameterExpression(self.EXPRESSION,
                                                            self.tr('Expression'), parentLayerParameterName=self.INPUT))
@@ -75,7 +80,6 @@ class SelectByExpression(QgisAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
-
         if method == 0:
             behavior = QgsVectorLayer.SetSelection
         elif method == 1:
@@ -91,4 +95,5 @@ class SelectByExpression(QgisAlgorithm):
             raise QgsProcessingException(qExp.parserErrorString())
 
         layer.selectByExpression(expression, behavior)
+
         return {self.OUTPUT: parameters[self.INPUT]}

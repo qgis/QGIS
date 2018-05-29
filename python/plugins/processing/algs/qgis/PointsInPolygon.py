@@ -30,12 +30,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
                        QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -56,7 +58,10 @@ class PointsInPolygon(QgisAlgorithm):
     CLASSFIELD = 'CLASSFIELD'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumPoints.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumPoints.svg")
 
     def group(self):
         return self.tr('Vector analysis')
@@ -91,7 +96,12 @@ class PointsInPolygon(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
+
         point_source = self.parameterAsSource(parameters, self.POINTS, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POINTS))
 
         weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
         weight_field_index = -1
@@ -112,6 +122,8 @@ class PointsInPolygon(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(
             QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)

@@ -86,7 +86,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_QTSVG_INCLUDE_DIR}
   ${QT_QTXML_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${QEXTSERIALPORT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
@@ -107,7 +106,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/pal
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/diagram
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
@@ -120,6 +118,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/providers
@@ -171,16 +170,23 @@ IF(NOT QT_MOBILITY_LOCATION_FOUND)
   SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOBILITY_LOCATION)
 ENDIF(NOT QT_MOBILITY_LOCATION_FOUND)
 
-# SIP 4.19.7+ can prepend auto-generated Python signature to existing Docstrings
+# SIP 4.19.7+ can:
+# * prepend auto-generated Python signature to existing Docstrings
+# * document template based classes
+SET(DOCSTRINGSTEMPLATE "//")
 IF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   SET(DEFAULTDOCSTRINGSIGNATURE "%DefaultDocstringSignature \"prepended\"")
+  SET(DOCSTRINGSTEMPLATE "")
 ENDIF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
 
 # core module
-FILE(GLOB_RECURSE sip_files_core core/*.sip)
+FILE(GLOB_RECURSE sip_files_core core/*.sip core/*.sip.in)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
-GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip cpp_files)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.core.api)
+IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_core.pyi)
+ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 SET(SIP_CORE_CPP_FILES ${cpp_files})
 
@@ -195,10 +201,12 @@ SET(PY_MODULES core analysis)
 IF (WITH_GUI)
   SET(PY_MODULES ${PY_MODULES} gui)
 
-  FILE(GLOB_RECURSE sip_files_gui gui/*.sip)
+  FILE(GLOB_RECURSE sip_files_gui gui/*.sip gui/*.sip.in)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
-  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
-
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.gui.api)
+  IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_gui.pyi)
+  ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
   IF(QSCI_SIP_DIR)
     SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -I ${QSCI_SIP_DIR})
   ELSE(QSCI_SIP_DIR)
@@ -206,7 +214,7 @@ IF (WITH_GUI)
     SET(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_QSCI_SIP)
   ENDIF(QSCI_SIP_DIR)
 
-  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip cpp_files)
+  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._gui gui/gui.sip "${sip_files_gui}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip ${cpp_files} "" qgis_core qgis_gui)
 ENDIF (WITH_GUI)
 
@@ -219,10 +227,13 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
   SET(PY_MODULES ${PY_MODULES} server)
 
-  FILE(GLOB_RECURSE sip_files_server server/*.sip)
+  FILE(GLOB_RECURSE sip_files_server server/*.sip server/*.sip.in)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
-  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
-  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip cpp_files)
+  SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
+  IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+    SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_server.pyi)
+  ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip "${sip_files_server}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._server server/server.sip ${cpp_files} "" qgis_core qgis_server)
 ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
@@ -243,17 +254,13 @@ INCLUDE_DIRECTORIES(BEFORE
 )
 
 # analysis module
-FILE(GLOB sip_files_analysis
-  analysis/*.sip
-  analysis/raster/*.sip
-  analysis/vector/*.sip
-  analysis/network/*.sip
-  analysis/interpolation/*.sip
-  analysis/openstreetmap/*.sip
-)
+FILE(GLOB_RECURSE sip_files_analysis analysis/*.sip analysis/*.sip.in)
 SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
-SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
-GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip cpp_files)
+SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -g -o -a ${CMAKE_BINARY_DIR}/python/qgis.analysis.api)
+IF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+  SET(SIP_EXTRA_OPTIONS ${SIP_EXTRA_OPTIONS} -y ${QGIS_PYTHON_OUTPUT_DIRECTORY}/_analysis.pyi)
+ENDIF((${SIP_VERSION_STR} VERSION_EQUAL 4.18) OR (${SIP_VERSION_STR} VERSION_GREATER 4.18))
+GENERATE_SIP_PYTHON_MODULE_CODE(qgis._analysis analysis/analysis.sip "${sip_files_analysis}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._analysis analysis/analysis.sip ${cpp_files} "" qgis_core qgis_analysis)
 
 SET(QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
@@ -320,13 +327,17 @@ ENDFOREACH(pyfile)
 FOREACH(module ${PY_MODULES})
   ADD_CUSTOM_TARGET(py${module} ALL)
   ADD_DEPENDENCIES(py${module} python_module_qgis__${module})
-  FILE(GLOB_RECURSE PY_FILES "${module}/*.py")
+  FILE(GLOB PY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/*.py)
+  FILE(GLOB PY_FILES_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/additions/*.py)
   INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
+  INSTALL(FILES ${PY_FILES_ADDITIONS} DESTINATION "${QGIS_PYTHON_DIR}/${module}/additions")
+  SET(PY_FILES ${PY_FILES} ${PY_FILES_ADDITIONS})
   FOREACH(pyfile ${PY_FILES})
+    GET_FILENAME_COMPONENT(subdir ${pyfile} DIRECTORY)
     ADD_CUSTOM_COMMAND(TARGET py${module}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
-      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${module}"
+      COMMAND ${CMAKE_COMMAND} -E make_directory "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${subdir}"
+      COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${subdir}"
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       DEPENDS ${PY_FILES}
     )

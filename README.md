@@ -8,7 +8,7 @@ May of 2002 and was established as a project on SourceForge in June of the same
 year. We've worked hard to make GIS software (which is traditionally expensive
 commercial software) a viable prospect for anyone with basic access to a
 Personal Computer.  QGIS currently runs on most Unix platforms (macOS/OS X included)
-and Windows. QGIS is developed using the Qt toolkit (http://qt.io) and C++.  This
+and Windows. QGIS is developed using the [Qt toolkit](https://qt.io) and C++.  This
 means that QGIS feels snappy to use and has a pleasing, easy to use graphical
 user interface.
 
@@ -53,7 +53,7 @@ modified.
 
 Please follow the installation instructions carefully.
 After extracting the distribution, you can find the HTML version of the
-installation document in qgis/doc/index.html. The installation document is
+installation document in `qgis/doc/index.html`. The installation document is
 also available as PDF in the same directory.
 
 ## Help us
@@ -64,7 +64,7 @@ an email address where we can request additional information.
 ## Support
 You can get support in the following ways:
 
- -  Using the QGIS community site at http://qgis.org
+ -  Using the QGIS community site at https://qgis.org
  -  Joining the [qgis-users mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
  -  Chatting with us real-time.
     Please wait around for a response to your question as many folks

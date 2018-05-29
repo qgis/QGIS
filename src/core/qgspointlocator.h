@@ -18,12 +18,15 @@
 
 class QgsPointXY;
 class QgsVectorLayer;
+class QgsFeatureRenderer;
+class QgsRenderContext;
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include <memory>
 
 class QgsPointLocator_VisitorNearestVertex;
 class QgsPointLocator_VisitorNearestEdge;
@@ -69,19 +72,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
     ~QgsPointLocator() override;
 
     /**
-     * Get associated layer
+     * Gets associated layer
      * \since QGIS 2.14
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /**
-     * Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+     * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
      * \since QGIS 2.14
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
-     * Get extent of the area point locator covers - if null then it caches the whole layer
+     * Gets extent of the area point locator covers - if null then it caches the whole layer
      * \since QGIS 2.14
      */
     const QgsRectangle *extent() const { return mExtent; }
@@ -91,6 +94,12 @@ class CORE_EXPORT QgsPointLocator : public QObject
      * \since QGIS 2.14
      */
     void setExtent( const QgsRectangle *extent );
+
+    /**
+     * Configure render context  - if not null, it will use to index only visible feature
+     * \since QGIS 3.2
+     */
+    void setRenderContext( const QgsRenderContext *context );
 
     /**
      * The type of a snap result or the filter type for a snap request.
@@ -229,6 +238,15 @@ class CORE_EXPORT QgsPointLocator : public QObject
     Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
 
     /**
+     * Find nearest area to the specified point - up to distance specified by tolerance
+     * Optional filter may discard unwanted matches.
+     * This will first perform a pointInPolygon and return first result.
+     * If no match is found and tolerance is not 0, it will return nearestEdge.
+     * \since QGIS 3.0
+     */
+    Match nearestArea( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = nullptr );
+
+    /**
      * Find edges within a specified recangle
      * Optional filter may discard unwanted matches.
      */
@@ -242,10 +260,8 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! find out if the point is in any polygons
     MatchList pointInPolygon( const QgsPointXY &point );
 
-    //
-
     /**
-     * Return how many geometries are cached in the index
+     * Returns how many geometries are cached in the index
      * \since QGIS 2.14
      */
     int cachedGeometryCount() const { return mGeoms.count(); }
@@ -258,6 +274,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     void onFeatureAdded( QgsFeatureId fid );
     void onFeatureDeleted( QgsFeatureId fid );
     void onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
+    void onAttributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
     //! Storage manager
@@ -269,10 +286,13 @@ class CORE_EXPORT QgsPointLocator : public QObject
     //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
     bool mIsEmptyLayer;
 
+
     //! R-tree containing spatial index
     QgsCoordinateTransform mTransform;
     QgsVectorLayer *mLayer = nullptr;
     QgsRectangle *mExtent = nullptr;
+
+    std::unique_ptr<QgsRenderContext> mContext;
 
     friend class QgsPointLocator_VisitorNearestVertex;
     friend class QgsPointLocator_VisitorNearestEdge;

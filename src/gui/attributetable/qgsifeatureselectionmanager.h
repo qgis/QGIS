@@ -38,23 +38,17 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
       : QObject( parent ) {}
 
     /**
-     * The number of features that are selected in this layer
-     *
-     * \returns See description
+     * Returns the number of features that are selected in this layer.
      */
     virtual int selectedFeatureCount() = 0;
 
     /**
-     * Select features
-     *
-     * \param ids            Feature ids to select
+     * Select features by feature \a ids.
      */
     virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
-     * Deselect features
-     *
-     * \param ids            Feature ids to deselect
+     * Deselect features by feature \a ids.
      */
     virtual void deselect( const QgsFeatureIds &ids ) = 0;
 
@@ -64,14 +58,15 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * clearAndSelect flag set.
      *
      * \param ids   The ids which will be the new selection
+     * \see selectedFeatureIds()
      */
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
     /**
-     * Return reference to identifiers of selected features
+     * Returns reference to identifiers of selected features
      *
      * \returns A list of QgsFeatureId's
-     * \see selectedFeatures()
+     * \see setSelectedFeatures()
      */
     virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 

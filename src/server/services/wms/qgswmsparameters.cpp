@@ -685,9 +685,9 @@ namespace QgsWms
     return value( ParameterName::DPI ).toString();
   }
 
-  int QgsWmsParameters::dpiAsInt() const
+  double QgsWmsParameters::dpiAsDouble() const
   {
-    return toInt( ParameterName::DPI );
+    return toDouble( ParameterName::DPI );
   }
 
   QString QgsWmsParameters::version() const
@@ -1209,6 +1209,11 @@ namespace QgsWms
     return value( ParameterName::INFO_FORMAT ).toString();
   }
 
+  bool QgsWmsParameters::infoFormatIsImage() const
+  {
+    return infoFormat() == Format::PNG || infoFormat() == Format::JPG;
+  }
+
   QgsWmsParameters::Format QgsWmsParameters::infoFormat() const
   {
     QString fStr = infoFormatAsString();
@@ -1658,7 +1663,7 @@ namespace QgsWms
 
   QStringList QgsWmsParameters::selections() const
   {
-    return toStringList( ParameterName::SELECTION );
+    return toStringList( ParameterName::SELECTION, ';' );
   }
 
   QStringList QgsWmsParameters::opacities() const
@@ -1987,7 +1992,7 @@ namespace QgsWms
 
   void QgsWmsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, QStringLiteral( "Server" ), Qgis::Info );
   }
 
   void QgsWmsParameters::raiseError( ParameterName paramName ) const

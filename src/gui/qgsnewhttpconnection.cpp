@@ -36,7 +36,14 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
 
   QRegExp rx( "/connections-([^/]+)/" );
   if ( rx.indexIn( baseKey ) != -1 )
-    setWindowTitle( tr( "Create a New %1 Connection" ).arg( rx.cap( 1 ).toUpper() ) );
+  {
+    QString connectionType( rx.cap( 1 ).toUpper() );
+    if ( connectionType == QLatin1String( "WMS" ) )
+    {
+      connectionType = QStringLiteral( "WMS/WMTS" );
+    }
+    setWindowTitle( tr( "Create a New %1 Connection" ).arg( connectionType ) );
+  }
 
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.
@@ -188,7 +195,7 @@ bool QgsNewHttpConnection::validate()
   if ( ! mAuthSettings->password().isEmpty() &&
        QMessageBox::question( this,
                               tr( "Saving Passwords" ),
-                              trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
+                              tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;

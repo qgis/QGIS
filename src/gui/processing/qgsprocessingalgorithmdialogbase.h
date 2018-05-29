@@ -54,7 +54,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
   signals:
 
     void progressTextChanged( const QString &text );
-    void errorReported( const QString &text );
+    void errorReported( const QString &text, bool fatalError );
     void infoPushed( const QString &text );
     void commandInfoPushed( const QString &text );
     void debugInfoPushed( const QString &text );
@@ -63,7 +63,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
   public slots:
 
     void setProgressText( const QString &text ) override;
-    void reportError( const QString &error ) override;
+    void reportError( const QString &error, bool fatalError ) override;
     void pushInfo( const QString &info ) override;
     void pushCommandInfo( const QString &info ) override;
     void pushDebugInfo( const QString &info ) override;
@@ -84,6 +84,16 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     Q_OBJECT
 
   public:
+
+    /**
+     * Log format options.
+     * \since QGIS 3.2
+     */
+    enum LogFormat
+    {
+      FormatPlainText, //!< Plain text file (.txt)
+      FormatHtml, //!< HTML file (.html)
+    };
 
     /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
@@ -144,14 +154,24 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     virtual QVariantMap getParameterValues() const;
 
+    /**
+     * Saves the log contents to a text file (specified by the file \a path), in
+     * the given \a format.
+     * \see saveLog()
+     * \since QGIS 3.2
+     */
+    void saveLogToFile( const QString &path, LogFormat format = FormatPlainText );
+
   public slots:
 
     void accept() override;
 
     /**
      * Reports an \a error string to the dialog's log.
+     *
+     * If \a fatalError is true, the error prevented the algorithm from executing.
      */
-    void reportError( const QString &error );
+    void reportError( const QString &error, bool fatalError );
 
     /**
      * Pushes an information string to the dialog's log.
@@ -188,6 +208,25 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * from this dialog.
      */
     QDialog *createProgressDialog();
+
+    /**
+     * Clears the current log contents.
+     * \since QGIS 3.2
+     */
+    void clearLog();
+
+    /**
+     * Opens a dialog allowing users to save the current log contents.
+     * \see saveLogToFile()
+     * \since QGIS 3.2
+     */
+    void saveLog();
+
+    /**
+     * Copies the current log contents to the clipboard.
+     * \since QGIS 3.2
+     */
+    void copyLogToClipboard();
 
   protected:
 
@@ -257,6 +296,13 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * by the dialog. Ownership of \a task is transferred to the dialog.
      */
     void setCurrentTask( QgsProcessingAlgRunnerTask *task SIP_TRANSFER );
+
+    /**
+     * Formats an input \a string for display in the log tab.
+     *
+     * \since QGIS 3.0.1
+     */
+    static QString formatStringForLog( const QString &string );
 
   protected slots:
 

@@ -206,7 +206,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "invalid character" ) << "@" << false;
       QTest::newRow( "invalid column reference" ) << "my col" << false;
       QTest::newRow( "invalid binary operator" ) << "1+" << false;
-      QTest::newRow( "invalid function no params" ) << "cos" << false;
+      QTest::newRow( "invalid function not known no args" ) << "watwat()" << false;
       QTest::newRow( "invalid function not known" ) << "coz(1)" << false;
       QTest::newRow( "invalid operator IN" ) << "n in p" << false;
       QTest::newRow( "empty node list" ) << "1 in ()" << false;
@@ -255,6 +255,36 @@ class TestQgsExpression: public QObject
         qDebug() << "Parsed string: " << exp.expression();
 
       QCOMPARE( !exp.hasParserError(), valid );
+    }
+
+    void parsing_error_line_column_data()
+    {
+      QTest::addColumn<QString>( "string" );
+      QTest::addColumn<int>( "firstLine" );
+      QTest::addColumn<int>( "firstColumn" );
+      QTest::addColumn<int>( "lastLine" );
+      QTest::addColumn<int>( "lastColumn" );
+
+      // invalid strings
+      QTest::newRow( "No close brace" ) << "(" << 1 << 1 << 1 << 2;
+      QTest::newRow( "No close brace 2" ) << "to_string(" << 1 << 10 << 1 << 11;
+      QTest::newRow( "No close brace 2 - Multiline" ) << "to_string\n(" << 2 << 0 << 2 << 1;
+    }
+
+    void parsing_error_line_column()
+    {
+      QFETCH( QString, string );
+      QFETCH( int, firstLine );
+      QFETCH( int, firstColumn );
+      QFETCH( int, lastLine );
+      QFETCH( int, lastColumn );
+
+      QgsExpression exp( string );
+      QCOMPARE( exp.hasParserError(), true );
+      QCOMPARE( exp.parserErrors().first().firstLine, firstLine );
+      QCOMPARE( exp.parserErrors().first().firstColumn, firstColumn );
+      QCOMPARE( exp.parserErrors().first().lastLine, lastLine );
+      QCOMPARE( exp.parserErrors().first().lastColumn, lastColumn );
     }
 
     void parsing_with_locale()
@@ -784,6 +814,20 @@ class TestQgsExpression: public QObject
       QTest::newRow( "offset_curve line" ) << "geom_to_wkt(offset_curve(geom_from_wkt('LineString(0 0, 10 0)'),1,segments:=4))" << false << QVariant( "LineString (0 1, 10 1)" );
       QTest::newRow( "offset_curve line miter" ) << "geom_to_wkt(offset_curve(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),distance:=-1,join:=2,miter_limit:=1))" << false << QVariant( "LineString (10 -1, 0 -1)" );
       QTest::newRow( "offset_curve line bevel" ) << "geom_to_wkt(offset_curve(geometry:=geom_from_wkt('LineString(0 0, 10 0, 10 10)'),distance:=1,join:=3))" << false << QVariant( "LineString (0 1, 9 1, 9 10)" );
+      QTest::newRow( "wedge_buffer not geom" ) << "wedge_buffer('g', 0, 45, 1)" << true << QVariant();
+      QTest::newRow( "wedge_buffer null" ) << "wedge_buffer(NULL, 0, 45, 1)" << false << QVariant();
+      QTest::newRow( "wedge_buffer point" ) << "geom_to_wkt(wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=1))" << false << QVariant( QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (1 3, 2 2, 1 1),(1 1, 1 2),(1 2, 1 3)))" ) );
+      QTest::newRow( "wedge_buffer point inner" ) << "geom_to_wkt(wedge_buffer(center:=geom_from_wkt('POINT(1 2)'),azimuth:=90,width:=180,outer_radius:=2,inner_radius:=1))" << false << QVariant( QStringLiteral( "CurvePolygon (CompoundCurve (CircularString (1 4, 3 2, 1 0),(1 0, 1 1),CircularString (1 1, 0 2, 1 3),(1 3, 1 4)))" ) );
+      QTest::newRow( "tapered_buffer not geom" ) << "tapered_buffer('g', 1, 2, 8)" << true << QVariant();
+      QTest::newRow( "tapered_buffer null" ) << "tapered_buffer(NULL, 1, 2, 8)" << false << QVariant();
+      QTest::newRow( "tapered_buffer point" ) << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('POINT(1 2)'),start_width:=1,end_width:=2,segments:=10))" << true << QVariant();
+      QTest::newRow( "tapered_buffer line" ) << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=1,end_width:=2,segments:=3))" << false << QVariant( QStringLiteral( "MultiPolygon (((-0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 -0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, -0 -0.5)))" ) );
+      QTest::newRow( "tapered_buffer line 2" ) << "geom_to_wkt(tapered_buffer(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),start_width:=2,end_width:=1,segments:=3))" << false << QVariant( QStringLiteral( "MultiPolygon (((-0 -1, -0.5 -0.8660254, -0.8660254 -0.5, -1 0, -0.8660254 0.5, -0.5 0.8660254, 0 1, 10 0.5, 10.25 0.4330127, 10.4330127 0.25, 10.5 -0, 10.4330127 -0.25, 10.25 -0.4330127, 10 -0.5, -0 -1)))" ) );
+      QTest::newRow( "buffer_by_m not geom" ) << "buffer_by_m('g', 8)" << true << QVariant();
+      QTest::newRow( "buffer_by_m null" ) << "buffer_by_m(NULL, 8)" << false << QVariant();
+      QTest::newRow( "buffer_by_m point" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('POINT(1 2)'),segments:=10))" << true << QVariant();
+      QTest::newRow( "buffer_by_m line" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineString(0 0, 10 0)'),segments:=3))" << false << QVariant( QStringLiteral( "GeometryCollection ()" ) );
+      QTest::newRow( "buffer_by_m linem" ) << "geom_to_wkt(buffer_by_m(geometry:=geom_from_wkt('LineStringM(0 0 1, 10 0 2)'),segments:=3))" << false << QVariant( QStringLiteral( "MultiPolygon (((-0 -0.5, -0.25 -0.4330127, -0.4330127 -0.25, -0.5 0, -0.4330127 0.25, -0.25 0.4330127, 0 0.5, 10 1, 10.5 0.8660254, 10.8660254 0.5, 11 -0, 10.8660254 -0.5, 10.5 -0.8660254, 10 -1, -0 -0.5)))" ) );
       QTest::newRow( "single_sided_buffer not geom" ) << "single_sided_buffer('g', 5)" << true << QVariant();
       QTest::newRow( "single_sided_buffer null" ) << "single_sided_buffer(NULL, 5)" << false << QVariant();
       QTest::newRow( "single_sided_buffer point" ) << "single_sided_buffer(geom_from_wkt('POINT(1 2)'),5)" << false << QVariant();
@@ -807,6 +851,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "reverse point" ) << "reverse(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
       QTest::newRow( "reverse polygon" ) << "reverse(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1))'))" << false << QVariant();
       QTest::newRow( "reverse line" ) << "geom_to_wkt(reverse(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))" << false << QVariant( "LineString (2 2, 1 1, 0 0)" );
+      QTest::newRow( "reverse multiline" ) << "geom_to_wkt(reverse(geom_from_wkt('MULTILINESTRING((0 0, 1 1, 2 2),(10 10, 11 11, 12 12))')))" << false << QVariant( "MultiLineString ((2 2, 1 1, 0 0),(12 12, 11 11, 10 10))" );
       QTest::newRow( "exterior_ring not geom" ) << "exterior_ring('g')" << true << QVariant();
       QTest::newRow( "exterior_ring null" ) << "exterior_ring(NULL)" << false << QVariant();
       QTest::newRow( "exterior_ring point" ) << "exterior_ring(geom_from_wkt('POINT(1 2)'))" << false << QVariant();
@@ -953,6 +998,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "hausdorff line to line densify" ) << " round(hausdorff_distance( geom_from_wkt('LINESTRING (130 0, 0 0, 0 150)'),geom_from_wkt('LINESTRING (10 10, 10 150, 130 10)'),0.5))" << false << QVariant( 70 );
       QTest::newRow( "hausdorff not geom 1" ) << " hausdorff_distance( 'a',geom_from_wkt('LINESTRING (0 0, 2 0)'))" << true << QVariant();
       QTest::newRow( "hausdorff not geom 2" ) << " hausdorff_distance( geom_from_wkt('LINESTRING (0 0, 2 0)'), 'b')" << true << QVariant();
+      QTest::newRow( "flip_coordinates not geom" ) << "flip_coordinates('g')" << true << QVariant();
+      QTest::newRow( "flip_coordinates null" ) << "flip_coordinates(NULL)" << false << QVariant();
+      QTest::newRow( "flip_coordinates point" ) << "geom_to_wkt(flip_coordinates(geom_from_wkt('POINT(1 2)')))" << false << QVariant( "Point (2 1)" );
 
       // string functions
       QTest::newRow( "lower" ) << "lower('HeLLo')" << false << QVariant( "hello" );
@@ -1109,6 +1157,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "color hsva" ) << "color_hsva(40,100,100,200)" << false << QVariant( "255,170,0,200" );
       QTest::newRow( "color cmyk" ) << "color_cmyk(100,50,33,10)" << false << QVariant( "0,115,154" );
       QTest::newRow( "color cmyka" ) << "color_cmyka(50,25,90,60,200)" << false << QVariant( "51,76,10,200" );
+      QTest::newRow( "color grayscale average" ) << "color_grayscale_average('255,100,50')" << false << QVariant( "135,135,135,255" );
+      QTest::newRow( "color mix rgb" ) << "color_mix_rgb('0,0,0,100','255,255,255',0.5)" << false << QVariant( "127,127,127,177" );
 
       QTest::newRow( "color part bad color" ) << "color_part('notacolor','red')" << true << QVariant();
       QTest::newRow( "color part bad part" ) << "color_part(color_rgb(255,127,0),'bad')" << true << QVariant();
@@ -1226,9 +1276,9 @@ class TestQgsExpression: public QObject
 
     void run_evaluation_test( QgsExpression &exp, bool evalError, QVariant &expected )
     {
-      QCOMPARE( exp.hasParserError(), false );
       if ( exp.hasParserError() )
         qDebug() << exp.parserErrorString();
+      QCOMPARE( exp.hasParserError(), false );
 
       QVariant result = exp.evaluate();
       if ( exp.hasEvalError() )
@@ -1323,10 +1373,12 @@ class TestQgsExpression: public QObject
       fields.append( QgsField( QStringLiteral( "x1" ) ) );
       fields.append( QgsField( QStringLiteral( "x2" ) ) );
       fields.append( QgsField( QStringLiteral( "foo" ), QVariant::Int ) );
+      fields.append( QgsField( QStringLiteral( "sin" ), QVariant::Int ) );
 
       QgsFeature f;
-      f.initAttributes( 3 );
+      f.initAttributes( 4 );
       f.setAttribute( 2, QVariant( 20 ) );
+      f.setAttribute( 3, QVariant( 10 ) );
 
       QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
 
@@ -1346,6 +1398,22 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp2.hasEvalError(), true );
       QVariant res2 = exp2.evaluate( &context );
       QCOMPARE( res2.type(), QVariant::Invalid );
+
+      // Has field called sin and function
+      QgsExpression exp3( QStringLiteral( "sin" ) );
+      prepareRes = exp3.prepare( &context );
+      QCOMPARE( prepareRes, true );
+      QCOMPARE( exp3.hasEvalError(), false );
+      res = exp3.evaluate( &context );
+      QCOMPARE( res.type(), QVariant::Int );
+      QCOMPARE( res.toInt(), 10 );
+
+      QgsExpression exp4( QStringLiteral( "sin(3.14)" ) );
+      prepareRes = exp4.prepare( &context );
+      QCOMPARE( prepareRes, true );
+      QCOMPARE( exp4.hasEvalError(), false );
+      res = exp4.evaluate( &context );
+      QCOMPARE( res.toInt(), 0 );
     }
 
     void eval_feature_id()
@@ -1792,6 +1860,59 @@ class TestQgsExpression: public QObject
       QSet<QString> refVar = exp.referencedVariables();
 
       QCOMPARE( refVar, expectedVars );
+    }
+
+
+    void referenced_functions()
+    {
+      QSet<QString> expectedFunctions;
+      expectedFunctions << QStringLiteral( "current_value" )
+                        << QStringLiteral( "var" )
+                        << QStringLiteral( "intersects" )
+                        << QStringLiteral( "$geometry" )
+                        << QStringLiteral( "buffer" );
+
+      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)" ) );
+      QCOMPARE( exp.hasParserError(), false );
+      QSet<QString> refVar = exp.referencedFunctions();
+
+      QCOMPARE( refVar, expectedFunctions );
+    }
+
+    void findNodes()
+    {
+      QSet<QString> expectedFunctions;
+      expectedFunctions << QStringLiteral( "current_value" )
+                        << QStringLiteral( "intersects" )
+                        << QStringLiteral( "var" )
+                        << QStringLiteral( "$geometry" )
+                        << QStringLiteral( "buffer" );
+      QgsExpression exp( QStringLiteral( "current_value( 'FIELD_NAME' ) = 'A_VALUE' AND intersects(buffer($geometry, 10), @current_geometry)" ) );
+      QList<const QgsExpressionNodeFunction *> functionNodes( exp.findNodes<QgsExpressionNodeFunction>() );
+      QCOMPARE( functionNodes.size(), 5 );
+      QgsExpressionFunction *fd;
+      QSet<QString> actualFunctions;
+      for ( const auto &f : functionNodes )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntFunction );
+        fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+        actualFunctions << fd->name();
+      }
+      QCOMPARE( actualFunctions, expectedFunctions );
+
+      QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> expectedBinaryOps;
+      expectedBinaryOps << QgsExpressionNodeBinaryOperator::BinaryOperator::boAnd;
+      expectedBinaryOps << QgsExpressionNodeBinaryOperator::BinaryOperator::boEQ;
+      QList<const QgsExpressionNodeBinaryOperator *> binaryOpsNodes( exp.findNodes<QgsExpressionNodeBinaryOperator>() );
+      QCOMPARE( binaryOpsNodes.size(), 2 );
+      QSet<QgsExpressionNodeBinaryOperator::BinaryOperator> actualBinaryOps;
+      for ( const auto &f : binaryOpsNodes )
+      {
+        QCOMPARE( f->nodeType(), QgsExpressionNode::NodeType::ntBinaryOperator );
+        actualBinaryOps << f->op();
+      }
+      QCOMPARE( actualBinaryOps, expectedBinaryOps );
+
     }
 
     void referenced_columns_all_attributes()
@@ -2935,7 +3056,7 @@ class TestQgsExpression: public QObject
       map[QStringLiteral( "2" )] = "Two";
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two'&gt;</i>" ) );
       map[QStringLiteral( "3" )] = "A very long string that is going to be truncated";
-      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two', 3: 'A very long string that is going to ...&gt;</i>" ) );
+      QCOMPARE( QgsExpression::formatPreviewString( QVariant( map ) ), QString( "<i>&lt;map: 1: 'One', 2: 'Two', 3: 'A very long string that is going to …&gt;</i>" ) );
 
       QVariantList list;
       list << 1 << 2 << 3;
@@ -2944,7 +3065,7 @@ class TestQgsExpression: public QObject
       QStringList stringList;
       stringList << QStringLiteral( "One" ) << QStringLiteral( "Two" ) << QStringLiteral( "A very long string that is going to be truncated" );
       QCOMPARE( QgsExpression::formatPreviewString( QVariant( stringList ) ),
-                QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca...&gt;</i>" ) );
+                QString( "<i>&lt;array: 'One', 'Two', 'A very long string that is going to be trunca…&gt;</i>" ) );
     }
 };
 

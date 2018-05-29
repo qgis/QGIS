@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     # We need to import all the bands and color tables of the input rasters
     alg.loadRasterLayerFromParameter('shade', parameters, context,
                                      False, None)
@@ -34,6 +34,6 @@ def processInputs(alg, parameters, context):
                                      False, None)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     # Keep color table
     alg.exportRasterLayerFromParameter('output', parameters, context, True)

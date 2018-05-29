@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    update_ts_files.sh
 #    ---------------------
@@ -42,13 +42,6 @@ cleanup() {
 		qgis_ts.pro
 	do
 		[ -f "$i" ] && rm "$i"
-	done
-
-	for i in \
-		src/plugins/plugin_template/plugingui.cpp \
-		src/plugins/plugin_template/plugin.cpp
-	do
-		[ -f "$i.save" ] && mv "$i.save" "$i"
 	done
 
 	trap "" EXIT
@@ -131,14 +124,7 @@ for i in python/plugins/*/CMakeLists.txt; do
 done
 echo Updating GRASS module translations
 perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
-mv src/plugins/plugin_template/plugingui.cpp src/plugins/plugin_template/plugingui.cpp.save
 echo Creating qmake project file
-for i in \
-	src/plugins/plugin_template/plugingui.cpp \
-	src/plugins/plugin_template/plugin.cpp
-do
-	[ -f "$i" ] && mv "$i" "$i.save"
-done
 $QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do

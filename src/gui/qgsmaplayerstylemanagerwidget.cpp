@@ -51,9 +51,9 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   QAction *loadFromFileAction = toolbar->addAction( tr( "Load Style" ) );
   loadFromFileAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   connect( loadFromFileAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadStyle );
-  QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as default" ) );
+  QAction *saveAsDefaultAction = toolbar->addAction( tr( "Save as Default" ) );
   connect( saveAsDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::saveAsDefault );
-  QAction *loadDefaultAction = toolbar->addAction( tr( "Restore default" ) );
+  QAction *loadDefaultAction = toolbar->addAction( tr( "Restore Default" ) );
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
 
@@ -185,6 +185,7 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
     if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
+      askToUser.setWindowTitle( tr( "Save Style" ) );
       askToUser.setText( tr( "Save default style to: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );
@@ -227,6 +228,7 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
     if ( layer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
     {
       QMessageBox askToUser;
+      askToUser.setWindowTitle( tr( "Load Style" ) );
       askToUser.setText( tr( "Load default style from: " ) );
       askToUser.setIcon( QMessageBox::Question );
       askToUser.addButton( tr( "Cancel" ), QMessageBox::RejectRole );

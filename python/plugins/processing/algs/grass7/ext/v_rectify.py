@@ -27,18 +27,19 @@ __revision__ = '$Format:%H$'
 
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
+from processing.tools.system import getTempFilename
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'inline_points', context)
             and alg.parameterAsString(parameters, 'points', context)):
-        return alg.tr("You need to set either an input control point file or inline control points!")
+        return False, alg.tr("You need to set either an input control point file or inline control points!")
 
-    return None
+    return True, None
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # handle inline points
     inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
     if inlinePoints:
@@ -51,4 +52,4 @@ def processCommand(alg, parameters, context):
         alg.removeParameter('inline_points')
         parameters['points'] = tempPoints
 
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)

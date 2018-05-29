@@ -19,10 +19,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgsellipse.h"
 #include "qgssettings.h"
+#include "qgis_app.h"
 
 class QgsGeometryRubberBand;
 
-class QgsMapToolAddEllipse: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddEllipse: public QgsMapToolCapture
 {
     Q_OBJECT
   public:

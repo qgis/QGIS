@@ -348,6 +348,14 @@ class TestQgsDateRange(unittest.TestCase):
         self.assertTrue(QgsDateRange(QDate(2017, 3, 1), QDate(2010, 6, 2)).isEmpty())
         self.assertFalse(QgsDateRange(QDate(), QDate()).isEmpty())
 
+    def testEquality(self):
+        range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
+        self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False))
+        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, True))
+        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), True, False))
+        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 3), False, False))
+        self.assertNotEqual(range, QgsDateRange(QDate(2010, 3, 2), QDate(2010, 6, 2), False, False))
+
 
 if __name__ == "__main__":
     unittest.main()

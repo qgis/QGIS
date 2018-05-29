@@ -151,7 +151,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! called when map tool is about to get inactive
     void deactivate() override;
 
-    //! get the rectangle
+    //! Gets the rectangle
     QgsRectangle getRegion();
 
     //! refresh the rectangle displayed in canvas

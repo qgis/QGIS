@@ -36,14 +36,14 @@
         <name>John Smith</name>
         <organization>ACME</organization>
         <position>staff</position>
-        <address>
+        <contactAddress>
             <type>postal</type>
             <address>123 Main Street</address>
             <city>anycity</city>
             <administrativearea>anyprovince</administrativearea>
             <postalcode>90210</postalcode>
             <country>Canada</country>
-        </address>
+        </contactAddress>
         <voice>xx.xxx.xxx.xxxx</voice>
         <fax>xx.xxx.xxx.xxxx</fax>
         <email>foo@example.org</email>

@@ -157,13 +157,14 @@ void QgsLayoutFrame::cleanup()
   QgsLayoutItem::cleanup();
 }
 
-void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
+void QgsLayoutFrame::draw( QgsLayoutItemRenderContext &context )
 {
   if ( mMultiFrame )
   {
     //calculate index of frame
     int frameIndex = mMultiFrame->frameIndex( this );
-    mMultiFrame->render( context, mSection, frameIndex, itemStyle );
+    Q_ASSERT_X( frameIndex >= 0, "QgsLayoutFrame::draw", "Invalid frame index for frame" );
+    mMultiFrame->render( context, mSection, frameIndex );
   }
 }
 
@@ -186,6 +187,7 @@ void QgsLayoutFrame::drawBackground( QgsRenderContext &context )
 bool QgsLayoutFrame::writePropertiesToElement( QDomElement &parentElement, QDomDocument &, const QgsReadWriteContext & ) const
 {
   parentElement.setAttribute( QStringLiteral( "multiFrame" ), mMultiFrameUuid );
+  parentElement.setAttribute( QStringLiteral( "multiFrameTemplateUuid" ), mMultiFrameUuid );
   parentElement.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
   parentElement.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
   parentElement.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
@@ -206,24 +208,10 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
 
   mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrame" ) );
+  if ( mMultiFrameUuid.isEmpty( ) )
+  {
+    mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrameTemplateUuid" ) );
+  }
   mMultiFrame = mLayout->multiFrameByUuid( mMultiFrameUuid );
   return true;
 }
-
-#if 0 //TODO
-void QgsLayoutFrame::beginItemCommand( const QString &text )
-{
-  if ( mComposition )
-  {
-    mComposition->beginMultiFrameCommand( multiFrame(), text );
-  }
-}
-
-void QgsLayoutFrame::endItemCommand()
-{
-  if ( mComposition )
-  {
-    mComposition->endMultiFrameCommand();
-  }
-}
-#endif

@@ -76,6 +76,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QgsLayoutView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsLayoutView();
+
     /**
      * Returns the current layout associated with the view.
      * \see setCurrentLayout()
@@ -515,6 +517,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     void itemFocused( QgsLayoutItem *item );
 
+    /**
+     * Emitted in the destructor when the view is about to be deleted,
+     * but is still in a perfectly valid state.
+     */
+    void willBeDeleted();
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
@@ -584,7 +592,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
   public:
     virtual ~QgsLayoutViewMenuProvider() = default;
 
-    //! Return a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Auxiliary storage : new auxiliary field</string>
+   <string>Auxiliary Storage : New Auxiliary Field</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">

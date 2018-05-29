@@ -32,7 +32,7 @@ class QgsCharacterSelectorDialog;
 /**
  * \class QgsTextFormatWidget
  * \ingroup gui
- * A widget for customising text formatting settings.
+ * A widget for customizing text formatting settings.
  *
  * QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
  * using QgsTextRenderer. The widget includes all settings contained within
@@ -67,6 +67,12 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * Returns the current formatting settings defined by the widget.
      */
     QgsTextFormat format() const;
+
+    /**
+     * Sets the current formatting settings
+     * \since QGIS 3.2
+     */
+    void setFormat( const QgsTextFormat &format );
 
   public slots:
 
@@ -210,7 +216,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
 /**
  * \class QgsTextFormatDialog
  * \ingroup gui
- * A simple dialog for customising text formatting settings.
+ * A simple dialog for customizing text formatting settings.
  *
  * QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
  * using QgsTextRenderer. The dialog includes all settings contained within
@@ -249,7 +255,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
 /**
  * \class QgsTextFormatPanelWidget
  * \ingroup gui
- * A panel widget for customising text formatting settings.
+ * A panel widget for customizing text formatting settings.
  *
  * QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
  * using QgsTextRenderer. The dialog includes all settings contained within

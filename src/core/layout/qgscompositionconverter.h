@@ -48,9 +48,9 @@ class QgsLayoutItemAttributeTable;
 
 /**
  * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
- * \since QGIS 3.0
  * \note Not available in Python bindings.
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsCompositionConverter
 {
@@ -144,6 +144,24 @@ class CORE_EXPORT QgsCompositionConverter
         QPointF *position = nullptr,
         bool pasteInPlace = false );
 
+    /**
+     * Check if the given \a document is a composition template
+     * \return true if the document is a composition template
+     * \since QGIS 3.0.1
+     */
+    static bool isCompositionTemplate( const QDomDocument &document );
+
+    /**
+     * Convert a composition template \a document to a layout template
+     * \param document containing a composition
+     * \param project
+     * \return dom document with the converted template
+     * \since QGIS 3.0.1
+     */
+    static QDomDocument convertCompositionTemplate( const QDomDocument
+        &document, QgsProject *project );
+
+
   private:
 
 
@@ -220,7 +238,7 @@ class CORE_EXPORT QgsCompositionConverter
     //! Restore general composer item properties
     static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
-    //! Get item position
+    //! Gets item position
     static QRectF itemPosition( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
     //! Calculates the item minimum position from an xml string

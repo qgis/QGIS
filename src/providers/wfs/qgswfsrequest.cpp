@@ -25,7 +25,9 @@
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
 
-QgsWfsRequest::QgsWfsRequest( const QString &uri )
+const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
+
+QgsWfsRequest::QgsWfsRequest( const QgsWFSDataSourceURI &uri )
   : mUri( uri )
   , mErrorCode( QgsWfsRequest::NoError )
   , mIsAborted( false )
@@ -33,7 +35,7 @@ QgsWfsRequest::QgsWfsRequest( const QString &uri )
   , mTimedout( false )
   , mGotNonEmptyResponse( false )
 {
-  QgsDebugMsg( "theUri = " + uri );
+  QgsDebugMsg( "theUri = " + uri.uri( ) );
   connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
 }
 
@@ -46,6 +48,11 @@ void QgsWfsRequest::requestTimedOut( QNetworkReply *reply )
 {
   if ( reply == mReply )
     mTimedout = true;
+}
+
+QUrl QgsWfsRequest::requestUrl( const QString &request ) const
+{
+  return mUri.requestUrl( request );
 }
 
 bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefresh, bool cache )
@@ -61,6 +68,8 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   mResponse.clear();
 
   QUrl modifiedUrl( url );
+
+  // Specific code for testing
   if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
   {
     // Just for testing with local files instead of http:// resources
@@ -96,9 +105,11 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     }
 #endif
     modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
-    QgsDebugMsg( QString( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
+    QgsDebugMsg( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ) );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
   }
+
+  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
   if ( !mUri.auth().setAuthorization( request ) )
@@ -116,6 +127,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   }
 
   mReply = QgsNetworkAccessManager::instance()->get( request );
+  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -167,6 +179,7 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
   request.setHeader( QNetworkRequest::ContentTypeHeader, contentTypeHeader );
 
   mReply = QgsNetworkAccessManager::instance()->post( request, data );
+  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
   if ( !mUri.auth().setAuthorizationReply( mReply ) )
   {
     mErrorCode = QgsWfsRequest::NetworkError;
@@ -257,6 +270,7 @@ void QgsWfsRequest::replyFinished()
 
           QgsDebugMsg( QString( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mReply = QgsNetworkAccessManager::instance()->get( request );
+          mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
           {
             mResponse.clear();

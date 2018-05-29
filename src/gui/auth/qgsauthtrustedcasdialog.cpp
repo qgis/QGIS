@@ -307,7 +307,7 @@ void QgsAuthTrustedCAsDialog::btnGroupByOrg_toggled( bool checked )
 void QgsAuthTrustedCAsDialog::authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level )
 {
   int levelint = ( int )level;
-  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
+  messageBar()->pushMessage( authtag, message, ( Qgis::MessageLevel )levelint, 7 );
 }
 
 void QgsAuthTrustedCAsDialog::showEvent( QShowEvent *e )
@@ -316,7 +316,7 @@ void QgsAuthTrustedCAsDialog::showEvent( QShowEvent *e )
   {
     treeTrustedCAs->setFocus();
   }
-  QWidget::showEvent( e );
+  QDialog::showEvent( e );
 }
 
 QgsMessageBar *QgsAuthTrustedCAsDialog::messageBar()

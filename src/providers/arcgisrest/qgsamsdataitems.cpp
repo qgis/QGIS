@@ -50,7 +50,7 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 #ifdef HAVE_GUI
 QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  QAction *actionNew = new QAction( tr( "New Connection…" ), parent );
   connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
@@ -86,7 +86,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconConnect.svg" );
 }
 
 QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
@@ -140,7 +140,7 @@ QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  QAction *actionEdit = new QAction( tr( "Edit…" ), parent );
   connect( actionEdit, &QAction::triggered, this, &QgsAmsConnectionItem::editConnection );
   lst.append( actionEdit );
 

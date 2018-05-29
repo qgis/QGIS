@@ -26,7 +26,10 @@ from qgis.core import (QgsLayoutItemLegend,
                        QgsProject,
                        QgsLayoutObject,
                        QgsProperty,
-                       QgsLayoutMeasurement)
+                       QgsLayoutMeasurement,
+                       QgsLayoutItem,
+                       QgsLayoutPoint,
+                       QgsLayoutSize)
 from qgis.testing import (start_app,
                           unittest
                           )
@@ -83,6 +86,24 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         checker.setControlPathPrefix("composer_legend")
         result, message = checker.testLayout()
         self.assertTrue(result, message)
+
+        # resize with non-top-left reference point
+        legend.setResizeToContents(False)
+        legend.setReferencePoint(QgsLayoutItem.LowerRight)
+        legend.attemptMove(QgsLayoutPoint(120, 90))
+        legend.attemptResize(QgsLayoutSize(50, 60))
+
+        self.assertEqual(legend.positionWithUnits().x(), 120.0)
+        self.assertEqual(legend.positionWithUnits().y(), 90.0)
+        self.assertAlmostEqual(legend.pos().x(), 70, -1)
+        self.assertAlmostEqual(legend.pos().y(), 30, -1)
+
+        legend.setResizeToContents(True)
+        legend.updateLegend()
+        self.assertEqual(legend.positionWithUnits().x(), 120.0)
+        self.assertEqual(legend.positionWithUnits().y(), 90.0)
+        self.assertAlmostEqual(legend.pos().x(), 91, -1)
+        self.assertAlmostEqual(legend.pos().y(), 71, -1)
 
         QgsProject.instance().removeMapLayers([point_layer.id()])
 

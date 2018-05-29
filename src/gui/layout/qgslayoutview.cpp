@@ -17,6 +17,8 @@
 
 #include "qgslayoutview.h"
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutmultiframe.h"
 #include "qgslayoutviewtool.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewtooltemporarykeypan.h"
@@ -64,6 +66,11 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   viewport()->setGraphicsEffect( mPreviewEffect );
 
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
+}
+
+QgsLayoutView::~QgsLayoutView()
+{
+  emit willBeDeleted();
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -149,7 +156,6 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
   tool->activate();
   mTool = tool;
   connect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
-
   emit toolSet( mTool );
 }
 
@@ -320,6 +326,9 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
   QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
   if ( operation == ClipboardCut )
     currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
+
+  QSet< QgsLayoutMultiFrame * > copiedMultiFrames;
+
   for ( QgsLayoutItem *item : items )
   {
     // copy every child from a group
@@ -329,6 +338,15 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
       for ( const QgsLayoutItem *groupedItem : groupedItems )
       {
         groupedItem->writeXml( documentElement, doc, context );
+      }
+    }
+    else if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item ) )
+    {
+      // copy multiframe too
+      if ( !copiedMultiFrames.contains( frame->multiFrame() ) )
+      {
+        frame->multiFrame()->writeXml( documentElement, doc, context );
+        copiedMultiFrames.insert( frame->multiFrame() );
       }
     }
     item->writeXml( documentElement, doc, context );
@@ -350,6 +368,24 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
     if ( itemNode.isElement() )
     {
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameNodes.count(); ++i )
+  {
+    QDomNode multiFrameNode = multiFrameNodes.at( i );
+    if ( multiFrameNode.isElement() )
+    {
+      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      for ( int j = 0; j < frameNodes.count(); ++j )
+      {
+        QDomNode itemNode = frameNodes.at( j );
+        if ( itemNode.isElement() )
+        {
+          itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+        }
+      }
     }
   }
 

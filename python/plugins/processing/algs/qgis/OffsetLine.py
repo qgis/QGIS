@@ -32,6 +32,7 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
 
@@ -62,10 +63,10 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
         self.miter_limit = None
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance'),
+                                                         defaultValue=10.0,
+                                                         parentParameterName='INPUT'))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Segments'),
                                                        type=QgsProcessingParameterNumber.Integer,
@@ -113,4 +114,4 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(output_geometry)
 
-        return feature
+        return [feature]

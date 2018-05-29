@@ -61,8 +61,8 @@ static const QString pluginIcon = QStringLiteral( ":/images/themes/default/grass
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param theQGisApp Pointer to the QGIS main window
- * @param qgisInterFace Pointer to the QGIS interface object
+ * \param theQGisApp Pointer to the QGIS main window
+ * \param qgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface *qgisInterFace )
   : qGisInterface( qgisInterFace )
@@ -281,7 +281,7 @@ void QgsGrassPlugin::onGisbaseChanged()
   {
     // TODO: save init error and get it here more reliably
     QString error = tr( "GRASS init error" );
-    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), QgsMessageBar::WARNING );
+    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), Qgis::Warning );
 
     mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );

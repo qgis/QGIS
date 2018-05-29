@@ -145,7 +145,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Sets the the diagram placement flags. These are only used if the diagram placement
      * is set to a line type.
      * \param flags placement value
-     * \see getPlacement()
+     * \see linePlacementFlags()
      * \since QGIS 2.16
      */
     void setLinePlacementFlags( LinePlacementFlags flags ) { mPlacementFlags = flags; }
@@ -227,8 +227,8 @@ class CORE_EXPORT QgsDiagramLayerSettings
     /**
      * Returns the diagram renderer associated with the layer.
      * \see setRenderer()
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const QgsDiagramRenderer *renderer() const { return mRenderer; } SIP_SKIP
 
@@ -300,24 +300,24 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     /**
      * Returns a reference to the diagram's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /**
      * Returns a reference to the diagram's property collection, used for data defined overrides.
-     * \since QGIS 3.0
-     * \see setProperties()
+     * \see setDataDefinedProperties()
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /**
      * Sets the diagram's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \since QGIS 3.0
      * \see dataDefinedProperties()
+     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -582,18 +582,16 @@ class CORE_EXPORT QgsDiagramRenderer
 
     /**
      * Returns true if renderer will show legend items for diagram attributes.
-     * \since QGIS 2.16
      * \see setAttributeLegend()
-     * \see sizeLegend()
+     * \since QGIS 2.16
      */
     bool attributeLegend() const { return mShowAttributeLegend; }
 
     /**
      * Sets whether the renderer will show legend items for diagram attributes.
      * \param enabled set to true to show diagram attribute legend
-     * \since QGIS 2.16
      * \see attributeLegend()
-     * \see setSizeLegend()
+     * \since QGIS 2.16
      */
     void setAttributeLegend( bool enabled ) { mShowAttributeLegend = enabled; }
 

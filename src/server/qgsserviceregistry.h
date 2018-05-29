@@ -73,7 +73,7 @@ class SERVER_EXPORT QgsServiceRegistry
      *
      * The registry gain ownership of services and will call 'delete' on cleanup
      *
-     * \param service a QgsServerResponse to be registered
+     * \param service a QgsService to be registered
      */
     void registerService( QgsService *service SIP_TRANSFER );
 

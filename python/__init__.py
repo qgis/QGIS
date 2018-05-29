@@ -69,25 +69,3 @@ if os.name == 'nt':
 
 
 from qgis.PyQt import QtCore
-from qgis.core import QgsFeature, QgsGeometry
-
-
-def mapping_feature(feature):
-    geom = feature.geometry()
-    properties = {}
-    fields = [field.name() for field in feature.fields()]
-    properties = dict(list(zip(fields, feature.attributes())))
-    return {'type': 'Feature',
-            'properties': properties,
-            'geometry': geom.__geo_interface__}
-
-
-def mapping_geometry(geometry):
-    geo = geometry.asJson()
-    # We have to use eval because exportToGeoJSON() gives us
-    # back a string that looks like a dictionary.
-    return eval(geo)
-
-
-QgsFeature.__geo_interface__ = property(mapping_feature)
-QgsGeometry.__geo_interface__ = property(mapping_geometry)

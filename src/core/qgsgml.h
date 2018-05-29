@@ -115,31 +115,31 @@ class CORE_EXPORT QgsGmlStreamingParser
         by later calls. */
     QVector<QgsGmlFeaturePtrGmlIdPair> getAndStealReadyFeatures();
 
-    //! Return the EPSG code, or 0 if unknown
+    //! Returns the EPSG code, or 0 if unknown
     int getEPSGCode() const { return mEpsg; }
 
-    //! Return the value of the srsName attribute
+    //! Returns the value of the srsName attribute
     QString srsName() const { return mSrsName; }
 
-    //! Return layer bounding box
+    //! Returns layer bounding box
     const QgsRectangle &layerExtent() const { return mLayerExtent; }
 
-    //! Return the geometry type
+    //! Returns the geometry type
     QgsWkbTypes::Type wkbType() const { return mWkbType; }
 
-    //! Return WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
+    //! Returns WFS 2.0 "numberMatched" attribute, or -1 if invalid/not found
     int numberMatched() const { return mNumberMatched; }
 
-    //! Return WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
+    //! Returns WFS 2.0 "numberReturned" or WFS 1.1 "numberOfFeatures" attribute, or -1 if invalid/not found
     int numberReturned() const { return mNumberReturned; }
 
-    //! Return whether the document parser is a OGC exception
+    //! Returns whether the document parser is a OGC exception
     bool isException() const { return mIsException; }
 
-    //! Return the exception text.
+    //! Returns the exception text.
     QString exceptionText() const { return mExceptionText; }
 
-    //! Return whether a "truncatedResponse" element is found
+    //! Returns whether a "truncatedResponse" element is found
     bool isTruncatedResponse() const { return mTruncatedResponse; }
 
   private:
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Adds all the integers contained in mCurrentWKBFragmentSizes
     int totalWKBFragmentSize() const;
 
-    //! Get safely (if empty) top from mode stack
+    //! Gets safely (if empty) top from mode stack
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
     //! Safely (if empty) pop from mode stack
@@ -382,10 +382,10 @@ class CORE_EXPORT QgsGml : public QObject
      */
     int getFeatures( const QByteArray &data, QgsWkbTypes::Type *wkbType, QgsRectangle *extent = nullptr );
 
-    //! Get parsed features for given type name
+    //! Gets parsed features for given type name
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const { return mFeatures; }
 
-    //! Get feature ids map
+    //! Gets feature ids map
     QMap<QgsFeatureId, QString > idsMap() const { return mIdMap; }
 
     /**

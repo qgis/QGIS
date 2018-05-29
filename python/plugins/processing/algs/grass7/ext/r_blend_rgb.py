@@ -30,7 +30,7 @@ import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
-def processInputs(alg, parameters, context):
+def processInputs(alg, parameters, context, feedback):
     if 'first' and 'second' in alg.exportedLayers:
         return
 
@@ -40,12 +40,12 @@ def processInputs(alg, parameters, context):
     alg.postInputs()
 
 
-def processCommand(alg, parameters, context):
+def processCommand(alg, parameters, context, feedback):
     # We need to remove all outputs
-    alg.processCommand(parameters, context, True)
+    alg.processCommand(parameters, context, feedback, True)
 
 
-def processOutputs(alg, parameters, context):
+def processOutputs(alg, parameters, context, feedback):
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 

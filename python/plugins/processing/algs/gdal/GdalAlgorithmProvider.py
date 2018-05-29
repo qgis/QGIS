@@ -45,6 +45,7 @@ from .gdalinfo import gdalinfo
 from .gdal2tiles import gdal2tiles
 from .gdal2xyz import gdal2xyz
 from .gdaladdo import gdaladdo
+from .gdalcalc import gdalcalc
 from .gdaltindex import gdaltindex
 from .GridAverage import GridAverage
 from .GridDataMetrics import GridDataMetrics
@@ -58,6 +59,7 @@ from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .proximity import proximity
+from .rasterize import rasterize
 from .retile import retile
 from .rgb2pct import rgb2pct
 from .roughness import roughness
@@ -68,9 +70,7 @@ from .tpi import tpi
 from .tri import tri
 from .warp import warp
 
-# from .rasterize import rasterize
 # from .extractprojection import ExtractProjection
-# from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
 
 from .Buffer import Buffer
@@ -151,6 +151,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             gdal2tiles(),
             gdal2xyz(),
             gdaladdo(),
+            gdalcalc(),
             gdaltindex(),
             GridAverage(),
             GridDataMetrics(),
@@ -164,6 +165,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pct2rgb(),
             polygonize(),
             proximity(),
+            rasterize(),
             retile(),
             rgb2pct(),
             roughness(),
@@ -175,7 +177,6 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             warp(),
             # rasterize(),
             # ExtractProjection(),
-            # gdalcalc(),
             # rasterize_over(),
             # ----- OGR tools -----
             Buffer(),
@@ -197,6 +198,12 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
 
     def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
+
+    def supportsNonFileBasedOutput(self):
+        """
+        GDAL Provider doesn't support non file based outputs
+        """
+        return False
 
     def tr(self, string, context=''):
         if context == '':

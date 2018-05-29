@@ -18,6 +18,7 @@
 #include "qgshistogramwidget.h"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgsstatisticalsummary.h"
 #include "qgssettings.h"
 
@@ -103,7 +104,7 @@ void QgsHistogramWidget::refreshValues()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   bool ok;
-  mValues = mVectorLayer->getDoubleValues( mSourceFieldExp, ok );
+  mValues = QgsVectorLayerUtils::getDoubleValues( mVectorLayer, mSourceFieldExp, ok );
 
   if ( ! ok )
   {

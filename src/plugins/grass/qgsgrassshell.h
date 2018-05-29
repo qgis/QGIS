@@ -18,6 +18,7 @@
 class QgsGrassTools;
 class QTabWidget;
 class QTermWidget;
+class QEvent;
 
 class QgsGrassShell : public QFrame
 {
@@ -25,6 +26,7 @@ class QgsGrassShell : public QFrame
 
   public:
     QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = nullptr, const char *name = nullptr );
+    bool event( QEvent * ) override;
 
   private slots:
     void closeShell();

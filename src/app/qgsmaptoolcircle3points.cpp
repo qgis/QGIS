@@ -29,12 +29,12 @@ QgsMapToolCircle3Points::QgsMapToolCircle3Points( QgsMapToolCapture *parentTool,
 
 void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( e->button() == Qt::LeftButton )
   {
     if ( mPoints.size() < 2 )
-      mPoints.append( mapPoint );
+      mPoints.append( point );
     if ( !mPoints.isEmpty() && !mTempRubberBand )
     {
       mTempRubberBand = createGeometryRubberBand( ( mode() == CapturePolygon ) ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry, true );
@@ -53,7 +53,7 @@ void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint point = mapPoint( *e );
 
   if ( mTempRubberBand )
   {
@@ -63,13 +63,13 @@ void QgsMapToolCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         std::unique_ptr<QgsLineString> line( new QgsLineString() );
         line->addVertex( mPoints.at( 0 ) );
-        line->addVertex( mapPoint );
+        line->addVertex( point );
         mTempRubberBand->setGeometry( line.release() );
       }
       break;
       case 2:
       {
-        mCircle = QgsCircle().from3Points( mPoints.at( 0 ), mPoints.at( 1 ), mapPoint );
+        mCircle = QgsCircle().from3Points( mPoints.at( 0 ), mPoints.at( 1 ), point );
         mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
       }
       break;

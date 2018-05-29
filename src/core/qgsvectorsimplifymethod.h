@@ -16,8 +16,10 @@
 #ifndef QGSVECTORSIMPLIFYMETHOD_H
 #define QGSVECTORSIMPLIFYMETHOD_H
 
-#include "qgis_core.h"
 #include <QFlags>
+#include <QObject>
+
+#include "qgis_core.h"
 
 /**
  * \ingroup core
@@ -26,6 +28,7 @@
  */
 class CORE_EXPORT QgsVectorSimplifyMethod
 {
+    Q_GADGET
   public:
     //! construct a default object
     QgsVectorSimplifyMethod();
@@ -38,7 +41,9 @@ class CORE_EXPORT QgsVectorSimplifyMethod
       AntialiasingSimplification = 2, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
       FullSimplification         = 3, //!< All simplification hints can be applied ( Geometry + AA-disabling )
     };
+    Q_ENUM( SimplifyHint )
     Q_DECLARE_FLAGS( SimplifyHints, SimplifyHint )
+    Q_FLAG( SimplifyHints )
 
     //! Sets the simplification hints of the vector layer managed
     void setSimplifyHints( SimplifyHints simplifyHints ) { mSimplifyHints = simplifyHints; }
@@ -52,6 +57,7 @@ class CORE_EXPORT QgsVectorSimplifyMethod
       SnapToGrid  = 1, //!< The simplification uses a grid (similar to ST_SnapToGrid) to remove duplicate points
       Visvalingam = 2, //!< The simplification gives each point in a line an importance weighting, so that least important points are removed first
     };
+    Q_ENUM( SimplifyAlgorithm )
 
     //! Sets the local simplification algorithm of the vector layer managed
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }

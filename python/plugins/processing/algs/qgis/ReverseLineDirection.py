@@ -67,4 +67,4 @@ class ReverseLineDirection(QgisFeatureBasedAlgorithm):
             outGeom = QgsGeometry(reversedLine)
 
             feature.setGeometry(outGeom)
-        return feature
+        return [feature]

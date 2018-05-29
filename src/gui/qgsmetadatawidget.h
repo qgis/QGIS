@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsmetadatawidget.h  -  description
+                          QgsAbstractMetadataBasewidget.h  -  description
                              -------------------
     begin                : 17/05/2017
     copyright            : (C) 2017 by Etienne Trimaille
@@ -14,8 +14,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSMETADATAWIDGET_H
-#define QGSMETADATAWIDGET_H
+#ifndef QgsAbstractMetadataBaseWIDGET_H
+#define QgsAbstractMetadataBaseWIDGET_H
 
 #include "QStandardItemModel"
 #include "QStyledItemDelegate"
@@ -35,41 +35,92 @@
  * \since QGIS 3.0
  */
 
-class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidget
+class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidgetBase
 {
     Q_OBJECT
+    Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
 
   public:
 
     /**
-     * Constructor for the wizard.
+     * Widget modes.
+     * \since QGIS 3.2
      */
-    QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
+    enum Mode
+    {
+      LayerMetadata = 0, //!< Show layer metadata
+      ProjectMetadata, //!< Show project metadata
+    };
 
     /**
-     * Save all fields in a QgsLayerMetadata object.
+     * Constructor for the wizard.
+     *
+     * If \a layer is set, then this constructor automatically sets the widget's metadata() to match
+     * the layer's metadata..
+
+     * \see setMetadata()
      */
-    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    QgsMetadataWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapLayer *layer = nullptr );
+
+    /**
+     * Sets the widget's current \a mode.
+     * \see mode()
+     * \since QGIS 3.2
+     */
+    void setMode( Mode mode );
+
+    /**
+     * Returns the widget's current mode.
+     * \see setMode()
+     * \since QGIS 3.2
+     */
+    Mode mode() const { return mMode; }
+
+    /**
+     * Sets the \a metadata to display in the widget.
+     *
+     * This method can be called after constructing a QgsMetadataWidget in order
+     * to set the displayed metadata to custom, non-layer based metadata.
+     *
+     * Calling this method will automatically setMode() to the correct mode corresponding
+     * to the specified \a metadata object.
+     *
+     * \see metadata()
+     */
+    void setMetadata( const QgsAbstractMetadataBase *metadata );
+
+    /**
+     * Returns a QgsAbstractMetadataBase object representing the current state of the widget.
+     *
+     * Caller takes ownership of the returned object.
+     *
+     * \see saveMetadata()
+     */
+    QgsAbstractMetadataBase *metadata() SIP_FACTORY;
+
+    /**
+     * Save all fields in a metadata object.
+     * \see metadata()
+     * \see acceptMetadata()
+     * \see checkMetadata()
+     */
+    void saveMetadata( QgsAbstractMetadataBase *metadata );
 
     /**
      * Check if values in the wizard are correct.
+     * \see saveMetadata()
      */
-    bool checkMetadata() const;
+    bool checkMetadata();
 
     /**
      * If the CRS is updated.
      */
-    void crsChanged() const;
+    void crsChanged();
 
     /**
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
-
-    /**
-     * Sets the layer's \a metadata store.
-     */
-    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -103,35 +154,75 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
-  private:
-    void updatePanel() const;
-    void fillSourceFromLayer() const;
+    /**
+     * Returns the current title field for the metadata.
+     *
+     * \see setTitle()
+     * \see titleChanged()
+     *
+     * \since QGIS 3.2
+     */
+    QString title() const;
+
+  public slots:
+
+    /**
+     * Sets the \a title field for the metadata.
+     *
+     * \see title()
+     * \see titleChanged()
+     *
+     * \since QGIS 3.2
+     */
+    void setTitle( const QString &title );
+
+  signals:
+
+    /**
+     * Emitted when the \a title field is changed.
+     *
+     * \see title()
+     * \see setTitle()
+     *
+     * \since QGIS 3.2
+     */
+    void titleChanged( const QString &title );
+
+  private slots:
+    void removeSelectedCategories();
+    void updatePanel();
+    void fillSourceFromLayer();
     void fillCrsFromLayer();
     void fillCrsFromProvider();
-    void addDefaultCategory() const;
+    void addDefaultCategories();
     void addNewCategory();
-    void removeSelectedCategory() const;
-    void addVocabulary() const;
-    void removeSelectedVocabulary() const;
+    void addVocabulary();
+    void removeSelectedVocabulary();
     void addLicence();
-    void removeSelectedLicence() const;
+    void removeSelectedLicence();
     void addRight();
-    void removeSelectedRight() const;
-    void addConstraint() const;
-    void removeSelectedConstraint() const;
-    void addAddress() const;
-    void removeSelectedAddress() const;
-    void addLink() const;
-    void removeSelectedLink() const;
+    void removeSelectedRight();
+    void addConstraint();
+    void removeSelectedConstraint();
+    void addAddress();
+    void removeSelectedAddress();
+    void addLink();
+    void removeSelectedLink();
     void addHistory();
-    void removeSelectedHistory() const;
-    void fillComboBox() const;
-    void setPropertiesFromLayer();
-    void syncFromCategoriesTabToKeywordsTab() const;
+    void removeSelectedHistory();
+
+  private:
+
+    void fillComboBox();
+    void setUiFromMetadata();
+    void syncFromCategoriesTabToKeywordsTab();
+
+    Mode mMode = LayerMetadata;
+
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsCoordinateReferenceSystem mCrs;
-    QgsLayerMetadata mMetadata;
+    std::unique_ptr< QgsAbstractMetadataBase > mMetadata;
     QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;
     QStringListModel *mCategoriesModel = nullptr;

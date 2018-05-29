@@ -91,4 +91,4 @@ class Orthogonalize(QgisFeatureBasedAlgorithm):
                     self.tr('Error orthogonalizing geometry'))
 
             feature.setGeometry(output_geometry)
-        return feature
+        return [feature]

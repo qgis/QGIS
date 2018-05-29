@@ -265,7 +265,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesWidget: public QWidget, private Ui::QgsL
 
   private:
 
-    QgsLayoutItem *mItem = nullptr;
+    QPointer< QgsLayoutItem > mItem;
     QgsLayoutConfigObject *mConfigObject = nullptr;
 
     bool mFreezeXPosSpin = false;

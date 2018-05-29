@@ -36,7 +36,7 @@ bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface,
   QFile templateFile( file );
   if ( !templateFile.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( iface->view(), tr( "Load from template" ), tr( "Could not read template file." ) );
+    QMessageBox::warning( iface->view(), tr( "Load from Template" ), tr( "Could not read template file." ) );
     return true;
   }
 
@@ -49,7 +49,7 @@ bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface,
     QList< QgsLayoutItem * > items = iface->layout()->loadFromTemplate( templateDoc, context, false, &ok );
     if ( !ok )
     {
-      QMessageBox::warning( iface->view(), tr( "Load from template" ), tr( "Could not read template file." ) );
+      QMessageBox::warning( iface->view(), tr( "Load from Template" ), tr( "Could not read template file." ) );
       return true;
     }
     else

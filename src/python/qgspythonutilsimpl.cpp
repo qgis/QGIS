@@ -110,7 +110,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
     return false;
   }
 
-  // set PyQt4 api versions
+  // set PyQt api versions
   QStringList apiV2classes;
   apiV2classes << QStringLiteral( "QDate" ) << QStringLiteral( "QDateTime" ) << QStringLiteral( "QString" ) << QStringLiteral( "QTextStream" ) << QStringLiteral( "QTime" ) << QStringLiteral( "QUrl" ) << QStringLiteral( "QVariant" );
   Q_FOREACH ( const QString &clsName, apiV2classes )

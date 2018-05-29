@@ -32,6 +32,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -295,7 +296,7 @@ QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
   mRanges.clear(); // should delete all the symbols
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value )
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForValue( double value ) const
 {
   Q_FOREACH ( const QgsRendererRange &range, mRanges )
   {
@@ -329,12 +330,12 @@ QString QgsGraduatedSymbolRenderer::legendKeyForValue( double value ) const
   return QString();
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGraduatedSymbolRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return originalSymbolForFeature( feature, context );
 }
 
-QVariant QgsGraduatedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const
+QVariant QgsGraduatedSymbolRenderer::valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsAttributes attrs = feature.attributes();
   QVariant value;
@@ -350,7 +351,7 @@ QVariant QgsGraduatedSymbolRenderer::valueForFeature( QgsFeature &feature, QgsRe
   return value;
 }
 
-QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsGraduatedSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 
@@ -512,7 +513,7 @@ void QgsGraduatedSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element,
   }
 }
 
-QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -812,7 +813,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   bool ok;
   if ( attrNum == -1 )
   {
-    values = vlayer->getDoubleValues( mAttrName, ok );
+    values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
     if ( !ok || values.isEmpty() )
       return;
 
@@ -843,7 +844,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     // get values from layer
     if ( !valuesLoaded )
     {
-      values = vlayer->getDoubleValues( mAttrName, ok );
+      values = QgsVectorLayerUtils::getDoubleValues( vlayer, mAttrName, ok );
     }
 
     // calculate the breaks
@@ -1189,7 +1190,7 @@ QgsLegendSymbolList QgsGraduatedSymbolRenderer::legendSymbolItems() const
   return baseLegendSymbolItems();
 }
 
-QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsGraduatedSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QVariant value = valueForFeature( feature, context );
 

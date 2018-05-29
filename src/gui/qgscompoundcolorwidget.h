@@ -76,6 +76,42 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      */
     void setDiscarded( bool discarded ) { mDiscarded = discarded; }
 
+    /**
+     * Triggers a user prompt for importing a new color scheme from an existing GPL file.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see createNewUserPalette()
+     * \see removeUserPalette()
+     * \since QGIS 3.2
+     */
+    static QgsUserColorScheme *importUserPaletteFromFile( QWidget *parent );
+
+    /**
+     * Triggers a user prompt for creating a new user color scheme.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see importUserPaletteFromFile()
+     * \see removeUserPalette()
+     * \since QGIS 3.2
+     */
+    static QgsUserColorScheme *createNewUserPalette( QWidget *parent );
+
+    /**
+     * Triggers a user prompt for removing an existing user color \a scheme.
+     *
+     * The \a parent argument must be set to a valid parent widget for the dialog prompts.
+     *
+     *
+     * \see importUserPaletteFromFile()
+     * \see createNewUserPalette()
+     * \since QGIS 3.2
+     */
+    static bool removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent );
+
   signals:
 
     /**
@@ -137,7 +173,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
 
   private:
 
-    static QScreen *findScreenAt( const QPoint &pos );
+    static QScreen *findScreenAt( QPoint pos );
 
     bool mAllowAlpha = true;
 
@@ -182,7 +218,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     /**
      * Returns the path to the user's palette folder
      */
-    QString gplFilePath();
+    static QString gplFilePath();
 
     //! Updates the state of actions for the current selected scheme
     void updateActionsForCurrentScheme();

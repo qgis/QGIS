@@ -2610,7 +2610,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
 
   //import all the DualEdges
   QProgressBar *edgebar = new QProgressBar();//use a progress dialog so that it is not boring for the user
-  edgebar->setCaption( "Reading edges..." );
+  edgebar->setCaption( "Reading edges…" );
   edgebar->setTotalSteps( numberofhalfedges / 2 );
   edgebar->setMinimumWidth( 400 );
   edgebar->move( 500, 500 );
@@ -2731,7 +2731,7 @@ bool DualEdgeTriangulation::readFromTAFF( QString filename )
   }
 
   QProgressBar *pointbar = new QProgressBar();
-  pointbar->setCaption( "Reading points..." );
+  pointbar->setCaption( tr( "Reading points…" ) );
   pointbar->setTotalSteps( numberofpoints );
   pointbar->setMinimumWidth( 400 );
   pointbar->move( 500, 500 );
@@ -2796,7 +2796,7 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
   QFile outputfile( filename );
   if ( !outputfile.open( IO_WriteOnly ) )
   {
-    QMessageBox::warning( 0, "warning", "File could not be written", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "File could not be written." ), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
     return false;
   }
 

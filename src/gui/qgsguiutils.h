@@ -164,4 +164,35 @@ namespace QgsGuiUtils
   QString createWidgetKey( QWidget *widget, const QString &keyName = QString() );
 }
 
+/**
+ * Temporarily sets a cursor override for the QApplication for the lifetime of the object.
+ *
+ * When the object is deleted, the cursor override is removed.
+ *
+ * \ingroup gui
+ * \since QGIS 3.2
+ */
+class GUI_EXPORT QgsTemporaryCursorOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsTemporaryCursorOverride. Sets the application override
+     * cursor to \a cursor.
+     */
+    QgsTemporaryCursorOverride( const QCursor &cursor );
+
+    ~QgsTemporaryCursorOverride();
+
+    /**
+     * Releases the cursor override early (i.e. before this object is destroyed).
+     */
+    void release();
+
+  private:
+
+    bool mHasOverride = true;
+
+};
+
 #endif // QGSGUIUTILS_H

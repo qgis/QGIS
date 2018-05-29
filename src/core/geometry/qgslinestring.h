@@ -26,6 +26,8 @@
 #include "qgscurve.h"
 #include "qgscompoundcurve.h"
 
+class QgsLineSegment2D;
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsgeometry.cpp.
@@ -64,12 +66,24 @@ class CORE_EXPORT QgsLineString: public QgsCurve
                    const QVector<double> &m = QVector<double>() );
 
     /**
+     * Constructs a linestring with a single segment from \a p1 to \a p2.
+     * \since QGIS 3.2
+     */
+    QgsLineString( const QgsPoint &p1, const QgsPoint &p2 );
+
+    /**
      * Construct a linestring from list of points.
      * This constructor is more efficient then calling setPoints()
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
     QgsLineString( const QVector<QgsPointXY> &points );
+
+    /**
+     * Construct a linestring from a single 2d line segment.
+     * \since QGIS 3.2
+     */
+    explicit QgsLineString( const QgsLineSegment2D &segment );
 
     bool equals( const QgsCurve &other ) const override;
 
@@ -81,6 +95,22 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
+
+    /**
+     * Returns a const pointer to the x vertex data.
+     * \note Not available in Python bindings
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *xData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the y vertex data.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \since QGIS 3.2
+     */
+    const double *yData() const SIP_SKIP;
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -186,8 +216,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
 
     //curve interface
@@ -208,8 +238,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void draw( QPainter &p ) const override;
 
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
@@ -234,6 +263,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
 
     bool convertTo( QgsWkbTypes::Type type ) override;
 
@@ -253,8 +283,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       return nullptr;
     }
 #endif
-  protected:
+
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     QgsRectangle calculateBoundingBox() const override;
 
   private:

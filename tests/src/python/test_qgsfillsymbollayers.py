@@ -58,6 +58,7 @@ class TestQgsFillSymbolLayers(unittest.TestCase):
         """ test that rendering a polygon with simple line symbol with offset results in closed line"""
         layer = QgsSimpleLineSymbolLayer()
         layer.setOffset(-1)
+        layer.setColor(QColor(0, 0, 0))
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)

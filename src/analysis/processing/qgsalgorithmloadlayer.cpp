@@ -26,7 +26,7 @@ QString QgsLoadLayerAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsLoadLayerAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | QgsProcessingAlgorithm::FlagCanRunInBackground;
+  return FlagHideFromToolbox;
 }
 
 QString QgsLoadLayerAlgorithm::displayName() const

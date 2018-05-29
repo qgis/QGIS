@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QSet>
@@ -29,7 +30,7 @@
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   : mSymbolName( QStringLiteral( "circle" ) )
-  , mStrokeColor( Qt::black )
+  , mStrokeColor( QColor( 35, 35, 35 ) )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );

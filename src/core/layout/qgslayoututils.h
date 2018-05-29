@@ -27,7 +27,7 @@ class QgsLayout;
 class QgsLayoutItemMap;
 class QPainter;
 class QRectF;
-
+class QStyleOptionGraphicsItem;
 
 /**
  * \ingroup core
@@ -205,6 +205,22 @@ class CORE_EXPORT QgsLayoutUtils
      * If the string was correctly decoded, \a ok will be set to true.
      */
     static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
+
+    /**
+     * Extracts the scale factor from an item \a style.
+     */
+    static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );
+
+    /**
+     * Resolves a \a string into a map layer from a given \a project. Attempts different
+     * forms of layer matching such as matching by layer id or layer name.
+     *
+     * Layer names are matched using a case-insensitive check, ONLY if an exact case
+     * match was not found.
+     *
+     * \since QGIS 3.2
+     */
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProject *project );
 
   private:
 

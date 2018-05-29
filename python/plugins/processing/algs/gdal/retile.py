@@ -139,8 +139,6 @@ class retile(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
 
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
-
         output_csv_param = QgsProcessingParameterFileDestination(self.OUTPUT_CSV,
                                                                  self.tr('CSV file containing the tile(s) georeferencing information'),
                                                                  'CSV files (*.csv)',
@@ -179,7 +177,7 @@ class retile(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         if crs.isValid():
             arguments.append('-s_srs')
-            arguments.append(crs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append('-r')
         arguments.append(self.methods[self.parameterAsEnum(parameters, self.RESAMPLING, context)][1])
@@ -189,8 +187,7 @@ class retile(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         if self.parameterAsBool(parameters, self.DIR_FOR_ROW, context):
             arguments.append('-pyramidOnly')
@@ -215,10 +212,10 @@ class retile(GdalAlgorithm):
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_retile.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_retile.py',
+            commands = [self.commandName() + '.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
         return commands

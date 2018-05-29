@@ -30,12 +30,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterMapLayer,
                        QgsProcessingParameterFeatureSink,
                        QgsFields)
@@ -53,7 +55,10 @@ class ExtentFromLayer(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'layer_extent.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmExtractLayerExtent.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmExtractLayerExtent.svg")
 
     def tags(self):
         return self.tr('polygon,from,vector,raster,extent,envelope,bounds,bounding,boundary,layer').split(',')
@@ -94,6 +99,8 @@ class ExtentFromLayer(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, layer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         try:
             # may not be possible

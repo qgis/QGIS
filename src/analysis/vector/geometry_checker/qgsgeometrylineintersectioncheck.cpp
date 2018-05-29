@@ -59,7 +59,8 @@ void QgsGeometryLineIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
           {
             continue;
           }
-          for ( const QgsPoint &inter : QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance ) )
+          const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
+          for ( const QgsPoint &inter : intersections )
           {
             errors.append( new QgsGeometryCheckError( this, layerFeatureA, inter, QgsVertexId( iPart ), layerFeatureB.id() ) );
           }

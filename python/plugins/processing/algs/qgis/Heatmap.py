@@ -30,12 +30,14 @@ from collections import OrderedDict
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsRasterFileWriter,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterDefinition,
@@ -61,7 +63,7 @@ class Heatmap(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'heatmap.png'))
+        return QgsApplication.getThemeIcon("/heatmap.svg")
 
     def tags(self):
         return self.tr('heatmap,kde,hotspot').split(',')
@@ -95,10 +97,9 @@ class Heatmap(QgisAlgorithm):
                                                               self.tr('Point layer'),
                                                               [QgsProcessing.TypeVectorPoint]))
 
-        self.addParameter(QgsProcessingParameterNumber(self.RADIUS,
-                                                       self.tr('Radius (layer units)'),
-                                                       QgsProcessingParameterNumber.Double,
-                                                       100.0, False, 0.0, 9999999999.99))
+        self.addParameter(QgsProcessingParameterDistance(self.RADIUS,
+                                                         self.tr('Radius (layer units)'),
+                                                         100.0, self.INPUT, False, 0.0, 9999999999.99))
 
         radius_field_param = QgsProcessingParameterField(self.RADIUS_FIELD,
                                                          self.tr('Radius from field'),
@@ -175,6 +176,8 @@ class Heatmap(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         radius = self.parameterAsDouble(parameters, self.RADIUS, context)
         kernel_shape = self.parameterAsEnum(parameters, self.KERNEL, context)

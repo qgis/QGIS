@@ -43,6 +43,7 @@ QgsAuthBasicMethod::QgsAuthBasicMethod()
                     << QStringLiteral( "wcs" )
                     << QStringLiteral( "wms" )
                     << QStringLiteral( "ogr" )
+                    << QStringLiteral( "gdal" )
                     << QStringLiteral( "proxy" ) );
 
 }
@@ -120,7 +121,7 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
   }
 
   // Branch for OGR
-  if ( dataprovider == QStringLiteral( "ogr" ) )
+  if ( dataprovider == QStringLiteral( "ogr" ) || dataprovider == QStringLiteral( "gdal" ) )
   {
     if ( ! password.isEmpty() )
     {
@@ -215,8 +216,11 @@ bool QgsAuthBasicMethod::updateDataSourceUriItems( QStringList &connectionItems,
         else if ( uri.startsWith( QStringLiteral( "couchdb" ) )
                   || uri.startsWith( QStringLiteral( "DODS" ) )
                   || uri.startsWith( "http://" )
+                  || uri.startsWith( "/vsicurl/http://" )
                   || uri.startsWith( "https://" )
-                  || uri.startsWith( "ftp://" ) // not really sure that this is supported ...
+                  || uri.startsWith( "/vsicurl/https://" )
+                  || uri.startsWith( "ftp://" )
+                  || uri.startsWith( "/vsicurl/ftp://" )
                 )
         {
           uri = uri.replace( QStringLiteral( "://" ), QStringLiteral( "://%1:%2@" ).arg( username, password ) );

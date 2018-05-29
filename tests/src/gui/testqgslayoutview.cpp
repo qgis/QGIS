@@ -247,7 +247,7 @@ class TestItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-    void draw( QgsRenderContext &, const QStyleOptionGraphicsItem * = nullptr ) override
+    void draw( QgsLayoutItemRenderContext & ) override
     {    }
 };
 
@@ -272,7 +272,7 @@ void TestQgsLayoutView::guiRegistry()
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget*
+  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutItemBaseWidget( nullptr, item );
   };

@@ -49,10 +49,12 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     QWidget *createWidget( QWidget *parent ) override;
     bool applyDirectly() override;
     void setExpression( const QString &value ) override;
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
     QgsRelationWidgetWrapper *mWrapper = nullptr;
     QgsAttributeForm *mAttributeForm = nullptr;
+    QWidget *mContainerWidget = nullptr;
 };
 
 #endif // QGSRELATIONAGGREGATESEARCHWIDGETWRAPPER_H

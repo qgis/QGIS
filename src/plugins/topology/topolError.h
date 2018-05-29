@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          begin                : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************

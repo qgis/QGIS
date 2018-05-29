@@ -82,7 +82,7 @@ class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemB
   public:
     QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 
-    QIcon icon() override { return QgsDataItem::icon(); }
+    QIcon icon() override;
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
@@ -233,7 +233,7 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
   public:
     QgsGrassImportItem( QgsDataItem *parent, const QString &name, const QString &path, QgsGrassImport *import );
     ~QgsGrassImportItem() override;
-    //virtual void setState( State state ) override {
+    //void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
 #ifdef HAVE_GUI

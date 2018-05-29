@@ -132,7 +132,7 @@ void QgsRelation::setName( const QString &name )
 }
 
 
-void QgsRelation::setStrength( const RelationStrength &strength )
+void QgsRelation::setStrength( RelationStrength strength )
 {
   mRelationStrength = strength;
 }
@@ -345,19 +345,19 @@ void QgsRelation::updateRelationStatus()
   {
     if ( !mReferencedLayer )
     {
-      QgsDebugMsg( QString( "Invalid relation: referenced layer does not exist. ID: %1" ).arg( mReferencedLayerId ) );
+      QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referenced layer does not exist. ID: %1" ).arg( mReferencedLayerId ), 4 );
       mValid = false;
     }
     else if ( !mReferencingLayer )
     {
-      QgsDebugMsg( QString( "Invalid relation: referencing layer does not exist. ID: %2" ).arg( mReferencingLayerId ) );
+      QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referencing layer does not exist. ID: %2" ).arg( mReferencingLayerId ), 4 );
       mValid = false;
     }
     else
     {
       if ( mFieldPairs.count() < 1 )
       {
-        QgsDebugMsg( "Invalid relation: no pair of field is specified." );
+        QgsDebugMsgLevel( "Invalid relation: no pair of field is specified.", 4 );
         mValid = false;
       }
 
@@ -365,13 +365,13 @@ void QgsRelation::updateRelationStatus()
       {
         if ( -1 == mReferencingLayer->fields().lookupField( fieldPair.first ) )
         {
-          QgsDebugMsg( QString( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( fieldPair.first, mReferencingLayer->name() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( fieldPair.first, mReferencingLayer->name() ) );
           mValid = false;
           break;
         }
         else if ( -1 == mReferencedLayer->fields().lookupField( fieldPair.second ) )
         {
-          QgsDebugMsg( QString( "Invalid relation: field %1 does not exist in referencedg layer %2" ).arg( fieldPair.second, mReferencedLayer->name() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencedg layer %2" ).arg( fieldPair.second, mReferencedLayer->name() ) );
           mValid = false;
           break;
         }

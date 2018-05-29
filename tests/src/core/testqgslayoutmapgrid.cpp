@@ -20,6 +20,7 @@
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapgrid.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
 #include <QObject>
@@ -233,6 +234,7 @@ void TestQgsLayoutMapGrid::markerGrid()
   map->grid()->setIntervalY( 2000 );
   map->grid()->setGridLineWidth( 0.5 );
   map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( map->grid()->markerSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   map->updateBoundingRect();
   l.addLayoutItem( map );
 

@@ -64,6 +64,13 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    bool ok = false;
+    int idInt = layerData[QStringLiteral( "id" )].toInt( &ok );
+    if ( ok )
+    {
+      // force display role to be int value, so that sorting works correctly
+      idItem->setData( idInt, Qt::DisplayRole );
+    }
     QStandardItem *nameItem = new QStandardItem( layerData[QStringLiteral( "name" )].toString() );
     QStandardItem *abstractItem = new QStandardItem( layerData[QStringLiteral( "description" )].toString() );
     abstractItem->setToolTip( layerData[QStringLiteral( "description" )].toString() );

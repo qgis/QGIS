@@ -763,24 +763,24 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /**
      * Returns a reference to the label's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the label's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \since QGIS 3.0
      * \see dataDefinedProperties()
+     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -847,7 +847,8 @@ class CORE_EXPORT QgsPalLayerSettings
       DDColor,
       DDJoinStyle,
       DDBlendMode,
-      DDPointF
+      DDPointF,
+      DDSizeF, //!< Data defined size
     };
 
     // convenience data defined evaluation function
@@ -928,9 +929,9 @@ class CORE_EXPORT QgsLabelingResults
     //! QgsLabelingResults cannot be copied.
     QgsLabelingResults &operator=( const QgsLabelingResults &rh ) = delete;
 
-    //! return infos about labels at a given (map) position
+    //! Returns infos about labels at a given (map) position
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
-    //! return infos about labels within a given (map) rectangle
+    //! Returns infos about labels within a given (map) rectangle
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 
   private:

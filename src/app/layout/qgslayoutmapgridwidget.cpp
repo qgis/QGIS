@@ -74,7 +74,7 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mCoordinatePrecisionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mCoordinatePrecisionSpinBox_valueChanged );
   connect( mDistanceToMapFrameSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutMapGridWidget::mDistanceToMapFrameSpinBox_valueChanged );
   connect( mAnnotationFontColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutMapGridWidget::mAnnotationFontColorButton_colorChanged );
-  setPanelTitle( tr( "Map grid properties" ) );
+  setPanelTitle( tr( "Map Grid Properties" ) );
 
   mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -601,7 +601,7 @@ void QgsLayoutMapGridWidget::setGridItems()
 
   //CRS button
   QgsCoordinateReferenceSystem gridCrs = mMapGrid->crs();
-  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "change..." );
+  QString crsButtonText = gridCrs.isValid() ? gridCrs.authid() : tr( "Change…" );
   mMapGridCRSButton->setText( crsButtonText );
 }
 

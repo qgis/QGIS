@@ -45,7 +45,7 @@ QgsSnapIndex::SegmentSnapItem::SegmentSnapItem( const QgsSnapIndex::CoordIdx *_i
 
 QgsPoint QgsSnapIndex::SegmentSnapItem::getSnapPoint( const QgsPoint &p ) const
 {
-  return QgsGeometryUtils::projPointOnSegment( p, idxFrom->point(), idxTo->point() );
+  return QgsGeometryUtils::projectPointOnSegment( p, idxFrom->point(), idxTo->point() );
 }
 
 bool QgsSnapIndex::SegmentSnapItem::getIntersection( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &inter ) const
@@ -690,7 +690,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
         if ( subjPointFlags[iPart][iRing][iVert] == SnappedToRefSegment &&
              subjPointFlags[iPart][iRing][iPrev] != Unsnapped &&
              subjPointFlags[iPart][iRing][iNext] != Unsnapped &&
-             QgsGeometryUtils::sqrDistance2D( QgsGeometryUtils::projPointOnSegment( pMid, pPrev, pNext ), pMid ) < 1E-12 )
+             QgsGeometryUtils::sqrDistance2D( QgsGeometryUtils::projectPointOnSegment( pMid, pPrev, pNext ), pMid ) < 1E-12 )
         {
           if ( ( ringIsClosed && nVerts > 3 ) || ( !ringIsClosed && nVerts > 2 ) )
           {

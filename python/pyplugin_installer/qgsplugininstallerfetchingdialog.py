@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import QByteArray
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
@@ -55,7 +55,16 @@ class QgsPluginInstallerFetchingDialog(QDialog, Ui_QgsPluginInstallerFetchingDia
 
     # ----------------------------------------- #
     def displayState(self, key, state, state2=None):
-        messages = [self.tr("Success"), self.tr("Resolving host name..."), self.tr("Connecting..."), self.tr("Host connected. Sending request..."), self.tr("Downloading data..."), self.tr("Idle"), self.tr("Closing connection..."), self.tr("Error")]
+        messages = [
+            self.tr("Success"),
+            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Resolving host name…"),
+            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Connecting…"),
+            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Host connected. Sending request…"),
+            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Downloading data…"),
+            self.tr("Idle"),
+            QCoreApplication.translate('QgsPluginInstallerFetchingDialog', "Closing connection…"),
+            self.tr("Error")
+        ]
         message = messages[state]
         if state2:
             message += " (%s%%)" % state2

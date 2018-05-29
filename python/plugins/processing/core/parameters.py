@@ -41,12 +41,14 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterRange,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterExtent,
+                       QgsProcessingParameterExpression,
                        QgsProcessingParameterMatrix,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterField,
@@ -55,9 +57,36 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterMapLayer,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber)
+
+from PyQt5.QtCore import QCoreApplication
+
+PARAMETER_NUMBER = 'number'
+PARAMETER_DISTANCE = 'distance'
+PARAMETER_RASTER = 'raster'
+PARAMETER_TABLE = 'vector'
+PARAMETER_VECTOR = 'source'
+PARAMETER_STRING = 'string'
+PARAMETER_EXPRESSION = 'expression'
+PARAMETER_BOOLEAN = 'boolean'
+PARAMETER_TABLE_FIELD = 'field'
+PARAMETER_EXTENT = 'extent'
+PARAMETER_FILE = 'file'
+PARAMETER_POINT = 'point'
+PARAMETER_CRS = 'crs'
+PARAMETER_MULTIPLE = 'multilayer'
+PARAMETER_BAND = 'band'
+PARAMETER_MAP_LAYER = 'Map Layer'
+PARAMETER_RANGE = 'range'
+PARAMETER_ENUM = 'enum'
+PARAMETER_MATRIX = 'matrix'
+PARAMETER_VECTOR_DESTINATION = 'vectorDestination'
+PARAMETER_FILE_DESTINATION = 'fileDestination'
+PARAMETER_FOLDER_DESTINATION = 'folderDestination'
+PARAMETER_RASTER_DESTINATION = 'rasterDestination'
 
 
 def getParameterFromString(s):
@@ -76,11 +105,17 @@ def getParameterFromString(s):
             if clazz == QgsProcessingParameterRasterLayer:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterBand:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterVectorLayer:
                 if len(params) > 2:
                     params[2] = [int(p) for p in params[2].split(';')]
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterMapLayer:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterBoolean:
                 if len(params) > 2:
                     params[2] = True if params[2].lower() == 'true' else False
@@ -94,10 +129,16 @@ def getParameterFromString(s):
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRange:
                 if len(params) > 2:
-                    params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('integer') else QgsProcessingParameterNumber.Double
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterExtent:
+                if len(params) > 3:
+                    params[3] = True if params[3].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterExpression:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterEnum:
@@ -115,12 +156,18 @@ def getParameterFromString(s):
                     params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFeatureSource:
                 if len(params) > 2:
-                    params[2] = [int(p) for p in params[2].split(';')]
+                    try:
+                        params[2] = [int(p) for p in params[2].split(';')]
+                    except:
+                        params[2] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[2].split(';')]
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterMultipleLayers:
                 if len(params) > 2:
-                    params[2] = int(params[2])
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessing, params[2].split(".")[1])
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterMatrix:
@@ -130,21 +177,32 @@ def getParameterFromString(s):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     params[4] = params[4].split(';')
+                if len(params) > 6:
+                    params[6] = True if params[6].lower() == 'true' else False
             elif clazz == QgsProcessingParameterField:
                 if len(params) > 4:
-                    params[4] = int(params[4])
+                    try:
+                        params[4] = int(params[4])
+                    except:
+                        params[4] = getattr(QgsProcessingParameterField, params[4].split(".")[1])
                 if len(params) > 5:
                     params[5] = True if params[5].lower() == 'true' else False
                 if len(params) > 6:
                     params[6] = True if params[6].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFile:
                 if len(params) > 2:
-                    params[2] = QgsProcessingParameterFile.File if params[2].lower() == 'false' else QgsProcessingParameterFile.Folder
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterFile, params[2].split(".")[1])
                 if len(params) > 5:
                     params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterNumber:
                 if len(params) > 2:
-                    params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('integer') else QgsProcessingParameterNumber.Double
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessingParameterNumber, params[2].split(".")[1])
                 if len(params) > 3:
                     params[3] = float(params[3].strip()) if params[3] is not None else None
                 if len(params) > 4:
@@ -161,28 +219,26 @@ def getParameterFromString(s):
             elif clazz == QgsProcessingParameterFileDestination:
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFolderDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
             elif clazz == QgsProcessingParameterRasterDestination:
                 if len(params) > 3:
                     params[3] = True if params[3].lower() == 'true' else False
-            elif clazz == QgsProcessingParameterVectorDestination:
-                if len(params) > 2:
-                    if params[2].lower().endswith('point'):
-                        params[2] = QgsProcessing.TypeVectorPoint
-                    elif params[2].lower().endswith('line'):
-                        params[2] = QgsProcessing.TypeVectorLine
-                    elif params[2].lower().endswith('polygon'):
-                        params[2] = QgsProcessing.TypeVectorPolygon
-                    elif params[2].lower().endswith('geometry'):
-                        params[2] = QgsProcessing.TypeVectorAnyGeometry
-                    elif params[2].lower().endswith('vector'):
-                        params[2] = QgsProcessing.TypeVector
-                    elif params[2].lower().endswith('file'):
-                        params[2] = QgsProcessing.TypeFile
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
+            elif clazz == QgsProcessingParameterVectorDestination:
+                if len(params) > 2:
+                    try:
+                        params[2] = int(params[2])
+                    except:
+                        params[2] = getattr(QgsProcessing, params[2].split(".")[1])
+                if len(params) > 4:
+                    params[4] = True if params[4].lower() == 'true' else False
+                if len(params) > 5:
+                    params[5] = True if params[5].lower() == 'true' else False
 
             param = clazz(*params)
             if isAdvanced:

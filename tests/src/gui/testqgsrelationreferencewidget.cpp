@@ -46,6 +46,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
     void testInvalidRelation();
+    void testSetGetForeignKey();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -129,6 +130,8 @@ void TestQgsRelationReferenceWidget::init()
 
 void TestQgsRelationReferenceWidget::cleanup()
 {
+  QgsProject::instance()->removeMapLayer( mLayer1.get() );
+  QgsProject::instance()->removeMapLayer( mLayer2.get() );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilter()
@@ -136,7 +139,8 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   // init a relation reference widget
   QStringList filterFields = { "material", "diameter", "raccord" };
 
-  QgsRelationReferenceWidget w( new QWidget() );
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
   w.setChainFilters( true );
   w.setFilterFields( filterFields );
   w.setRelation( *mRelation, true );
@@ -181,12 +185,36 @@ void TestQgsRelationReferenceWidget::testChainFilter()
 
   // set the filter for "raccord" and then reset filter for "diameter". As
   // chain filter is activated, the filter on "raccord" field should be reset
-  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
-  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
-
   QEventLoop loop;
   connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  cbs[0]->setCurrentIndex( 0 );
   loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
 
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
@@ -196,6 +224,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
   loop.exec();
   QCOMPARE( w.mComboBox->count(), 4 );
+  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()
@@ -285,6 +314,30 @@ void TestQgsRelationReferenceWidget::testInvalidRelation()
   // initWidget with an invalid relation
   QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
   ww.initWidget( nullptr );
+}
+
+void TestQgsRelationReferenceWidget::testSetGetForeignKey()
+{
+  QWidget parentWidget;
+  QgsRelationReferenceWidget w( &parentWidget );
+  w.setRelation( *mRelation, true );
+  w.init();
+
+  QSignalSpy spy( &w, SIGNAL( foreignKeyChanged( QVariant ) ) );
+
+  w.setForeignKey( 11 );
+  QCOMPARE( w.foreignKey(), QVariant( 11 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(11)" ) );
+  QCOMPARE( spy.count(), 1 );
+
+  w.setForeignKey( 12 );
+  QCOMPARE( w.foreignKey(), QVariant( 12 ) );
+  QCOMPARE( w.mComboBox->currentText(), QStringLiteral( "(12)" ) );
+  QCOMPARE( spy.count(), 2 );
+
+  w.setForeignKey( QVariant( QVariant::Int ) );
+  Q_ASSERT( w.foreignKey().isNull() );
+  QCOMPARE( spy.count(), 3 );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

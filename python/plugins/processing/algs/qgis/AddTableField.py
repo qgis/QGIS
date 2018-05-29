@@ -30,7 +30,8 @@ from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterEnum)
+                       QgsProcessingParameterEnum,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -93,8 +94,11 @@ class AddTableField(QgisFeatureBasedAlgorithm):
         inputFields.append(self.field)
         return inputFields
 
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
     def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         attributes.append(None)
         feature.setAttributes(attributes)
-        return feature
+        return [feature]

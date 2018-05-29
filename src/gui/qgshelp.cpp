@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmessagelog.h"
 
 #include <QUrl>
 #include <QFileInfo>
@@ -44,6 +45,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
     return helpNotFound;
   }
 
@@ -72,6 +74,8 @@ QUrl QgsHelp::helpUrl( const QString &key )
     fullPath.replace( QRegularExpression( QStringLiteral( "(\\$\\$)" ) ), QStringLiteral( "$" ) );
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
+
+    QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::Info );
 
     if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {

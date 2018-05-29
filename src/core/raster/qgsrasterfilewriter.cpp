@@ -497,7 +497,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   void *greenData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void *blueData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
   void *alphaData = qgsMalloc( mMaxTileWidth * mMaxTileHeight );
-  QgsRectangle mapRect;
   int iterLeft = 0, iterTop = 0, iterCols = 0, iterRows = 0;
   int fileIndex = 0;
 
@@ -717,7 +716,8 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
 {
   QgsDebugMsgLevel( "filename = " + filename, 4 );
   // open new dataProvider so we can build pyramids with it
-  QgsRasterDataProvider *destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename ) );
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsRasterDataProvider *destProvider = dynamic_cast< QgsRasterDataProvider * >( QgsProviderRegistry::instance()->createProvider( mOutputProviderKey, filename, providerOptions ) );
   if ( !destProvider )
   {
     return;
@@ -746,28 +746,28 @@ void QgsRasterFileWriter::buildPyramids( const QString &filename )
     QString title, message;
     if ( res == QLatin1String( "ERROR_WRITE_ACCESS" ) )
     {
-      title = QObject::tr( "Building pyramids failed - write access denied" );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Write access denied. Adjust the file permissions and try again." );
     }
     else if ( res == QLatin1String( "ERROR_WRITE_FORMAT" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "The file was not writable. Some formats do not "
                              "support pyramid overviews. Consult the GDAL documentation if in doubt." );
     }
     else if ( res == QLatin1String( "FAILED_NOT_SUPPORTED" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     else if ( res == QLatin1String( "ERROR_JPEG_COMPRESSION" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library." );
     }
     else if ( res == QLatin1String( "ERROR_VIRTUAL" ) )
     {
-      title = QObject::tr( "Building pyramids failed." );
+      title = QObject::tr( "Building Pyramids" );
       message = QObject::tr( "Building pyramid overviews is not supported on this type of raster." );
     }
     QMessageBox::warning( nullptr, title, message );
@@ -816,8 +816,8 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
   if ( geoTransform )
   {
     QDomElement geoTransformElem = mVRTDocument.createElement( QStringLiteral( "GeoTransform" ) );
-    QString geoTransformString = QString::number( geoTransform[0] ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
-                                 ", "  + QString::number( geoTransform[3] ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
+    QString geoTransformString = QString::number( geoTransform[0], 'f', 6 ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
+                                 ", "  + QString::number( geoTransform[3], 'f', 6 ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
     QDomText geoTransformText = mVRTDocument.createTextNode( geoTransformString );
     geoTransformElem.appendChild( geoTransformText );
     VRTDatasetElem.appendChild( geoTransformElem );
@@ -996,7 +996,7 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
     if ( drv )
     {
       char **driverMetadata = GDALGetMetadata( drv, nullptr );
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
       {
         QString drvName = GDALGetDriverShortName( drv );
         QStringList driverExtensions = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
@@ -1018,7 +1018,7 @@ QStringList QgsRasterFileWriter::extensionsForFormat( const QString &format )
   if ( drv )
   {
     char **driverMetadata = GDALGetMetadata( drv, nullptr );
-    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
     {
       return QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
     }

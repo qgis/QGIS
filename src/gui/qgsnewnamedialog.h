@@ -71,36 +71,37 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * Sets whether users are permitted to overwrite existing names. If true, then
      * the dialog will reflect that the new name will overwrite an existing name. If false,
      * then the dialog will not accept names which already exist.
-     * \since QGIS 2.12
      * \see overwriteEnabled()
+     * \since QGIS 2.12
      */
     void setOverwriteEnabled( bool enabled );
 
     /**
      * Returns whether users are permitted to overwrite existing names.
-     * \since QGIS 2.12
      * \see setOverwriteEnabled()
+     * \since QGIS 2.12
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
     /**
      * Sets the string used for warning users if a conflicting name exists.
      * \param string warning string. If empty a default warning string will be used.
-     * \since QGIS 2.12
      * \see conflictingNameWarning()
+     * \since QGIS 2.12
      */
     void setConflictingNameWarning( const QString &string );
 
     /**
      * Returns the string used for warning users if a conflicting name exists.
-     * \since QGIS 2.12
      * \see setConflictingNameWarning()
+     * \since QGIS 2.12
      */
     QString conflictingNameWarning() const { return mConflictingNameWarning; }
 
     /**
      * Name entered by user.
      * \returns new name
+     * \see newNameChanged()
      */
     QString name() const;
 
@@ -114,7 +115,18 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      */
     static bool exists( const QString &name, const QStringList &extensions,
                         const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+  signals:
+
+    // TODO QGIS 4.0 - rename to nameChanged
+
+    /**
+     * Emitted when the name is changed in the dialog.
+     * \since QGIS 3.2
+     */
+    void newNameChanged();
+
   public slots:
+    // TODO QGIS 4.0 - rename to onNameChanged
     void nameChanged();
 
   protected:

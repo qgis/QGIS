@@ -28,6 +28,9 @@ class QgsAmsRootItem : public QgsDataCollectionItem
     QgsAmsRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+    QVariant sortKey() const override { return 12; }
+
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
     QWidget *paramWidget() override;

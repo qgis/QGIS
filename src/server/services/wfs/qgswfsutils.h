@@ -38,7 +38,7 @@ namespace QgsWfs
 {
 
   /**
-   * Return the highest version supported by this implementation
+   * Returns the highest version supported by this implementation
    */
   QString implementationVersion();
 
@@ -57,6 +57,9 @@ namespace QgsWfs
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
   const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
+
+  // Define clean tagName regExp
+  const QRegExp cleanTagNameRegExp( "(?![\\w\\d\\.-])." );
 
 } // namespace QgsWfs
 

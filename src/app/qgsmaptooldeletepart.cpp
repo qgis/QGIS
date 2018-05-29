@@ -160,15 +160,17 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     }
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
-      double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-      QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
-                               layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
-      fit.nextFeature( f );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Area );
+      if ( !match.isValid() )
+        return geomPart;
+
+      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
       QgsGeometry g = f.geometry();
       if ( g.isNull() )
         return geomPart;
+
+      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
+
       if ( !g.isMultipart() )
       {
         fid = f.id();

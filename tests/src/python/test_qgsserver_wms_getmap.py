@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import QSize
 import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
+from utilities import unitTestDataPath
 from qgis.core import QgsProject
 
 # Strip path and content length because path may vary
@@ -183,6 +184,44 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Basic4")
+
+    def test_wms_getmap_context_rendering(self):
+        project = os.path.join(self.testdata_path, "test_project_render_context.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "points",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-119.8,20.4,-82.4,49.2",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:4326"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_ContextRendering")
+
+    def test_wms_getmap_dpi(self):
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "DPI": "112.5"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Basic5")
 
     def test_wms_getmap_invalid_parameters(self):
         # height should be an int
@@ -477,6 +516,30 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Transparent")
 
+    def test_wms_getmap_labeling_settings(self):
+        # Test the `DrawRectOnly` option with 1 candidate (`CandidatesPolygon`).
+        # May fail if the labeling position engine is tweaked.
+
+        d = unitTestDataPath('qgis_server_accesscontrol') + '/'
+        project = os.path.join(d, "project_labeling_settings.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Labels",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "TRANSPARENT": "TRUE"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_LabelingSettings")
+
     def test_wms_getmap_background(self):
         qs = "?" + "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
@@ -697,6 +760,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Filter3")
 
+        # display multiple features filtered from multiple layers
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectStatePath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello,Hello_Filter_SubsetString",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "FILTER": "Country: \"name\" IN ( 'arctic' , 'eurasia' );Hello: \"color\" = 'red';Hello_Filter_SubsetString: \"color\" = 'slate'"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Filter4")
+
     def test_wms_getmap_filter_ogc(self):
         filter = "<Filter><PropertyIsEqualTo><PropertyName>name</PropertyName>" + \
                  "<Literal>eurasia</Literal></PropertyIsEqualTo></Filter>"
@@ -731,7 +813,7 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857",
-            "SELECTION": "Country: 4"
+            "SELECTION": "Country: 4,1;Hello: 2,5"
         }.items())])
 
         r, h = self._result(self._execute_request(qs))
@@ -791,6 +873,25 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_Opacities2")
+
+        # Test OPACITIES with specific STYLES
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country,Hello,dem",
+            "STYLES": "origin,default,default",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857",
+            "OPACITIES": "125,50,150"
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetMap_Opacities3")
 
     def test_wms_getmap_highlight(self):
         # highlight layer with color separated from sld
@@ -888,6 +989,70 @@ class TestQgsServerWMSGetMap(QgsServerTestBase):
 
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetMap_SLDRestored")
+
+    def test_wms_getmap_group(self):
+        """A WMS shall render the requested layers by drawing the leftmost in the list
+        bottommost, the next one over that, and so on."""
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Country_Diagrams,Country_Labels,Country",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_individual, _ = self._result(self._execute_request(qs))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "CountryGroup",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_group, _ = self._result(self._execute_request(qs))
+
+        """ Debug check:
+        f = open('grouped.png', 'wb+')
+        f.write(r_group)
+        f.close()
+        f = open('individual.png', 'wb+')
+        f.write(r_individual)
+        f.close()
+        #"""
+
+        self.assertEqual(r_individual, r_group, 'Individual layers query and group layers query results should be identical')
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectGroupsPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "SLD": "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>CountryGroup</se:Name></NamedLayer> </StyledLayerDescriptor>",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-4710778,5696513,14587125",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "CRS": "EPSG:3857"
+        }.items())])
+
+        r_group_sld, _ = self._result(self._execute_request(qs))
+        self.assertEqual(r_individual, r_group_sld, 'Individual layers query and SLD group layers query results should be identical')
 
 
 if __name__ == '__main__':

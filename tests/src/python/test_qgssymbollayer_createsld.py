@@ -315,6 +315,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgStrokeWidth(3)
+        symbol.setSvgStrokeColor(QColor('black'))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         symbol.subSymbol().setWidth(10)
 
@@ -1193,6 +1194,23 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
             return None
         else:
             self.fail('Could not find a se:VendorOption named ' + expectedName + ' in ' + container.nodeName())
+
+    def testRuleBaseEmptyFilter(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedEmptyValue"))
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based, with last rule checking against empty value:" + dom.toString())
+
+        # get the third rule
+        rule = root.elementsByTagName('se:Rule').item(2).toElement()
+        filter = rule.elementsByTagName('Filter').item(0).toElement()
+        filter = filter.firstChild().toElement()
+        self.assertEqual("ogc:Or", filter.nodeName())
+        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsEqualTo').size())
+        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsNull').size())
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()

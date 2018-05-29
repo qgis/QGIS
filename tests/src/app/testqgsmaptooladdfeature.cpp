@@ -20,10 +20,13 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
+#include "qgssnappingconfig.h"
 #include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
@@ -44,29 +47,10 @@ namespace QTest
   }
 }
 
-static QSet<QgsFeatureId> _existingFeatureIds( QgsVectorLayer *layer )
-{
-  QSet<QgsFeatureId> fids;
-  QgsFeature f;
-  QgsFeatureIterator it = layer->getFeatures();
-  while ( it.nextFeature( f ) )
-    fids << f.id();
-  return fids;
-}
-
-static QgsFeatureId _newFeatureId( QgsVectorLayer *layer, QSet<QgsFeatureId> oldFids )
-{
-  QSet<QgsFeatureId> newFids = _existingFeatureIds( layer );
-  QSet<QgsFeatureId> diffFids = newFids.subtract( oldFids );
-  Q_ASSERT( diffFids.count() == 1 );
-  return *diffFids.constBegin();
-}
-
-
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the node tool
+ * This is a unit test for the vertex tool
  */
 class TestQgsMapToolAddFeature : public QObject
 {
@@ -81,46 +65,8 @@ class TestQgsMapToolAddFeature : public QObject
     void testNoTracing();
     void testTracing();
     void testTracingWithOffset();
-
-  private:
-    QPoint mapToScreen( double mapX, double mapY )
-    {
-      QgsPointXY pt = mCanvas->mapSettings().mapToPixel().transform( mapX, mapY );
-      return QPoint( std::round( pt.x() ), std::round( pt.y() ) );
-    }
-
-    void mouseMove( double mapX, double mapY )
-    {
-      QgsMapMouseEvent e( mCanvas, QEvent::MouseMove, mapToScreen( mapX, mapY ) );
-      mCaptureTool->cadCanvasMoveEvent( &e );
-    }
-
-    void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
-    {
-      QgsMapMouseEvent e1( mCanvas, QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
-      mCaptureTool->cadCanvasPressEvent( &e1 );
-    }
-
-    void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
-    {
-      QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
-      mCaptureTool->cadCanvasReleaseEvent( &e2 );
-    }
-
-    void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
-    {
-      mousePress( mapX, mapY, button, stateKey );
-      mouseRelease( mapX, mapY, button, stateKey );
-    }
-
-    void keyClick( int key )
-    {
-      QKeyEvent e1( QEvent::KeyPress, key, Qt::KeyboardModifiers() );
-      mCaptureTool->keyPressEvent( &e1 );
-
-      QKeyEvent e2( QEvent::KeyRelease, key, Qt::KeyboardModifiers() );
-      mCaptureTool->keyReleaseEvent( &e2 );
-    }
+    void testZ();
+    void testZMSnapping();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -129,6 +75,8 @@ class TestQgsMapToolAddFeature : public QObject
     QAction *mEnableTracingAction = nullptr;
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
+    QgsVectorLayer *mLayerLineZ = nullptr;
+    QgsVectorLayer *mLayerPointZM = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -172,6 +120,20 @@ void TestQgsMapToolAddFeature::initTestCase()
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
+  // make testing layers
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
+
+  QgsPolyline line2;
+  line2 << QgsPoint( 1, 1, 0 ) << QgsPoint( 2, 1, 1 ) << QgsPoint( 3, 2, 2 ) << QgsPoint( 1, 2, 3 ) << QgsPoint( 1, 1, 0 );
+  QgsFeature lineF2;
+  lineF2.setGeometry( QgsGeometry::fromPolyline( line2 ) );
+
+  mLayerLineZ->startEditing();
+  mLayerLineZ->addFeature( lineF2 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
+
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -180,7 +142,20 @@ void TestQgsMapToolAddFeature::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine ); //<< mLayerPolygon << mLayerPoint );
+  // make layer for snapping
+  mLayerPointZM = new QgsVectorLayer( QStringLiteral( "PointZM?crs=EPSG:27700" ), QStringLiteral( "layer point ZM" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerPointZM->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZM );
+
+  mLayerPointZM->startEditing();
+  QgsFeature pointF;
+  QString pointWktZM = "PointZM(6 6 3 4)";
+  pointF.setGeometry( QgsGeometry::fromWkt( pointWktZM ) );
+
+  mLayerPointZM->addFeature( pointF );
+  QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ << mLayerPointZM ); //<< mLayerPolygon << mLayerPoint );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -210,15 +185,17 @@ void TestQgsMapToolAddFeature::cleanupTestCase()
 
 void TestQgsMapToolAddFeature::testNoTracing()
 {
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
   // tracing not enabled - will be straight line
 
-  QSet<QgsFeatureId> oldFids = _existingFeatureIds( mLayerLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
-  mouseClick( 1, 1, Qt::LeftButton );
-  mouseClick( 3, 2, Qt::LeftButton );
-  mouseClick( 3, 2, Qt::RightButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::RightButton );
 
-  QgsFeatureId newFid = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 3 2)" ) );
@@ -229,17 +206,19 @@ void TestQgsMapToolAddFeature::testNoTracing()
 
 void TestQgsMapToolAddFeature::testTracing()
 {
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
   // tracing enabled - same clicks - now following line
 
   mEnableTracingAction->setChecked( true );
 
-  QSet<QgsFeatureId> oldFids = _existingFeatureIds( mLayerLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
-  mouseClick( 1, 1, Qt::LeftButton );
-  mouseClick( 3, 2, Qt::LeftButton );
-  mouseClick( 3, 2, Qt::RightButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::RightButton );
 
-  QgsFeatureId newFid = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( "LINESTRING(1 1, 2 1, 3 2)" ) );
@@ -251,13 +230,13 @@ void TestQgsMapToolAddFeature::testTracing()
 
   // tracing enabled - combined with first and last segments that are not traced
 
-  mouseClick( 0, 2, Qt::LeftButton );
-  mouseClick( 1, 1, Qt::LeftButton );
-  mouseClick( 3, 2, Qt::LeftButton );
-  mouseClick( 4, 1, Qt::LeftButton );
-  mouseClick( 4, 1, Qt::RightButton );
+  utils.mouseClick( 0, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 1, Qt::LeftButton );
+  utils.mouseClick( 3, 2, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
 
-  QgsFeatureId newFid2 = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QCOMPARE( mLayerLine->getFeature( newFid2 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(0 2, 1 1, 2 1, 3 2, 4 1)" ) );
@@ -272,18 +251,20 @@ void TestQgsMapToolAddFeature::testTracing()
 
 void TestQgsMapToolAddFeature::testTracingWithOffset()
 {
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
   // tracing enabled + offset enabled
 
   mEnableTracingAction->setChecked( true );
   mTracer->setOffset( 0.1 );
 
-  QSet<QgsFeatureId> oldFids = _existingFeatureIds( mLayerLine );
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
 
-  mouseClick( 2, 1, Qt::LeftButton );
-  mouseClick( 1, 2, Qt::LeftButton );
-  mouseClick( 1, 2, Qt::RightButton );
+  utils.mouseClick( 2, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QgsFeatureId newFid = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
 
@@ -302,11 +283,11 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
   // use negative offset
   mTracer->setOffset( -0.1 );
 
-  mouseClick( 2, 1, Qt::LeftButton );
-  mouseClick( 1, 2, Qt::LeftButton );
-  mouseClick( 1, 2, Qt::RightButton );
+  utils.mouseClick( 2, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::RightButton );
 
-  QgsFeatureId newFid2 = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid2 = utils.newFeatureId( oldFids );
 
   QgsGeometry g2 = mLayerLine->getFeature( newFid2 ).geometry();
   QgsPolylineXY poly2 = g2.asPolyline();
@@ -319,13 +300,13 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
 
   // tracing enabled + offset enabled - combined with first and last segments that are not traced
 
-  mouseClick( 3, 0, Qt::LeftButton );
-  mouseClick( 2, 1, Qt::LeftButton );
-  mouseClick( 1, 2, Qt::LeftButton );
-  mouseClick( 0, 1, Qt::LeftButton );
-  mouseClick( 0, 1, Qt::RightButton );
+  utils.mouseClick( 3, 0, Qt::LeftButton );
+  utils.mouseClick( 2, 1, Qt::LeftButton );
+  utils.mouseClick( 1, 2, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::LeftButton );
+  utils.mouseClick( 0, 1, Qt::RightButton );
 
-  QgsFeatureId newFid3 = _newFeatureId( mLayerLine, oldFids );
+  QgsFeatureId newFid3 = utils.newFeatureId( oldFids );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QgsGeometry g3 = mLayerLine->getFeature( newFid3 ).geometry();
@@ -346,6 +327,74 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
   mEnableTracingAction->setChecked( false );
 }
 
+void TestQgsMapToolAddFeature::testZ()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLineZ );
+
+  // test with default Z value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 4, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QString wkt = "LineStringZ (4 0 333, 5 0 333, 5 1 333, 4 1 333)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  // test with default Z value = 222
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+
+  oldFids = utils.existingFeatureIds();
+  utils.mouseClick( 4, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::LeftButton );
+  utils.mouseClick( 4, 1, Qt::RightButton );
+  newFid = utils.newFeatureId( oldFids );
+
+  wkt = "LineStringZ (4 0 222, 5 0 222, 5 1 222, 4 1 222)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  mCanvas->setCurrentLayer( mLayerLine );
+}
+
+void TestQgsMapToolAddFeature::testZMSnapping()
+{
+  TestQgsMapToolAdvancedDigitizingUtils utils( mCaptureTool );
+
+  mCanvas->setCurrentLayer( mLayerLine );
+
+  QSet<QgsFeatureId> oldFids = utils.existingFeatureIds();
+
+  QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
+  cfg.setMode( QgsSnappingConfig::AllLayers );
+  cfg.setEnabled( true );
+  mCanvas->snappingUtils()->setConfig( cfg );
+
+  // snap a on a layer with ZM support
+  utils.mouseClick( 6, 6, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 5, 0, Qt::LeftButton );
+  utils.mouseClick( 5, 0, Qt::RightButton );
+  QgsFeatureId newFid = utils.newFeatureId( oldFids );
+
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->is3D(), false );
+  QCOMPARE( mLayerLine->getFeature( newFid ).geometry().get()->isMeasure(), false );
+
+  mLayerLine->undoStack()->undo();
+
+  cfg.setEnabled( false );
+  mCanvas->snappingUtils()->setConfig( cfg );
+}
 
 QGSTEST_MAIN( TestQgsMapToolAddFeature )
 #include "testqgsmaptooladdfeature.moc"

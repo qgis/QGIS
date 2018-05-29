@@ -34,7 +34,6 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsSmoothAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -49,12 +48,20 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsProcessing::SourceType outputLayerType() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mIterations = 1;
+    bool mDynamicIterations = false;
+    QgsProperty mIterationsProperty;
+
     double mOffset = 0.25;
+    bool mDynamicOffset = false;
+    QgsProperty mOffsetProperty;
+
     double mMaxAngle = 0;
+    bool mDynamicMaxAngle = false;
+    QgsProperty mMaxAngleProperty;
 };
 
 ///@endcond PRIVATE

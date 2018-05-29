@@ -46,9 +46,9 @@
 
 /**
 * Constructor called when browser is launched from the application plugin tool bar
-* @param parent - Pointer the to parent QWidget for modality
-* @param interface - Pointer to the application interface
-* @param fl - Window flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param interface - Pointer to the application interface
+* \param fl - Window flags
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInterface *interface, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -102,9 +102,9 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgisInt
 
 /**
 * Constructor called when browser is launched by the eVisEventIdTool
-* @param parent - Pointer to the parent QWidget for modality
-* @param canvas - Pointer to the map canvas
-* @param fl - Window flags
+* \param parent - Pointer to the parent QWidget for modality
+* \param canvas - Pointer to the map canvas
+* \param fl - Window flags
 */
 eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -248,13 +248,13 @@ bool eVisGenericEventBrowserGui::initBrowser()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Warning" ), tr( "This tool only supports vector data" ) );
+        QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "This tool only supports vector data." ) );
         return false;
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "Warning" ), tr( "No active layers found" ) );
+      QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "No active layers found." ) );
       return false;
     }
   }
@@ -271,19 +271,19 @@ bool eVisGenericEventBrowserGui::initBrowser()
       }
       else
       {
-        QMessageBox::warning( this, tr( "Warning" ), tr( "This tool only supports vector data" ) );
+        QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "This tool only supports vector data." ) );
         return false;
       }
     }
     else
     {
-      QMessageBox::warning( this, tr( "Warning" ), tr( "No active layers found" ) );
+      QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "No active layers found." ) );
       return false;
     }
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to connect to either the map canvas or application interface" ) );
+    QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "Unable to connect to either the map canvas or application interface." ) );
     return false;
   }
 
@@ -310,11 +310,11 @@ bool eVisGenericEventBrowserGui::initBrowser()
   if ( 0 == mFeatureIds.size() )
     return false;
 
-  //get the first feature in the list so we can set the field in the pulldown menues
+  //get the first feature in the list so we can set the field in the pull-down menus
   QgsFeature *myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
   if ( !myFeature )
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "An invalid feature was received during initialization" ) );
+    QMessageBox::warning( this, tr( "Generic Event Browser" ), tr( "An invalid feature was received during initialization." ) );
     return false;
   }
 
@@ -596,7 +596,7 @@ void eVisGenericEventBrowserGui::displayImage()
 
 /**
  * Returns a pointer to the requested feature with a given featureid
- * @param id - FeatureId of the feature to find/select
+ * \param id - FeatureId of the feature to find/select
  */
 QgsFeature *eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
 {
@@ -759,8 +759,8 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
 
 /**
  * Slot called when a column is clicked in the tree displaying the attribute data
- * @param item - The tree widget item click
- * @param column - The column that was clicked
+ * \param item - The tree widget item click
+ * \param column - The column that was clicked
  */
 void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem *item, int column )
 {
@@ -837,7 +837,7 @@ void eVisGenericEventBrowserGui::launchExternalApplication( QTreeWidgetItem *ite
 
 /**
  * Slot called when the restore or save button is click on the options panel
- * @param state - The new state of the checkbox
+ * \param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::buttonboxOptions_clicked( QAbstractButton *button )
 {
@@ -853,7 +853,7 @@ void eVisGenericEventBrowserGui::buttonboxOptions_clicked( QAbstractButton *butt
 
 /**
  * Slot called when the state changes for the chkboxApplyPathRulesToDocs checkbox.
- * @param state - The new state of the checkbox
+ * \param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int state )
 {
@@ -863,7 +863,7 @@ void eVisGenericEventBrowserGui::chkboxApplyPathRulesToDocs_stateChanged( int st
 
 /**
  * Slot called when the index changes for the cboxEventImagePathField combo box.
- * @param index - The index of the new selected item
+ * \param index - The index of the new selected item
  */
 void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( int index )
 {
@@ -891,7 +891,7 @@ void eVisGenericEventBrowserGui::cboxEventImagePathField_currentIndexChanged( in
 
 /**
  * Slot called when the index changes for the cboxCompassBearingField combo box.
- * @param index - The index of the new selected item
+ * \param index - The index of the new selected item
  */
 void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( int index )
 {
@@ -919,7 +919,7 @@ void eVisGenericEventBrowserGui::cboxCompassBearingField_currentIndexChanged( in
 
 /**
  * Slot called when the index changes for the cboxCompassBearingField combo box.
- * @param index - The index of the new selected item
+ * \param index - The index of the new selected item
  */
 void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int index )
 {
@@ -947,7 +947,7 @@ void eVisGenericEventBrowserGui::cboxCompassOffsetField_currentIndexChanged( int
 
 /**
  * Slot called when the chkDisplayCompassBearing radio button is toggled
- * @param state - The current selection state of the radio button
+ * \param state - The current selection state of the radio button
  */
 void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int state )
 {
@@ -958,7 +958,7 @@ void eVisGenericEventBrowserGui::chkboxDisplayCompassBearing_stateChanged( int s
 
 /**
  * Slot called when the state changes for the chkboxEventImagePathRelative checkbox.
- * @param state - The new state of the checkbox
+ * \param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int state )
 {
@@ -974,7 +974,7 @@ void eVisGenericEventBrowserGui::chkboxEventImagePathRelative_stateChanged( int 
 
 /**
  * Slot called when the state changes for the chkboxUseOnlyFilename checkbox.
- * @param state - The new state of the checkbox
+ * \param state - The new state of the checkbox
  */
 void eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged( int state )
 {
@@ -984,7 +984,7 @@ void eVisGenericEventBrowserGui::chkboxUseOnlyFilename_stateChanged( int state )
 
 /**
  * Slot called when the tabs in the tabWidget are selected
- * @param currentTabIndex - The index of the currently selected tab
+ * \param currentTabIndex - The index of the currently selected tab
  */
 void eVisGenericEventBrowserGui::displayArea_currentChanged( int currentTabIndex )
 {
@@ -997,7 +997,7 @@ void eVisGenericEventBrowserGui::displayArea_currentChanged( int currentTabIndex
 
 /**
  * Slot called when a manual compass offset is entered
- * @param value - The new compass offset
+ * \param value - The new compass offset
  */
 void eVisGenericEventBrowserGui::dsboxCompassOffset_valueChanged( double value )
 {
@@ -1006,7 +1006,7 @@ void eVisGenericEventBrowserGui::dsboxCompassOffset_valueChanged( double value )
 
 /**
  * Slot called the text in leBasePath is set or changed
- * @param text - The new base path
+ * \param text - The new base path
  */
 void eVisGenericEventBrowserGui::leBasePath_textChanged( const QString &text )
 {
@@ -1131,8 +1131,8 @@ void eVisGenericEventBrowserGui::rbtnManualCompassOffset_toggled( bool state )
 
 /**
  * Slot called when an entry in the file associations table is clicked
- * @param row - the row that was clicked
- * @param column - the column that was clicked
+ * \param row - the row that was clicked
+ * \param column - the column that was clicked
  */
 void eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked( int row, int column )
 {
@@ -1149,7 +1149,7 @@ void eVisGenericEventBrowserGui::tableFileTypeAssociations_cellDoubleClicked( in
 
 /**
  * This slot is coonnected to the map canvas. When the canvas is done drawing the slot is fired to display thee highlighting symbol
- * @param painter - Pointer to the QPainter object
+ * \param painter - Pointer to the QPainter object
  */
 void eVisGenericEventBrowserGui::renderSymbol( QPainter *painter )
 {

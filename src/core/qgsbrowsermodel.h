@@ -124,7 +124,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void refresh( const QModelIndex &index = QModelIndex() );
 
     /**
-     * Return index of item with given path. It only searches in currently fetched
+     * Returns index of item with given path. It only searches in currently fetched
      * items, i.e. it does not fetch children.
      * \param path item path
      * \param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
@@ -169,15 +169,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * If \a name is specified, it will be used as the favorite's name. Otherwise
      * the name will be set to match \a directory.
      *
-     * \since QGIS 3.0
      * \see removeFavorite()
+     * \since QGIS 3.0
      */
     void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes a favorite directory from its corresponding model index.
-     * \since QGIS 3.0
      * \see addFavoriteDirectory()
+     * \since QGIS 3.0
      */
     void removeFavorite( const QModelIndex &index );
 

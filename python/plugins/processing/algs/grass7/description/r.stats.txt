@@ -5,7 +5,6 @@ QgsProcessingParameterMultipleLayers|input|Name of input raster map|3|None|False
 QgsProcessingParameterString|separator|Output field separator|space|False|True
 QgsProcessingParameterString|null_value|String representing no data cell value|*|False|True
 QgsProcessingParameterNumber|nsteps|Number of floating-point subranges to collect stats from|QgsProcessingParameterNumber.Integer|255|True|1|None
-QgsProcessingParameterString|nsteps|Number of fp subranges to collect stats from|255
 QgsProcessingParameterEnum|sort|Sort output statistics by cell counts|asc;desc|False|0|False
 QgsProcessingParameterBoolean|-1|One cell (range) per line|True
 QgsProcessingParameterBoolean|-A|Print averaged values instead of intervals|False

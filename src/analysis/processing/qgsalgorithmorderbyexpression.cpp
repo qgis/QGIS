@@ -47,11 +47,6 @@ QString QgsOrderByExpressionAlgorithm::groupId() const
   return QStringLiteral( "vectorgeneral" );
 }
 
-QgsProcessingAlgorithm::Flags QgsOrderByExpressionAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsOrderByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
@@ -74,9 +69,9 @@ QgsOrderByExpressionAlgorithm *QgsOrderByExpressionAlgorithm::createInstance() c
 
 QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString expressionString = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
 
@@ -86,7 +81,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   QString sinkId;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, sinkId, source->fields(), source->wkbType(), source->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   long count = source->featureCount();
   double step = count > 0 ? 100.0 / count : 1;
@@ -96,7 +91,7 @@ QVariantMap QgsOrderByExpressionAlgorithm::processAlgorithm( const QVariantMap &
   request.addOrderBy( expressionString, ascending, nullsFirst );
 
   QgsFeature inFeature;
-  QgsFeatureIterator features = source->getFeatures( request );
+  QgsFeatureIterator features = source->getFeatures( request, QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   while ( features.nextFeature( inFeature ) )
   {
     if ( feedback->isCanceled() )

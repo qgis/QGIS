@@ -30,15 +30,31 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {
   public:
 
+    /**
+     * Constructor for QgsSingleSymbolRenderer.
+     *
+     * The same \a symbol will be used to render every feature. Ownership
+     * of \a symbol is transferred to the renderer.
+     */
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
+    /**
+     * Returns the symbol which will be rendered for every feature.
+     * \see setSymbol()
+     */
     QgsSymbol *symbol() const;
+
+    /**
+     * Sets the symbol which will be rendered for every feature. Ownership
+     * of the symbol is transferred to the renderer.
+     * \see symbol()
+     */
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
     QString dump() const override;
@@ -46,21 +62,34 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     QgsSingleSymbolRenderer *clone() const override SIP_FACTORY;
 
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
+
+    /**
+     * Creates a new single symbol renderer from an SLD \a element.
+     *
+     * The geometry type for features to be rendered must be specified via the \a geomType argument.
+     *
+     * The caller takes ownership of the returned renderer.
+     */
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels; }
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
-    //! create renderer from XML element
+    /**
+     * Creates a new single symbol renderer from an XML \a element, using the supplied read/write \a context.
+     *
+     * The caller takes ownership of the returned renderer.
+     */
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
-     * creates a QgsSingleSymbolRenderer from an existing renderer.
-     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * Creates a new single symbol renderer from an existing \a renderer.
+     * \returns a new renderer if the conversion was possible, otherwise nullptr.
      * \since QGIS 2.5
      */
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;

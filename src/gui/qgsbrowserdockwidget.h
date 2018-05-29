@@ -75,9 +75,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void showFilterWidget( bool visible );
     //! Enable/disable properties widget
     void enablePropertiesWidget( bool enable );
-    //! Set filter syntax
+    //! Sets filter syntax
     void setFilterSyntax( QAction * );
-    //! Set filter case sensitivity
+    //! Sets filter case sensitivity
     void setCaseSensitive( bool caseSensitive );
     //! Apply filter to the model
     void setFilter();
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   signals:
     //! Emitted when a file needs to be opened
-    void openFile( const QString & );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     //! Emitted when drop uri list needs to be handled
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Connections changed in the browser
@@ -121,7 +121,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void addLayer( QgsLayerItem *layerItem );
     //! Clear the properties widget
     void clearPropertiesWidget();
-    //! Set the properties widget
+    //! Sets the properties widget
     void setPropertiesWidget();
 
     //! Count selected items

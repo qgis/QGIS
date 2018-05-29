@@ -18,6 +18,7 @@
 
 #include "qgsmaptoolcapture.h"
 #include "qgscircle.h"
+#include "qgis_app.h"
 
 class QgsGeometryRubberBand;
 
@@ -26,7 +27,7 @@ struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
   bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 
-class QgsMapToolAddCircle: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddCircle: public QgsMapToolCapture
 {
     Q_OBJECT
 

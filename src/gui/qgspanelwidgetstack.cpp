@@ -155,6 +155,14 @@ void QgsPanelWidgetStack::mouseReleaseEvent( QMouseEvent *e )
   }
 }
 
+void QgsPanelWidgetStack::keyPressEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    acceptCurrentPanel();
+  }
+}
+
 void QgsPanelWidgetStack::updateBreadcrumb()
 {
   QString breadcrumb;

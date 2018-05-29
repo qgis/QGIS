@@ -112,7 +112,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     QAction *pagePropertiesAction = new QAction( tr( "Page Properties…" ), menu );
     connect( pagePropertiesAction, &QAction::triggered, this, [this, page]()
     {
-      mDesigner->showItemOptions( page );
+      mDesigner->showItemOptions( page, true );
     } );
     menu->addAction( pagePropertiesAction );
     QAction *removePageAction = new QAction( tr( "Remove Page" ), menu );

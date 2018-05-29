@@ -428,8 +428,8 @@ void QgsGpsInformationWidget::connectGps()
     port = QStringLiteral( "internalGPS" );
   }
 
-  mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );
-  showStatusBarMessage( tr( "Connecting to GPS device..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Connecting…" ) );
+  showStatusBarMessage( tr( "Connecting to GPS device…" ) );
 
   QgsGpsDetector *detector = new QgsGpsDetector( port );
   connect( detector, static_cast < void ( QgsGpsDetector::* )( QgsGpsConnection * ) > ( &QgsGpsDetector::detected ), this, &QgsGpsInformationWidget::connected );
@@ -501,7 +501,7 @@ void QgsGpsInformationWidget::disconnectGps()
     delete mpMapMarker;
     mpMapMarker = nullptr;
   }
-  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected..." ) );
+  mGPSPlainTextEdit->appendPlainText( tr( "Disconnected…" ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "&Connect" ) );
   showStatusBarMessage( tr( "Disconnected from GPS device." ) );
@@ -788,7 +788,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   //lines: bail out if there are not at least two vertices
   if ( layerWKBType == QgsWkbTypes::LineString  && mCaptureList.size() < 2 )
   {
-    QMessageBox::information( nullptr, tr( "Not enough vertices" ),
+    QMessageBox::information( nullptr, tr( "Add Feature" ),
                               tr( "Cannot close a line feature until it has at least two vertices." ) );
     return;
   }
@@ -796,7 +796,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   //polygons: bail out if there are not at least three vertices
   if ( layerWKBType == QgsWkbTypes::Polygon && mCaptureList.size() < 3 )
   {
-    QMessageBox::information( nullptr, tr( "Not enough vertices" ),
+    QMessageBox::information( nullptr, tr( "Add Feature" ),
                               tr( "Cannot close a polygon feature until it has at least three vertices." ) );
     return;
   }
@@ -833,7 +833,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         if ( !vlayer->commitChanges() ) //assumed to be vector layer and is editable and is in editing mode (preconditions have been tested)
         {
           QMessageBox::information( this,
-                                    tr( "Error" ),
+                                    tr( "Save Layer Edits" ),
                                     tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                     .arg( vlayer->name(),
                                           vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
@@ -911,14 +911,14 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       else if ( avoidIntersectionsReturn == 2 )
       {
         //bail out...
-        QMessageBox::critical( nullptr, tr( "Error" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ) );
+        QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type." ) );
         delete f;
         connectGpsSlot();
         return;
       }
       else if ( avoidIntersectionsReturn == 3 )
       {
-        QMessageBox::critical( nullptr, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
+        QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "An error was reported during intersection removal." ) );
         delete f;
         connectGpsSlot();
         return;
@@ -927,7 +927,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
     // Should never get here, as preconditions should have removed any that aren't handled
     else // layerWKBType == QgsWkbTypes::Polygon  -  unknown type
     {
-      QMessageBox::critical( nullptr, tr( "Error" ), tr( "Cannot add feature. "
+      QMessageBox::critical( nullptr, tr( "Add Feature" ), tr( "Cannot add feature. "
                              "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
       delete f;
@@ -942,7 +942,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
         if ( !vlayer->commitChanges() ) //swiped... er... appropriated from QgisApp saveEdits()
         {
           QMessageBox::information( this,
-                                    tr( "Error" ),
+                                    tr( "Save Layer Edits" ),
                                     tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                     .arg( vlayer->name(),
                                           vlayer->commitErrors().join( QStringLiteral( "\n  " ) ) ) );
@@ -1019,7 +1019,7 @@ void QgsGpsInformationWidget::mBtnLogFile_clicked()
   QgsSettings settings;
   QString settingPath( QStringLiteral( "/gps/lastLogFileDir" ) );
   QString lastUsedDir = settings.value( settingPath, QDir::homePath() ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file As" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {
     return;

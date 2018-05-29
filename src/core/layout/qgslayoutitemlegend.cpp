@@ -89,7 +89,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
     QgsRectangle mapExtent = mMap->extent();
 
-    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi );
+    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi, false );
     mSettings.setMapScale( ms.scale() );
   }
   mInitialMapScaleCalculated = true;
@@ -126,12 +126,6 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
 void QgsLayoutItemLegend::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  if ( mMapId != -1 && mMapUuid.isEmpty() )
-  {
-    setMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
-  }
-#endif
   if ( !mMapUuid.isEmpty() )
   {
     setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
@@ -144,13 +138,13 @@ void QgsLayoutItemLegend::refresh()
   onAtlasFeature();
 }
 
-void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemLegend::draw( QgsLayoutItemRenderContext &context )
 {
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
   // painter is scaled to dots, so scale back to layout units
-  painter->scale( context.scaleFactor(), context.scaleFactor() );
+  painter->scale( context.renderContext().scaleFactor(), context.renderContext().scaleFactor() );
 
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
 
@@ -188,9 +182,9 @@ void QgsLayoutItemLegend::adjustBoxSize()
   QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
   if ( size.isValid() )
   {
-    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+    QgsLayoutSize newSize = mLayout->convertFromLayoutUnits( size, sizeWithUnits().units() );
     //set new rect, respecting position mode and data defined size/position
-    attemptSetSceneRect( targetRect );
+    attemptResize( newSize );
   }
 }
 
@@ -210,7 +204,6 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 
   mCustomLayerTree.reset( rootGroup );
 }
-
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
@@ -466,59 +459,59 @@ void QgsLayoutItemLegend::updateLegend()
   updateFilterByMap( false );
 }
 
-bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &composerLegendElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemLegend::writePropertiesToElement( QDomElement &legendElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
 
   //write general properties
-  composerLegendElem.setAttribute( QStringLiteral( "title" ), mTitle );
-  composerLegendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
-  composerLegendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mColumnCount ) );
-  composerLegendElem.setAttribute( QStringLiteral( "splitLayer" ), QString::number( mSettings.splitLayer() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "equalColumnWidth" ), QString::number( mSettings.equalColumnWidth() ) );
+  legendElem.setAttribute( QStringLiteral( "title" ), mTitle );
+  legendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
+  legendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mColumnCount ) );
+  legendElem.setAttribute( QStringLiteral( "splitLayer" ), QString::number( mSettings.splitLayer() ) );
+  legendElem.setAttribute( QStringLiteral( "equalColumnWidth" ), QString::number( mSettings.equalColumnWidth() ) );
 
-  composerLegendElem.setAttribute( QStringLiteral( "boxSpace" ), QString::number( mSettings.boxSpace() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "columnSpace" ), QString::number( mSettings.columnSpace() ) );
+  legendElem.setAttribute( QStringLiteral( "boxSpace" ), QString::number( mSettings.boxSpace() ) );
+  legendElem.setAttribute( QStringLiteral( "columnSpace" ), QString::number( mSettings.columnSpace() ) );
 
-  composerLegendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
+  legendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
+  legendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  legendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
 
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterStrokeColor() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
+  legendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
+  legendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterStrokeColor() ) );
+  legendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
 
-  composerLegendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
-  composerLegendElem.setAttribute( QStringLiteral( "wrapChar" ), mSettings.wrapChar() );
-  composerLegendElem.setAttribute( QStringLiteral( "fontColor" ), mSettings.fontColor().name() );
+  legendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
+  legendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
+  legendElem.setAttribute( QStringLiteral( "wrapChar" ), mSettings.wrapChar() );
+  legendElem.setAttribute( QStringLiteral( "fontColor" ), mSettings.fontColor().name() );
 
-  composerLegendElem.setAttribute( QStringLiteral( "resizeToContents" ), mSizeToContents );
+  legendElem.setAttribute( QStringLiteral( "resizeToContents" ), mSizeToContents );
 
   if ( mMap )
   {
-    composerLegendElem.setAttribute( QStringLiteral( "map_uuid" ), mMap->uuid() );
+    legendElem.setAttribute( QStringLiteral( "map_uuid" ), mMap->uuid() );
   }
 
-  QDomElement composerLegendStyles = doc.createElement( QStringLiteral( "styles" ) );
-  composerLegendElem.appendChild( composerLegendStyles );
+  QDomElement legendStyles = doc.createElement( QStringLiteral( "styles" ) );
+  legendElem.appendChild( legendStyles );
 
-  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), composerLegendStyles, doc );
-  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), composerLegendStyles, doc );
-  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), composerLegendStyles, doc );
-  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), composerLegendStyles, doc );
-  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), legendStyles, doc );
+  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), legendStyles, doc );
+  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), legendStyles, doc );
+  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), legendStyles, doc );
+  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), legendStyles, doc );
 
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXml( composerLegendElem, context );
+    mCustomLayerTree->writeXml( legendElem, context );
   }
 
   if ( mLegendFilterByMap )
   {
-    composerLegendElem.setAttribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "1" ) );
+    legendElem.setAttribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "1" ) );
   }
-  composerLegendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  legendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   return true;
 }
@@ -581,19 +574,17 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
 
   mSizeToContents = itemElem.attribute( QStringLiteral( "resizeToContents" ), QStringLiteral( "1" ) ) != QLatin1String( "0" );
 
-  //composer map
+  // map
   mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
 
-  mMapId = -1;
   mMapUuid.clear();
-  if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
-  {
-    mMapId = itemElem.attribute( QStringLiteral( "map" ) ).toInt();
-  }
   if ( !itemElem.attribute( QStringLiteral( "map_uuid" ) ).isEmpty() )
   {
     mMapUuid = itemElem.attribute( QStringLiteral( "map_uuid" ) );
   }
+  // disconnect current map
+  setupMapConnections( mMap, false );
+  mMap = nullptr;
 
   mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
@@ -630,7 +621,7 @@ QString QgsLayoutItemLegend::displayName() const
   }
   if ( text.length() > 25 )
   {
-    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+    return tr( "%1…" ).arg( text.left( 25 ) );
   }
   else
   {
@@ -638,24 +629,40 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
-void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
+
+void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool connectSlots )
 {
-  if ( mMap )
+  if ( !map )
+    return;
+
+  if ( !connectSlots )
   {
-    disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
-    disconnect( mMap, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
-    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
-    disconnect( mMap, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    disconnect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
+    disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
   }
-
-  mMap = map;
-
-  if ( map )
+  else
   {
     connect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+  }
+}
+
+void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
+{
+  if ( mMap )
+  {
+    setupMapConnections( mMap, false );
+  }
+
+  mMap = map;
+
+  if ( mMap )
+  {
+    setupMapConnections( mMap, true );
   }
 
   updateFilterByMap();
@@ -761,7 +768,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QSizeF size( requestRectangle.width(), requestRectangle.height() );
     size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
 
-    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi );
+    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
 
     QgsGeometry filterPolygon;
     if ( mInAtlas )

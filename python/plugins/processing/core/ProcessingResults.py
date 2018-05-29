@@ -34,8 +34,8 @@ class ProcessingResults(QObject):
 
     results = []
 
-    def addResult(self, icon, name, result):
-        self.results.append(Result(icon, name, result))
+    def addResult(self, icon, name, timestamp, result):
+        self.results.append(Result(icon, name, timestamp, result))
         self.resultAdded.emit()
 
     def getResults(self):
@@ -44,9 +44,10 @@ class ProcessingResults(QObject):
 
 class Result:
 
-    def __init__(self, icon, name, filename):
+    def __init__(self, icon, name, timestamp, filename):
         self.icon = icon
         self.name = name
+        self.timestamp = timestamp
         self.filename = filename
 
 

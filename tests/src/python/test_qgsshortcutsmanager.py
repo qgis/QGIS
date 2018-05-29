@@ -90,6 +90,11 @@ class TestQgsShortcutsManager(unittest.TestCase):
         action2 = QAction('action2', None)
         action2.setShortcut('y')
         self.assertTrue(s.registerAction(action2, 'B'))
+        self.assertCountEqual(s.listActions(), [action1, action2])
+
+        # try re-registering an existing action - should fail, but leave action registered
+        self.assertFalse(s.registerAction(action2, 'B'))
+        self.assertCountEqual(s.listActions(), [action1, action2])
 
         # actions should have been set to default sequences
         self.assertEqual(action1.shortcut().toString(), 'A')

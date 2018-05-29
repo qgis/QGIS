@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
@@ -45,8 +46,11 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class ExtentSelectionPanel(BASE, WIDGET):
@@ -132,7 +136,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 layerName = layer.name()
             extents.append(layerName)
             extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
-        (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
+        (item, ok) = QInputDialog.getItem(self, self.tr('Select Extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
             self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))

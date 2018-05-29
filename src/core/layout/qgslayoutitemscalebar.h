@@ -97,8 +97,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     /**
      * Returns the size mode for the scale bar segments.
      * \see setSegmentSizeMode()
-     * \see minBarWidth()
-     * \see maxBarWidth()
+     * \see minimumBarWidth()
+     * \see maximumBarWidth()
      */
     QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const { return mSettings.segmentSizeMode(); }
 
@@ -175,30 +175,48 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setUnitLabel( const QString &label ) { mSettings.setUnitLabel( label );}
 
     /**
+     * Returns the text format used for drawing text in the scalebar.
+     * \see setTextFormat()
+     * \since QGIS 3.2
+     */
+    QgsTextFormat textFormat() const;
+
+    /**
+     * Sets the text \a format used for drawing text in the scalebar.
+     * \see textFormat()
+     * \since QGIS 3.2
+     */
+    void setTextFormat( const QgsTextFormat &format );
+
+    /**
      * Returns the font used for drawing text in the scalebar.
      * \see setFont()
+     * \deprecated use textFormat() instead
      */
-    QFont font() const;
+    Q_DECL_DEPRECATED QFont font() const SIP_DEPRECATED;
 
     /**
      * Sets the \a font used for drawing text in the scalebar.
-     * \see setFont()
+     * \see font()
+     * \deprecated use setTextFormat() instead
      */
-    void setFont( const QFont &font );
+    Q_DECL_DEPRECATED void setFont( const QFont &font ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for drawing text in the scalebar.
      * \see setFontColor()
      * \see font()
+     * \deprecated use textFormat() instead
      */
-    QColor fontColor() const { return mSettings.fontColor(); }
+    Q_DECL_DEPRECATED QColor fontColor() const SIP_DEPRECATED;
 
     /**
      * Sets the \a color used for drawing text in the scalebar.
      * \see fontColor()
      * \see setFont()
+     * \deprecated use setTextFormat() instead
      */
-    void setFontColor( const QColor &color ) { mSettings.setFontColor( color ); }
+    Q_DECL_DEPRECATED void setFontColor( const QColor &color ) SIP_DEPRECATED;
 
     /**
      * Returns the color used for fills in the scalebar.
@@ -254,7 +272,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Returns the pen used for drawing outlines in the scalebar.
-     * \see setPen()
      * \see brush()
      */
     QPen pen() const { return mSettings.pen(); }
@@ -262,7 +279,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     /**
      * Returns the primary brush for the scalebar.
      * \returns QBrush used for filling the scalebar
-     * \see setBrush
      * \see brush2
      * \see pen
      */
@@ -272,7 +288,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * \returns QBrush used for secondary color areas
-     * \see setBrush2
      * \see brush
      */
     QBrush brush2() const {return mSettings.brush2(); }
@@ -425,7 +440,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void finalizeRestoreFromXml() override;
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
@@ -438,7 +453,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
     QString mMapUuid;
-    int mMapId = -1;
 
     QgsScaleBarSettings mSettings;
 

@@ -210,8 +210,8 @@ class CORE_EXPORT QWebPage : public QObject
  * \ingroup core
  * \class QgsWebPage
  * \brief QWebPage subclass which redirects JavaScript errors and console output to the QGIS message log.
- * \since QGIS 2.16
  * \note Not available in Python bindings
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsWebPage : public QWebPage
 {

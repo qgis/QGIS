@@ -27,6 +27,7 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
+#include "qgsmaptoolidentifyaction.h"
 #include "qgsidentifyresultsdialog.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -124,7 +125,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
     }
     QString targetFile = QFileDialog::getSaveFileName( this,
-                         tr( "Save as" ),
+                         tr( "Save As" ),
                          savePath,
                          info.suffix().isEmpty() ? QString() : "*." +  info.suffix()
                                                      );
@@ -272,7 +273,7 @@ QgsIdentifyResultsWebViewItem::QgsIdentifyResultsWebViewItem( QTreeWidget *treeW
 {
   mWebView = new QgsIdentifyResultsWebView( treeWidget );
   mWebView->hide();
-  setText( 0, tr( "Loading..." ) );
+  setText( 0, tr( "Loading…" ) );
   connect( mWebView->page(), &QWebPage::loadFinished, this, &QgsIdentifyResultsWebViewItem::loadFinished );
 }
 
@@ -369,12 +370,12 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   }
 
   // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
-  int identifyMode = mySettings.value( QStringLiteral( "Map/identifyMode" ), 0 ).toInt();
+  QgsMapToolIdentify::IdentifyMode identifyMode = mySettings.enumValue( QStringLiteral( "Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer );
 
-  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
-  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
+  cmbIdentifyMode->addItem( tr( "Current layer" ), QgsMapToolIdentify::ActiveLayer );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), QgsMapToolIdentify::TopDownStopAtFirst );
+  cmbIdentifyMode->addItem( tr( "Top down" ), QgsMapToolIdentify::TopDownAll );
+  cmbIdentifyMode->addItem( tr( "Layer selection" ), QgsMapToolIdentify::LayerSelection );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 
@@ -408,6 +409,8 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   connect( mOpenFormAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::featureForm );
   connect( mClearResultsAction, &QAction::triggered, this, &QgsIdentifyResultsDialog::clear );
   connect( mHelpToolButton, &QAbstractButton::clicked, this, &QgsIdentifyResultsDialog::showHelp );
+
+  initSelectionModes();
 }
 
 QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
@@ -422,6 +425,31 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
     delete curve;
   mPlotCurves.clear();
+}
+
+void QgsIdentifyResultsDialog::initSelectionModes()
+{
+  mSelectModeButton = new QToolButton( mIdentifyToolbar );
+  mSelectModeButton->setPopupMode( QToolButton::MenuButtonPopup );
+  QList<QAction *> selectActions;
+  selectActions << mActionSelectFeatures << mActionSelectPolygon
+                << mActionSelectFreehand << mActionSelectRadius;
+
+  QActionGroup *group = new QActionGroup( this );
+  group->addAction( mActionSelectFeatures );
+  group->addAction( mActionSelectPolygon );
+  group->addAction( mActionSelectFreehand );
+  group->addAction( mActionSelectRadius );
+
+  mSelectModeButton->addActions( selectActions );
+  mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+
+  mIdentifyToolbar->addWidget( mSelectModeButton );
+
+  connect( mActionSelectFeatures, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectPolygon, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectFreehand, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
+  connect( mActionSelectRadius, &QAction::triggered, this, &QgsIdentifyResultsDialog::setSelectionMode );
 }
 
 QTreeWidgetItem *QgsIdentifyResultsDialog::layerItem( QObject *object )
@@ -452,8 +480,6 @@ void QgsIdentifyResultsDialog::addFeature( const QgsMapToolIdentify::IdentifyRes
 void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes )
 {
   QTreeWidgetItem *layItem = layerItem( vlayer );
-  lstResults->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
-  lstResults->header()->setStretchLastSection( false );
 
   if ( !layItem )
   {
@@ -513,6 +539,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
       if ( !action.runable() )
         continue;
 
+      if ( action.isEnabledOnlyWhenEditable() )
+        continue;
+
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action.name() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
       twi->setData( 0, Qt::UserRole, "action" );
@@ -523,6 +552,9 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
     //add actions from QgsMapLayerActionRegistry
     for ( int i = 0; i < registeredActions.size(); i++ )
     {
+      if ( registeredActions.at( i )->isEnabledOnlyWhenEditable() )
+        continue;
+
       QgsMapLayerAction *action = registeredActions.at( i );
       QTreeWidgetItem *twi = new QTreeWidgetItem( QStringList() << QLatin1String( "" ) << action->text() );
       twi->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ) );
@@ -612,7 +644,7 @@ void QgsIdentifyResultsDialog::addFeature( QgsVectorLayer *vlayer, const QgsFeat
 
     QString value = fields.at( i ).displayString( attrs.at( i ) );
     const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( vlayer, fields.at( i ).name() );
-    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), value );
+    QString value2 = representValue( vlayer, setup, fields.at( i ).name(), attrs.at( i ) );
 
     tblResults->setRowCount( j + 1 );
 
@@ -1033,19 +1065,19 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     {
       mActionPopup->addAction(
         QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ),
-        vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
+        vlayer->isEditable() ? tr( "Edit Feature Form…" ) : tr( "View Feature Form…" ),
         this, SLOT( featureForm() ) );
     }
 
     if ( featItem->feature().isValid() )
     {
-      mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
-      mActionPopup->addAction( tr( "Copy feature" ), this, SLOT( copyFeature() ) );
-      mActionPopup->addAction( tr( "Toggle feature selection" ), this, SLOT( toggleFeatureSelection() ) );
+      mActionPopup->addAction( tr( "Zoom to Feature" ), this, SLOT( zoomToFeature() ) );
+      mActionPopup->addAction( tr( "Copy Feature" ), this, SLOT( copyFeature() ) );
+      mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, SLOT( toggleFeatureSelection() ) );
     }
 
-    mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
-    mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
+    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, SLOT( copyAttributeValue() ) );
+    mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, SLOT( copyFeatureAttributes() ) );
 
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
@@ -1066,18 +1098,18 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addSeparator();
   }
 
-  mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
-  mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearHighlights() ) );
-  mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
-  mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
+  mActionPopup->addAction( tr( "Clear Results" ), this, SLOT( clear() ) );
+  mActionPopup->addAction( tr( "Clear Highlights" ), this, SLOT( clearHighlights() ) );
+  mActionPopup->addAction( tr( "Highlight All" ), this, SLOT( highlightAll() ) );
+  mActionPopup->addAction( tr( "Highlight Layer" ), this, SLOT( highlightLayer() ) );
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
-    mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties..." ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Activate Layer" ), this, SLOT( activateLayer() ) );
+    mActionPopup->addAction( tr( "Layer Properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
-  mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
-  mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
+  mActionPopup->addAction( tr( "Expand All" ), this, SLOT( expandAll() ) );
+  mActionPopup->addAction( tr( "Collapse All" ), this, SLOT( collapseAll() ) );
   mActionPopup->addSeparator();
 
   if ( featItem && vlayer )
@@ -1092,6 +1124,9 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
       Q_FOREACH ( const QgsAction &action, actions )
       {
         if ( !action.runable() )
+          continue;
+
+        if ( action.isEnabledOnlyWhenEditable() )
           continue;
 
         QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, action.id(), idx, this );
@@ -1112,9 +1147,12 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
 
       int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
 
-      QList<QgsMapLayerAction *>::iterator actionIt;
+      QList<QgsMapLayerAction *>::const_iterator actionIt;
       for ( actionIt = registeredActions.begin(); actionIt != registeredActions.end(); ++actionIt )
       {
+        if ( ( *actionIt )->isEnabledOnlyWhenEditable() )
+          continue;
+
         QgsIdentifyResultsDialogMapLayerAction *a = new QgsIdentifyResultsDialogMapLayerAction( ( *actionIt )->text(), this, ( *actionIt ), vlayer, &( mFeatures[ featIdx ] ) );
         mActionPopup->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mAction.svg" ) ), ( *actionIt )->text(), a, SLOT( execute() ) );
       }
@@ -1840,7 +1878,7 @@ void QgsIdentifyResultsDialog::printCurrentItem()
 
   if ( !wv )
   {
-    QMessageBox::warning( this, tr( "Cannot print" ), tr( "Cannot print this item" ) );
+    QMessageBox::warning( this, tr( "Print HTML Response" ), tr( "Cannot print this item." ) );
     return;
   }
 
@@ -1979,6 +2017,40 @@ void QgsIdentifyResultsDialogMapLayerAction::execute()
 void QgsIdentifyResultsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#identify" ) );
+}
+
+void QgsIdentifyResultsDialog::setSelectionMode()
+{
+  QObject *obj = sender();
+  QgsMapToolSelectionHandler::SelectionMode oldMode = mSelectionMode;
+  if ( obj == mActionSelectFeatures )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectFeatures );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
+  }
+  else if ( obj == mActionSelectPolygon )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectPolygon );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectPolygon;
+  }
+  else if ( obj == mActionSelectFreehand )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectFreehand );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectFreehand;
+  }
+  else if ( obj == mActionSelectRadius )
+  {
+    mSelectModeButton->setDefaultAction( mActionSelectRadius );
+    mSelectionMode = QgsMapToolSelectionHandler::SelectRadius;
+  }
+
+  if ( oldMode != mSelectionMode )
+    emit selectionModeChanged();
+}
+
+QgsMapToolSelectionHandler::SelectionMode QgsIdentifyResultsDialog::selectionMode() const
+{
+  return mSelectionMode;
 }
 
 void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionContextScope &scope )

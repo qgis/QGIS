@@ -65,8 +65,16 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
   public:
     explicit QgsOgrConnPoolGroup( const QString &name )
       : QgsConnectionPoolGroup<QgsOgrConn*>( name )
-      , mRefCount( 0 )
-    { initTimer( this ); }
+    {
+      initTimer( this );
+    }
+
+    //! QgsOgrConnPoolGroup cannot be copied
+    QgsOgrConnPoolGroup( const QgsOgrConnPoolGroup &other ) = delete;
+
+    //! QgsOgrConnPoolGroup cannot be copied
+    QgsOgrConnPoolGroup &operator=( const QgsOgrConnPoolGroup &other ) = delete;
+
     void ref() { ++mRefCount; }
     bool unref()
     {
@@ -79,11 +87,8 @@ class QgsOgrConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsOgr
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }
 
-  protected:
-    Q_DISABLE_COPY( QgsOgrConnPoolGroup )
-
   private:
-    int mRefCount;
+    int mRefCount = 0;
 
 };
 
@@ -109,6 +114,12 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     //          in double-free of the instance.
     //
     static void cleanupInstance();
+
+    //! QgsOgrConnPool cannot be copied
+    QgsOgrConnPool( const QgsOgrConnPool &other ) = delete;
+
+    //! QgsOgrConnPool cannot be copied
+    QgsOgrConnPool &operator=( const QgsOgrConnPool &other ) = delete;
 
     /**
      * \brief Increases the reference count on the connection pool for the specified connection.
@@ -150,9 +161,6 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
       }
       mMutex.unlock();
     }
-
-  protected:
-    Q_DISABLE_COPY( QgsOgrConnPool )
 
   private:
     QgsOgrConnPool();

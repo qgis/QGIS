@@ -14,8 +14,10 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFields, QgsVectorLayer
-from qgis.core import QgsFieldModel
+from qgis.core import (QgsField,
+                       QgsFields,
+                       QgsVectorLayer,
+                       QgsFieldModel)
 from qgis.PyQt.QtCore import QVariant, Qt
 
 from qgis.testing import start_app, unittest
@@ -244,6 +246,16 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
         self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+
+    def testFieldTooltip(self):
+        f = QgsField('my_string', QVariant.String, 'string')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_string</b><p>string</p>')
+        f.setAlias('my alias')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string</p>')
+        f.setLength(20)
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string (20)</p>')
+        f = QgsField('my_real', QVariant.Double, 'real', 8, 3)
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_real</b><p>real (8, 3)</p>')
 
 
 if __name__ == '__main__':

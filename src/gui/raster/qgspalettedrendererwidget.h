@@ -49,41 +49,7 @@ class QgsPalettedRendererClassGatherer: public QThread
       , mWasCanceled( false )
     {}
 
-    void run() override
-    {
-      mWasCanceled = false;
-
-      // allow responsive cancelation
-      mFeedback = new QgsRasterBlockFeedback();
-      connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
-
-      QgsPalettedRasterRenderer::ClassData newClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
-
-      // combine existing classes with new classes
-      QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
-      for ( ; classIt != newClasses.end(); ++classIt )
-      {
-        // check if existing classes contains this same class
-        Q_FOREACH ( const QgsPalettedRasterRenderer::Class &existingClass, mClasses )
-        {
-          if ( existingClass.value == classIt->value )
-          {
-            classIt->color = existingClass.color;
-            classIt->label = existingClass.label;
-            break;
-          }
-        }
-      }
-      mClasses = newClasses;
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit collectedClasses();
-    }
+    void run() override;
 
     //! Informs the gatherer to immediately stop collecting values
     void stop()

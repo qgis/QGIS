@@ -134,9 +134,9 @@ WId Session::windowId() const
 	// On Qt5, requesting window IDs breaks QQuickWidget and the likes,
 	// for example, see the following bug reports:
 	//
-	// https://bugreports.qt-project.org/browse/QTBUG-41779
-	// https://bugreports.qt-project.org/browse/QTBUG-40765
-	// https://bugreports.qt-project.org/browse/QTBUG-41942
+	// https://bugreports.qt.io/browse/QTBUG-41779
+	// https://bugreports.qt.io/browse/QTBUG-40765
+	// https://bugreports.qt.io/browse/QTBUG-41942
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
   return 0;
@@ -288,7 +288,7 @@ void Session::run()
      * Thats bad for BSD as its /usr/local/bin/bash there - its also bad for arch as its /usr/bin/bash there too!
      * So i added a check to see if /bin/bash exists - if no then we use $SHELL - if that does not exist either, we fall back to /bin/sh
      * As far as i know /bin/sh exists on every unix system.. You could also just put some ifdef __FREEBSD__ here but i think these 2 filechecks are worth
-     * their computing time on any system - especially with the problem on arch linux beeing there too.
+     * their computing time on any system - especially with the problem on arch linux being there too.
      */
     QString exec = QFile::encodeName(_program);
     // if 'exec' is not specified, fall back to default shell.  if that

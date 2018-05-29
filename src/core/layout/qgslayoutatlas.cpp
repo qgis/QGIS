@@ -220,6 +220,8 @@ int QgsLayoutAtlas::updateFeatures()
   // select all features with all attributes
   QgsFeatureRequest req;
 
+  req.setExpressionContext( expressionContext );
+
   mFilterParserError.clear();
   if ( mFilterFeatures && !mFilterExpression.isEmpty() )
   {
@@ -489,7 +491,7 @@ bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )
     QVariant filenameRes = mFilenameExpression.evaluate( &context );
     if ( mFilenameExpression.hasEvalError() )
     {
-      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Composer" ) );
+      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Layout" ) );
       return false;
     }
 

@@ -19,6 +19,7 @@
 #define QGSFILTERLINEEDIT_H
 
 #include <QLineEdit>
+#include <QIcon>
 #include "qgis.h"
 #include "qgis_gui.h"
 
@@ -64,7 +65,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
       ClearToNull = 0, //!< Reset value to null
       ClearToDefault, //!< Reset value to default value (see defaultValue() )
     };
-    Q_ENUM( ClearMode );
+    Q_ENUM( ClearMode )
 
     /**
      * Constructor for QgsFilterLineEdit.
@@ -133,7 +134,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * when no text is entered
      * \since QGIS 3.0
      */
-    bool showSearchIcon() const { return mSearchIconVisible; }
+    bool showSearchIcon() const { return static_cast< bool >( mSearchAction ); }
 
     /**
      * Sets the default value for the widget. The default value is a value
@@ -213,6 +214,15 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void setSelectOnFocus( bool selectOnFocus );
 
+
+    /**
+     * Reimplemented to enable/disable the clear action
+     * depending on read-only status
+     *
+     * \since QGIS 3.0.1
+     */
+    bool event( QEvent *event ) override;
+
   public slots:
 
     /**
@@ -262,12 +272,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void updateClearIcon();
 
   private:
-    QAction *mClearAction;
-    QAction *mSearchAction;
+    QIcon mClearIcon;
+    QAction *mClearAction = nullptr;
+    QAction *mSearchAction = nullptr;
     QAction *mBusySpinnerAction = nullptr;
 
     bool mClearButtonVisible = true;
-    bool mSearchIconVisible = false;
     bool mShowSpinner = false;
 
     ClearMode mClearMode = ClearToNull;

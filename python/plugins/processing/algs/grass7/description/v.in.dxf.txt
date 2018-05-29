@@ -1,7 +1,7 @@
 v.in.dxf
 Converts files in DXF format to GRASS vector map format.
 Vector (v.*)
-QgsProcessingParameterFile|input|Name of input DXF file|False|dxf|None|False
+QgsProcessingParameterFile|input|Name of input DXF file|QgsProcessingParameterFile.File|dxf|None|False
 QgsProcessingParameterString|layers|List of layers to import|None|False|True
 QgsProcessingParameterBoolean|-e|Ignore the map extent of DXF file|True
 QgsProcessingParameterBoolean|-t|Do not create attribute tables|False

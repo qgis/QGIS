@@ -91,7 +91,7 @@ class SERVER_EXPORT QgsServerRequest
     QgsServerRequest::Method method() const;
 
     /**
-     * Return a map of query parameters with keys converted
+     * Returns a map of query parameters with keys converted
      * to uppercase
      */
     QgsServerRequest::Parameters parameters() const;
@@ -102,7 +102,7 @@ class SERVER_EXPORT QgsServerRequest
     void setParameter( const QString &key, const QString &value );
 
     /**
-     * Get a parameter value
+     * Gets a parameter value
      */
     QString parameter( const QString &key ) const;
 
@@ -112,9 +112,9 @@ class SERVER_EXPORT QgsServerRequest
     void removeParameter( const QString &key );
 
     /**
-     * Return the header value
+     * Returns the header value
      * \param name of the header
-     * @return the header value or an empty string
+     * \return the header value or an empty string
      */
     QString header( const QString &name ) const;
 
@@ -126,8 +126,8 @@ class SERVER_EXPORT QgsServerRequest
     void setHeader( const QString &name, const QString &value );
 
     /**
-     * Return the header map
-     * @return the headers map
+     * Returns the header map
+     * \return the headers map
      */
     QMap<QString, QString> headers() const;
 
@@ -138,7 +138,7 @@ class SERVER_EXPORT QgsServerRequest
     void removeHeader( const QString &name );
 
     /**
-     * Return post/put data
+     * Returns post/put data
      * Check for QByteArray::isNull() to check if data
      * is available.
      */

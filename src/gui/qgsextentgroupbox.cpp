@@ -17,7 +17,6 @@
 
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
-#include "qgsrasterblock.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
 #include "qgsexception.h"
@@ -25,6 +24,7 @@
 
 #include <QMenu>
 #include <QAction>
+#include <QDoubleValidator>
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -78,6 +78,7 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
 {
   if ( mOutputCrs != outputCrs )
   {
+    bool prevExtentEnabled = isChecked();
     switch ( mExtentState )
     {
       case CurrentExtent:
@@ -116,6 +117,8 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
         break;
     }
 
+    if ( !prevExtentEnabled )
+      setChecked( false );
   }
 
 }
@@ -141,10 +144,28 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
     }
   }
 
-  mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
-  mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
-  mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
-  mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
+  int decimals = 4;
+  switch ( mOutputCrs.mapUnits() )
+  {
+    case QgsUnitTypes::DistanceDegrees:
+    case QgsUnitTypes::DistanceUnknownUnit:
+      decimals = 9;
+      break;
+    case QgsUnitTypes::DistanceMeters:
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+      decimals = 4;
+      break;
+  }
+  mXMinLineEdit->setText( QString::number( extent.xMinimum(), 'f', decimals ) );
+  mXMaxLineEdit->setText( QString::number( extent.xMaximum(), 'f', decimals ) );
+  mYMinLineEdit->setText( QString::number( extent.yMinimum(), 'f', decimals ) );
+  mYMaxLineEdit->setText( QString::number( extent.yMaximum(), 'f', decimals ) );
 
   mExtentState = state;
 

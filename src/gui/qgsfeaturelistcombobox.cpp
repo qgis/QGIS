@@ -46,6 +46,7 @@ QgsFeatureListComboBox::QgsFeatureListComboBox( QWidget *parent )
   connect( mCompleter, static_cast<void( QCompleter::* )( const QModelIndex & )>( &QCompleter::activated ), this, &QgsFeatureListComboBox::onActivated );
   connect( mModel, &QgsFeatureFilterModel::beginUpdate, this, &QgsFeatureListComboBox::storeLineEditState );
   connect( mModel, &QgsFeatureFilterModel::endUpdate, this, &QgsFeatureListComboBox::restoreLineEditState );
+  connect( mModel, &QgsFeatureFilterModel::endUpdate, this, &QgsFeatureListComboBox::modelUpdated );
   connect( mModel, &QgsFeatureFilterModel::dataChanged, this, &QgsFeatureListComboBox::onDataChanged );
 
   connect( this, static_cast<void( QgsFeatureListComboBox::* )( int )>( &QgsFeatureListComboBox::currentIndexChanged ), this, &QgsFeatureListComboBox::onCurrentIndexChanged );
@@ -134,6 +135,18 @@ void QgsFeatureListComboBox::restoreLineEditState()
 {
   if ( mIsCurrentlyEdited )
     mLineEditState.restore( mLineEdit );
+}
+
+int QgsFeatureListComboBox::nullIndex() const
+{
+  int index = -1;
+
+  if ( allowNull() )
+  {
+    index = findText( tr( "NULL" ) );
+  }
+
+  return index;
 }
 
 void QgsFeatureListComboBox::onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles )

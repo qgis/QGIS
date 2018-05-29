@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgswelcomepageitemsmodel.h"
+
+#include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectstorageregistry.h"
 
 #include <QApplication>
 #include <QAbstractTextDocumentLayout>
@@ -201,14 +204,22 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) co
 
 Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  if ( !index.isValid() || !rowCount( index.parent() ) )
+    return Qt::NoItemFlags;
+
+  Qt::ItemFlags flags = QAbstractListModel::flags( index );
 
   const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
   // This check can be slow for network based projects, so only run it the first time
   if ( !projectData.checkedExists )
   {
-    projectData.exists = QFile::exists( ( projectData.path ) );
+    if ( QgsApplication::projectStorageRegistry()->projectStorageFromUri( projectData.path ) )
+      // we could check whether a project exists in a custom project storage by checking its metadata,
+      // but that may be slow (e.g. doing some network queries) so for now we always assume such projects exist
+      projectData.exists = true;
+    else
+      projectData.exists = QFile::exists( ( projectData.path ) );
     projectData.checkedExists = true;
   }
 
@@ -230,7 +241,9 @@ void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
 
 void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
 {
+  beginRemoveRows( index, index.row(), index.row() );
   mRecentProjects.removeAt( index.row() );
+  endRemoveRows();
 }
 
 void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )

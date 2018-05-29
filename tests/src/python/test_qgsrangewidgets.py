@@ -45,6 +45,7 @@ class TestQgsRangeWidget(unittest.TestCase):
         reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('Range', self.layer, 1, None)
         config = configWdg.config()
+        config["Min"] = 0
 
         # if null shall be allowed
         if allownull:
@@ -84,10 +85,13 @@ class TestQgsRangeWidget(unittest.TestCase):
         rangewidget = self.__createRangeWidget(True)
 
         rangewidget.setValue(NULL)
-        assert rangewidget.value() == NULL
+        self.assertEqual(rangewidget.value(), NULL)
 
         rangewidget.setValue(None)
-        assert rangewidget.value() == NULL
+        self.assertEqual(rangewidget.value(), NULL)
+
+        rangewidget.setValue(0)
+        self.assertEqual(rangewidget.value(), 0)
 
 
 if __name__ == '__main__':

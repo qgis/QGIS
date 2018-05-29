@@ -480,7 +480,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
 {
   if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
-    if ( layer->labeling() )
+    if ( layer->labelsEnabled() )
     {
       mLabelProvider = layer->labeling()->provider( layer );
       if ( mLabelProvider )
@@ -549,10 +549,16 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QStrin
 QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
 ( const QgsRenderContext &context )
   : mContext( context )
+  , mTimer( new QTimer( this ) )
 {
-}
+  connect( mTimer, &QTimer::timeout, this, [ = ]
+  {
+    if ( mContext.renderingStopped() )
+    {
+      mTimer->stop();
+      cancel();
+    }
+  } );
+  mTimer->start( 50 );
 
-bool QgsVectorLayerRendererInterruptionChecker::mustStop() const
-{
-  return mContext.renderingStopped();
 }

@@ -56,7 +56,7 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
 
     def testSimpleLineWithOffset(self):
         """ test that rendering a simple line symbol with offset"""
-        layer = QgsSimpleLineSymbolLayer()
+        layer = QgsSimpleLineSymbolLayer(QColor(0, 0, 0))
         layer.setOffset(1)
 
         symbol = QgsLineSymbol()

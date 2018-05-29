@@ -361,6 +361,7 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
 
     case Qt::DisplayRole:
     case Qt::EditRole:
+    case Qt::ToolTipRole:
     {
       if ( isEmpty )
       {
@@ -373,6 +374,10 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
       else if ( role == Qt::EditRole )
       {
         return mFields.at( index.row() - fieldOffset ).name();
+      }
+      else if ( role == Qt::ToolTipRole )
+      {
+        return fieldToolTip( mFields.at( index.row() - fieldOffset ) );
       }
       else if ( mLayer )
       {
@@ -425,4 +430,35 @@ QVariant QgsFieldModel::data( const QModelIndex &index, int role ) const
     default:
       return QVariant();
   }
+}
+
+QString QgsFieldModel::fieldToolTip( const QgsField &field )
+{
+  QString toolTip;
+  if ( !field.alias().isEmpty() )
+  {
+    toolTip = QStringLiteral( "<b>%1</b> (%2)" ).arg( field.alias(), field.name() );
+  }
+  else
+  {
+    toolTip = QStringLiteral( "<b>%1</b>" ).arg( field.name() );
+  }
+  QString typeString;
+  if ( field.length() > 0 )
+  {
+    if ( field.precision() > 0 )
+    {
+      typeString = QStringLiteral( "%1 (%2, %3)" ).arg( field.typeName() ).arg( field.length() ).arg( field.precision() );
+    }
+    else
+    {
+      typeString = QStringLiteral( "%1 (%2)" ).arg( field.typeName() ).arg( field.length() );
+    }
+  }
+  else
+  {
+    typeString = field.typeName();
+  }
+  toolTip += QStringLiteral( "<p>%1</p>" ).arg( typeString );
+  return toolTip;
 }

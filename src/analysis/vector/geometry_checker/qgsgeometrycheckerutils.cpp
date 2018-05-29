@@ -99,7 +99,7 @@ namespace QgsGeometryCheckerUtils
       }
       if ( mParent->mGeometryTypes.contains( mParent->mFeaturePools[*mLayerIt]->getLayer()->geometryType() ) )
       {
-        mFeatureIt = mParent->mFeatureIds[*mLayerIt].begin();
+        mFeatureIt = mParent->mFeatureIds[*mLayerIt].constBegin();
         return true;
       }
       ++mLayerIt;

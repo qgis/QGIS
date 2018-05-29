@@ -53,11 +53,11 @@ Documentation goes here
 
 Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
 
-.. versionadded:: 3.0
-
 .. note::
 
    some other note
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -161,7 +161,7 @@ is not very interesting!
 
     void LongDocStringMethodWithBrief();
 %Docstring
- some brief
+some brief
 My long doc ``string``
 is not very interesting!
 Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
@@ -307,7 +307,7 @@ remove argument
     void FallBackToPublic();
 
   private:
-    void ShowThisPrivateOne() ;
+    void ShowThisPrivateOne();
 };
 
 class ClassWithPrivateInheritanceOnly /Abstract/

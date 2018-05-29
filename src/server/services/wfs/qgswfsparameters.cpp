@@ -384,8 +384,8 @@ namespace QgsWfs
     if ( !bbox.isEmpty() )
     {
       QStringList corners = bbox.split( ',' );
-
-      if ( corners.size() == 4 )
+      // We need at least 4 elements, an optional fifth could be the CRS in WFS 1.1.0 BBOX
+      if ( corners.size() >= 4 )
       {
         double d[4];
         bool ok;
@@ -402,6 +402,7 @@ namespace QgsWfs
         }
 
         extent = QgsRectangle( d[0], d[1], d[2], d[3] );
+
       }
       else
       {
@@ -460,7 +461,7 @@ namespace QgsWfs
 
   void QgsWfsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
   }
 
   void QgsWfsParameters::raiseError( ParameterName paramName ) const

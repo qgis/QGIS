@@ -60,23 +60,19 @@ QgsFileDownloaderAlgorithm *QgsFileDownloaderAlgorithm::createInstance() const
   return new QgsFileDownloaderAlgorithm();
 }
 
-QgsProcessingAlgorithm::Flags QgsFileDownloaderAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),
                 tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true ) );
-  addOutput( new QgsProcessingOutputFile( QStringLiteral( "OUTPUT" ), tr( "File destination" ) ) );
 }
 
 QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   mFeedback = feedback;
   QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  if ( url.isEmpty() )
+    throw QgsProcessingException( tr( "No URL specified" ) );
   QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
 
   QEventLoop loop;
@@ -93,7 +89,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   loop.exec();
 
   timer.stop();
-  bool exists = QFileInfo( outputFile ).exists();
+  bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
@@ -102,7 +98,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-void QgsFileDownloaderAlgorithm::reportErrors( QStringList errors )
+void QgsFileDownloaderAlgorithm::reportErrors( const QStringList &errors )
 {
   throw QgsProcessingException( errors.join( '\n' ) );
 }
@@ -115,7 +111,7 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
     if ( mTotal.isEmpty() )
       mFeedback->pushInfo( tr( "%1 downloaded." ).arg( mReceived ) );
     else
-      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived ).arg( mTotal ) );
+      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived, mTotal ) );
   }
 }
 

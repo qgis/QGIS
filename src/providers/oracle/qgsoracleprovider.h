@@ -78,19 +78,20 @@ class QgsOracleProvider : public QgsVectorDataProvider
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
+     * \param options generic data provider options
      */
-    explicit QgsOracleProvider( QString const &uri = "" );
+    explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
     //! Destructor
     virtual ~QgsOracleProvider();
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsCoordinateReferenceSystem crs() const override;
     QgsWkbTypes::Type wkbType() const override;
 
     /**
-     * Return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -98,12 +99,12 @@ class QgsOracleProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
-     * Get the number of fields in the layer
+     * Gets the number of fields in the layer
      */
     uint fieldCount() const;
 
     /**
-     * Return a string representation of the endian-ness for the layer
+     * Returns a string representation of the endian-ness for the layer
      */
     QString endianString();
 
@@ -113,8 +114,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle &newExtent );
 
-    virtual QgsRectangle extent() const override;
-    virtual void updateExtents() override;
+    QgsRectangle extent() const override;
+    void updateExtents() override;
 
     /**
      * Determine the fields making up the primary key
@@ -131,7 +132,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
@@ -145,20 +146,20 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool createSpatialIndex() override;
 
-    //! Get the table name associated with this provider instance
+    //! Gets the table name associated with this provider instance
     QString getTableName();
 
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QString name() const override;
     QString description() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
     static bool exec( QSqlQuery &qry, QString sql, const QVariantList &args );
 
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
     /**
      * Switch to oracle workspace
@@ -344,17 +345,17 @@ class QgsOracleSharedData
     QgsOracleSharedData();
 
     // FID lookups
-    QgsFeatureId lookupFid( const QVariant &v ); // lookup existing mapping or add a new one
+    QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
     QVariant removeFid( QgsFeatureId fid );
-    void insertFid( QgsFeatureId fid, const QVariant &k );
-    QVariant lookupKey( QgsFeatureId featureId );
+    void insertFid( QgsFeatureId fid, const QVariantList &k );
+    QVariantList lookupKey( QgsFeatureId featureId );
 
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
     QgsFeatureId mFidCounter;                    // next feature id if map is used
-    QMap<QVariant, QgsFeatureId> mKeyToFid;      // map key values to feature id
-    QMap<QgsFeatureId, QVariant> mFidToKey;      // map feature back to fea
+    QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
+    QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };
 
 

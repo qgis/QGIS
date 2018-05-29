@@ -29,13 +29,13 @@ QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks,
   : mChecks( checks )
   , mContext( context )
 {
-  for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
+  for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
   {
-    if ( featurePool->getLayer() )
+    if ( it.value()->getLayer() )
     {
-      featurePool->getLayer()->setReadOnly( true );
+      it.value()->getLayer()->setReadOnly( true );
       // Enter update mode to defer ogr dataset repacking until the checker has finished
-      featurePool->getLayer()->dataProvider()->enterUpdateMode();
+      it.value()->getLayer()->dataProvider()->enterUpdateMode();
     }
   }
 }
@@ -44,14 +44,14 @@ QgsGeometryChecker::~QgsGeometryChecker()
 {
   qDeleteAll( mCheckErrors );
   qDeleteAll( mChecks );
-  for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
+  for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
   {
-    if ( featurePool->getLayer() )
+    if ( it.value()->getLayer() )
     {
-      featurePool->getLayer()->dataProvider()->leaveUpdateMode();
-      featurePool->getLayer()->setReadOnly( false );
+      it.value()->getLayer()->dataProvider()->leaveUpdateMode();
+      it.value()->getLayer()->setReadOnly( false );
     }
-    delete featurePool;
+    delete it.value();
   }
   delete mContext;
 }
@@ -61,13 +61,13 @@ QFuture<void> QgsGeometryChecker::execute( int *totalSteps )
   if ( totalSteps )
   {
     *totalSteps = 0;
-    for ( QgsGeometryCheck *check : mChecks )
+    for ( QgsGeometryCheck *check : qgis::as_const( mChecks ) )
     {
-      for ( const QgsFeaturePool *featurePool : mContext->featurePools.values() )
+      for ( auto it = mContext->featurePools.constBegin(); it != mContext->featurePools.constEnd(); ++it )
       {
         if ( check->getCheckType() <= QgsGeometryCheck::FeatureCheck )
         {
-          *totalSteps += check->getCompatibility( featurePool->getLayer()->geometryType() ) ? featurePool->getFeatureIds().size() : 0;
+          *totalSteps += check->getCompatibility( it.value()->getLayer()->geometryType() ) ? it.value()->getFeatureIds().size() : 0;
         }
         else
         {
@@ -140,15 +140,15 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   // Determine what to recheck
   // - Collect all features which were changed, get affected area
   QMap<QString, QSet<QgsFeatureId>> recheckFeatures;
-  for ( const QString &layerId : changes.keys() )
+  for ( auto it = changes.constBegin(); it != changes.constEnd(); ++it )
   {
-    const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = changes[layerId];
-    QgsFeaturePool *featurePool = mContext->featurePools[layerId];
+    const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = it.value();
+    QgsFeaturePool *featurePool = mContext->featurePools[it.key()];
     QgsCoordinateTransform t( featurePool->getLayer()->crs(), mContext->mapCrs, QgsProject::instance() );
-    for ( QgsFeatureId id : layerChanges.keys() )
+    for ( auto layerChangeIt = layerChanges.constBegin(); layerChangeIt != layerChanges.constEnd(); ++layerChangeIt )
     {
       bool removed = false;
-      for ( const QgsGeometryCheck::Change &change : layerChanges.value( id ) )
+      for ( const QgsGeometryCheck::Change &change : layerChangeIt.value() )
       {
         if ( change.what == QgsGeometryCheck::ChangeFeature && change.type == QgsGeometryCheck::ChangeRemoved )
         {
@@ -159,16 +159,16 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
       if ( !removed )
       {
         QgsFeature f;
-        if ( featurePool->get( id, f ) )
+        if ( featurePool->get( layerChangeIt.key(), f ) )
         {
-          recheckFeatures[layerId].insert( id );
+          recheckFeatures[it.key()].insert( layerChangeIt.key() );
           recheckArea.combineExtentWith( t.transformBoundingBox( f.geometry().boundingBox() ) );
         }
       }
     }
   }
   // - Determine extent to recheck for gaps
-  for ( QgsGeometryCheckError *err : mCheckErrors )
+  for ( QgsGeometryCheckError *err : qgis::as_const( mCheckErrors ) )
   {
     if ( err->check()->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -189,7 +189,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
 
   // Recheck feature / changed area to detect new errors
   QList<QgsGeometryCheckError *> recheckErrors;
-  for ( const QgsGeometryCheck *check : mChecks )
+  for ( const QgsGeometryCheck *check : qgis::as_const( mChecks ) )
   {
     if ( check->getCheckType() == QgsGeometryCheck::LayerCheck )
     {
@@ -208,7 +208,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   }
 
   // Go through error list, update other errors of the checked feature
-  for ( QgsGeometryCheckError *err : mCheckErrors )
+  for ( QgsGeometryCheckError *err : qgis::as_const( mCheckErrors ) )
   {
     if ( err == error || err->status() == QgsGeometryCheckError::StatusObsolete )
     {
@@ -222,7 +222,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     // Check if this error now matches one found when rechecking the feature/area
     QgsGeometryCheckError *matchErr = nullptr;
     int nMatch = 0;
-    for ( QgsGeometryCheckError *recheckErr : recheckErrors )
+    for ( QgsGeometryCheckError *recheckErr : qgis::as_const( recheckErrors ) )
     {
       if ( recheckErr->isEqual( err ) || recheckErr->closeMatch( err ) )
       {
@@ -258,7 +258,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   }
 
   // Add new errors
-  for ( QgsGeometryCheckError *recheckErr : recheckErrors )
+  for ( QgsGeometryCheckError *recheckErr : qgis::as_const( recheckErrors ) )
   {
     emit errorAdded( recheckErr );
     mCheckErrors.append( recheckErr );
@@ -285,7 +285,7 @@ void QgsGeometryChecker::runCheck( const QgsGeometryCheck *check )
   mCheckErrors.append( errors );
   mMessages.append( messages );
   mErrorListMutex.unlock();
-  for ( QgsGeometryCheckError *error : errors )
+  for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
   {
     emit errorAdded( error );
   }

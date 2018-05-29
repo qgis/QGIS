@@ -169,7 +169,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   else
   {
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
-    mFilename->setDialogTitle( tr( "Select output file" ) );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
@@ -197,7 +197,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
         if ( files.isEmpty() )
           break;
 
-        if ( QMessageBox::warning( this, tr( "Warning" ),
+        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ),
                                    tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
                                    QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
           break;
@@ -717,7 +717,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
   {
     mTilesGroupBox->hide();
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
-    mFilename->setDialogTitle( tr( "Select output file" ) );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
 }
 

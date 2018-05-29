@@ -17,6 +17,7 @@
 #define QGSVECTOR_H
 
 #include "qgis_core.h"
+#include <QtGlobal>
 
 /**
  * \ingroup core
@@ -89,8 +90,19 @@ class CORE_EXPORT QgsVector
 
     /**
      * Returns the length of the vector.
+     * \see lengthSquared()
      */
     double length() const;
+
+    /**
+     * Returns the length of the vector.
+     * \see length()
+     * \since QGIS 3.2
+     */
+    double lengthSquared() const
+    {
+      return mX * mX + mY * mY;
+    }
 
     /**
      * Returns the vector's x-component.
@@ -120,6 +132,14 @@ class CORE_EXPORT QgsVector
     double angle( QgsVector v ) const;
 
     /**
+     * Returns the 2D cross product of this vector and another vector \a v. (This is sometimes
+     * referred to as a "perpendicular dot product", and equals x1 * y1 - y1 * x2).
+     *
+     * \since QGIS 3.2
+     */
+    double crossProduct( QgsVector v ) const;
+
+    /**
      * Rotates the vector by a specified angle.
      * \param rot angle in radians
      */
@@ -141,5 +161,7 @@ class CORE_EXPORT QgsVector
     double mX = 0.0, mY = 0.0;
 
 };
+
+Q_DECLARE_TYPEINFO( QgsVector, Q_MOVABLE_TYPE );
 
 #endif // QGSVECTOR_H

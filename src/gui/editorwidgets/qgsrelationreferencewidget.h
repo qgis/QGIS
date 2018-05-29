@@ -105,9 +105,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     //! If the widget will order the combobox entries by value
     bool orderByValue() { return mOrderByValue; }
-    //! Set if the widget will order the combobox entries by value
+    //! Sets if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
-    //! Set the fields for which filter comboboxes will be created
+    //! Sets the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList &filterFields );
 
     //! determines the open form button is visible in the widget
@@ -130,7 +130,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setChainFilters( bool chainFilters );
 
     /**
-     * return the related feature (from the referenced layer)
+     * Returns the related feature (from the referenced layer)
      * if no feature is related, it returns an invalid feature
      */
     QgsFeature referencedFeature() const;
@@ -184,10 +184,17 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void addEntry();
     void updateAddEntryButton();
 
+    /**
+     * Updates the FK index as soon as the underlying model is updated when
+     * the chainFilter option is activated.
+     */
+    void updateIndex();
+
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature &feature );
     void disableChainedComboBoxes( const QComboBox *cb );
+    void emitForeignKeyChanged( const QVariant &foreignKey );
 
     // initialized
     QgsAttributeEditorContext mEditorContext;

@@ -279,9 +279,9 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader *colorRampS
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
-  QList<double>::const_iterator value_it = entryValues.begin();
-  QVector<QColor>::const_iterator color_it = entryColors.begin();
-  for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
+  QList<double>::const_iterator value_it = entryValues.constBegin();
+  QVector<QColor>::const_iterator color_it = entryColors.constBegin();
+  for ( ; value_it != entryValues.constEnd(); ++value_it, ++color_it )
   {
     colorRampItems.append( QgsColorRampShader::ColorRampItem( *value_it, *color_it ) );
   }

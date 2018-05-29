@@ -101,7 +101,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../images/images.qrc">
-            <normaloff>:/images/themes/default/grass_mapset.png</normaloff>:/images/themes/default/grass_mapset.png</iconset>
+            <normaloff>:/images/themes/default/grass_mapset.svg</normaloff>:/images/themes/default/grass_mapset.svg</iconset>
           </property>
          </item>
          <item>

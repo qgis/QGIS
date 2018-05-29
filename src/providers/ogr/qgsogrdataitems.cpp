@@ -53,7 +53,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
-  if ( mPath.toLower().endsWith( QLatin1String( ".shp" ) ) )
+  if ( mPath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
   {
     if ( OGRGetDriverCount() == 0 )
     {
@@ -139,6 +139,21 @@ QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometr
   {
     return QgsLayerItem::LayerType::Raster;
   }
+
+  // fallback - try parsing as a WKT type string
+  switch ( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( geometryType ) ) )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return QgsLayerItem::LayerType::Point;
+    case QgsWkbTypes::LineGeometry:
+      return QgsLayerItem::LayerType::Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return QgsLayerItem::LayerType::Polygon;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+
   return QgsLayerItem::LayerType::TableLayer;
 }
 
@@ -238,7 +253,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
     for ( const QString &uri : layers )
     {
-      QStringList pieces = uri.split( QgsDataProvider::SUBLAYER_SEPARATOR );
+      // Split on ':' since this is what comes out from the provider
+      QStringList pieces = uri.split( ':' );
       QString name = pieces.value( pieces.length() - 1 );
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
       children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );
@@ -295,7 +311,7 @@ QList<QAction *> QgsOgrLayerItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
   // Messages are different for files and tables
-  QString message = mIsSubLayer ? QObject::tr( "Delete Layer '%1'..." ).arg( mName ) : QObject::tr( "Delete File '%1'..." ).arg( mUri );
+  QString message = mIsSubLayer ? QObject::tr( "Delete Layer '%1'…" ).arg( mName ) : QObject::tr( "Delete File '%1'…" ).arg( mUri );
   QAction *actionDeleteLayer = new QAction( message, parent );
   connect( actionDeleteLayer, &QAction::triggered, this, &QgsOgrLayerItem::deleteLayer );
   lst.append( actionDeleteLayer );

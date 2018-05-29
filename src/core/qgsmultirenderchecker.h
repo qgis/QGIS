@@ -119,14 +119,11 @@ class CORE_EXPORT QgsMultiRenderChecker
 
     /**
      * Returns a report for this test
-     *
-     * \returns A report
      */
     QString report() const { return mReport; }
 
     /**
-     * \brief controlImagePath
-     * \returns
+     * Returns the path to the control images.
      */
     QString controlImagePath() const;
 
@@ -152,34 +149,6 @@ SIP_FEATURE( TESTS )
 SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
-
-#ifndef SIP_RUN
-
-/**
- * \ingroup core
- * \class QgsCompositionChecker
- * Renders a composition to an image and compares with an expected output
- */
-class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
-{
-  public:
-    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
-
-    void setSize( QSize size ) { mSize = size; }
-
-    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
-
-  private:
-    QgsCompositionChecker(); //forbidden
-
-    QString mTestName;
-    QgsComposition *mComposition = nullptr;
-    QSize mSize;
-    int mDotsPerMeter;
-};
-
-
-#endif
 
 /**
  * \ingroup core

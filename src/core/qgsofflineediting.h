@@ -60,7 +60,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false );
 
-    //! Return true if current project is offline
+    //! Returns true if current project is offline
     bool isOfflineProject() const;
 
     //! Synchronize to remote layers

@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -73,24 +74,30 @@ class AssignProjection(GdalAlgorithm):
     def groupId(self):
         return 'rasterprojections'
 
+    def commandName(self):
+        return 'gdal_edit'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         fileName = inLayer.source()
 
-        crs = self.parameterAsCrs(parameters, self.CRS, context).authid()
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = []
         arguments.append('-a_srs')
-        arguments.append(crs)
+        arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append(fileName)
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_edit.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_edit.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         self.setOutputValue(self.OUTPUT, fileName)
         return commands

@@ -16,6 +16,7 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (QgsVectorLayer,
+                       QgsField,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsGeometry,
@@ -794,6 +795,26 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
 
         QgsProject.instance().removeMapLayer(l1.id())
 
+    def test_lazy(self):
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "françéà", "ogr", QgsVectorLayer.LayerOptions(False))
+        self.assertEqual(l1.isValid(), True)
+        QgsProject.instance().addMapLayer(l1)
+
+        df = QgsVirtualLayerDefinition()
+        df.setQuery('select * from "françéà"')
+        df.setLazy(True)
+
+        vl = QgsVectorLayer(df.toString(), "testq", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 0)
+
+        vl.reload()
+        ids = [f.id() for f in vl.getFeatures()]
+        self.assertEqual(len(ids), 4)
+
+        QgsProject.instance().removeMapLayer(l1.id())
+
     def test_joined_layers_conversion(self):
         v1 = QgsVectorLayer("Point?field=id:integer&field=b_id:integer&field=c_id:integer&field=name:string", "A", "memory")
         self.assertEqual(v1.isValid(), True)
@@ -846,6 +867,62 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
                                       'LEFT JOIN {} AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
 
         QgsProject.instance().removeMapLayers([v1.id(), v2.id(), v3.id()])
+
+    def testFieldsWithSpecialCharacters(self):
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=123:int", "mem_with_nontext_fieldnames", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsProject.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        self.assertTrue(ml.addAttribute(QgsField('abc:123', QVariant.String)))
+        self.assertTrue(ml.addAttribute(QgsField('map', QVariant.String)))  # matches QGIS expression function name
+        f1 = QgsFeature(ml.fields())
+        f1.setGeometry(QgsGeometry.fromWkt('POINT(0 0)'))
+        f1.setAttributes([1, 'a', 'b'])
+        f2 = QgsFeature(ml.fields())
+        f2.setGeometry(QgsGeometry.fromWkt('POINT(1 1)'))
+        f2.setAttributes([2, 'c', 'd'])
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        vl = QgsVectorLayer("?query=select * from mem_with_nontext_fieldnames", "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        self.assertEqual(vl.fields().at(0).name(), '123')
+        self.assertEqual(vl.fields().at(1).name(), 'abc:123')
+
+        self.assertEqual(vl.featureCount(), 2)
+
+        features = [f for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('"abc:123"=\'c\''))]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [2, 'c', 'd'])
+
+        features = [f for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('"map"=\'b\''))]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [1, 'a', 'b'])
+
+        vl2 = QgsVectorLayer("?query=select * from mem_with_nontext_fieldnames where \"abc:123\"='c'", "vl", "virtual")
+        self.assertEqual(vl2.isValid(), True)
+        self.assertEqual(vl2.fields().at(0).name(), '123')
+        self.assertEqual(vl2.fields().at(1).name(), 'abc:123')
+
+        self.assertEqual(vl2.featureCount(), 1)
+
+        features = [f for f in vl2.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [2, 'c', 'd'])
+
+        vl3 = QgsVectorLayer("?query=select * from mem_with_nontext_fieldnames where \"map\"='b'", "vl", "virtual")
+        self.assertEqual(vl3.isValid(), True)
+        self.assertEqual(vl3.fields().at(0).name(), '123')
+        self.assertEqual(vl3.fields().at(1).name(), 'abc:123')
+
+        self.assertEqual(vl3.featureCount(), 1)
+
+        features = [f for f in vl3.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertEqual(features[0].attributes(), [1, 'a', 'b'])
+
+        QgsProject.instance().removeMapLayer(ml)
 
 
 if __name__ == '__main__':

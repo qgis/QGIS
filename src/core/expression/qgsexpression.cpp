@@ -26,7 +26,7 @@
 
 
 // from parser
-extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg );
+extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
@@ -99,7 +99,7 @@ bool QgsExpression::checkExpression( const QString &text, const QgsExpressionCon
 void QgsExpression::setExpression( const QString &expression )
 {
   detach();
-  d->mRootNode = ::parseExpression( expression, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expression, d->mParserErrorString, d->mParserErrors );
   d->mEvalErrorString = QString();
   d->mExp = expression;
 }
@@ -195,7 +195,7 @@ int QgsExpression::functionCount()
 QgsExpression::QgsExpression( const QString &expr )
   : d( new QgsExpressionPrivate )
 {
-  d->mRootNode = ::parseExpression( expr, d->mParserErrorString );
+  d->mRootNode = ::parseExpression( expr, d->mParserErrorString, d->mParserErrors );
   d->mExp = expr;
   Q_ASSERT( !d->mParserErrorString.isNull() || d->mRootNode );
 }
@@ -247,12 +247,17 @@ bool QgsExpression::isValid() const
 
 bool QgsExpression::hasParserError() const
 {
-  return !d->mParserErrorString.isNull();
+  return d->mParserErrors.count() > 0;
 }
 
 QString QgsExpression::parserErrorString() const
 {
   return d->mParserErrorString;
+}
+
+QList<QgsExpression::ParserError> QgsExpression::parserErrors() const
+{
+  return d->mParserErrors;
 }
 
 QSet<QString> QgsExpression::referencedColumns() const
@@ -269,6 +274,14 @@ QSet<QString> QgsExpression::referencedVariables() const
     return QSet<QString>();
 
   return d->mRootNode->referencedVariables();
+}
+
+QSet<QString> QgsExpression::referencedFunctions() const
+{
+  if ( !d->mRootNode )
+    return QSet<QString>();
+
+  return d->mRootNode->referencedFunctions();
 }
 
 QSet<int> QgsExpression::referencedAttributeIndexes( const QgsFields &fields ) const
@@ -338,7 +351,7 @@ bool QgsExpression::prepare( const QgsExpressionContext *context )
     //re-parse expression. Creation of QgsExpressionContexts may have added extra
     //known functions since this expression was created, so we have another try
     //at re-parsing it now that the context must have been created
-    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString );
+    d->mRootNode = ::parseExpression( d->mExp, d->mParserErrorString, d->mParserErrors );
   }
 
   if ( !d->mRootNode )
@@ -472,6 +485,28 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsEx
   return expr_action;
 }
 
+QSet<QString> QgsExpression::referencedVariables( const QString &text )
+{
+  QSet<QString> variables;
+  int index = 0;
+  while ( index < text.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( text, index );
+    if ( pos < 0 )
+      break;
+
+    index = pos + rx.matchedLength();
+    QString to_replace = rx.cap( 1 ).trimmed();
+
+    QgsExpression exp( to_replace );
+    variables.unite( exp.referencedVariables() );
+  }
+
+  return variables;
+}
+
 double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
 {
   bool ok;
@@ -548,6 +583,8 @@ QString QgsExpression::helpText( QString name )
     {
       helpContents += QStringLiteral( "<code><span class=\"functionname\">%1</span>" ).arg( name );
 
+      bool hasOptionalArgs = false;
+
       if ( f.mType == tr( "function" ) && ( f.mName[0] != '$' || !v.mArguments.isEmpty() || v.mVariableLenArguments ) )
       {
         helpContents += '(';
@@ -555,13 +592,24 @@ QString QgsExpression::helpText( QString name )
         QString delim;
         for ( const HelpArg &a : qgis::as_const( v.mArguments ) )
         {
-          helpContents += delim;
-          delim = QStringLiteral( ", " );
           if ( !a.mDescOnly )
           {
-            helpContents += QStringLiteral( "<span class=\"argument %1\">%2%3</span>" ).arg( a.mOptional ? QStringLiteral( "optional" ) : QStringLiteral( "" ), a.mArg,
-                            a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal );
+            if ( a.mOptional )
+            {
+              hasOptionalArgs = true;
+              helpContents += QStringLiteral( "[" );
+            }
+
+            helpContents += delim;
+            helpContents += QStringLiteral( "<span class=\"argument\">%2%3</span>" ).arg(
+                              a.mArg,
+                              a.mDefaultVal.isEmpty() ? QLatin1String( "" ) : '=' + a.mDefaultVal
+                            );
+
+            if ( a.mOptional )
+              helpContents += QStringLiteral( "]" );
           }
+          delim = QStringLiteral( "," );
         }
 
         if ( v.mVariableLenArguments )
@@ -573,6 +621,11 @@ QString QgsExpression::helpText( QString name )
       }
 
       helpContents += QLatin1String( "</code>" );
+
+      if ( hasOptionalArgs )
+      {
+        helpContents += QLatin1String( "<br/><br/>" ) + tr( "[ ] marks optional components" );
+      }
     }
 
     if ( !v.mArguments.isEmpty() )
@@ -637,8 +690,15 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "project_path" ), QCoreApplication::translate( "variable_help", "Full path (including file name) of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_folder" ), QCoreApplication::translate( "variable_help", "Folder for current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_filename" ), QCoreApplication::translate( "variable_help", "Filename of current project." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_basename" ), QCoreApplication::translate( "variable_help", "Base name of current project's filename (without path and extension)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_home" ), QCoreApplication::translate( "variable_help", "Home path of current project." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (e.g., 'EPSG:4326')." ) );
   sVariableHelpTexts.insert( QStringLiteral( "project_crs_definition" ), QCoreApplication::translate( "variable_help", "Coordinate reference system of project (full definition)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_author" ), QCoreApplication::translate( "variable_help", "Project author, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_abstract" ), QCoreApplication::translate( "variable_help", "Project abstract, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_creation_date" ), QCoreApplication::translate( "variable_help", "Project creation date, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_identifier" ), QCoreApplication::translate( "variable_help", "Project identifier, taken from project metadata." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "project_keywords" ), QCoreApplication::translate( "variable_help", "Project keywords, taken from project metadata." ) );
 
   //layer variables
   sVariableHelpTexts.insert( QStringLiteral( "layer_name" ), QCoreApplication::translate( "variable_help", "Name of current layer." ) );
@@ -664,16 +724,16 @@ void QgsExpression::initVariableHelp()
   sVariableHelpTexts.insert( QStringLiteral( "atlas_featureid" ), QCoreApplication::translate( "variable_help", "Current atlas feature ID." ) );
   sVariableHelpTexts.insert( QStringLiteral( "atlas_geometry" ), QCoreApplication::translate( "variable_help", "Current atlas feature geometry." ) );
 
-  //composer item variables
-  sVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Composer item user ID (not necessarily unique)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "Composer item unique ID." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of composer item (in mm)." ) );
-  sVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of composer item (in mm)." ) );
+  //layout item variables
+  sVariableHelpTexts.insert( QStringLiteral( "item_id" ), QCoreApplication::translate( "variable_help", "Layout item user ID (not necessarily unique)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_uuid" ), QCoreApplication::translate( "variable_help", "layout item unique ID." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_left" ), QCoreApplication::translate( "variable_help", "Left position of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_top" ), QCoreApplication::translate( "variable_help", "Top position of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_width" ), QCoreApplication::translate( "variable_help", "Width of layout item (in mm)." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "item_height" ), QCoreApplication::translate( "variable_help", "Height of layout item (in mm)." ) );
 
   //map settings item variables
-  sVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for composer map renders." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "map_id" ), QCoreApplication::translate( "variable_help", "ID of current map destination. This will be 'canvas' for canvas renders, and the item ID for layout map renders." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_rotation" ), QCoreApplication::translate( "variable_help", "Current rotation of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_scale" ), QCoreApplication::translate( "variable_help", "Current scale of map." ) );
   sVariableHelpTexts.insert( QStringLiteral( "map_extent" ), QCoreApplication::translate( "variable_help", "Geometry representing the current extent of the map." ) );
@@ -719,6 +779,10 @@ void QgsExpression::initVariableHelp()
 
   //provider notification
   sVariableHelpTexts.insert( QStringLiteral( "notification_message" ), QCoreApplication::translate( "notification_message", "Content of the notification message sent by the provider (available only for actions triggered by provider notifications)." ) );
+
+  //form context variable
+  sVariableHelpTexts.insert( QStringLiteral( "current_geometry" ), QCoreApplication::translate( "current_geometry", "Represents the geometry of the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
+  sVariableHelpTexts.insert( QStringLiteral( "current_feature" ), QCoreApplication::translate( "current_feature", "Represents the feature currently being edited in the form or the table row. Can be used in a form/row context to filter the related features." ) );
 }
 
 QString QgsExpression::variableHelpText( const QString &variableName )
@@ -827,7 +891,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     QString previewString = value.toString();
     if ( previewString.length() > MAX_PREVIEW + 3 )
     {
-      return QString( tr( "'%1...'" ) ).arg( previewString.left( MAX_PREVIEW ) );
+      return tr( "'%1…'" ).arg( previewString.left( MAX_PREVIEW ) );
     }
     else
     {
@@ -844,7 +908,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       mapStr.append( it.key() ).append( ": " ).append( formatPreviewString( it.value() ) );
       if ( mapStr.length() > MAX_PREVIEW + 3 )
       {
-        mapStr = QString( tr( "%1..." ) ).arg( mapStr.left( MAX_PREVIEW ) );
+        mapStr = QString( tr( "%1…" ) ).arg( mapStr.left( MAX_PREVIEW ) );
         break;
       }
     }
@@ -860,7 +924,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
       listStr.append( formatPreviewString( *it ) );
       if ( listStr.length() > MAX_PREVIEW + 3 )
       {
-        listStr = QString( tr( "%1..." ) ).arg( listStr.left( MAX_PREVIEW ) );
+        listStr = QString( tr( "%1…" ) ).arg( listStr.left( MAX_PREVIEW ) );
         break;
       }
     }
@@ -893,3 +957,14 @@ bool QgsExpression::isField() const
 {
   return d->mRootNode && d->mRootNode->nodeType() == QgsExpressionNode::ntColumnRef;
 }
+
+QList<const QgsExpressionNode *> QgsExpression::nodes() const
+{
+  if ( !d->mRootNode )
+    return QList<const QgsExpressionNode *>();
+
+  return d->mRootNode->nodes();
+}
+
+
+

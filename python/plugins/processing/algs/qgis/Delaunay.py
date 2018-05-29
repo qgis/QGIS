@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsFeature,
@@ -56,7 +57,10 @@ class Delaunay(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'delaunay.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDelaunay.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDelaunay.svg")
 
     def group(self):
         return self.tr('Vector geometry')
@@ -79,6 +83,8 @@ class Delaunay(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         fields = QgsFields()
         fields.append(QgsField('POINTA', QVariant.Double, '', 24, 15))
@@ -87,6 +93,8 @@ class Delaunay(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Polygon, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         pts = []
         ptDict = {}

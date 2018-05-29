@@ -101,36 +101,36 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const { return value < other.value; }
     };
 
-    //! \brief Get the custom colormap
+    //! Returns the custom colormap.
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const { return mColorRampItemList.toList(); }
 
-    //! \brief Get the color ramp type
+    //! Returns the color ramp type.
     Type colorRampType() const { return mColorRampType; }
 
-    //! \brief Get the color ramp type as a string
+    //! Returns the color ramp type as a string.
     QString colorRampTypeAsQString();
 
-    //! \brief Set custom colormap
+    //! Sets a custom colormap
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /**
-     * Get the source color ramp
-     * \since QGIS 3.0
+     * Gets the source color ramp
      * \see setSourceColorRamp()
+     * \since QGIS 3.0
      */
     QgsColorRamp *sourceColorRamp() const SIP_FACTORY;
 
     /**
      * Set the source color ramp. Ownership is transferred to the renderer.
-     * \since QGIS 3.0
      * \see sourceColorRamp()
+     * \since QGIS 3.0
      */
     void setSourceColorRamp( QgsColorRamp *colorramp SIP_TRANSFER );
 
-    //! \brief Set the color ramp type
+    //! Sets the color ramp type
     void setColorRampType( const QString &type );
 
     /**
@@ -159,7 +159,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
                 int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
 
-    //! \brief Get symbology items if provided by renderer
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
     //! Sets classification mode

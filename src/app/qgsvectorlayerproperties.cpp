@@ -140,7 +140,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-           << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+           << QgsExpressionContextUtils::atlasScope( nullptr )
            << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
            << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -190,8 +190,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     //for loading
     mLoadStyleMenu = new QMenu( this );
-    mLoadStyleMenu->addAction( tr( "Load from file…" ) );
-    mLoadStyleMenu->addAction( tr( "Database styles manager" ) );
+    mLoadStyleMenu->addAction( tr( "Load from File…" ) );
+    mLoadStyleMenu->addAction( tr( "Database Styles Manager…" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
@@ -206,7 +206,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       if ( providerName == QLatin1String( "GPKG" ) )
         providerName = QStringLiteral( "GeoPackage" );
     }
-    mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
+    mSaveAsMenu->addAction( tr( "Save in Database (%1)" ).arg( providerName ) );
   }
 
   connect( mSaveAsMenu, &QMenu::triggered,
@@ -302,6 +302,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDiagramFrame->setLayout( diagLayout );
 
   // Legend tab
+  mLegendWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLegendWidget->setLayer( mLayer );
   mLegendConfigEmbeddedWidget->setLayer( mLayer );
 
   // WMS Name as layer short name
@@ -560,7 +562,7 @@ void QgsVectorLayerProperties::syncToLayer()
   mVector3DWidget->setLayer( mLayer );
 #endif
 
-  mMetadataWidget->setMetadata( mLayer->metadata() );
+  mMetadataWidget->setMetadata( &mLayer->metadata() );
 
 } // syncToLayer()
 
@@ -572,6 +574,7 @@ void QgsVectorLayerProperties::apply()
   }
 
   // apply legend settings
+  mLegendWidget->applyToLayer();
   mLegendConfigEmbeddedWidget->applyToLayer();
 
   // save metadata
@@ -744,7 +747,7 @@ void QgsVectorLayerProperties::apply()
   }
   if ( ! mLayer->setDependencies( deps ) )
   {
-    QMessageBox::warning( nullptr, tr( "Dependency cycle" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored" ) );
+    QMessageBox::warning( nullptr, tr( "Save Dependency" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored." ) );
   }
 
 #ifdef HAVE_3D
@@ -882,7 +885,7 @@ void QgsVectorLayerProperties::loadDefaultStyle_clicked()
         if ( msg.compare( tr( "Loaded from Provider" ) ) )
         {
           QMessageBox::information( this, tr( "Default Style" ),
-                                    tr( "No default style was found for this layer" ) );
+                                    tr( "No default style was found for this layer." ) );
         }
         else
         {
@@ -953,7 +956,7 @@ void QgsVectorLayerProperties::loadStyle_clicked()
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer properties from style file" ), myLastUsedDir,
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Properties from Style File" ), myLastUsedDir,
                        tr( "QGIS Layer Style File" ) + " (*.qml);;" + tr( "SLD File" ) + " (*.sld)" );
   if ( myFileName.isNull() )
   {
@@ -1003,7 +1006,7 @@ void QgsVectorLayerProperties::loadMetadata()
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load layer metadata from metadata file" ), myLastUsedDir,
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Layer Metadata from Metadata File" ), myLastUsedDir,
                        tr( "QGIS Layer Metadata File" ) + " (*.qmd)" );
   if ( myFileName.isNull() )
   {
@@ -1017,7 +1020,7 @@ void QgsVectorLayerProperties::loadMetadata()
   //reset if the default style was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {
@@ -1037,7 +1040,7 @@ void QgsVectorLayerProperties::saveMetadataAs()
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
-  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer metadata as QMD" ),
+  QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Metadata as QMD" ),
                              myLastUsedDir, tr( "QMD File" ) + " (*.qmd)" );
   if ( myOutputFileName.isNull() ) //dialog canceled
   {
@@ -1064,7 +1067,7 @@ void QgsVectorLayerProperties::saveMetadataAs()
   else
   {
     //let the user know what went wrong
-    QMessageBox::information( this, tr( "Saved Metadata" ), myMessage );
+    QMessageBox::information( this, tr( "Save Metadata" ), myMessage );
   }
 
   QFileInfo myFI( myOutputFileName );
@@ -1092,7 +1095,7 @@ void QgsVectorLayerProperties::loadDefaultMetadata()
   //reset if the default metadata was loaded OK only
   if ( defaultLoadedFlag )
   {
-    mMetadataWidget->setMetadata( mLayer->metadata() );
+    mMetadataWidget->setMetadata( &mLayer->metadata() );
   }
   else
   {
@@ -1138,11 +1141,11 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
 
       if ( !msgError.isNull() )
       {
-        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, msgError, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, msgError, Qgis::Warning, QgisApp::instance()->messageTimeout() );
       }
       else
       {
-        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, tr( "Style saved" ), QgsMessageBar::INFO, QgisApp::instance()->messageTimeout() );
+        QgisApp::instance()->messageBar()->pushMessage( infoWindowTitle, tr( "Style saved" ), Qgis::Info, QgisApp::instance()->messageTimeout() );
       }
 
     }
@@ -1166,7 +1169,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
       extension = QgsMapLayer::extensionPropertyType( QgsMapLayer::Style );
     }
 
-    QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file" ),
+    QString myOutputFileName = QFileDialog::getSaveFileName( this, tr( "Save Layer Properties as Style File" ),
                                myLastUsedDir, format );
     if ( myOutputFileName.isNull() ) //dialog canceled
     {
@@ -1202,7 +1205,7 @@ void QgsVectorLayerProperties::saveStyleAs( StyleType styleType )
     else
     {
       //let the user know what went wrong
-      QMessageBox::information( this, tr( "Saved Style" ), myMessage );
+      QMessageBox::information( this, tr( "Save Style" ), myMessage );
     }
 
     QFileInfo myFI( myOutputFileName );
@@ -1272,7 +1275,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
   if ( !errorMsg.isNull() )
   {
-    QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
+    QMessageBox::warning( this, tr( "Load Styles from Database" ), errorMsg );
     return;
   }
 
@@ -1287,7 +1290,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     QString qmlStyle = mLayer->getStyleFromDatabase( selectedStyleId, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
+      QMessageBox::warning( this, tr( "Load Styles from Database" ), errorMsg );
       return;
     }
 
@@ -1300,7 +1303,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ),
+      QMessageBox::warning( this, tr( "Load Styles from Database" ),
                             tr( "The retrieved style is not a valid named style. Error message: %1" )
                             .arg( errorMsg ) );
     }

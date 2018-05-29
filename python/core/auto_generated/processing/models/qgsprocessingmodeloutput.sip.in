@@ -1,0 +1,136 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodeloutput.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsProcessingModelOutput : QgsProcessingModelComponent
+{
+%Docstring
+Represents a final output created by the model.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingmodeloutput.h"
+%End
+  public:
+
+    QgsProcessingModelOutput( const QString &name = QString(), const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingModelOutput with the specified ``name`` and ``description``.
+%End
+
+    QString name() const;
+%Docstring
+Returns the model output name.
+
+.. seealso:: :py:func:`setName`
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the model output ``name``.
+
+.. seealso:: :py:func:`name`
+%End
+
+    QVariant defaultValue() const;
+%Docstring
+Returns the default value for the model output parameter.
+
+.. seealso:: :py:func:`setDefaultValue`
+
+.. versionadded:: 3.2
+%End
+
+    void setDefaultValue( const QVariant &value );
+%Docstring
+Sets the default value for the model output.
+
+.. seealso:: :py:func:`defaultValue`
+
+.. versionadded:: 3.2
+%End
+
+    bool isMandatory() const;
+%Docstring
+Returns true if the output is mandatory. This may override the associated
+child algorithm's parameter optional status - e.g. allowing
+an optional output from an algorithm to be mandatory within a model.
+
+.. seealso:: :py:func:`setMandatory`
+
+.. versionadded:: 3.2
+%End
+
+    void setMandatory( bool mandatory );
+%Docstring
+Sets whether the output is ``mandatory``. This may override the associated
+child algorithm's parameter optional status - e.g. allowing
+an optional output from an algorithm to be mandatory within a model.
+
+.. seealso:: :py:func:`isMandatory`
+
+.. versionadded:: 3.2
+%End
+
+    QString childId() const;
+%Docstring
+Returns the child algorithm ID from which this output is generated.
+
+.. seealso:: :py:func:`setChildId`
+%End
+
+    void setChildId( const QString &id );
+%Docstring
+Sets the child algorithm ``id`` from which this output is generated.
+
+.. seealso:: :py:func:`childId`
+%End
+
+    QString childOutputName() const;
+%Docstring
+Returns the child algorithm output name from which this output is generated.
+
+.. seealso:: :py:func:`setOutputName`
+%End
+
+    void setChildOutputName( const QString &name );
+%Docstring
+Sets the child algorithm output ``name`` from which this output is generated.
+
+.. seealso:: :py:func:`outputName`
+%End
+
+    QVariant toVariant() const;
+%Docstring
+Saves this output to a QVariant.
+
+.. seealso:: :py:func:`loadVariant`
+%End
+
+    bool loadVariant( const QVariantMap &map );
+%Docstring
+Loads this output from a QVariantMap.
+
+.. seealso:: :py:func:`toVariant`
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/processing/models/qgsprocessingmodeloutput.h                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

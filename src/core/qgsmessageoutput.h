@@ -48,13 +48,13 @@ class CORE_EXPORT QgsMessageOutput
 
     virtual ~QgsMessageOutput() = default;
 
-    //! set message, it won't be displayed until
+    //! Sets message, it won't be displayed until
     virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 
     //! message to be appended to the current text
     virtual void appendMessage( const QString &message ) = 0;
 
-    //! set title for the messages
+    //! Sets title for the messages
     virtual void setTitle( const QString &title ) = 0;
 
     //! display the message to the user and deletes itself

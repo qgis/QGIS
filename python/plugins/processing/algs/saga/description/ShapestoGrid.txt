@@ -8,7 +8,7 @@ QgsProcessingParameterEnum|MULTIPLE|Method for Multiple Values|[0] first;[1] las
 QgsProcessingParameterEnum|LINE_TYPE|Method for Lines|[0] thin;[1] thick
 QgsProcessingParameterEnum|POLY_TYPE|Method for Lines|[0] node;[1] cell
 QgsProcessingParameterEnum|GRID_TYPE|Preferred Target Grid Type|[0] Integer (1 byte);[1] Integer (2 byte);[2] Integer (4 byte);[3] Floating Point (4 byte);[4] Floating Point (8 byte)|False|3
-Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterDestination|GRID|Rasterized

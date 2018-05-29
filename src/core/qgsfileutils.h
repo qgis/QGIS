@@ -31,7 +31,7 @@ class CORE_EXPORT QgsFileUtils
   public:
 
     /**
-     * Return the human size from bytes
+     * Returns the human size from bytes
      */
     static QString representFileSize( qint64 bytes );
 
@@ -75,7 +75,7 @@ class CORE_EXPORT QgsFileUtils
      * Converts a \a string to a safe filename, replacing characters which are not safe
      * for filenames with an '_' character.
      *
-     * This method should be called with file names only, not complete paths.
+     * \warning This method strips slashes from the filename, so it is safe to call with file names only, not complete paths.
      */
     static QString stringToSafeFilename( const QString &string );
 };

@@ -71,32 +71,32 @@ class SERVER_EXPORT QgsAccessControlFilter
       bool canDelete;
     };
 
-    //! Return the QgsServerInterface instance
+    //! Returns the QgsServerInterface instance
     const QgsServerInterface *serverInterface() const { return mServerInterface; }
 
     /**
-     * Return an additional expression filter
+     * Returns an additional expression filter
      * \param layer the layer to control
      * \returns the filter expression
      */
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return an additional subset string (typically SQL) filter
+     * Returns an additional subset string (typically SQL) filter
      * \param layer the layer to control
      * \returns the subset string
      */
     virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
 
     /**
-     * Return the layer permissions
+     * Returns the layer permissions
      * \param layer the layer to control
      * \returns the permission to use on the layer
      */
     virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
 
     /**
-     * Return the authorized layer attributes
+     * Returns the authorized layer attributes
      * \param layer the layer to control
      * \param attributes the current list of visible attribute
      * \returns the new list of visible attributes

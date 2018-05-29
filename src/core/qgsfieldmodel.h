@@ -128,6 +128,13 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
     int columnCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
 
+    /**
+     * Returns a HTML formatted tooltip string for a \a field, containing details
+     * like the field name, alias and type.
+     * \since QGIS 3.0
+     */
+    static QString fieldToolTip( const QgsField &field );
+
   public slots:
 
     /**

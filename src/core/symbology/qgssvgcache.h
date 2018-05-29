@@ -31,6 +31,8 @@
 #include <QElapsedTimer>
 #include <QPicture>
 #include <QImage>
+#include <QCache>
+#include <QSet>
 
 #include "qgis_core.h"
 
@@ -103,7 +105,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     //! Don't consider image, picture, last used timestamp for comparison
     bool operator==( const QgsSvgCacheEntry &other ) const;
-    //! Return memory usage in bytes
+    //! Returns memory usage in bytes
     int dataSize() const;
 
   private:
@@ -139,7 +141,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
     ~QgsSvgCache() override;
 
     /**
-     * Get SVG as QImage.
+     * Gets SVG as QImage.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -153,7 +155,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 
     /**
-     * Get SVG  as QPicture&.
+     * Gets SVG  as QPicture&.
      * \param path Absolute path to SVG file.
      * \param size size of cached image
      * \param fill color of fill
@@ -215,10 +217,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
                          bool &hasStrokeWidthParam, bool &hasDefaultStrokeWidth, double &defaultStrokeWidth,
                          bool &hasStrokeOpacityParam, bool &hasDefaultStrokeOpacity, double &defaultStrokeOpacity ) const SIP_PYNAME( containsParamsV3 );
 
-    //! Get image data
+    //! Gets image data
     QByteArray getImageData( const QString &path ) const;
 
-    //! Get SVG content
+    //! Gets SVG content
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 
@@ -226,8 +228,16 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString  &statusQString );
 
+    /**
+     * Emitted when the cache has finished retrieving an SVG file from a remote \a url.
+     * \since QGIS 3.2
+     */
+    void remoteSvgFetched( const QString &url );
+
   private slots:
     void downloadProgress( qint64, qint64 );
+
+    void onRemoteSvgFetched( const QString &url, bool success );
 
   private:
 
@@ -303,11 +313,18 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     QImage imageFromCachedPicture( const QgsSvgCacheEntry &entry ) const;
 
+    QByteArray fetchImageData( const QString &path, bool &ok ) const;
+
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
 
+    QByteArray mFetchingSvg;
+
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
-    QMutex mMutex;
+    mutable QMutex mMutex;
+
+    mutable QCache< QString, QByteArray > mRemoteContentCache;
+    mutable QSet< QString > mPendingRemoteUrls;
 
     friend class TestQgsSvgCache;
 };

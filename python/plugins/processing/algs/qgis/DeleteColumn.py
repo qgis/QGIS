@@ -26,7 +26,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessingParameterField,
-                       QgsProcessing)
+                       QgsProcessing,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -83,9 +84,12 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
             input_fields.remove(index)
         return input_fields
 
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
     def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         for index in self.field_indices:
             del attributes[index]
         feature.setAttributes(attributes)
-        return feature
+        return [feature]

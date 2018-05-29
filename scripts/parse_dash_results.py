@@ -159,7 +159,7 @@ class ResultHandler(QDialog):
 
         images = {}
         for img in measurement_img:
-            m = re.search('Rendered Image (.*?)\s', img.get('alt'))
+            m = re.search('Rendered Image (.*?)(\s|$)', img.get('alt'))
             test_name = m.group(1)
             rendered_image = img.get('src')
             images[test_name] = '{}/{}'.format(dash_url, rendered_image)

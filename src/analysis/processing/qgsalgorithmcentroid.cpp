@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcentroid.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
@@ -49,17 +50,6 @@ QString QgsCentroidAlgorithm::outputName() const
   return QObject::tr( "Centroids" );
 }
 
-QgsProcessingAlgorithm::Flags QgsCentroidAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
-void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
-{
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Centroids" ), QgsProcessing::TypeVectorPoint ) );
-}
-
 QString QgsCentroidAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new point layer, with points representing the centroid of the geometries in an input layer.\n\n"
@@ -71,18 +61,72 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
   return new QgsCentroidAlgorithm();
 }
 
-QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+void QgsCentroidAlgorithm::initParameters( const QVariantMap & )
 {
+  std::unique_ptr< QgsProcessingParameterBoolean> allParts = qgis::make_unique< QgsProcessingParameterBoolean >(
+        QStringLiteral( "ALL_PARTS" ),
+        QObject::tr( "Create point on surface for each part" ),
+        false );
+  allParts->setIsDynamic( true );
+  allParts->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "All parts" ), QObject::tr( "Create point on surface for each part" ), QgsPropertyDefinition::Boolean ) );
+  allParts->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  addParameter( allParts.release() );
+}
+
+bool QgsCentroidAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  mAllParts = parameterAsBool( parameters, QStringLiteral( "ALL_PARTS" ), context );
+  mDynamicAllParts = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ALL_PARTS" ) );
+  if ( mDynamicAllParts )
+    mAllPartsProperty = parameters.value( QStringLiteral( "ALL_PARTS" ) ).value< QgsProperty >();
+
+  return true;
+}
+
+QgsFeatureList QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  QgsFeatureList list;
   QgsFeature feature = f;
   if ( feature.hasGeometry() )
   {
-    feature.setGeometry( feature.geometry().centroid() );
-    if ( !feature.geometry() )
+    QgsGeometry geom = feature.geometry();
+
+    bool allParts = mAllParts;
+    if ( mDynamicAllParts )
+      allParts = mAllPartsProperty.valueAsBool( context.expressionContext(), allParts );
+
+    if ( allParts && geom.isMultipart() )
     {
-      feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1" ).arg( feature.id() ) );
+      const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
+
+      for ( int i = 0; i < geomCollection->partCount(); ++i )
+      {
+        QgsGeometry partGeometry( geomCollection->geometryN( i )->clone() );
+        QgsGeometry outputGeometry = partGeometry.centroid();
+        if ( !outputGeometry )
+        {
+          feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1 part %2: %3" ).arg( feature.id() ).arg( i ).arg( outputGeometry.lastError() ) );
+        }
+        feature.setGeometry( outputGeometry );
+        list << feature;
+      }
+    }
+    else
+    {
+      QgsGeometry outputGeometry = feature.geometry().centroid();
+      if ( !outputGeometry )
+      {
+        feedback->pushInfo( QObject::tr( "Error calculating centroid for feature %1: %2" ).arg( feature.id() ).arg( outputGeometry.lastError() ) );
+      }
+      feature.setGeometry( outputGeometry );
+      list << feature;
     }
   }
-  return feature;
+  else
+  {
+    list << feature;
+  }
+  return list;
 }
 
 ///@endcond

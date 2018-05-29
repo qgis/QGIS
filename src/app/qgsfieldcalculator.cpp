@@ -173,7 +173,7 @@ void QgsFieldCalculator::accept()
 
   if ( !exp.prepare( &expContext ) )
   {
-    QMessageBox::critical( nullptr, tr( "Evaluation error" ), exp.evalErrorString() );
+    QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
     return;
   }
 
@@ -222,7 +222,7 @@ void QgsFieldCalculator::accept()
       if ( !mVectorLayer->addAttribute( newField ) )
       {
         QApplication::restoreOverrideCursor();
-        QMessageBox::critical( nullptr, tr( "Provider error" ), tr( "Could not add the new field to the provider." ) );
+        QMessageBox::critical( nullptr, tr( "Create New Field" ), tr( "Could not add the new field to the provider." ) );
         mVectorLayer->destroyEditCommand();
         return;
       }
@@ -244,7 +244,7 @@ void QgsFieldCalculator::accept()
       if ( ! exp.prepare( &expContext ) )
       {
         QApplication::restoreOverrideCursor();
-        QMessageBox::critical( nullptr, tr( "Evaluation error" ), exp.evalErrorString() );
+        QMessageBox::critical( nullptr, tr( "Evaluation Error" ), exp.evalErrorString() );
         return;
       }
     }
@@ -310,7 +310,7 @@ void QgsFieldCalculator::accept()
 
     if ( !calculationSuccess )
     {
-      QMessageBox::critical( nullptr, tr( "Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
+      QMessageBox::critical( nullptr, tr( "Evaluation Error" ), tr( "An error occurred while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;
     }

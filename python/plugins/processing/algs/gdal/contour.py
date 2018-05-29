@@ -30,6 +30,7 @@ import os
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -90,7 +91,7 @@ class contour(GdalAlgorithm):
         nodata_param = QgsProcessingParameterNumber(self.NODATA,
                                                     self.tr('Input pixel value to treat as "nodata"'),
                                                     type=QgsProcessingParameterNumber.Double,
-                                                    defaultValue=0.0,
+                                                    defaultValue=None,
                                                     optional=True)
         nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(nodata_param)
@@ -121,10 +122,19 @@ class contour(GdalAlgorithm):
     def groupId(self):
         return 'rasterextraction'
 
+    def commandName(self):
+        return 'gdal_contour'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         offset = self.parameterAsDouble(parameters, self.OFFSET, context)
 
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
@@ -147,7 +157,7 @@ class contour(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.IGNORE_NODATA, context):
             arguments.append('-inodata')
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-snodata {}'.format(nodata))
 
         if offset:
@@ -159,4 +169,4 @@ class contour(GdalAlgorithm):
         arguments.append(inLayer.source())
         arguments.append(output)
 
-        return ['gdal_contour', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

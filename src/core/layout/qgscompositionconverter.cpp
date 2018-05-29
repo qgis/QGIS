@@ -128,6 +128,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
   // Guides
   layout->guides().setVisible( composerElement.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0 );
 
+  int printResolution = composerElement.attribute( "printResolution", "300" ).toInt();
+  layout->renderContext().setDpi( printResolution );
+
   // Create pages
   int pages = composerElement.attribute( QStringLiteral( "numPages" ) ).toInt( );
   float paperHeight = composerElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
@@ -139,9 +142,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     QgsReadWriteContext context;
     if ( project )
       context.setPathResolver( project->pathResolver() );
-    QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
+    std::unique_ptr< QgsFillSymbol > symbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context ) );
     if ( symbol )
-      layout->pageCollection()->setPageStyleSymbol( symbol );
+      layout->pageCollection()->setPageStyleSymbol( symbol.get() );
   }
 
   QString name = composerElement.attribute( QStringLiteral( "name" ) );
@@ -447,6 +450,29 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
   }
 
   return newItems;
+}
+
+bool QgsCompositionConverter::isCompositionTemplate( const QDomDocument &document )
+{
+  return document.elementsByTagName( QStringLiteral( "Composition" ) ).count() > 0;
+}
+
+QDomDocument QgsCompositionConverter::convertCompositionTemplate( const QDomDocument &document, QgsProject *project )
+{
+  QDomDocument doc;
+  QgsReadWriteContext context;
+  if ( project )
+    context.setPathResolver( project->pathResolver() );
+  if ( document.elementsByTagName( QStringLiteral( "Composition" ) ).count( ) > 0 )
+  {
+    QDomElement composerElem = document.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement( );
+
+    std::unique_ptr<QgsLayout> layout = createLayoutFromCompositionXml( composerElem,
+                                        project );
+    QDomElement elem = layout->writeXml( doc, context );
+    doc.appendChild( elem );
+  }
+  return doc;
 }
 
 bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *layoutItem, const QDomElement &itemElem, const QgsProject *project )
@@ -1005,7 +1031,9 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   {
     f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
   }
+  Q_NOWARN_DEPRECATED_PUSH
   layoutItem->setFont( f );
+  Q_NOWARN_DEPRECATED_POP
 
   //colors
   //fill color
@@ -1098,14 +1126,18 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
 
     if ( redOk && greenOk && blueOk && alphaOk )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       layoutItem->setFontColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
+      Q_NOWARN_DEPRECATED_POP
     }
   }
   else
   {
     QColor c;
     c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    Q_NOWARN_DEPRECATED_PUSH
     layoutItem->setFontColor( c );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   //style
@@ -1652,8 +1684,9 @@ bool QgsCompositionConverter::readOldComposerObjectXml( QgsLayoutObject *layoutI
 
 void QgsCompositionConverter::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection &dataDefinedProperties )
 {
-  QgsPropertiesDefinition::const_iterator i = QgsCompositionConverter::propertyDefinitions().constBegin();
-  for ( ; i != QgsCompositionConverter::propertyDefinitions().constEnd(); ++i )
+  const QgsPropertiesDefinition defs = QgsCompositionConverter::propertyDefinitions();
+  QgsPropertiesDefinition::const_iterator i = defs.constBegin();
+  for ( ; i != defs.constEnd(); ++i )
   {
     QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );

@@ -100,7 +100,7 @@ QgsGrassGisLib::QgsGrassGisLib()
   QString libPath = gisBase + "\\lib\\libgrass_gis." + QString( GRASS_VERSION ) + ".dll";
 #else
   QString libPath = QString( GRASS_LIBRARY_GIS );
-  // Prefere GISBASE if set
+  // Prefer GISBASE if set
   if ( !gisBase.isEmpty() )
   {
     libPath = gisBase + "/lib/" + QFileInfo( libPath ).fileName();

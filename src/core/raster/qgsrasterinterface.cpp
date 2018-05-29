@@ -188,9 +188,10 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         if ( blk->isNoData( i ) ) continue; // NULL
 
         double myValue = blk->value( i );
-
         myRasterBandStats.sum += myValue;
         myRasterBandStats.elementCount++;
+
+        if ( !std::isfinite( myValue ) ) continue; // inf
 
         if ( myFirstIterationFlag )
         {

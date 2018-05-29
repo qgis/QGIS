@@ -83,6 +83,14 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     QString filterExpression() const;
 
     /**
+     * Returns the current index of the NULL value, or -1 if NULL values are
+     * not allowed.
+     *
+     * \since QGIS 3.2
+     */
+    int nullIndex() const;
+
+    /**
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
      *
@@ -140,6 +148,13 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void keyPressEvent( QKeyEvent *event ) override;
 
   signals:
+
+    /**
+     * The underlying model has been updated.
+     *
+     * \since QGIS 3.2
+     */
+    void modelUpdated();
 
     /**
      * The layer from which features should be listed.

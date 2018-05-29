@@ -29,6 +29,7 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
@@ -110,6 +111,7 @@ class warp(GdalAlgorithm):
                                                      self.tr('Resampling method to use'),
                                                      options=[i[0] for i in self.methods],
                                                      defaultValue=0))
+
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),
                                                     self.TYPES,
@@ -127,6 +129,8 @@ class warp(GdalAlgorithm):
         target_extent_crs_param = QgsProcessingParameterCrs(self.TARGET_EXTENT_CRS,
                                                             self.tr('CRS of the target raster extent'),
                                                             optional=True)
+        target_extent_crs_param.setFlags(target_extent_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(target_extent_crs_param)
 
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
@@ -152,27 +156,38 @@ class warp(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
+    def commandName(self):
+        return 'gdalwarp'
+
     def tags(self):
-        return self.tr('transform,reproject,crs,srs').split(',')
+        tags = self.tr('transform,reproject,crs,srs').split(',')
+        tags.extend(super().tags())
+        return tags
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
         targetCrs = self.parameterAsCrs(parameters, self.TARGET_CRS, context)
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         resolution = self.parameterAsDouble(parameters, self.TARGET_RESOLUTION, context)
 
         arguments = []
         if sourceCrs.isValid():
             arguments.append('-s_srs')
-            arguments.append(sourceCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(sourceCrs))
 
         if targetCrs.isValid():
             arguments.append('-t_srs')
-            arguments.append(targetCrs.authid())
+            arguments.append(GdalUtils.gdal_crs_string(targetCrs))
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-dstnodata')
             arguments.append(str(nodata))
 
@@ -187,10 +202,10 @@ class warp(GdalAlgorithm):
         extent = self.parameterAsExtent(parameters, self.TARGET_EXTENT, context)
         if not extent.isNull():
             arguments.append('-te')
-            arguments.append(rasterExtent.xMinimum())
-            arguments.append(rasterExtent.yMinimum())
-            arguments.append(rasterExtent.xMaximum())
-            arguments.append(rasterExtent.yMaximum())
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append(extent.yMaximum())
 
             extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
             if extentCrs:
@@ -209,10 +224,9 @@ class warp(GdalAlgorithm):
 
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

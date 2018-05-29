@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterRasterLayer,
@@ -71,10 +72,10 @@ class ClipRasterByMask(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0,
+                                                       defaultValue=None,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.ALPHA_BAND,
-                                                        self.tr('Create and output alpha band'),
+                                                        self.tr('Create an output alpha band'),
                                                         defaultValue=False))
         self.addParameter(QgsProcessingParameterBoolean(self.CROP_TO_CUTLINE,
                                                         self.tr('Crop the extent of the target dataset to the extent of the cutline'),
@@ -119,12 +120,20 @@ class ClipRasterByMask(GdalAlgorithm):
     def groupId(self):
         return 'rasterextraction'
 
+    def commandName(self):
+        return 'gdalwarp'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
 
         maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
-        nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        if self.NODATA in parameters and parameters[self.NODATA] is not None:
+            nodata = self.parameterAsDouble(parameters, self.NODATA, context)
+        else:
+            nodata = None
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -150,14 +159,13 @@ class ClipRasterByMask(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.ALPHA_BAND, context):
             arguments.append('-dstalpha')
 
-        if nodata:
+        if nodata is not None:
             arguments.append('-dstnodata {}'.format(nodata))
 
         if options:
-            arguments.append('-co')
-            arguments.append(options)
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append(inLayer.source())
         arguments.append(out)
 
-        return ['gdalwarp', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

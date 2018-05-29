@@ -18,6 +18,7 @@
 #define QGSSCALEBARRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QRectF>
 #include <QList>
 
@@ -40,10 +41,15 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Contains parameters regarding scalebar calculations.
+     * \note The need to attribute the parameters vary depending on the targeted scalebar.
      */
     struct ScaleBarContext
     {
-      //! Width of each individual segment (in millimeters)
+
+      /**
+       * The width, in millimeters, of each individual segment drawn.
+       * \note The number of map units per segment needs to be set via QgsScaleBarSettings::setUnitsPerSegment.
+       */
       double segmentWidth { 0.0 };
 
       /**
@@ -98,8 +104,15 @@ class CORE_EXPORT QgsScaleBarRenderer
 
     /**
      * Returns the x-offset (in millimeters) used for the first label in the scalebar.
+     * \deprecated Use the version with QgsRenderContext instead.
      */
-    double firstLabelXOffset( const QgsScaleBarSettings &settings ) const;
+    Q_DECL_DEPRECATED double firstLabelXOffset( const QgsScaleBarSettings &settings ) const SIP_DEPRECATED;
+
+    /**
+     * Returns the x-offset (in render context painter units) used for the first label in the scalebar.
+     * \since QGIS 3.2
+     */
+    double firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context ) const;
 
     /**
      * Returns a list of positions for each segment within the scalebar.

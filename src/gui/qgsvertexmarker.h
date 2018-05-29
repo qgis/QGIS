@@ -83,18 +83,18 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
     /**
      * Sets the fill \a color for the marker. This setting only
      * applies to some icon types.
-     * \since QGIS 3.0
      * \see fillColor()
      * \see setColor()
+     * \since QGIS 3.0
      */
     void setFillColor( const QColor &color );
 
     /**
      * Returns the fill \a color for the marker. This setting only
      * applies to some icon types.
-     * \since QGIS 3.0
      * \see setFillColor()
      * \see color()
+     * \since QGIS 3.0
      */
     QColor fillColor() const { return mFillColor; }
 

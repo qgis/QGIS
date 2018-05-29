@@ -26,11 +26,12 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterBoolean,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputFile)
+                       QgsProcessingParameterFileDestination
+                       )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools.system import isWindows
@@ -58,7 +59,6 @@ class gdal2xyz(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT,
                                                                 self.tr('XYZ ASCII file'),
                                                                 self.tr('CSV files (*.csv)')))
-        self.addOutput(QgsProcessingOutputFile(self.OUTPUT, self.tr('XYZ ASCII file')))
 
     def name(self):
         return 'gdal2xyz'
@@ -72,8 +72,10 @@ class gdal2xyz(GdalAlgorithm):
     def groupId(self):
         return 'rasterconversion'
 
+    def commandName(self):
+        return 'gdal2xyz'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = []
         arguments = []
         arguments.append('-band')
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
@@ -81,14 +83,18 @@ class gdal2xyz(GdalAlgorithm):
         if self.parameterAsBool(parameters, self.CSV, context):
             arguments.append('-csv')
 
-        arguments.append(self.parameterAsRasterLayer(parameters, self.INPUT, context).source())
+        raster = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if raster is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
+        arguments.append(raster.source())
         arguments.append(self.parameterAsFileOutput(parameters, self.OUTPUT, context))
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal2xyz.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal2xyz.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         return commands

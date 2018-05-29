@@ -130,6 +130,8 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsMultiPolylineV2<td>QgsPolyline
 <tr><td>QgsMultiSurfaceV2<td>QgsMultiSurface
 <tr><td>QgsNMEAConnection<td>QgsNmeaConnection
+<tr><td>QgsNodeEditor<td>QgsVertexEditor
+<tr><td>QgsNodeTool<td>QgsVertexTool
 <tr><td>QgsNumericScaleBarStyle<td>QgsNumericScaleBarRenderer
 <tr><td>QgsPoint<td>QgsPointXY
 <tr><td>QgsPointSequenceV2<td>QgsPointSequence
@@ -285,6 +287,7 @@ should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinat
 - HalfEdge.
 - QgsHtmlAnnotationItem. Use QgsHtmlAnnotation instead.
 - QgsHttpTransaction. This class was outdated and code should be ported to native Qt or Python implementations.
+- QgsInterruptionChecker. Use QgsFeedback instead.
 - QgsGenericProjectionSelector. Use QgsProjectionSelectionTreeWidget instead.
 - QgsGeometryCache. It got redundant after removal of old snapping classes (QgsSnapper + friends).
 - QgsLabel and QgsLabelAttributes. Replaced by labeling based on PAL library, see QgsLabelingEngine.
@@ -1029,6 +1032,13 @@ None will need to be modified, as the method will return an empty geometry if th
 - fields() no longer returns a pointer, but instead a QgsFields value.
 - The duplicate method setFeatureId() was removed. Use setId() instead.
 
+
+QgsFeatureIterator        {#qgis_api_break_3_0_QgsFeatureIterator}
+------------------
+
+- setInterruptionChecker now accepts a QgsFeedback object instead of a QgsInterruptionChecker.
+
+
 QgsFeatureListViewDelegate        {#qgis_api_break_3_0_QgsFeatureListViewDelegate}
 --------------------------
 
@@ -1179,7 +1189,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().
 QgsGraduatedSymbolRenderer        {#qgis_api_break_3_0_QgsGraduatedSymbolRenderer}
 --------------------------
 
-- getDataValues() has been removed - use QgsVectorLayer::getDoubleValues() instead
+- getDataValues() has been removed - use QgsVectorLayerUtils::getDoubleValues() instead
 
 
 QgsGraduatedSymbolRenderer        {#qgis_api_break_3_0_QgsGraduatedSymbolRendererWidget}
@@ -1251,6 +1261,9 @@ QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 - adjacentVertices was removed - use QgsAbstractGeometry.adjacentVertices instead.
 - segmentIntersection takes an optional boolean parameter "acceptImproperIntersection" returning true even if the intersection is improper.
 Takes another boolean argument "isIntersection" returning if there is an intersection or not. The "inter" parameter has been renamed "intersectionPoint".
+- projPointOnSegment has been renamed to projectPointOnSegment
+- getSelfIntersections has been renamed to selfIntersections
+
 
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
 ------------------------
@@ -1504,7 +1517,8 @@ QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 
 - layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
 - destinationSrsChanged() was renamed to destinationCrsChanged()
-- hasCrsTransformEnabled() was removed. CRS transformation is now always enabled.
+- hasCrsTransformEnabled() was removed. CRS transformation is now always enabled
+- drawExtentRect() and destinationCrsChanged() are now protected
 
 
 QgsMapRenderer        {#qgis_api_break_3_0_QgsMapRenderer}
@@ -1599,9 +1613,16 @@ QgsMarkerSymbolLayer        {#qgis_api_break_3_0_QgsMarkerSymbolLayer}
 - bounds() is now pure virtual and must be implemented in all subclasses.
 
 
+QgsMessageBar        {#qgis_api_break_3_0_QgsMessageBar}
+---------------------------
+
+- MessageLevel has been removed. Use Qgis::MessageLevel instead
+
+
 QgsMessageLog        {#qgis_api_break_3_0_QgsMessageLog}
 ---------------------------
 
+- MessageLevel has been removed. Use Qgis::MessageLevel instead
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::messageLog() to access an application-wide log.
 
 QgsMessageLogViewer        {#qgis_api_break_3_0_QgsMessageLogViewer}
@@ -2131,12 +2152,6 @@ QgsSlider        {#qgis_api_break_3_0_QgsSlider}
 - The protected valueChanged slot was removed.
 
 
-QgsSnapper        {#qgis_api_break_3_0_QgsSnapper}
-----------
-
-- Constructor variant with QgsMapRenderer has been removed. Use the variant with QgsMapSettings.
-- Signature for snapPoint() has changed.
-
 QgsSnappingUtils        {#qgis_api_break_3_0_QgsSnappingUtils}
 ----------------
 
@@ -2444,6 +2459,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - pendingAllAttributesList() was dropped. Use allAttributes() instead.
 - pendingPkAttributesList() and pkAttributeList() were dropped. Use primaryKeyAttributes() instead.
 - pendingFeatureCount() was dropped. Use featureCount() instead.
+- getValues() and getDoubleValues() functions moved to QgsVectorLayerUtils.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

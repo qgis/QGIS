@@ -70,13 +70,24 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( QString const &uri = QString(), bool update = false, GDALDatasetH newDataset = nullptr );
+    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
-    QgsGdalProvider( QString const &uri, const QgsError &error );
+    QgsGdalProvider( const QString &uri, const QgsError &error );
 
 
     ~QgsGdalProvider() override;
+
+    /**
+     * Gets the data source specification. This may be a path or a protocol
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
+     */
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
     /**
      * Clone the provider.
@@ -266,7 +277,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     };
 
     // Dataset cache
-    static QMap< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+    static QHash< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
 
     // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
     static int mgDatasetCacheSize;
@@ -274,7 +285,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Add handles to the cache if possible for the specified parent provider, in which case true is returned. If false returned, then the handles should be processed appropriately by the caller
     static bool cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider, GDALDatasetH gdalBaseDataset, GDALDatasetH gdalDataset );
 
-    //! Get cached handles for the specified provider, in which case true is returned and 2 handles are set.
+    //! Gets cached handles for the specified provider, in which case true is returned and 2 handles are set.
     static bool getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset );
 
     //! Close all cached dataset for the specified provider.

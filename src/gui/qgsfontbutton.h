@@ -26,7 +26,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsFontButton
- * A button for customising QgsTextFormat settings.
+ * A button for customizing QgsTextFormat settings.
  *
  * The button will open a detailed text format settings dialog when clicked. An attached drop-down
  * menu allows for copying and pasting text styles, picking colors for the text, and for dropping
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
 
-    Q_ENUM( Mode );
+    Q_ENUM( Mode )
 
     /**
      * Construct a new font button.
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * no color settings or the other advanced options QgsTextFormat allows).
      * \see mode()
      */
-    void setMode( const QgsFontButton::Mode &mode );
+    void setMode( Mode mode );
 
     /**
      * Sets the \a title for the text settings dialog window.

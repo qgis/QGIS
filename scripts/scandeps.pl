@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 ###########################################################################
 #    scandeps.pl
 #    ---------------------
@@ -84,7 +84,7 @@ for my $dist (@dists) {
 
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
-	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default";
+	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default,libyaml-tiny-perl,python-autopep8";
 
 	my @deps;
 	my %deps;

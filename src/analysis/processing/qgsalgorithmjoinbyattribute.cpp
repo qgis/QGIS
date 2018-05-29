@@ -26,12 +26,12 @@ QString QgsJoinByAttributeAlgorithm::name() const
 
 QString QgsJoinByAttributeAlgorithm::displayName() const
 {
-  return QObject::tr( "Join attributes table" );
+  return QObject::tr( "Join attributes by field value" );
 }
 
 QStringList QgsJoinByAttributeAlgorithm::tags() const
 {
-  return QObject::tr( "join,connect,attributes,values,fields" ).split( ',' );
+  return QObject::tr( "join,connect,attributes,values,fields,tables" ).split( ',' );
 }
 
 QString QgsJoinByAttributeAlgorithm::group() const
@@ -44,13 +44,12 @@ QString QgsJoinByAttributeAlgorithm::groupId() const
   return QStringLiteral( "vectorgeneral" );
 }
 
-QgsProcessingAlgorithm::Flags QgsJoinByAttributeAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  QStringList methods;
+  methods << QObject::tr( "Create separate feature for each matching feature (one-to-many)" )
+          << QObject::tr( "Take attributes of the first matching feature only (one-to-one)" );
+
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
                 QObject::tr( "Input layer" ), QList< int>() << QgsProcessing::TypeVector ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD" ),
@@ -65,6 +64,13 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Layer 2 fields to copy (leave empty to copy all fields)" ),
                 QVariant(), QStringLiteral( "INPUT_2" ), QgsProcessingParameterField::Any,
                 true, true ) );
+
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
+                QObject::tr( "Join type" ),
+                methods, false, 1 ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DISCARD_NONMATCHING" ),
+                QObject::tr( "Discard records which could not be joined" ),
+                false ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ) ) );
 }
@@ -84,10 +90,16 @@ QgsJoinByAttributeAlgorithm *QgsJoinByAttributeAlgorithm::createInstance() const
 
 QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
-  std::unique_ptr< QgsFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
-  if ( !input || !input2 )
-    return QVariantMap();
+  int joinMethod = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
+  bool discardNonMatching = parameterAsBool( parameters, QStringLiteral( "DISCARD_NONMATCHING" ), context );
+
+  std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  if ( !input )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+
+  std::unique_ptr< QgsProcessingFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
+  if ( !input2 )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
 
   QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
@@ -96,7 +108,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   int joinField1Index = input->fields().lookupField( field1Name );
   int joinField2Index = input2->fields().lookupField( field2Name );
   if ( joinField1Index < 0 || joinField2Index < 0 )
-    return QVariantMap();
+    throw QgsProcessingException( QObject::tr( "Invalid join fields" ) );
 
   QgsFields outFields2;
   QgsAttributeList fields2Indices;
@@ -130,12 +142,12 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
                                           input->wkbType(), input->sourceCrs() ) );
   if ( !sink )
-    return QVariantMap();
+    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
 
   // cache attributes of input2
-  QHash< QVariant, QgsAttributes > input2AttributeCache;
-  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ) );
+  QMultiHash< QVariant, QgsAttributes > input2AttributeCache;
+  QgsFeatureIterator features = input2->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fields2Fetch ), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   double step = input2->featureCount() > 0 ? 50.0 / input2->featureCount() : 1;
   int i = 0;
   QgsFeature feat;
@@ -149,7 +161,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
     feedback->setProgress( i * step );
 
-    if ( input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
+    if ( joinMethod == 1 && input2AttributeCache.contains( feat.attribute( joinField2Index ) ) )
       continue;
 
     // only keep selected attributes
@@ -166,7 +178,7 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
   // Create output vector layer with additional attribute
   step = input->featureCount() > 0 ? 50.0 / input->featureCount() : 1;
-  features = input->getFeatures();
+  features = input->getFeatures( QgsFeatureRequest(), QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks );
   i = 0;
   while ( features.nextFeature( feat ) )
   {
@@ -178,10 +190,24 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
 
     feedback->setProgress( 50 + i * step );
 
-    QgsAttributes attrs = feat.attributes();
-    attrs.append( input2AttributeCache.value( feat.attribute( joinField1Index ) ) );
-    feat.setAttributes( attrs );
-    sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    if ( input2AttributeCache.count( feat.attribute( joinField1Index ) ) > 0 )
+    {
+      QgsAttributes attrs = feat.attributes();
+
+      QList< QgsAttributes > attributes = input2AttributeCache.values( feat.attribute( joinField1Index ) );
+      QList< QgsAttributes >::iterator attrsIt = attributes.begin();
+      for ( ; attrsIt != attributes.end(); ++attrsIt )
+      {
+        QgsAttributes newAttrs = attrs;
+        newAttrs.append( *attrsIt );
+        feat.setAttributes( newAttrs );
+        sink->addFeature( feat, QgsFeatureSink::FastInsert );
+      }
+    }
+    else if ( !discardNonMatching )
+    {
+      sink->addFeature( feat, QgsFeatureSink::FastInsert );
+    }
   }
 
   QVariantMap outputs;

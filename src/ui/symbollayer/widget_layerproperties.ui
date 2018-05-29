@@ -71,7 +71,7 @@
    <item row="3" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="spacing">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="bottomMargin">
       <number>0</number>

@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited (as a polygon): QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
 
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
@@ -351,7 +351,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     QgsCircle circumscribedCircle() const;
 
     /**
-     * Center of the inscribed circle of the triangle.
+     * Center of the inscribed circle of the triangle. Z dimension is
+     * supported and is retrieved from the first 3D point amongst vertices.
      * \returns The center of the inscribed circle of the triangle.
      * An empty point is returned for empty triangle.
      * * Example:
@@ -412,9 +413,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     }
 #endif
 
-  protected:
-
     QgsTriangle *createEmptyWithSameType() const override SIP_FACTORY;
+
 
 };
 #endif // QGSTRIANGLE_H

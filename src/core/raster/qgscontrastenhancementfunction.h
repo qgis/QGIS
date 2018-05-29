@@ -37,17 +37,45 @@ class CORE_EXPORT QgsContrastEnhancementFunction
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction() = default;
 
-    //! \brief A customizable method that takes in a double and returns a int between 0 and 255
-    virtual int enhance( double );
+    /**
+     * A customizable method that takes in a double \a value and returns a int between 0 and 255.
+     */
+    virtual int enhance( double value );
 
-    //! \brief A customicable method to indicate if the pixels is displayable
-    virtual bool isValueInDisplayableRange( double );
+    /**
+     * A customizable method to indicate if a pixel's value is within the displayable range.
+     */
+    virtual bool isValueInDisplayableRange( double value );
 
-    //! \brief Mustator for the maximum value
-    void setMaximumValue( double );
+    /**
+     * Sets the maximum \a value.
+     * \see maximumValue()
+     * \see setMinimumValue()
+     */
+    void setMaximumValue( double value );
 
-    //! \brief Mutator for the minimum value
-    void setMinimumValue( double );
+    /**
+     * Sets the minimum \a value.
+     * \see minimumValue()
+     * \see setMaximumValue()
+     */
+    void setMinimumValue( double value );
+
+    /**
+     * Returns the maximum value.
+     * \see setMaximumValue()
+     * \see minimumValue()
+     * \since QGIS 3.2
+     */
+    double maximumValue() const { return mMaximumValue; }
+
+    /**
+     * Returns the minimum value.
+     * \see setMinimumValue()
+     * \see maximumValue()
+     * \since QGIS 3.2
+     */
+    double minimumValue() const { return mMinimumValue; }
 
   protected:
     //! \brief User defineable maximum value for the band, used for enhanceContrasting

@@ -719,6 +719,8 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
   {
     //edited variable name
     QString newName = lineEdit->text();
+    newName = newName.trimmed();
+    newName = newName.replace( QStringLiteral( " " ), "_" );
 
     //test for validity
     if ( newName == variableName )
@@ -728,7 +730,7 @@ void VariableEditorDelegate::setModelData( QWidget *widget, QAbstractItemModel *
     if ( scope->hasVariable( newName ) )
     {
       //existing name
-      QMessageBox::warning( mParentTree, tr( "Rename variable" ), tr( "A variable with the name \"%1\" already exists in this context." ).arg( newName ) );
+      QMessageBox::warning( mParentTree, tr( "Rename Variable" ), tr( "A variable with the name \"%1\" already exists in this context." ).arg( newName ) );
       newName.append( "_1" );
     }
 

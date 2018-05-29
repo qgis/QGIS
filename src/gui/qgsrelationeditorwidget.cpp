@@ -29,6 +29,7 @@
 #include "qgstransactiongroup.h"
 #include "qgslogger.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsmapcanvas.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -94,6 +95,13 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   mUnlinkFeatureButton->setToolTip( tr( "Unlink child feature" ) );
   mUnlinkFeatureButton->setObjectName( QStringLiteral( "mUnlinkFeatureButton" ) );
   buttonLayout->addWidget( mUnlinkFeatureButton );
+  // zoom to linked feature
+  mZoomToFeatureButton = new QToolButton( this );
+  mZoomToFeatureButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToSelected.svg" ) ) );
+  mZoomToFeatureButton->setText( tr( "Zoom To Feature" ) );
+  mZoomToFeatureButton->setToolTip( tr( "Zoom to child feature" ) );
+  mZoomToFeatureButton->setObjectName( QStringLiteral( "mZoomToFeatureButton" ) );
+  buttonLayout->addWidget( mZoomToFeatureButton );
   // spacer
   buttonLayout->addItem( new QSpacerItem( 0, 0, QSizePolicy::Expanding ) );
   // form view
@@ -141,6 +149,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteSelectedFeatures );
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
   connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
+  connect( mZoomToFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::zoomToSelectedFeatures );
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
@@ -188,7 +197,6 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
   if ( mVisible )
   {
     QgsFeatureRequest myRequest = mRelation.getRelatedFeaturesRequest( mFeature );
-
     mDualView->init( mRelation.referencingLayer(), nullptr, myRequest, mEditorContext );
   }
 }
@@ -270,7 +278,6 @@ void QgsRelationEditorWidget::setViewMode( QgsDualView::ViewMode mode )
   mViewMode = mode;
 }
 
-
 void QgsRelationEditorWidget::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
@@ -300,6 +307,25 @@ void QgsRelationEditorWidget::updateButtons()
   mLinkFeatureButton->setEnabled( linkable );
   mDeleteFeatureButton->setEnabled( editable && selectionNotEmpty );
   mUnlinkFeatureButton->setEnabled( linkable && selectionNotEmpty );
+
+  mZoomToFeatureButton->setVisible(
+    mEditorContext.mapCanvas() && (
+      (
+        mNmRelation.isValid() &&
+        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
+        mNmRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
+      )
+      ||
+      (
+        mRelation.isValid() &&
+        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::NullGeometry &&
+        mRelation.referencedLayer()->geometryType() != QgsWkbTypes::UnknownGeometry
+      )
+    )
+  );
+
+  mZoomToFeatureButton->setEnabled( selectionNotEmpty );
+
   mToggleEditingButton->setChecked( editable );
   mSaveEditsButton->setEnabled( editable );
 }
@@ -451,44 +477,40 @@ void QgsRelationEditorWidget::duplicateFeature()
 
 void QgsRelationEditorWidget::deleteFeature( const QgsFeatureId featureid )
 {
-  QgsFeatureIds featureids;
-
-  featureids << featureid;
-
-  deleteFeatures( featureids );
-
+  deleteFeatures( QgsFeatureIds() << featureid );
 }
 
-void QgsRelationEditorWidget::deleteSelectedFeatures( )
+void QgsRelationEditorWidget::deleteSelectedFeatures()
 {
   deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
 }
 
 void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 {
-  QgsVectorLayer *layer = nullptr;
-  if ( mNmRelation.isValid() )
-    layer = mNmRelation.referencedLayer();
-  else
-    layer = mRelation.referencingLayer();
-
-  QgsDebugMsg( QString( "Delete %1" ).arg( featureids.size() ) );
+  QgsVectorLayer *layer = mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer();
   layer->deleteFeatures( featureids );
 }
 
-
 void QgsRelationEditorWidget::unlinkFeature( const QgsFeatureId featureid )
 {
-  QgsFeatureIds featureids;
-
-  featureids << featureid;
-
-  unlinkFeatures( featureids );
+  unlinkFeatures( QgsFeatureIds() << featureid );
 }
 
-void QgsRelationEditorWidget::unlinkSelectedFeatures( )
+void QgsRelationEditorWidget::unlinkSelectedFeatures()
 {
   unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::zoomToSelectedFeatures()
+{
+  QgsMapCanvas *c = mEditorContext.mapCanvas();
+  if ( !c )
+    return;
+
+  c->zoomToFeatureIds(
+    mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer(),
+    mFeatureSelectionMgr->selectedFeatureIds()
+  );
 }
 
 void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
@@ -581,7 +603,6 @@ void QgsRelationEditorWidget::saveEdits()
 
 void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
 {
-
   if ( !collapsed )
   {
     mVisible = true;
@@ -667,10 +688,10 @@ void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFea
   {
     QAction *qAction = nullptr;
 
-    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete feature" ) );
+    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete Feature" ) );
     connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
 
-    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink feature" ) );
+    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink Feature" ) );
     connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
   }
 }

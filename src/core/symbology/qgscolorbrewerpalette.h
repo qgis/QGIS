@@ -28,58 +28,11 @@
 class CORE_EXPORT QgsColorBrewerPalette
 {
   public:
-    static QList<QColor> listSchemeColors( const QString &schemeName, int colors )
-    {
-      QList<QColor> pal;
-      QString palette( BREWER_STRING );
-      QStringList list = palette.split( QChar( '\n' ) );
-      Q_FOREACH ( const QString &entry, list )
-      {
-        QStringList items = entry.split( QChar( '-' ) );
-        if ( items.count() != 3 || items[0] != schemeName || items[1].toInt() != colors )
-          continue;
-        QStringList colors = items[2].split( QChar( ' ' ) );
-        Q_FOREACH ( const QString &clr, colors )
-        {
-          pal << QgsSymbolLayerUtils::parseColor( clr );
-        }
-      }
-      return pal;
-    }
+    static QList<QColor> listSchemeColors( const QString &schemeName, int colors );
 
-    static QStringList listSchemes()
-    {
-      QStringList schemes;
+    static QStringList listSchemes();
 
-      QString palette( BREWER_STRING );
-      QStringList list = palette.split( QChar( '\n' ) );
-      Q_FOREACH ( const QString &entry, list )
-      {
-        QStringList items = entry.split( QChar( '-' ) );
-        if ( items.count() != 3 )
-          continue;
-        if ( !schemes.contains( items[0] ) )
-          schemes << items[0];
-      }
-      return schemes;
-    }
-
-    static QList<int> listSchemeVariants( const QString &schemeName )
-    {
-      QList<int> variants;
-
-      QString palette( BREWER_STRING );
-      QStringList list = palette.split( QChar( '\n' ) );
-      Q_FOREACH ( const QString &entry, list )
-      {
-        QStringList items = entry.split( QChar( '-' ) );
-        if ( items.count() != 3 || items[0] != schemeName )
-          continue;
-        variants << items[1].toInt();
-      }
-
-      return variants;
-    }
+    static QList<int> listSchemeVariants( const QString &schemeName );
 
     // extracted ColorBrewer data
     static const char *BREWER_STRING;

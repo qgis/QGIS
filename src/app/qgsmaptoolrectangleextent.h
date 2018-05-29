@@ -18,8 +18,9 @@
 #define QGSMAPTOOLRECTANGLEEXTENT_H
 
 #include "qgsmaptooladdrectangle.h"
+#include "qgis_app.h"
 
-class QgsMapToolRectangleExtent: public QgsMapToolAddRectangle
+class APP_EXPORT QgsMapToolRectangleExtent: public QgsMapToolAddRectangle
 {
     Q_OBJECT
 

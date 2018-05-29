@@ -104,6 +104,7 @@ source directory.
 = Building on Windows =
 %!include: msvc.t2t
 %!include: msys.t2t
+%!include: mxe.t2t
 
 %!include: osx.t2t
 

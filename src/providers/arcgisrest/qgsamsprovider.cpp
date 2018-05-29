@@ -124,8 +124,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString &uri )
-  : QgsRasterDataProvider( uri ), mValid( false )
+QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsRasterDataProvider( uri, options )
 {
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
@@ -209,7 +209,8 @@ void QgsAmsProvider::reloadData()
 
 QgsRasterInterface *QgsAmsProvider::clone() const
 {
-  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri() );
+  QgsDataProvider::ProviderOptions options;
+  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri(), options );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -427,9 +428,9 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
         featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
+      std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
       QgsFeature feature( fields );
-      feature.setGeometry( QgsGeometry( geometry ) );
+      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );
       feature.setValid( true );
       QgsFeatureStore store( fields, crs );

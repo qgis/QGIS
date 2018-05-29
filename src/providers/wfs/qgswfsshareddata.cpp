@@ -40,6 +40,7 @@ QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   , mSourceCRS( 0 )
   , mMaxFeatures( 0 )
   , mMaxFeaturesWasSetFromDefaultForPaging( false )
+  , mRequestLimit( 0 )
   , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
   , mDistinctSelect( false )
   , mHasWarnedAboutMissingFeatureId( false )
@@ -447,8 +448,10 @@ bool QgsWFSSharedData::createCache()
   pragmas << QStringLiteral( "synchronous=OFF" );
   pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers
   dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
+
+  QgsDataProvider::ProviderOptions providerOptions;
   mCacheDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider(
-                         QStringLiteral( "spatialite" ), dsURI.uri() ) );
+                         QStringLiteral( "spatialite" ), dsURI.uri(), providerOptions ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
     delete mCacheDataProvider;
@@ -463,7 +466,7 @@ bool QgsWFSSharedData::createCache()
   return true;
 }
 
-int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, const QgsRectangle &rect )
+int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, int limit, const QgsRectangle &rect )
 {
   // This locks prevents 2 readers to register at the same time (and particularly
   // destroy the current mDownloader at the same time)
@@ -527,10 +530,17 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, const Qg
   {
     newDownloadNeeded = true;
   }
+  // If there's a ongoing download with a limitation, and the new download is
+  // unlimited, we need a new download.
+  else if ( !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ) && limit <= 0 && mRequestLimit > 0 )
+  {
+    newDownloadNeeded = true;
+  }
 
   if ( newDownloadNeeded || !mDownloader )
   {
     mRect = rect;
+    mRequestLimit = ( limit > 0 && !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ) ) ? limit : 0;
     // to prevent deadlock when waiting the end of the downloader thread that will try to take the mutex in serializeFeatures()
     mMutex.unlock();
     delete mDownloader;
@@ -918,16 +928,19 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
 
     {
       QMutexLocker locker( &mMutex );
-      if ( !mFeatureCountExact )
-        mFeatureCount += featureListToCache.size();
-      mTotalFeaturesAttemptedToBeCached += featureListToCache.size();
-      if ( !localComputedExtent.isNull() && mComputedExtent.isNull() && !mTryFetchingOneFeature &&
-           !localComputedExtent.intersects( mCapabilityExtent ) )
+      if ( mRequestLimit != 1 )
       {
-        QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. "
-                                       "You may need to zoom again on layer while features are being downloaded" ), tr( "WFS" ) );
+        if ( !mFeatureCountExact )
+          mFeatureCount += featureListToCache.size();
+        mTotalFeaturesAttemptedToBeCached += featureListToCache.size();
+        if ( !localComputedExtent.isNull() && mComputedExtent.isNull() && !mTryFetchingOneFeature &&
+             !localComputedExtent.intersects( mCapabilityExtent ) )
+        {
+          QgsMessageLog::logMessage( tr( "Layer extent reported by the server is not correct. "
+                                         "You may need to zoom again on layer while features are being downloaded" ), tr( "WFS" ) );
+        }
+        mComputedExtent = localComputedExtent;
       }
-      mComputedExtent = localComputedExtent;
     }
   }
 
@@ -1010,19 +1023,22 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       mCachedRegions = QgsSpatialIndex();
     }
 
-    // In case the download was successful, we will remember this bbox
-    // and if the download reached the download limit or not
-    QgsFeature f;
-    f.setGeometry( QgsGeometry::fromRect( mRect ) );
-    QgsFeatureId id = mRegions.size();
-    f.setId( id );
-    f.initAttributes( 1 );
-    f.setAttribute( 0, QVariant( bDownloadLimit ) );
-    mRegions.push_back( f );
-    mCachedRegions.insertFeature( f );
+    if ( mRequestLimit == 0 )
+    {
+      // In case the download was successful, we will remember this bbox
+      // and if the download reached the download limit or not
+      QgsFeature f;
+      f.setGeometry( QgsGeometry::fromRect( mRect ) );
+      QgsFeatureId id = mRegions.size();
+      f.setId( id );
+      f.initAttributes( 1 );
+      f.setAttribute( 0, QVariant( bDownloadLimit ) );
+      mRegions.push_back( f );
+      mCachedRegions.insertFeature( f );
+    }
   }
 
-  if ( mRect.isEmpty() && success && !bDownloadLimit && !mFeatureCountExact )
+  if ( mRect.isEmpty() && success && !bDownloadLimit && mRequestLimit == 0 && !mFeatureCountExact )
   {
     mFeatureCountExact = true;
     if ( featureCount != mFeatureCount )
@@ -1043,7 +1059,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
       msg += " " + tr( "Zoom in to fetch all data." );
     else
       msg += " " + tr( "You may want to check the 'Only request features overlapping the view extent' option to be able to zoom in to fetch all data." );
-    QgsMessageLog::logMessage( msg, QStringLiteral( "WFS" ) );
+    QgsMessageLog::logMessage( msg, tr( "WFS" ) );
   }
 }
 
@@ -1066,6 +1082,7 @@ void QgsWFSSharedData::invalidateCache()
   mCachedRegions = QgsSpatialIndex();
   mRegions.clear();
   mRect = QgsRectangle();
+  mRequestLimit = 0;
   mGetFeatureHitsIssued = false;
   mFeatureCount = 0;
   mFeatureCountExact = false;
@@ -1170,15 +1187,14 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser()
 
 
 QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
-  : QgsWfsRequest( uri.uri() )
+  : QgsWfsRequest( uri )
 {
 }
 
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
@@ -1232,14 +1248,13 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
-  : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
+  : QgsWfsRequest( shared->mURI ), mShared( shared )
 {
 }
 
 QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
-  QUrl getFeatureUrl( mUri.baseURL() );
-  getFeatureUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetFeature" ) );
+  QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
   if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     getFeatureUrl.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
@@ -1251,7 +1266,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
 
   if ( !sendGET( getFeatureUrl, true ) )
-    return -1;
+    return QgsRectangle();
 
   const QByteArray &buffer = response();
 

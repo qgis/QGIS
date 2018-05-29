@@ -47,6 +47,7 @@ class TestQgsFieldExpressionWidget : public QObject
     void asExpression();
     void testIsValid();
     void testFilters();
+    void setNull();
 
   private:
     QgsFieldExpressionWidget *mWidget = nullptr;
@@ -265,6 +266,27 @@ void TestQgsFieldExpressionWidget::testFilters()
   widget->setFilters( QgsFieldProxyModel::Time );
   QCOMPARE( widget->mCombo->count(), 1 );
   QCOMPARE( widget->mCombo->itemText( 0 ), QString( "timefld" ) );
+
+  QgsProject::instance()->removeMapLayer( layer );
+}
+
+void TestQgsFieldExpressionWidget::setNull()
+{
+  // test that QgsFieldExpressionWidget can be set to an empty value
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
+  QgsProject::instance()->addMapLayer( layer );
+
+  std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
+  widget->setLayer( layer );
+
+  widget->setField( QString() );
+  QVERIFY( widget->currentField().isEmpty() );
+
+  widget->setField( QStringLiteral( "fld2" ) );
+  QCOMPARE( widget->currentField(), QStringLiteral( "fld2" ) );
+
+  widget->setField( QString() );
+  QVERIFY( widget->currentField().isEmpty() );
 
   QgsProject::instance()->removeMapLayer( layer );
 }

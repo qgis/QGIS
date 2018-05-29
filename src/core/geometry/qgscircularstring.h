@@ -34,7 +34,36 @@
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
   public:
+
+    /**
+     * Constructs an empty circular string.
+     */
     QgsCircularString();
+
+    /**
+     * Constructs a circular string with a single
+     * arc passing through \a p1, \a p2 and \a p3.
+     *
+     * \since QGIS 3.2
+     */
+    QgsCircularString( const QgsPoint &p1,
+                       const QgsPoint &p2,
+                       const QgsPoint &p3 );
+
+    /**
+     * Creates a circular string with a single arc representing
+     * the curve from \a p1 to \a p2 with the specified \a center.
+     *
+     * If \a useShortestArc is true, then the arc returned will be that corresponding
+     * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
+     * to \a p2 will be used (i.e. winding the other way around the circle).
+     *
+     * \since QGIS 3.2
+     */
+    static QgsCircularString fromTwoPointsAndCenter( const QgsPoint &p1,
+        const QgsPoint &p2,
+        const QgsPoint &center,
+        bool useShortestArc = true );
 
     bool equals( const QgsCurve &other ) const override;
 
@@ -48,8 +77,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
 
     bool isEmpty() const override;
@@ -75,8 +104,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -94,6 +122,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool addMValue( double mValue = 0 ) override;
     bool dropZValue() override;
     bool dropMValue() override;
+    void swapXy() override;
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 #ifndef SIP_RUN
@@ -113,8 +142,10 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     }
 #endif
 
-  protected:
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     QgsRectangle calculateBoundingBox() const override;
 
   private:

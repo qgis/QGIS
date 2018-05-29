@@ -318,7 +318,6 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      *
      * \param layers List of layers which have been added.
      *
-     * \see legendLayersAdded()
      * \see layerWasAdded()
      */
     void layersAdded( const QList<QgsMapLayer *> &layers );

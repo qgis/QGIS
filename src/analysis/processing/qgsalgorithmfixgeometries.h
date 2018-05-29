@@ -34,7 +34,6 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsFixGeometriesAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -47,7 +46,7 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessingFeatureSource::Flag sourceFlags() const override;
     QString outputName() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type type ) const override;
-    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

@@ -40,12 +40,12 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return mSymbol.get();
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
@@ -121,7 +121,7 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
   if ( mSymbol ) mSymbol->toSld( doc, ruleElem, newProps );
 }
 
-QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -234,28 +234,28 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     return nullptr;
 
   // now create the symbol
-  QgsSymbol *symbol = nullptr;
+  std::unique_ptr< QgsSymbol > symbol;
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
-      symbol = new QgsLineSymbol( layers );
+      symbol = qgis::make_unique< QgsLineSymbol >( layers );
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      symbol = new QgsFillSymbol( layers );
+      symbol = qgis::make_unique< QgsFillSymbol >( layers );
       break;
 
     case QgsWkbTypes::PointGeometry:
-      symbol = new QgsMarkerSymbol( layers );
+      symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
       break;
 
     default:
-      QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
       return nullptr;
   }
 
   // and finally return the new renderer
-  return new QgsSingleSymbolRenderer( symbol );
+  return new QgsSingleSymbolRenderer( symbol.release() );
 }
 
 QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
@@ -316,7 +316,7 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   return lst;
 }
 
-QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );

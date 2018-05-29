@@ -34,20 +34,11 @@
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
+  mBackgroundUpdateTimer = new QTimer( this );
+  mBackgroundUpdateTimer->setSingleShot( true );
+  connect( mBackgroundUpdateTimer, &QTimer::timeout, this, &QgsLayoutItemMap::recreateCachedImageInBackground );
+
   assignFreeId();
-
-
-  if ( layout )
-  {
-    if ( QgsProject *project = layout->project() )
-    {
-      //get the color for map canvas background and set map background color accordingly
-      int bgRedInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorRedPart" ), 255 );
-      int bgGreenInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorGreenPart" ), 255 );
-      int bgBlueInt = project->readNumEntry( QStringLiteral( "Gui" ), QStringLiteral( "/CanvasColorBluePart" ), 255 );
-      setBackgroundColor( QColor( bgRedInt, bgGreenInt, bgBlueInt ) );
-    }
-  }
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
   {
@@ -127,6 +118,9 @@ QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout )
 void QgsLayoutItemMap::refresh()
 {
   QgsLayoutItem::refresh();
+
+  mCachedLayerStyleOverridesPresetName.clear();
+
   invalidateCache();
 
   updateAtlasFeature();
@@ -153,8 +147,7 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
   double scaleRatio = scaleDenominator / currentScaleDenominator;
   mExtent.scale( scaleRatio );
 
-#if 0 //TODO
-  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed )
   {
     //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
@@ -165,7 +158,6 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
-#endif
 
   invalidateCache();
   if ( forceUpdate )
@@ -200,7 +192,7 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
 {
   QgsRectangle newExtent = extent;
   QgsRectangle currentExtent = mExtent;
-  //Make sure the width/height ratio is the same as the current composer map extent.
+  //Make sure the width/height ratio is the same as the current layout map extent.
   //This is to keep the map item frame size fixed
   double currentWidthHeightRatio = 1.0;
   if ( !currentExtent.isNull() )
@@ -356,8 +348,7 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
   mExtent.setYMaximum( centerY + newIntervalY / 2 );
   mExtent.setYMinimum( centerY - newIntervalY / 2 );
 
-#if 0 //TODO
-  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed )
   {
     //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
@@ -368,7 +359,6 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
-#endif
 
   //recalculate data defined scale and extents, since that may override zoom
   refreshMapExtents();
@@ -507,28 +497,28 @@ QgsLayoutItemMapOverview *QgsLayoutItemMap::overview()
   return mOverviewStack->overview( 0 );
 }
 
-void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemMap::draw( QgsLayoutItemRenderContext & )
 {
 }
 
-bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( mKeepLayerSet )
   {
-    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
+    mapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
+    mapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
   }
 
   if ( mDrawAnnotations )
   {
-    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
+    mapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "false" ) );
+    mapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "false" ) );
   }
 
   //extent
@@ -537,21 +527,21 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
   extentElem.setAttribute( QStringLiteral( "xmax" ), qgsDoubleToString( mExtent.xMaximum() ) );
   extentElem.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mExtent.yMinimum() ) );
   extentElem.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mExtent.yMaximum() ) );
-  composerMapElem.appendChild( extentElem );
+  mapElem.appendChild( extentElem );
 
   if ( mCrs.isValid() )
   {
     QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
     mCrs.writeXml( crsElem, doc );
-    composerMapElem.appendChild( crsElem );
+    mapElem.appendChild( crsElem );
   }
 
   // follow map theme
-  composerMapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
-  composerMapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
+  mapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
+  mapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
 
   //map rotation
-  composerMapElem.setAttribute( QStringLiteral( "mapRotation" ), QString::number( mMapRotation ) );
+  mapElem.setAttribute( QStringLiteral( "mapRotation" ), QString::number( mMapRotation ) );
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
@@ -569,7 +559,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
 
     layerSetElem.appendChild( layerElem );
   }
-  composerMapElem.appendChild( layerSetElem );
+  mapElem.appendChild( layerSetElem );
 
   // override styles
   if ( mKeepLayerStyles )
@@ -591,21 +581,21 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
       style.writeXml( styleElem );
       stylesElem.appendChild( styleElem );
     }
-    composerMapElem.appendChild( stylesElem );
+    mapElem.appendChild( stylesElem );
   }
 
   //grids
-  mGridStack->writeXml( composerMapElem, doc, context );
+  mGridStack->writeXml( mapElem, doc, context );
 
   //overviews
-  mOverviewStack->writeXml( composerMapElem, doc, context );
+  mOverviewStack->writeXml( mapElem, doc, context );
 
   //atlas
   QDomElement atlasElem = doc.createElement( QStringLiteral( "AtlasMap" ) );
   atlasElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven );
   atlasElem.setAttribute( QStringLiteral( "scalingMode" ), mAtlasScalingMode );
   atlasElem.setAttribute( QStringLiteral( "margin" ), qgsDoubleToString( mAtlasMargin ) );
-  composerMapElem.appendChild( atlasElem );
+  mapElem.appendChild( atlasElem );
 
   return true;
 }
@@ -739,6 +729,9 @@ bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, c
     }
     mAtlasMargin = atlasElem.attribute( QStringLiteral( "margin" ), QStringLiteral( "0.1" ) ).toDouble();
   }
+
+  updateBoundingRect();
+
   mUpdatesEnabled = true;
   return true;
 }
@@ -775,18 +768,20 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       painter->setFont( messageFont );
       painter->setPen( QColor( 255, 255, 255, 255 ) );
       painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
-      if ( !mPainterJob )
+      if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
-        recreateCachedImageInBackground( style->matrix.m11() );
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mBackgroundUpdateTimer->start( 1 );
       }
     }
     else
     {
-      if ( mCacheInvalidated )
+      if ( mCacheInvalidated && !mDrawingPreview )
       {
         // cache was invalidated - trigger a background update
-        recreateCachedImageInBackground( style->matrix.m11() );
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
+        mBackgroundUpdateTimer->start( 1 );
       }
 
       //Background color is already included in cached image, so no need to draw
@@ -837,7 +832,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
-      double destinationDpi = style->matrix.m11() * 25.4;
+      double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style ) * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
       int widthInPixels = std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi );
       int heightInPixels = std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi );
@@ -960,14 +955,14 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   }
 
   // render
-  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi ), painter );
+  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi, true ), painter );
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
   job.renderSynchronously();
 }
 
-void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
+void QgsLayoutItemMap::recreateCachedImageInBackground()
 {
   if ( mPainterJob )
   {
@@ -996,8 +991,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
   double widthLayoutUnits = ext.width() * mapUnitsToLayoutUnits();
   double heightLayoutUnits = ext.height() * mapUnitsToLayoutUnits();
 
-  int w = widthLayoutUnits * viewScaleFactor;
-  int h = heightLayoutUnits * viewScaleFactor;
+  int w = widthLayoutUnits * mPreviewScaleFactor;
+  int h = heightLayoutUnits * mPreviewScaleFactor;
 
   // limit size of image for better performance
   if ( w > 5000 || h > 5000 )
@@ -1037,13 +1032,25 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
 
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
-  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX() ) );
+  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
+
+  // from now on we can accept refresh requests again
+  // this must be reset only after the job has been started, because
+  // some providers (yes, it's you WCS and AMS!) during preparation
+  // do network requests and start an internal event loop, which may
+  // end up calling refresh() and would schedule another refresh,
+  // deleting the one we have just started.
+
+  // ^^ that comment was directly copied from a similar fix in QgsMapCanvas. And
+  // with little surprise, both those providers are still badly behaved and causing
+  // annoying bugs for us to deal with...
+  mDrawingPreview = false;
 }
 
-QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const
+QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
 {
   QgsExpressionContext expressionContext = createExpressionContext();
   QgsCoordinateReferenceSystem renderCrs = crs();
@@ -1058,26 +1065,29 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( mLayout )
     jobMapSettings.setEllipsoid( mLayout->project()->ellipsoid() );
 
-  //set layers to render
-  QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-  if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
+  if ( includeLayerSettings )
   {
-    const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
-    if ( layerIdx >= 0 && layerIdx < layers.length() )
+    //set layers to render
+    QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
+    if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
     {
-      // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
-      QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
-      layers.clear();
-      layers << ml;
+      const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
+      if ( layerIdx >= 0 && layerIdx < layers.length() )
+      {
+        // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
+        QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
+        layers.clear();
+        layers << ml;
+      }
+      else
+      {
+        // exporting decorations such as map frame/grid/overview, so no map layers required
+        layers.clear();
+      }
     }
-    else
-    {
-      // exporting decorations such as map frame/grid/overview, so no map layers required
-      layers.clear();
-    }
+    jobMapSettings.setLayers( layers );
+    jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }
-  jobMapSettings.setLayers( layers );
-  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
@@ -1094,6 +1104,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
+  jobMapSettings.setPathResolver( mLayout->project()->pathResolver() );
 
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
 
@@ -1104,11 +1115,8 @@ void QgsLayoutItemMap::finalizeRestoreFromXml()
 {
   assignFreeId();
 
-  const QList<QgsLayoutItemMapOverview * > allOverviews = overviews()->asList();
-  for ( QgsLayoutItemMapOverview *overview : allOverviews )
-  {
-    overview->connectSignals();
-  }
+  mOverviewStack->finalizeRestoreFromXml();
+  mGridStack->finalizeRestoreFromXml();
 }
 
 void QgsLayoutItemMap::setMoveContentPreviewOffset( double xOffset, double yOffset )
@@ -1324,6 +1332,12 @@ void QgsLayoutItemMap::shapeChanged()
   emit extentChanged();
 }
 
+void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
+{
+  if ( theme == mCachedLayerStyleOverridesPresetName )
+    mCachedLayerStyleOverridesPresetName.clear(); // force cache regeneration at next redraw
+}
+
 void QgsLayoutItemMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
@@ -1354,6 +1368,8 @@ void QgsLayoutItemMap::connectUpdateSlot()
 
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
+
+  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
 }
 
 void QgsLayoutItemMap::updateToolTip()
@@ -1433,7 +1449,16 @@ QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsE
     presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
 
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
-      return mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+    {
+      if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )
+      {
+        // have to regenerate cache of style overrides
+        mCachedPresetLayerStyleOverrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+        mCachedLayerStyleOverridesPresetName = presetName;
+      }
+
+      return mCachedPresetLayerStyleOverrides;
+    }
     else
       return QMap<QString, QString>();
   }
@@ -1635,7 +1660,7 @@ bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 
   if ( -1 == currentExportLayer )
   {
-    //all parts of the composer map are visible
+    //all parts of the map are visible
     return true;
   }
 

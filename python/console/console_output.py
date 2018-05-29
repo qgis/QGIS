@@ -18,19 +18,19 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from builtins import range
-from builtins import object
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QColor, QFont, QKeySequence, QFontDatabase
 from qgis.PyQt.QtWidgets import QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython
-from qgis.core import QgsApplication, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 import sys
 
 
 class writeOut(object):
+
+    ERROR_COLOR = "#e31a1c"
 
     def __init__(self, shellOut, out=None, style=None):
         """
@@ -39,11 +39,12 @@ class writeOut(object):
         self.sO = shellOut
         self.out = None
         self.style = style
+        self.fire_keyboard_interrupt = False
 
     def write(self, m):
         if self.style == "_traceback":
             # Show errors in red
-            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(Qt.red)))
+            stderrColor = QColor(self.sO.settings.value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, 0o01, stderrColor)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, 0o01, True)
             self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, 0o01, True)
@@ -62,6 +63,10 @@ class writeOut(object):
         if self.style != "_traceback":
             QCoreApplication.processEvents()
 
+        if self.fire_keyboard_interrupt:
+            self.fire_keyboard_interrupt = False
+            raise KeyboardInterrupt
+
     def move_cursor_to_end(self):
         """Move cursor to end of text"""
         line, index = self.get_end_pos()
@@ -77,8 +82,33 @@ class writeOut(object):
     def flush(self):
         pass
 
+    def isatty(self):
+        return False
+
 
 class ShellOutputScintilla(QsciScintilla):
+
+    DEFAULT_COLOR = "#4d4d4c"
+    KEYWORD_COLOR = "#8959a8"
+    CLASS_COLOR = "#4271ae"
+    METHOD_COLOR = "#4271ae"
+    DECORATION_COLOR = "#3e999f"
+    NUMBER_COLOR = "#c82829"
+    COMMENT_COLOR = "#8e908c"
+    COMMENT_BLOCK_COLOR = "#8e908c"
+    BACKGROUND_COLOR = "#ffffff"
+    CURSOR_COLOR = "#636363"
+    CARET_LINE_COLOR = "#efefef"
+    SINGLE_QUOTE_COLOR = "#718c00"
+    DOUBLE_QUOTE_COLOR = "#718c00"
+    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
+    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
+    MARGIN_BACKGROUND_COLOR = "#efefef"
+    MARGIN_FOREGROUND_COLOR = "#636363"
+    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
+    SELECTION_FOREGROUND_COLOR = "#303030"
+    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
+    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
 
     def __init__(self, parent=None):
         super(ShellOutputScintilla, self).__init__(parent)
@@ -120,8 +150,6 @@ class ShellOutputScintilla(QsciScintilla):
         self.setMarginsFont(font)
         self.setMarginWidth(1, "00000")
         self.setMarginLineNumbers(1, True)
-        self.setMarginsForegroundColor(QColor("#3E3EE3"))
-        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretWidth(0)
 
@@ -155,8 +183,12 @@ class ShellOutputScintilla(QsciScintilla):
     def refreshSettingsOutput(self):
         # Set Python lexer
         self.setLexers()
-        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor("#fcf3ed"))
-        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(Qt.black))
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColor", QColor(self.SELECTION_FOREGROUND_COLOR))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColor", QColor(self.SELECTION_BACKGROUND_COLOR))))
+        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColor", QColor(self.MARGIN_FOREGROUND_COLOR))))
+        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColor", QColor(self.MARGIN_BACKGROUND_COLOR))))
+        caretLineColor = self.settings.value("pythonConsole/caretLineColor", QColor(self.CARET_LINE_COLOR))
+        cursorColor = self.settings.value("pythonConsole/cursorColor", QColor(self.CURSOR_COLOR))
         self.setCaretLineBackgroundColor(caretLineColor)
         self.setCaretForegroundColor(cursorColor)
 
@@ -173,25 +205,28 @@ class ShellOutputScintilla(QsciScintilla):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(Qt.blue))), 7)
+        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColor", QColor(self.NUMBER_COLOR))), 2)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColor", QColor(self.CLASS_COLOR))), 8)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColor", QColor(self.METHOD_COLOR))), 9)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColor", QColor(self.DECORATION_COLOR))), 15)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
         self.lexer.setColor(QColor(Qt.red), 14)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 2)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(Qt.white)))
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.setLexer(self.lexer)
@@ -204,9 +239,9 @@ class ShellOutputScintilla(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
-        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
-        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")
+        iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.svg")
+        iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.svg")
+        iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.svg")
         menu.addAction(iconHideTool,
                        QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
                        self.hideToolBar)
@@ -231,7 +266,7 @@ class ShellOutputScintilla(QsciScintilla):
             self.selectAll, QKeySequence.SelectAll)
         menu.addSeparator()
         menu.addAction(iconSettings,
-                       QCoreApplication.translate("PythonConsole", "Options..."),
+                       QCoreApplication.translate("PythonConsole", "Options…"),
                        self.parent.openSettings)
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
@@ -288,4 +323,4 @@ class ShellOutputScintilla(QsciScintilla):
 
     def widgetMessageBar(self, iface, text):
         timeout = iface.messageTimeout()
-        self.infoBar.pushMessage(text, QgsMessageBar.INFO, timeout)
+        self.infoBar.pushMessage(text, Qgis.Info, timeout)

@@ -31,25 +31,60 @@
 QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mToolName = tr( "Select" );
-  mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
+  mToolName = tr( "Select features" );
+
+  mSelectionHandler = qgis::make_unique<QgsMapToolSelectionHandler>( canvas );
+  connect( mSelectionHandler.get(), &QgsMapToolSelectionHandler::geometryChanged, this, &QgsMapToolSelect::selectFeatures );
+  setSelectionMode( QgsMapToolSelectionHandler::SelectSimple );
+}
+
+void QgsMapToolSelect::setSelectionMode( QgsMapToolSelectionHandler::SelectionMode selectionMode )
+{
+  mSelectionHandler->setSelectionMode( selectionMode );
+  if ( selectionMode == QgsMapToolSelectionHandler::SelectSimple )
+    mCursor = QgsApplication::getThemeCursor( QgsApplication::Cursor::Select );
+  else
+    mCursor = Qt::ArrowCursor;
+}
+
+void QgsMapToolSelect::canvasPressEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasPressEvent( e );
+}
+
+void QgsMapToolSelect::canvasMoveEvent( QgsMapMouseEvent *e )
+{
+  mSelectionHandler->canvasMoveEvent( e );
 }
 
 void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( !vlayer )
+  mSelectionHandler->canvasReleaseEvent( e );
+}
+
+void QgsMapToolSelect::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mSelectionHandler->keyReleaseEvent( e ) )
     return;
 
-  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
-  rubberBand.setFillColor( mFillColor );
-  rubberBand.setStrokeColor( mStrokeColor );
-  QRect selectRect( 0, 0, 0, 0 );
-  QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
-  QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QgsGeometry selectGeom( rubberBand.asGeometry() );
-  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
-  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
+  QgsMapTool::keyReleaseEvent( e );
+}
+
+void QgsMapToolSelect::deactivate()
+{
+  mSelectionHandler->deactivate();
+  QgsMapTool::deactivate();
+}
+
+void QgsMapToolSelect::selectFeatures( Qt::KeyboardModifiers modifiers )
+{
+  if ( mSelectionHandler->selectionMode() == QgsMapToolSelectionHandler::SelectSimple &&
+       mSelectionHandler->selectedGeometry().type() == QgsWkbTypes::PointGeometry )
+  {
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    QgsRectangle r = QgsMapToolSelectUtils::expandSelectRectangle( mSelectionHandler->selectedGeometry().asPoint(), mCanvas, vlayer );
+    QgsMapToolSelectUtils::selectSingleFeature( mCanvas, QgsGeometry::fromRect( r ), modifiers );
+  }
+  else
+    QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, mSelectionHandler->selectedGeometry(), modifiers );
 }

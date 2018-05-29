@@ -18,6 +18,8 @@ import tempfile
 import shutil
 import os
 import subprocess
+from xml.dom import minidom
+from osgeo import gdal
 
 from qgis.core import (QgsMultiRenderChecker,
                        QgsLayoutExporter,
@@ -39,7 +41,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsPrintLayout,
                        QgsSingleSymbolRenderer,
                        QgsReport)
-from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
+from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt, QDateTime, QDate, QTime, QTimeZone
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
@@ -293,6 +295,14 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('rendertoimageregionoverridedpi', 'rendertoimageregionoverridedpi', rendered_file_path))
 
     def testExportToImage(self):
+        md = QgsProject.instance().metadata()
+        md.setTitle('proj title')
+        md.setAuthor('proj author')
+        md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
+        md.setIdentifier('proj identifier')
+        md.setAbstract('proj abstract')
+        md.setKeywords({'kw': ['kw1', 'kw2']})
+        QgsProject.instance().setMetadata(md)
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
 
@@ -335,6 +345,15 @@ class TestQgsLayoutExporter(unittest.TestCase):
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagedpi_2.png')
         self.assertTrue(self.checkImage('exporttoimagedpi_page2', 'exporttoimagedpi_page2', page2_path))
 
+        for f in (rendered_file_path, page2_path):
+            d = gdal.Open(f)
+            metadata = d.GetMetadata()
+            self.assertEqual(metadata['Author'], 'proj author')
+            self.assertEqual(metadata['Created'], '2011-05-03T09:04:05+10:00')
+            self.assertIn(metadata['Keywords'], ('kw1,kw2', 'kw2,kw1'))
+            self.assertEqual(metadata['Subject'], 'proj abstract')
+            self.assertEqual(metadata['Title'], 'proj title')
+
         # crop to contents
         settings.cropToContents = True
         settings.cropMargins = QgsMargins(10, 20, 30, 40)
@@ -367,6 +386,15 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
 
     def testExportToPdf(self):
+        md = QgsProject.instance().metadata()
+        md.setTitle('proj title')
+        md.setAuthor('proj author')
+        md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
+        md.setIdentifier('proj identifier')
+        md.setAbstract('proj abstract')
+        md.setKeywords({'kw': ['kw1', 'kw2']})
+        QgsProject.instance().setMetadata(md)
+
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
 
@@ -403,6 +431,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings.dpi = 80
         settings.rasterizeWholeImage = False
         settings.forceVectorOutput = False
+        settings.exportMetadata = True
 
         pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdfdpi.pdf')
         self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
@@ -417,7 +446,23 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttopdfdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttopdfdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
+        d = gdal.Open(pdf_file_path)
+        metadata = d.GetMetadata()
+        self.assertEqual(metadata['AUTHOR'], 'proj author')
+        self.assertEqual(metadata['CREATION_DATE'], "D:20110503090405+10'0'")
+        self.assertIn(metadata['KEYWORDS'], ('kw1,kw2', 'kw2,kw1'))
+        self.assertEqual(metadata['SUBJECT'], 'proj abstract')
+        self.assertEqual(metadata['TITLE'], 'proj title')
+
     def testExportToSvg(self):
+        md = QgsProject.instance().metadata()
+        md.setTitle('proj title')
+        md.setAuthor('proj author')
+        md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
+        md.setIdentifier('proj identifier')
+        md.setAbstract('proj abstract')
+        md.setKeywords({'kw': ['kw1', 'kw2']})
+        QgsProject.instance().setMetadata(md)
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
 
@@ -453,12 +498,29 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings = QgsLayoutExporter.SvgExportSettings()
         settings.dpi = 80
         settings.forceVectorOutput = False
+        settings.exportMetadata = True
 
         svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvgdpi.svg')
         svg_file_path_2 = os.path.join(self.basetestpath, 'test_exporttosvgdpi_2.svg')
         self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
         self.assertTrue(os.path.exists(svg_file_path))
         self.assertTrue(os.path.exists(svg_file_path_2))
+
+        # metadata
+        def checkMetadata(f, expected):
+            # ideally we'd check the path too - but that's very complex given that
+            # the output from Qt svg generator isn't valid XML, and no Python standard library
+            # xml parser handles invalid xml...
+            self.assertEqual('proj title' in open(f).read(), expected)
+            self.assertEqual('proj author' in open(f).read(), expected)
+            self.assertEqual('proj identifier' in open(f).read(), expected)
+            self.assertEqual('2011-05-03' in open(f).read(), expected)
+            self.assertEqual('proj abstract' in open(f).read(), expected)
+            self.assertEqual('kw1' in open(f).read(), expected)
+            self.assertEqual('kw2' in open(f).read(), expected)
+
+        for f in [svg_file_path, svg_file_path_2]:
+            checkMetadata(f, True)
 
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttosvgdpi.png')
         svgToPng(svg_file_path, rendered_page_1, width=936)
@@ -468,8 +530,15 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttosvgdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttosvgdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
+        # no metadata
+        settings.exportMetadata = False
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        for f in [svg_file_path, svg_file_path_2]:
+            checkMetadata(f, False)
+
         # layered
         settings.exportAsLayers = True
+        settings.exportMetadata = True
 
         svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvglayered.svg')
         svg_file_path_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered_2.svg')
@@ -484,6 +553,16 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
         self.assertTrue(self.checkImage('exporttosvglayered_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+
+        for f in [svg_file_path, svg_file_path_2]:
+            checkMetadata(f, True)
+
+        # layered no metadata
+        settings.exportAsLayers = True
+        settings.exportMetadata = False
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        for f in [svg_file_path, svg_file_path_2]:
+            checkMetadata(f, False)
 
     def testPrint(self):
         l = QgsLayout(QgsProject.instance())

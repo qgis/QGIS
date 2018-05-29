@@ -79,9 +79,9 @@ class CORE_EXPORT QgsRelation
         FieldPair( const QString &referencingField, const QString &referencedField )
           : QPair< QString, QString >( referencingField, referencedField ) {}
 
-        //! Get the name of the referencing (child) field
+        //! Gets the name of the referencing (child) field
         QString referencingField() const { return first; }
-        //! Get the name of the referenced (parent) field
+        //! Gets the name of the referenced (parent) field
         QString referencedField() const { return second; }
 
         bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsRelation
      * Set a strength for this relation
      * \since QGIS 3.0
      */
-    void setStrength( const RelationStrength &strength );
+    void setStrength( RelationStrength strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -185,9 +185,9 @@ class CORE_EXPORT QgsRelation
      * which have a foreign key pointing to the provided feature.
      * \param feature A feature from the referenced (parent) layer
      * \returns expression filter string for all the referencing features
-     * \since QGIS 2.16
      * \see getRelatedFeatures()
      * \see getRelatedFeaturesRequest()
+     * \since QGIS 2.16
      */
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
 
@@ -198,7 +198,6 @@ class CORE_EXPORT QgsRelation
      * \param attributes An attribute vector containing the foreign key
      *
      * \returns A request the referenced feature
-     * \note not available in Python bindings
      */
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
 
@@ -296,7 +295,7 @@ class CORE_EXPORT QgsRelation
     % MethodCode
     const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
     sipRes = new QMap< QString, QString >();
-    Q_FOREACH ( const QgsRelation::FieldPair &pair, pairs )
+    for ( const QgsRelation::FieldPair &pair : pairs )
     {
       sipRes->insert( pair.first, pair.second );
     }
@@ -336,14 +335,14 @@ class CORE_EXPORT QgsRelation
     bool hasEqualDefinition( const QgsRelation &other ) const;
 
     /**
-     * Get the referenced field counterpart given a referencing field.
+     * Gets the referenced field counterpart given a referencing field.
      *
      * \since QGIS 3.0
      */
     Q_INVOKABLE QString resolveReferencedField( const QString &referencingField ) const;
 
     /**
-     * Get the referencing field counterpart given a referenced field.
+     * Gets the referencing field counterpart given a referenced field.
      *
      * \since QGIS 3.0
      */

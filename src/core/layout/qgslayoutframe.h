@@ -68,11 +68,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     QgsLayoutSize minimumSize() const override;
     QgsLayoutSize fixedSize() const override;
 
-#if 0 //TODO
-    void beginItemCommand( const QString &text ) override;
-    void endItemCommand() override;
-#endif
-
     /**
      * Returns the visible portion of the multi frame's content which
      * is shown in this frame, in layout units.
@@ -118,7 +113,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 
   protected:
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;

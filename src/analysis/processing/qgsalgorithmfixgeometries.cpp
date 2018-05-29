@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsFixGeometriesAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsFixGeometriesAlgorithm::name() const
 {
   return QStringLiteral( "fixgeometries" );
@@ -77,10 +72,10 @@ QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
   return new QgsFixGeometriesAlgorithm();
 }
 
-QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
+QgsFeatureList QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
-    return feature;
+    return QgsFeatureList() << feature;
 
   QgsFeature outputFeature = feature;
 
@@ -89,7 +84,7 @@ QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature,
   {
     feedback->pushInfo( QObject::tr( "makeValid failed for feature %1 " ).arg( feature.id() ) );
     outputFeature.clearGeometry();
-    return outputFeature;
+    return QgsFeatureList() << outputFeature;
   }
 
   if ( outputGeometry.wkbType() == QgsWkbTypes::Unknown ||
@@ -120,7 +115,7 @@ QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature,
   {
     outputFeature.setGeometry( outputGeometry );
   }
-  return outputFeature;
+  return QgsFeatureList() << outputFeature;
 }
 
 ///@endcond

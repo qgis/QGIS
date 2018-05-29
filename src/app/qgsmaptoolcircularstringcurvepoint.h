@@ -18,8 +18,9 @@
 #define QGSMAPTOOLCIRCULARSTRINGCURVEPOINT_H
 
 #include "qgsmaptooladdcircularstring.h"
+#include "qgis_app.h"
 
-class QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
+class APP_EXPORT QgsMapToolCircularStringCurvePoint: public QgsMapToolAddCircularString
 {
     Q_OBJECT
 

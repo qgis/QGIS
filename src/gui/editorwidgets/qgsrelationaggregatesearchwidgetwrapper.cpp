@@ -61,10 +61,9 @@ QWidget *QgsRelationAggregateSearchWidgetWrapper::createWidget( QWidget *parent 
   }
   else
   {
-    QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
-    mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, parent );
-    mAttributeForm->setMode( QgsAttributeForm::AggregateSearchMode );
-    widget = mAttributeForm;
+    mContainerWidget = new QWidget( parent );
+    widget = mContainerWidget;
+    widget->installEventFilter( this );
   }
 
   groupBox->setLayout( new QGridLayout() );
@@ -82,4 +81,20 @@ void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &valu
 {
   Q_UNUSED( value )
   QgsDebugMsg( "Not supported" );
+}
+
+bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEvent *event )
+{
+  bool rv = QgsSearchWidgetWrapper::eventFilter( watched, event );
+  if ( event->type() == QEvent::Show && !mAttributeForm )
+  {
+    QgsAttributeEditorContext subContext = QgsAttributeEditorContext( context(), mWrapper->relation(), QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed );
+    mAttributeForm = new QgsAttributeForm( mWrapper->relation().referencingLayer(), QgsFeature(), subContext, mContainerWidget );
+    mAttributeForm->setMode( QgsAttributeForm::AggregateSearchMode );
+    QGridLayout *glayout = new QGridLayout();
+    mContainerWidget->setLayout( glayout );
+    glayout->setMargin( 0 );
+    glayout->addWidget( mAttributeForm );
+  }
+  return rv;
 }

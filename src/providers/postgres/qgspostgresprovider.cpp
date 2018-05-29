@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgsmessageoutput.h"
 #include "qgsmessagelog.h"
+#include "qgsprojectstorageregistry.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsxmlutils.h"
@@ -36,6 +37,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgrestransaction.h"
 #include "qgspostgreslistener.h"
+#include "qgspostgresprojectstorage.h"
 #include "qgslogger.h"
 #include "qgsfeedback.h"
 #include "qgssettings.h"
@@ -87,8 +89,8 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 
-QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mShared( new QgsPostgresSharedData )
 {
 
@@ -278,6 +280,9 @@ QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   {
     disconnectDb();
   }
+
+  mLayerMetadata.setType( QStringLiteral( "dataset" ) );
+  mLayerMetadata.setCrs( crs() );
 }
 
 QgsPostgresProvider::~QgsPostgresProvider()
@@ -646,11 +651,16 @@ void QgsPostgresProvider::setExtent( QgsRectangle &newExtent )
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
 {
   return mRequestedGeomType != QgsWkbTypes::Unknown ? mRequestedGeomType : mDetectedGeomType;
+}
+
+QgsLayerMetadata QgsPostgresProvider::layerMetadata() const
+{
+  return mLayerMetadata;
 }
 
 QgsField QgsPostgresProvider::field( int index ) const
@@ -675,7 +685,7 @@ QString QgsPostgresProvider::dataComment() const
 }
 
 
-//! @todo XXX Perhaps this should be promoted to QgsDataProvider?
+//! \todo XXX Perhaps this should be promoted to QgsDataProvider?
 QString QgsPostgresProvider::endianString()
 {
   switch ( QgsApplication::endian() )
@@ -713,7 +723,10 @@ bool QgsPostgresProvider::loadFields()
     sql = QStringLiteral( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
     tresult = connectionRO()->PQexec( sql );
     if ( tresult.PQntuples() > 0 )
+    {
       mDataComment = tresult.PQgetvalue( 0, 0 );
+      mLayerMetadata.setAbstract( mDataComment );
+    }
   }
 
   // Populate the field vector for this layer. The field vector contains
@@ -1254,6 +1267,9 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
   // supports circular geometries
   mEnabledCapabilities |= QgsVectorDataProvider::CircularGeometries;
 
+  // supports layer metadata
+  mEnabledCapabilities |= QgsVectorDataProvider::ReadLayerMetadata;
+
   if ( ( mEnabledCapabilities & QgsVectorDataProvider::ChangeGeometries ) &&
        ( mEnabledCapabilities & QgsVectorDataProvider::ChangeAttributeValues ) &&
        mSpatialColType != SctTopoGeometry )
@@ -1675,6 +1691,9 @@ void QgsPostgresProvider::enumValues( int index, QStringList &enumList ) const
   QString fieldName = mAttributeFields.at( index ).name();
   QString typeName = mAttributeFields.at( index ).typeName();
 
+  // Remove schema extension from typeName
+  typeName.remove( QRegularExpression( "^([^.]+\\.)+" ) );
+
   //is type an enum?
   QString typeSql = QStringLiteral( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
   QgsPostgresResult typeRes( connectionRO()->PQexec( typeSql ) );
@@ -1727,12 +1746,22 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   enumValues.clear();
 
   //is it a domain type with a check constraint?
-  QString domainSql = QStringLiteral( "SELECT domain_name FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
+  QString domainSql = QStringLiteral( "SELECT domain_name, domain_schema FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
-  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 )
+  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
     //a domain type
-    QString domainCheckDefinitionSql = QStringLiteral( "SELECT consrc FROM pg_constraint WHERE conname=(SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name=%1)" ).arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) );
+    QString domainCheckDefinitionSql = QStringLiteral( ""
+                                       "SELECT consrc FROM pg_constraint "
+                                       "  WHERE contypid =("
+                                       "    SELECT oid FROM pg_type "
+                                       "      WHERE typname = %1 "
+                                       "      AND typnamespace =("
+                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                       "      )"
+                                       "    )" )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {
@@ -2018,7 +2047,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // e.g. for defaults
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
-      QVariant v = attributevec.at( idx );
+      QVariant v = attributevec.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
       if ( fieldId.contains( idx ) )
         continue;
 
@@ -2037,7 +2066,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( i = 1; i < flist.size(); i++ )
       {
         QgsAttributes attrs2 = flist[i].attributes();
-        QVariant v2 = attrs2.at( idx );
+        QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
 
         if ( v2 != v )
           break;
@@ -2145,7 +2174,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       for ( int i = 0; i < fieldId.size(); i++ )
       {
         int attrIdx = fieldId[i];
-        QVariant value = attrs.at( attrIdx );
+        QVariant value = attrIdx < attrs.length() ? attrs.at( attrIdx ) : QVariant( QVariant::Int );
 
         QString v;
         if ( value.isNull() )
@@ -3089,7 +3118,7 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsPostgresProvider::featureCount() const
 {
@@ -3523,7 +3552,6 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.geometryColType = mSpatialColType;
-    layerProperty.force2d         = false;
 
     QString delim;
 
@@ -3565,7 +3593,6 @@ bool QgsPostgresProvider::getGeometryDetails()
           // only what we requested is available
           mDetectedGeomType = layerProperty.types.at( 0 );
           mDetectedSrid     = QString::number( layerProperty.srids.at( 0 ) );
-          mForce2d          = layerProperty.force2d;
         }
       }
       else
@@ -3580,7 +3607,6 @@ bool QgsPostgresProvider::getGeometryDetails()
   QgsDebugMsg( QString( "Requested SRID is %1" ).arg( mRequestedSrid ) );
   QgsDebugMsg( QString( "Detected type is %1" ).arg( mDetectedGeomType ) );
   QgsDebugMsg( QString( "Requested type is %1" ).arg( mRequestedGeomType ) );
-  QgsDebugMsg( QString( "Force to 2D %1" ).arg( mForce2d ? "Yes" : "No" ) );
 
   mValid = ( mDetectedGeomType != QgsWkbTypes::Unknown || mRequestedGeomType != QgsWkbTypes::Unknown )
            && ( !mDetectedSrid.isEmpty() || !mRequestedSrid.isEmpty() );
@@ -3909,13 +3935,14 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri( false ) );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
       *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
-    delete provider;
     return QgsVectorLayerExporter::ErrInvalidLayer;
   }
 
@@ -3976,7 +4003,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
         if ( errorMessage )
           *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
-        delete provider;
         return QgsVectorLayerExporter::ErrAttributeTypeUnsupported;
       }
 
@@ -3996,7 +4022,6 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
-      delete provider;
       return QgsVectorLayerExporter::ErrAttributeCreationFailed;
     }
 
@@ -4376,9 +4401,9 @@ bool QgsPostgresProvider::hasMetadata() const
  * Class factory to return a pointer to a newly created
  * QgsPostgresProvider object
  */
-QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri )
+QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsPostgresProvider( *uri );
+  return new QgsPostgresProvider( *uri, options );
 }
 
 /**
@@ -4719,6 +4744,7 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
+    conn->unref();
     return QLatin1String( "" );
   }
 
@@ -4889,8 +4915,21 @@ QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
   return new QgsPostgresTransaction( connString );
 }
 
+
+QgsPostgresProjectStorage *gProjectStorage = nullptr;   // when not null it is owned by QgsApplication::projectStorageRegistry()
+
+QGISEXTERN void initProvider()
+{
+  Q_ASSERT( !gProjectStorage );
+  gProjectStorage = new QgsPostgresProjectStorage;
+  QgsApplication::projectStorageRegistry()->registerProjectStorage( gProjectStorage );  // takes ownership
+}
+
 QGISEXTERN void cleanupProvider()
 {
+  QgsApplication::projectStorageRegistry()->unregisterProjectStorage( gProjectStorage );  // destroys the object
+  gProjectStorage = nullptr;
+
   QgsPostgresConnPool::cleanupInstance();
 }
 
@@ -4904,7 +4943,7 @@ class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spell
 
     QString providerKey() const override { return QStringLiteral( "postgres" ); }
     QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

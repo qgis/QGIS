@@ -1712,7 +1712,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
   mSvgPattern = nullptr;
@@ -1729,7 +1729,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
@@ -2188,7 +2188,8 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &co
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
   {
     context.setOriginalValueVariable( mSvgFilePath );
-    svgFile = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath );
+    svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath ),
+              context.renderContext().pathResolver() );
   }
   QColor svgFillColor = mColor;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
@@ -3134,6 +3135,11 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+    if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
+    {
+      pointRenderContext.setFlag( QgsRenderContext::Antialiasing, true );
+      p.setRenderHint( QPainter::Antialiasing, true );
+    }
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
@@ -3621,6 +3627,18 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties
   return symbolLayer;
 }
 
+void QgsRasterFillSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = pathResolver.writePath( it.value() );
+    else
+      it.value() = pathResolver.readPath( it.value() );
+  }
+}
+
 bool QgsRasterFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   Q_UNUSED( symbol );
@@ -3769,7 +3787,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( hasFileExpression )
   {
     context.setOriginalValueVariable( mImageFilePath );
-    file = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file );
+    file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
   applyPattern( mBrush, file, width, opacity, context );
 }

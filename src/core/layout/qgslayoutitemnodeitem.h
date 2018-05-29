@@ -126,7 +126,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      */
     QgsLayoutNodesItem( const QPolygonF &polygon, QgsLayout *layout );
 
-    void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    void draw( QgsLayoutItemRenderContext &context ) override;
 
     bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -144,7 +144,7 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     virtual bool _removeNode( const int nodeIndex ) = 0;
 
     //! Method called in paint.
-    virtual void _draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
+    virtual void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
 
     //! Method called in readXml.
     virtual void _readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context ) = 0;
@@ -188,8 +188,8 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     bool mDrawNodes = false;
 
     //! Draw nodes
-    void drawNodes( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) const;
-    void drawSelectedNode( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) const;
+    void drawNodes( QgsLayoutItemRenderContext &context ) const;
+    void drawSelectedNode( QgsLayoutItemRenderContext &context ) const;
 
 };
 

@@ -22,9 +22,14 @@
 #include "processing/qgsprocessingprovider.h"
 #include "qgstaskmanager.h"
 #include "processing/qgsprocessingalgrunnertask.h"
+#include "qgsstringutils.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
+#include <QApplication>
+#include <QClipboard>
+#include <QFileDialog>
+
 
 ///@cond NOT_STABLE
 
@@ -38,9 +43,9 @@ void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text 
   emit progressTextChanged( text );
 }
 
-void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error )
+void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error, bool fatalError )
 {
-  emit errorReported( error );
+  emit errorReported( error, fatalError );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
@@ -108,6 +113,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( mButtonCollapse, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::toggleCollapsed );
   connect( splitter, &QSplitter::splitterMoved, this, &QgsProcessingAlgorithmDialogBase::splitterChanged );
 
+  connect( mButtonSaveLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::saveLog );
+  connect( mButtonCopyLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::copyLogToClipboard );
+  connect( mButtonClearLog, &QToolButton::clicked, this, &QgsProcessingAlgorithmDialogBase::clearLog );
+
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
@@ -118,7 +127,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm = algorithm;
-  setWindowTitle( mAlgorithm->displayName() );
+  setWindowTitle( QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase ) );
 
   QString algHelp = formatHelp( algorithm );
   if ( algHelp.isEmpty() )
@@ -135,7 +144,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
   }
 
-  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagCanRunInBackground )
+  if ( !( algorithm->flags() & QgsProcessingAlgorithm::FlagNoThreading ) )
     mButtonRun->setText( tr( "Run in Background" ) );
 }
 
@@ -163,6 +172,27 @@ QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
 QVariantMap QgsProcessingAlgorithmDialogBase::getParameterValues() const
 {
   return QVariantMap();
+}
+
+void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const LogFormat format )
+{
+  QFile logFile( path );
+  if ( !logFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    return;
+  }
+  QTextStream fout( &logFile );
+
+  switch ( format )
+  {
+    case FormatPlainText:
+      fout << txtLog->toPlainText();
+      break;
+
+    case FormatHtml:
+      fout << txtLog->toHtml();
+      break;
+  }
 }
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
@@ -233,7 +263,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() )
   {
-    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->id(), mAlgorithm->groupId(), mAlgorithm->name() ) );
+    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), QStringLiteral( "%1%2" ).arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name() ) ) );
   }
 
   if ( !algHelp.isEmpty() )
@@ -316,10 +346,11 @@ void QgsProcessingAlgorithmDialogBase::closeClicked()
   close();
 }
 
-void QgsProcessingAlgorithmDialogBase::reportError( const QString &error )
+void QgsProcessingAlgorithmDialogBase::reportError( const QString &error, bool fatalError )
 {
   setInfo( error, true );
-  resetGui();
+  if ( fatalError )
+    resetGui();
   showLog();
   processEvents();
 }
@@ -332,21 +363,21 @@ void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
 
 void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
 {
-  txtLog->append( QStringLiteral( "<code>%1<code>" ).arg( command.toHtmlEscaped() ) );
+  txtLog->append( QStringLiteral( "<code>%1<code>" ).arg( formatStringForLog( command.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 {
-  txtLog->append( QStringLiteral( "<span style=\"color:blue\">%1</span>" ).arg( message.toHtmlEscaped() ) );
+  txtLog->append( QStringLiteral( "<span style=\"color:blue\">%1</span>" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
 {
-  txtLog->append( QStringLiteral( "<code><span style=\"color:blue\">%1</darkgray></code>" ).arg( info.toHtmlEscaped() ) );
+  txtLog->append( QStringLiteral( "<code><span style=\"color:blue\">%1</darkgray></code>" ).arg( formatStringForLog( info.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
@@ -366,6 +397,49 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
     sb->setValue( sb->maximum() );
   } );
   return dialog;
+}
+
+void QgsProcessingAlgorithmDialogBase::clearLog()
+{
+  txtLog->clear();
+}
+
+void QgsProcessingAlgorithmDialogBase::saveLog()
+{
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QDir::homePath() ).toString();
+
+  QString filter;
+  const QString txtExt = tr( "Text files" ) + QStringLiteral( " (*.txt *.TXT)" );
+  const QString htmlExt = tr( "HTML files" ) + QStringLiteral( " (*.html *.HTML)" );
+
+  QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
+  if ( path.isEmpty() )
+  {
+    return;
+  }
+
+  settings.setValue( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QFileInfo( path ).path() );
+
+  LogFormat format = FormatPlainText;
+  if ( filter == htmlExt )
+  {
+    format = FormatHtml;
+  }
+  saveLogToFile( path, format );
+}
+
+void QgsProcessingAlgorithmDialogBase::copyLogToClipboard()
+{
+  QMimeData *m = new QMimeData();
+  m->setText( txtLog->toPlainText() );
+  m->setHtml( txtLog->toHtml() );
+  QClipboard *cb = QApplication::clipboard();
+
+#ifdef Q_OS_LINUX
+  cb->setMimeData( m, QClipboard::Selection );
+#endif
+  cb->setMimeData( m, QClipboard::Clipboard );
 }
 
 void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
@@ -411,12 +485,26 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
     }
     return QStringLiteral( "<h2>%1</h2>%2" ).arg( algorithm->displayName(), help );
   }
+  else if ( !algorithm->shortDescription().isEmpty() )
+  {
+    return QStringLiteral( "<h2>%1</h2><p>%2</p>" ).arg( algorithm->displayName(), algorithm->shortDescription() );
+  }
   else
     return QString();
 }
 
 void QgsProcessingAlgorithmDialogBase::processEvents()
 {
+  if ( mAlgorithmTask )
+  {
+    // no need to call this - the algorithm is running in a thread.
+    // in fact, calling it causes a crash on Windows when the algorithm
+    // is running in a background thread... unfortunately we need something
+    // like this for non-threadable algorithms, otherwise there's no chance
+    // for users to hit cancel or see progress updates...
+    return;
+  }
+
   // So that we get a chance of hitting the Abort button
 #ifdef Q_OS_LINUX
   // For some reason on Windows hasPendingEvents() always return true,
@@ -463,14 +551,21 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
   QgsApplication::taskManager()->addTask( mAlgorithmTask );
 }
 
+QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
+{
+  QString s = string;
+  s.replace( '\n', QStringLiteral( "<br>" ) );
+  return s;
+}
+
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
 {
   if ( isError )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span><br />" ).arg( message ) );
+    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( formatStringForLog( message ) ) );
   else if ( escapeHtml )
-    txtLog->append( message.toHtmlEscaped() );
+    txtLog->append( formatStringForLog( message.toHtmlEscaped() ) );
   else
-    txtLog->append( message );
+    txtLog->append( formatStringForLog( message ) );
   scrollToBottomOfLog();
   processEvents();
 }

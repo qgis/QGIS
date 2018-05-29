@@ -42,6 +42,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterString,
@@ -224,7 +225,7 @@ def createTest(text):
             params[param.name()] = token
         elif isinstance(param, QgsProcessingParameterBoolean):
             params[param.name()] = token
-        elif isinstance(param, QgsProcessingParameterNumber):
+        elif isinstance(param, (QgsProcessingParameterNumber, QgsProcessingParameterDistance)):
             if param.dataType() == QgsProcessingParameterNumber.Integer:
                 params[param.name()] = int(token)
             else:
@@ -246,6 +247,9 @@ def createTest(text):
     definition['params'] = params
 
     for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
+        if not out.name() in parameters:
+            continue
+
         token = parameters[out.name()]
 
         if isinstance(out, QgsProcessingParameterRasterDestination):
@@ -298,7 +302,7 @@ class ShowTestDialog(QDialog):
         QDialog.__init__(self)
         self.setModal(True)
         self.resize(600, 400)
-        self.setWindowTitle(self.tr('Unit test'))
+        self.setWindowTitle(self.tr('Unit Test'))
         layout = QVBoxLayout()
         self.text = QTextEdit()
         self.text.setFontFamily("monospace")

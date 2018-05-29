@@ -5,10 +5,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layout
+  ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -35,7 +35,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
@@ -58,11 +57,11 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Sql_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -95,11 +94,17 @@ ADD_QGIS_TEST(apppythontest testqgisapppython.cpp)
 ENDIF ()
 ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
 ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
+ADD_QGIS_TEST(applocatorfilters testqgsapplocatorfilters.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
 ADD_QGIS_TEST(maptooladdfeature testqgsmaptooladdfeature.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
 ADD_QGIS_TEST(maptoolreshape testqgsmaptoolreshape.cpp)
+ADD_QGIS_TEST(maptoolcircularstringtest testqgsmaptoolcircularstring.cpp)
+ADD_QGIS_TEST(maptoolcircletest testqgsmaptoolcircle.cpp)
+ADD_QGIS_TEST(maptoolellipsetest testqgsmaptoolellipse.cpp)
+ADD_QGIS_TEST(maptoolrectangletest testqgsmaptoolrectangle.cpp)
+ADD_QGIS_TEST(maptoolregularpolygontest testqgsmaptoolregularpolygon.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
-ADD_QGIS_TEST(nodetool testqgsnodetool.cpp)
+ADD_QGIS_TEST(vertextool testqgsvertextool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)

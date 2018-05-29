@@ -29,8 +29,8 @@
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.
  *
- * \since QGIS 3.0
  * \see QgsRectangle
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsBox3d
 {
@@ -201,6 +201,8 @@ class CORE_EXPORT QgsBox3d
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
+
+    bool operator==( const QgsBox3d &other ) const;
 
   private:
 

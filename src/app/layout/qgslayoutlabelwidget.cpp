@@ -44,7 +44,7 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mTopRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mTopRadioButton_clicked );
   connect( mBottomRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mBottomRadioButton_clicked );
   connect( mMiddleRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::mMiddleRadioButton_clicked );
-  setPanelTitle( tr( "Label properties" ) );
+  setPanelTitle( tr( "Label Properties" ) );
 
   mFontButton->setMode( QgsFontButton::ModeQFont );
 

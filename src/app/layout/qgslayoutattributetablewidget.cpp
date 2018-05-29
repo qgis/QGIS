@@ -68,8 +68,8 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mEmptyFrameCheckBox_toggled );
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutAttributeTableWidget::mHideEmptyBgCheckBox_toggled );
   connect( mWrapBehaviorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged );
-  connect( mAdvancedCustomisationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomisationButton_clicked );
-  setPanelTitle( tr( "Table properties" ) );
+  connect( mAdvancedCustomizationButton, &QPushButton::clicked, this, &QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked );
+  setPanelTitle( tr( "Table Properties" ) );
 
   mContentFontToolButton->setMode( QgsFontButton::ModeQFont );
   mHeaderFontToolButton->setMode( QgsFontButton::ModeQFont );
@@ -131,7 +131,11 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
     {
       connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutAttributeTableWidget::atlasToggled );
     }
+
+    mLayerSourceDDBtn->registerExpressionContextGenerator( mTable );
   }
+
+  registerDataDefinedButton( mLayerSourceDDBtn, QgsLayoutObject::AttributeTableSourceLayer );
 
   //embed widget for general options
   if ( mFrame )
@@ -394,7 +398,7 @@ void QgsLayoutAttributeTableWidget::mBackgroundColorButton_colorChanged( const Q
 
 void QgsLayoutAttributeTableWidget::updateGuiElements()
 {
-  if ( !mTable )
+  if ( !mTable || !mFrame )
   {
     return;
   }
@@ -883,7 +887,7 @@ void QgsLayoutAttributeTableWidget::mWrapBehaviorComboBox_currentIndexChanged( i
   mTable->endCommand();
 }
 
-void QgsLayoutAttributeTableWidget::mAdvancedCustomisationButton_clicked()
+void QgsLayoutAttributeTableWidget::mAdvancedCustomizationButton_clicked()
 {
   if ( !mTable )
   {
@@ -925,6 +929,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
     case QgsLayoutItemAttributeTable::LayerAttributes:
       mLayerComboBox->setEnabled( true );
       mLayerComboBox->setVisible( true );
+      mLayerSourceDDBtn->setVisible( true );
       mLayerLabel->setVisible( true );
       mRelationsComboBox->setEnabled( false );
       mRelationsComboBox->setVisible( false );
@@ -938,6 +943,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
     case QgsLayoutItemAttributeTable::AtlasFeature:
       mLayerComboBox->setEnabled( false );
       mLayerComboBox->setVisible( false );
+      mLayerSourceDDBtn->setVisible( false );
       mLayerLabel->setVisible( false );
       mRelationsComboBox->setEnabled( false );
       mRelationsComboBox->setVisible( false );
@@ -952,6 +958,7 @@ void QgsLayoutAttributeTableWidget::toggleSourceControls()
       mLayerComboBox->setEnabled( false );
       mLayerComboBox->setVisible( false );
       mLayerLabel->setVisible( false );
+      mLayerSourceDDBtn->setVisible( false );
       mRelationsComboBox->setEnabled( true );
       mRelationsComboBox->setVisible( true );
       mRelationLabel->setVisible( true );

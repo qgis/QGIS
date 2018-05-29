@@ -10,7 +10,7 @@ QgsProcessingParameterEnum|SEARCH_POINTS_ALL|Number of Points|[0] maximum number
 QgsProcessingParameterNumber|SEARCH_POINTS_MIN|Maximum Number of Points|QgsProcessingParameterNumber.Integer|16|False|1|None
 QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum Number of Points|QgsProcessingParameterNumber.Integer|20|False|1|None
 QgsProcessingParameterEnum|SEARCH_DIRECTION|Search Direction|[0] all directions;[1] quadrants
-Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
+QgsProcessingParameterExtent|TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX|Output extent|None|True
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
 QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
 QgsProcessingParameterRasterLayer|TARGET_TEMPLATE|Target system|None|True

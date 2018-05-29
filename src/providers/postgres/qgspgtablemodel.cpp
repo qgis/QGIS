@@ -70,7 +70,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -85,14 +85,14 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN );
     if ( sridItem->isEditable() )
     {
-      sridItem->setText( tr( "Enter..." ) );
+      sridItem->setText( tr( "Enter…" ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
     QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
     if ( !layerProperty.pkCols.isEmpty() )
     {
-      pkItem->setText( tr( "Select..." ) );
+      pkItem->setText( tr( "Select…" ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else

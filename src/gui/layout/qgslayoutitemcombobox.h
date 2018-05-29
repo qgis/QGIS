@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
     QList< QgsLayoutItem * > exceptedItemList() const;
 
     /**
-     * Return the item currently shown at the specified \a index within the combo box.
+     * Returns the item currently shown at the specified \a index within the combo box.
      * \see currentItem()
      */
     QgsLayoutItem *item( int index ) const;

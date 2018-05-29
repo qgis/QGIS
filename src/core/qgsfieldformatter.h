@@ -45,7 +45,7 @@ class CORE_EXPORT QgsFieldFormatter
     virtual ~QgsFieldFormatter() = default;
 
     /**
-     * Return a unique id for this field formatter.
+     * Returns a unique id for this field formatter.
      * This id will later be used to identify this field formatter in the registry with QgsFieldFormatterRegistry::fieldFormatter().
      *
      * This id matches the id of a QgsEditorWidgetFactory.
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsFieldFormatter
     virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
 
     /**
-     * Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
+     * Returns the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
      * values are represented.
      *
      * \since QGIS 3.0

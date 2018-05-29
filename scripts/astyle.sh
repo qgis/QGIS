@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    astyle.sh
 #    ---------------------
@@ -22,7 +22,7 @@ fi
 
 min_version="3"
 astyle_version_check() {
-	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1` = "$min_version" ]
+	[ `printf "$($1 --version 2>&1 | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1` = "$min_version" ]
 }
 
 for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
@@ -75,9 +75,9 @@ set -e
 
 astyleit() {
 	$ASTYLE --options="$ASTYLEOPTS" "$1"
-	modified=$1.unify_includes_modified
+        modified=$1.unify_includes_modified
 	cp "$1" "$modified"
-	scripts/unify_includes.pl "$modified"
+	perl -i.sortinc -n scripts/unify_includes.pl "$modified"
 	scripts/doxygen_space.pl "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"

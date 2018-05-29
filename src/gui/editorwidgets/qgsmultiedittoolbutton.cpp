@@ -43,13 +43,13 @@ void QgsMultiEditToolButton::aboutToShowMenu()
   {
     case Default:
     {
-      QAction *noAction = mMenu->addAction( tr( "No changes to commit" ) );
+      QAction *noAction = mMenu->addAction( tr( "No Changes to Commit" ) );
       noAction->setEnabled( false );
       break;
     }
     case MixedValues:
     {
-      QString title = !mField.name().isEmpty() ? tr( "Set %1 for all selected features" ).arg( mField.name() )
+      QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
                       : tr( "Set field for all selected features" );
       QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
@@ -57,7 +57,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     }
     case Changed:
     {
-      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to original values" ) );
+      QAction *resetFieldAction = mMenu->addAction( tr( "Reset to Original Values" ) );
       connect( resetFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::resetFieldTriggered );
       break;
     }

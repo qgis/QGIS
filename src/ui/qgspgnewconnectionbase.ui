@@ -209,7 +209,7 @@
 &lt;body&gt;
 &lt;p&gt;When the layer is setup various metadata is required for the PostGIS table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;
 &lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;
-&lt;p&gt;1) Row count is determined from table statistics obtained from running the PostgreSQL table analyze function.&lt;/p&gt;
+&lt;p&gt;1) Row count is determined from results of running the PostgreSQL Analyze function on the table.&lt;/p&gt;
 &lt;p&gt;2) Table extents are always determined with the estimated_extent PostGIS function even if a layer filter is applied.&lt;/p&gt;
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
@@ -217,6 +217,13 @@
         </property>
         <property name="text">
          <string>Use estimated table metadata</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb_projectsInDatabase">
+        <property name="text">
+         <string>Allow saving/loading QGIS projects in the database</string>
         </property>
        </widget>
       </item>

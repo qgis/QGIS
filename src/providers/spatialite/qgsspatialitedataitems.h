@@ -67,6 +67,8 @@ class QgsSLRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 2; }
+
 #ifdef HAVE_GUI
     QWidget *paramWidget() override;
     QList<QAction *> actions( QWidget *parent ) override;

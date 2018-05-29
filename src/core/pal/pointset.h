@@ -137,7 +137,7 @@ namespace pal
       int getNumPoints() const { return nbPoints; }
 
       /**
-       * Get a point a set distance along a line geometry.
+       * Gets a point a set distance along a line geometry.
        * \param d array of distances between points
        * \param ad cumulative total distance from pt0 to each point (ad0 = pt0->pt0)
        * \param dl distance to traverse along line
@@ -156,13 +156,18 @@ namespace pal
        */
       double length() const;
 
+      /**
+       * Returns true if pointset is closed.
+       */
+      bool isClosed() const;
+
     protected:
       mutable GEOSGeometry *mGeos = nullptr;
       mutable bool mOwnsGeom = false;
 
       int nbPoints;
       double *x = nullptr;
-      double *y;   // points order is counterclockwise
+      double *y = nullptr;   // points order is counterclockwise
 
       int *cHull = nullptr;
       int cHullSize;

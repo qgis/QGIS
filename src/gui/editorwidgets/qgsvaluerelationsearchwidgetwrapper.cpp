@@ -54,19 +54,6 @@ QVariant QgsValueRelationSearchWidgetWrapper::value() const
     }
   }
 
-  if ( mListWidget )
-  {
-    QStringList selection;
-    for ( int i = 0; i < mListWidget->count(); ++i )
-    {
-      QListWidgetItem *item = mListWidget->item( i );
-      if ( item->checkState() == Qt::Checked )
-        selection << item->data( Qt::UserRole ).toString();
-    }
-
-    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
-  }
-
   if ( mLineEdit )
   {
     Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &i, mCache )
@@ -141,10 +128,6 @@ void QgsValueRelationSearchWidgetWrapper::clearWidget()
   {
     mComboBox->setCurrentIndex( 0 );
   }
-  if ( mListWidget )
-  {
-    mListWidget->clearSelection();
-  }
   if ( mLineEdit )
   {
     mLineEdit->setText( QString() );
@@ -156,10 +139,6 @@ void QgsValueRelationSearchWidgetWrapper::setEnabled( bool enabled )
   if ( mComboBox )
   {
     mComboBox->setEnabled( enabled );
-  }
-  if ( mListWidget )
-  {
-    mListWidget->setEnabled( enabled );
   }
   if ( mLineEdit )
   {
@@ -182,7 +161,6 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   }
   else
   {
-    QgsSettings settings;
     setExpression( vl.isNull() ? QgsApplication::nullRepresentation() : vl.toString() );
     emit valueChanged();
   }
@@ -231,7 +209,6 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
   mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox *>( editor );
-  mListWidget = qobject_cast<QListWidget *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mComboBox )
@@ -248,18 +225,6 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
     }
 
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
-  }
-  else if ( mListWidget )
-  {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
-    {
-      QListWidgetItem *item = nullptr;
-      item = new QListWidgetItem( element.value );
-      item->setData( Qt::UserRole, element.key );
-
-      mListWidget->addItem( item );
-    }
-    connect( mListWidget, &QListWidget::itemChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
   else if ( mLineEdit )
   {

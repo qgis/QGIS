@@ -27,6 +27,7 @@
 #include "qgsattributeformeditorwidget.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
+#include "qgsnetworkcontentfetcherregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
@@ -129,8 +130,8 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     if ( mUnsavedMultiEditChanges )
     {
       // prompt for save
-      int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
-                                          tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
+      int res = QMessageBox::question( this, tr( "Multiedit Attributes" ),
+                                       tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
       if ( res == QMessageBox::Yes )
       {
         save();
@@ -175,6 +176,10 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       case QgsAttributeForm::AggregateSearchMode:
         w->setMode( QgsAttributeFormWidget::AggregateSearchMode );
         break;
+
+      case QgsAttributeForm::IdentifyMode:
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
+        break;
     }
   }
 
@@ -211,6 +216,11 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
       mSearchButtonBox->setVisible( false );
       hideButtonBox();
       break;
+
+    case QgsAttributeForm::IdentifyMode:
+      setFeature( mFeature );
+      mSearchButtonBox->setVisible( false );
+      break;
   }
 
   emit modeChanged( mMode );
@@ -231,11 +241,13 @@ void QgsAttributeForm::changeAttribute( const QString &field, const QVariant &va
 
 void QgsAttributeForm::setFeature( const QgsFeature &feature )
 {
+  mIsSettingFeature = true;
   mFeature = feature;
 
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     {
       resetValues();
@@ -256,6 +268,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
       break;
     }
   }
+  mIsSettingFeature = false;
 }
 
 bool QgsAttributeForm::saveEdits()
@@ -330,6 +343,9 @@ bool QgsAttributeForm::saveEdits()
       {
         mLayer->beginEditCommand( mEditCommandMessage );
 
+        QgsAttributeMap newValues;
+        QgsAttributeMap oldValues;
+
         int n = 0;
         for ( int i = 0; i < dst.count(); ++i )
         {
@@ -346,9 +362,13 @@ bool QgsAttributeForm::saveEdits()
           QgsDebugMsg( QString( "src:'%1' (type:%2, isNull:%3, isValid:%4)" )
                        .arg( src.at( i ).toString(), src.at( i ).typeName() ).arg( src.at( i ).isNull() ).arg( src.at( i ).isValid() ) );
 
-          success &= mLayer->changeAttributeValue( mFeature.id(), i, dst.at( i ), src.at( i ) );
+          newValues[i] = dst.at( i );
+          oldValues[i] = src.at( i );
+
           n++;
         }
+
+        success = mLayer->changeAttributeValues( mFeature.id(), newValues, oldValues );
 
         if ( success && n > 0 )
         {
@@ -448,14 +468,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
     mMessageBar->pushMessage( QString(),
                               tr( "%1 matching %2 selected" ).arg( count )
                               .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
-                              QgsMessageBar::INFO,
+                              Qgis::Info,
                               messageTimeout() );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              QgsMessageBar::WARNING,
+                              Qgis::Warning,
                               messageTimeout() );
   }
 }
@@ -523,8 +543,8 @@ bool QgsAttributeForm::saveMultiEdits()
 
 #if 0
   // prompt for save
-  int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
-                                      tr( "Edits will be applied to all selected features" ), QMessageBox::Ok | QMessageBox::Cancel );
+  int res = QMessageBox::information( this, tr( "Multiedit Attributes" ),
+                                      tr( "Edits will be applied to all selected features." ), QMessageBox::Ok | QMessageBox::Cancel );
   if ( res != QMessageBox::Ok )
   {
     resetMultiEdit();
@@ -550,12 +570,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), QgsMessageBar::SUCCESS, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied." ), Qgis::Success, messageTimeout() );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), QgsMessageBar::WARNING, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied." ), Qgis::Warning, messageTimeout() );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -567,6 +587,24 @@ bool QgsAttributeForm::save()
 {
   if ( mIsSaving )
     return true;
+
+  // only do the dirty checks when editing an existing feature - for new
+  // features we need to add them even if the attributes are unchanged from the initial
+  // default values
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case IdentifyMode:
+    case MultiEditMode:
+      if ( !mDirty )
+        return true;
+      break;
+
+    case AddFeatureMode:
+    case SearchMode:
+    case AggregateSearchMode:
+      break;
+  }
 
   mIsSaving = true;
 
@@ -581,6 +619,7 @@ bool QgsAttributeForm::save()
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     case SearchMode:
     case AggregateSearchMode:
@@ -594,16 +633,20 @@ bool QgsAttributeForm::save()
 
   mIsSaving = false;
   mUnsavedMultiEditChanges = false;
+  mDirty = false;
 
   return success;
 }
 
 void QgsAttributeForm::resetValues()
 {
+  mValuesInitialized = false;
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
     ww->setFeature( mFeature );
   }
+  mValuesInitialized = true;
+  mDirty = false;
 }
 
 void QgsAttributeForm::resetSearch()
@@ -647,23 +690,29 @@ QString QgsAttributeForm::createFilterExpression() const
   return filter;
 }
 
+
 void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 {
   QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( sender() );
   Q_ASSERT( eww );
 
-  const QVariant oldValue = mFeature.attribute( eww->fieldIdx() );
+  bool signalEmitted = false;
 
-  // Safety check, if we receive the same value again, no reason to do anything
-  if ( oldValue == value && oldValue.isNull() == value.isNull() )
-    return;
+  if ( mValuesInitialized )
+    mDirty = true;
 
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     {
+      Q_NOWARN_DEPRECATED_PUSH
       emit attributeChanged( eww->field().name(), value );
+      Q_NOWARN_DEPRECATED_PUSH
+      emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+
+      signalEmitted = true;
 
       updateJoinedFields( *eww );
 
@@ -681,7 +730,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
         connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
         clearMultiEditMessages();
 
-        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
+        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::Warning );
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
       }
@@ -695,7 +744,13 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
 
   updateConstraints( eww );
 
-  emit attributeChanged( eww->field().name(), value );
+  if ( !signalEmitted )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
+    emit attributeChanged( eww->field().name(), value );
+    Q_NOWARN_DEPRECATED_PUSH
+    emit widgetValueChanged( eww->field().name(), value, !mIsSettingFeature );
+  }
 }
 
 void QgsAttributeForm::updateAllConstraints()
@@ -1055,6 +1110,7 @@ void QgsAttributeForm::init()
   vl->addWidget( container );
 
   mFormEditorWidgets.clear();
+  mFormWidgets.clear();
 
   // a bar to warn the user with non-blocking messages
   setContentsMargins( 0, 0, 0, 0 );
@@ -1063,23 +1119,27 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QFile file( mLayer->editFormConfig().uiForm() );
-
-    if ( file.open( QFile::ReadOnly ) )
+    QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    const QString path = mLayer->editFormConfig().uiForm();
+    QFile *file = QgsApplication::instance()->networkContentFetcherRegistry()->localFile( path );
+    if ( file && file->open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( mLayer->editFormConfig().uiForm() );
+      QFileInfo fi( file->fileName() );
       loader.setWorkingDirectory( fi.dir() );
-      formWidget = loader.load( &file, this );
-      formWidget->setWindowFlags( Qt::Widget );
-      layout->addWidget( formWidget );
-      formWidget->show();
-      file.close();
-      mButtonBox = findChild<QDialogButtonBox *>();
-      createWrappers();
+      formWidget = loader.load( file, this );
+      if ( formWidget )
+      {
+        formWidget->setWindowFlags( Qt::Widget );
+        layout->addWidget( formWidget );
+        formWidget->show();
+        file->close();
+        mButtonBox = findChild<QDialogButtonBox *>();
+        createWrappers();
 
-      formWidget->installEventFilter( this );
+        formWidget->installEventFilter( this );
+      }
     }
   }
 
@@ -1247,7 +1307,7 @@ void QgsAttributeForm::init()
       }
       else
       {
-        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ) ).arg( widgetSetup.type() ) );
+        w = new QLabel( QStringLiteral( "<p style=\"color: red; font-style: italic;\">%1</p>" ).arg( tr( "Failed to create widget with type '%1'" ), widgetSetup.type() ) );
       }
 
 
@@ -1280,10 +1340,10 @@ void QgsAttributeForm::init()
       const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
       rww->setConfig( setup.config() );
       rww->setContext( mContext );
-      gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
 
       QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
       formWidget->createSearchWidgetWrappers( mContext );
+      gridLayout->addWidget( formWidget, row++, 0, 1, 2 );
 
       mWidgets.append( rww );
       mFormWidgets.append( formWidget );
@@ -1504,7 +1564,7 @@ void QgsAttributeForm::initPython()
       {
         // If we get here, it means that the function doesn't accept three arguments
         QMessageBox msgBox;
-        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the  <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
+        msgBox.setText( tr( "The python init function (<code>%1</code>) does not accept three arguments as expected!<br>Please check the function name in the <b>Fields</b> tab of the layer properties." ).arg( initFunction ) );
         msgBox.exec();
 #if 0
         QString expr = QString( "%1(%2)" )
@@ -1845,6 +1905,7 @@ void QgsAttributeForm::layerSelectionChanged()
   switch ( mMode )
   {
     case SingleEditMode:
+    case IdentifyMode:
     case AddFeatureMode:
     case SearchMode:
     case AggregateSearchMode:
@@ -1956,6 +2017,9 @@ void QgsAttributeForm::ContainerInformation::apply( QgsExpressionContext *expres
 
 void QgsAttributeForm::updateJoinedFields( const QgsEditorWidgetWrapper &eww )
 {
+  if ( !eww.layer()->fields().exists( eww.fieldIdx() ) )
+    return;
+
   QgsFeature formFeature;
   QgsField field = eww.layer()->fields().field( eww.fieldIdx() );
   QList<const QgsVectorLayerJoinInfo *> infos = eww.layer()->joinBuffer()->joinsWhereFieldIsId( field );

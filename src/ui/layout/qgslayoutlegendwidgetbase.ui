@@ -184,7 +184,7 @@
             <item>
              <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
               <property name="toolTip">
-               <string>Keeps the legend contents synchronized with the main application legend. Customisation is not possible and must be done in the main application.</string>
+               <string>Keeps the legend contents synchronized with the main application legend. Customization is not possible and must be done in the main application.</string>
               </property>
               <property name="text">
                <string>Auto update</string>
@@ -344,7 +344,7 @@
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">
-                <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
+                <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -383,7 +383,7 @@
             <item>
              <widget class="QToolButton" name="mFilterByMapToolButton">
               <property name="toolTip">
-               <string>Filter Legend By Map Content</string>
+               <string>Filter Legend by Map Content</string>
               </property>
               <property name="icon">
                <iconset resource="../../../images/images.qrc">

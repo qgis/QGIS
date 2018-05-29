@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsexpressionfunction.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsmessageviewer.h"
 #include "qgsapplication.h"
 #include "qgspythonrunner.h"
@@ -81,12 +82,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     connect( button, &QAbstractButton::pressed, this, &QgsExpressionBuilderWidget::operatorButtonClicked );
   }
 
+  txtSearchEdit->setShowSearchIcon( true );
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
 
   mValuesModel = new QStringListModel();
   mProxyValues = new QSortFilterProxyModel();
   mProxyValues->setSourceModel( mValuesModel );
   mValuesListView->setModel( mProxyValues );
+  txtSearchEditValues->setShowSearchIcon( true );
   txtSearchEditValues->setPlaceholderText( tr( "Search" ) );
 
   QgsSettings settings;
@@ -113,8 +116,35 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   QModelIndex firstItem = mProxyModel->index( 0, 0, QModelIndex() );
   expressionTree->setCurrentIndex( firstItem );
 
-  lblAutoSave->clear();
   txtExpressionString->setWrapMode( QsciScintilla::WrapWord );
+  lblAutoSave->clear();
+
+
+  // Note: If you add a indicator here you should add it to clearErrors method if you need to clear it on text parse.
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionUnknown );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionWrongArgs );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionInvalidParams );
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionNamedArgsError );
+#if defined(QSCINTILLA_VERSION) && QSCINTILLA_VERSION >= 0x20a00
+  txtExpressionString->indicatorDefine( QgsCodeEditor::TriangleIndicator, QgsExpression::ParserError::Unknown );
+#else
+  txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::Unknown );
+#endif
+
+  // Set all the error markers as red. -1 is all.
+  txtExpressionString->setIndicatorForegroundColor( QColor( Qt::red ), -1 );
+  txtExpressionString->setIndicatorHoverForegroundColor( QColor( Qt::red ), -1 );
+  txtExpressionString->setIndicatorOutlineColor( QColor( Qt::red ), -1 );
+
+  // Hidden function markers.
+  txtExpressionString->indicatorDefine( QgsCodeEditor::HiddenIndicator, FUNCTION_MARKER_ID );
+  txtExpressionString->setIndicatorForegroundColor( QColor( Qt::blue ), FUNCTION_MARKER_ID );
+  txtExpressionString->setIndicatorHoverForegroundColor( QColor( Qt::blue ), FUNCTION_MARKER_ID );
+  txtExpressionString->setIndicatorHoverStyle( QgsCodeEditor::DotsIndicator, FUNCTION_MARKER_ID );
+
+  connect( txtExpressionString, &QgsCodeEditorSQL::indicatorClicked, this, &QgsExpressionBuilderWidget::indicatorClicked );
+
+  setExpectedOutputFormat( QString() );
 }
 
 
@@ -221,7 +251,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
     if ( info.baseName() == QLatin1String( "__init__" ) ) continue;
-    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.png" ) ), info.baseName() );
+    QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }
   if ( !cmbFileNames->currentItem() )
@@ -234,7 +264,7 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   if ( !items.isEmpty() )
     return;
 
-  QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.png" ) ), fileName );
+  QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), fileName );
   cmbFileNames->insertItem( 0, item );
   cmbFileNames->setCurrentRow( 0 );
 
@@ -364,6 +394,17 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
   }
   mValuesModel->setStringList( strValues );
   mFieldValues[fieldName] = strValues;
+}
+
+QString QgsExpressionBuilderWidget::getFunctionHelp( QgsExpressionFunction *function )
+{
+  if ( !function )
+    return QString();
+
+  QString helpContents = QgsExpression::helpText( function->name() );
+
+  return "<head><style>" + helpStylesheet() + "</style></head><body>" + helpContents + "</body>";
+
 }
 
 void QgsExpressionBuilderWidget::registerItem( const QString &group,
@@ -558,6 +599,17 @@ void QgsExpressionBuilderWidget::setExpressionText( const QString &expression )
   txtExpressionString->setText( expression );
 }
 
+QString QgsExpressionBuilderWidget::expectedOutputFormat()
+{
+  return lblExpected->text();
+}
+
+void QgsExpressionBuilderWidget::setExpectedOutputFormat( const QString &expected )
+{
+  lblExpected->setText( expected );
+  mExpectedOutputFrame->setVisible( !expected.isNull() );
+}
+
 void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContext &context )
 {
   mExpressionContext = context;
@@ -569,6 +621,7 @@ void QgsExpressionBuilderWidget::setExpressionContext( const QgsExpressionContex
 void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 {
   QString text = expressionText();
+  clearErrors();
 
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
@@ -583,6 +636,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     setEvalError( true );
     return;
   }
+
 
   QgsExpression exp( text );
 
@@ -608,9 +662,14 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 
   if ( exp.hasParserError() || exp.hasEvalError() )
   {
-    QString tooltip = QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ), exp.parserErrorString() );
-    if ( exp.hasEvalError() )
-      tooltip += QStringLiteral( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
+    QString errorString = exp.parserErrorString().replace( "\n", "<br>" );
+    QString tooltip;
+    if ( exp.hasParserError() )
+      tooltip = QStringLiteral( "<b>%1:</b>"
+                                "%2" ).arg( tr( "Parser Errors" ), errorString );
+    // Only show the eval error if there is no parser error.
+    if ( !exp.hasParserError() && exp.hasEvalError() )
+      tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), exp.evalErrorString() );
 
     lblPreview->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
     lblPreview->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10,  255);" ) );
@@ -619,6 +678,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     emit expressionParsed( false );
     setParserError( exp.hasParserError() );
     setEvalError( exp.hasEvalError() );
+    createErrorMarkers( exp.parserErrors() );
     return;
   }
   else
@@ -629,7 +689,9 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     emit expressionParsed( true );
     setParserError( false );
     setEvalError( false );
+    createMarkers( exp.rootNode() );
   }
+
 }
 
 void QgsExpressionBuilderWidget::loadExpressionContext()
@@ -729,6 +791,121 @@ void QgsExpressionBuilderWidget::showEvent( QShowEvent *e )
   txtExpressionString->setFocus();
 }
 
+void QgsExpressionBuilderWidget::createErrorMarkers( QList<QgsExpression::ParserError> errors )
+{
+  clearErrors();
+  for ( const QgsExpression::ParserError &error : errors )
+  {
+    int errorFirstLine = error.firstLine - 1 ;
+    int errorFirstColumn = error.firstColumn - 1;
+    int errorLastColumn = error.lastColumn - 1;
+    int errorLastLine = error.lastLine - 1;
+
+    // If we have a unknown error we just mark the point that hit the error for now
+    // until we can handle others more.
+    if ( error.errorType == QgsExpression::ParserError::Unknown )
+    {
+      errorFirstLine = errorLastLine;
+      errorFirstColumn = errorLastColumn - 1;
+    }
+    txtExpressionString->fillIndicatorRange( errorFirstLine,
+        errorFirstColumn,
+        errorLastLine,
+        errorLastColumn, error.errorType );
+  }
+}
+
+void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode )
+{
+  switch ( inNode->nodeType() )
+  {
+    case QgsExpressionNode::NodeType::ntFunction:
+    {
+      const QgsExpressionNodeFunction *node = static_cast<const QgsExpressionNodeFunction *>( inNode );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORCURRENT, FUNCTION_MARKER_ID );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_SETINDICATORVALUE, node->fnIndex() );
+      int start = inNode->parserFirstColumn - 1;
+      int end = inNode->parserLastColumn - 1;
+      int start_pos = txtExpressionString->positionFromLineIndex( inNode->parserFirstLine - 1, start );
+      txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, start_pos, end - start );
+      if ( node->args() )
+      {
+        const QList< QgsExpressionNode * > nodeList = node->args()->list();
+        for ( QgsExpressionNode *n : nodeList )
+        {
+          createMarkers( n );
+        }
+      }
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntLiteral:
+    {
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntUnaryOperator:
+    {
+      const QgsExpressionNodeUnaryOperator *node = static_cast<const QgsExpressionNodeUnaryOperator *>( inNode );
+      createMarkers( node->operand() );
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntBinaryOperator:
+    {
+      const QgsExpressionNodeBinaryOperator *node = static_cast<const QgsExpressionNodeBinaryOperator *>( inNode );
+      createMarkers( node->opLeft() );
+      createMarkers( node->opRight() );
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntColumnRef:
+    {
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntInOperator:
+    {
+      const QgsExpressionNodeInOperator *node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
+      if ( node->list() )
+      {
+        const QList< QgsExpressionNode * > nodeList = node->list()->list();
+        for ( QgsExpressionNode *n : nodeList )
+        {
+          createMarkers( n );
+        }
+      }
+      break;
+    }
+    case QgsExpressionNode::NodeType::ntCondition:
+    {
+      const QgsExpressionNodeCondition *node = static_cast<const QgsExpressionNodeCondition *>( inNode );
+      for ( QgsExpressionNodeCondition::WhenThen *cond : node->conditions() )
+      {
+        createMarkers( cond->whenExp() );
+        createMarkers( cond->thenExp() );
+      }
+      if ( node->elseExp() )
+      {
+        createMarkers( node->elseExp() );
+      }
+      break;
+    }
+  }
+}
+
+void QgsExpressionBuilderWidget::clearFunctionMarkers()
+{
+  int lastLine = txtExpressionString->lines() - 1;
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length() - 1, FUNCTION_MARKER_ID );
+}
+
+void QgsExpressionBuilderWidget::clearErrors()
+{
+  int lastLine = txtExpressionString->lines() - 1;
+  // Note: -1 here doesn't seem to do the clear all like the other functions.  Will need to make this a bit smarter.
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length(), QgsExpression::ParserError::Unknown );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length(), QgsExpression::ParserError::FunctionInvalidParams );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length(), QgsExpression::ParserError::FunctionUnknown );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length(), QgsExpression::ParserError::FunctionWrongArgs );
+  txtExpressionString->clearIndicatorRange( 0, 0, lastLine, txtExpressionString->text( lastLine ).length(), QgsExpression::ParserError::FunctionNamedArgsError );
+}
+
 void QgsExpressionBuilderWidget::txtSearchEdit_textChanged()
 {
   mProxyModel->setFilterWildcard( txtSearchEdit->text() );
@@ -790,8 +967,8 @@ void QgsExpressionBuilderWidget::showContextMenu( QPoint pt )
   if ( item->getItemType() == QgsExpressionItem::Field && mLayer )
   {
     QMenu *menu = new QMenu( this );
-    menu->addAction( tr( "Load top 10 unique values" ), this, SLOT( loadSampleValues() ) );
-    menu->addAction( tr( "Load all unique values" ), this, SLOT( loadAllValues() ) );
+    menu->addAction( tr( "Load First 10 Unique Values" ), this, SLOT( loadSampleValues() ) );
+    menu->addAction( tr( "Load All Unique Values" ), this, SLOT( loadAllValues() ) );
     menu->popup( expressionTree->mapToGlobal( pt ) );
   }
 }
@@ -824,7 +1001,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
 void QgsExpressionBuilderWidget::txtPython_textChanged()
 {
-  lblAutoSave->setText( QStringLiteral( "Saving..." ) );
+  lblAutoSave->setText( tr( "Saving…" ) );
   if ( mAutoSave )
   {
     autosave();
@@ -852,6 +1029,18 @@ void QgsExpressionBuilderWidget::autosave()
   anim->setEndValue( 0.0 );
   anim->setEasingCurve( QEasingCurve::OutQuad );
   anim->start( QAbstractAnimation::DeleteWhenStopped );
+}
+
+void QgsExpressionBuilderWidget::indicatorClicked( int line, int index, Qt::KeyboardModifiers state )
+{
+  if ( state & Qt::ControlModifier )
+  {
+    int position = txtExpressionString->positionFromLineIndex( line, index );
+    long fncIndex = txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORVALUEAT, FUNCTION_MARKER_ID, ( long int )position );
+    QgsExpressionFunction *func = QgsExpression::Functions()[fncIndex];
+    QString help = getFunctionHelp( func );
+    txtHelpText->setText( help );
+  }
 }
 
 void QgsExpressionBuilderWidget::setExpressionState( bool state )

@@ -772,9 +772,6 @@ void getStackTrace( StackTrace *stackTrace, QString symbolPath, QgsStackTrace *t
 QgsStackTrace *QgsStackTrace::trace( DWORD processId, DWORD threadId, LPEXCEPTION_POINTERS exception, QString symbolPath )
 {
   QgsStackTrace *trace = new QgsStackTrace();
-#ifndef QGISDEBUG
-  return stack;
-#endif
   EXCEPTION_POINTERS remoteException = { 0 };
   CONTEXT remoteContextRecord = { 0 };
 

@@ -32,8 +32,6 @@
 QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mCanvas( canvas )
-  , mFilterMode( ShowAll )
-  , mSelectedOnTop( false )
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
@@ -131,11 +129,16 @@ int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 
 void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
+  QgsAttributeTableConfig oldConfig = mConfig;
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  QVector<int> newColumnMapping;
+  if ( mConfig.hasSameColumns( oldConfig ) )
+  {
+    return;
+  }
 
+  QVector<int> newColumnMapping;
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column

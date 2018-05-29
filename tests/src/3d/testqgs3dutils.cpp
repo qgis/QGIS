@@ -20,7 +20,7 @@
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the node tool
+ * This is a unit test for the vertex tool
  */
 class TestQgs3DUtils : public QObject
 {

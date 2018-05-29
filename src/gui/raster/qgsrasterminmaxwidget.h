@@ -63,7 +63,6 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     /**
      * Returns the map canvas associated with the widget.
      * \see setMapCanvas()
-     * \see canvasExtent()
      * \since QGIS 2.16
      */
     QgsMapCanvas *mapCanvas();
@@ -71,18 +70,18 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     void setBands( const QList<int> &bands );
 
     /**
-     * Return the extent selected by the user.
+     * Returns the extent selected by the user.
      * Either an empty extent for 'full' or the current visible extent.
     */
     QgsRectangle extent();
 
-    //! Return the selected sample size.
+    //! Returns the selected sample size.
     int sampleSize() { return cboAccuracy->currentIndex() == 0 ? 250000 : 0; }
 
-    //! \brief Set the "source" of min/max values.
+    //! Sets the "source" of min/max values.
     void setFromMinMaxOrigin( const QgsRasterMinMaxOrigin & );
 
-    //! \brief Return a QgsRasterMinMaxOrigin object with the widget values.
+    //! Returns a QgsRasterMinMaxOrigin object with the widget values.
     QgsRasterMinMaxOrigin minMaxOrigin();
 
     //! Hide updated extent choice
@@ -94,10 +93,10 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
     //! Uncheck cumulative cut, min/max, std-dev radio buttons
     void userHasSetManualMinMaxValues();
 
-    //! Return if the widget is collaped.
+    //! Returns if the widget is collaped.
     bool isCollapsed() const { return mLoadMinMaxValuesGroupBox->isCollapsed(); }
 
-    //! Set collapsed state of widget
+    //! Sets collapsed state of widget
     void setCollapsed( bool b ) { mLoadMinMaxValuesGroupBox->setCollapsed( b ); }
 
   signals:

@@ -57,7 +57,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel
   mLayoutBrowser->addWidget( mBrowserView );
 
   mWidgetFilter->hide();
-  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items..." ) );
+  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items…" ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
 
   QMenu *menu = new QMenu( this );
@@ -208,13 +208,14 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     }
     else if ( inFavDirs )
     {
-      QAction *actionRename = new QAction( tr( "Rename Favorite..." ), this );
+      QAction *actionRename = new QAction( tr( "Rename Favorite…" ), this );
       connect( actionRename, &QAction::triggered, this, &QgsBrowserDockWidget::renameFavorite );
       menu->addAction( actionRename );
+      menu->addSeparator();
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
       menu->addSeparator();
     }
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
@@ -224,11 +225,11 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   else if ( item->type() == QgsDataItem::Layer )
   {
     menu->addAction( tr( "Add Selected Layer(s) to Canvas" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
+    menu->addAction( tr( "Add a Directory…" ), this, SLOT( addFavoriteDirectory() ) );
   }
 
   const QList<QMenu *> menus = item->menus( menu );
@@ -360,7 +361,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      emit openFile( projectItem->path() );
+      emit openFile( projectItem->path(), QStringLiteral( "project" ) );
       QApplication::restoreOverrideCursor();
     }
   }
@@ -392,7 +393,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
-        emit openFile( projectItem->path() );
+        emit openFile( projectItem->path(), QStringLiteral( "project" ) );
 
       QApplication::restoreOverrideCursor();
       return;

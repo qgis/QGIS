@@ -21,7 +21,6 @@
 //for CMAKE_INSTALL_PREFIX
 #include "qgsconfig.h"
 #include "qgsserver.h"
-#include "qgsmslayercache.h"
 #include "qgsmapsettings.h"
 #include "qgsauthmanager.h"
 #include "qgscapabilitiescache.h"
@@ -89,10 +88,6 @@ QFileInfo QgsServer::defaultAdminSLD()
   return QFileInfo( QStringLiteral( "admin.sld" ) );
 }
 
-
-/**
- * @brief QgsServer::setupNetworkAccessManager
- */
 void QgsServer::setupNetworkAccessManager()
 {
   QSettings settings;
@@ -102,15 +97,11 @@ void QgsServer::setupNetworkAccessManager()
   QString cacheDirectory = sSettings.cacheDirectory();
   cache->setCacheDirectory( cacheDirectory );
   cache->setMaximumCacheSize( cacheSize );
-  QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( QStringLiteral( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ), QStringLiteral( "Server" ), Qgis::Info );
   nam->setCache( cache );
 }
 
-/**
- * @brief QgsServer::defaultProjectFile
- * @return the default project file
- */
 QFileInfo QgsServer::defaultProjectFile()
 {
   QDir currentDir;
@@ -120,7 +111,7 @@ QFileInfo QgsServer::defaultProjectFile()
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
-    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( projectFiles.isEmpty() )
   {
@@ -129,14 +120,9 @@ QFileInfo QgsServer::defaultProjectFile()
   return projectFiles.at( 0 );
 }
 
-/**
- * @brief QgsServer::printRequestParameters prints the request parameters
- * @param parameterMap
- * @param logLevel
- */
-void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, QgsMessageLog::MessageLevel logLevel )
+void QgsServer::printRequestParameters( const QMap< QString, QString> &parameterMap, Qgis::MessageLevel logLevel )
 {
-  if ( logLevel > QgsMessageLog::INFO )
+  if ( logLevel > Qgis::Info )
   {
     return;
   }
@@ -144,16 +130,10 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
   QMap< QString, QString>::const_iterator pIt = parameterMap.constBegin();
   for ( ; pIt != parameterMap.constEnd(); ++pIt )
   {
-    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( pIt.key() + ":" + pIt.value(), QStringLiteral( "Server" ), Qgis::Info );
   }
 }
 
-/**
- * @brief QgsServer::configPath
- * @param defaultConfigPath
- * @param parameters
- * @return config file path
- */
 QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QString, QString> &parameters )
 {
   QString cfPath( defaultConfigPath );
@@ -168,7 +148,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
     QMap<QString, QString>::const_iterator paramIt = parameters.find( QStringLiteral( "MAP" ) );
     if ( paramIt == parameters.constEnd() )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
     }
     else
     {
@@ -179,10 +159,6 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
   return cfPath;
 }
 
-
-/**
- * Server initialization
- */
 bool QgsServer::init()
 {
   if ( sInitialized )
@@ -194,18 +170,10 @@ bool QgsServer::init()
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
 
-#if !defined(Q_OS_WIN)
-  // Set the QGIS_PREFIX_PATH environnemnt instead of calling directly
-  // setPrefixPath: this will allow running server from build directory
-  // and get the paths accordingly
-  setenv( "QGIS_PREFIX_PATH", CMAKE_INSTALL_PREFIX, 1 );
-#endif
-
-  //Default prefix path may be altered by environment variable
   QgsApplication::init();
 
 #if defined(SERVER_SKIP_ECW)
-  QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Skipping GDAL ECW drivers in server.", "Server", Qgis::Info );
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
 #endif
@@ -219,10 +187,6 @@ bool QgsServer::init()
   QgsServerLogger::instance()->setLogLevel( sSettings.logLevel() );
   QgsServerLogger::instance()->setLogFile( sSettings.logFile() );
 
-  // init and configure cache
-  QgsMSLayerCache::instance();
-  QgsMSLayerCache::instance()->setMaxCacheLayers( sSettings.maxCacheLayers() );
-
   // log settings currently used
   sSettings.logSummary();
 
@@ -231,12 +195,12 @@ bool QgsServer::init()
 
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
-  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
-  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Prefix  PATH: " + QgsApplication::prefixPath(), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "Plugin  PATH: " + QgsApplication::pluginPath(), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "PkgData PATH: " + QgsApplication::pkgDataPath(), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "User DB PATH: " + QgsApplication::qgisUserDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "Auth DB PATH: " + QgsApplication::qgisAuthDatabaseFilePath(), QStringLiteral( "Server" ), Qgis::Info );
+  QgsMessageLog::logMessage( "SVG PATHS: " + QgsApplication::svgPaths().join( QDir::separator() ), QStringLiteral( "Server" ), Qgis::Info );
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
@@ -251,7 +215,7 @@ bool QgsServer::init()
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
-    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Using default project file: " + defaultConfigFilePath, QStringLiteral( "Server" ), Qgis::Info );
   }
   else
   {
@@ -281,7 +245,7 @@ bool QgsServer::init()
   sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
-  QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), Qgis::Info );
   return true;
 }
 
@@ -297,19 +261,14 @@ void QgsServer::putenv( const QString &var, const QString &val )
   sSettings.load( var );
 }
 
-/**
- * @brief Handles the request
- * @param queryString
- * @return response headers and body
- */
 void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
-  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
+  Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
 
   qApp->processEvents();
 
-  if ( logLevel == QgsMessageLog::INFO )
+  if ( logLevel == Qgis::Info )
   {
     time.start();
   }
@@ -328,7 +287,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
   catch ( QgsMapServiceException &e )
   {
-    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), Qgis::Critical );
     requestHandler.setServiceException( e );
   }
 
@@ -416,9 +375,9 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // to a deleted request handler from Python bindings
   sServerInterface->clearRequestHandler();
 
-  if ( logLevel == QgsMessageLog::INFO )
+  if ( logLevel == Qgis::Info )
   {
-    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", QStringLiteral( "Server" ), Qgis::Info );
   }
 }
 
@@ -429,11 +388,11 @@ void QgsServer::initPython()
   // Init plugins
   if ( ! QgsServerPlugins::initPlugins( sServerInterface ) )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QStringLiteral( "No server python plugins are available" ), QStringLiteral( "Server" ), Qgis::Info );
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( QStringLiteral( "Server python plugins loaded" ), QStringLiteral( "Server" ), Qgis::Info );
   }
 }
 #endif

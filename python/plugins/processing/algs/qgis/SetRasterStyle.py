@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFile,
                        QgsProcessingOutputRasterLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -49,6 +50,9 @@ class SetRasterStyle(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,

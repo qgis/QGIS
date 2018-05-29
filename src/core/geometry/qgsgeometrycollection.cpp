@@ -390,25 +390,25 @@ QString QgsGeometryCollection::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
-    elemGeometryMember.appendChild( geom->asGml2( doc, precision, ns ) );
+    elemGeometryMember.appendChild( geom->asGml2( doc, precision, ns, axisOrder ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
   return elemMultiGeometry;
 }
 
-QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
-    elemGeometryMember.appendChild( geom->asGml3( doc, precision, ns ) );
+    elemGeometryMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
   return elemMultiGeometry;
@@ -830,6 +830,16 @@ bool QgsGeometryCollection::dropMValue()
   return true;
 }
 
+void QgsGeometryCollection::swapXy()
+{
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( geom )
+      geom->swapXy();
+  }
+  clearCache();
+}
+
 QgsGeometryCollection *QgsGeometryCollection::toCurveType() const
 {
   std::unique_ptr< QgsGeometryCollection > newCollection( new QgsGeometryCollection() );
@@ -852,5 +862,7 @@ int QgsGeometryCollection::childCount() const
 
 QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
 {
+  if ( index < 0 || index > mGeometries.count() )
+    return nullptr;
   return mGeometries.at( index );
 }

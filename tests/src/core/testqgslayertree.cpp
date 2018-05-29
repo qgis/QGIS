@@ -381,6 +381,7 @@ void TestQgsLayerTree::testLegendSymbolCategorized()
   renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   renderer->addCategory( QgsRendererCategory( "a", QgsMarkerSymbol::createSimple( props ), QStringLiteral( "a" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
   renderer->addCategory( QgsRendererCategory( "b", QgsMarkerSymbol::createSimple( props ), QStringLiteral( "b" ) ) );
@@ -397,6 +398,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
   renderer->setSourceSymbol( QgsSymbol::defaultSymbol( QgsWkbTypes::PointGeometry ) );
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   renderer->addClass( QgsRendererRange( 1, 2, QgsMarkerSymbol::createSimple( props ), QStringLiteral( "a" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
   renderer->addClass( QgsRendererRange( 2, 3, QgsMarkerSymbol::createSimple( props ), QStringLiteral( "b" ) ) );
@@ -411,6 +413,7 @@ void TestQgsLayerTree::testLegendSymbolRuleBased()
   QgsRuleBasedRenderer::Rule *root = new QgsRuleBasedRenderer::Rule( nullptr );
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "\"col1\"=1" ) ) );
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ff00" ) );
   root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "\"col1\"=2" ) ) );
@@ -509,6 +512,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   //another test - check directly setting symbol at renderer
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#00ffff" ) );
+  props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#000000" ) );
   renderer->setLegendSymbolItem( symbolList.at( 2 ).ruleKey(), QgsMarkerSymbol::createSimple( props ) );
   m->refreshLayerLegend( n );
   symbolNode = dynamic_cast< QgsSymbolLegendNode * >( m->findLegendNode( vl->id(), symbolList.at( 2 ).ruleKey() ) );

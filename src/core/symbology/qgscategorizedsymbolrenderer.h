@@ -56,8 +56,18 @@ class CORE_EXPORT QgsRendererCategory
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
     void setLabel( const QString &label );
 
-    // \since QGIS 2.5
+    /**
+     * Returns true if the category is currently enabled and should be rendered.
+     * \see setRenderState()
+     * \since QGIS 2.5
+     */
     bool renderState() const;
+
+    /**
+     * Sets whether the category is currently enabled and should be rendered.
+     * \see renderState()
+     * \since QGIS 2.5
+     */
     void setRenderState( bool render );
 
     // debugging
@@ -86,8 +96,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
-    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
     void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
@@ -96,7 +106,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
     QString filter( const QgsFields &fields = QgsFields() ) override;
-    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
      * Update all the symbols but leave categories and colors. This method also sets the source
@@ -108,11 +118,11 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     const QgsCategoryList &categories() const { return mCategories; }
 
-    //! return index of category with specified value (-1 if not found)
+    //! Returns index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant &val );
 
     /**
-     * return index of category with specified label (-1 if not found or not unique)
+     * Returns index of category with specified label (-1 if not found or not unique)
      * \since QGIS 2.5
      */
     int categoryIndexForLabel( const QString &val );
@@ -142,7 +152,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
@@ -233,9 +243,33 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     void rebuildHash();
 
-    QgsSymbol *skipRender();
+    /**
+     * \deprecated No longer used, will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
-    QgsSymbol *symbolForValue( const QVariant &value );
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     * \deprecated use variant which takes a second bool argument instead.
+     */
+    Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
+
+    // TODO QGIS 4.0 - rename Python method to symbolForValue
+
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     *
+     * Will return nullptr if no matching symbol was found for \a value, or
+     * if the category corresponding to \a value is currently disabled (see QgsRendererCategory::renderState()).
+     *
+     * If \a foundMatchingSymbol is specified then it will be set to true if
+     * a matching category was found. This can be used to differentiate between
+     * a nullptr returned as a result of no matching category vs a nullptr as a result
+     * of disabled categories.
+     *
+     * \note available in Python bindings as symbolForValue2
+     */
+    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol SIP_OUT ) const SIP_PYNAME( symbolForValue2 );
 
   private:
 #ifdef SIP_RUN
@@ -244,7 +278,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 #endif
 
     //! Returns calculated classification value for a feature
-    QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    QVariant valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;

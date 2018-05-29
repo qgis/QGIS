@@ -296,7 +296,7 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
   double firstItemRotation = ( *itemIter )->rotation();
 
   //iterate through remaining items, checking if they have same rotation
-  for ( ++itemIter; itemIter != selectedItems.end(); ++itemIter )
+  for ( ++itemIter; itemIter != selectedItems.constEnd(); ++itemIter )
   {
     if ( !qgsDoubleNear( ( *itemIter )->rotation(), firstItemRotation ) )
     {

@@ -137,7 +137,8 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
 void QgsAuthSslErrorsDialog::showCertificateChainCAsInfo()
 {
-  for ( const auto &cert : mSslConfiguration.caCertificates() )
+  const QList< QSslCertificate > certificates = mSslConfiguration.caCertificates();
+  for ( const auto &cert : certificates )
   {
     qDebug() << cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName );
   }

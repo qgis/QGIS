@@ -41,6 +41,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmeshlayer.h"
 #include "qgspathresolver.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsproject.h"
@@ -70,12 +71,13 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
+  , mLayerName( lyrname )
   , mLayerType( type )
+  , mUndoStack( new QUndoStack( this ) )
+  , mUndoStackStyles( new QUndoStack( this ) )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
+  , mRefreshTimer( new QTimer( this ) )
 {
-  // Set the display name = internal name
-  mLayerName = lyrname;
-
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
@@ -91,13 +93,8 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   // there for the compiler, so the pattern is actually \W
   mID.replace( QRegExp( "[\\W]" ), QStringLiteral( "_" ) );
 
-  //set some generous  defaults for scale based visibility
-  mMinScale = 0;
-  mMaxScale = 100000000;
-  mScaleBasedVisibility = false;
-
   connect( mStyleManager, &QgsMapLayerStyleManager::currentStyleChanged, this, &QgsMapLayer::styleChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
+  connect( mRefreshTimer, &QTimer::timeout, this, [ = ] { triggerRepaint( true ); } );
 }
 
 QgsMapLayer::~QgsMapLayer()
@@ -206,7 +203,7 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteContext &context )
 {
   bool layerError;
 
@@ -232,182 +229,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     return false;
   }
 
-  // TODO: this should go to providers
-  if ( provider == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( mDataSource );
-    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
-    mDataSource = uri.uri();
-  }
-  else if ( provider == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = mDataSource.split( '|' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    mDataSource = theURIParts.join( QStringLiteral( "|" ) );
-  }
-  else if ( provider == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = mDataSource.split( '?' );
-    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
-    mDataSource = theURIParts.join( QStringLiteral( "?" ) );
-  }
-  else if ( provider == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( mDataSource.toLatin1() );
-
-    if ( !mDataSource.startsWith( QLatin1String( "file:" ) ) )
-    {
-      QUrl file = QUrl::fromLocalFile( mDataSource.left( mDataSource.indexOf( '?' ) ) );
-      urlSource.setScheme( QStringLiteral( "file" ) );
-      urlSource.setPath( file.path() );
-    }
-
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
-    urlDest.setQueryItems( urlSource.queryItems() );
-    mDataSource = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( provider == QLatin1String( "wms" ) )
-  {
-    // >>> BACKWARD COMPATIBILITY < 1.9
-    // For project file backward compatibility we must support old format:
-    // 1. mode: <url>
-    //    example: http://example.org/wms?
-    // 2. mode: tiled=<width>;<height>;<resolution>;<resolution>...,ignoreUrl=GetMap;GetFeatureInfo,featureCount=<count>,username=<name>,password=<password>,url=<url>
-    //    example: tiled=256;256;0.703;0.351,url=http://example.org/tilecache?
-    //    example: featureCount=10,http://example.org/wms?
-    //    example: ignoreUrl=GetMap;GetFeatureInfo,username=cimrman,password=jara,url=http://example.org/wms?
-    // This is modified version of old QgsWmsProvider::parseUri
-    // The new format has always params crs,format,layers,styles and that params
-    // should not appear in old format url -> use them to identify version
-    // XYZ tile layers do not need to contain crs,format params, but they have type=xyz
-    if ( !mDataSource.contains( QLatin1String( "type=" ) ) &&
-         !mDataSource.contains( QLatin1String( "crs=" ) ) && !mDataSource.contains( QLatin1String( "format=" ) ) )
-    {
-      QgsDebugMsg( "Old WMS URI format detected -> converting to new format" );
-      QgsDataSourceUri uri;
-      if ( !mDataSource.startsWith( QLatin1String( "http:" ) ) )
-      {
-        QStringList parts = mDataSource.split( ',' );
-        QStringListIterator iter( parts );
-        while ( iter.hasNext() )
-        {
-          QString item = iter.next();
-          if ( item.startsWith( QLatin1String( "username=" ) ) )
-          {
-            uri.setParam( QStringLiteral( "username" ), item.mid( 9 ) );
-          }
-          else if ( item.startsWith( QLatin1String( "password=" ) ) )
-          {
-            uri.setParam( QStringLiteral( "password" ), item.mid( 9 ) );
-          }
-          else if ( item.startsWith( QLatin1String( "tiled=" ) ) )
-          {
-            // in < 1.9 tiled= may apper in to variants:
-            // tiled=width;height - non tiled mode, specifies max width and max height
-            // tiled=width;height;resolutions-1;resolution2;... - tile mode
-
-            QStringList params = item.mid( 6 ).split( ';' );
-
-            if ( params.size() == 2 ) // non tiled mode
-            {
-              uri.setParam( QStringLiteral( "maxWidth" ), params.takeFirst() );
-              uri.setParam( QStringLiteral( "maxHeight" ), params.takeFirst() );
-            }
-            else if ( params.size() > 2 ) // tiled mode
-            {
-              // resolutions are no more needed and size limit is not used for tiles
-              // we have to tell to the provider however that it is tiled
-              uri.setParam( QStringLiteral( "tileMatrixSet" ), QLatin1String( "" ) );
-            }
-          }
-          else if ( item.startsWith( QLatin1String( "featureCount=" ) ) )
-          {
-            uri.setParam( QStringLiteral( "featureCount" ), item.mid( 13 ) );
-          }
-          else if ( item.startsWith( QLatin1String( "url=" ) ) )
-          {
-            uri.setParam( QStringLiteral( "url" ), item.mid( 4 ) );
-          }
-          else if ( item.startsWith( QLatin1String( "ignoreUrl=" ) ) )
-          {
-            uri.setParam( QStringLiteral( "ignoreUrl" ), item.mid( 10 ).split( ';' ) );
-          }
-        }
-      }
-      else
-      {
-        uri.setParam( QStringLiteral( "url" ), mDataSource );
-      }
-      mDataSource = uri.encodedUri();
-      // At this point, the URI is obviously incomplete, we add additional params
-      // in QgsRasterLayer::readXml
-    }
-    // <<< BACKWARD COMPATIBILITY < 1.9
-  }
-  else
-  {
-    bool handled = false;
-
-    if ( provider == QLatin1String( "gdal" ) )
-    {
-      if ( mDataSource.startsWith( QLatin1String( "NETCDF:" ) ) )
-      {
-        // NETCDF:filename:variable
-        // filename can be quoted with " as it can contain colons
-        QRegExp r( "NETCDF:(.+):([^:]+)" );
-        if ( r.exactMatch( mDataSource ) )
-        {
-          QString filename = r.cap( 1 );
-          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-            filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
-          handled = true;
-        }
-      }
-      else if ( mDataSource.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
-      {
-        // HDF4_SDS:subdataset_type:file_name:subdataset_index
-        // filename can be quoted with " as it can contain colons
-        QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
-        if ( r.exactMatch( mDataSource ) )
-        {
-          QString filename = r.cap( 2 );
-          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-            filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 3 );
-          handled = true;
-        }
-      }
-      else if ( mDataSource.startsWith( QLatin1String( "HDF5:" ) ) )
-      {
-        // HDF5:file_name:subdataset
-        // filename can be quoted with " as it can contain colons
-        QRegExp r( "HDF5:(.+):([^:]+)" );
-        if ( r.exactMatch( mDataSource ) )
-        {
-          QString filename = r.cap( 1 );
-          if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-            filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
-          handled = true;
-        }
-      }
-      else if ( mDataSource.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
-      {
-        // NITF_IM:0:filename
-        // RADARSAT_2_CALIB:?:filename
-        QRegExp r( "([^:]+):([^:]+):(.+)" );
-        if ( r.exactMatch( mDataSource ) )
-        {
-          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().readPath( r.cap( 3 ) );
-          handled = true;
-        }
-      }
-    }
-
-    if ( !handled )
-      mDataSource = context.pathResolver().readPath( mDataSource );
-  }
+  mDataSource = decodedSource( mDataSource, provider, context );
 
   // Set the CRS from project file, asking the user if necessary.
   // Make it the saved CRS to have WMS layer projected correctly.
@@ -433,6 +255,8 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   // read custom properties before passing reading further to a subclass, so that
   // the subclass can also read custom properties
   readCustomProperties( layerElement );
+
+  QgsReadWriteContextCategoryPopper p = context.enterCategory( tr( "Layer" ), mne.text() );
 
   // now let the children grab what they need from the Dom node.
   layerError = !readXml( layerElement, context );
@@ -563,7 +387,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
+bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( context );
@@ -586,8 +410,8 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
 
-  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer.interval() ) );
-  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer.isActive() ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer->interval() ) );
+  layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer->isActive() ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
   layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
 
@@ -601,117 +425,10 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // data source
   QDomElement dataSource = document.createElement( QStringLiteral( "datasource" ) );
-
-  QString src = source();
-
-  const QgsVectorLayer *vlayer = qobject_cast<const QgsVectorLayer *>( this );
-  // TODO: what about postgres, mysql and others, they should not go through writePath()
-  if ( vlayer && vlayer->providerType() == QLatin1String( "spatialite" ) )
-  {
-    QgsDataSourceUri uri( src );
-    QString database = context.pathResolver().writePath( uri.database() );
-    uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
-    src = uri.uri();
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) )
-  {
-    QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "|" ) );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "gpx" ) )
-  {
-    QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
-    src = theURIParts.join( QStringLiteral( "?" ) );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "delimitedtext" ) )
-  {
-    QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
-    urlDest.setQueryItems( urlSource.queryItems() );
-    src = QString::fromLatin1( urlDest.toEncoded() );
-  }
-  else if ( vlayer && vlayer->providerType() == QLatin1String( "memory" ) )
-  {
-    // Refetch the source from the provider, because adding fields actually changes the source for this provider.
-    src = vlayer->dataProvider()->dataSourceUri();
-  }
-  else
-  {
-    bool handled = false;
-
-    if ( !vlayer )
-    {
-      const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( this );
-      // Update path for subdataset
-      if ( rlayer && rlayer->providerType() == QLatin1String( "gdal" ) )
-      {
-        if ( src.startsWith( QLatin1String( "NETCDF:" ) ) )
-        {
-          // NETCDF:filename:variable
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "NETCDF:(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 1 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
-            handled = true;
-          }
-        }
-        else if ( src.startsWith( QLatin1String( "HDF4_SDS:" ) ) )
-        {
-          // HDF4_SDS:subdataset_type:file_name:subdataset_index
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "HDF4_SDS:([^:]+):(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 2 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 3 );
-            handled = true;
-          }
-        }
-        else if ( src.startsWith( QLatin1String( "HDF5:" ) ) )
-        {
-          // HDF5:file_name:subdataset
-          // filename can be quoted with " as it can contain colons
-          QRegExp r( "HDF5:(.+):([^:]+)" );
-          if ( r.exactMatch( src ) )
-          {
-            QString filename = r.cap( 1 );
-            if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
-              filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
-            handled = true;
-          }
-        }
-        else if ( src.contains( QRegExp( "^(NITF_IM|RADARSAT_2_CALIB):" ) ) )
-        {
-          // NITF_IM:0:filename
-          // RADARSAT_2_CALIB:?:filename
-          QRegExp r( "([^:]+):([^:]+):(.+)" );
-          if ( r.exactMatch( src ) )
-          {
-            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().writePath( r.cap( 3 ) );
-            handled = true;
-          }
-        }
-      }
-    }
-
-    if ( !handled )
-      src = context.pathResolver().writePath( src );
-  }
-
+  QString src = encodedSource( source(), context );
   QDomText dataSourceText = document.createTextNode( src );
   dataSource.appendChild( dataSourceText );
-
   layerElement.appendChild( dataSource );
-
 
   // layer name
   QDomElement layerName = document.createElement( QStringLiteral( "layername" ) );
@@ -848,7 +565,20 @@ bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const 
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
-} // void QgsMapLayer::writeXml
+}
+
+QString QgsMapLayer::encodedSource( const QString &source, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context );
+  return source;
+}
+
+QString QgsMapLayer::decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const
+{
+  Q_UNUSED( context );
+  Q_UNUSED( dataProvider );
+  return source;
+}
 
 void QgsMapLayer::resolveReferences( QgsProject *project )
 {
@@ -913,36 +643,36 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
 
 bool QgsMapLayer::hasAutoRefreshEnabled() const
 {
-  return mRefreshTimer.isActive();
+  return mRefreshTimer->isActive();
 }
 
 int QgsMapLayer::autoRefreshInterval() const
 {
-  return mRefreshTimer.interval();
+  return mRefreshTimer->interval();
 }
 
 void QgsMapLayer::setAutoRefreshInterval( int interval )
 {
   if ( interval <= 0 )
   {
-    mRefreshTimer.stop();
-    mRefreshTimer.setInterval( 0 );
+    mRefreshTimer->stop();
+    mRefreshTimer->setInterval( 0 );
   }
   else
   {
-    mRefreshTimer.setInterval( interval );
+    mRefreshTimer->setInterval( interval );
   }
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
 {
   if ( !enabled )
-    mRefreshTimer.stop();
-  else if ( mRefreshTimer.interval() > 0 )
-    mRefreshTimer.start();
+    mRefreshTimer->stop();
+  else if ( mRefreshTimer->interval() > 0 )
+    mRefreshTimer->start();
 
-  emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
+  emit autoRefreshIntervalChanged( mRefreshTimer->isActive() ? mRefreshTimer->interval() : 0 );
 }
 
 const QgsLayerMetadata &QgsMapLayer::metadata() const
@@ -1168,7 +898,6 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
 {
   QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
-  QgsDebugMsg( "loadNamedProperty" );
   resultFlag = false;
 
   QDomDocument myDocument( QStringLiteral( "qgis" ) );
@@ -1314,7 +1043,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
   }
 
-  return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
+  QgsReadWriteContext context = QgsReadWriteContext();
+  return readSymbology( myRoot, myErrorMessage, context ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
@@ -1795,7 +1525,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
@@ -1824,7 +1554,6 @@ void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &doc
   }
 }
 
-
 void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
 {
   QgsAbstract3DRenderer *r3D = nullptr;
@@ -1841,17 +1570,15 @@ void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsRea
   setRenderer3D( r3D );
 }
 
-
 QUndoStack *QgsMapLayer::undoStack()
 {
-  return &mUndoStack;
+  return mUndoStack;
 }
 
 QUndoStack *QgsMapLayer::undoStackStyles()
 {
-  return &mUndoStackStyles;
+  return mUndoStackStyles;
 }
-
 
 QStringList QgsMapLayer::customPropertyKeys() const
 {
@@ -1909,7 +1636,10 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
   mLegend = legend;
 
   if ( mLegend )
+  {
+    mLegend->setParent( this );
     connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
+  }
 
   emit legendChanged();
 }

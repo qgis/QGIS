@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
+    <width>354</width>
     <height>247</height>
    </rect>
   </property>
@@ -67,12 +67,15 @@
      <item row="4" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Default value</string>
+        <string>Default value expression</string>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
       <widget class="QLineEdit" name="editDefault">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Properly quoted PostgreSQL expression (e.g. &lt;code&gt;4&lt;/code&gt;, &lt;code&gt;'text'&lt;/code&gt; or  &lt;code&gt;nextval('foo_id_seq')&lt;/code&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string notr="true"/>
        </property>

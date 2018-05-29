@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>319</height>
+    <height>351</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SVG export options</string>
+   <string>SVG Export Options</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -23,7 +23,7 @@
       <item>
        <widget class="QCheckBox" name="chkMapLayersAsGroup">
         <property name="text">
-         <string>Export map layers as svg groups (may affect label placement)</string>
+         <string>Export map layers as SVG groups (may affect label placement)</string>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -53,6 +53,16 @@
         </property>
         <property name="text">
          <string>Always export as vectors</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="mIncludeMetadataCheckbox">
+        <property name="text">
+         <string>Export RDF metadata</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -205,8 +215,9 @@
  <tabstops>
   <tabstop>chkMapLayersAsGroup</tabstop>
   <tabstop>chkTextAsOutline</tabstop>
-  <tabstop>mClipToContentGroupBox</tabstop>
   <tabstop>mForceVectorCheckBox</tabstop>
+  <tabstop>mIncludeMetadataCheckbox</tabstop>
+  <tabstop>mClipToContentGroupBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>
   <tabstop>mLeftMarginSpinBox</tabstop>
   <tabstop>mRightMarginSpinBox</tabstop>

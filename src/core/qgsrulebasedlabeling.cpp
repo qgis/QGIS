@@ -86,6 +86,17 @@ void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings *settings )
   mSettings = settings;
 }
 
+QgsRuleBasedLabeling::RuleList QgsRuleBasedLabeling::Rule::descendants() const
+{
+  RuleList l;
+  for ( Rule *c : mChildren )
+  {
+    l += c;
+    l += c->descendants();
+  }
+  return l;
+}
+
 void QgsRuleBasedLabeling::Rule::initFilter()
 {
   if ( mElseRule || mFilterExp.compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
@@ -182,7 +193,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
   if ( key == mRuleKey )
     return this;
 
-  for ( Rule *rule : mChildren )
+  for ( Rule *rule : qgis::as_const( mChildren ) )
   {
     Rule *r = rule->findRuleByKey( key );
     if ( r )
@@ -472,7 +483,7 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
   {
     Rule *rule = mRootRule->findRuleByKey( providerId );
     if ( rule && rule->settings() )
-      return rule->setSettings( settings );
+      rule->setSettings( settings );
   }
 }
 

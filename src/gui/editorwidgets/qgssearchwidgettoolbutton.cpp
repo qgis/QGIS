@@ -144,7 +144,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
     }
   }
 
-  QAction *clearAction = mMenu->addAction( tr( "Exclude field" ) );
+  QAction *clearAction = mMenu->addAction( tr( "Exclude Field" ) );
   connect( clearAction, &QAction::triggered, this, &QgsSearchWidgetToolButton::setInactive );
   clearAction->setCheckable( true );
   clearAction->setChecked( !fieldActive );

@@ -36,7 +36,9 @@ from qgis.core import (QgsFeature,
                        QgsWkbTypes,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
@@ -72,8 +74,8 @@ class PointsAlongGeometry(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=1.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance'), parentParameterName=self.INPUT, minValue=0.0, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.START_OFFSET,
                                                        self.tr('Start offset'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.END_OFFSET,
@@ -89,6 +91,9 @@ class PointsAlongGeometry(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         start_offset = self.parameterAsDouble(parameters, self.START_OFFSET, context)
         end_offset = self.parameterAsDouble(parameters, self.END_OFFSET, context)
@@ -99,6 +104,8 @@ class PointsAlongGeometry(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

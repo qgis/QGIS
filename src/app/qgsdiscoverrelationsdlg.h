@@ -36,7 +36,7 @@ class APP_EXPORT QgsDiscoverRelationsDlg : public QDialog, private Ui::QgsDiscov
     explicit QgsDiscoverRelationsDlg( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent = nullptr );
 
     /**
-     * Get the selected relations.
+     * Gets the selected relations.
      */
     QList<QgsRelation> relations() const;
 

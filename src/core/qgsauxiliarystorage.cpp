@@ -232,7 +232,8 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
     {
       const QgsProperty prop = QgsProperty::fromField( fieldName );
 
-      for ( const QString &providerId : layer->labeling()->subProviders() )
+      const QStringList subProviderIds = layer->labeling()->subProviders();
+      for ( const QString &providerId : subProviderIds )
       {
         QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
 
@@ -368,7 +369,7 @@ QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, b
     fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
 
   if ( !def.comment().isEmpty() )
-    fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
+    fieldName = QString( "%1_%2" ).arg( fieldName, def.comment() );
 
   if ( joined )
     fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
@@ -428,11 +429,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
@@ -442,11 +443,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "symbol", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsSymbolLayer::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
@@ -456,11 +457,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "diagram", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsDiagramLayerSettings::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
@@ -502,12 +503,9 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
 {
   initTmpFileName();
 
-  if ( !project.fileInfo().fileName().isEmpty() )
+  if ( !project.absoluteFilePath().isEmpty() )
   {
-    const QFileInfo info = project.fileInfo();
-    const QString path = info.path() + QDir::separator() + info.baseName();
-    const QString asFileName = path + "." + QgsAuxiliaryStorage::extension();
-    mFileName = asFileName;
+    mFileName = filenameForProject( project );
   }
 
   open( mFileName );
@@ -646,6 +644,12 @@ QString QgsAuxiliaryStorage::extension()
   return AS_EXTENSION;
 }
 
+bool QgsAuxiliaryStorage::exists( const QgsProject &project )
+{
+  const QFileInfo fileinfo( filenameForProject( project ) );
+  return fileinfo.exists() && fileinfo.isFile();
+}
+
 bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
 {
   bool rc = false;
@@ -665,15 +669,20 @@ bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
 
 void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
 {
+#ifdef QGISDEBUG
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
-  const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg ).arg( sql ).arg( err );
+  const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
+#else
+  Q_UNUSED( sql );
+  Q_UNUSED( handler );
+#endif
 }
 
 bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
 {
-  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table ).arg( AS_JOINFIELD ).arg( type );
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD, type );
 
   if ( !exec( sql, handler ) )
     return false;
@@ -764,7 +773,7 @@ spatialite_database_unique_ptr QgsAuxiliaryStorage::open( const QgsProject &proj
 
 QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 {
-  const QFileInfo info = project.fileInfo();
+  const QFileInfo info( project.absoluteFilePath() );
   const QString path = info.path() + QDir::separator() + info.baseName();
   return path + '.' + QgsAuxiliaryStorage::extension();
 }

@@ -98,7 +98,7 @@ QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 
 void QgsTriangle::clear()
 {
-  QgsCurvePolygon::clear();
+  QgsPolygon::clear();
   mWkbType = QgsWkbTypes::Triangle;
 }
 
@@ -211,7 +211,7 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   return true;
 }
 
-QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
 
   QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
@@ -220,7 +220,7 @@ QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString
     return elemTriangle;
 
   QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
-  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns );
+  QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
   if ( curveElem.tagName() == QLatin1String( "LineString" ) )
   {
     curveElem.setTagName( QStringLiteral( "LinearRing" ) );
@@ -574,7 +574,13 @@ QgsPoint QgsTriangle::inscribedCenter() const
                l.at( 1 ) * vertexAt( 0 ).y() +
                l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
-  return QgsPoint( x, y );
+  QgsPoint center( x, y );
+
+  QgsPointSequence points;
+  points << vertexAt( 0 ) << vertexAt( 1 ) << vertexAt( 2 );
+  QgsGeometryUtils::setZValueFromPoints( points, center );
+
+  return center;
 }
 
 double QgsTriangle::inscribedRadius() const
@@ -590,6 +596,3 @@ QgsCircle QgsTriangle::inscribedCircle() const
     return QgsCircle();
   return QgsCircle( inscribedCenter(), inscribedRadius() );
 }
-
-
-

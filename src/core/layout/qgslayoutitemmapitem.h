@@ -62,6 +62,16 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
+     * Called after all pending items have been restored from XML. Map items can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. an overview can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
+
+    /**
      * Sets the corresponding layout \a map for the item.
      * \see map()
      */
@@ -131,8 +141,8 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
  * \brief A collection of map items which are drawn above the map content in a
  * QgsLayoutItemMap. The item stack controls which items are drawn and the
  * order they are drawn in.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapItem
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapItemStack
 {
@@ -164,6 +174,16 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * \see writeXml()
      */
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
+
+    /**
+     * Called after all pending items have been restored from XML. Map item stacks can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. an overview can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
 
     /**
      * Draws the items from the stack on a specified \a painter.
@@ -214,19 +234,16 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Returns a reference to an item which matching \a itemId within the stack.
-     * \see constItem()
      */
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 
     /**
      * Returns a reference to the item at the specified \a index within the stack.
-     * \see constItem
      */
     QgsLayoutItemMapItem *item( int index ) const;
 
     /**
      * Returns a reference to an item at the specified \a index within the stack.
-     * \see constItem()
      * \see item()
      * \note not available in Python bindings
      */

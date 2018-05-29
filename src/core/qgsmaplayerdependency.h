@@ -56,13 +56,13 @@ class CORE_EXPORT QgsMapLayerDependency
       , mLayerId( layerId )
     {}
 
-    //! Return the dependency type
+    //! Returns the dependency type
     Type type() const { return mType; }
 
-    //! Return the dependency origin
+    //! Returns the dependency origin
     Origin origin() const { return mOrigin; }
 
-    //! Return the ID of the layer this dependency depends on
+    //! Returns the ID of the layer this dependency depends on
     QString layerId() const { return mLayerId; }
 
     //! Comparison operator

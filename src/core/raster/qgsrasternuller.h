@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
 
     QgsRasterRangeList noData( int bandNo ) const { return mNoData.value( bandNo - 1 ); }
 
-    //! \brief Set output no data value.
+    //! Sets the output no data value.
     void setOutputNoDataValue( int bandNo, double noData );
 
   private:

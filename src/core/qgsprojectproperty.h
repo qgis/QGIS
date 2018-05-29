@@ -198,8 +198,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * The name of the property is used as identifier.
      *
-     * \since QGIS 3.0
      * \see name()
+     * \since QGIS 3.0
      */
     void setName( const QString &name );
 
@@ -284,7 +284,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     void entryList( QStringList &entries ) const;
 
     /**
-     * Return any sub-keys contained by this property which themselves contain other keys.
+     * Returns any sub-keys contained by this property which themselves contain other keys.
      * \see entryList()
      */
     void subkeyList( QStringList &entries ) const;

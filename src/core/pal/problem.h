@@ -150,7 +150,7 @@ namespace pal
        */
       void chain_search();
 
-      QList<LabelPosition *> *getSolution( bool returnInactive );
+      QList<LabelPosition *> getSolution( bool returnInactive );
 
       PalStat *getStats();
 

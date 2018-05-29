@@ -124,6 +124,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
   mCaptureOutput = actionElement.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0;
   mShortTitle = actionElement.attributeNode( QStringLiteral( "shortTitle" ) ).value();
   mNotificationMessage = actionElement.attributeNode( QStringLiteral( "notificationMessage" ) ).value();
+  mIsEnabledOnlyWhenEditable = actionElement.attributeNode( QStringLiteral( "isEnabledOnlyWhenEditable" ) ).value().toInt() != 0;
   mId = QUuid( actionElement.attributeNode( QStringLiteral( "id" ) ).value() );
   if ( mId.isNull() )
     mId = QUuid::createUuid();
@@ -139,6 +140,7 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
   actionSetting.setAttribute( QStringLiteral( "action" ), mCommand );
   actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
   actionSetting.setAttribute( QStringLiteral( "notificationMessage" ), mNotificationMessage );
+  actionSetting.setAttribute( QStringLiteral( "isEnabledOnlyWhenEditable" ), mIsEnabledOnlyWhenEditable );
   actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
 
   Q_FOREACH ( const QString &scope, mActionScopes )

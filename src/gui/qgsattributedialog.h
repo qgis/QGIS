@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
+#include "qgsactionmenu.h"
 
 #include <QDialog>
 #include <QMenuBar>
@@ -56,18 +57,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     ~QgsAttributeDialog() override;
 
     /**
-     * Saves the size and position for the next time
-     *  this dialog box will be used.
-     */
-    void saveGeometry();
-
-    /**
-     * Restores the size and position from the last time
-     *  this dialog box was used.
-     */
-    void restoreGeometry();
-
-    /**
      * \brief setHighlight
      * \param h The highlight. Ownership is taken.
      */
@@ -89,7 +78,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param mode form mode. For example, if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
      * will add a new feature when the form is accepted.
      */
-    void setMode( QgsAttributeForm::Mode mode ) { mAttributeForm->setMode( mode ); }
+    void setMode( QgsAttributeForm::Mode mode );
 
     /**
      * Sets the edit command message (Undo) that will be used when the dialog is accepted
@@ -131,9 +120,13 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     // true if this dialog is editable
     bool mEditable;
 
+    QgsActionMenu *mMenu;
+
     static int sFormCounter;
     static QString sSettingsPath;
 
+    void saveGeometry();
+    void restoreGeometry();
 };
 
 #endif

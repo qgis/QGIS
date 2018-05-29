@@ -872,7 +872,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
       }
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
-        // TODO: overwrite inherited
         QgsWmsBoundingBoxProperty bbox;
         bbox.box = QgsRectangle( e1.attribute( QStringLiteral( "minx" ) ).toDouble(),
                                  e1.attribute( QStringLiteral( "miny" ) ).toDouble(),
@@ -893,7 +892,18 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
             bbox.box = invAxisBbox;
           }
 
-          layerProperty.boundingBoxes << bbox;
+          // Overwrite existing bounding boxes with identical CRS
+          bool inheritedOverwritten = false;
+          for ( int i = 0; i < layerProperty.boundingBoxes.size(); i++ )
+          {
+            if ( layerProperty.boundingBoxes[i].crs == bbox.crs )
+            {
+              layerProperty.boundingBoxes[i] = bbox;
+              inheritedOverwritten = true;
+            }
+          }
+          if ( ! inheritedOverwritten )
+            layerProperty.boundingBoxes << bbox;
         }
         else
         {
@@ -1923,17 +1933,17 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, c
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 {
-  QgsDebugMsg( QString( "entering: forceRefresh=%1" ).arg( mForceRefresh ) );
+  QgsDebugMsgLevel( QStringLiteral( "entering: forceRefresh=%1" ).arg( mForceRefresh ), 2 );
   abort(); // cancel previous
   mIsAborted = false;
 
   QString url = mBaseUrl;
-  QgsDebugMsg( "url = " + url );
   if ( !url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) &&
        !url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive ) )
   {
     url += QLatin1String( "SERVICE=WMS&REQUEST=GetCapabilities" );
   }
+  QgsDebugMsgLevel( QStringLiteral( "url = %1" ).arg( url ), 2 );
 
   mError.clear();
 

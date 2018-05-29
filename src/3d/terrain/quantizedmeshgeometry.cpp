@@ -1,3 +1,17 @@
+/***************************************************************************
+    quantizedmeshgeometry.cpp
+    ---------------------
+    begin                : July 2017
+    copyright            : (C) 2017 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "quantizedmeshgeometry.h"
 
 #include <zlib.h>
@@ -12,10 +26,10 @@
 #define GZIP_CHUNK_SIZE 32 * 1024
 
 /**
- * @brief Decompresses the given buffer using the standard GZIP algorithm
- * @param input The buffer to be decompressed
- * @param output The result of the decompression
- * @return @c true if the decompression was successful, @c false otherwise
+ * \brief Decompresses the given buffer using the standard GZIP algorithm
+ * \param input The buffer to be decompressed
+ * \param output The result of the decompression
+ * \return \c true if the decompression was successful, \c false otherwise
  */
 bool gzipDecompress( QByteArray input, QByteArray &output )
 {

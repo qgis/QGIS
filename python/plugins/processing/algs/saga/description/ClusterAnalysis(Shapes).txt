@@ -6,5 +6,5 @@ QgsProcessingParameterFeatureSource|FIELDS|Attributes|5|None|False
 QgsProcessingParameterFeatureSource|CLUSTER|Cluster|5|None|False
 QgsProcessingParameterFeatureSource|STATISTICS|Statistics|5|None|False
 QgsProcessingParameterEnum|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing|False|1
-QgsProcessingParameterNumber|NCLUSTER|Clusters|QgsProcessingParameterNumber.Integer|10|False| 2|None
+QgsProcessingParameterNumber|NCLUSTER|Clusters|QgsProcessingParameterNumber.Integer|10|False|2|None
 QgsProcessingParameterBoolean|NORMALISE|Normalise|False

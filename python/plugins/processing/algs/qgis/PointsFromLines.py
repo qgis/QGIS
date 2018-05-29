@@ -35,6 +35,7 @@ from qgis.core import (QgsFeature,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsFeatureRequest,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
@@ -74,6 +75,8 @@ class PointsFromLines(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_VECTOR, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_VECTOR))
 
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
         rasterPath = raster_layer.source()
@@ -89,6 +92,8 @@ class PointsFromLines(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, raster_layer.crs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)

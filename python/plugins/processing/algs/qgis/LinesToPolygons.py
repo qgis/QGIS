@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsGeometry,
                        QgsGeometryCollection,
                        QgsPolygon,
@@ -51,7 +52,10 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class LinesToPolygons(QgisFeatureBasedAlgorithm):
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmLineToPolygon.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmLineToPolygon.svg")
 
     def tags(self):
         return self.tr('line,polygon,convert').split(',')
@@ -88,7 +92,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
             feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
             if feature.geometry().isEmpty():
                 feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
-        return feature
+        return [feature]
 
     def convertWkbToPolygons(self, wkb):
         multi_wkb = None

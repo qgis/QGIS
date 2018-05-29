@@ -49,7 +49,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     QSpinBox *mRadiusSpinBox = nullptr;
 
     int mRadius = 0;
-    QVector<QgsPointXY> mCenters;
+    QVector<QgsPoint> mCenters;
     QVector<QgsGeometryRubberBand *> mRubberBands;
 };
 

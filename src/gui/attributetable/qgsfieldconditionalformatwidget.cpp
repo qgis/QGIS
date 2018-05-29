@@ -57,7 +57,7 @@ void QgsFieldConditionalFormatWidget::setExpression()
   context.setHighlightedVariables( QStringList() << QStringLiteral( "value" ) );
 
   QgsExpressionBuilderDialog dlg( mLayer, mRuleEdit->text(), this, QStringLiteral( "generic" ), context );
-  dlg.setWindowTitle( tr( "Conditional style rule expression" ) );
+  dlg.setWindowTitle( tr( "Conditional Style Rule Expression" ) );
 
   if ( dlg.exec() )
   {
