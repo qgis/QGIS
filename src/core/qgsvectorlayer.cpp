@@ -164,6 +164,8 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { emit repaintRequested(); } );
   connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
+  connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
+
   // Default simplify drawing settings
   QgsSettings settings;
   mSimplifyMethod.setSimplifyHints( settings.flagValue( QStringLiteral( "qgis/simplifyDrawingHints" ), mSimplifyMethod.simplifyHints(), QgsSettings::NoSection ) );
@@ -897,7 +899,7 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
 
   if ( res )
   {
-    emit configChanged();
+    emit subsetStringChanged();
     emit repaintRequested();
   }
 
