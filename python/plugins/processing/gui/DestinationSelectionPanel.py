@@ -61,6 +61,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
     SAVE_TO_TEMP_FILE = QCoreApplication.translate(
         'DestinationSelectionPanel', '[Save to temporary file]')
+    SAVE_TO_TEMP_FOLDER = QCoreApplication.translate(
+        'DestinationSelectionPanel', '[Save to temporary folder]')
     SAVE_TO_TEMP_LAYER = QCoreApplication.translate(
         'DestinationSelectionPanel', '[Create temporary layer]')
     SKIP_OUTPUT = QCoreApplication.translate(
@@ -157,6 +159,8 @@ signal        """
     def saveToTemporary(self):
         if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.supportsNonFileBasedOutput():
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
+        elif isinstance(self.parameter, QgsProcessingParameterFolderDestination):
+            self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FOLDER)
         else:
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
         self.leText.setText('')
