@@ -109,6 +109,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
 
+    /**
+     * Removes any interior rings which are not valid from the polygon.
+     *
+     * For example, this removes unclosed rings and rings with less than 4 vertices.
+     *
+     * \since QGIS 3.0
+     */
+    void removeInvalidRings();
+
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
