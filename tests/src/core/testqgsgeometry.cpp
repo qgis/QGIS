@@ -4538,7 +4538,7 @@ void TestQgsGeometry::lineString()
   filterLine.filterVertices( filter ); // no crash
   filterLine.setPoints( QgsPointSequence()  << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
   filterLine.filterVertices( filter );
-  QCOMPARE( swapLine.asWkt( 2 ), QStringLiteral( "LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
+  QCOMPARE( filterLine.asWkt( 2 ), QStringLiteral( "LineStringZM (1 2 3 4, 4 12 13 14)" ) );
 }
 
 void TestQgsGeometry::polygon()
@@ -11583,6 +11583,20 @@ void TestQgsGeometry::multiPoint()
   mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
   QVERIFY( !mp.removeDuplicateNodes() );
   QCOMPARE( mp.numGeometries(), 2 );
+
+  // filter vertex
+  QgsMultiPoint filterPoint;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() < 5;
+  };
+  filterPoint.filterVertices( filter ); // no crash
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 11, 0, 4, 8 ) );
+  filterPoint.filterVertices( filter );
+  QCOMPARE( filterPoint.asWkt( 2 ), QStringLiteral( "MultiPointZM ((3 0 4 8),(1 0 4 8))" ) );
 }
 
 void TestQgsGeometry::multiLineString()
