@@ -573,8 +573,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
      * check. Has no meaning when called on a single point geometry.
      *
-     * Depending on the \a filter used, this may result in an invalid geometry. However, CurvePolygon rings which are no longer
-     * valid rings will be automatically removed after filtering.
+     * Depending on the \a filter used, this may result in an invalid geometry.
      *
      * \note Not available in Python bindings
      * \since QGIS 3.2

@@ -703,6 +703,25 @@ void QgsCurvePolygon::removeInteriorRings( double minimumAllowedArea )
   clearCache();
 }
 
+void QgsCurvePolygon::removeInvalidRings()
+{
+  QVector<QgsCurve *> validRings;
+  validRings.reserve( mInteriorRings.size() );
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    if ( !curve->isRing() )
+    {
+      // remove invalid rings
+      delete curve;
+    }
+    else
+    {
+      validRings << curve;
+    }
+  }
+  mInteriorRings = validRings;
+}
+
 void QgsCurvePolygon::draw( QPainter &p ) const
 {
   if ( !mExteriorRing )
@@ -1179,23 +1198,10 @@ void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint 
   if ( mExteriorRing )
     mExteriorRing->filterVertices( filter );
 
-  QVector<QgsCurve *> filteredRings;
-  filteredRings.reserve( mInteriorRings.size() );
   for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
     curve->filterVertices( filter );
-
-    if ( !curve->isRing() )
-    {
-      // remove invalid rings
-      delete curve;
-    }
-    else
-    {
-      filteredRings << curve;
-    }
   }
-  mInteriorRings = filteredRings;
   clearCache();
 }
 

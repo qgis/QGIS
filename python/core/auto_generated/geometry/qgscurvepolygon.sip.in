@@ -125,6 +125,15 @@ area will be removed.
 .. versionadded:: 3.0
 %End
 
+    void removeInvalidRings();
+%Docstring
+Removes any interior rings which are not valid from the polygon.
+
+For example, this removes unclosed rings and rings with less than 4 vertices.
+
+.. versionadded:: 3.0
+%End
+
     virtual void draw( QPainter &p ) const;
 
     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
