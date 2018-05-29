@@ -74,26 +74,36 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     /**
       * Creates crs from epsg code in QML
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE static QgsCoordinateReferenceSystem coordinateReferenceSystemFromEpsgId( long epsg );
 
     /**
       * Creates QgsPointXY in QML
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE QgsPointXY pointXYFactory( double x, double y ) const;
 
     /**
       * Creates QgsPoint in QML
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE QgsPoint pointFactory( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
 
     /**
       * Converts QGeoCoordinate to QgsPoint
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE QgsPoint coordinateToPoint( const QGeoCoordinate &coor ) const;
 
     /**
       * Transforms point between different crs from QML
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE static QgsPointXY transformPoint( const QgsCoordinateReferenceSystem &srcCrs,
         const QgsCoordinateReferenceSystem &destCrs,
@@ -121,10 +131,16 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
 
     /**
       * Returns QUrl to image from library's /images folder.
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE const QUrl getThemeIcon( const QString &name );
 
-    //! \copydoc QgsCoordinateFormatter::format()
+    /**
+     * \copydoc QgsCoordinateFormatter::format()
+     *
+     * \since QGIS 3.4
+     */
     Q_INVOKABLE static QString formatPoint(
       const QgsPoint &point,
       QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatPair,
@@ -141,6 +157,8 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * \param units units of dist
       * \param decimals decimal to use
       * \returns string represetation of dist
+      *
+      * \since QGIS 3.4
       */
     Q_INVOKABLE static QString formatDistance( double distance, QgsUnitTypes::DistanceUnit units, int decimals = 1 );
 

@@ -35,7 +35,7 @@
  *
  * \note QML Type: PositionKit
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickPositionKit : public QObject
 {

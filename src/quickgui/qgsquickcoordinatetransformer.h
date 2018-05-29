@@ -34,7 +34,7 @@
  *
  * \note QML Type: CoordinateTransformer
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
 {
