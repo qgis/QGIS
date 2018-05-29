@@ -40,14 +40,8 @@ ApplicationWindow {
     onClicked: {
       var screenPoint = Qt.point(mouse.x, mouse.y)
       var res = identifyKit.identifyOne(screenPoint);
-      if (QgsQuick.Utils.hasValidGeometry(res.layer, res.feature)) {
-        featureModel.feature = res
-      }
+      highlight.featureLayerPair = res
     }
-  }
-
-  QgsQuick.FeatureModel {
-    id: featureModel
   }
 
   Item {
@@ -57,9 +51,8 @@ ApplicationWindow {
     }
 
     QgsQuick.FeatureHighlight {
+      id: highlight
       color: "red"
-      width: 20
-      model: featureModel
       mapSettings: mapCanvas.mapSettings
     }
 

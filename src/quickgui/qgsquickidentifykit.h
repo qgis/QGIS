@@ -25,7 +25,7 @@
 #include "qgsrendercontext.h"
 
 #include "qgis_quick.h"
-#include "qgsquickfeature.h"
+#include "qgsquickfeaturelayerpair.h"
 
 class QgsMapLayer;
 class QgsQuickMapSettings;
@@ -33,9 +33,11 @@ class QgsVectorLayer;
 
 /**
  * \ingroup quick
- * Convenient set of tools to get a list of QgsFeatures in a defined radius from a point.
- * Also possible to get a feature with the closest distance to the point or feature(s) from
- * specified QgsVectorLayer.
+ *
+ * Convenient set of tools to identify features
+ *
+ * - get a list of features in a defined radius from a point.
+ * - get a feature with the closest distance to the point
  *
  * \note QML Type: IdentifyKit
  *
@@ -46,23 +48,27 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     Q_OBJECT
 
     /**
-      * Map settings. Set directly when creating QML object.
-      */
+     * Map settings. Set directly when creating QML object.
+     */
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
     /**
-      * Search radius for the identify functions from the point. Default is 8.
-      */
+     * Search radius for the identify functions
+     *
+     * Default is 8.
+     */
     Q_PROPERTY( double searchRadiusMm READ searchRadiusMm WRITE setSearchRadiusMm NOTIFY searchRadiusMmChanged )
 
     /**
-      * Maximum number of feature returned from by the identify functions in QgsFeatureList. Default is 100.
-      */
+     * Maximum number of features returned from the QgsQuickIdentifyKit::identify()
+     *
+     * Default is 100.
+     */
     Q_PROPERTY( long featuresLimit MEMBER mFeaturesLimit NOTIFY featuresLimitChanged )
 
   public:
     //! Constructor of new identify kit.
-    explicit QgsQuickIdentifyKit( QObject *parent = 0 );
+    explicit QgsQuickIdentifyKit( QObject *parent = nullptr );
 
     //! \copydoc QgsQuickIdentifyKit::mapSettings
     QgsQuickMapSettings *mapSettings() const;
@@ -77,21 +83,31 @@ class QUICK_EXPORT QgsQuickIdentifyKit : public QObject
     void setSearchRadiusMm( double searchRadiusMm );
 
     /**
-      * Gets the closest feature to the point. If given layer is defined, identifies only features from it,
-      * otherwise searches among identifiable layers.
-      * If a layer param is undefined, identify feature from any identifiable layer.
-      * \param point QPointF position
-      * \param layer QgsVectorLayer used for identifying if is defined, otherwise identifiable layer.
+      * Gets the closest feature to the point within the search radius
+      *
+      * If layer is nullptr, identifies the closest feature from all identifiable layers
+      * If layer is not nullptr, identifies the closest feature from given layer
+      *
+      * To modify search radius, use QgsQuickIdentifyKit::searchRadiusMm
+      *
+      * \param point position to search a feature from
+      * \param layer if defined, search for a feature only from this layer
       */
-    Q_INVOKABLE QgsQuickFeature identifyOne( const QPointF &point, QgsVectorLayer *layer = nullptr );
+    Q_INVOKABLE QgsQuickFeatureLayerPair identifyOne( const QPointF &point, QgsVectorLayer *layer = nullptr );
 
     /**
-      * Gets all features interseting the point. If layer is defined, identifies only features from given layer,
-      * otherwise searches among identifiable layers.
-      * \param point QPointF used for identifying.
-      * \param layer QgsVectorLayer used for identifying if is defined, otherwise identifiable layer.
+      * Gets all features in the search radius
+      *
+      * If layer is nullptr, identifies features from all identifiable layers
+      * If layer is not nullptr, identifies only features from given layer
+      *
+      * To limit number of results, use QgsQuickIdentifyKit::featuresLimit
+      * To modify search radius, use QgsQuickIdentifyKit::searchRadiusMm
+      *
+      * \param point position to search features ob
+      * \param layer if defined, search for features only from this layer
       */
-    Q_INVOKABLE QgsQuickFeatureList identify( const QPointF &point, QgsVectorLayer *layer = nullptr );
+    Q_INVOKABLE QgsQuickFeatureLayerPairs identify( const QPointF &point, QgsVectorLayer *layer = nullptr );
 
   signals:
     //! \copydoc QgsQuickIdentifyKit::mapSettings

@@ -41,9 +41,9 @@ void QgsQuickIdentifyKit::setMapSettings( QgsQuickMapSettings *mapSettings )
   emit mapSettingsChanged();
 }
 
-QgsQuickFeatureList QgsQuickIdentifyKit::identify( const QPointF &point, QgsVectorLayer *layer )
+QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, QgsVectorLayer *layer )
 {
-  QgsQuickFeatureList results;
+  QgsQuickFeatureLayerPairs results;
 
   if ( !mMapSettings )
   {
@@ -57,7 +57,7 @@ QgsQuickFeatureList QgsQuickIdentifyKit::identify( const QPointF &point, QgsVect
     QgsFeatureList featureList = identifyVectorLayer( layer, mapPoint );
     for ( const QgsFeature &feature : featureList )
     {
-      results.append( QgsQuickFeature( feature, layer ) );
+      results.append( QgsQuickFeatureLayerPair( feature, layer ) );
     }
     QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results for layer %2" ).arg( results.count() ).arg( layer->name() ) );
   }
@@ -81,7 +81,7 @@ QgsQuickFeatureList QgsQuickIdentifyKit::identify( const QPointF &point, QgsVect
 
         for ( const QgsFeature &feature : featureList )
         {
-          results.append( QgsQuickFeature( feature, vl ) );
+          results.append( QgsQuickFeatureLayerPair( feature, vl ) );
         }
       }
     }
@@ -92,7 +92,7 @@ QgsQuickFeatureList QgsQuickIdentifyKit::identify( const QPointF &point, QgsVect
   return results;
 }
 
-static QgsQuickFeature _closestFeature( const QgsQuickFeatureList &results, const QgsMapSettings &mapSettings, const QPointF &point, QgsVectorLayer *layer = nullptr )
+static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs &results, const QgsMapSettings &mapSettings, const QPointF &point, QgsVectorLayer *layer = nullptr )
 {
   QgsPointXY mapPoint = mapSettings.mapToPixel().toMapCoordinates( point.toPoint() );
   QgsGeometry mapPointGeom( QgsGeometry::fromPointXY( mapPoint ) );
@@ -103,7 +103,7 @@ static QgsQuickFeature _closestFeature( const QgsQuickFeatureList &results, cons
   int iMin = -1;
   for ( int i = 0; i < results.count(); ++i )
   {
-    const QgsQuickFeature &res = results.at( i );
+    const QgsQuickFeatureLayerPair &res = results.at( i );
     QgsGeometry geom( res.feature().geometry() );
     if ( layer )
       geom.transform( ctLayerToMap );
@@ -119,12 +119,12 @@ static QgsQuickFeature _closestFeature( const QgsQuickFeatureList &results, cons
   return results.at( iMin );
 }
 
-QgsQuickFeature QgsQuickIdentifyKit::identifyOne( const QPointF &point, QgsVectorLayer *layer )
+QgsQuickFeatureLayerPair QgsQuickIdentifyKit::identifyOne( const QPointF &point, QgsVectorLayer *layer )
 {
-  QgsQuickFeatureList results = identify( point, layer );
+  QgsQuickFeatureLayerPairs results = identify( point, layer );
   if ( results.empty() )
   {
-    QgsQuickFeature emptyRes;
+    QgsQuickFeatureLayerPair emptyRes;
     return emptyRes;
   }
   else

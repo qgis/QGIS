@@ -1,8 +1,7 @@
 ############################################################
 # sources
 SET(QGIS_QUICK_GUI_MOC_HDRS
-  qgsquickfeature.h
-  qgsquickfeaturemodel.h
+  qgsquickfeaturelayerpair.h
   qgsquickfeaturehighlight.h
   qgsquickidentifykit.h
   qgsquickmapcanvasmap.h
@@ -18,8 +17,7 @@ SET(QGIS_QUICK_GUI_HDRS
 )
 
 SET(QGIS_QUICK_GUI_SRC
-  qgsquickfeature.cpp
-  qgsquickfeaturemodel.cpp
+  qgsquickfeaturelayerpair.cpp
   qgsquickfeaturehighlight.cpp
   qgsquickhighlightsgnode.cpp
   qgsquickidentifykit.cpp

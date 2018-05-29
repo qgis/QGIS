@@ -24,14 +24,13 @@
 #include "qgsmessagelog.h"
 
 #include "qgsquickmapsettings.h"
-#include "qgsquickfeature.h"
+#include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
 
 
 class QgsFeature;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
-class QgsQuickFeature;
 
 /**
  * \ingroup quick
@@ -73,11 +72,6 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       */
     Q_INVOKABLE double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels ) const;
 
-    /**
-      * Has QgsFeature a geometry that can be added to the layer (non-empty, same geometry type)?
-      */
-    Q_INVOKABLE bool hasValidGeometry( QgsVectorLayer *layer, const QgsFeature &feat );
-
     //! Log message in QgsMessageLog
     Q_INVOKABLE void logMessage( const QString &message,
                                  const QString &tag = QString( "QgsQuick" ),
@@ -88,7 +82,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * \param feature QgsFeature linked to new QgsQuickFeature instance.
       * \param layer QgsVectorLayer which the feature belongs to, optional.
       */
-    Q_INVOKABLE QgsQuickFeature featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
+    Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Returns a string with information about screen size and resolution

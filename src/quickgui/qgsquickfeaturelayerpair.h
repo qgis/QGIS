@@ -1,6 +1,6 @@
 /***************************************************************************
-  qgsquickfeature.h
- ---------------------
+  qgsquickfeaturelayerpair.h
+ ---------------------------
   Date                 : Nov 2017
   Copyright            : (C) 2017 by Peter Petrik
   Email                : zilolv at gmail dot com
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSQUICKFEATURE_H
-#define QGSQUICKFEATURE_H
+#ifndef QGSQUICKFEATURELAYERPAIR_H
+#define QGSQUICKFEATURELAYERPAIR_H
 
 #include <QObject>
 
@@ -31,49 +31,50 @@ class QgsVectorLayer;
  * Vector layer is commonly used to gather geometry type or CRS
  * for the feature.
  *
- * Note that the feature may or may not be part of the vector layer's
- * associated features
+ * Note that the feature may or may not be part of the layer's features
  *
- * \note QML Type: QgsQuickFeature
+ * \note QML Type: QgsQuickFeatureLayerPair
  *
  * \since QGIS 3.2
  */
-class QUICK_EXPORT QgsQuickFeature
+class QUICK_EXPORT QgsQuickFeatureLayerPair
 {
     Q_GADGET
 
     /**
-     * Vector layer to which the feature belongs.
+     * Vector layer to which the feature belongs. May be nullptr if pair is not valid
      *
      * This is a readonly property.
      */
     Q_PROPERTY( QgsVectorLayer *layer READ layer )
 
     /**
-     * Feature instance itself.
+     * Feature that belongs to layer.
      *
      * This is a readonly property.
      */
     Q_PROPERTY( QgsFeature feature READ feature )
 
     /**
-     * Whether the feature is valid and vector layer assigned.
+     * Whether
+     *  - layer is not nullptr
+     *  - feature is valid
+     *  - feature has geometry and the geometry is the same as geometry expected by layer
      *
      * This is a readonly property.
      */
-    Q_PROPERTY( bool valid READ valid )
+    Q_PROPERTY( bool valid READ isValid )
 
   public:
-    //! Constructor of a new feature.
-    QgsQuickFeature();
+    //! Constructs invalid feature-layer pair.
+    QgsQuickFeatureLayerPair();
 
     /**
-     * Constructor of a new feature.
+     * Constructor of a new feature-layer pair
      * \param feature QgsFeature associated.
-     * \param layer Vector layer which the feature belongs to, if not defined, the feature is not valid.
+     * \param layer Vector layer which the feature belongs to
      */
-    QgsQuickFeature( const QgsFeature &feature,
-                     QgsVectorLayer *layer );
+    QgsQuickFeatureLayerPair( const QgsFeature &feature, QgsVectorLayer *layer );
 
     //! \copydoc QgsQuickFeature::layer
     QgsVectorLayer *layer() const;
@@ -81,22 +82,21 @@ class QUICK_EXPORT QgsQuickFeature
     //! \copydoc QgsQuickFeature::feature
     QgsFeature feature() const;
 
-    //! \copydoc QgsQuickFeature::valid
-    bool valid() const;
+    //! \copydoc QgsQuickFeature::isValid
+    bool isValid() const;
 
-    //! \copydoc QgsQuickFeature::feature
-    void setFeature( const QgsFeature &feature );
-
-    //! \copydoc QgsQuickFeature::layer
-    void setLayer( QgsVectorLayer *layer );
+    bool operator==( const QgsQuickFeatureLayerPair &other ) const;
+    bool operator!=( const QgsQuickFeatureLayerPair &other ) const;
 
   private:
+    bool hasValidGeometry() const;
+
     QgsVectorLayer *mLayer = nullptr; // not owned
     QgsFeature mFeature;
 };
 
-typedef QList<QgsQuickFeature> QgsQuickFeatureList;
+typedef QList<QgsQuickFeatureLayerPair> QgsQuickFeatureLayerPairs;
 
-Q_DECLARE_METATYPE( QgsQuickFeature )
+Q_DECLARE_METATYPE( QgsQuickFeatureLayerPair )
 
-#endif // QGSQUICKFEATURE_H
+#endif // QGSQUICKFEATURELAYERPAIR_H

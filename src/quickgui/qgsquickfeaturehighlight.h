@@ -1,9 +1,9 @@
 /***************************************************************************
   qgsqguickfeaturehighlight.h
-  --------------------------------------
-  Date                 : 9.12.2014
-  Copyright            : (C) 2014 by Matthias Kuhn
-  Email                : matthias@opengis.ch
+  ---------------------------
+  Date                 : May 2018
+  Copyright            : (C) 2018 by Peter Petrik
+  Email                : zilolv at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,10 +18,10 @@
 
 #include <QQuickItem>
 
+#include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
 
 class QgsQuickMapSettings;
-class QgsQuickFeatureModel;
 
 /**
  * \ingroup quick
@@ -44,27 +44,31 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
     Q_PROPERTY( QgsQuickMapSettings *mapSettings MEMBER mMapSettings NOTIFY mapSettingsChanged )
 
     /**
-     * Feature model for geometry.
+     * Feature to highlight
      */
-    Q_PROPERTY( QgsQuickFeatureModel *model MEMBER mModel NOTIFY modelChanged )
+    Q_PROPERTY( QgsQuickFeatureLayerPair featureLayerPair MEMBER mFeatureLayerPair NOTIFY featureLayerPairChanged )
 
     /**
      * Color of the highlighted geometry (feature).
+     *
+     * Default is yellow color
      */
     Q_PROPERTY( QColor color MEMBER mColor NOTIFY colorChanged )
 
     /**
-     * Pen width of the highlighted geometry (feature). Default is 20.
+     * Pen width of the highlighted geometry (feature).
+     *
+     * Default is 20, see QSGGeometry::setLineWidth()
      */
-    Q_PROPERTY( unsigned int width MEMBER mWidth NOTIFY widthChanged )
+    Q_PROPERTY( float width MEMBER mWidth NOTIFY widthChanged )
 
   public:
     //! Creates a new feature highlight
     explicit QgsQuickFeatureHighlight( QQuickItem *parent = nullptr );
 
   signals:
-    //! \copydoc QgsQuickFeatureHighlight::model
-    void modelChanged();
+    //! \copydoc QgsQuickFeatureHighlight::featureLayerPair
+    void featureLayerPairChanged();
 
     //! \copydoc QgsQuickFeatureHighlight::color
     void colorChanged();
@@ -76,16 +80,15 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
     void mapSettingsChanged();
 
   private slots:
-    void onDataChanged();
-    void onModelDataChanged();
+    void markDirty();
 
   private:
     QSGNode *updatePaintNode( QSGNode *n, UpdatePaintNodeData * ) override;
 
     QColor mColor = Qt::yellow;
     bool mDirty = false;
-    unsigned int mWidth = 20;
-    QgsQuickFeatureModel *mModel = nullptr; // not owned
+    float mWidth = 20;
+    QgsQuickFeatureLayerPair mFeatureLayerPair;
     QgsQuickMapSettings *mMapSettings = nullptr; // not owned
 };
 

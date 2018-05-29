@@ -59,7 +59,7 @@ void TestQgsQuickUtils::screenUnitsToMeters()
   ms.setExtent( QgsRectangle( 49, 16, 50, 17 ) );
   ms.setOutputSize( QSize( 1000, 500 ) );
   double sutm = utils.screenUnitsToMeters( &ms, 1 );
-  QVERIFY( fabs( sutm - 213 ) < 1.0 );
+  QGSCOMPARENEAR( sutm, 213, 1.0 );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )

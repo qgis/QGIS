@@ -29,10 +29,9 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsvectorlayer.h"
 
-#include "qgsquickfeaturemodel.h"
 #include "qgsquickfeaturehighlight.h"
 #include "qgsquickidentifykit.h"
-#include "qgsquickfeature.h"
+#include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptransform.h"
@@ -58,10 +57,9 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qRegisterMetaType< QgsFeatureId > ( "QgsFeatureId" );
   qRegisterMetaType< QgsPoint >( "QgsPoint" );
   qRegisterMetaType< QgsPointXY >( "QgsPointXY" );
-  qRegisterMetaType< QgsQuickFeature >( "QgsQuickFeature" );
+  qRegisterMetaType< QgsQuickFeatureLayerPair >( "QgsQuickFeatureLayerPair" );
 
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
-  qmlRegisterType< QgsQuickFeatureModel >( uri, 0, 1, "FeatureModel" );
   qmlRegisterType< QgsQuickFeatureHighlight >( uri, 0, 1, "FeatureHighlight" );
   qmlRegisterType< QgsQuickIdentifyKit >( uri, 0, 1, "IdentifyKit" );
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
