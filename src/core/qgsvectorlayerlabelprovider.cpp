@@ -269,9 +269,9 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     return QgsGeometry();
 
   bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
-  QgsAbstractGeometry *obstacleGeom = nullptr;
+  std::unique_ptr< QgsAbstractGeometry > obstacleGeom;
   if ( isMultiPoint )
-    obstacleGeom = new QgsMultiPolygon();
+    obstacleGeom = qgis::make_unique< QgsMultiPolygon >();
 
   // for each point
   for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
@@ -313,7 +313,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;
     bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
-    QgsLineString *boundLineString = new QgsLineString( bX, bY );
+    std::unique_ptr< QgsLineString > boundLineString = qgis::make_unique< QgsLineString >( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
@@ -336,20 +336,31 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
     boundLineString->close();
 
-    QgsPolygon *obstaclePolygon = new QgsPolygon();
-    obstaclePolygon->setExteriorRing( boundLineString );
+    if ( context.coordinateTransform().isValid() )
+    {
+      // coordinate transforms may have resulted in nan coordinates - if so, strip these out
+      boundLineString->filterVertices( []( const QgsPoint & point )->bool
+      {
+        return std::isfinite( point.x() ) && std::isfinite( point.y() );
+      } );
+      if ( !boundLineString->isRing() )
+        return QgsGeometry();
+    }
+
+    std::unique_ptr< QgsPolygon > obstaclePolygon = qgis::make_unique< QgsPolygon >();
+    obstaclePolygon->setExteriorRing( boundLineString.release() );
 
     if ( isMultiPoint )
     {
-      static_cast<QgsMultiPolygon *>( obstacleGeom )->addGeometry( obstaclePolygon );
+      static_cast<QgsMultiPolygon *>( obstacleGeom.get() )->addGeometry( obstaclePolygon.release() );
     }
     else
     {
-      obstacleGeom = obstaclePolygon;
+      obstacleGeom = std::move( obstaclePolygon );
     }
   }
 
-  return QgsGeometry( obstacleGeom );
+  return QgsGeometry( std::move( obstacleGeom ) );
 }
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const
