@@ -2899,6 +2899,11 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
       return QgsGeometry();
     }
+    // geometry transforms may result in nan points, remove these
+    geom.filterVertices( []( const QgsPoint & point )->bool
+    {
+      return std::isfinite( point.x() ) && std::isfinite( point.y() );
+    } );
   }
 
   // Rotate the geometry if needed, before clipping
