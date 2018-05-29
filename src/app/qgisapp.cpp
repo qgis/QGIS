@@ -3762,7 +3762,7 @@ void QgisApp::initLayerTreeView()
 
   mActionStyleDock = new QAction( tr( "Layer Styling" ), this );
   mActionStyleDock->setCheckable( true );
-  mActionStyleDock->setToolTip( tr( "Open the layer styling dock" ) );
+  mActionStyleDock->setToolTip( tr( "Open the Layer Styling panel" ) );
   mActionStyleDock->setShortcut( QStringLiteral( "F7" ) );
   mActionStyleDock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
   connect( mActionStyleDock, &QAction::toggled, this, &QgisApp::mapStyleDock );
