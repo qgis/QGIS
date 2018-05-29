@@ -626,7 +626,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
             elif cmd == '_api':
                 webbrowser.open("https://qgis.org/api/{}".format(version))
             elif cmd == '_cookbook':
-                webbrowser.open("https://qgis.org/pyqgis-cookbook/")
+                webbrowser.open("https://docs.qgis.org/{}/en/docs/pyqgis_developer_cookbook/".format(
+                    'testing' if version == 'master' else version))
             more = False
         else:
             self.buffer.append(cmd)
