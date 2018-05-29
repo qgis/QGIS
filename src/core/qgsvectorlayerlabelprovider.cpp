@@ -285,7 +285,14 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     //transform point to pixels
     if ( context.coordinateTransform().isValid() )
     {
-      context.coordinateTransform().transformInPlace( x, y, z );
+      try
+      {
+        context.coordinateTransform().transformInPlace( x, y, z );
+      }
+      catch ( QgsCsException & )
+      {
+        return QgsGeometry();
+      }
     }
     context.mapToPixel().transformInPlace( x, y );
 
@@ -318,7 +325,14 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
     if ( context.coordinateTransform().isValid() )
     {
-      boundLineString->transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      try
+      {
+        boundLineString->transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        return QgsGeometry();
+      }
     }
     boundLineString->close();
 

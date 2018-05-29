@@ -237,7 +237,14 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, QgsVectorLayer *la
   if ( layer )
   {
     QgsCoordinateTransform ct = mMapCanvas->mapSettings().layerTransform( layer );
-    geom.transform( ct );
+    try
+    {
+      geom.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+      return;
+    }
   }
 
   addGeometry( geom );
