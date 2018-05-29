@@ -246,6 +246,11 @@ bool QgsAbstractGeometry::convertTo( QgsWkbTypes::Type type )
   return true;
 }
 
+void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> & )
+{
+  // Ideally this would be pure virtual, but SIP has issues with that
+}
+
 QgsVertexIterator QgsAbstractGeometry::vertices() const
 {
   return QgsVertexIterator( this );

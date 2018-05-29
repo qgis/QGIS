@@ -158,6 +158,7 @@ Sets the circular string's points
     virtual double yAt( int index ) const;
 
 
+
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
 
 

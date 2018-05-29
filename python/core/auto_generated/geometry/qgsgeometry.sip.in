@@ -1588,6 +1588,7 @@ was performed on the geometry.
 .. versionadded:: 3.0
 %End
 
+
     static QgsGeometry fromQPointF( QPointF point );
 %Docstring
 Construct geometry from a QPointF

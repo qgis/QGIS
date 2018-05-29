@@ -153,7 +153,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     void swapXy() override;
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
+
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsCurvePolygon.

@@ -440,6 +440,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
 #ifndef SIP_RUN
 
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+
     /**
      * Cast the \a geom to a QgsPoint.
      * Should be used by qgsgeometry_cast<QgsPoint *>( geometry ).
