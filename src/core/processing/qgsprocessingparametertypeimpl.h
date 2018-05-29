@@ -53,6 +53,15 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
     {
       return QStringLiteral( "raster" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRasterLayer" );
+    }
 };
 
 /**
@@ -82,6 +91,15 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
     QString id() const override
     {
       return QStringLiteral( "vector" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsVectorLayer" );
     }
 };
 
@@ -113,6 +131,17 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
     {
       return QStringLiteral( "maplayer" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsMapLayer" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRasterLayer" )
+             << QStringLiteral( "QgsVectorLayer" );
+    }
 };
 
 /**
@@ -142,6 +171,14 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
     QString id() const override
     {
       return QStringLiteral( "boolean" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "bool" )
+             << QStringLiteral( "int" )
+             << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -173,6 +210,12 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
     {
       return QStringLiteral( "expression" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -202,6 +245,20 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
     QString id() const override
     {
       return QStringLiteral( "crs" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList()
+             << QStringLiteral( "str: 'ProjectCrs'" )
+             << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" )
+             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:...')" )
+             << QObject::tr( "str: CRS WKT (e.g. 'WKT:...')" )
+             << QObject::tr( "str: layer ID. CRS of layer is used." )
+             << QObject::tr( "str: layer name. CRS of layer is used." )
+             << QObject::tr( "str: layer source. CRS of layer is used." )
+             << QObject::tr( "QgsMapLayer: CRS of layer is used" )
+             << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -233,6 +290,14 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
     {
       return QStringLiteral( "range" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[float]: list of 2 float values" )
+             << QObject::tr( "list[str]: list of strings representing floats" )
+             << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -262,6 +327,14 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
     QString id() const override
     {
       return QStringLiteral( "point" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" )
+             << QStringLiteral( "QgsPointXY" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsReferencedPointXY" );
     }
 };
 
@@ -293,6 +366,13 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
     {
       return QStringLiteral( "enum" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QObject::tr( "str: as string representation of int, e.g. '1'" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -322,6 +402,18 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
     QString id() const override
     {
       return QStringLiteral( "extent" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as comma delimited list of x min, x max, y min, y max. E.g. '4,10,101,105'" )
+             << QObject::tr( "str: layer ID. Extent of layer is used." )
+             << QObject::tr( "str: layer name. Extent of layer is used." )
+             << QObject::tr( "str: layer source. Extent of layer is used." )
+             << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRectangle" )
+             << QStringLiteral( "QgsReferencedRectangle" );
     }
 };
 
@@ -353,6 +445,13 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     {
       return QStringLiteral( "matrix" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as comma delimited list of values" )
+             << QStringLiteral( "list" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -383,6 +482,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
     {
       return QStringLiteral( "file" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -412,6 +517,12 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
     QString id() const override
     {
       return QStringLiteral( "field" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -457,6 +568,13 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
 };
 
 /**
@@ -500,6 +618,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 #endif
 
       return flags;
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -546,6 +670,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -590,6 +720,13 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
 };
 
 /**
@@ -619,6 +756,12 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     QString id() const override
     {
       return QStringLiteral( "string" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
     }
 };
 
@@ -650,6 +793,15 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
     {
       return QStringLiteral( "multilayer" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[str]: list of layer IDs" )
+             << QObject::tr( "list[str]: list of layer names" )
+             << QObject::tr( "list[str]: list of layer sources" )
+             << QStringLiteral( "list[QgsMapLayer]" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -679,6 +831,16 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     QString id() const override
     {
       return QStringLiteral( "source" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProcessingFeatureSourceDefinition" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsVectorLayer" );
     }
 };
 
@@ -710,6 +872,13 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
     {
       return QStringLiteral( "number" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -740,6 +909,14 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
     {
       return QStringLiteral( "distance" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
 };
 
 /**
@@ -770,6 +947,13 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
     {
       return QStringLiteral( "band" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

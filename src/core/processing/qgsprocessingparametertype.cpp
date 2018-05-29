@@ -26,3 +26,8 @@ QVariantMap QgsProcessingParameterType::metadata() const
 {
   return QVariantMap();
 }
+
+QStringList QgsProcessingParameterType::acceptedPythonTypes() const
+{
+  return QStringList();
+}
