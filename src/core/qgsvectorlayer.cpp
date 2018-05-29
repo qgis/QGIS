@@ -2677,16 +2677,16 @@ bool QgsVectorLayer::deleteAttribute( int index )
   return mEditBuffer->deleteAttribute( index );
 }
 
-bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
+bool QgsVectorLayer::deleteAttributes( const QList<int> &attrs )
 {
   bool deleted = false;
 
   // Remove multiple occurrences of same attribute
-  attrs = attrs.toSet().toList();
+  QList<int> attrList = attrs.toSet().toList();
 
-  std::sort( attrs.begin(), attrs.end(), std::greater<int>() );
+  std::sort( attrList.begin(), attrList.end(), std::greater<int>() );
 
-  Q_FOREACH ( int attr, attrs )
+  for ( int attr : qgis::as_const( attrList ) )
   {
     if ( deleteAttribute( attr ) )
     {
