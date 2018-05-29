@@ -150,7 +150,7 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-src_srs_name {}'.format(crs_field))
 
         if crs_format:
-            arguments.append('-src_srs_format {}'.format(self.modes[crs_format][1]))
+            arguments.append('-src_srs_format {}'.format(self.formats[crs_format][1]))
 
         if target_crs.isValid():
             arguments.append('-t_srs')

@@ -90,7 +90,7 @@ class DefineProjection(QgisAlgorithm):
                 with open(qpjFile, 'w') as f:
                     f.write(wkt)
         else:
-            feedback.pushConsoleInfo(tr("Data source isn't a shapefile, skipping .prj/.qpj creation"))
+            feedback.pushConsoleInfo(self.tr("Data source isn't a shapefile, skipping .prj/.qpj creation"))
 
         layer.setCrs(crs)
         layer.triggerRepaint()

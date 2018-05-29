@@ -738,7 +738,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param colorTable: preserve color Table.
         :param outFormat: file format for export.
         :param createOpt: creation options for format.
-        :param metatOpt: metadata options for export.
+        :param metaOpt: metadata options for export.
         """
         if not createOpt:
             if outFormat in Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS:

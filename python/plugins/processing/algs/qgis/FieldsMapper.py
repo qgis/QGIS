@@ -82,7 +82,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, 'INPUT', context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(self.invalidSourceError(parameters, 'INPUT'))
 
         mapping = self.parameterAsFieldsMapping(parameters, self.FIELDS_MAPPING, context)
 
