@@ -25,10 +25,10 @@ class QgsQuickMapSettings;
 
 /**
  * \ingroup quick
- * The QgsQuickMapTransform is transformation that can be attached to any QQuickItem. Transformation scales and translates
- * Item based on the current QgsQuickMapSettings settings.
+ * The QgsQuickMapTransform is transformation that can be attached to any QQuickItem.
  *
- * For example it can be used on QgsQuickFeatureHighlight to place it correctly on the map canvas.
+ * If the item is based on the map coordinates, QgsQuickMapTransform will
+ * transform it to the device coordintes based on the attached map settings.
  *
  * \note QML Type: MapTransform
  *

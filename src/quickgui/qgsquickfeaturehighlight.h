@@ -20,6 +20,7 @@
 
 #include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
+#include "qgsquickmaptransform.h"
 
 class QgsQuickMapSettings;
 
@@ -28,9 +29,10 @@ class QgsQuickMapSettings;
  *
  * Creates map highlights for a geometry provided by a FeatureModel.
  *
- * The highlights are compatible with the QtQuick scene graph.
+ * The highlights are compatible with the QtQuick scene graph and
+ * can be direcly shown on map canvas
  *
- * \note QML Type: FeatureModelHighlight
+ * \note QML Type: FeatureHighlight
  *
  * \since QGIS 3.4
  */
@@ -81,6 +83,7 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
 
   private slots:
     void markDirty();
+    void onMapSettingsChanged();
 
   private:
     QSGNode *updatePaintNode( QSGNode *n, UpdatePaintNodeData * ) override;
@@ -90,6 +93,7 @@ class QUICK_EXPORT QgsQuickFeatureHighlight : public QQuickItem
     float mWidth = 20;
     QgsQuickFeatureLayerPair mFeatureLayerPair;
     QgsQuickMapSettings *mMapSettings = nullptr; // not owned
+    QgsQuickMapTransform mTransform;
 };
 
 #endif // QGSQUICKFEATUREHIGHLIGHT_H

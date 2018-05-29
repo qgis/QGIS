@@ -28,7 +28,10 @@ QgsQuickFeatureHighlight::QgsQuickFeatureHighlight( QQuickItem *parent )
   setFlags( QQuickItem::ItemHasContents );
   setAntialiasing( true );
 
-  connect( this, &QgsQuickFeatureHighlight::mapSettingsChanged, this, &QgsQuickFeatureHighlight::markDirty );
+  // transform to device coords
+  mTransform.appendToItem(this);
+
+  connect( this, &QgsQuickFeatureHighlight::mapSettingsChanged, this, &QgsQuickFeatureHighlight::onMapSettingsChanged );
   connect( this, &QgsQuickFeatureHighlight::featureLayerPairChanged, this, &QgsQuickFeatureHighlight::markDirty );
   connect( this, &QgsQuickFeatureHighlight::colorChanged, this, &QgsQuickFeatureHighlight::markDirty );
   connect( this, &QgsQuickFeatureHighlight::widthChanged, this, &QgsQuickFeatureHighlight::markDirty );
@@ -38,6 +41,12 @@ void QgsQuickFeatureHighlight::markDirty()
 {
   mDirty = true;
   update();
+}
+
+void QgsQuickFeatureHighlight::onMapSettingsChanged()
+{
+  mTransform.setMapSettings(mMapSettings);
+  markDirty();
 }
 
 QSGNode *QgsQuickFeatureHighlight::updatePaintNode( QSGNode *n, QQuickItem::UpdatePaintNodeData * )
