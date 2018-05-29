@@ -2390,6 +2390,12 @@ Is emitted, whenever the fields available from this layer have been changed.
 This can be due to manually adding attributes or due to a join.
 %End
 
+    void subsetStringChanged();
+%Docstring
+Emitted when the layer's subset string has changed.
+
+.. versionadded:: 3.2
+%End
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 %Docstring
