@@ -2574,6 +2574,16 @@ QString QgsGeometry::lastError() const
   return mLastError;
 }
 
+void QgsGeometry::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+{
+  if ( !d->geometry )
+    return;
+
+  detach();
+
+  d->geometry->filterVertices( filter );
+}
+
 void QgsGeometry::convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output )
 {
   output.clear();

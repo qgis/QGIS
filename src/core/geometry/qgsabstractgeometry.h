@@ -570,6 +570,18 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
     /**
+     * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
+     * check. Has no meaning when called on a single point geometry.
+     *
+     * Depending on the \a filter used, this may result in an invalid geometry. However, CurvePolygon rings which are no longer
+     * valid rings will be automatically removed after filtering.
+     *
+     * \since QGIS 3.2
+     * \note Not available in Python bindings
+     */
+    virtual void filterVertices( const std::function< bool( const QgsPoint & ) > &filter );
+
+    /**
      * \ingroup core
      * The vertex_iterator class provides STL-style iterator for vertices.
      * \since QGIS 3.0

@@ -201,6 +201,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 
+
     virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
 
 

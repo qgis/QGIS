@@ -268,6 +268,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsLineString.

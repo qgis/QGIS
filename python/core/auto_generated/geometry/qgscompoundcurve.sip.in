@@ -162,6 +162,7 @@ Appends first point if not already closed.
     virtual double yAt( int index ) const;
 
 
+
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 
 

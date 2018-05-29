@@ -345,6 +345,8 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
     ~QgsShapeburstFillSymbolLayer();
 
 
+
+
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 
 

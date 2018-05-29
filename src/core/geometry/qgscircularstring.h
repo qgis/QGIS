@@ -125,7 +125,9 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     void swapXy() override;
     double xAt( int index ) const override;
     double yAt( int index ) const override;
+
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsCircularString.

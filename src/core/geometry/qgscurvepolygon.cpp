@@ -1174,6 +1174,31 @@ QgsCurvePolygon *QgsCurvePolygon::toCurveType() const
   return clone();
 }
 
+void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+{
+  if ( mExteriorRing )
+    mExteriorRing->filterVertices( filter );
+
+  QVector<QgsCurve *> filteredRings;
+  filteredRings.reserve( mInteriorRings.size() );
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    curve->filterVertices( filter );
+
+    if ( !curve->isRing() )
+    {
+      // remove invalid rings
+      delete curve;
+    }
+    else
+    {
+      filteredRings << curve;
+    }
+  }
+  mInteriorRings = filteredRings;
+  clearCache();
+}
+
 int QgsCurvePolygon::childCount() const
 {
   return 1 + mInteriorRings.count();
