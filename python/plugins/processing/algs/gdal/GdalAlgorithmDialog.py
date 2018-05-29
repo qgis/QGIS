@@ -48,6 +48,7 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.tools.dataobjects import createContext
 
 
@@ -88,6 +89,8 @@ class GdalParametersPanel(ParametersPanel):
             self.connectWidgetChangedSignals(w)
             for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)
+        for output_widget in self.outputWidgets.values():
+            self.connectWidgetChangedSignals(output_widget)
 
     def connectWidgetChangedSignals(self, w):
         if isinstance(w, QLineEdit):
@@ -102,6 +105,8 @@ class GdalParametersPanel(ParametersPanel):
             w.selectionChanged.connect(self.parametersHaveChanged)
         elif isinstance(w, NumberInputPanel):
             w.hasChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, DestinationSelectionPanel):
+            w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         context = createContext()
