@@ -88,13 +88,13 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.leText.textEdited.connect(self.textChanged)
 
     def textChanged(self):
-        self.use_temporary = False
+        self.use_temporary = not self.leText.text()
         self.destinationChanged.emit()
 
     def outputIsSkipped(self):
         """
         Returns true if output is set to be skipped
-signal        """
+        """
         return not self.leText.text() and not self.use_temporary
 
     def skipOutput(self):
