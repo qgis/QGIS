@@ -1056,6 +1056,27 @@ class TestQgsProject(unittest.TestCase):
         self.assertEqual(candidates[1], 33)
         self.assertEqual(candidates[2], 333)
 
+    def testLayerChangeDirtiesProject(self):
+        """
+        Test that making changes to certain layer properties results in dirty projects
+        """
+        p = QgsProject()
+        l = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr")
+        self.assertTrue(l.isValid())
+        self.assertTrue(p.addMapLayers([l]))
+        p.setDirty(False)
+
+        l.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertTrue(p.isDirty())
+        p.setDirty(False)
+
+        l.setName('test')
+        self.assertTrue(p.isDirty())
+        p.setDirty(False)
+
+        self.assertTrue(l.setSubsetString('class=\'a\''))
+        self.assertTrue(p.isDirty())
+
 
 if __name__ == '__main__':
     unittest.main()
