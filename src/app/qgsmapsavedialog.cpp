@@ -434,6 +434,8 @@ void QgsMapSaveDialog::onAccepted()
     QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Save Map As" ), lastUsedDir, tr( "PDF Format" ) + " (*.pdf *.PDF)" );
     if ( !fileName.isEmpty() )
     {
+      settings.setValue( QStringLiteral( "UI/lastSaveAsImageDir" ), QFileInfo( fileName ).absolutePath() );
+
       QgsMapSettings ms = QgsMapSettings();
       applyMapSettings( ms );
 
