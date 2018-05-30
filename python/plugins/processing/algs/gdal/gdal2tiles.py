@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import (QgsProcessingException,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
@@ -157,6 +158,9 @@ class gdal2tiles(GdalAlgorithm):
 
     def commandName(self):
         return 'gdal2tiles'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []

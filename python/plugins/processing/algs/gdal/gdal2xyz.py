@@ -25,7 +25,8 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessing,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -74,6 +75,9 @@ class gdal2xyz(GdalAlgorithm):
 
     def commandName(self):
         return 'gdal2xyz'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []

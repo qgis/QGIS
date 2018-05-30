@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessing,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessing,
                        QgsProperty,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterEnum,
@@ -93,7 +94,7 @@ class buildvrt(GdalAlgorithm):
         return 'buildvirtualraster'
 
     def displayName(self):
-        return QCoreApplication.translate("buildvrt", 'Build Virtual Raster')
+        return QCoreApplication.translate("buildvrt", 'Build virtual raster')
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'vrt.png'))
