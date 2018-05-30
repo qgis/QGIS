@@ -73,8 +73,8 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     QgsOgrConn *mConn = nullptr;
     OGRLayerH mOgrLayer = nullptr;
+    OGRLayerH mOgrOrigLayer = nullptr;
 
-    bool mSubsetStringSet = false;
     bool mOrigFidAdded = false;
 
     //! Sets to true, if geometry is in the requested columns
