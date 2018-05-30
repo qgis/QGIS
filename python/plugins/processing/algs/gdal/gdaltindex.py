@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsMapLayer,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
@@ -106,7 +107,7 @@ class gdaltindex(GdalAlgorithm):
         return 'tileindex'
 
     def displayName(self):
-        return self.tr('Tile Index')
+        return self.tr('Tile index')
 
     def group(self):
         return self.tr('Raster miscellaneous')

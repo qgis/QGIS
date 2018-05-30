@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils
+from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils, QgsProcessingAlgorithm
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -183,7 +183,11 @@ def removeMenus():
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     if actionText is None:
-        actionText = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase) + QCoreApplication.translate('Processing', '…')
+        if alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral:
+            alg_title = alg.displayName()
+        else:
+            alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        actionText = alg_title + QCoreApplication.translate('Processing', '…')
     action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
     action.setData(alg.id())
     action.triggered.connect(lambda: _executeAlgorithm(alg))

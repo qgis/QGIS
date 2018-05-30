@@ -160,7 +160,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def flags(self):
         # TODO - maybe it's safe to background thread this?
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def tr(self, string, context=''):
         if context == '':

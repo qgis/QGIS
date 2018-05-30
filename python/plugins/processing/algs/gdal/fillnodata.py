@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsRasterFileWriter,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsRasterFileWriter,
                        QgsProcessingException,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
@@ -92,6 +93,9 @@ class fillnodata(GdalAlgorithm):
 
     def commandName(self):
         return 'gdal_fillnodata'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
