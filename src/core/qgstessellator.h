@@ -16,15 +16,15 @@
 #ifndef QGSTESSELLATOR_H
 #define QGSTESSELLATOR_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
+#include "qgis.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;
 
 #include <QVector>
 #include <memory>
+#include "qgspoint.h"
 
 /**
  * \ingroup core
@@ -46,15 +46,23 @@ class CORE_EXPORT QgsTessellator
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
-    //! Returns array of triangle vertex data
+    /**
+     * Returns array of triangle vertex data
+     *
+     * Vertice coordinates are stored as (x, z, -y)
+     */
     QVector<float> data() const { return mData; }
+
+    //! Return number of vertices stored in the output data array
+    int dataVerticesCount() const;
+
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
 
     /**
      * Returns the triangulation as a multipolygon geometry.
      */
-    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const;
+    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
   private:
     double mOriginX = 0, mOriginY = 0;

@@ -540,6 +540,11 @@ QgsPoint getPointFromData( QVector< float >::const_iterator &it )
   return QgsPoint( x, y, z );
 }
 
+int QgsTessellator::dataVerticesCount() const
+{
+  return mData.size() / 3;
+}
+
 std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
 {
   std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();

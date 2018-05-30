@@ -29,7 +29,7 @@ QgsQuickFeatureHighlight::QgsQuickFeatureHighlight( QQuickItem *parent )
   setAntialiasing( true );
 
   // transform to device coords
-  mTransform.appendToItem(this);
+  mTransform.appendToItem( this );
 
   connect( this, &QgsQuickFeatureHighlight::mapSettingsChanged, this, &QgsQuickFeatureHighlight::onMapSettingsChanged );
   connect( this, &QgsQuickFeatureHighlight::featureLayerPairChanged, this, &QgsQuickFeatureHighlight::markDirty );
@@ -45,7 +45,7 @@ void QgsQuickFeatureHighlight::markDirty()
 
 void QgsQuickFeatureHighlight::onMapSettingsChanged()
 {
-  mTransform.setMapSettings(mMapSettings);
+  mTransform.setMapSettings( mMapSettings );
   markDirty();
 }
 
@@ -65,12 +65,19 @@ QSGNode *QgsQuickFeatureHighlight::updatePaintNode( QSGNode *n, QQuickItem::Upda
   if ( feature.hasGeometry() )
   {
     QgsGeometry geom( feature.geometry() );
-    geom.transform( transf );
-    std::unique_ptr<QgsQuickHighlightSGNode> rb( new QgsQuickHighlightSGNode( geom, mColor, mWidth ) );
-    rb->setFlag( QSGNode::OwnedByParent );
-    n->appendChildNode( rb.release() );
+    try
+    {
+      geom.transform( transf );
+      std::unique_ptr<QgsQuickHighlightSGNode> rb( new QgsQuickHighlightSGNode( geom, mColor, mWidth ) );
+      rb->setFlag( QSGNode::OwnedByParent );
+      n->appendChildNode( rb.release() );
+    }
+    catch ( QgsCsException &e )
+    {
+      Q_UNUSED( e );
+      // Caught an error in transform
+    }
   }
-
   mDirty = false;
 
   return n;

@@ -94,23 +94,28 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
   return results;
 }
 
-static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs &results, const QgsMapSettings &mapSettings, const QPointF &point, QgsVectorLayer *layer = nullptr )
+static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs &results, const QgsMapSettings &mapSettings, const QPointF &point )
 {
   QgsPointXY mapPoint = mapSettings.mapToPixel().toMapCoordinates( point.toPoint() );
   QgsGeometry mapPointGeom( QgsGeometry::fromPointXY( mapPoint ) );
-  QgsCoordinateTransform ctLayerToMap = mapSettings.layerTransform( layer );
 
-  Q_ASSERT( !results.empty() );
   double distMin = 1e10;
   int iMin = -1;
   for ( int i = 0; i < results.count(); ++i )
   {
     const QgsQuickFeatureLayerPair &res = results.at( i );
     QgsGeometry geom( res.feature().geometry() );
-    if ( layer )
-      geom.transform( ctLayerToMap );
-    else
+    try
+    {
       geom.transform( mapSettings.layerTransform( res.layer() ) );
+    }
+    catch ( QgsCsException &e )
+    {
+      Q_UNUSED( e );
+      // Caught an error in transform
+      continue;
+    }
+
     double dist = geom.distance( mapPointGeom );
     if ( dist < distMin )
     {
@@ -118,21 +123,21 @@ static QgsQuickFeatureLayerPair _closestFeature( const QgsQuickFeatureLayerPairs
       distMin = dist;
     }
   }
-  return results.at( iMin );
+
+  if ( results.empty() )
+  {
+    return QgsQuickFeatureLayerPair();
+  }
+  else
+  {
+    return results.at( iMin );
+  }
 }
 
 QgsQuickFeatureLayerPair QgsQuickIdentifyKit::identifyOne( const QPointF &point, QgsVectorLayer *layer )
 {
   QgsQuickFeatureLayerPairs results = identify( point, layer );
-  if ( results.empty() )
-  {
-    QgsQuickFeatureLayerPair emptyRes;
-    return emptyRes;
-  }
-  else
-  {
-    return _closestFeature( results, mMapSettings->mapSettings(), point, layer );
-  }
+  return _closestFeature( results, mMapSettings->mapSettings(), point );
 }
 
 QgsFeatureList QgsQuickIdentifyKit::identifyVectorLayer( QgsVectorLayer *layer, const QgsPointXY &point ) const

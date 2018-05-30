@@ -19,10 +19,12 @@
 #include <QtQuick/QSGNode>
 #include <QtQuick/QSGFlatColorMaterial>
 
-#include "qgspoint.h"
 #include "qgsgeometry.h"
-
 #include "qgis_quick.h"
+
+class QgsLineString;
+class QgsPoint;
+class QgsPolygon;
 
 /**
  * \ingroup quick
@@ -49,12 +51,12 @@ class QUICK_EXPORT QgsQuickHighlightSGNode : public QSGNode
     ~QgsQuickHighlightSGNode() = default;
 
   private:
-    void handleGeometryCollection( const QgsGeometry &geom );
-    void handleSingleGeometry( const QgsGeometry &geom );
+    void handleGeometryCollection( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type );
+    void handleSingleGeometry( const QgsAbstractGeometry *geom, QgsWkbTypes::GeometryType type );
 
-    QSGGeometryNode *createLineGeometry( const QVector<QgsPoint> &points );
-    QSGGeometryNode *createPointGeometry( const QgsPoint &point );
-    QSGGeometryNode *createPolygonGeometry( const QgsPolygon &polygon );
+    QSGGeometryNode *createLineGeometry( const QgsLineString *line );
+    QSGGeometryNode *createPointGeometry( const QgsPoint *point );
+    QSGGeometryNode *createPolygonGeometry( const QgsPolygon *polygon );
 
     QSGFlatColorMaterial mMaterial;
     float mWidth  = 20;
