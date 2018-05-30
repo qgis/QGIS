@@ -65,12 +65,13 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, mOrigFidAdded );
+    mOgrOrigLayer = mOgrLayer;
+    mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrOrigLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, mOrigFidAdded );
     if ( !mOgrLayer )
     {
+      close();
       return;
     }
-    mSubsetStringSet = true;
   }
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
@@ -200,18 +201,26 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
   gdal::ogr_feature_unique_ptr fet;
   if ( mOrigFidAdded )
   {
-    OGR_L_ResetReading( mOgrLayer );
-    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrLayer );
+    // if we have been using the original fid as feature IDs (e.g. as a result of a subset
+    // string in place), then we need to request features from the original, unfiltered
+    // OGR layer. Otherwise the feature IDs we request will correspond to features in the
+    // filtered layer, not the original layer!
+    OGR_L_ResetReading( mOgrOrigLayer );
+    fet.reset( OGR_L_GetFeature( mOgrOrigLayer, FID_TO_NUMBER( id ) ) );
+
+    // do a bit of a safety check - make sure that the original fid column value
+    // matches the feature id which we actually requested.
+    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrOrigLayer );
     int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
+    bool foundCorrect = false;
     if ( lastField >= 0 )
+      foundCorrect = OGR_F_GetFieldAsInteger64( fet.get(), lastField ) == id;
+    else
+      foundCorrect = OGR_F_GetFID( fet.get() ) == id;
+
+    if ( !foundCorrect )
     {
-      while ( fet.reset( OGR_L_GetNextFeature( mOgrLayer ) ), fet )
-      {
-        if ( OGR_F_GetFieldAsInteger64( fet.get(), lastField ) == id )
-        {
-          break;
-        }
-      }
+      fet.reset();
     }
   }
   else
@@ -306,9 +315,11 @@ bool QgsOgrFeatureIterator::close()
     OGR_L_ResetReading( mOgrLayer );
   }
 
-  if ( mSubsetStringSet )
+  if ( mOgrOrigLayer )
   {
     GDALDatasetReleaseResultSet( mConn->ds, mOgrLayer );
+    mOgrLayer = mOgrOrigLayer;
+    mOgrOrigLayer = nullptr;
   }
 
   if ( mConn )
