@@ -46,7 +46,7 @@ Vertice coordinates are stored as (x, z, -y)
 
     int dataVerticesCount() const;
 %Docstring
-Return number of vertices stored in the output data array
+Returns the number of vertices stored in the output data array
 %End
 
     int stride() const;

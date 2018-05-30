@@ -53,7 +53,7 @@ class CORE_EXPORT QgsTessellator
      */
     QVector<float> data() const { return mData; }
 
-    //! Return number of vertices stored in the output data array
+    //! Returns the number of vertices stored in the output data array
     int dataVerticesCount() const;
 
     //! Returns size of one vertex entry in bytes
