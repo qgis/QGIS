@@ -374,7 +374,6 @@ class TreeProviderItem(QTreeWidgetItem):
 
     def refresh(self):
         self.takeChildren()
-        Processing.updateAlgsList()
         self.populate()
 
     def populate(self):
