@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import math
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (NULL,
+                       QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -148,9 +149,15 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 angle = feat[rotation]
-                if not w or not h or not angle:
+                # block 0/NULL width or height, but allow 0 as angle value
+                if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                                                 'width, height or angle. '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
+                    continue
+                if angle is NULL:
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'angle. '
                                                                  'Skipping…').format(feat.id()))
                     continue
 
@@ -217,9 +224,15 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 angle = feat[rotation]
-                if not w or not h or not angle:
+                # block 0/NULL width or height, but allow 0 as angle value
+                if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                                                 'width, height or angle. '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
+                    continue
+                if angle is NULL:
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'angle. '
                                                                  'Skipping…').format(feat.id()))
                     continue
 
@@ -284,9 +297,15 @@ class RectanglesOvalsDiamondsVariable(QgisAlgorithm):
                 w = feat[width]
                 h = feat[height]
                 angle = feat[rotation]
-                if not w or not h or not angle:
+                # block 0/NULL width or height, but allow 0 as angle value
+                if not w or not h:
                     feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
-                                                                 'width, height or angle. '
+                                                                 'width or height. '
+                                                                 'Skipping…').format(feat.id()))
+                    continue
+                if angle == NULL:
+                    feedback.pushInfo(QCoreApplication.translate('RectanglesOvalsDiamondsVariable', 'Feature {} has empty '
+                                                                 'angle. '
                                                                  'Skipping…').format(feat.id()))
                     continue
 
