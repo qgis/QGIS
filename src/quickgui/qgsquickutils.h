@@ -77,7 +77,7 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
                                  Qgis::MessageLevel level = Qgis::Warning );
 
     /**
-      * QgsQuickFeature factory for tuple of QgsFeature and QgsVectorLayer usud in QgsQUick library.
+      * QgsQuickFeatureLayerPair factory for tuple of QgsFeature and QgsVectorLayer used in QgsQUick library.
       * \param feature QgsFeature linked to new QgsQuickFeature instance.
       * \param layer QgsVectorLayer which the feature belongs to, optional.
       *

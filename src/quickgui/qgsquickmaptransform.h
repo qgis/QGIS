@@ -38,7 +38,9 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
 {
     Q_OBJECT
 
-    //! map settings
+    /**
+     * Associated map settings. Should be initialized before the first use from mapcanvas map settings.
+     */
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
   public:
