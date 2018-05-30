@@ -3807,9 +3807,8 @@ QString QgsSymbolLayerV2Utils::symbolNameToPath( QString name )
     }
   }
 
-  QFileInfo pfi( QgsProject::instance()->fileName() );
-  QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
-  if ( pfi.exists() && QFile( alternatePath ).exists() )
+  QString alternatePath = QgsProject::instance()->readPath( name );
+  if ( QFile( alternatePath ).exists() )
   {
     QgsDebugMsg( "Svg found in alternative path" );
     return QFileInfo( alternatePath ).canonicalFilePath();
