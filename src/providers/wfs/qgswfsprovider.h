@@ -111,6 +111,8 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString translateMetadataKey( const QString &mdKey ) const override;
     QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
+    bool empty() const override;
+
   public slots:
 
     void reloadData() override;

@@ -1199,6 +1199,27 @@ QString QgsWFSProvider::translateMetadataValue( const QString &mdKey, const QVar
   {
     return value.toString();
   }
+}
+
+bool QgsWFSProvider::empty() const
+{
+  QgsFeature f;
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+
+  // Whoops, the WFS provider returns an empty iterator when we are using
+  // a setLimit call in combination with a subsetString.
+  // Remove this method (and default to the QgsVectorDataProvider one)
+  // once this is fixed
+#if 0
+  request.setLimit( 1 );
+#endif
+  if ( getFeatures( request ).nextFeature( f ) )
+    return false;
+  else
+    return true;
+
 };
 
 bool QgsWFSProvider::describeFeatureType( QString &geometryAttribute, QgsFields &fields, QgsWkbTypes::Type &geomType )
