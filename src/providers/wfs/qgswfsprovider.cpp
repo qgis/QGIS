@@ -978,11 +978,17 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
 
 bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
 {
-  //find out typename from uri and strip namespace prefix
+  //find out typename from uri
   QString tname = mShared->mURI.typeName();
   if ( tname.isNull() )
   {
     return false;
+  }
+
+  QString namespacePrefix = QgsWFSUtils::nameSpacePrefix( tname );
+  if ( !namespacePrefix.isEmpty() )
+  {
+    namespacePrefix += ':';
   }
 
   //create <Transaction> xml
@@ -1004,7 +1010,7 @@ bool QgsWFSProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     //Property
     QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
     QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
-    QDomText nameText = transactionDoc.createTextNode( mShared->mGeometryAttribute );
+    QDomText nameText = transactionDoc.createTextNode( namespacePrefix + mShared->mGeometryAttribute );
     nameElem.appendChild( nameText );
     propertyElem.appendChild( nameElem );
     QDomElement valueElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Value" ) );
@@ -1065,11 +1071,17 @@ QString QgsWFSProvider::convertToXML( const QVariant &value )
 
 bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
-  //find out typename from uri and strip namespace prefix
+  //find out typename from uri
   QString tname = mShared->mURI.typeName();
   if ( tname.isNull() )
   {
     return false;
+  }
+
+  QString namespacePrefix = QgsWFSUtils::nameSpacePrefix( tname );
+  if ( !namespacePrefix.isEmpty() )
+  {
+    namespacePrefix += ':';
   }
 
   //create <Transaction> xml
@@ -1097,7 +1109,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
       QDomElement propertyElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Property" ) );
 
       QDomElement nameElem = transactionDoc.createElementNS( QgsWFSConstants::WFS_NAMESPACE, QStringLiteral( "Name" ) );
-      QDomText nameText = transactionDoc.createTextNode( fieldName );
+      QDomText nameText = transactionDoc.createTextNode( namespacePrefix + fieldName );
       nameElem.appendChild( nameText );
       propertyElem.appendChild( nameElem );
 
