@@ -55,11 +55,16 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
     explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
-      : QObject(), mUrl( url ), mFile( file ), mStatus( status ) {}
+      : QObject()
+      , mUrl( url )
+      , mFile( file )
+      , mStatus( status )
+    {}
 
     ~QgsFetchedContent()
     {
-      mFile->close();
+      if ( mFile )
+        mFile->close();
       delete mFile;
     }
 
