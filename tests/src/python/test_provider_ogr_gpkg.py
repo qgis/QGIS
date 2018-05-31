@@ -841,8 +841,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testSubSetStringEditable_bug17795(self):
         """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
 
+        tmpfile = os.path.join(self.basetestpath, 'testSubSetStringEditable_bug17795.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
+
         isEditable = QgsVectorDataProvider.ChangeAttributeValues
-        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+        testPath = tmpfile + '|layername=bug_17795'
 
         vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
         self.assertTrue(vl.isValid())
@@ -868,7 +871,10 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         def _lessdigits(s):
             return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
 
-        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+        tmpfile = os.path.join(self.basetestpath, 'testSubsetStringExtent_bug17863.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
+
+        testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
         subSet = '|layername=bug_17795|subset=%s' % subSetString
 
