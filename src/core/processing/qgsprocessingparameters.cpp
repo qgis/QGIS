@@ -2038,7 +2038,10 @@ QgsProcessingParameterNumber::QgsProcessingParameterNumber( const QString &name,
   , mMax( maxValue )
   , mDataType( type )
 {
-
+  if ( mMin >= mMax )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Invalid number parameter \"%1\": min value %2 is >= max value %3!" ).arg( name ).arg( mMin ).arg( mMax ), QObject::tr( "Processing" ) );
+  }
 }
 
 QgsProcessingParameterDefinition *QgsProcessingParameterNumber::clone() const
