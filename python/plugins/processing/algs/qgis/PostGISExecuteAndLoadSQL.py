@@ -94,7 +94,8 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
         id_field = self.parameterAsString(parameters, self.ID_FIELD, context)
-        geom_field = self.parameterAsString(parameters, self.GEOMETRY_FIELD, context)
+        geom_field = self.parameterAsString(
+            parameters, self.GEOMETRY_FIELD, context)
         uri = postgis.uri_from_name(connection)
         sql = self.parameterAsString(parameters, self.SQL, context)
         sql = sql.replace('\n', ' ')
