@@ -104,6 +104,14 @@ pushd /root/QGIS > /dev/null
 /root/QGIS/tests/testdata/provider/testdata_pg.sh
 popd > /dev/null # /root/QGIS
 
+##########################################################
+# Set Postgres server location inside the docker running
+# the test. This is for that tests that require
+# setting up a custom server
+#########################################################
+export QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/10/bin
+export QGIS_POSTGRES_SERVER_PORT=55432
+
 ###########
 # Run tests
 ###########

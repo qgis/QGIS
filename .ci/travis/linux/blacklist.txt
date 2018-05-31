@@ -25,8 +25,4 @@ PyQgsSpatialiteProvider
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
 
-# Need a local postgres installation
-PyQgsAuthManagerPKIPostgresTest
-PyQgsAuthManagerPasswordPostgresTest
-PyQgsAuthManagerOgrPostgresTest
 
