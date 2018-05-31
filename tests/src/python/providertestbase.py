@@ -421,19 +421,20 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
 
         if self.source.supportsSubsetString():
-            backup = self.source.subsetString()
-            # Add a subset string and test feature count
-            subset = self.getSubsetString()
-            self.source.setSubsetString(subset)
+            try:
+                backup = self.source.subsetString()
+                # Add a subset string and test feature count
+                subset = self.getSubsetString()
+                self.source.setSubsetString(subset)
+                self.assertFalse(self.source.empty())
+                self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
+                subsetNoMatching = self.getSubsetStringNoMatching()
+                self.source.setSubsetString(subsetNoMatching)
+                self.assertTrue(self.source.empty())
+                self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
+            finally:
+                self.source.setSubsetString(None)
             self.assertFalse(self.source.empty())
-            self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.FeaturesAvailable)
-            subsetNoMatching = self.getSubsetStringNoMatching()
-            self.source.setSubsetString(subsetNoMatching)
-            self.assertTrue(self.source.empty())
-            self.assertEqual(self.source.hasFeatures(), QgsFeatureSource.NoFeaturesAvailable)
-            self.source.setSubsetString(None)
-            self.assertFalse(self.source.empty())
-            self.source.setSubsetString(backup)
 
         # If the provider supports tests on editable layers
         if getattr(self, 'getEditableLayer', None):
