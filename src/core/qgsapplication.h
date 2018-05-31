@@ -22,6 +22,7 @@
 
 #include "qgis.h"
 #include "qgsconfig.h"
+#include "qgstranslationcontext.h"
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
@@ -743,7 +744,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     int maxConcurrentConnectionsPerPool() const;
 
    /**
-     * dave : to write
+     * Emits the signal to collect all the strings of .qgs to be included in ts file
      *
      * \since QGIS 3.2
      */
@@ -771,6 +772,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \copydoc nullRepresentation()
      */
     void nullRepresentationChanged();
+
+    /**
+     * dave : to write
+     *
+     * \since QGIS 3.2
+     */
+    void requestForTranslatableObjects( QgsTranslationContext *translationContext );
 
   private:
 

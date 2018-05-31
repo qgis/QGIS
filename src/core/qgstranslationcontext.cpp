@@ -53,10 +53,13 @@ void QgsTranslationContext::writeTsFile()
   //write xml
   QDomDocument doc( QStringLiteral( "TS" ) );
 
+  QDomElement tsElement = doc.createElement( QStringLiteral( "TS" ) );
+  doc.appendChild( tsElement );
+
   for ( QPair < QString, QString > translatableObject : mTranslatableObjects )
   {
     QDomElement contextElement = doc.createElement( QStringLiteral( "context" ) );
-    doc.appendChild( contextElement );
+    tsElement.appendChild( contextElement );
 
     QDomElement nameElement = doc.createElement( QStringLiteral( "name" ) );
     QDomText nameText = doc.createTextNode( translatableObject.first );
@@ -72,7 +75,7 @@ void QgsTranslationContext::writeTsFile()
     messageElement.appendChild( sourceElement );
 
     QDomElement translationElement = doc.createElement( QStringLiteral( "translation" ) );
-    QDomText translationText = doc.createTextNode( QStringLiteral( "testtranslation" ) );
+    QDomText translationText = doc.createTextNode( translatableObject.second );
     translationElement.appendChild( translationText );
     messageElement.appendChild( translationElement );
   }

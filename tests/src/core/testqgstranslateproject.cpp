@@ -57,7 +57,6 @@ void TestQgsTranslateProject::generateTsFile()
 
   //test wheter there is the entry for our honeybee
 
-
   // QgsProject::instance()->generateTsFile();
 
   // all cases start with all items checked

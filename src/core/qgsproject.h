@@ -97,6 +97,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
+    //dave to do Q_PROPERTY( QTranslator translator READ translator )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -968,13 +969,22 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * dave : to write
      * \since QGIS 3.2
      */
+    //QTranslator &translator() { return mTranslator; }
+
+    /**
+     * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+     * \since QGIS 3.2
+     */
     void generateTsFile( );
 
     /**
      * Translates the project with QTranslator and qm-file
-     * \returns true if project file has been translated
+     * \returns the result string (in case there is no QTranslator loaded the sourceText)
      */
-    bool translate( const QString &translationCode );
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 );
+
+    //dave a function not used because of compiling
+    bool translate( const QString &context ) const {return context.isEmpty(); }
 
   signals:
 
@@ -1421,6 +1431,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateTransformContext mTransformContext;
 
     QgsProjectMetadata mMetadata;
+
+    QTranslator mTranslator;
 
     friend class QgsProjectDirtyBlocker;
 

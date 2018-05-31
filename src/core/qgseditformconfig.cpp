@@ -524,7 +524,7 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
 
   if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
-    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( elem.attribute( QStringLiteral( "name" ) ), parent );
+    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( QgsProject::instance()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( "testdave" ), elem.attribute( QStringLiteral( "name" ) ) ), parent );
     bool ok;
     int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
     if ( !ok )

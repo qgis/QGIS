@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgstranslationcontext.h - %{Cpp:License:ClassName}
+  qgstranslationcontext.h
 
  ---------------------
  begin                : 23.5.2018
- copyright            : (C) 2018 by david
- email                : [your-email-here]
+ copyright            : (C) 2018 by David Signer
+ email                : david at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,7 +25,7 @@ class QgsProject;
 /**
  * \ingroup core
  * \class QgsTranslationContext
- * \brief dave: write
+ * \brief used for the collecting of strings of .qgs to be translated and writing of ts file
  *
  * \since QGIS 3.2
  */
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsTranslationContext
 
   private:
 
-    QgsProject *mProject;
+    QgsProject *mProject = nullptr;
     QString mFileName;
     QList < QPair< QString, QString > > mTranslatableObjects;
 

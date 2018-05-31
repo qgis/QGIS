@@ -1902,7 +1902,26 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           field = fields().at( index ).name();
       }
 
-      mAttributeAliasMap.insert( field, aliasElem.attribute( QStringLiteral( "name" ) ) );
+      QString alias;
+
+      if ( !aliasElem.attribute( QStringLiteral( "name" ) ).isEmpty() )
+      {
+        //if it has alias
+        alias = QgsProject::instance()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( this->name() ), aliasElem.attribute( QStringLiteral( "name" ) ) );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( this->name() ) + " source " + aliasElem.attribute( QStringLiteral( "name" ) ), 1 );
+      }
+      else
+      {
+        //if it has no alias, but alias is should be the fields translation
+        alias = QgsProject::instance()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( this->name() ), aliasElem.attribute( QStringLiteral( "name" ) ) );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( this->name() ) + " source " + field, 1 );
+        //if it gets the exact field value, there has been no translation (no translation loaded);
+        if ( alias == aliasElem.attribute( QStringLiteral( "field" ) ) )
+          alias.clear();
+      }
+
+      QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 1 );
+      mAttributeAliasMap.insert( field, alias );
     }
   }
 
@@ -1916,6 +1935,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement defaultElem = defaultNodeList.at( i ).toElement();
 
+      //dave muss hier übersetzt werden?
       QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
       QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
       bool applyOnUpdate = defaultElem.attribute( QStringLiteral( "applyOnUpdate" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
@@ -1937,6 +1957,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
+      //dave muss hier übersetzt werden?
       QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
       int constraints = constraintElem.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
       if ( field.isEmpty() || constraints == 0 )
@@ -1962,6 +1983,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
+      //dave muss hier übersetzt werden?
       QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
       QString exp = constraintElem.attribute( QStringLiteral( "exp" ), QString() );
       QString desc = constraintElem.attribute( QStringLiteral( "desc" ), QString() );

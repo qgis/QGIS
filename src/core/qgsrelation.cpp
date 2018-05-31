@@ -35,7 +35,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString referencingLayerId = elem.attribute( QStringLiteral( "referencingLayer" ) );
   QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
-  QString name = elem.attribute( QStringLiteral( "name" ) );
+  QString name = QgsProject::instance()->translate( QStringLiteral( "project:relations" ), elem.attribute( QStringLiteral( "name" ) ) );
   QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();

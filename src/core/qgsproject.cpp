@@ -444,9 +444,38 @@ void QgsProject::setPresetHomePath( const QString &path )
 
 void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
 {
-  for ( auto layer : mRootGroup->layerOrder() )
+  //register layers
+  for ( QgsLayerTreeLayer *layer : mRootGroup->findLayers() )
   {
-    translationContext->registerTranslation( QStringLiteral( "project:layers:{layer_id}" ), layer->name() );
+    translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
+
+    QgsMapLayer *mapLayer = layer->layer();
+    if ( mapLayer && mapLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+      const QgsFields fields = vlayer->fields();
+      for ( const QgsField &field : fields )
+      {
+        if ( field.alias().isEmpty() )
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.name() );
+        else
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
+      }
+    }
+  }
+
+  //register layergroups
+  for ( const QgsLayerTreeGroup *groupLayer : mRootGroup->findGroups() )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:layergroups" ), groupLayer->name() );
+  }
+
+  //register relations
+  const QList<QgsRelation> &relations = mRelationManager->relations().values();
+  for ( const QgsRelation &relation : relations )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:relations" ), relation.name() );
   }
 }
 
@@ -797,7 +826,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   {
     QDomElement element = node.toElement();
 
-    QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
+    QString name = translate( QStringLiteral( "project:layers:%1" ).arg( node.namedItem( QStringLiteral( "id" ) ).toElement().text() ), node.namedItem( QStringLiteral( "layername" ) ).toElement().text() );
     if ( !name.isNull() )
       emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
 
@@ -936,10 +965,29 @@ bool QgsProject::read()
   return rc;
 }
 
+//dave put to another place
+QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )
+{
+  if ( mTranslator.isEmpty() )
+  {
+    return sourceText;
+  }
+
+  return mTranslator.translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+}
+
+
 bool QgsProject::readProjectFile( const QString &filename )
 {
   QFile projectFile( filename );
   clearError();
+
+  QgsSettings settings;
+
+  if ( mTranslator.load( QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() ), QFileInfo( projectFile.fileName() ).absolutePath() ) )
+  {
+    QgsDebugMsg( "Translation loaded" );
+  }
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
@@ -977,7 +1025,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   projectFile.close();
-
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
 
@@ -1208,7 +1255,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   mSnappingConfig.readProject( *doc );
-
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
   QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
@@ -2729,27 +2775,3 @@ void QgsProject::generateTsFile()
 
   translationContext.writeTsFile();
 }
-
-bool QgsProject::translate( const QString &translationCode )
-{
-  /*
-  QgsTranslationContext translationContext;
-  translationContext.setProject( this );
-  translationContext.setFileName( filePath() );
-
-  QgsApplication::instance()->collectTranslatableObjects( &translationContext );
-
-  QTranslator projectTranslator( nullptr );
-
-  if ( projectTranslator.load( fileInfo().baseName() + translationCode, fileInfo().path() ) )
-  {
-    //translationContext.translations.projectTranslator.translate( )
-  }
-  else
-  {
-   return false;
-  }
-  */
-  return true;
-}
-
