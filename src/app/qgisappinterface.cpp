@@ -774,6 +774,11 @@ void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
   qgis->mLocatorWidget->locator()->deregisterFilter( filter );
 }
 
+void QgisAppInterface::invalidateLocatorResults()
+{
+  qgis->mLocatorWidget->invalidateResults();
+}
+
 bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
 {
   return qgis->askUserForDatumTransform( sourceCrs, destinationCrs );

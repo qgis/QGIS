@@ -903,6 +903,15 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
 
     /**
+     * Invalidate results from the locator filter.
+     *
+     * This might be useful if the configuration of the filter changed without going through main application settings.
+     *
+     * \since QGIS 3.2
+     */
+    virtual void invalidateLocatorResults() = 0;
+
+    /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
       * \returns true if a datum transform has been specifically chosen by user or only one is available.
