@@ -40,6 +40,9 @@ class TestQgsQuickUtils: public QObject
     void transformedPoint();
     void formatPoint();
     void formatDistance();
+    void loadIcon();
+    void fileExists();
+    void loadQmlComponent();
 
   private:
     QgsQuickUtils utils;
@@ -134,6 +137,31 @@ void TestQgsQuickUtils::formatDistance()
   /////////////////////////////////////////////////////////
   dist2str = utils.formatDistance( 7000, QgsUnitTypes::DistanceFeet, 1, QgsUnitTypes::USCSSystem );
   QVERIFY( dist2str == "1.2 NM" );
+}
+
+void TestQgsQuickUtils::loadIcon()
+{
+  QUrl url = utils.getThemeIcon( "ic_save_white" );
+  Q_ASSERT( url.toString() == QStringLiteral( "qrc:/ic_save_white.svg" ) );
+
+  QString fileName = utils.getFileName( url.toString() );
+  Q_ASSERT( fileName == QStringLiteral( "ic_save_white.svg" ) );
+}
+
+void TestQgsQuickUtils::fileExists()
+{
+  QString path = QStringLiteral( TEST_DATA_DIR ) + "/quickapp_project.qgs";
+  Q_ASSERT( utils.fileExists( path ) );
+}
+
+
+void TestQgsQuickUtils::loadQmlComponent()
+{
+  QUrl dummy = utils.getEditorComponentSource( "dummy" );
+  Q_ASSERT( dummy.path() == QString( "qgsquicktextedit.qml" ) );
+
+  QUrl valuemap = utils.getEditorComponentSource( "valuemap" );
+  Q_ASSERT( valuemap.path() == QString( "qgsquickvaluemap.qml" ) );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )

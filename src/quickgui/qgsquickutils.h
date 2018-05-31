@@ -19,6 +19,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QUrl>
 #include <QtPositioning/QGeoCoordinate>
 
 #include <limits>
@@ -31,9 +32,10 @@
 #include "qgsquickmapsettings.h"
 #include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
-#include "qgsfeature.h"
 #include "qgscoordinateformatter.h"
 
+
+class QgsFeature;
 class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 
@@ -115,7 +117,21 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       */
     Q_INVOKABLE static double screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int baseLengthPixels );
 
-    //! Log message in QgsMessageLog
+    /**
+      * Returns whether file on path exists
+      * \since QGIS 3.4
+      */
+    Q_INVOKABLE bool fileExists( QString path );
+
+    /**
+     * Extracts filename from path
+     * \since QGIS 3.4
+     */
+    Q_INVOKABLE QString getFileName( QString path );
+
+    /**
+      * Log message in QgsMessageLog
+      */
     Q_INVOKABLE void logMessage( const QString &message,
                                  const QString &tag = QString( "QgsQuick" ),
                                  Qgis::MessageLevel level = Qgis::Warning );
@@ -135,6 +151,15 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * \since QGIS 3.4
       */
     Q_INVOKABLE const QUrl getThemeIcon( const QString &name ) const;
+
+    /**
+      * Returns url to field editor component for a feature form.
+      * If the widgetName does not match any supported widget, text edit is returned.
+      * \param widgetName name of the attribute field widget
+      *
+      * \since QGIS 3.4
+      */
+    Q_INVOKABLE const QUrl getEditorComponentSource( const QString &widgetName );
 
     /**
      * \copydoc QgsCoordinateFormatter::format()

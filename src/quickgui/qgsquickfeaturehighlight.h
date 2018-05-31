@@ -27,7 +27,7 @@ class QgsQuickMapSettings;
 /**
  * \ingroup quick
  *
- * Creates map highlights for a geometry provided by a FeatureModel.
+ * Creates map highlights for a geometry provided by a AttributeModel.
  *
  * The highlights are compatible with the QtQuick scene graph and
  * can be direcly shown on map canvas

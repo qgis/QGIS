@@ -21,6 +21,7 @@
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeature.h"
 
 #include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapsettings.h"
@@ -84,6 +85,20 @@ double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int
   return mDistanceArea.measureLine( p1, p2 );
 }
 
+bool QgsQuickUtils::fileExists( QString path )
+{
+  QFileInfo check_file( path );
+  // check if file exists and if yes: Is it really a file and no directory?
+  return ( check_file.exists() && check_file.isFile() );
+}
+
+QString QgsQuickUtils::getFileName( QString path )
+{
+  QFileInfo fileInfo( path );
+  QString filename( fileInfo.fileName() );
+  return filename;
+}
+
 void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
   QgsMessageLog::logMessage( message, tag, level );
@@ -99,6 +114,25 @@ const QUrl QgsQuickUtils::getThemeIcon( const QString &name ) const
   QString path = QStringLiteral( "qrc:/%1.svg" ).arg( name );
   QgsDebugMsg( QStringLiteral( "Using icon %1 from %2" ).arg( name, path ) );
   return QUrl( path );
+}
+
+const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
+{
+  QString path( "qgsquick%1.qml" );
+  QStringList supportedWidgets = { "textedit",
+                                   "valuemap",
+                                   "checkbox",
+                                   "externalresource",
+                                   "datetime"
+                                 };
+  if ( supportedWidgets.contains( widgetName ) )
+  {
+    return QUrl( path.arg( widgetName ) );
+  }
+  else
+  {
+    return QUrl( path.arg( "textedit" ) );
+  }
 }
 
 QString QgsQuickUtils::formatPoint(

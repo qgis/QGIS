@@ -36,6 +36,11 @@ QgsFeature QgsQuickFeatureLayerPair::feature() const
   return mFeature;
 }
 
+QgsFeature &QgsQuickFeatureLayerPair::featureRef()
+{
+  return mFeature;
+}
+
 bool QgsQuickFeatureLayerPair::isValid() const
 {
   return ( mLayer && mFeature.isValid() && hasValidGeometry() );
