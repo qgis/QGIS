@@ -41,8 +41,17 @@ from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QSizePolicy,
                                  QMainWindow,
                                  QShortcut,
-                                 QLabel)
-from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
+                                 QLabel,
+                                 QDockWidget,
+                                 QWidget,
+                                 QVBoxLayout,
+                                 QGridLayout,
+                                 QFrame,
+                                 QLineEdit)
+from qgis.PyQt.QtGui import (QIcon,
+                             QImage,
+                             QPainter,
+                             QKeySequence)
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import (Qgis,
@@ -55,7 +64,10 @@ from qgis.core import (Qgis,
                        QgsProcessingModelParameter,
                        QgsProcessingParameterType
                        )
-from qgis.gui import QgsMessageBar
+from qgis.gui import (QgsMessageBar,
+                      QgsDockWidget,
+                      QgsScrollArea,
+                      QgsFilterLineEdit)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -90,6 +102,107 @@ class ModelerDialog(BASE, WIDGET):
         self.setAttribute(Qt.WA_DeleteOnClose)
 
         self.setupUi(self)
+
+        # LOTS of bug reports when we include the dock creation in the UI file
+        # see e.g. #16428, #19068
+        # So just roll it all by hand......!
+        self.propertiesDock = QgsDockWidget(self)
+        self.propertiesDock.setFeatures(
+            QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.propertiesDock.setObjectName("propertiesDock")
+        propertiesDockContents = QWidget()
+        self.verticalDockLayout_1 = QVBoxLayout(propertiesDockContents)
+        self.verticalDockLayout_1.setContentsMargins(0, 0, 0, 0)
+        self.verticalDockLayout_1.setSpacing(0)
+        self.scrollArea_1 = QgsScrollArea(propertiesDockContents)
+        sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding,
+                                           QSizePolicy.MinimumExpanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scrollArea_1.sizePolicy().hasHeightForWidth())
+        self.scrollArea_1.setSizePolicy(sizePolicy)
+        self.scrollArea_1.setFocusPolicy(Qt.WheelFocus)
+        self.scrollArea_1.setFrameShape(QFrame.NoFrame)
+        self.scrollArea_1.setFrameShadow(QFrame.Plain)
+        self.scrollArea_1.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_1 = QWidget()
+        self.gridLayout = QGridLayout(self.scrollAreaWidgetContents_1)
+        self.gridLayout.setContentsMargins(6, 6, 6, 6)
+        self.gridLayout.setSpacing(4)
+        self.label_1 = QLabel(self.scrollAreaWidgetContents_1)
+        self.gridLayout.addWidget(self.label_1, 0, 0, 1, 1)
+        self.textName = QLineEdit(self.scrollAreaWidgetContents_1)
+        self.gridLayout.addWidget(self.textName, 0, 1, 1, 1)
+        self.label_2 = QLabel(self.scrollAreaWidgetContents_1)
+        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
+        self.textGroup = QLineEdit(self.scrollAreaWidgetContents_1)
+        self.gridLayout.addWidget(self.textGroup, 1, 1, 1, 1)
+        self.label_1.setText(self.tr("Name"))
+        self.textName.setToolTip(self.tr("Enter model name here"))
+        self.label_2.setText(self.tr("Group"))
+        self.textGroup.setToolTip(self.tr("Enter group name here"))
+        self.scrollArea_1.setWidget(self.scrollAreaWidgetContents_1)
+        self.verticalDockLayout_1.addWidget(self.scrollArea_1)
+        self.propertiesDock.setWidget(propertiesDockContents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.propertiesDock)
+        self.propertiesDock.setWindowTitle(self.tr("Model properties"))
+
+        self.inputsDock = QgsDockWidget(self)
+        self.inputsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
+        self.inputsDock.setObjectName("inputsDock")
+        self.inputsDockContents = QWidget()
+        self.verticalLayout_3 = QVBoxLayout(self.inputsDockContents)
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea_2 = QgsScrollArea(self.inputsDockContents)
+        sizePolicy.setHeightForWidth(self.scrollArea_2.sizePolicy().hasHeightForWidth())
+        self.scrollArea_2.setSizePolicy(sizePolicy)
+        self.scrollArea_2.setFocusPolicy(Qt.WheelFocus)
+        self.scrollArea_2.setFrameShape(QFrame.NoFrame)
+        self.scrollArea_2.setFrameShadow(QFrame.Plain)
+        self.scrollArea_2.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_2 = QWidget()
+        self.verticalLayout = QVBoxLayout(self.scrollAreaWidgetContents_2)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setSpacing(0)
+        self.inputsTree = QTreeWidget(self.scrollAreaWidgetContents_2)
+        self.inputsTree.setAlternatingRowColors(True)
+        self.inputsTree.header().setVisible(False)
+        self.verticalLayout.addWidget(self.inputsTree)
+        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents_2)
+        self.verticalLayout_3.addWidget(self.scrollArea_2)
+        self.inputsDock.setWidget(self.inputsDockContents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.inputsDock)
+        self.inputsDock.setWindowTitle(self.tr("Inputs"))
+
+        self.algorithmsDock = QgsDockWidget(self)
+        self.algorithmsDock.setFeatures(QDockWidget.DockWidgetFloatable|QDockWidget.DockWidgetMovable)
+        self.algorithmsDock.setObjectName("algorithmsDock")
+        self.algorithmsDockContents = QWidget()
+        self.verticalLayout_4 = QVBoxLayout(self.algorithmsDockContents)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea_3 = QgsScrollArea(self.algorithmsDockContents)
+        sizePolicy.setHeightForWidth(self.scrollArea_3.sizePolicy().hasHeightForWidth())
+        self.scrollArea_3.setSizePolicy(sizePolicy)
+        self.scrollArea_3.setFocusPolicy(Qt.WheelFocus)
+        self.scrollArea_3.setFrameShape(QFrame.NoFrame)
+        self.scrollArea_3.setFrameShadow(QFrame.Plain)
+        self.scrollArea_3.setWidgetResizable(True)
+        self.scrollAreaWidgetContents_3 = QWidget()
+        self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents_3)
+        self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_2.setSpacing(4)
+        self.searchBox = QgsFilterLineEdit(self.scrollAreaWidgetContents_3)
+        self.verticalLayout_2.addWidget(self.searchBox)
+        self.algorithmTree = QTreeWidget(self.scrollAreaWidgetContents_3)
+        self.algorithmTree.setAlternatingRowColors(True)
+        self.algorithmTree.header().setVisible(False)
+        self.verticalLayout_2.addWidget(self.algorithmTree)
+        self.scrollArea_3.setWidget(self.scrollAreaWidgetContents_3)
+        self.verticalLayout_4.addWidget(self.scrollArea_3)
+        self.algorithmsDock.setWidget(self.algorithmsDockContents)
+        self.addDockWidget(Qt.DockWidgetArea(1), self.algorithmsDock)
+        self.algorithmsDock.setWindowTitle(self.tr("Algorithms"))
+        self.searchBox.setToolTip(self.tr("Enter algorithm name to filter list"))
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
