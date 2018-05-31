@@ -258,39 +258,39 @@ tests:
         hash: e1a433546cc1fdf7061adc0d9b77676c9d66ee8e0773d471bdb39a37
         type: rasterhash
         
-#  - algorithm: grass7:i.cluster
-#    name: GRASS7 i.cluster
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      classes: 5
-#      convergence: 98
-#      input:
-#        params:
-#        - name: custom/grass7/raster_6class.tif
-#          type: raster
-#        - name: custom/grass7/raster_5class.tif
-#          type: raster
-#        - name: custom/grass7/raster_4class.tif
-#          type: raster
-#        type: multi
-#      iterations: 30
-#      min_size: 17
-#      separation: 0
-#    results:
-#      signaturefile:
-#        type: regex
-#        name: expected/grass7/i.cluster.sig.txt
-#        rules:
-#          - '#Class 1'
-#          - '1.83333 1.53759 3.31579'
-#          - '#Class 2'
-#          - '2.11045 4.35498 3.32266'
-#          - '#Class 3'
-#          - '5.32655 1.72558 3.32713'
-#          - '#Class 4'
-#          - '4.34567 4.36522 3.30235'
-#          - '#Class 5'
-#          - '6 4.55734 3.30291'
+  - algorithm: grass7:i.cluster
+    name: GRASS7 i.cluster
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      classes: 5
+      convergence: 98
+      input:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      iterations: 30
+      min_size: 17
+      separation: 0
+    results:
+      signaturefile:
+        type: regex
+        name: expected/grass7/i.cluster.sig.txt
+        rules:
+          - '#Class 1'
+          - '1.83333 1.53759 3.31579'
+          - '#Class 2'
+          - '2.11045 4.35498 3.32266'
+          - '#Class 3'
+          - '5.32655 1.72558 3.32713'
+          - '#Class 4'
+          - '4.34567 4.36522 3.30235'
+          - '#Class 5'
+          - '6 4.55734 3.30291'
 
   - algorithm: grass7:i.oif
     name: GRASS7 i.oif
