@@ -544,6 +544,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     void registerLocatorFilter( QgsLocatorFilter *filter ) override;
     void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
+    void invalidateLocatorResults() override;
 
     bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) override;
 

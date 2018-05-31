@@ -1104,6 +1104,15 @@ deregisterLocatorFilter() to deregister their filters upon plugin unload to avoi
 .. versionadded:: 3.0
 %End
 
+    virtual void invalidateLocatorResults() = 0;
+%Docstring
+Invalidate results from the locator filter.
+
+This might be useful if the configuration of the filter changed without going through main application settings.
+
+.. versionadded:: 3.2
+%End
+
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 %Docstring
 Checks available datum transforms and ask user if several are available and none
