@@ -245,7 +245,7 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
 
     def testConnect(self):
         # create a PKI postgis connection
-        # that will be listed in postgis connection of db_amanger
+        # that will be listed in postgis connection of db_manager
         self.setUpProvider(self.auth_config.id())
 
         plugin = createDbPlugin('postgis')
