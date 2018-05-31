@@ -42,14 +42,28 @@ function(FIND_QCAOSSL_PLUGIN_CPP PLUGIN_REQUIRED)
     get_target_property(_QtCore_path Qt5::Core LOCATION)
     set(QCA_LINK_LIBRARIES "-DLINK_LIBRARIES:STRING=${_QtCore_path};${QCA_LIBRARY}")
 
-    try_run(RUN_RESULT COMPILE_RESULT
-      ${CMAKE_BINARY_DIR} ${TESTCPP}
-      CMAKE_FLAGS "-DCMAKE_CXX_STANDARD=11"
-                  "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
-                  "${QCA_INCLUDE_DIRECTORIES}"
-                  "${QCA_LINK_LIBRARIES}"
-      COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT
-    )
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+        # qtglobal.h with GCC doesn't like -fPIE added by CMAKE_POSITION_INDEPENDENT_CODE=ON
+        SET(CMAKE_CXX_FLAGS_BACKUP "${CMAKE_CXX_FLAGS}")
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+        try_run(RUN_RESULT COMPILE_RESULT
+                ${CMAKE_BINARY_DIR} ${TESTCPP}
+                CMAKE_FLAGS "-DCMAKE_CXX_STANDARD=11"
+                            "${QCA_INCLUDE_DIRECTORIES}"
+                            "${QCA_LINK_LIBRARIES}"
+                COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT
+        )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_BACKUP}")
+    ELSE()
+        try_run(RUN_RESULT COMPILE_RESULT
+            ${CMAKE_BINARY_DIR} ${TESTCPP}
+            CMAKE_FLAGS "-DCMAKE_CXX_STANDARD=11"
+                        "-DCMAKE_POSITION_INDEPENDENT_CODE=ON"
+                        "${QCA_INCLUDE_DIRECTORIES}"
+                        "${QCA_LINK_LIBRARIES}"
+            COMPILE_OUTPUT_VARIABLE COMPILE_OUTPUT
+        )
+    ENDIF()
 
     set(_msg "QCA OpenSSL plugin not found (run-time/unit-test dependency)")
 
