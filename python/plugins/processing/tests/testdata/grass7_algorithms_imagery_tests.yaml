@@ -528,29 +528,30 @@ tests:
         - 00f909594106bf0aca7b909841b30532a816ddc8f53f4c0d30481710
         type: rasterhash
 
-#  - algorithm: grass7:i.eb.hsebal01.coords
-#    name: GRASS7 i.eb.hsebal01
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      aerodynresistance:
-#        name: custom/grass7/raster_6class.tif
-#        type: raster
-#      frictionvelocitystar: 0.32407
-#      netradiation:
-#        name: custom/grass7/raster_4class.tif
-#        type: raster
-#      soilheatflux:
-#        name: custom/grass7/raster_5class.tif
-#        type: raster
-#      temperaturemeansealevel:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#      vapourpressureactual: 1.511
-#    results:
-#      output:
-#        hash: cac9e91f9b5182fbad336fd46ecebcf5185327e009ae8dc4cc0367fc
-#        type: rasterhash
-        
+  - algorithm: grass7:i.eb.hsebal01.coords
+    name: GRASS7 i.eb.hsebal01
+    params:
+      -a: true
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      aerodynresistance:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      frictionvelocitystar: 0.32407
+      netradiation:
+        name: custom/grass7/raster_4class.tif
+        type: raster
+      soilheatflux:
+        name: custom/grass7/raster_5class.tif
+        type: raster
+      temperaturemeansealevel:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      vapourpressureactual: 1.511
+    results:
+      output:
+        hash: cac9e91f9b5182fbad336fd46ecebcf5185327e009ae8dc4cc0367fc
+        type: rasterhash
+
 #  - algorithm: grass7:i.modis.qc
 #    name: GRASS7 i.modis.qc
 #    params:
