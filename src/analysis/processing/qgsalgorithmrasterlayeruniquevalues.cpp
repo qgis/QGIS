@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrasterlayeruniquevalues.h"
+#include "qgsstringutils.h"
 
 ///@cond PRIVATE
 
@@ -159,12 +160,12 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
     {
-      QString areaUnit = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) );
+      const QString areaUnit = QgsStringUtils::ampersandEncode( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( mCrs.mapUnits() ) ) );
       double pixelArea = mRasterUnitsPerPixelX * mRasterUnitsPerPixelY;
 
       QTextStream out( &file );
-      out << QString( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
-      out << QString( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( band );
+      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
+      out << QStringLiteral( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Analyzed file" ), mSource, QObject::tr( "band" ) ).arg( band );
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Extent" ), mExtent.toString() );
       out << QObject::tr( "<p>%1: %2 (%3)</p>\n" ).arg( QObject::tr( "Projection" ), mCrs.description(), mCrs.authid() );
       out << QObject::tr( "<p>%1: %2 (%3 %4)</p>\n" ).arg( QObject::tr( "Width in pixels" ) ).arg( mLayerWidth ).arg( QObject::tr( "units per pixel" ) ).arg( mRasterUnitsPerPixelX );
@@ -172,14 +173,14 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
       out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "Total pixel count" ) ).arg( layerSize );
       if ( mHasNoDataValue )
         out << QObject::tr( "<p>%1: %2</p>\n" ).arg( QObject::tr( "NODATA pixel count" ) ).arg( noDataCount );
-      out << QString( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ), QObject::tr( "Pixel count" ), QObject::tr( "Area" ), areaUnit );
+      out << QStringLiteral( "<table><tr><td>%1</td><td>%2</td><td>%3 (%4)</td></tr>\n" ).arg( QObject::tr( "Value" ), QObject::tr( "Pixel count" ), QObject::tr( "Area" ), areaUnit );
 
       for ( auto it = sortedUniqueValues.constBegin(); it != sortedUniqueValues.constEnd(); ++it )
       {
         double area = it.value() * pixelArea;
-        out << QString( "<tr><td>%1</td><td>%2</td><td>%3</td></tr>\n" ).arg( it.key() ).arg( it.value() ).arg( QString::number( area, 'g', 16 ) );
+        out << QStringLiteral( "<tr><td>%1</td><td>%2</td><td>%3</td></tr>\n" ).arg( it.key() ).arg( it.value() ).arg( QString::number( area, 'g', 16 ) );
       }
-      out << QString( "</table>\n</body></html>" );
+      out << QStringLiteral( "</table>\n</body></html>" );
       outputs.insert( QStringLiteral( "OUTPUT_HTML_FILE" ), outputFile );
     }
   }

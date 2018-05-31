@@ -201,6 +201,13 @@ class CORE_EXPORT QgsStringUtils
     static QString capitalize( const QString &string, Capitalization capitalization );
 
     /**
+     * Replaces any extended unicode characters with the XML style &#233; encoded versions
+     * of these characeters.
+     * \since QGIS 3.2
+     */
+    static QString ampersandEncode( const QString &string );
+
+    /**
      * Returns the Levenshtein edit distance between two strings. This equates to the minimum
      * number of character edits (insertions, deletions or substitutions) required to change
      * one string to another.
