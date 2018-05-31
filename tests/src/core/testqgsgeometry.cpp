@@ -2796,6 +2796,19 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray8.zAt( 2 ), 23.0 );
   QCOMPARE( fromArray8.mAt( 2 ), 33.0 );
 
+  QCOMPARE( *fromArray8.xData(), 1.0 );
+  QCOMPARE( *( fromArray8.xData() + 1 ), 2.0 );
+  QCOMPARE( *( fromArray8.xData() + 2 ), 3.0 );
+  QCOMPARE( *fromArray8.yData(), 11.0 );
+  QCOMPARE( *( fromArray8.yData() + 1 ), 12.0 );
+  QCOMPARE( *( fromArray8.yData() + 2 ), 13.0 );
+  QCOMPARE( *fromArray8.zData(), 21.0 );
+  QCOMPARE( *( fromArray8.zData() + 1 ), 22.0 );
+  QCOMPARE( *( fromArray8.zData() + 2 ), 23.0 );
+  QCOMPARE( *fromArray8.mData(), 31.0 );
+  QCOMPARE( *( fromArray8.mData() + 1 ), 32.0 );
+  QCOMPARE( *( fromArray8.mData() + 2 ), 33.0 );
+
   // from QList<QgsPointXY>
   QgsLineString fromPtsA = QgsLineString( QVector< QgsPoint >() );
   QVERIFY( fromPtsA.isEmpty() );

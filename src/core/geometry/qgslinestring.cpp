@@ -560,6 +560,22 @@ const double *QgsLineString::yData() const
   return mY.constData();
 }
 
+const double *QgsLineString::zData() const
+{
+  if ( mZ.empty() )
+    return nullptr;
+  else
+    return mZ.constData();
+}
+
+const double *QgsLineString::mData() const
+{
+  if ( mM.empty() )
+    return nullptr;
+  else
+    return mM.constData();
+}
+
 double QgsLineString::zAt( int index ) const
 {
   if ( index >= 0 && index < mZ.size() )

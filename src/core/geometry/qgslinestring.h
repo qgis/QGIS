@@ -113,6 +113,26 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     const double *yData() const SIP_SKIP;
 
     /**
+     * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
+     * not have z values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *zData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
+     * not have m values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *mData() const SIP_SKIP;
+
+    /**
      * Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
