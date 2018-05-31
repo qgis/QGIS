@@ -29,4 +29,5 @@ PyQgsServerAccessControl
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
+PyQgsDbManagerPostgis
 
