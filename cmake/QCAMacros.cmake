@@ -12,9 +12,8 @@
 
 function(FIND_QCAOSSL_PLUGIN_CPP PLUGIN_REQUIRED)
 
-  FIND_PACKAGE(Qt5Core QUIET)
   # requires Qt and QCA packages to be found
-  if(Qt5Core_INCLUDE_DIRS AND Qt5Core_LIBRARIES
+  if(QT_INCLUDE_DIR AND QT_QTCORE_INCLUDE_DIR AND Qt5Core_LIBRARIES
      AND QCA_INCLUDE_DIR AND QCA_LIBRARY
      AND NOT CMAKE_CROSSCOMPILING)
 
@@ -93,7 +92,7 @@ function(FIND_QCATOOL TOOL_REQUIRED)
           $ENV{OSGEO4W_ROOT}/bin
       )
     else()
-      find_program(QCATOOL_EXECUTABLE NAMES qcatool-qt5 qcatool2 qcatool)
+      find_program(QCATOOL_EXECUTABLE NAMES qcatool qcatool2 qcatool-qt5)
     endif()
 
     if(NOT QCATOOL_EXECUTABLE)
