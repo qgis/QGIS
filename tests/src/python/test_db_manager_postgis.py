@@ -294,5 +294,6 @@ class TestPyQgsDBManagerPostgis(unittest.TestCase):
         pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
         self.assertEqual(len(pkies), 0)
 
+
 if __name__ == '__main__':
     unittest.main()
