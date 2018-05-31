@@ -327,9 +327,19 @@ ENDFOREACH(pyfile)
 FOREACH(module ${PY_MODULES})
   ADD_CUSTOM_TARGET(py${module} ALL)
   ADD_DEPENDENCIES(py${module} python_module_qgis__${module})
+
+
+  # concat auto_additions/*.py in _module_/__init__.py
+  FILE(GLOB PY_FILES_AUTO_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/auto_additions/*.py)
+  FOREACH(pyfile ${PY_FILES_AUTO_ADDITIONS})
+    file(READ ${IN_FILE} CONTENTS)
+    file(APPEND ${OUT_FILE} "${CONTENTS}")
+  ENDFOREACH(pyfile)
+  configure_file(somefile.sql.in somefile.sql COPYONLY)
+
   FILE(GLOB PY_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/*.py)
-  FILE(GLOB PY_FILES_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/additions/*.py)
   INSTALL(FILES ${PY_FILES} DESTINATION "${QGIS_PYTHON_DIR}/${module}")
+  FILE(GLOB PY_FILES_ADDITIONS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${module}/additions/*.py)
   INSTALL(FILES ${PY_FILES_ADDITIONS} DESTINATION "${QGIS_PYTHON_DIR}/${module}/additions")
   SET(PY_FILES ${PY_FILES} ${PY_FILES_ADDITIONS})
   FOREACH(pyfile ${PY_FILES})
