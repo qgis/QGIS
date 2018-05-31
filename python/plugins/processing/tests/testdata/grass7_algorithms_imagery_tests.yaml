@@ -496,37 +496,39 @@ tests:
         hash: 87b3d0be1315a040a61c4d4dec2bd5837881ad207a4140a89a28997a
         type: rasterhash
 
-#  - algorithm: grass7:i.evapo.time
-#    name: GRASS7 i.evapo.time
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      eta:
-#        params:
-#        - name: custom/grass7/raster_5class.tif
-#          type: raster
-#        - name: custom/grass7/raster_4class.tif
-#          type: raster
-#        type: multi
-#      eta_doy:
-#        params:
-#        - name: custom/grass7/raster_6class.tif
-#          type: raster
-#        - name: custom/grass7/raster_5class.tif
-#          type: raster
-#        type: multi
-#      eto:
-#        params:
-#        - name: custom/grass7/float_raster.tif
-#          type: raster
-#        - name: custom/grass7/raster_6class.tif
-#          type: raster
-#        type: multi
-#    results:
-#      output:
-#        hash: a361b729bf0b0628fa66822297dc57e71e0b2e56331f7145c3cfdce6
-#        type: rasterhash
+  - algorithm: grass7:i.evapo.time
+    name: GRASS7 i.evapo.time
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      eta:
+        params:
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        - name: custom/grass7/raster_4class.tif
+          type: raster
+        type: multi
+      eta_doy:
+        params:
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        - name: custom/grass7/raster_5class.tif
+          type: raster
+        type: multi
+      eto:
+        params:
+        - name: custom/grass7/float_raster.tif
+          type: raster
+        - name: custom/grass7/raster_6class.tif
+          type: raster
+        type: multi
+    results:
+      output:
+        hash:
+        - a361b729bf0b0628fa66822297dc57e71e0b2e56331f7145c3cfdce6
+        - 00f909594106bf0aca7b909841b30532a816ddc8f53f4c0d30481710
+        type: rasterhash
 
-#  - algorithm: grass7:i.eb.hsebal01
+#  - algorithm: grass7:i.eb.hsebal01.coords
 #    name: GRASS7 i.eb.hsebal01
 #    params:
 #      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
