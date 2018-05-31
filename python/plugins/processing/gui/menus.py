@@ -189,9 +189,10 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
             alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
         actionText = alg_title + QCoreApplication.translate('Processing', '…')
     action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
-    action.setData(alg.id())
-    action.triggered.connect(lambda: _executeAlgorithm(alg))
-    action.setObjectName("mProcessingUserMenu_%s" % alg.id())
+    alg_id = alg.id()
+    action.setData(alg_id)
+    action.triggered.connect(lambda: _executeAlgorithm(alg_id))
+    action.setObjectName("mProcessingUserMenu_%s" % alg_id)
 
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
@@ -225,11 +226,20 @@ def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
                 algorithmsToolbar.removeAction(action)
 
 
-def _executeAlgorithm(alg):
+def _executeAlgorithm(alg_id):
+    alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
+    if alg is None:
+        dlg = MessageDialog()
+        dlg.setTitle(Processing.tr('Missing Algorithm'))
+        dlg.setMessage(
+            Processing.tr('The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)').format(alg_id))
+        dlg.exec_()
+        return
+
     ok, message = alg.canExecute()
     if not ok:
         dlg = MessageDialog()
-        dlg.setTitle(Processing.tr('Missing dependency'))
+        dlg.setTitle(Processing.tr('Missing Dependency'))
         dlg.setMessage(
             Processing.tr('<h3>Missing dependency. This algorithm cannot '
                           'be run :-( </h3>\n{0}').format(message))
