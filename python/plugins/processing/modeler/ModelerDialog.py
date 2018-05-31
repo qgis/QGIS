@@ -116,7 +116,7 @@ class ModelerDialog(BASE, WIDGET):
         self.verticalDockLayout_1.setSpacing(0)
         self.scrollArea_1 = QgsScrollArea(propertiesDockContents)
         sizePolicy = QSizePolicy(QSizePolicy.MinimumExpanding,
-                                           QSizePolicy.MinimumExpanding)
+                                 QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.scrollArea_1.sizePolicy().hasHeightForWidth())
@@ -175,7 +175,7 @@ class ModelerDialog(BASE, WIDGET):
         self.inputsDock.setWindowTitle(self.tr("Inputs"))
 
         self.algorithmsDock = QgsDockWidget(self)
-        self.algorithmsDock.setFeatures(QDockWidget.DockWidgetFloatable|QDockWidget.DockWidgetMovable)
+        self.algorithmsDock.setFeatures(QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable)
         self.algorithmsDock.setObjectName("algorithmsDock")
         self.algorithmsDockContents = QWidget()
         self.verticalLayout_4 = QVBoxLayout(self.algorithmsDockContents)
@@ -203,6 +203,7 @@ class ModelerDialog(BASE, WIDGET):
         self.addDockWidget(Qt.DockWidgetArea(1), self.algorithmsDock)
         self.algorithmsDock.setWindowTitle(self.tr("Algorithms"))
         self.searchBox.setToolTip(self.tr("Enter algorithm name to filter list"))
+        self.searchBox.setShowSearchIcon(True)
 
         self.bar = QgsMessageBar()
         self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
