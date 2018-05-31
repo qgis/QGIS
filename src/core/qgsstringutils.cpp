@@ -101,6 +101,27 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
   return string;
 }
 
+// original code from http://www.qtcentre.org/threads/52456-HTML-Unicode-ampersand-encoding
+QString QgsStringUtils::ampersandEncode( const QString &string )
+{
+  QString encoded;
+  for ( int i = 0; i < string.size(); ++i )
+  {
+    QChar ch = string.at( i );
+    if ( ch.unicode() > 160 )
+      encoded += QStringLiteral( "&#%1;" ).arg( static_cast< int >( ch.unicode() ) );
+    else if ( ch.unicode() == 38 )
+      encoded += QStringLiteral( "&amp;" );
+    else if ( ch.unicode() == 60 )
+      encoded += QStringLiteral( "&lt;" );
+    else if ( ch.unicode() == 62 )
+      encoded += QStringLiteral( "&gt;" );
+    else
+      encoded += ch;
+  }
+  return encoded;
+}
+
 int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive )
 {
   int length1 = string1.length();

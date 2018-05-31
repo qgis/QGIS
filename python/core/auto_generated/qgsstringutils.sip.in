@@ -189,6 +189,14 @@ Converts a string by applying capitalization rules to the string.
 .. versionadded:: 3.0
 %End
 
+    static QString ampersandEncode( const QString &string );
+%Docstring
+Replaces any extended unicode characters with the XML style &#233; encoded versions
+of these characeters.
+
+.. versionadded:: 3.2
+%End
+
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
 %Docstring
 Returns the Levenshtein edit distance between two strings. This equates to the minimum
