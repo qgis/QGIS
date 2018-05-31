@@ -822,19 +822,18 @@ class ProviderTestCase(FeatureSourceTestCase):
         Test if string comparisons with numbers are cast by the expression
         compiler (or work fine without doing anything :P)
         """
-        vl = self.getEditableLayer()
         for expression in (
                 '5 LIKE \'5\'',
                 '5 ILIKE \'5\'',
                 '15 NOT LIKE \'5\'',
                 '15 NOT ILIKE \'5\'',
                 '5 ~ \'5\''):
-            iterator = vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+            iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
             count = len([f for f in iterator])
             self.assertEqual(count, 5)
             self.assertFalse(iterator.compileFailed())
-            self.enableCompiler()
-            iterator = vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
-            self.assertEqual(count, 5)
-            self.assertFalse(iterator.compileFailed())
-            self.disableCompiler()
+            if self.enableCompiler():
+                iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+                self.assertEqual(count, 5)
+                self.assertFalse(iterator.compileFailed())
+                self.disableCompiler()
