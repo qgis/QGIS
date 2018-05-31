@@ -51,7 +51,7 @@ done
 cmake \
   -G 'Ninja' \
   -DCMAKE_FIND_FRAMEWORK:STRING=LAST \
-  -DCMAKE_PREFIX_PATH:STRING=${full_prefixes} \
+  -DCMAKE_PREFIX_PATH:STRING="${full_prefixes}" \
   -DWITH_SERVER=OFF \
   -DWITH_DESKTOP=OFF \
   -DWITH_STAGED_PLUGINS=ON \
