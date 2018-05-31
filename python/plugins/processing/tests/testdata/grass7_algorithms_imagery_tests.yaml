@@ -318,20 +318,20 @@ tests:
           - '128.6900'
 
 # this doesn't work in travis-ci environment (probably due to libfftw version).
-#  - algorithm: grass7:i.fft
-#    name: GRASS7 i.fft
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      input:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#    results:
-#      imaginary:
-#        hash: 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
-#        type: rasterhash
-#      real:
-#        hash: 09ab93c65aa2dde4da422b62a5ed3e38208e2da072cec2b0eb837a47
-#        type: rasterhash
+  - algorithm: grass7:i.fft
+    name: GRASS7 i.fft
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      input:
+        name: custom/grass7/float_raster.tif
+        type: raster
+    results:
+      imaginary:
+        hash: 94249384dd8b6019f0024501bc9a093cba9dd025c183d3fb46d77027
+        type: rasterhash
+      real:
+        hash: 09ab93c65aa2dde4da422b62a5ed3e38208e2da072cec2b0eb837a47
+        type: rasterhash
 
   - algorithm: grass7:i.segment
     name: GRASS7 i.segment
