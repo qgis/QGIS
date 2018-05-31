@@ -54,6 +54,11 @@ class QgsLocatorFilter : QObject
 %Docstring
 Abstract base class for filters which collect locator results.
 
+.. note::
+
+   If the configuration of the filter is changed outside of the main application settings,
+   one needs to invalidate current results of the locator widget: see QgisInterface.invalidateLocatorResults
+
 .. versionadded:: 3.0
 %End
 
