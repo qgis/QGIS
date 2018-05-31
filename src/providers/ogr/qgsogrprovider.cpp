@@ -661,6 +661,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName )
   else if ( typeName == QLatin1String( "MultiLineString25D" ) ) return wkbMultiLineString25D;
   else if ( typeName == QLatin1String( "MultiPolygon25D" ) ) return wkbMultiPolygon25D;
   else if ( typeName == QLatin1String( "GeometryCollection25D" ) ) return wkbGeometryCollection25D;
+  QgsDebugMsg( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
   return wkbUnknown;
 }
 

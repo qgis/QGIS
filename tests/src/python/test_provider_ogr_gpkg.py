@@ -897,6 +897,32 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
+    def testRequestWithoutGeometryOnLayerMixedGeometry(self):
+        """ Test bugfix for https://issues.qgis.org/issues/19077 """
+
+        # Issue is more a generic one of the OGR provider, but easy to trigger with GPKG
+
+        tmpfile = os.path.join(self.basetestpath, 'testRequestWithoutGeometryOnLayerMixedGeometry.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown, options=['SPATIAL_INDEX=NO'])
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 0)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|geometrytype=Point|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        features = [f for f in vl.getFeatures(request)]
+        self.assertEqual(len(features), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

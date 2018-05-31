@@ -92,7 +92,10 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
     return;
   }
 
-  mFetchGeometry = ( !mFilterRect.isNull() ) || !( mRequest.flags() & QgsFeatureRequest::NoGeometry );
+  mFetchGeometry = ( !mFilterRect.isNull() ) ||
+                   !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) ||
+                   ( mSource->mOgrGeometryTypeFilter != wkbUnknown );
+
   QgsAttributeList attrs = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();
 
   // ensure that all attributes required for expression filter are being fetched
