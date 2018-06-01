@@ -2056,7 +2056,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( !skipSinglePKField )
       {
-        Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+        for ( int idx : mPrimaryKeyAttrs )
         {
           insert += delim + quotedIdentifier( field( idx ).name() );
           values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
