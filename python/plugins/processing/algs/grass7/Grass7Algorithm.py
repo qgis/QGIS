@@ -872,7 +872,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
-                          outFormat='GPKG', dsco=None, lco=None):
+                          outFormat=None, dsco=None, lco=None):
         """
         Creates a dedicated command to export a vector from
         temporary GRASS DB into a file via OGR.
@@ -885,6 +885,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param dsco: datasource creation options for format.
         :param lco: layer creation options for format.
         """
+        if outFormat is None:
+            outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
+
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
                 'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7} --overwrite'.format(
