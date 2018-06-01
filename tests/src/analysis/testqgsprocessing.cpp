@@ -693,34 +693,45 @@ void TestQgsProcessing::compatibleLayers()
 
   // unsorted
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<QgsWkbTypes::GeometryType>(), false ) )
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>(), false ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "V4" << "v1" << "v3" << "vvvv4" );
 
   // point only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry ) )
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" );
 
   // polygon only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PolygonGeometry ) )
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPolygon ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "V4" );
 
   // line only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::LineGeometry ) )
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorLine ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v3" );
 
   // point and line only
   lIds.clear();
-  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<QgsWkbTypes::GeometryType>() << QgsWkbTypes::PointGeometry << QgsWkbTypes::LineGeometry ) )
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorPoint << QgsProcessing::TypeVectorLine ) )
     lIds << vl->name();
   QCOMPARE( lIds, QStringList() << "v1" << "v3" );
 
+  // any vector w geometry
+  lIds.clear();
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVectorAnyGeometry ) )
+    lIds << vl->name();
+  QCOMPARE( lIds, QStringList() << "v1" << "v3" << "V4" );
+
+  // any vector
+  lIds.clear();
+  Q_FOREACH ( QgsVectorLayer *vl, QgsProcessingUtils::compatibleVectorLayers( &p, QList<int>() << QgsProcessing::TypeVector ) )
+    lIds << vl->name();
+  QCOMPARE( lIds, QStringList() << "v1" << "v3" << "V4" << "vvvv4" );
 
   // all layers
   QVERIFY( QgsProcessingUtils::compatibleLayers( nullptr ).isEmpty() );
