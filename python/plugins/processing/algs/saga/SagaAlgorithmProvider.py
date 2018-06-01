@@ -65,6 +65,9 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.addSetting(Setting("SAGA",
                                             SagaUtils.SAGA_LOG_CONSOLE,
                                             self.tr('Log console output'), True))
+        ProcessingConfig.addSetting(Setting("SAGA",
+                                            SagaUtils.SAGA_ALLOW_UNSUPPORTED,
+                                            self.tr('Skip version check (some algorithms WILL NOT function!)'), False))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -73,6 +76,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting('ACTIVATE_SAGA')
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_COMMANDS)
+        ProcessingConfig.removeSetting(SagaUtils.SAGA_ALLOW_UNSUPPORTED)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_SAGA')
@@ -88,10 +92,15 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
             return
 
         if not version.startswith(REQUIRED_VERSION):
-            QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
-                                     self.tr('Processing'),
-                                     Qgis.Critical)
-            return
+            if not ProcessingConfig.getSetting(SagaUtils.SAGA_ALLOW_UNSUPPORTED):
+                QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version (found: {}, required: {}).').format(version, REQUIRED_VERSION),
+                                         self.tr('Processing'),
+                                         Qgis.Critical)
+                return
+            else:
+                QgsMessageLog.logMessage(
+                    self.tr('Unsupported SAGA version found. Some algorithms WILL NOT function -- proceed at own risk!'),
+                    self.tr('Processing'), Qgis.Critical)
 
         self.algs = []
         folder = SagaUtils.sagaDescriptionPath()

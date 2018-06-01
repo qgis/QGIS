@@ -41,6 +41,7 @@ from processing.tools.system import isWindows, isMac, userFolder
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
 SAGA_IMPORT_EXPORT_OPTIMIZATION = 'SAGA_IMPORT_EXPORT_OPTIMIZATION'
+SAGA_ALLOW_UNSUPPORTED = 'SAGA_ALLOW_UNSUPPORTED'
 
 _installedVersion = None
 _installedVersionFound = False
