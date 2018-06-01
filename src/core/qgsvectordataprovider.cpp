@@ -343,16 +343,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     if ( field.type() != nativeType.mType )
       continue;
 
-    if ( field.length() <= 0 )
-    {
-      // source length unlimited
-      if ( nativeType.mMinLen > 0 || nativeType.mMaxLen > 0 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
+    if ( field.length() > 0 )
     {
       // source length limited
       if ( ( nativeType.mMinLen > 0 && field.length() < nativeType.mMinLen ) ||
@@ -363,18 +354,9 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    if ( field.precision() <= 0 )
+    if ( field.precision() > 0 )
     {
-      // source precision unlimited / n/a
-      if ( nativeType.mMinPrec > 0 || nativeType.mMaxPrec > 0 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
-    {
-      // source precision unlimited / n/a
+      // source precision limited
       if ( ( nativeType.mMinPrec > 0 && field.precision() < nativeType.mMinPrec ) ||
            ( nativeType.mMaxPrec > 0 && field.precision() > nativeType.mMaxPrec ) )
       {
