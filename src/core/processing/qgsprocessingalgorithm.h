@@ -23,8 +23,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessingutils.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
