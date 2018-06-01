@@ -92,7 +92,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
 static bool IsLocalFile( const QString &path );
 
-static const QByteArray ORIG_OGC_FID = "orig_ogc_fid";
+static const QByteArray ORIG_OGC_FID = "__orig_ogc_fid";
 
 QMutex QgsOgrProviderUtils::sGlobalMutex( QMutex::Recursive );
 
@@ -898,6 +898,8 @@ void QgsOgrProvider::loadFields()
   QByteArray fidColumn( mOgrLayer->GetFIDColumn() );
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
+
+  int createdFields = 0;
   if ( mFirstFieldIsFid )
   {
     QgsField fidField(
@@ -914,6 +916,7 @@ void QgsOgrProvider::loadFields()
       fidField
     );
     mDefaultValues.insert( 0, tr( "Autogenerate" ) );
+    createdFields++;
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -961,6 +964,12 @@ void QgsOgrProvider::loadFields()
     QString name = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
 #endif
 
+    if ( name == ORIG_OGC_FID )
+    {
+      // don't ever report this field, it's for internal purposes only!
+      continue;
+    }
+
     if ( mAttributeFields.indexFromName( name ) != -1 )
     {
 
@@ -1006,10 +1015,11 @@ void QgsOgrProvider::loadFields()
     QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
     if ( !defaultValue.isEmpty() && !OGR_Fld_IsDefaultDriverSpecific( fldDef ) )
     {
-      mDefaultValues.insert( i + ( mFirstFieldIsFid ? 1 : 0 ), defaultValue );
+      mDefaultValues.insert( createdFields, defaultValue );
     }
 
     mAttributeFields.append( newField );
+    createdFields++;
   }
 
 }
@@ -3859,7 +3869,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       fidColumn = "FID";
     }
 
-    QByteArray sql = sqlPart1 + ", " + fidColumn + " as " + ORIG_OGC_FID + sqlPart3;
+    QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
     QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
     subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
 
@@ -3867,7 +3877,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
     if ( !subsetLayer )
     {
-      QByteArray sql = sqlPart1 + ", " + "FID as " + ORIG_OGC_FID + sqlPart3;
+      QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
     }
