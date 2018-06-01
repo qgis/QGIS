@@ -688,7 +688,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            return self.widget.setValue(value)
         else:
             options = self._getOptions()
 
@@ -916,7 +916,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setAdditionalItems(items)
                 self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
-            self.widget.setText(value)
+            self.widget.setValue(value)
         else:
             self.setComboValue(value, combobox=self.combo)
         self.widgetValueHasChanged.emit(self)
@@ -1456,7 +1456,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setAdditionalItems(items)
                 self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            return self.widget.setValue(value)
         else:
             self.setComboValue(value, combobox=self.combo)
         self.widgetValueHasChanged.emit(self)
