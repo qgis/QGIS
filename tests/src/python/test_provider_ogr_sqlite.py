@@ -245,30 +245,53 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
 
         vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
 
-        req = QgsFeatureRequest()
-        req.setFilterExpression("value=16")
-        it = vl.getFeatures(req)
-        f = QgsFeature()
-        self.assertTrue(it.nextFeature(f))
-        self.assertTrue(f.id() == 5)
+        def run_checks():
+            self.assertEqual([f.name() for f in vl.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
 
-        # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
-        req = QgsFeatureRequest()
-        req.setSubsetOfAttributes([])
-        it = vl.getFeatures(req)
-        ids = []
-        while it.nextFeature(f):
-            ids.append(f.id())
-        self.assertTrue(len(ids) == 3)
-        self.assertTrue(3 in ids)
-        self.assertTrue(4 in ids)
-        self.assertTrue(5 in ids)
+            req = QgsFeatureRequest()
+            req.setFilterExpression("value=16")
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
 
+            req = QgsFeatureRequest()
+            req.setFilterFid(5)
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+
+            req = QgsFeatureRequest()
+            req.setFilterFids([5])
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+
+            # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
+            req = QgsFeatureRequest()
+            req.setSubsetOfAttributes([])
+            it = vl.getFeatures(req)
+            ids = []
+            while it.nextFeature(f):
+                ids.append(f.id())
+            self.assertTrue(len(ids) == 3)
+            self.assertTrue(3 in ids)
+            self.assertTrue(4 in ids)
+            self.assertTrue(5 in ids)
+
+        run_checks()
         # Check that subset string is correctly set on reload
         vl.reload()
-        self.assertTrue(vl.fields().at(vl.fields().count() - 1).name() == "orig_ogc_fid")
+        run_checks()
 
     def test_SplitFeature(self):
         """Test sqlite feature can be split"""
