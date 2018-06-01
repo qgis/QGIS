@@ -1557,6 +1557,10 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       returnvalue = false;
     }
   }
+
+  // Backup existing fields. We need them to 'restore' field type, length, precision
+  QgsFields oldFields = mAttributeFields;
+
   loadFields();
 
   // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
@@ -1575,6 +1579,24 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+    }
+  }
+
+  // Restore field type, length, precision of existing fields as well
+  // We need that in scenarios where the user adds a int field with length != 0
+  // in a editing session, and repeat that again in another editing session
+  // Without the below hack, the length of the first added field would have
+  // been reset to zero, and QgsVectorLayerEditBuffer::commitChanges() would
+  // error out because of this.
+  // See https://issues.qgis.org/issues/19009
+  for ( auto field : oldFields )
+  {
+    int idx = mAttributeFields.lookupField( field.name() );
+    if ( idx >= 0 )
+    {
+      mAttributeFields[ idx ].setType( field.type() );
+      mAttributeFields[ idx ].setLength( field.length() );
+      mAttributeFields[ idx ].setPrecision( field.precision() );
     }
   }
 
