@@ -207,21 +207,6 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
     // filtered layer, not the original layer!
     OGR_L_ResetReading( mOgrOrigLayer );
     fet.reset( OGR_L_GetFeature( mOgrOrigLayer, FID_TO_NUMBER( id ) ) );
-
-    // do a bit of a safety check - make sure that the original fid column value
-    // matches the feature id which we actually requested.
-    OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( mOgrOrigLayer );
-    int lastField = OGR_FD_GetFieldCount( fdef ) - 1;
-    bool foundCorrect = false;
-    if ( lastField >= 0 )
-      foundCorrect = OGR_F_GetFieldAsInteger64( fet.get(), lastField ) == id;
-    else
-      foundCorrect = OGR_F_GetFID( fet.get() ) == id;
-
-    if ( !foundCorrect )
-    {
-      fet.reset();
-    }
   }
   else
   {
