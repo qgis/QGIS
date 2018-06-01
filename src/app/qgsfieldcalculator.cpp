@@ -483,12 +483,20 @@ void QgsFieldCalculator::setOkButtonState()
   okButton->setEnabled( true );
 }
 
+
 void QgsFieldCalculator::setPrecisionMinMax()
 {
   int idx = mOutputFieldTypeComboBox->currentIndex();
   int minPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 4 ).toInt();
   int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 5 ).toInt();
-  mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
-  mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
-  mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+  bool precisionIsEnabled = minPrecType < maxPrecType;
+  mOutputFieldPrecisionSpinBox->setEnabled( precisionIsEnabled );
+  // Do not set min/max if it's disabled or we'll loose the default value,
+  // see https://issues.qgis.org/issues/19050 - QGIS saves integer field when
+  // I create a new real field through field calculator (Update field works as intended)
+  if ( precisionIsEnabled )
+  {
+    mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
+    mOutputFieldPrecisionSpinBox->setMaximum( qMax( minPrecType, qMin( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+  }
 }
