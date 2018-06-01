@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for the python layer provider.
+"""QGIS Unit tests for the python dataprovider.
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -144,13 +144,13 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         return self.createLayer()
 
     def testGetFeaturesSubsetAttributes2(self):
-        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        """ Override and skip this test for pythonprovider provider, as it's actually more efficient for the pythonprovider provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
 
     def testGetFeaturesNoGeometry(self):
-        """ Override and skip this test for memory provider, as it's actually more efficient for the memory provider to return
+        """ Override and skip this test for pythonprovider provider, as it's actually more efficient for the pythonprovider provider to return
         its features as direct copies (due to implicit sharing of QgsFeature)
         """
         pass
@@ -163,8 +163,8 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
     def testCtors(self):
         testVectors = ["Point", "LineString", "Polygon", "MultiPoint", "MultiLineString", "MultiPolygon", "None"]
         for v in testVectors:
-            layer = QgsVectorLayer(v, "test", "memory")
-            assert layer.isValid(), "Failed to create valid %s memory layer" % (v)
+            layer = QgsVectorLayer(v, "test", "pythonprovider")
+            assert layer.isValid(), "Failed to create valid %s pythonprovider layer" % (v)
 
     def testLayerGeometry(self):
         testVectors = [("Point", QgsWkbTypes.PointGeometry, QgsWkbTypes.Point),
@@ -199,7 +199,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
                        ("MultiPolygon25D", QgsWkbTypes.PolygonGeometry, QgsWkbTypes.MultiPolygon25D),
                        ("None", QgsWkbTypes.NullGeometry, QgsWkbTypes.NoGeometry)]
         for v in testVectors:
-            layer = QgsVectorLayer(v[0], "test", "memory")
+            layer = QgsVectorLayer(v[0], "test", "pythonprovider")
 
             myMessage = ('Expected: %s\nGot: %s\n' %
                          (v[1], layer.geometryType()))
@@ -210,7 +210,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
             assert layer.wkbType() == v[2], myMessage
 
     def testAddFeatures(self):
-        layer = QgsVectorLayer("Point", "test", "memory")
+        layer = QgsVectorLayer("Point", "test", "pythonprovider")
         provider = layer.dataProvider()
 
         res = provider.addAttributes([QgsField("name", QVariant.String),
@@ -260,7 +260,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
             assert compareWkt(str(geom.asWkt()), "Point (10 10)"), myMessage
 
     def testGetFields(self):
-        layer = QgsVectorLayer("Point", "test", "memory")
+        layer = QgsVectorLayer("Point", "test", "pythonprovider")
         provider = layer.dataProvider()
 
         provider.addAttributes([QgsField("name", QVariant.String),
@@ -345,7 +345,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
             assert f == importedFields.field(f.name())
 
     def testRenameAttributes(self):
-        layer = QgsVectorLayer("Point", "test", "memory")
+        layer = QgsVectorLayer("Point", "test", "pythonprovider")
         provider = layer.dataProvider()
 
         res = provider.addAttributes([QgsField("name", QVariant.String),
@@ -381,71 +381,6 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         fet = next(layer.getFeatures())
         self.assertEqual(fet.fields()[1].name(), 'mapinfo_is_the_stone_age')
         self.assertEqual(fet.fields()[2].name(), 'super_size')
-
-    def testUniqueSource(self):
-        """
-        Similar memory layers should have unique source - some code checks layer source to identify
-        matching layers
-        """
-        layer = QgsVectorLayer("Point", "test", "memory")
-        layer2 = QgsVectorLayer("Point", "test2", "memory")
-        self.assertNotEqual(layer.source(), layer2.source())
-
-    def testCreateMemoryLayer(self):
-        """
-        Test QgsMemoryProviderUtils.createMemoryLayer()
-        """
-
-        # no fields
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
-        self.assertTrue(layer.isValid())
-        self.assertEqual(layer.name(), 'my name')
-        self.assertTrue(layer.fields().isEmpty())
-
-        # similar layers should have unique sources
-        layer2 = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields())
-        self.assertNotEqual(layer.source(), layer2.source())
-
-        # geometry type
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.Point)
-        self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM)
-        self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
-
-        # crs
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', QgsFields(), QgsWkbTypes.PolygonZM, QgsCoordinateReferenceSystem.fromEpsgId(3111))
-        self.assertTrue(layer.isValid())
-        self.assertEqual(layer.wkbType(), QgsWkbTypes.PolygonZM)
-        self.assertTrue(layer.crs().isValid())
-        self.assertEqual(layer.crs().authid(), 'EPSG:3111')
-
-        # fields
-        fields = QgsFields()
-        fields.append(QgsField("string", QVariant.String))
-        fields.append(QgsField("long", QVariant.LongLong))
-        fields.append(QgsField("double", QVariant.Double))
-        fields.append(QgsField("integer", QVariant.Int))
-        fields.append(QgsField("date", QVariant.Date))
-        fields.append(QgsField("datetime", QVariant.DateTime))
-        fields.append(QgsField("time", QVariant.Time))
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
-        self.assertTrue(layer.isValid())
-        self.assertFalse(layer.fields().isEmpty())
-        self.assertEqual(len(layer.fields()), len(fields))
-        for i in range(len(fields)):
-            self.assertEqual(layer.fields()[i].name(), fields[i].name())
-            self.assertEqual(layer.fields()[i].type(), fields[i].type())
-
-        # unsupported field type
-        fields = QgsFields()
-        fields.append(QgsField("rect", QVariant.RectF))
-        layer = QgsMemoryProviderUtils.createMemoryLayer('my name', fields)
-        self.assertTrue(layer.isValid())
-        self.assertFalse(layer.fields().isEmpty())
-        self.assertEqual(layer.fields()[0].name(), 'rect')
-        self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',

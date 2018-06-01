@@ -71,14 +71,14 @@ class CORE_EXPORT QgsProviderMetadata
 
     Py_BEGIN_ALLOW_THREADS
 
-    sipCpp = new QgsProviderMetadata( *a0, *a1, [a2]( const QString &dataSource ) -> QgsDataProvider*
+    sipCpp = new QgsProviderMetadata( *a0, *a1, [a2]( const QString &dataSource, const QgsDataProvider::ProviderOptions &providerOptions ) -> QgsDataProvider*
     {
       QgsDataProvider *provider;
       provider = nullptr;
       PyObject *sipResObj;
       SIP_BLOCK_THREADS
 
-      sipResObj = sipCallMethod( NULL, a2, "D", new QString( dataSource ), sipType_QString, NULL );
+      sipResObj = sipCallMethod( NULL, a2, "DD", new QString( dataSource ), sipType_QString, NULL, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
 
       if ( sipResObj )
       {

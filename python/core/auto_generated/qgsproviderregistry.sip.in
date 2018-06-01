@@ -182,7 +182,7 @@ Returns a string containing the available protocol drivers
 
     void registerProvider( QgsProviderMetadata *providerMetadata /Transfer/ );
 %Docstring
- register a new vector data provider from its ``providerMetadata``
+register a new vector data provider from its ``providerMetadata``
 
 .. note::
 

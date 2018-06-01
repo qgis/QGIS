@@ -46,6 +46,7 @@ from qgis.core import (
     QgsProviderMetadata,
     QgsGeometryEngine,
     QgsSpatialIndex,
+    QgsDataProvider,
 )
 
 from qgis.PyQt.QtCore import QVariant
@@ -54,7 +55,7 @@ from qgis.PyQt.QtCore import QVariant
 class PyFeatureIterator(QgsAbstractFeatureIterator):
 
     def __init__(self, source, request):
-        super(PyFeatureIterator, self).__init__(request)
+        super().__init__(request)
         self._request = request if request is not None else QgsFeatureRequest()
         self._source = source
         self._index = 0
@@ -187,13 +188,13 @@ class PyProvider(QgsVectorDataProvider):
         return 'Python Test Provider'
 
     @classmethod
-    def createProvider(cls, uri):
-        return PyProvider(uri)
+    def createProvider(cls, uri, providerOptions):
+        return PyProvider(uri, providerOptions)
 
     # Implementation of functions from QgsVectorDataProvider
 
-    def __init__(self, uri=''):
-        super(PyProvider, self).__init__(uri)
+    def __init__(self, uri='', providerOptions=QgsDataProvider.ProviderOptions()):
+        super().__init__(uri)
         # Use the memory layer to parse the uri
         mlayer = QgsVectorLayer(uri, 'ml', 'memory')
         self.setNativeTypes(mlayer.dataProvider().nativeTypes())
@@ -206,6 +207,7 @@ class PyProvider(QgsVectorDataProvider):
         self._subset_string = ''
         self._crs = mlayer.crs()
         self._spatialindex = None
+        self._provider_options = providerOptions
         if 'index=yes'in self._uri:
             self.createSpatialIndex()
 
@@ -307,16 +309,21 @@ class PyProvider(QgsVectorDataProvider):
 
     def renameAttributes(self, renamedAttributes):
         result = True
-        for key, new_name in renamedAttributes:
-            fieldIndex = key
+        # We need to replace all fields because python bindings return a copy from [] and at()
+        new_fields = [self._fields.at(i) for i in range(self._fields.count())]
+        for fieldIndex, new_name in renamedAttributes.items():
             if fieldIndex < 0 or fieldIndex >= self._fields.count():
                 result = False
                 continue
-            if new_name in self._fields.indexFromName(new_name) >= 0:
+            if self._fields.indexFromName(new_name) >= 0:
                 #field name already in use
                 result = False
                 continue
-            self._fields[fieldIndex].setName(new_name)
+            new_fields[fieldIndex].setName(new_name)
+        if result:
+            self._fields = QgsFields()
+            for i in range(len(new_fields)):
+                self._fields.append(new_fields[i])
         return result
 
     def deleteAttributes(self, attributes):
