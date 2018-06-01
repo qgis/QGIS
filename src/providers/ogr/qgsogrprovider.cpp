@@ -449,20 +449,60 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   open( OpenModeInitial );
 
+  int nMaxIntLen = 11;
+  int nMaxInt64Len = 21;
+  int nMaxDoubleLen = 20;
+  int nMaxDoublePrec = 15;
+  int nDateLen = 8;
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    // GPKG only supports field length for text (and binary)
+    nMaxIntLen = 0;
+    nMaxInt64Len = 0;
+    nMaxDoubleLen = 0;
+    nMaxDoublePrec = 0;
+    nDateLen = 0;
+  }
+
   QList<NativeType> nativeTypes;
   nativeTypes
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 11 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, 21 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, 20, 0, 15 )
-      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
-      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, 8, 8 );
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
 
-  // Some drivers do not support datetime type
-  // Please help to fill this list
-  if ( mGDALDriverName != QLatin1String( "ESRI Shapefile" ) )
+  bool supportsDate = true;
+  bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
+  bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
+  const char *pszDataTypes = nullptr;
+  if ( mOgrOrigLayer )
+  {
+    pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+  }
+  // For drivers that advertize their data type, use that instead of the
+  // above hardcoded defaults.
+  if ( pszDataTypes )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDataTypes, " ", 0 );
+    supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
+    supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
+    supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  if ( supportsDate )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1 )
+        << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+  }
+  if ( supportsTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time );
+  }
+  if ( supportsDateTime )
+  {
+    nativeTypes
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
 
@@ -471,8 +511,8 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   if ( mOgrOrigLayer )
   {
-    const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
-    if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
+    const char *pszDataSubTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+    if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
       supportsBoolean = true;
   }
 #else
@@ -492,7 +532,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     // boolean data type
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 );
+        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
   }
 
   setNativeTypes( nativeTypes );
@@ -1567,6 +1607,10 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       returnvalue = false;
     }
   }
+
+  // Backup existing fields. We need them to 'restore' field type, length, precision
+  QgsFields oldFields = mAttributeFields;
+
   loadFields();
 
   // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
@@ -1585,6 +1629,24 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+    }
+  }
+
+  // Restore field type, length, precision of existing fields as well
+  // We need that in scenarios where the user adds a int field with length != 0
+  // in a editing session, and repeat that again in another editing session
+  // Without the below hack, the length of the first added field would have
+  // been reset to zero, and QgsVectorLayerEditBuffer::commitChanges() would
+  // error out because of this.
+  // See https://issues.qgis.org/issues/19009
+  for ( auto field : oldFields )
+  {
+    int idx = mAttributeFields.lookupField( field.name() );
+    if ( idx >= 0 )
+    {
+      mAttributeFields[ idx ].setType( field.type() );
+      mAttributeFields[ idx ].setLength( field.length() );
+      mAttributeFields[ idx ].setPrecision( field.precision() );
     }
   }
 

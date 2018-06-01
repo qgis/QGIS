@@ -61,17 +61,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     QMap<QString, int> mFieldMap;
 
     //! Create a field based on the definitions
-    inline QgsField fieldDefinition()
-    {
-      return QgsField( mOutputFieldNameLineEdit->text(),
-                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole ).toInt() ),
-                       mOutputFieldTypeComboBox->currentData( Qt::UserRole + 1 ).toString(),
-                       mOutputFieldWidthSpinBox->value(),
-                       mOutputFieldPrecisionSpinBox->value(),
-                       QString(),
-                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + 6 ).toInt() )
-                     );
-    }
+    QgsField fieldDefinition();
 
     //! Idx of changed attribute
     int mAttributeId;

@@ -929,6 +929,26 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = [f for f in vl.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
+    def testAddingTwoIntFieldsWithWidth(self):
+        """ Test buggfix for https://issues.qgis.org/issues/19009 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testRequestWithoutGeometryOnLayerMixedGeometry.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+        lyr.CreateField(ogr.FieldDefn('a', ogr.OFTInteger))
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField("b", QVariant.Int, "integer", 10)))
+        self.assertTrue(vl.commitChanges())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField("c", QVariant.Int, "integer", 10)))
+        self.assertTrue(vl.commitChanges())
+
 
 if __name__ == '__main__':
     unittest.main()
