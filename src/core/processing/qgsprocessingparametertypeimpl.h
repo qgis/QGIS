@@ -470,12 +470,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A file parameter, for use with non-map layer file sources." );
+      return QCoreApplication::translate( "Processing", "A file or folder parameter, for use with non-map layer file sources or folders." );
     }
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "File" );
+      return QCoreApplication::translate( "Processing", "File/Folder" );
     }
 
     QString id() const override
