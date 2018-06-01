@@ -1,7 +1,7 @@
 Angular Distance Weighted
 grid_gridding
 QgsProcessingParameterFeatureSource|SHAPES|Points|-1|None|False
-QgsProcessingParameterFeatureSource|FIELD|Attribute|5|None|False
+QgsProcessingParameterField|FIELD|Attribute|None|SHAPES|-1|False|False
 QgsProcessingParameterEnum|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system|False|0
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
 QgsProcessingParameterNumber|TARGET_USER_XMIN|Left|QgsProcessingParameterNumber.Double|0.000000|False|None|None
