@@ -1194,7 +1194,7 @@ if ( $sip_output ne ''){
 
 if ( $python_output ne '' ){
     unlink $python_output or 1;
-    if ( $#OUTPUT_PYTHON > 0 ){
+    if ( @OUTPUT_PYTHON ){
         open(FH2, '>', $python_output) or die $!;
         print FH2 join('', python_header());
         print FH2 join('', @OUTPUT_PYTHON);
