@@ -3919,8 +3919,9 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   else
   {
     QByteArray sqlPart1 = "SELECT *";
-    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName )
-                          + " WHERE " + encoding->fromUnicode( subsetString );
+    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName );
+    if ( !subsetString.isEmpty() )
+      sqlPart3 += " WHERE " + encoding->fromUnicode( subsetString );
 
     origFidAddAttempted = true;
 
