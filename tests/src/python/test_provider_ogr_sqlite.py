@@ -254,7 +254,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, NULL, 2, 16])
             self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
 
@@ -263,7 +263,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, NULL, 2, 16])
             self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
 
@@ -272,7 +272,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
+            self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, NULL, 2, 16])
             self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
 
@@ -283,10 +283,7 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
             ids = []
             while it.nextFeature(f):
                 ids.append(f.id())
-            self.assertTrue(len(ids) == 3)
-            self.assertTrue(3 in ids)
-            self.assertTrue(4 in ids)
-            self.assertTrue(5 in ids)
+            self.assertCountEqual(ids, [3, 4, 5])
 
         run_checks()
         # Check that subset string is correctly set on reload
