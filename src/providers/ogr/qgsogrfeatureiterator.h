@@ -74,6 +74,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     QgsOgrConn *mConn = nullptr;
     OGRLayerH mOgrLayer = nullptr;
     OGRLayerH mOgrOrigLayer = nullptr;
+    OGRLayerH mOgrLayerWithFid = nullptr;
 
     bool mOrigFidAdded = false;
 
