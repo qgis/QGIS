@@ -387,30 +387,32 @@ class QgsOgrProviderUtils
     //! Wrapper for GDALClose()
     static void GDALCloseWrapper( GDALDatasetH mhDS );
 
-    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           const QString &layerName,
                                           QString &errCause );
 
 
-    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           bool updateMode,
                                           const QStringList &options,
                                           const QString &layerName,
-                                          QString &errCause );
+                                          QString &errCause,
+                                          bool checkModificationDateAgainstCache );
 
-    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           int layerIndex,
                                           QString &errCause );
 
-    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           bool updateMode,
                                           const QStringList &options,
                                           int layerIndex,
-                                          QString &errCause );
+                                          QString &errCause,
+                                          bool checkModificationDateAgainstCache );
 
     //! Returns a QgsOgrLayer* with a SQL result layer
     static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
