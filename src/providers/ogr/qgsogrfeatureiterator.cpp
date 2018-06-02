@@ -66,8 +66,8 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   if ( !mSource->mSubsetString.isEmpty() )
   {
     mOgrOrigLayer = mOgrLayer;
-    mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), mOrigFidAdded );
-    mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, mOrigFidAdded );
+    mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), true, &mOrigFidAdded );
+    mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, true, &mOrigFidAdded );
     if ( !mOgrLayer )
     {
       close();

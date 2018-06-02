@@ -373,7 +373,14 @@ class QgsOgrProviderUtils
     static QString expandAuthConfig( const QString &dsName );
 
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
-    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
+
+    /**
+     * Sets a subset string for an OGR \a layer.
+     *
+     * If \a addOriginalFid is specified, then the original OGR feature ID field will be added. If this is successful,
+     * \a origFidAdded will be set to true.
+     */
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool addOriginalFid = false, bool *origFidAdded = nullptr );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
     /**
