@@ -4160,6 +4160,13 @@ bool QgsOgrProvider::leaveUpdateMode()
   }
   if ( !mDynamicWriteAccess )
   {
+    // The GeoJSON driver only properly flushes stuff in all situations by
+    // closing and re-opening. Starting with GDAL 2.3.1, it should be safe to
+    // use GDALDatasetFlush().
+    if ( mGDALDriverName == QLatin1String( "GeoJSON" ) )
+    {
+      reloadData();
+    }
     return true;
   }
   if ( mUpdateModeStackDepth == 0 )
