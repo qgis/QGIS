@@ -14,3 +14,4 @@
 ###########################################################################
 
 pip install autopep8 nose2 mock termcolor
+cpan App::Licensecheck
