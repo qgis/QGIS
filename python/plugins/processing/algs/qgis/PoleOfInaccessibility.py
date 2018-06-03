@@ -27,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
                        QgsField,
                        NULL,
                        QgsFeatureSink,
@@ -53,7 +54,10 @@ class PoleOfInaccessibility(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCentroids.svg")
+    
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmCentroids.svg")
 
     def tags(self):
         return self.tr('furthest,point,distant,extreme,maximum,centroid,center,centre').split(',')
