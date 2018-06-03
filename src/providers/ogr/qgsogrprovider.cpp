@@ -198,11 +198,11 @@ void QgsOgrProvider::repack()
       QString errCause;
       if ( mLayerName.isNull() )
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause, true );
       }
       else
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause, true );
       }
 
       if ( !mOgrOrigLayer )
@@ -837,6 +837,11 @@ QStringList QgsOgrProvider::subLayers() const
   }
   else
   {
+    // In case there is no free opened dataset in the cache, keep the first
+    // layer alive while we iterate over the other layers, so that we can
+    // reuse the same dataset. Can help in a particular with a FileGDB with
+    // the FileGDB driver
+    QgsOgrLayerUniquePtr firstLayer;
     for ( unsigned int i = 0; i < layerCount() ; i++ )
     {
       QString errCause;
@@ -844,11 +849,18 @@ QStringList QgsOgrProvider::subLayers() const
                                    mOgrOrigLayer->updateMode(),
                                    mOgrOrigLayer->options(),
                                    i,
-                                   errCause );
+                                   errCause,
+                                   // do not check timestamp beyond the first
+                                   // layer
+                                   firstLayer == nullptr );
       if ( !layer )
         continue;
 
       addSubLayerDetailsToSubLayerList( i, layer.get() );
+      if ( firstLayer == nullptr )
+      {
+        firstLayer = std::move( layer );
+      }
     }
   }
   return mSubLayerList;
@@ -4025,11 +4037,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // has precedence over the layerid if both are given.
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause, true );
     }
   }
 
@@ -4050,11 +4062,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause, true );
     }
   }
 
@@ -4125,11 +4137,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause, true );
     }
 
     mWriteAccess = false;
@@ -4351,18 +4363,19 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
           errCause = QObject::tr( "Cannot find layer %1." ).arg( layerIndex );
           return nullptr;
         }
-        return getLayer( dsName, iter.key().updateMode, iter.key().options, layerName, errCause );
+        return getLayer( dsName, iter.key().updateMode, iter.key().options, layerName, errCause, true );
       }
     }
   }
-  return getLayer( dsName, false, QStringList(), layerIndex, errCause );
+  return getLayer( dsName, false, QStringList(), layerIndex, errCause, true );
 }
 
 QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     int layerIndex,
-    QString &errCause )
+    QString &errCause,
+    bool checkModificationDateAgainstCache )
 {
   QMutexLocker locker( &sGlobalMutex );
 
@@ -4403,7 +4416,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
         errCause = QObject::tr( "Cannot find layer %1." ).arg( layerIndex );
         return nullptr;
       }
-      return getLayer( dsName, updateMode, options, layerName, errCause );
+      return getLayer( dsName, updateMode, options, layerName, errCause,
+                       checkModificationDateAgainstCache );
     }
   }
 
@@ -4480,7 +4494,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       }
     }
   }
-  return getLayer( dsName, false, QStringList(), layerName, errCause );
+  return getLayer( dsName, false, QStringList(), layerName, errCause, true );
 }
 
 static QDateTime getLastModified( const QString &dsName )
@@ -4822,7 +4836,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     const QString &layerName,
-    QString &errCause )
+    QString &errCause,
+    bool checkModificationDateAgainstCache )
 {
   QMutexLocker locker( &sGlobalMutex );
 
@@ -4840,7 +4855,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   auto iter = sMapSharedDS.find( ident );
   if ( iter != sMapSharedDS.end() )
   {
-    if ( !canUseOpenedDatasets( dsName ) )
+    if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
     {
       QgsDebugMsg( QString( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
       invalidateCachedDatasets( dsName );
@@ -5316,11 +5331,11 @@ QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri,
 
   if ( !layerName.isEmpty() )
   {
-    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerName, errCause );
+    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerName, errCause, true );
   }
   else
   {
-    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause );
+    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause, true );
   }
 }
 
