@@ -198,11 +198,11 @@ void QgsOgrProvider::repack()
       QString errCause;
       if ( mLayerName.isNull() )
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause, true );
       }
       else
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause );
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause, true );
       }
 
       if ( !mOgrOrigLayer )
@@ -837,6 +837,11 @@ QStringList QgsOgrProvider::subLayers() const
   }
   else
   {
+    // In case there is no free opened dataset in the cache, keep the first
+    // layer alive while we iterate over the other layers, so that we can
+    // reuse the same dataset. Can help in a particular with a FileGDB with
+    // the FileGDB driver
+    QgsOgrLayerUniquePtr firstLayer;
     for ( unsigned int i = 0; i < layerCount() ; i++ )
     {
       QString errCause;
@@ -844,11 +849,18 @@ QStringList QgsOgrProvider::subLayers() const
                                    mOgrOrigLayer->updateMode(),
                                    mOgrOrigLayer->options(),
                                    i,
-                                   errCause );
+                                   errCause,
+                                   // do not check timestamp beyond the first
+                                   // layer
+                                   firstLayer == nullptr );
       if ( !layer )
         continue;
 
       addSubLayerDetailsToSubLayerList( i, layer.get() );
+      if ( firstLayer == nullptr )
+      {
+        firstLayer = std::move( layer );
+      }
     }
   }
   return mSubLayerList;
@@ -1771,14 +1783,13 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   if ( !theSQL.isEmpty() )
   {
-    bool origFidAdded = false;
     QMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
     OGRLayerH subsetLayerH;
     {
       QMutexLocker locker( mutex );
-      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL, origFidAdded );
+      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL );
     }
     if ( !subsetLayerH )
     {
@@ -3890,13 +3901,14 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
   }
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool addOriginalFid, bool *origFidAdded )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH mGDALDriver = GDALGetDatasetDriver( ds );
   QString mGDALDriverName = GDALGetDriverShortName( mGDALDriver );
   bool origFidAddAttempted = false;
-  origFidAdded = false;
+  if ( origFidAdded )
+    *origFidAdded = false;
 
   if ( mGDALDriverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
   {
@@ -3919,31 +3931,35 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   else
   {
     QByteArray sqlPart1 = "SELECT *";
-    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName )
-                          + " WHERE " + encoding->fromUnicode( subsetString );
+    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName );
+    if ( !subsetString.isEmpty() )
+      sqlPart3 += " WHERE " + encoding->fromUnicode( subsetString );
 
-    origFidAddAttempted = true;
-
-    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
-    // Fallback to FID if OGR_L_GetFIDColumn returns nothing
-    if ( fidColumn.isEmpty() )
+    if ( addOriginalFid )
     {
-      fidColumn = "FID";
-    }
+      origFidAddAttempted = true;
 
-    QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
-    QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+      // Fallback to FID if OGR_L_GetFIDColumn returns nothing
+      if ( fidColumn.isEmpty() )
+      {
+        fidColumn = "FID";
+      }
 
-    // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
-    // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
-    if ( !subsetLayer )
-    {
-      QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
+      QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+
+      // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
+      // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
+      if ( !subsetLayer )
+      {
+        QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
+        QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+        subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      }
     }
-    // If that also fails, just continue without the orig_ogc_fid
+    // If that also fails (or we never wanted to add the original FID), just continue without the orig_ogc_fid
     if ( !subsetLayer )
     {
       QByteArray sql = sqlPart1 + sqlPart3;
@@ -3961,7 +3977,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     if ( fieldCount > 0 )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
-      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
+      if ( origFidAdded )
+        *origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
     }
   }
 
@@ -4020,11 +4037,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // has precedence over the layerid if both are given.
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause, true );
     }
   }
 
@@ -4045,11 +4062,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause, true );
     }
   }
 
@@ -4120,11 +4137,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause, true );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause, true );
     }
 
     mWriteAccess = false;
@@ -4346,18 +4363,19 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
           errCause = QObject::tr( "Cannot find layer %1." ).arg( layerIndex );
           return nullptr;
         }
-        return getLayer( dsName, iter.key().updateMode, iter.key().options, layerName, errCause );
+        return getLayer( dsName, iter.key().updateMode, iter.key().options, layerName, errCause, true );
       }
     }
   }
-  return getLayer( dsName, false, QStringList(), layerIndex, errCause );
+  return getLayer( dsName, false, QStringList(), layerIndex, errCause, true );
 }
 
 QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     int layerIndex,
-    QString &errCause )
+    QString &errCause,
+    bool checkModificationDateAgainstCache )
 {
   QMutexLocker locker( &sGlobalMutex );
 
@@ -4398,7 +4416,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
         errCause = QObject::tr( "Cannot find layer %1." ).arg( layerIndex );
         return nullptr;
       }
-      return getLayer( dsName, updateMode, options, layerName, errCause );
+      return getLayer( dsName, updateMode, options, layerName, errCause,
+                       checkModificationDateAgainstCache );
     }
   }
 
@@ -4475,7 +4494,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       }
     }
   }
-  return getLayer( dsName, false, QStringList(), layerName, errCause );
+  return getLayer( dsName, false, QStringList(), layerName, errCause, true );
 }
 
 static QDateTime getLastModified( const QString &dsName )
@@ -4817,7 +4836,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     const QString &layerName,
-    QString &errCause )
+    QString &errCause,
+    bool checkModificationDateAgainstCache )
 {
   QMutexLocker locker( &sGlobalMutex );
 
@@ -4835,7 +4855,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   auto iter = sMapSharedDS.find( ident );
   if ( iter != sMapSharedDS.end() )
   {
-    if ( !canUseOpenedDatasets( dsName ) )
+    if ( checkModificationDateAgainstCache && !canUseOpenedDatasets( dsName ) )
     {
       QgsDebugMsg( QString( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
       invalidateCachedDatasets( dsName );
@@ -5311,11 +5331,11 @@ QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri,
 
   if ( !layerName.isEmpty() )
   {
-    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerName, errCause );
+    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerName, errCause, true );
   }
   else
   {
-    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause );
+    return QgsOgrProviderUtils::getLayer( filePath, true, QStringList(), layerIndex, errCause, true );
   }
 }
 

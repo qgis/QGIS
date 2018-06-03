@@ -72,15 +72,16 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH ogrLayer = nullptr;
+    OGRLayerH mOgrLayer = nullptr;
+    OGRLayerH mOgrOrigLayer = nullptr;
+    OGRLayerH mOgrLayerWithFid = nullptr;
 
-    bool mSubsetStringSet;
-    bool mOrigFidAdded;
+    bool mOrigFidAdded = false;
 
     //! Sets to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    bool mFetchGeometry = false;
 
-    bool mExpressionCompiled;
+    bool mExpressionCompiled = false;
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;
 

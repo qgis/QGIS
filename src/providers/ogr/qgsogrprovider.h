@@ -373,7 +373,14 @@ class QgsOgrProviderUtils
     static QString expandAuthConfig( const QString &dsName );
 
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
-    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
+
+    /**
+     * Sets a subset string for an OGR \a layer.
+     *
+     * If \a addOriginalFid is specified, then the original OGR feature ID field will be added. If this is successful,
+     * \a origFidAdded will be set to true.
+     */
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool addOriginalFid = false, bool *origFidAdded = nullptr );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
 
     /**
@@ -387,30 +394,32 @@ class QgsOgrProviderUtils
     //! Wrapper for GDALClose()
     static void GDALCloseWrapper( GDALDatasetH mhDS );
 
-    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           const QString &layerName,
                                           QString &errCause );
 
 
-    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           bool updateMode,
                                           const QStringList &options,
                                           const QString &layerName,
-                                          QString &errCause );
+                                          QString &errCause,
+                                          bool checkModificationDateAgainstCache );
 
-    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           int layerIndex,
                                           QString &errCause );
 
-    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
                                           bool updateMode,
                                           const QStringList &options,
                                           int layerIndex,
-                                          QString &errCause );
+                                          QString &errCause,
+                                          bool checkModificationDateAgainstCache );
 
     //! Returns a QgsOgrLayer* with a SQL result layer
     static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );

@@ -31,7 +31,6 @@ from .additions.fromfunction import fromFunction
 from .additions.metaenum import metaEnumFromType, metaEnumFromValue
 from .additions.processing import processing_output_layer_repr, processing_source_repr
 from .additions.projectdirtyblocker import ProjectDirtyBlocker
-from .additions.qgsdefaultvalue import _isValid
 from .additions.qgsfeature import mapping_feature
 from .additions.qgsfunction import register_function, qgsfunction
 from .additions.qgsgeometry import _geometryNonZero, mapping_geometry
@@ -40,7 +39,6 @@ from .additions.qgstaskwrapper import QgsTaskWrapper
 from .additions.readwritecontextentercategory import ReadWriteContextEnterCategory
 
 # Injections into classes
-QgsDefaultValue.__bool__ = _isValid
 QgsFeature.__geo_interface__ = property(mapping_feature)
 QgsGeometry.__bool__ = _geometryNonZero
 QgsGeometry.__geo_interface__ = property(mapping_geometry)
@@ -52,36 +50,3 @@ QgsReadWriteContext.enterCategory = ReadWriteContextEnterCategory
 QgsSettings.enumValue = _qgssettings_enum_value
 QgsSettings.flagValue = _qgssettings_flag_value
 QgsTask.fromFunction = fromFunction
-
-# -----------------
-# DO NOT EDIT BELOW
-# These are automatically added by calling sipify.pl script
-
-QgsAuthManager.MessageLevel.baseClass = QgsAuthManager
-QgsDataItem.Type.baseClass = QgsDataItem
-QgsDataItem.State.baseClass = QgsDataItem
-QgsLayerItem.LayerType.baseClass = QgsLayerItem
-QgsDataProvider.DataCapability.baseClass = QgsDataProvider
-QgsDataSourceUri.SslMode.baseClass = QgsDataSourceUri
-QgsFieldProxyModel.Filters.baseClass = QgsFieldProxyModel
-Filters = QgsFieldProxyModel  # dirty hack since SIP seems to introduce the flags in module
-QgsMapLayerProxyModel.Filters.baseClass = QgsMapLayerProxyModel
-Filters = QgsMapLayerProxyModel  # dirty hack since SIP seems to introduce the flags in module
-QgsNetworkContentFetcherRegistry.FetchingMode.baseClass = QgsNetworkContentFetcherRegistry
-QgsSnappingConfig.SnappingMode.baseClass = QgsSnappingConfig
-QgsSnappingConfig.SnappingType.baseClass = QgsSnappingConfig
-QgsTolerance.UnitType.baseClass = QgsTolerance
-QgsUnitTypes.DistanceUnit.baseClass = QgsUnitTypes
-QgsUnitTypes.AreaUnit.baseClass = QgsUnitTypes
-QgsUnitTypes.AngleUnit.baseClass = QgsUnitTypes
-QgsUnitTypes.RenderUnit.baseClass = QgsUnitTypes
-QgsUnitTypes.LayoutUnit.baseClass = QgsUnitTypes
-QgsVectorSimplifyMethod.SimplifyHint.baseClass = QgsVectorSimplifyMethod
-QgsVectorSimplifyMethod.SimplifyHints.baseClass = QgsVectorSimplifyMethod
-SimplifyHints = QgsVectorSimplifyMethod  # dirty hack since SIP seems to introduce the flags in module
-QgsVectorSimplifyMethod.SimplifyAlgorithm.baseClass = QgsVectorSimplifyMethod
-QgsRasterProjector.Precision.baseClass = QgsRasterProjector
-QgsAbstractGeometry.SegmentationToleranceType.baseClass = QgsAbstractGeometry
-QgsGeometry.BufferSide.baseClass = QgsGeometry
-QgsGeometry.EndCapStyle.baseClass = QgsGeometry
-QgsGeometry.JoinStyle.baseClass = QgsGeometry

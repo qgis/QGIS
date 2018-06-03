@@ -19,7 +19,13 @@ import tempfile
 import shutil
 from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest, QgsFieldConstraints, QgsFieldConstraints, QgsPointXY, NULL
+from qgis.core import (QgsVectorLayer,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsFieldConstraints,
+                       QgsPointXY,
+                       NULL,
+                       QgsRectangle)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime
 
@@ -214,79 +220,132 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
         f.SetFID(0)
         f.SetField(0, 1)
         f.SetField(1, 11)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (0 0)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
         f.SetField(0, 1)
         f.SetField(1, 12)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (1 1)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
         f.SetField(0, 1)
         f.SetField(1, 13)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (2 2)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
         f.SetField(0, 2)
         f.SetField(1, 14)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (3 3)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
         f.SetField(0, 2)
         f.SetField(1, 15)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (4 4)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
         f.SetField(0, 2)
         f.SetField(1, 16)
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (5 5)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
+
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual([f.name() for f in vl.fields()], ['fid', 'type', 'value'])
+        original_fields = vl.fields()
 
         vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         def run_checks():
-            self.assertEqual([f.name() for f in vl.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+            self.assertEqual([f.name() for f in vl.fields()], ['fid', 'type', 'value'])
 
+            # expression
             req = QgsFeatureRequest()
             req.setFilterExpression("value=16")
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
-            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
-            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
+            # filter fid
             req = QgsFeatureRequest()
             req.setFilterFid(5)
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
-            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
-            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
+            # filter fids
             req = QgsFeatureRequest()
             req.setFilterFids([5])
             it = vl.getFeatures(req)
             f = QgsFeature()
             self.assertTrue(it.nextFeature(f))
-            self.assertTrue(f.id() == 5)
-            self.assertEqual(f.attributes(), [5, NULL, 2, 16])
-            self.assertEqual([field.name() for field in f.fields()], ['fid', 'GEOMETRY', 'type', 'value'])
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
+
+            # check with subset of attributes
+            req = QgsFeatureRequest()
+            req.setFilterFids([5])
+            req.setSubsetOfAttributes([2])
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes()[2], 16)
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
+
+            # filter rect and expression
+            req = QgsFeatureRequest()
+            req.setFilterExpression("value=16 or value=14")
+            req.setFilterRect(QgsRectangle(4.5, 4.5, 5.5, 5.5))
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
+
+            # filter rect and fids
+            req = QgsFeatureRequest()
+            req.setFilterFids([3, 5])
+            req.setFilterRect(QgsRectangle(4.5, 4.5, 5.5, 5.5))
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
             req = QgsFeatureRequest()
             req.setSubsetOfAttributes([])
             it = vl.getFeatures(req)
             ids = []
+            geoms = {}
             while it.nextFeature(f):
                 ids.append(f.id())
-            self.assertTrue(len(ids) == 3)
-            self.assertTrue(3 in ids)
-            self.assertTrue(4 in ids)
-            self.assertTrue(5 in ids)
+                geoms[f.id()] = f.geometry().asWkt()
+            self.assertCountEqual(ids, [3, 4, 5])
+            self.assertEqual(geoms, {3: 'Point (3 3)', 4: 'Point (4 4)', 5: 'Point (5 5)'})
 
         run_checks()
         # Check that subset string is correctly set on reload

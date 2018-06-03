@@ -57,6 +57,9 @@ class QTimer;
  * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
+ *
+ * QgsAuthManager should not usually be directly created, but rather accessed through
+ * QgsApplication::authManager().
  */
 class CORE_EXPORT QgsAuthManager : public QObject
 {

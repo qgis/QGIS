@@ -71,6 +71,7 @@ my $LINE_COUNT = @INPUT_LINES;
 my $LINE_IDX = 0;
 my $LINE;
 my @OUTPUT = ();
+my @OUTPUT_PYTHON = ();
 
 
 sub read_line {
@@ -115,20 +116,31 @@ sub exit_with_error {
   die "! Sipify error in $headerfile at line :: $LINE_IDX\n! $_[0]\n";
 }
 
-sub write_header_footer {
+sub sip_header_footer {
+    my @header_footer = ();
     # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
     # otherwise "sip up to date" test fails. This is because the test uses %Include entries
     # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
     # as the first letter of a relative path
     my $headerfile_x = $headerfile;
     $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
-    push @OUTPUT,  "/************************************************************************\n";
-    push @OUTPUT,  " * This file has been generated automatically from                      *\n";
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile_x;
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
-    push @OUTPUT,  " ************************************************************************/\n";
+    push @header_footer,  "/************************************************************************\n";
+    push @header_footer,  " * This file has been generated automatically from                      *\n";
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer, sprintf " * %-*s *\n", 68, $headerfile_x;
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+    push @header_footer,  " ************************************************************************/\n";
+    return @header_footer;
+}
+
+sub python_header {
+    my @header = ();
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
+    push @header, "# The following has been generated automatically from ";
+    push @header, sprintf "%s\n", $headerfile_x;
+    return @header;
 }
 
 sub processDoxygenLine {
@@ -455,9 +467,6 @@ sub detect_non_method_member{
   return 0;
 }
 
-
-write_header_footer();
-
 # write some code in front of line to know where the output comes from
 $debug == 0 or push @OUTPUT, "CODE SIP_RUN MultiLine\n";
 
@@ -649,29 +658,21 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         next;
     }
+    # insert in python output (python/module/__init__.py)
     if ($LINE =~ m/Q_(ENUM|FLAG)\(\s*(\w+)\s*\)/ ){
         if ($LINE !~ m/SIP_SKIP/){
             my $is_flag = $1 eq 'FLAG' ? 1 : 0;
             my $enum_helper = "$ACTUAL_CLASS.$2.baseClass = $ACTUAL_CLASS";
             dbg_info("Q_ENUM/Q_FLAG $enum_helper");
             if ($python_output ne ''){
-                my $pl;
-                open(FH, '+<', $python_output) or die $!;
-                foreach $pl (<FH>)  {
-                    if ($pl =~ m/$enum_helper/){
-                        $enum_helper = '';
-                        last;
+                if ($enum_helper ne ''){
+                    push @OUTPUT_PYTHON, "$enum_helper\n";
+                    if ($is_flag == 1){
+                        # SIP seems to introduce the flags in the module rather than in the class itself
+                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                        push @OUTPUT_PYTHON, "$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module\n";
                     }
                 }
-                if ($enum_helper ne ''){
-                  if ($is_flag == 1){
-                      # SIP seems to introduce the flags in the module rather than in the class itself
-                      # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
-                      $enum_helper .= "\n$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module";
-                  }
-                    print FH "$enum_helper\n";
-                }
-                close(FH);
             }
         }
         next;
@@ -683,9 +684,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # SIP_SKIP
-    if ( $LINE =~ m/SIP_SKIP/ ){
+    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_OPERATOR_/ ){
         dbg_info('SIP SKIP!');
-        $COMMENT = '';
         # if multiline definition, remove previous lines
         if ( $MULTILINE_DEFINITION != MULTILINE_NO){
             dbg_info('SIP_SKIP with MultiLine');
@@ -700,6 +700,16 @@ while ($LINE_IDX < $LINE_COUNT){
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
+
+        if ($LINE =~ m/SIP_PYTHON_OPERATOR_(\w+)\(\s*(\w+)\s*\)/ ){
+            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: self.$2()";
+            dbg_info("PYTHON OPERATOR $pyop");
+            if ($python_output ne ''){
+                push @OUTPUT_PYTHON, "$pyop\n";
+            }
+        }
+
+        $COMMENT = '';
         next;
     }
 
@@ -1169,12 +1179,25 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
     }
 }
-write_header_footer();
 
 if ( $sip_output ne ''){
   open(FH, '>', $sip_output) or die $!;
+  print FH join('', sip_header_footer());
   print FH join('',@OUTPUT);
+  print FH join('', sip_header_footer());
   close(FH);
 } else {
+  print join('', sip_header_footer());
   print join('',@OUTPUT);
+  print join('', sip_header_footer());
+}
+
+if ( $python_output ne '' ){
+    unlink $python_output or 1;
+    if ( @OUTPUT_PYTHON ){
+        open(FH2, '>', $python_output) or die $!;
+        print FH2 join('', python_header());
+        print FH2 join('', @OUTPUT_PYTHON);
+        close(FH2);
+    }
 }
