@@ -14,4 +14,7 @@
 ###########################################################################
 
 pip install autopep8 nose2 mock termcolor
-cpan App::Licensecheck
+
+export PERL_MM_USE_DEFAULT=1
+export PERL_EXTUTILS_AUTOINSTALL="--defaultdeps"
+perl -MCPAN -e 'install App::Licensecheck'
