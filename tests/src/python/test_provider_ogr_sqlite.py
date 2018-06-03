@@ -323,6 +323,18 @@ class TestPyQgsOGRProviderSqlite(unittest.TestCase):
             self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
             self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
+            # filter rect and fids
+            req = QgsFeatureRequest()
+            req.setFilterFids([3, 5])
+            req.setFilterRect(QgsRectangle(4.5, 4.5, 5.5, 5.5))
+            it = vl.getFeatures(req)
+            f = QgsFeature()
+            self.assertTrue(it.nextFeature(f))
+            self.assertEqual(f.id(), 5)
+            self.assertEqual(f.attributes(), [5, 2, 16])
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
+
             # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
             req = QgsFeatureRequest()
             req.setSubsetOfAttributes([])
