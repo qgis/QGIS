@@ -466,12 +466,11 @@ Is emitted every time a tag or smartgroup has been added, removed, or renamed
 Convenience function to open the DB and return a sqlite3 object
 %End
 
-    bool runEmptyQuery( char *query, bool freeQuery = true );
+    bool runEmptyQuery( const QString &query );
 %Docstring
 Convenience function that would run queries which don't generate return values
 
 :param query: query to run
-:param freeQuery: release query memory
 
 :return: success true on success
 %End

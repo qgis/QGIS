@@ -436,10 +436,9 @@ class CORE_EXPORT QgsStyle : public QObject
      * Convenience function that would run queries which don't generate return values
      *
      *  \param query query to run
-     *  \param freeQuery release query memory
      *  \returns success true on success
      */
-    bool runEmptyQuery( char *query, bool freeQuery = true );
+    bool runEmptyQuery( const QString &query );
 
     //! Gets the id from the table for the given name from the database, 0 if not found
     int getId( const QString &table, const QString &name );
