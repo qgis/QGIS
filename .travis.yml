@@ -55,6 +55,7 @@ matrix:
             - expect-dev  # unbuffer
             - coreutils
             # dependencies for licensecheck
+            - cpanminus
             - libyaml-tiny-perl
             - libio-socket-ssl-perl
             - libhttp-date-perl
