@@ -55,7 +55,7 @@ class PoleOfInaccessibility(QgisAlgorithm):
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCentroids.svg")
-    
+
     def svgIconPath(self):
         return QgsApplication.iconPath("/algorithms/mAlgorithmCentroids.svg")
 

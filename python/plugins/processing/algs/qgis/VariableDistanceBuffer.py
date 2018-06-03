@@ -60,7 +60,7 @@ class VariableDistanceBuffer(QgisAlgorithm):
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBuffer.svg")
-    
+
     def svgIconPath(self):
         return QgsApplication.iconPath("/algorithms/mAlgorithmBuffer.svg")
 

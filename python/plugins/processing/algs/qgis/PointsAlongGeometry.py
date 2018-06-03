@@ -59,7 +59,7 @@ class PointsAlongGeometry(QgisAlgorithm):
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmExtractVertices.svg")
-    
+
     def svgIconPath(self):
         return QgsApplication.iconPath("/algorithms/mAlgorithmExtractVertices.svg")
 
