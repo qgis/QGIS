@@ -830,6 +830,16 @@ bool QgsGeometryCollection::dropMValue()
   return true;
 }
 
+void QgsGeometryCollection::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+{
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( geom )
+      geom->filterVertices( filter );
+  }
+  clearCache();
+}
+
 void QgsGeometryCollection::swapXy()
 {
   for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )

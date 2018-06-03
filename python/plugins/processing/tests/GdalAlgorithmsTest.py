@@ -41,6 +41,7 @@ from processing.algs.gdal.GridInverseDistance import GridInverseDistance
 from processing.algs.gdal.GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
 from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
+from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
@@ -233,10 +234,10 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     def testOgrConnectionStringAndFormat(self):
         context = QgsProcessingContext()
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.shp', context)
-        self.assertEqual(output, '"d:/test/test.shp"')
+        self.assertEqual(output, 'd:/test/test.shp')
         self.assertEqual(outputFormat, '"ESRI Shapefile"')
         output, outputFormat = GdalUtils.ogrConnectionStringAndFormat('d:/test/test.mif', context)
-        self.assertEqual(output, '"d:/test/test.mif"')
+        self.assertEqual(output, 'd:/test/test.mif')
         self.assertEqual(outputFormat, '"MapInfo File"')
 
     def testCrsConversion(self):
@@ -479,7 +480,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdal_contour',
              '-b 1 -a elev -i 5.0 -f "ESRI Shapefile" ' +
              source + ' ' +
-             '"d:/temp/check.shp"'])
+             'd:/temp/check.shp'])
         # with NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -491,7 +492,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdal_contour',
              '-b 1 -a elev -i 5.0 -snodata 9999.0 -f "ESRI Shapefile" ' +
              source + ' ' +
-             '"d:/temp/check.shp"'])
+             'd:/temp/check.shp'])
         # with "0" NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -503,7 +504,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['gdal_contour',
              '-b 1 -a elev -i 5.0 -snodata 0.0 -f "GPKG" ' +
              source + ' ' +
-             '"d:/temp/check.gpkg"'])
+             'd:/temp/check.gpkg'])
 
     def testGdal2Tiles(self):
         context = QgsProcessingContext()
@@ -648,7 +649,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
             ['gdaltindex',
              '-tileindex location -f "ESRI Shapefile" ' +
-             '"d:/temp/test.shp" ' +
+             'd:/temp/test.shp ' +
              source])
 
         # with input srs
@@ -658,7 +659,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
             ['gdaltindex',
              '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-             '"d:/temp/test.shp" ' +
+             'd:/temp/test.shp ' +
              source])
 
         # with target using proj string
@@ -669,7 +670,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
             ['gdaltindex',
              '-tileindex location -t_srs EPSG:20936 -f "ESRI Shapefile" ' +
-             '"d:/temp/test.shp" ' +
+             'd:/temp/test.shp ' +
              source])
 
         # with target using custom projection
@@ -680,7 +681,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
             ['gdaltindex',
              '-tileindex location -t_srs "+proj=utm +zone=36 +south +a=63785 +b=6357 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs" -f "ESRI Shapefile" ' +
-             '"d:/temp/test.shp" ' +
+             'd:/temp/test.shp ' +
              source])
 
         # with non-EPSG crs code
@@ -690,7 +691,7 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/test.shp'}, context, feedback),
             ['gdaltindex',
              '-tileindex location -t_srs EPSG:3111 -f "ESRI Shapefile" ' +
-             '"d:/temp/test.shp" ' +
+             'd:/temp/test.shp ' +
              source])
 
     def testGridAverage(self):
@@ -896,6 +897,34 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-l points -a nearest:radius1=0.0:radius2=0.0:angle=0.0:nodata=0.0 -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
+    def testOgr2Ogr(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'polys.gml')
+        alg = ogr2ogr()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.shp'}, context, feedback),
+            ['ogr2ogr',
+             '-f "ESRI Shapefile" d:/temp/check.shp ' +
+             source + ' polys2'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/check.kml'}, context, feedback),
+            ['ogr2ogr',
+             '-f "LIBKML" d:/temp/check.kml ' +
+             source + ' polys2'])
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'OUTPUT': 'd:/temp/my out/check.kml'}, context, feedback),
+            ['ogr2ogr',
+             '-f "LIBKML" "d:/temp/my out/check.kml" ' +
+             source + ' polys2'])
 
     def testProximity(self):
         context = QgsProcessingContext()

@@ -30,6 +30,7 @@ from qgis.core import (QgsProcessingParameterFeatureSource,
                        QgsDateTimeStatisticalSummary,
                        QgsStringStatisticalSummary,
                        QgsFeatureRequest,
+                       QgsApplication,
                        QgsProcessingException,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSink,
@@ -61,7 +62,14 @@ class StatisticsByCategories(QgisAlgorithm):
         return 'vectoranalysis'
 
     def tags(self):
-        return self.tr('groups').split(',')
+        return self.tr('groups,stats,statistics,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct,summarygit di').split(',')
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def __init__(self):
         super().__init__()

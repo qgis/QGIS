@@ -117,16 +117,16 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Returns the current mode of the form.
-     * \since QGIS 2.16
      * \see setMode()
+     * \since QGIS 2.16
      */
     Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
      * \param mode form mode
-     * \since QGIS 2.16
      * \see mode()
+     * \since QGIS 2.16
      */
     void setMode( Mode mode );
 

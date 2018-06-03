@@ -189,9 +189,9 @@ The name of the property is used as identifier.
 %Docstring
 The name of the property is used as identifier.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`name`
+
+.. versionadded:: 3.0
 %End
 
     virtual QVariant value() const;

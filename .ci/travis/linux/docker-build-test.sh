@@ -70,8 +70,8 @@ echo "travis_fold:end:cmake"
 # Hopefully clocks are in sync :)
 TRAVIS_TIME=120
 UPLOAD_TIME=5
-CURRENT_TIME=`date +%s`
-TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
+CURRENT_TIME=$(date +%s)
+TIMEOUT=$((( ${TRAVIS_TIME} - ${UPLOAD_TIME} ) * 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP}))
 TIMEOUT=$(( ${TIMEOUT} < 300 ? 300 : ${TIMEOUT} ))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 
@@ -107,8 +107,8 @@ popd > /dev/null # /root/QGIS
 ###########
 # Run tests
 ###########
-CURRENT_TIME=`date +%s`
-TIMEOUT=$(expr \( ${TRAVIS_TIME} - ${UPLOAD_TIME} \) \* 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP})
+CURRENT_TIME=$(date +%s)
+TIMEOUT=$((( ${TRAVIS_TIME} - ${UPLOAD_TIME}) * 60 - ${CURRENT_TIME} + ${TRAVIS_TIMESTAMP}))
 echo "Timeout: ${TIMEOUT}s (started at ${TRAVIS_TIMESTAMP}, current: ${CURRENT_TIME})"
 timeout ${TIMEOUT}s python3 /root/QGIS/.ci/travis/scripts/ctest2travis.py xvfb-run ctest -V -E "$(cat /root/QGIS/.ci/travis/linux/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S /root/QGIS/.ci/travis/travis.ctest --output-on-failure
 rv=$?

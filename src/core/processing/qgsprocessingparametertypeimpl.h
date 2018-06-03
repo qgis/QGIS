@@ -28,9 +28,9 @@
 /**
  * A raster layer parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('raster')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingParameterType
 {
@@ -53,14 +53,23 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterLayer : public QgsProcessingPa
     {
       return QStringLiteral( "raster" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRasterLayer" );
+    }
 };
 
 /**
  * A vector layer parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('vector')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingParameterType
 {
@@ -83,14 +92,23 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorLayer : public QgsProcessingPa
     {
       return QStringLiteral( "vector" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsVectorLayer" );
+    }
 };
 
 /**
  * A generic map layer parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('maplayer')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParameterType
 {
@@ -113,14 +131,25 @@ class CORE_EXPORT QgsProcessingParameterTypeMapLayer : public QgsProcessingParam
     {
       return QStringLiteral( "maplayer" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsMapLayer" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRasterLayer" )
+             << QStringLiteral( "QgsVectorLayer" );
+    }
 };
 
 /**
  * A boolean parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('boolean')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParameterType
 {
@@ -143,14 +172,22 @@ class CORE_EXPORT QgsProcessingParameterTypeBoolean : public QgsProcessingParame
     {
       return QStringLiteral( "boolean" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "bool" )
+             << QStringLiteral( "int" )
+             << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * An expression parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('expression')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingParameterType
 {
@@ -173,14 +210,20 @@ class CORE_EXPORT QgsProcessingParameterTypeExpression : public QgsProcessingPar
     {
       return QStringLiteral( "expression" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A crs parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('crs')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterType
 {
@@ -203,14 +246,28 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
     {
       return QStringLiteral( "crs" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList()
+             << QStringLiteral( "str: 'ProjectCrs'" )
+             << QObject::tr( "str: CRS auth ID (e.g. 'EPSG:3111')" )
+             << QObject::tr( "str: CRS PROJ4 (e.g. 'PROJ4:...')" )
+             << QObject::tr( "str: CRS WKT (e.g. 'WKT:...')" )
+             << QObject::tr( "str: layer ID. CRS of layer is used." )
+             << QObject::tr( "str: layer name. CRS of layer is used." )
+             << QObject::tr( "str: layer source. CRS of layer is used." )
+             << QObject::tr( "QgsMapLayer: CRS of layer is used" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A numeric range parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('range')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParameterType
 {
@@ -233,14 +290,22 @@ class CORE_EXPORT QgsProcessingParameterTypeRange : public QgsProcessingParamete
     {
       return QStringLiteral( "range" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[float]: list of 2 float values" )
+             << QObject::tr( "list[str]: list of strings representing floats" )
+             << QObject::tr( "str: as two comma delimited floats, e.g. '1,10'" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A point parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('point')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParameterType
 {
@@ -263,14 +328,22 @@ class CORE_EXPORT QgsProcessingParameterTypePoint : public QgsProcessingParamete
     {
       return QStringLiteral( "point" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as an 'x,y' string, e.g. '1.5,10.1'" )
+             << QStringLiteral( "QgsPointXY" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsReferencedPointXY" );
+    }
 };
 
 /**
  * An enum based parameter for processing algorithms, allowing for selection from predefined values.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('enum')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameterType
 {
@@ -293,14 +366,21 @@ class CORE_EXPORT QgsProcessingParameterTypeEnum : public QgsProcessingParameter
     {
       return QStringLiteral( "enum" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QObject::tr( "str: as string representation of int, e.g. '1'" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A rectangular map extent parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('extent')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParameterType
 {
@@ -323,14 +403,26 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
     {
       return QStringLiteral( "extent" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as comma delimited list of x min, x max, y min, y max. E.g. '4,10,101,105'" )
+             << QObject::tr( "str: layer ID. Extent of layer is used." )
+             << QObject::tr( "str: layer name. Extent of layer is used." )
+             << QObject::tr( "str: layer source. Extent of layer is used." )
+             << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsRectangle" )
+             << QStringLiteral( "QgsReferencedRectangle" );
+    }
 };
 
 /**
  * A table (matrix) parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('matrix')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParameterType
 {
@@ -353,14 +445,21 @@ class CORE_EXPORT QgsProcessingParameterTypeMatrix : public QgsProcessingParamet
     {
       return QStringLiteral( "matrix" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: as comma delimited list of values" )
+             << QStringLiteral( "list" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * An input file or folder parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('file')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameterType
 {
@@ -371,26 +470,32 @@ class CORE_EXPORT QgsProcessingParameterTypeFile : public QgsProcessingParameter
 
     QString description() const override
     {
-      return QCoreApplication::translate( "Processing", "A file parameter, for use with non-map layer file sources." );
+      return QCoreApplication::translate( "Processing", "A file or folder parameter, for use with non-map layer file sources or folders." );
     }
 
     QString name() const override
     {
-      return QCoreApplication::translate( "Processing", "File" );
+      return QCoreApplication::translate( "Processing", "File/Folder" );
     }
 
     QString id() const override
     {
       return QStringLiteral( "file" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A vector layer or feature source field parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('field')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParameterType
 {
@@ -413,15 +518,21 @@ class CORE_EXPORT QgsProcessingParameterTypeField : public QgsProcessingParamete
     {
       return QStringLiteral( "field" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A vector layer destination parameter, for specifying the destination path for a vector layer
  * created by the algorithm.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('vectorDestination')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProcessingParameterType
 {
@@ -457,15 +568,22 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
 };
 
 /**
  * A generic file based destination parameter, for specifying the destination path for a file (non-map layer)
  * created by the algorithm.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('fileDestination')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessingParameterType
 {
@@ -501,6 +619,12 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
@@ -508,9 +632,9 @@ class CORE_EXPORT QgsProcessingParameterTypeFileDestination : public QgsProcessi
  * by the algorithm or used for creating new files within the algorithm.
  * A folder output parameter.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('folderDestination')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProcessingParameterType
 {
@@ -546,15 +670,21 @@ class CORE_EXPORT QgsProcessingParameterTypeFolderDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A raster layer destination parameter, for specifying the destination path for a raster layer
  * created by the algorithm.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('rasterDestination')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProcessingParameterType
 {
@@ -590,14 +720,21 @@ class CORE_EXPORT QgsProcessingParameterTypeRasterDestination : public QgsProces
 
       return flags;
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" );
+    }
 };
 
 /**
  * A string parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('string')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParameterType
 {
@@ -620,14 +757,20 @@ class CORE_EXPORT QgsProcessingParameterTypeString : public QgsProcessingParamet
     {
       return QStringLiteral( "string" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "str" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A parameter for processing algorithms which accepts multiple map layers.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('multilayer')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessingParameterType
 {
@@ -650,14 +793,23 @@ class CORE_EXPORT QgsProcessingParameterTypeMultipleLayers : public QgsProcessin
     {
       return QStringLiteral( "multilayer" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "list[str]: list of layer IDs" )
+             << QObject::tr( "list[str]: list of layer names" )
+             << QObject::tr( "list[str]: list of layer sources" )
+             << QStringLiteral( "list[QgsMapLayer]" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * An input feature source (such as vector layers) parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('source')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessingParameterType
 {
@@ -680,14 +832,24 @@ class CORE_EXPORT QgsProcessingParameterTypeFeatureSource : public QgsProcessing
     {
       return QStringLiteral( "source" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: layer ID" )
+             << QObject::tr( "str: layer name" )
+             << QObject::tr( "str: layer source" )
+             << QStringLiteral( "QgsProcessingFeatureSourceDefinition" )
+             << QStringLiteral( "QgsProperty" )
+             << QStringLiteral( "QgsVectorLayer" );
+    }
 };
 
 /**
  * A numeric parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('number')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParameterType
 {
@@ -710,14 +872,21 @@ class CORE_EXPORT QgsProcessingParameterTypeNumber : public QgsProcessingParamet
     {
       return QStringLiteral( "number" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
 };
 
 /**
  * A distance parameter for processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('distance')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParameterType
 {
@@ -740,14 +909,22 @@ class CORE_EXPORT QgsProcessingParameterTypeDistance : public QgsProcessingParam
     {
       return QStringLiteral( "distance" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "float" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
 };
 
 /**
  * A raster band parameter for Processing algorithms.
  *
- * \since QGIS 3.2
  * \ingroup core
  * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameterType
 {
@@ -770,6 +947,66 @@ class CORE_EXPORT QgsProcessingParameterTypeBand : public QgsProcessingParameter
     {
       return QStringLiteral( "band" );
     }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QStringLiteral( "int" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
+};
+
+/**
+ * A feature sink parameter for Processing algorithms.
+ *
+ * \ingroup core
+ * \note No Python bindings available. Get your copy from QgsApplication.processingRegistry().parameterType('band')
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsProcessingParameterTypeFeatureSink : public QgsProcessingParameterType
+{
+    QgsProcessingParameterDefinition *create( const QString &name ) const override SIP_FACTORY
+    {
+      return new QgsProcessingParameterFeatureSink( name );
+    }
+
+    ParameterFlags flags() const override
+    {
+      ParameterFlags flags = QgsProcessingParameterType::flags();
+
+#if QT_VERSION >= 0x50700
+      flags.setFlag( ParameterFlag::ExposeToModeler, false );
+#else
+      flags &= ~ParameterFlag::ExposeToModeler;
+#endif
+
+      return flags;
+    }
+
+    QString description() const override
+    {
+      return QCoreApplication::translate( "Processing", "A feature sink destination parameter." );
+    }
+
+    QString name() const override
+    {
+      return QCoreApplication::translate( "Processing", "Feature Sink" );
+    }
+
+    QString id() const override
+    {
+      return QStringLiteral( "sink" );
+    }
+
+    QStringList acceptedPythonTypes() const override
+    {
+      return QStringList() << QObject::tr( "str: destination vector file, e.g. 'd:/test.shp'" )
+             << QObject::tr( "str: 'memory:' to store result in temporary memory layer" )
+             << QObject::tr( "str: using vector provider ID prefix and destination URI, e.g. 'postgres:...' to store result in PostGIS table" )
+             << QStringLiteral( "QgsProcessingOutputLayerDefinition" )
+             << QStringLiteral( "QgsProperty" );
+    }
+
 };
 
 #endif // QGSPROCESSINGPARAMETERTYPEIMPL_H

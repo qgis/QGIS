@@ -127,11 +127,11 @@ which have a foreign key pointing to the provided feature.
 
 :return: expression filter string for all the referencing features
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`getRelatedFeatures`
 
 .. seealso:: :py:func:`getRelatedFeaturesRequest`
+
+.. versionadded:: 2.16
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;

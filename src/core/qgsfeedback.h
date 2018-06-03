@@ -98,9 +98,9 @@ class CORE_EXPORT QgsFeedback : public QObject
      * Emitted when the feedback object reports a progress change. Depending on how the
      * feedback object is used progress reporting may not be supported. The \a progress
      * argument is in percentage and ranges from 0-100.
-     * \since QGIS 3.0
      * \see setProgress()
      * \see progress()
+     * \since QGIS 3.0
      */
     void progressChanged( double progress );
 

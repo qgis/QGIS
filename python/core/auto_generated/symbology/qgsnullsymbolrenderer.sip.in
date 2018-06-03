@@ -11,7 +11,7 @@
 class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring
- Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
+Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
 and diagrams for the layer. Selected features will also be drawn with a default symbol.
 
 .. versionadded:: 2.16

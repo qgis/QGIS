@@ -13,7 +13,7 @@
 class QgsStyleSaveDialog: QDialog
 {
 %Docstring
- a dialog for setting properties of a newly saved style.
+a dialog for setting properties of a newly saved style.
 
 .. versionadded:: 3.0
 %End

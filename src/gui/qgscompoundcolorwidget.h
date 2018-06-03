@@ -81,10 +81,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      *
      * The \a parent argument must be set to a valid parent widget for the dialog prompts.
      *
-     * \since QGIS 3.2
      *
      * \see createNewUserPalette()
      * \see removeUserPalette()
+     * \since QGIS 3.2
      */
     static QgsUserColorScheme *importUserPaletteFromFile( QWidget *parent );
 
@@ -93,10 +93,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      *
      * The \a parent argument must be set to a valid parent widget for the dialog prompts.
      *
-     * \since QGIS 3.2
      *
      * \see importUserPaletteFromFile()
      * \see removeUserPalette()
+     * \since QGIS 3.2
      */
     static QgsUserColorScheme *createNewUserPalette( QWidget *parent );
 
@@ -105,10 +105,10 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      *
      * The \a parent argument must be set to a valid parent widget for the dialog prompts.
      *
-     * \since QGIS 3.2
      *
      * \see importUserPaletteFromFile()
      * \see createNewUserPalette()
+     * \since QGIS 3.2
      */
     static bool removeUserPalette( QgsUserColorScheme *scheme, QWidget *parent );
 

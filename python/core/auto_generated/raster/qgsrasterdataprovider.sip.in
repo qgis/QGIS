@@ -17,7 +17,7 @@
 class QgsImageFetcher : QObject
 {
 %Docstring
- Handles asynchronous download of images
+Handles asynchronous download of images
 
 .. versionadded:: 2.8
 %End
@@ -188,13 +188,13 @@ Returns a list of user no data value ranges.
 
     virtual QStringList subLayers() const;
 %Docstring
- Returns the sublayers of this layer - useful for providers that manage
+Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS *
 %End
 
     virtual bool supportsLegendGraphic() const;
 %Docstring
- Returns whether the provider supplies a legend graphic
+Returns whether the provider supplies a legend graphic
 %End
 
 
@@ -210,6 +210,7 @@ Returns a new image downloader for the raster legend.
          to caller.
 
 
+
 .. versionadded:: 2.8
 %End
 
@@ -219,7 +220,7 @@ Returns a new image downloader for the raster legend.
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
- Create pyramid overviews
+Create pyramid overviews
 %End
 
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
@@ -235,7 +236,7 @@ Returns the raster layers pyramid list.
 
     bool hasPyramids();
 %Docstring
- Returns true if raster has at least one populated histogram.
+Returns true if raster has at least one populated histogram.
 %End
 
     virtual QString htmlMetadata() = 0;
@@ -248,7 +249,7 @@ into a subset of the GUI raster properties "Metadata" tab.
 
     virtual QString lastErrorTitle() = 0;
 %Docstring
- Returns the caption error text for the last error in this provider
+Returns the caption error text for the last error in this provider
 
 If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.
@@ -258,7 +259,7 @@ call a QMessageBox to display the contents.
 
     virtual QString lastError() = 0;
 %Docstring
-   Returns the verbose error text for the last error in this provider
+Returns the verbose error text for the last error in this provider
 
 If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.

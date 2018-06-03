@@ -125,9 +125,9 @@ Returns true if the specified feature ID has been added but not committed.
 
 :param id: feature ID
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`addedFeatures`
+
+.. versionadded:: 3.0
 %End
 
     QgsChangedAttributesMap changedAttributeValues() const;
@@ -143,9 +143,9 @@ Returns true if the specified feature ID has had an attribute changed but not co
 
 :param id: feature ID
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`changedAttributeValues`
+
+.. versionadded:: 3.0
 %End
 
     QgsAttributeList deletedAttributeIds() const;
@@ -161,9 +161,9 @@ Returns true if the specified attribute has been deleted but not committed.
 
 :param index: attribute index
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`deletedAttributeIds`
+
+.. versionadded:: 3.0
 %End
 
     QList<QgsField> addedAttributes() const;
@@ -184,9 +184,9 @@ Returns true if the specified feature ID has had its geometry changed but not co
 
 :param id: feature ID
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`changedGeometries`
+
+.. versionadded:: 3.0
 %End
 
     QgsFeatureIds deletedFeatureIds() const;
@@ -202,9 +202,9 @@ Returns true if the specified feature ID has been deleted but not committed.
 
 :param id: feature ID
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`deletedFeatureIds`
+
+.. versionadded:: 3.0
 %End
 
 

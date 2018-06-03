@@ -12,7 +12,7 @@
 class QgsCompoundCurve: QgsCurve
 {
 %Docstring
- Compound curve geometry type
+Compound curve geometry type
 
 .. versionadded:: 2.10
 %End
@@ -160,6 +160,7 @@ Appends first point if not already closed.
     virtual double xAt( int index ) const;
 
     virtual double yAt( int index ) const;
+
 
 
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;

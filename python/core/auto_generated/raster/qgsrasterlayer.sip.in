@@ -98,7 +98,7 @@ methods.
 
     QgsRasterLayer();
 %Docstring
- Constructor. Provider is not set.
+Constructor. Provider is not set.
 %End
 
     struct LayerOptions
@@ -117,7 +117,7 @@ Constructor for LayerOptions.
                              const QString &providerKey = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 %Docstring
- This is the constructor for the RasterLayer class.
+This is the constructor for the RasterLayer class.
 
 The main tasks carried out by the constructor are:
 
@@ -259,7 +259,7 @@ Returns the name of a band given its number.
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
- This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
+This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
 %End
 
     QgsLegendColorList legendSymbologyItems() const;
@@ -281,7 +281,7 @@ Returns a 100x100 pixmap of the color palette. If the layer has no palette a whi
 
     QString providerType() const;
 %Docstring
- [ data provider interface ] Which provider is being used for this Raster Layer?
+[ data provider interface ] Which provider is being used for this Raster Layer?
 %End
 
     double rasterUnitsPerPixelX() const;
@@ -311,7 +311,7 @@ In a world file, this is normally the first row (without the sign).
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 %Docstring
- Set contrast enhancement algorithm
+Set contrast enhancement algorithm
 
 :param algorithm: Contrast enhancement algorithm
 :param limits: Limits
@@ -334,7 +334,7 @@ Sets the default contrast enhancement
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 %Docstring
- Draws a preview of the rasterlayer into a QImage
+Draws a preview of the rasterlayer into a QImage
 
 .. versionadded:: 2.4
 %End

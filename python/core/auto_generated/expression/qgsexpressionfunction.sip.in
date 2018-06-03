@@ -224,9 +224,9 @@ Returns the first group which the function belongs to.
 %Docstring
 Returns a list of the groups the function belongs to.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`group`
+
+.. versionadded:: 3.0
 %End
 
     const QString helpText() const;

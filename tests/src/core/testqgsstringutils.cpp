@@ -36,6 +36,8 @@ class TestQgsStringUtils : public QObject
     void insertLinks();
     void titleCase_data();
     void titleCase();
+    void ampersandEncode_data();
+    void ampersandEncode();
 
 };
 
@@ -181,6 +183,26 @@ void TestQgsStringUtils::titleCase()
   QFETCH( QString, input );
   QFETCH( QString, expected );
   QCOMPARE( QgsStringUtils::capitalize( input, QgsStringUtils::TitleCase ), expected );
+}
+
+void TestQgsStringUtils::ampersandEncode_data()
+{
+  QTest::addColumn<QString>( "input" );
+  QTest::addColumn<QString>( "expected" );
+
+  QTest::newRow( "empty string" ) << "" << "";
+  QTest::newRow( "amp" ) << "a & b" << "a &amp; b";
+  QTest::newRow( "gt" ) << "a > b" << "a &gt; b";
+  QTest::newRow( "lt" ) << "a < b" << "a &lt; b";
+  QTest::newRow( "mix" ) << "a <²> b" << "a &lt;&#178;&gt; b";
+}
+
+void TestQgsStringUtils::ampersandEncode()
+{
+  QFETCH( QString, input );
+  QFETCH( QString, expected );
+  QCOMPARE( QgsStringUtils::ampersandEncode( input ), expected );
+
 }
 
 

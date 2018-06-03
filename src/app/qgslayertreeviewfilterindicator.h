@@ -22,7 +22,7 @@
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
-class QgsVectorDataProvider;
+class QgsVectorLayer;
 
 
 //! Adds indicators showing whether vector layers have a filter applied.
@@ -40,14 +40,14 @@ class QgsLayerTreeViewFilterIndicatorProvider : public QObject
     //! Starts listening to layer provider's dataChanged signal
     void onLayerLoaded();
     //! Adds/removes indicator of a layer
-    void onProviderDataChanged();
+    void onSubsetStringChanged();
 
     void onIndicatorClicked( const QModelIndex &index );
 
   private:
     QgsLayerTreeViewIndicator *newIndicator( const QString &filter );
     void updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter );
-    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider );
+    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
 
   private:
     QgsLayerTreeView *mLayerTreeView;

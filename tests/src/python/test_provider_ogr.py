@@ -318,6 +318,28 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
+    def testEditGeoJson(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 """
+
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJson.json')
+        with open(datasource, 'wt') as f:
+            f.write("""{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "x": 1, "y": 2, "z": 3, "w": 4 }, "geometry": { "type": "Point", "coordinates": [ 0, 0 ] } } ] }""")
+
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.deleteAttribute(1))
+        self.assertTrue(vl.commitChanges())
+
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertEqual(f['x'], 1)
+        self.assertEqual(f['z'], 3)
+        self.assertEqual(f['w'], 4)
+
 
 if __name__ == '__main__':
     unittest.main()

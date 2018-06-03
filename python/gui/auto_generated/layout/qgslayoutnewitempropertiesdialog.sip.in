@@ -12,7 +12,7 @@
 class QgsLayoutItemPropertiesDialog : QDialog
 {
 %Docstring
- A dialog for configuring properties like the size and position of layout items.
+A dialog for configuring properties like the size and position of layout items.
 
 This is usually used only when constructing new layout items, allowing users to precisely
 enter their sizes and positions.

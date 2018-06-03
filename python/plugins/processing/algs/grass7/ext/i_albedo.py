@@ -36,4 +36,4 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     elif (alg.parameterAsBool(parameters, '-l', context)
           or alg.parameterAsBool(parameters, '-a', context)):
         return verifyRasterNum(alg, parameters, context, 'input', 6)
-    return None
+    return True, None

@@ -24,6 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsmessagelog.h"
 #include "qgsspatialindex.h"
+#include "qgsprocessing.h"
 
 class QgsProject;
 class QgsProcessingContext;
@@ -60,8 +61,9 @@ class CORE_EXPORT QgsProcessingUtils
      * Returns a list of vector layers from a \a project which are compatible with the processing
      * framework.
      *
-     * If the \a geometryTypes list is non-empty then the layers will be sorted so that only
-     * layers with geometry types included in the list will be returned. Leaving the \a geometryTypes
+     * The \a sourceTypes list should be filled with a list of QgsProcessing::SourceType values.
+     * If the \a sourceTypes list is non-empty then the layers will be sorted so that only
+     * layers with the specified source type included in the list will be returned. Leaving the \a sourceTypes
      * list empty will cause all vector layers, regardless of their geometry type, to be returned.
      *
      * If the \a sort argument is true then the layers will be sorted by their QgsMapLayer::name()
@@ -70,7 +72,7 @@ class CORE_EXPORT QgsProcessingUtils
      * \see compatibleLayers()
      */
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
-        const QList< QgsWkbTypes::GeometryType > &geometryTypes = QList< QgsWkbTypes::GeometryType >(),
+        const QList< int > &sourceTypes = QList< int >(),
         bool sort = true );
 
     /**
@@ -251,7 +253,7 @@ class CORE_EXPORT QgsProcessingUtils
 
     static bool canUseLayer( const QgsRasterLayer *layer );
     static bool canUseLayer( const QgsVectorLayer *layer,
-                             const QList< QgsWkbTypes::GeometryType > &geometryTypes = QList< QgsWkbTypes::GeometryType >() );
+                             const QList< int > &sourceTypes = QList< int >() );
 
     /**
      * Interprets a \a string as a map layer from a store.
@@ -348,8 +350,8 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
  * \class QgsProcessingFeatureSink
  * \ingroup core
  * QgsProxyFeatureSink subclass which reports feature addition errors to a QgsProcessingContext.
- * \since QGIS 3.0
  * \note Not available in Python bindings.
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
 {

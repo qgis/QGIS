@@ -30,9 +30,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'setnull', context)
             or alg.parameterAsString(parameters, 'null', context)):
-        return None
+        return True, None
 
-    return alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
+    return False, alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
 
 
 def processInputs(alg, parameters, context, feedback):

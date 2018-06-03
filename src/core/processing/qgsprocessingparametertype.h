@@ -27,8 +27,8 @@
 /**
  * Makes metadata of processing parameters available.
  *
- * \since QGIS 3.2
  * \ingroup core
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsProcessingParameterType
 {
@@ -84,6 +84,16 @@ class CORE_EXPORT QgsProcessingParameterType
      * The default implementation returns an empty map.
      */
     virtual QVariantMap metadata() const;
+
+    /**
+     * Returns a list of the Python data types accepted as values for the parameter.
+     * E.g. "str", "QgsVectorLayer", "QgsMapLayer", etc.
+     *
+     * These values should should match the Python types exactly
+     * (e.g. "str" not "string", "bool" not "boolean"). Extra explanatory help can
+     * be used (which must be translated), eg "str: as comma delimited list of numbers".
+     */
+    virtual QStringList acceptedPythonTypes() const;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsProcessingParameterType::ParameterFlags )

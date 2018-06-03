@@ -12,7 +12,7 @@
 class QgsRendererCategory
 {
 %Docstring
- categorized renderer
+categorized renderer
 %End
 
 %TypeHeaderCode

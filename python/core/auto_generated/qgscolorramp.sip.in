@@ -11,7 +11,7 @@
 class QgsColorRamp
 {
 %Docstring
- Abstract base class for color ramps
+Abstract base class for color ramps
 
 .. versionadded:: 3.0
 %End
@@ -83,7 +83,7 @@ Returns a string map containing all the color ramp's properties.
 class QgsGradientStop
 {
 %Docstring
- Represents a color stop within a QgsGradientColorRamp color ramp.
+Represents a color stop within a QgsGradientColorRamp color ramp.
 
 .. versionadded:: 3.0
 %End
@@ -113,7 +113,7 @@ typedef QList<QgsGradientStop> QgsGradientStopsList;
 class QgsGradientColorRamp : QgsColorRamp
 {
 %Docstring
- Gradient color ramp, which smoothly interpolates between two colors and also
+Gradient color ramp, which smoothly interpolates between two colors and also
 supports optional extra color stops.
 
 .. versionadded:: 3.0
@@ -280,7 +280,7 @@ Copy color ramp stops to a QGradient
 class QgsLimitedRandomColorRamp : QgsColorRamp
 {
 %Docstring
- Constrained random color ramp, which returns random colors based on preset parameters.
+Constrained random color ramp, which returns random colors based on preset parameters.
 
 .. versionadded:: 3.0
 %End
@@ -438,7 +438,7 @@ Sets the maximum value for generated colors
 class QgsRandomColorRamp: QgsColorRamp
 {
 %Docstring
- Totally random color ramp. Returns colors generated at random, but constrained
+Totally random color ramp. Returns colors generated at random, but constrained
 to some hardcoded saturation and value ranges to prevent ugly color generation.
 
 .. versionadded:: 3.0
@@ -492,7 +492,7 @@ by subsequent calls to color().
 class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
 {
 %Docstring
- A scheme based color ramp consisting of a list of predefined colors.
+A scheme based color ramp consisting of a list of predefined colors.
 
 .. versionadded:: 3.0
 %End
@@ -568,7 +568,7 @@ Returns the list of colors used by the ramp.
 class QgsColorBrewerColorRamp : QgsColorRamp
 {
 %Docstring
- Color ramp utilising "Color Brewer" preset color schemes.
+Color ramp utilising "Color Brewer" preset color schemes.
 
 .. versionadded:: 3.0
 %End

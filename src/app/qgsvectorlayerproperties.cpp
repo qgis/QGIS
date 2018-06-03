@@ -190,8 +190,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   {
     //for loading
     mLoadStyleMenu = new QMenu( this );
-    mLoadStyleMenu->addAction( tr( "Load from file…" ) );
-    mLoadStyleMenu->addAction( tr( "Database styles manager" ) );
+    mLoadStyleMenu->addAction( tr( "Load from File…" ) );
+    mLoadStyleMenu->addAction( tr( "Database Styles Manager…" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
 
@@ -206,7 +206,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
       if ( providerName == QLatin1String( "GPKG" ) )
         providerName = QStringLiteral( "GeoPackage" );
     }
-    mSaveAsMenu->addAction( tr( "Save in database (%1)" ).arg( providerName ) );
+    mSaveAsMenu->addAction( tr( "Save in Database (%1)" ).arg( providerName ) );
   }
 
   connect( mSaveAsMenu, &QMenu::triggered,

@@ -74,6 +74,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
+        self.searchBox.setShowSearchIcon(True)
+
         self.searchBox.textChanged.connect(self.textChanged)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(

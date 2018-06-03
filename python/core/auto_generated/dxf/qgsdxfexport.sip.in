@@ -68,18 +68,18 @@ Set map settings and assign layer name attributes
 %Docstring
 Sets the export flags.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.0
 %End
 
     QgsDxfExport::Flags flags() const;
 %Docstring
 Returns the export flags.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.0
 %End
 
     void addLayers( const QList< QgsDxfExport::DxfLayer > &layers );
@@ -98,9 +98,9 @@ Add layers to export
 Set reference ``scale`` for output.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`symbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     double symbologyScale() const;
@@ -108,9 +108,9 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setSymbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;

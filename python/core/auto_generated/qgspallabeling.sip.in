@@ -418,9 +418,9 @@ Write settings into a DOM element
 %Docstring
 Returns a reference to the label's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -430,9 +430,9 @@ Sets the label's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
     const QgsTextFormat &format() const;

@@ -361,9 +361,9 @@ Sets a callback function to use when encountering an invalid geometry and
 invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`invalidGeometryCallback`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -414,22 +414,22 @@ the existing expression and the additional expression will be returned.
 %Docstring
 Returns the expression context used to evaluate filter expressions.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setExpressionContext`
 
 .. seealso:: :py:func:`filterExpression`
+
+.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression context used to evaluate filter expressions.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`expressionContext`
 
 .. seealso:: :py:func:`setFilterExpression`
+
+.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &disableFilter();
@@ -600,11 +600,11 @@ Sets a callback function to use when encountering a transform error when iterati
 features and a destinationCrs() is set. This function will be
 called using the feature which encountered the transform error as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformErrorCallback`
 
 .. seealso:: :py:func:`setDestinationCrs`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS

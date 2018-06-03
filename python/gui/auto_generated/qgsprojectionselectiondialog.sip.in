@@ -43,9 +43,9 @@ Constructor for QgsProjectionSelectionDialog.
 %Docstring
 Returns the CRS currently selected in the widget.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setCrs`
+
+.. versionadded:: 3.0
 %End
 
     void setMessage( const QString &message );
@@ -70,9 +70,9 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
 Returns whether the "no/invalid" projection option is shown. If this
 option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setShowNoProjection`
+
+.. versionadded:: 3.0
 %End
 
   public slots:
@@ -81,14 +81,14 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
 %Docstring
 Sets the initial ``crs`` to show within the dialog.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`crs`
+
+.. versionadded:: 3.0
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 %Docstring
- filters this dialog by the given CRSs
+filters this dialog by the given CRSs
 
 Sets this dialog to filter the available projections to those listed
 by the given Coordinate Reference Systems.

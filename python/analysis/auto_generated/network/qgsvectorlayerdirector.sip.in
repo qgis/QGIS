@@ -13,9 +13,9 @@
 class QgsVectorLayerDirector : QgsGraphDirector
 {
 %Docstring
+Determine making the graph from vector line layer
 
 .. versionadded:: 3.0
- Determine making the graph from vector line layer
 %End
 
 %TypeHeaderCode

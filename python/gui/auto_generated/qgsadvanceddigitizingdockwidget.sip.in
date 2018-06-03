@@ -14,7 +14,7 @@
 class QgsAdvancedDigitizingDockWidget : QgsDockWidget
 {
 %Docstring
- The QgsAdvancedDigitizingDockWidget class is a dockable widget
+The QgsAdvancedDigitizingDockWidget class is a dockable widget
 used to handle the CAD tools on top of a selection of map tools.
 It handles both the UI and the constraints. Constraints are applied
 by implementing filters called from QgsMapToolAdvancedDigitizing.
@@ -44,7 +44,7 @@ by implementing filters called from QgsMapToolAdvancedDigitizing.
     class CadConstraint
 {
 %Docstring
- The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
+The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
 It contains all values (locked, value, relative) and pointers to corresponding widgets.
 
 .. note::
@@ -91,9 +91,9 @@ Is any kind of lock mode enabled
 Returns true if a repeating lock is set for the constraint. Repeating locks are not
 automatically cleared after a new point is added.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setRepeatingLock`
+
+.. versionadded:: 2.16
 %End
 
         bool relative() const;
@@ -123,9 +123,9 @@ automatically cleared after a new point is added.
 
 :param repeating: set to true to set the lock to repeat automatically
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`isRepeatingLock`
+
+.. versionadded:: 2.16
 %End
 
         void setRelative( bool relative );

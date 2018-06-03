@@ -37,7 +37,7 @@ and the attributes for the currently selected feature are shown in a form.
 
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
+Constructor
 
 :param parent: The parent widget
 %End
@@ -171,14 +171,14 @@ Gets the expression used for sorting the table and feature list.
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
 %Docstring
- Set the current edit selection in the AttributeEditor mode.
+Set the current edit selection in the AttributeEditor mode.
 
 :param fids: A list of edited features (Currently only one at a time is supported)
 %End
 
     bool saveEditChanges();
 %Docstring
- saveEditChanges
+saveEditChanges
 
 :return: true if the saving was OK. false is possible due to connected
          validation logic.

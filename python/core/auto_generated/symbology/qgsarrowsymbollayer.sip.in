@@ -13,7 +13,7 @@
 class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring
- Line symbol layer used for representing lines as arrows.
+Line symbol layer used for representing lines as arrows.
 
 .. versionadded:: 2.16
 %End

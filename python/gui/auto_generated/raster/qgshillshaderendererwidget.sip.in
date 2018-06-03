@@ -14,7 +14,7 @@
 class QgsHillshadeRendererWidget: QgsRasterRendererWidget
 {
 %Docstring
- Renderer widget for the hill shade renderer.
+Renderer widget for the hill shade renderer.
 
 .. versionadded:: 2.16
 %End
@@ -26,7 +26,7 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
 
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
- Renderer widget for the hill shade renderer.
+Renderer widget for the hill shade renderer.
 
 :param layer: The layer attached for this widget.
 :param extent: The current extent.
@@ -40,14 +40,14 @@ Factory method to create the renderer for this type.
     virtual QgsRasterRenderer *renderer();
 
 %Docstring
- The renderer for the widget.
+The renderer for the widget.
 
 :return: A new renderer for the the config in the widget
 %End
 
     void setFromRenderer( const QgsRasterRenderer *renderer );
 %Docstring
- Set the widget state from the given renderer.
+Set the widget state from the given renderer.
 
 :param renderer: The renderer to take the state from.
 %End
@@ -84,7 +84,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
 
     void setAltitude( double altitude );
 %Docstring
- Set the altitude of the light source
+Set the altitude of the light source
 
 :param altitude: the altitude
 
@@ -93,7 +93,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
 
     void setAzimuth( double azimuth );
 %Docstring
- Set the azimuth of the light source.
+Set the azimuth of the light source.
 
 :param azimuth: The azimuth of the light source, between 0 and 360.0
 
@@ -102,7 +102,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
 
     void setZFactor( double zfactor );
 %Docstring
- Set the Z scaling factor of the result image.
+Set the Z scaling factor of the result image.
 
 :param zfactor: The z factor
 

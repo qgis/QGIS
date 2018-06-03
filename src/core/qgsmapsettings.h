@@ -83,15 +83,15 @@ class CORE_EXPORT QgsMapSettings
 
     /**
      * Returns the rotation of the resulting map image, in degrees clockwise.
-     * \since QGIS 2.8
      * \see setRotation()
+     * \since QGIS 2.8
      */
     double rotation() const;
 
     /**
      * Sets the \a rotation of the resulting map image, in degrees clockwise.
-     * \since QGIS 2.8
      * \see rotation()
+     * \since QGIS 2.8
      */
     void setRotation( double rotation );
 
@@ -106,15 +106,15 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Set the magnification factor.
      * \param factor the factor of magnification
-     * \since QGIS 2.16
      * \see magnificationFactor()
+     * \since QGIS 2.16
      */
     void setMagnificationFactor( double factor );
 
     /**
      * Returns the magnification factor.
-     * \since QGIS 2.16
      * \see setMagnificationFactor()
+     * \since QGIS 2.16
      */
     double magnificationFactor() const;
 
@@ -153,16 +153,16 @@ class CORE_EXPORT QgsMapSettings
     /**
      * Gets custom rendering flags. Layers might honour these to alter their rendering.
      *  \returns custom flags strings, separated by ';'
-     * \since QGIS 2.16
      * \see setCustomRenderFlags()
+     * \since QGIS 2.16
      */
     QString customRenderFlags() const { return mCustomRenderFlags; }
 
     /**
      * Sets the custom rendering flags. Layers might honour these to alter their rendering.
      * \param customRenderFlags custom flags strings, separated by ';'
-     * \since QGIS 2.16
      * \see customRenderFlags()
+     * \since QGIS 2.16
      */
     void setCustomRenderFlags( const QString &customRenderFlags ) { mCustomRenderFlags = customRenderFlags; }
 
@@ -179,16 +179,16 @@ class CORE_EXPORT QgsMapSettings
      * retrieved using QgsEllipsoidUtils::acronyms().
      * Calculations will only use the ellipsoid if a valid ellipsoid has been set.
      * \returns true if ellipsoid was successfully set
-     * \since QGIS 3.0
      * \see ellipsoid()
+     * \since QGIS 3.0
      */
     bool setEllipsoid( const QString &ellipsoid );
 
     /**
      * Returns ellipsoid's acronym. Calculations will only use the
      * ellipsoid if a valid ellipsoid has been set.
-     * \since QGIS 3.0
      * \see setEllipsoid()
+     * \since QGIS 3.0
      */
     QString ellipsoid() const { return mEllipsoid; }
 
@@ -274,8 +274,8 @@ class CORE_EXPORT QgsMapSettings
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see setTransformContext()
+     * \since QGIS 3.0
      */
     QgsCoordinateTransformContext transformContext() const;
 
@@ -284,8 +284,8 @@ class CORE_EXPORT QgsMapSettings
      * information regarding which datum transforms should be used when transforming points
      * from a source to destination coordinate reference system.
      *
-     * \since QGIS 3.0
      * \see transformContext()
+     * \since QGIS 3.0
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
@@ -293,8 +293,8 @@ class CORE_EXPORT QgsMapSettings
      * Returns the path resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see setPathResolver()
+     * \since QGIS 3.0
      */
     const QgsPathResolver &pathResolver() const { return mPathResolver; }
 
@@ -302,8 +302,8 @@ class CORE_EXPORT QgsMapSettings
      * Sets the path \a resolver for conversion between relative and absolute paths
      * during rendering operations, e.g. for resolving relative symbol paths.
      *
-     * \since QGIS 3.0
      * \see pathResolver()
+     * \since QGIS 3.0
      */
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 

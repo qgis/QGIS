@@ -184,8 +184,8 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns true if symbol layer is enabled and will be drawn.
-     * \since QGIS 3.0
      * \see setEnabled()
+     * \since QGIS 3.0
      */
     bool enabled() const { return mEnabled; }
 
@@ -193,8 +193,8 @@ class CORE_EXPORT QgsSymbolLayer
      * Sets whether symbol layer is enabled and should be drawn. Disabled
      * layers are not drawn, but remain part of the symbol and can be re-enabled
      * when desired.
-     * \since QGIS 3.0
      * \see enabled()
+     * \since QGIS 3.0
      */
     void setEnabled( bool enabled ) { mEnabled = enabled; }
 
@@ -316,8 +316,8 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Sets a data defined property for the layer. Any existing property with the same key
      * will be overwritten.
-     * \since QGIS 3.0
      * \see dataDefinedProperties()
+     * \since QGIS 3.0
      */
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
 
@@ -351,16 +351,16 @@ class CORE_EXPORT QgsSymbolLayer
     /**
      * Returns the current paint effect for the layer.
      * \returns paint effect
-     * \since QGIS 2.9
      * \see setPaintEffect
+     * \since QGIS 2.9
      */
     QgsPaintEffect *paintEffect() const;
 
     /**
      * Sets the current paint effect for the layer.
      * \param effect paint effect. Ownership is transferred to the layer.
-     * \since QGIS 2.9
      * \see paintEffect
+     * \since QGIS 2.9
      */
     void setPaintEffect( QgsPaintEffect *effect SIP_TRANSFER );
 
@@ -374,23 +374,23 @@ class CORE_EXPORT QgsSymbolLayer
 
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mDataDefinedProperties; }
 
     /**
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /**
      * Sets the symbol layer's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \since QGIS 3.0
      * \see properties()
+     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mDataDefinedProperties = collection; }
 
@@ -505,9 +505,9 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * the marker's rotation and data defined rotation before rendering the symbol, and
      * is usually used for orienting symbols to match a line's angle.
      * \param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
-     * \since QGIS 2.9
      * \see setAngle()
      * \see angle()
+     * \since QGIS 2.9
      */
     void setLineAngle( double lineAngle ) { mLineAngle = lineAngle; }
 

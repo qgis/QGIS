@@ -16,7 +16,7 @@ typedef QList< QgsTask * > QgsTaskList;
 class QgsTask : QObject
 {
 %Docstring
- Abstract base class for long running background tasks. Tasks can be controlled directly,
+Abstract base class for long running background tasks. Tasks can be controlled directly,
 or added to a QgsTaskManager for automatic management.
 
 Derived classes should implement the process they want to execute in the background
@@ -288,7 +288,7 @@ QFlags<QgsTask::Flag> operator|(QgsTask::Flag f1, QFlags<QgsTask::Flag> f2);
 class QgsTaskManager : QObject
 {
 %Docstring
- Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
+Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
 or accessed via :py:func:`QgsApplication.taskManager()`
 
 .. versionadded:: 3.0

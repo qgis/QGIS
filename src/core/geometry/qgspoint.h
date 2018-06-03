@@ -246,8 +246,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
     double distance( double x, double y ) const;
 
@@ -281,8 +281,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const;
 
@@ -439,6 +439,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsPoint.

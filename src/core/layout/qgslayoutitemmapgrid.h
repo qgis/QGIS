@@ -39,8 +39,8 @@ class QgsRenderContext;
  * \brief A collection of grids which is drawn above the map content in a
  * QgsLayoutItemMap. The grid stack controls which grids are drawn and the
  * order they are drawn in.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapGrid
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
 {
@@ -133,8 +133,8 @@ class CORE_EXPORT QgsLayoutItemMapGridStack : public QgsLayoutItemMapItemStack
  * \class QgsLayoutItemMapGrid
  * \brief An individual grid which is drawn above the map content in a
  * QgsLayoutItemMap.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapGridStack
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
 {

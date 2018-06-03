@@ -14,7 +14,7 @@
 class QgsServerException
 {
 %Docstring
- Exception base class for server exceptions.
+Exception base class for server exceptions.
 
 .. versionadded:: 3.0
 %End
@@ -50,7 +50,7 @@ The defaolt implementation return text/xml format.
 class QgsOgcServiceException
 {
 %Docstring
- Exception base class for service exceptions.
+Exception base class for service exceptions.
 
 Note that this exception is associated with a default return code 200 which may be
 not appropriate in some situations.

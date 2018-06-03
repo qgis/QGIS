@@ -97,6 +97,9 @@ class CORE_EXPORT QgsLocatorResult
  * \class QgsLocatorFilter
  * \ingroup core
  * Abstract base class for filters which collect locator results.
+ *
+ * \note If the configuration of the filter is changed outside of the main application settings,
+ * one needs to invalidate current results of the locator widget: \see QgisInterface::invalidateLocatorResults
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorFilter : public QObject

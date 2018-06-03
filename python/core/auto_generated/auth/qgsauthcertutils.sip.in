@@ -16,7 +16,7 @@
 class QgsAuthCertUtils
 {
 %Docstring
- Utilities for working with certificates and keys
+Utilities for working with certificates and keys
 %End
 
 %TypeHeaderCode
@@ -105,7 +105,7 @@ Returns the first cert from a PEM or DER formatted file
     static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
                                             const QList<QSslCertificate> &bundle2 );
 %Docstring
- casMerge merges two certificate bundles in a single one removing duplicates, the certificates
+casMerge merges two certificate bundles in a single one removing duplicates, the certificates
 from the ``bundle2`` are appended to ``bundle1`` if not already there
 
 :param bundle1: first bundle
@@ -133,7 +133,7 @@ Returns a list of concatenated certs from a PEM Base64 text block
 
     static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
 %Docstring
- casRemoveSelfSigned remove self-signed CA certificates from ``caList``
+casRemoveSelfSigned remove self-signed CA certificates from ``caList``
 
 :param caList: list of CA certificates
 
@@ -193,7 +193,7 @@ Returns list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
 
     static QByteArray certsToPemText( const QList<QSslCertificate> &certs );
 %Docstring
- certsToPemText dump a list of QSslCertificates to PEM text
+certsToPemText dump a list of QSslCertificates to PEM text
 
 :param certs: list of certs
 
@@ -287,14 +287,14 @@ Gets short strings describing an SSL error
 
     static bool certIsCurrent( const QSslCertificate &cert );
 %Docstring
- certIsCurrent checks if ``cert`` is viable for its not before and not after dates
+certIsCurrent checks if ``cert`` is viable for its not before and not after dates
 
 :param cert: certificate to be checked
 %End
 
     static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
 %Docstring
- certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given ``cert``
+certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given ``cert``
 
 :param cert: certificate to be checked
 
@@ -303,7 +303,7 @@ Gets short strings describing an SSL error
 
     static bool certIsViable( const QSslCertificate &cert );
 %Docstring
- certIsViable checks for viability errors of ``cert`` and whether it is NULL
+certIsViable checks for viability errors of ``cert`` and whether it is NULL
 
 :param cert: certificate to be checked
 
@@ -314,7 +314,7 @@ Gets short strings describing an SSL error
         const QString &hostName = QString(),
         bool trustRootCa = false );
 %Docstring
- validateCertChain validates the given ``certificateChain``
+validateCertChain validates the given ``certificateChain``
 
 :param certificateChain: list of certificates to be checked, with leaf first and with optional root CA last
 :param hostName: (optional) name of the host to be verified
@@ -325,7 +325,7 @@ Gets short strings describing an SSL error
 
     static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
 %Docstring
- validatePKIBundle validate the PKI bundle by checking the certificate chain, the
+validatePKIBundle validate the PKI bundle by checking the certificate chain, the
 expiration and effective dates, optionally trusts the root CA
 
 :param bundle:

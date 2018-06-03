@@ -64,18 +64,18 @@ Sets the size of the resulting map image
 %Docstring
 Returns the rotation of the resulting map image, in degrees clockwise.
 
-.. versionadded:: 2.8
-
 .. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 2.8
 %End
 
     void setRotation( double rotation );
 %Docstring
 Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
-.. versionadded:: 2.8
-
 .. seealso:: :py:func:`rotation`
+
+.. versionadded:: 2.8
 %End
 
     double outputDpi() const;
@@ -94,18 +94,18 @@ Set the magnification factor.
 
 :param factor: the factor of magnification
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`magnificationFactor`
+
+.. versionadded:: 2.16
 %End
 
     double magnificationFactor() const;
 %Docstring
 Returns the magnification factor.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setMagnificationFactor`
+
+.. versionadded:: 2.16
 %End
 
     QStringList layerIds() const;
@@ -150,9 +150,9 @@ Gets custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: custom flags strings, separated by ';'
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setCustomRenderFlags`
+
+.. versionadded:: 2.16
 %End
 
     void setCustomRenderFlags( const QString &customRenderFlags );
@@ -161,9 +161,9 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
 :param customRenderFlags: custom flags strings, separated by ';'
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`customRenderFlags`
+
+.. versionadded:: 2.16
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -188,9 +188,9 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.0
 %End
 
     QString ellipsoid() const;
@@ -198,9 +198,9 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 3.0
 %End
 
     void setBackgroundColor( const QColor &color );
@@ -317,9 +317,9 @@ Returns the coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -328,9 +328,9 @@ Sets the coordinate transform ``context``, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -338,9 +338,9 @@ from a source to destination coordinate reference system.
 Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setPathResolver`
+
+.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -348,9 +348,9 @@ during rendering operations, e.g. for resolving relative symbol paths.
 Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`pathResolver`
+
+.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -367,7 +367,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
- transform bounding box from layer's CRS to output CRS
+transform bounding box from layer's CRS to output CRS
 
 .. seealso:: :py:func:`layerToMapCoordinates`
 
@@ -376,7 +376,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
- transform bounding box from output CRS to layer's CRS
+transform bounding box from output CRS to layer's CRS
 
 .. seealso:: :py:func:`mapToLayerCoordinates`
 
@@ -385,14 +385,14 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
- transform point coordinates from layer's CRS to output CRS
+transform point coordinates from layer's CRS to output CRS
 
 :return: the transformed point
 %End
 
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
- transform rectangle from layer's CRS to output CRS
+transform rectangle from layer's CRS to output CRS
 
 .. seealso:: :py:func:`layerExtentToOutputExtent`
 
@@ -401,14 +401,14 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
- transform point coordinates from output CRS to layer's CRS
+transform point coordinates from output CRS to layer's CRS
 
 :return: the transformed point
 %End
 
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
- transform rectangle from output CRS to layer's CRS
+transform rectangle from output CRS to layer's CRS
 
 .. seealso:: :py:func:`outputExtentToLayerExtent`
 

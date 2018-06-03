@@ -12,7 +12,7 @@
 class QgsColorEffect : QgsPaintEffect
 {
 %Docstring
- A paint effect which alters the colors (e.g., brightness, contrast) in a
+A paint effect which alters the colors (e.g., brightness, contrast) in a
 source picture.
 
 .. versionadded:: 2.9

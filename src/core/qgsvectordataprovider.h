@@ -249,16 +249,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
      * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
      * \returns true in case of success and false in case of failure.
-     * \since QGIS 3.0
      * \see deleteFeatures()
+     * \since QGIS 3.0
      */
     virtual bool truncate();
 
     /**
      * Cancels the current reloading of data.
      * \returns true if the reloading has been correctly interrupted, false otherwise
-     * \since QGIS 3.2
      * \see reloadData()
+     * \since QGIS 3.2
      */
     virtual bool cancelReload();
 
@@ -335,8 +335,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns any constraints which are present at the provider for a specified
      * field index.
-     * \since QGIS 3.0
      * \see skipConstraintCheck()
+     * \since QGIS 3.0
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
@@ -344,8 +344,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns true if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
-     * \since QGIS 3.0
      * \see fieldConstraints()
+     * \since QGIS 3.0
      */
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 

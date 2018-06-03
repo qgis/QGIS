@@ -59,9 +59,9 @@ Enable or disable the caching of geometries
 %Docstring
 Returns true if the cache will fetch and cache feature geometries.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setCacheGeometry`
+
+.. versionadded:: 3.0
 %End
 
     void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
@@ -166,9 +166,9 @@ Check if a certain feature id is cached.
 %Docstring
 Returns the set of feature IDs for features which are cached.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`isFidCached`
+
+.. versionadded:: 3.0
 %End
 
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
@@ -268,14 +268,14 @@ When filling the cache, this signal gets emitted once the cache is fully initial
 
     void cachedLayerDeleted();
 %Docstring
- Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
+Is emitted when the cached layer is deleted. Is emitted when the cached layers layerDelete()
 signal is being emitted, but before the local reference to it has been set to NULL. So call to
 layer() will still return a valid pointer for cleanup purpose.
 %End
 
     void attributeValueChanged( QgsFeatureId fid, int field, const QVariant &value );
 %Docstring
- Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
+Is emitted when an attribute is changed. Is re-emitted after the layer itself emits this signal.
 You should connect to this signal, to be sure, to not get a cached value if querying the cache.
 %End
 

@@ -540,7 +540,7 @@ void QgsFontButton::prepareMenu()
   sizeWidget->setFocusPolicy( Qt::StrongFocus );
   mMenu->addAction( sizeAction );
 
-  QMenu *recentFontMenu = new QMenu( tr( "Recent fonts" ), mMenu );
+  QMenu *recentFontMenu = new QMenu( tr( "Recent Fonts" ), mMenu );
   Q_FOREACH ( const QString &family, QgsFontUtils::recentFontFamilies() )
   {
     QAction *fontAction = new QAction( family, recentFontMenu );

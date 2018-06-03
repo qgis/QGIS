@@ -135,8 +135,8 @@ class CORE_EXPORT QgsStyle : public QObject
     /**
      * Returns a list of all tags in the style database
      *
-     * \since QGIS 2.16
      * \see addTag()
+     * \since QGIS 2.16
      */
     QStringList tags() const;
 
@@ -312,8 +312,8 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function creates a new on-disk permanent style database.
      *  \returns returns the success state of the database creation
-     *  \since QGIS 3.0
      *  \see createMemoryDatabase()
+     *  \since QGIS 3.0
      */
     bool createDatabase( const QString &filename );
 
@@ -322,8 +322,8 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function is used to create a temporary style database in case a permanent on-disk database is not needed.
      *  \returns returns the success state of the temporary memory database creation
-     *  \since QGIS 3.0
      *  \see createDatabase()
+     *  \since QGIS 3.0
      */
     bool createMemoryDatabase();
 
@@ -332,9 +332,9 @@ class CORE_EXPORT QgsStyle : public QObject
      *
      *  This function is used to create the tables structure in a newly-created database.
      *  \returns returns the success state of the temporary memory database creation
-     *  \since QGIS 3.0
      *  \see createDatabase()
      *  \see createMemoryDatabase()
+     *  \since QGIS 3.0
      */
     void createTables();
 

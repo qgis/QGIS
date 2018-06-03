@@ -1619,6 +1619,20 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(set(layer.uniqueStringsMatching(0, 'n')),
                          set(['orange', 'BanaNa', 'waterMelon', 'pineapple', 'coconut']))
 
+    def test_subsetString(self):
+        subset_string_changed = False
+
+        def onSubsetStringChanged():
+            nonlocal subset_string_changed
+            subset_string_changed = True
+
+        path = os.path.join(unitTestDataPath(), 'lines.shp')
+        layer = QgsVectorLayer(path, 'test', 'ogr')
+        layer.subsetStringChanged.connect(onSubsetStringChanged)
+        layer.setSubsetString("\"Name\" = 'Highway'")
+        self.assertTrue(subset_string_changed)
+        self.assertEqual(layer.featureCount(), 2)
+
     def testMinValue(self):
         """ test retrieving minimum values """
         layer = createLayerWithFivePoints()

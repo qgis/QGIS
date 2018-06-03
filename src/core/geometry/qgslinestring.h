@@ -98,19 +98,39 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Returns a const pointer to the x vertex data.
-     * \since QGIS 3.2
      * \note Not available in Python bindings
      * \see yData()
+     * \since QGIS 3.2
      */
     const double *xData() const SIP_SKIP;
 
     /**
      * Returns a const pointer to the y vertex data.
-     * \since QGIS 3.2
      * \note Not available in Python bindings
      * \see xData()
+     * \since QGIS 3.2
      */
     const double *yData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
+     * not have z values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *zData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
+     * not have m values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *mData() const SIP_SKIP;
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -210,6 +230,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isEmpty() const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
+    virtual QPolygonF asQPolygonF() const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -268,6 +289,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsLineString.

@@ -88,7 +88,7 @@ Generates a new RGBA value based on an original RGBA value.
 
     void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
 %Docstring
- A public method that allows the user to set their own shader ``function``.
+A public method that allows the user to set their own shader ``function``.
 
 .. note::
 

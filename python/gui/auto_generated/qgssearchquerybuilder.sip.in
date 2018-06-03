@@ -13,7 +13,7 @@
 class QgsSearchQueryBuilder : QDialog
 {
 %Docstring
- Query Builder for search strings
+Query Builder for search strings
 %End
 
 %TypeHeaderCode

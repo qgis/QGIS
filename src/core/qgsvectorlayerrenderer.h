@@ -68,8 +68,8 @@ class QgsVectorLayerRendererInterruptionChecker: public QgsFeedback
  * \ingroup core
  * Implementation of threaded rendering for vector layers.
  *
- * \since QGIS 2.4
  * \note not available in Python bindings
+ * \since QGIS 2.4
  */
 class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {

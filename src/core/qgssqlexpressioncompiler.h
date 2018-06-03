@@ -31,9 +31,9 @@ class QgsExpressionNode;
  *
  * This class is designed to be overridden by providers to take advantage of expression compilation,
  * so that feature requests can take advantage of the provider's native filtering support.
- * \since QGIS 2.14
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
+ * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsSqlExpressionCompiler

@@ -23,8 +23,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessingutils.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
@@ -73,6 +73,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
+      FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -762,10 +763,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidRasterError()
      * \see invalidSinkError()
+     * \since QGIS 3.2
      */
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 
@@ -776,10 +777,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidSourceError()
      * \see invalidSinkError()
+     * \since QGIS 3.2
      */
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
 
@@ -790,10 +791,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidSourceError()
      * \see invalidRasterError()
+     * \since QGIS 3.2
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 

@@ -161,18 +161,18 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual QgsLabelingResults *takeLabelingResults() = 0 SIP_TRANSFER;
 
     /**
-     * \since QGIS 3.0
      * Set the feature filter provider used by the QgsRenderContext of
      * each LayerRenderJob.
      * Ownership is not transferred and the provider must not be deleted
      * before the render job.
+     * \since QGIS 3.0
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
     /**
-     * \since QGIS 3.0
      * Returns the feature filter provider used by the QgsRenderContext of
      * each LayerRenderJob.
+     * \since QGIS 3.0
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
@@ -281,8 +281,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 

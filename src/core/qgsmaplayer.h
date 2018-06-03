@@ -157,8 +157,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Set the display \a name of the layer.
-     * \since QGIS 2.16
      * \see name()
+     * \since QGIS 2.16
      */
     void setName( const QString &name );
 
@@ -780,8 +780,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
-     * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     * \since QGIS 2.16
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
@@ -802,8 +802,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
-     *  \since QGIS 2.16
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     *  \since QGIS 2.16
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
@@ -871,10 +871,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
-     * \since QGIS 2.16
      * \see minimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
+     * \since QGIS 2.16
      */
     bool isInScaleRange( double scale ) const;
 
@@ -914,18 +914,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns true if auto refresh is enabled for the layer.
-     * \since QGIS 3.0
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
+     * \since QGIS 3.0
      */
     bool hasAutoRefreshEnabled() const;
 
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
      * auto refresh is only active when hasAutoRefreshEnabled() is true.
-     * \since QGIS 3.0
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
+     * \since QGIS 3.0
      */
     int autoRefreshInterval() const;
 
@@ -936,33 +936,33 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * Note that auto refresh triggers deferred repaints of the layer. Any map
      * canvas must be refreshed separately in order to view the refreshed layer.
-     * \since QGIS 3.0
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
+     * \since QGIS 3.0
      */
     void setAutoRefreshInterval( int interval );
 
     /**
      * Sets whether auto refresh is enabled for the layer.
-     * \since QGIS 3.0
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
+     * \since QGIS 3.0
      */
     void setAutoRefreshEnabled( bool enabled );
 
     /**
      * Returns a reference to the layer's metadata store.
-     * \since QGIS 3.0
      * \see setMetadata()
      * \see metadataChanged()
+     * \since QGIS 3.0
      */
     virtual const QgsLayerMetadata &metadata() const;
 
     /**
      * Sets the layer's \a metadata store.
-     * \since QGIS 3.0
      * \see metadata()
      * \see metadataChanged()
+     * \since QGIS 3.0
      */
     virtual void setMetadata( const QgsLayerMetadata &metadata );
 
@@ -1115,8 +1115,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Signal emitted whenever a change affects the layer's style. Ie this may be triggered
      * by renderer changes, label style changes, or other style changes such as blend
      * mode or layer opacity changes.
-     * \since QGIS 2.16
      * \see rendererChanged()
+     * \since QGIS 2.16
     */
     void styleChanged();
 
@@ -1379,15 +1379,15 @@ Q_DECLARE_METATYPE( QgsMapLayer * )
 
 /**
  * Weak pointer for QgsMapLayer
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 
 /**
  * A list of weak pointers to QgsMapLayers.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 #endif

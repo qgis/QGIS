@@ -160,7 +160,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def flags(self):
         # TODO - maybe it's safe to background thread this?
-        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading | QgsProcessingAlgorithm.FlagDisplayNameIsLiteral
 
     def tr(self, string, context=''):
         if context == '':
@@ -612,17 +612,18 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 outName = out.name()
                 # For File destination
                 if isinstance(out, QgsProcessingParameterFileDestination):
-                    # for HTML reports, we need to redirect stdout
-                    if out.defaultFileExtension().lower() == 'html':
-                        command += ' > "{}"'.format(
-                            self.parameterAsFileOutput(
-                                parameters, outName, context)
-                        )
-                    else:
-                        command += ' {}="{}"'.format(
-                            outName,
-                            self.parameterAsFileOutput(
-                                parameters, outName, context))
+                    if outName in parameters and parameters[outName] is not None:
+                        # for HTML reports, we need to redirect stdout
+                        if out.defaultFileExtension().lower() == 'html':
+                            command += ' > "{}"'.format(
+                                self.parameterAsFileOutput(
+                                    parameters, outName, context)
+                            )
+                        else:
+                            command += ' {}="{}"'.format(
+                                outName,
+                                self.parameterAsFileOutput(
+                                    parameters, outName, context))
                 # For folders destination
                 elif isinstance(out, QgsProcessingParameterFolderDestination):
                     # We need to add a unique temporary basename
@@ -738,7 +739,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param colorTable: preserve color Table.
         :param outFormat: file format for export.
         :param createOpt: creation options for format.
-        :param metatOpt: metadata options for export.
+        :param metaOpt: metadata options for export.
         """
         if not createOpt:
             if outFormat in Grass7Utils.GRASS_RASTER_FORMATS_CREATEOPTS:
@@ -871,7 +872,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
 
     def exportVectorLayer(self, grassName, fileName, layer=None, nocats=False, dataType='auto',
-                          outFormat='GPKG', dsco=None, lco=None):
+                          outFormat=None, dsco=None, lco=None):
         """
         Creates a dedicated command to export a vector from
         temporary GRASS DB into a file via OGR.
@@ -884,6 +885,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param dsco: datasource creation options for format.
         :param lco: layer creation options for format.
         """
+        if outFormat is None:
+            outFormat = QgsVectorFileWriter.driverForExtension(os.path.splitext(fileName)[1]).replace(' ', '_')
+
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
                 'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7} --overwrite'.format(
@@ -986,6 +990,5 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         if self.module:
             if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
                 func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
-                #return func(self, parameters, context), None
-                return None, func(self, parameters, context)
+                return func(self, parameters, context)
         return super(Grass7Algorithm, self).checkParameterValues(parameters, context)

@@ -312,8 +312,8 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Returns true if the scope has a feature associated with it.
-     * \since QGIS 3.0
      * \see feature()
+     * \since QGIS 3.0
      */
     bool hasFeature() const { return mHasFeature; }
 
@@ -336,9 +336,9 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Removes any feature associated with the scope.
-     * \since QGIS 3.0
      * \see setFeature()
      * \see hasFeature()
+     * \since QGIS 3.0
      */
     void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
@@ -588,8 +588,8 @@ class CORE_EXPORT QgsExpressionContext
      * any context.
      * Ownership is transferred to the caller.
      *
-     * \since QGIS 3.0
      * \note Not available in Python
+     * \since QGIS 3.0
      */
     QList<QgsExpressionContextScope *> takeScopes() SIP_SKIP;
 
@@ -611,8 +611,8 @@ class CORE_EXPORT QgsExpressionContext
 
     /**
      * Returns true if the context has a feature associated with it.
-     * \since QGIS 3.0
      * \see feature()
+     * \since QGIS 3.0
      */
     bool hasFeature() const;
 
@@ -912,9 +912,9 @@ class CORE_EXPORT QgsExpressionContextUtils
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
      * For instance, item size and position.
-     * \since QGIS 3.0
      * \see setLayoutItemVariable()
      * \see setLayoutItemVariables()
+     * \since QGIS 3.0
      */
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
 

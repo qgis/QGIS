@@ -13,7 +13,7 @@
 class QgsAbstractMetadataBase
 {
 %Docstring
- An abstract base class for metadata stores.
+An abstract base class for metadata stores.
 
 QgsAbstractMetadataBase is the base class for handling storage and management of the metadata
 for various map related assets. This class is an internal QGIS format with a common

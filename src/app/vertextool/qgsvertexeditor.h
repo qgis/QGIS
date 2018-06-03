@@ -75,6 +75,7 @@ class QgsVertexEditor : public QgsDockWidget
                      QgsMapCanvas *canvas );
 
   public:
+    void updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature );
     QgsVectorLayer *mLayer = nullptr;
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
@@ -96,8 +97,8 @@ class QgsVertexEditor : public QgsDockWidget
 
   private:
 
-    bool mUpdatingTableSelection;
-    bool mUpdatingVertexSelection;
+    bool mUpdatingTableSelection = false;
+    bool mUpdatingVertexSelection = false;
 };
 
 

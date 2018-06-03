@@ -582,7 +582,7 @@ Data item that can be used to represent QGIS projects.
 
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 %Docstring
- A data item holding a reference to a QGIS project file.
+A data item holding a reference to a QGIS project file.
 
 :param parent: The parent data item.
 :param name: The name of the of the project. Displayed to the user.

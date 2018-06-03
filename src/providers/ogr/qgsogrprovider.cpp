@@ -92,7 +92,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName );
 
 static bool IsLocalFile( const QString &path );
 
-static const QByteArray ORIG_OGC_FID = "orig_ogc_fid";
+static const QByteArray ORIG_OGC_FID = "__orig_ogc_fid";
 
 QMutex QgsOgrProviderUtils::sGlobalMutex( QMutex::Recursive );
 
@@ -449,20 +449,60 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 
   open( OpenModeInitial );
 
+  int nMaxIntLen = 11;
+  int nMaxInt64Len = 21;
+  int nMaxDoubleLen = 20;
+  int nMaxDoublePrec = 15;
+  int nDateLen = 8;
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    // GPKG only supports field length for text (and binary)
+    nMaxIntLen = 0;
+    nMaxInt64Len = 0;
+    nMaxDoubleLen = 0;
+    nMaxDoublePrec = 0;
+    nDateLen = 0;
+  }
+
   QList<NativeType> nativeTypes;
   nativeTypes
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, 11 )
-      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, 21 )
-      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, 20, 0, 15 )
-      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 )
-      << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, 8, 8 );
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QVariant::Int, 0, nMaxIntLen )
+      << QgsVectorDataProvider::NativeType( tr( "Whole number (integer 64 bit)" ), QStringLiteral( "integer64" ), QVariant::LongLong, 0, nMaxInt64Len )
+      << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double" ), QVariant::Double, 0, nMaxDoubleLen, 0, nMaxDoublePrec )
+      << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), QStringLiteral( "string" ), QVariant::String, 0, 65535 );
 
-  // Some drivers do not support datetime type
-  // Please help to fill this list
-  if ( mGDALDriverName != QLatin1String( "ESRI Shapefile" ) )
+  bool supportsDate = true;
+  bool supportsTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" ) && mGDALDriverName != QLatin1String( "GPKG" );
+  bool supportsDateTime = mGDALDriverName != QLatin1String( "ESRI Shapefile" );
+  const char *pszDataTypes = nullptr;
+  if ( mOgrOrigLayer )
+  {
+    pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+  }
+  // For drivers that advertize their data type, use that instead of the
+  // above hardcoded defaults.
+  if ( pszDataTypes )
+  {
+    char **papszTokens = CSLTokenizeString2( pszDataTypes, " ", 0 );
+    supportsDate = CSLFindString( papszTokens, "Date" ) >= 0;
+    supportsTime = CSLFindString( papszTokens, "Time" ) >= 0;
+    supportsDateTime = CSLFindString( papszTokens, "DateTime" ) >= 0;
+    CSLDestroy( papszTokens );
+  }
+
+  if ( supportsDate )
   {
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time, -1, -1 )
+        << QgsVectorDataProvider::NativeType( tr( "Date" ), QStringLiteral( "date" ), QVariant::Date, nDateLen, nDateLen );
+  }
+  if ( supportsTime )
+  {
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "Time" ), QStringLiteral( "time" ), QVariant::Time );
+  }
+  if ( supportsDateTime )
+  {
+    nativeTypes
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
 
@@ -471,8 +511,8 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
   if ( mOgrOrigLayer )
   {
-    const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
-    if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
+    const char *pszDataSubTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+    if ( pszDataSubTypes && strstr( pszDataSubTypes, "Boolean" ) )
       supportsBoolean = true;
   }
 #else
@@ -492,7 +532,7 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri, const ProviderOptions &optio
   {
     // boolean data type
     nativeTypes
-        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 );
+        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool );
   }
 
   setNativeTypes( nativeTypes );
@@ -661,6 +701,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName )
   else if ( typeName == QLatin1String( "MultiLineString25D" ) ) return wkbMultiLineString25D;
   else if ( typeName == QLatin1String( "MultiPolygon25D" ) ) return wkbMultiPolygon25D;
   else if ( typeName == QLatin1String( "GeometryCollection25D" ) ) return wkbGeometryCollection25D;
+  QgsDebugMsg( QStringLiteral( "unknown geometry type: %1" ).arg( typeName ) );
   return wkbUnknown;
 }
 
@@ -897,6 +938,8 @@ void QgsOgrProvider::loadFields()
   QByteArray fidColumn( mOgrLayer->GetFIDColumn() );
   mFirstFieldIsFid = !fidColumn.isEmpty() &&
                      fdef.GetFieldIndex( fidColumn ) < 0;
+
+  int createdFields = 0;
   if ( mFirstFieldIsFid )
   {
     QgsField fidField(
@@ -913,6 +956,7 @@ void QgsOgrProvider::loadFields()
       fidField
     );
     mDefaultValues.insert( 0, tr( "Autogenerate" ) );
+    createdFields++;
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -960,6 +1004,12 @@ void QgsOgrProvider::loadFields()
     QString name = textEncoding()->toUnicode( OGR_Fld_GetNameRef( fldDef ) );
 #endif
 
+    if ( name == ORIG_OGC_FID )
+    {
+      // don't ever report this field, it's for internal purposes only!
+      continue;
+    }
+
     if ( mAttributeFields.indexFromName( name ) != -1 )
     {
 
@@ -1005,10 +1055,11 @@ void QgsOgrProvider::loadFields()
     QString defaultValue = textEncoding()->toUnicode( OGR_Fld_GetDefault( fldDef ) );
     if ( !defaultValue.isEmpty() && !OGR_Fld_IsDefaultDriverSpecific( fldDef ) )
     {
-      mDefaultValues.insert( i + ( mFirstFieldIsFid ? 1 : 0 ), defaultValue );
+      mDefaultValues.insert( createdFields, defaultValue );
     }
 
     mAttributeFields.append( newField );
+    createdFields++;
   }
 
 }
@@ -1556,6 +1607,10 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       returnvalue = false;
     }
   }
+
+  // Backup existing fields. We need them to 'restore' field type, length, precision
+  QgsFields oldFields = mAttributeFields;
+
   loadFields();
 
   // The check in QgsVectorLayerEditBuffer::commitChanges() is questionable with
@@ -1574,6 +1629,24 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
       mAttributeFields[ idx ].setType( it->type() );
       mAttributeFields[ idx ].setLength( it->length() );
       mAttributeFields[ idx ].setPrecision( it->precision() );
+    }
+  }
+
+  // Restore field type, length, precision of existing fields as well
+  // We need that in scenarios where the user adds a int field with length != 0
+  // in a editing session, and repeat that again in another editing session
+  // Without the below hack, the length of the first added field would have
+  // been reset to zero, and QgsVectorLayerEditBuffer::commitChanges() would
+  // error out because of this.
+  // See https://issues.qgis.org/issues/19009
+  for ( auto field : oldFields )
+  {
+    int idx = mAttributeFields.lookupField( field.name() );
+    if ( idx >= 0 )
+    {
+      mAttributeFields[ idx ].setType( field.type() );
+      mAttributeFields[ idx ].setLength( field.length() );
+      mAttributeFields[ idx ].setPrecision( field.precision() );
     }
   }
 
@@ -1698,14 +1771,13 @@ bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeature
 
   if ( !theSQL.isEmpty() )
   {
-    bool origFidAdded = false;
     QMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
     GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
     OGRLayerH subsetLayerH;
     {
       QMutexLocker locker( mutex );
-      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL, origFidAdded );
+      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL );
     }
     if ( !subsetLayerH )
     {
@@ -3817,13 +3889,14 @@ OGRwkbGeometryType QgsOgrProvider::ogrWkbSingleFlatten( OGRwkbGeometryType type 
   }
 }
 
-OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded )
+OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool addOriginalFid, bool *origFidAdded )
 {
   QByteArray layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( layer ) );
   GDALDriverH mGDALDriver = GDALGetDatasetDriver( ds );
   QString mGDALDriverName = GDALGetDriverShortName( mGDALDriver );
   bool origFidAddAttempted = false;
-  origFidAdded = false;
+  if ( origFidAdded )
+    *origFidAdded = false;
 
   if ( mGDALDriverName == QLatin1String( "ODBC" ) ) //the odbc driver does not like schema names for subset
   {
@@ -3846,31 +3919,35 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
   else
   {
     QByteArray sqlPart1 = "SELECT *";
-    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName )
-                          + " WHERE " + encoding->fromUnicode( subsetString );
+    QByteArray sqlPart3 = " FROM " + quotedIdentifier( layerName, mGDALDriverName );
+    if ( !subsetString.isEmpty() )
+      sqlPart3 += " WHERE " + encoding->fromUnicode( subsetString );
 
-    origFidAddAttempted = true;
-
-    QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
-    // Fallback to FID if OGR_L_GetFIDColumn returns nothing
-    if ( fidColumn.isEmpty() )
+    if ( addOriginalFid )
     {
-      fidColumn = "FID";
-    }
+      origFidAddAttempted = true;
 
-    QByteArray sql = sqlPart1 + ", " + fidColumn + " as " + ORIG_OGC_FID + sqlPart3;
-    QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
-    subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      QByteArray fidColumn = OGR_L_GetFIDColumn( layer );
+      // Fallback to FID if OGR_L_GetFIDColumn returns nothing
+      if ( fidColumn.isEmpty() )
+      {
+        fidColumn = "FID";
+      }
 
-    // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
-    // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
-    if ( !subsetLayer )
-    {
-      QByteArray sql = sqlPart1 + ", " + "FID as " + ORIG_OGC_FID + sqlPart3;
+      QByteArray sql = sqlPart1 + ", " + fidColumn + " as \"" + ORIG_OGC_FID + '"' + sqlPart3;
       QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
       subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+
+      // See https://lists.osgeo.org/pipermail/qgis-developer/2017-September/049802.html
+      // If execute SQL fails because it did not find the fidColumn, retry with hardcoded FID
+      if ( !subsetLayer )
+      {
+        QByteArray sql = sqlPart1 + ", " + "FID as \"" + ORIG_OGC_FID + '"' + sqlPart3;
+        QgsDebugMsg( QString( "SQL: %1" ).arg( encoding->toUnicode( sql ) ) );
+        subsetLayer = GDALDatasetExecuteSQL( ds, sql.constData(), nullptr, nullptr );
+      }
     }
-    // If that also fails, just continue without the orig_ogc_fid
+    // If that also fails (or we never wanted to add the original FID), just continue without the orig_ogc_fid
     if ( !subsetLayer )
     {
       QByteArray sql = sqlPart1 + sqlPart3;
@@ -3888,7 +3965,8 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
     if ( fieldCount > 0 )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, fieldCount - 1 );
-      origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
+      if ( origFidAdded )
+        *origFidAdded = qstrcmp( OGR_Fld_GetNameRef( fldDef ), ORIG_OGC_FID ) == 0;
     }
   }
 
@@ -4159,6 +4237,13 @@ bool QgsOgrProvider::leaveUpdateMode()
   }
   if ( !mDynamicWriteAccess )
   {
+    // The GeoJSON driver only properly flushes stuff in all situations by
+    // closing and re-opening. Starting with GDAL 2.3.1, it should be safe to
+    // use GDALDatasetFlush().
+    if ( mGDALDriverName == QLatin1String( "GeoJSON" ) )
+    {
+      reloadData();
+    }
     return true;
   }
   if ( mUpdateModeStackDepth == 0 )

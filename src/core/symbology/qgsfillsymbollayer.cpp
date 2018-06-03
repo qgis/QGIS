@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgscolorramp.h"
 #include "qgsunittypes.h"
+#include "qgsmessagelog.h"
 
 #include <QPainter>
 #include <QFile>
@@ -947,10 +948,7 @@ QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color,
   mColor = color;
 }
 
-QgsShapeburstFillSymbolLayer::~QgsShapeburstFillSymbolLayer()
-{
-  delete mGradientRamp;
-}
+QgsShapeburstFillSymbolLayer::~QgsShapeburstFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props )
 {
@@ -1054,8 +1052,10 @@ QString QgsShapeburstFillSymbolLayer::layerType() const
 
 void QgsShapeburstFillSymbolLayer::setColorRamp( QgsColorRamp *ramp )
 {
-  delete mGradientRamp;
-  mGradientRamp = ramp;
+  if ( mGradientRamp.get() == ramp )
+    return;
+
+  mGradientRamp.reset( ramp );
 }
 
 void QgsShapeburstFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext &context, QColor &color, QColor &color2, int &blurRadius, bool &useWholeShape,
@@ -1169,9 +1169,10 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   //if we are using the two color mode, create a gradient ramp
+  std::unique_ptr< QgsGradientColorRamp > twoColorGradientRamp;
   if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
   {
-    mTwoColorGradientRamp = new QgsGradientColorRamp( color1, color2 );
+    twoColorGradientRamp = qgis::make_unique< QgsGradientColorRamp >( color1, color2 );
   }
 
   //no stroke for shapeburst fills
@@ -1180,23 +1181,37 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
   int sideBuffer = 4 + ( blurRadius + 2 ) * 4;
   //create a QImage to draw shapeburst in
-  double imWidth = points.boundingRect().width() + ( sideBuffer * 2 );
-  double imHeight = points.boundingRect().height() + ( sideBuffer * 2 );
-  QImage *fillImage = new QImage( imWidth,
-                                  imHeight, QImage::Format_ARGB32_Premultiplied );
+  int pointsWidth = static_cast< int >( std::round( points.boundingRect().width() ) );
+  int pointsHeight = static_cast< int >( std::round( points.boundingRect().height() ) );
+  int imWidth = pointsWidth + ( sideBuffer * 2 );
+  int imHeight = pointsHeight + ( sideBuffer * 2 );
+  std::unique_ptr< QImage > fillImage = qgis::make_unique< QImage >( imWidth,
+                                        imHeight, QImage::Format_ARGB32_Premultiplied );
+  if ( fillImage->isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for shapeburst fill" ) );
+    return;
+  }
+
+  //also create an image to store the alpha channel
+  std::unique_ptr< QImage > alphaImage = qgis::make_unique< QImage >( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
+  if ( alphaImage->isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for shapeburst fill" ) );
+    return;
+  }
+
   //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
   //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
   //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
   fillImage->fill( Qt::black );
 
-  //also create an image to store the alpha channel
-  QImage *alphaImage = new QImage( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
   //initially fill the alpha channel image with a transparent color
   alphaImage->fill( Qt::transparent );
 
   //now, draw the polygon in the alpha channel image
   QPainter imgPainter;
-  imgPainter.begin( alphaImage );
+  imgPainter.begin( alphaImage.get() );
   imgPainter.setRenderHint( QPainter::Antialiasing, true );
   imgPainter.setBrush( QBrush( Qt::white ) );
   imgPainter.setPen( QPen( Qt::black ) );
@@ -1206,7 +1221,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
 
   //now that we have a render of the polygon in white, draw this onto the shapeburst fill image too
   //(this avoids calling _renderPolygon twice, since that can be slow)
-  imgPainter.begin( fillImage );
+  imgPainter.begin( fillImage.get() );
   if ( !ignoreRings )
   {
     imgPainter.drawImage( 0, 0, *alphaImage );
@@ -1224,18 +1239,14 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   imgPainter.end();
 
   //apply distance transform to image, uses the current color ramp to calculate final pixel colors
-  double *dtArray = distanceTransform( fillImage );
+  double *dtArray = distanceTransform( fillImage.get() );
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
-  dtArrayToQImage( dtArray, fillImage, mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? mTwoColorGradientRamp : mGradientRamp,
+  dtArrayToQImage( dtArray, fillImage.get(), mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
                    context.opacity(), useWholeShape, outputPixelMaxDist );
 
   //clean up some variables
   delete [] dtArray;
-  if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
-  {
-    delete mTwoColorGradientRamp;
-  }
 
   //apply blur if desired
   if ( blurRadius > 0 )
@@ -1244,12 +1255,12 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
-  imgPainter.begin( fillImage );
+  imgPainter.begin( fillImage.get() );
   imgPainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
   imgPainter.drawImage( 0, 0, *alphaImage );
   imgPainter.end();
   //we're finished with the alpha channel image now
-  delete alphaImage;
+  alphaImage.reset();
 
   //draw shapeburst image in correct place in the destination painter
 
@@ -1263,8 +1274,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
-
-  delete fillImage;
 
   if ( !mOffset.isNull() )
   {

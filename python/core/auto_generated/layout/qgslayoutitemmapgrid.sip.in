@@ -13,13 +13,13 @@
 class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 {
 %Docstring
- A collection of grids which is drawn above the map content in a
+A collection of grids which is drawn above the map content in a
 QgsLayoutItemMap. The grid stack controls which grids are drawn and the
 order they are drawn in.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsLayoutItemMapGrid`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -124,12 +124,12 @@ map item separately.
 class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 {
 %Docstring
- An individual grid which is drawn above the map content in a
+An individual grid which is drawn above the map content in a
 :py:class:`QgsLayoutItemMap`.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsLayoutItemMapGridStack`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

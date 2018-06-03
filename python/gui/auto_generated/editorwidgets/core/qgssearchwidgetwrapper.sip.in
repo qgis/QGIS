@@ -94,18 +94,18 @@ Shows a search widget on a filter form.
 %Docstring
 Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`nonExclusiveFilterFlags`
+
+.. versionadded:: 2.16
 %End
 
     static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
 %Docstring
 Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`exclusiveFilterFlags`
+
+.. versionadded:: 2.16
 %End
 
     static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
@@ -130,18 +130,18 @@ Create a new widget wrapper
 %Docstring
 Returns filter flags supported by the search widget.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`defaultFlags`
+
+.. versionadded:: 2.16
 %End
 
     virtual FilterFlags defaultFlags() const;
 %Docstring
 Returns the filter flags which should be set by default for the search widget.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`supportedFlags`
+
+.. versionadded:: 2.16
 %End
 
     virtual QString expression() const = 0;

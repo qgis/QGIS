@@ -230,9 +230,9 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 
 :return: true in case of success and false in case of failure.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`deleteFeatures`
+
+.. versionadded:: 3.0
 %End
 
     virtual bool cancelReload();
@@ -241,9 +241,9 @@ Cancels the current reloading of data.
 
 :return: true if the reloading has been correctly interrupted, false otherwise
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`reloadData`
+
+.. versionadded:: 3.2
 %End
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
@@ -333,9 +333,9 @@ provider, e.g., sequence values.
 Returns any constraints which are present at the provider for a specified
 field index.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`skipConstraintCheck`
+
+.. versionadded:: 3.0
 %End
 
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
@@ -344,9 +344,9 @@ Returns true if a constraint check should be skipped for a specified field (e.g.
 the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
 passed which can help refine the skip constraint check.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`fieldConstraints`
+
+.. versionadded:: 3.0
 %End
 
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );

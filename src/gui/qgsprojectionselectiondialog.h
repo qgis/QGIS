@@ -64,8 +64,8 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
     /**
      * Returns the CRS currently selected in the widget.
-     * \since QGIS 3.0
      * \see setCrs()
+     * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem crs() const;
 
@@ -87,8 +87,8 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-     * \since QGIS 3.0
      * \see setShowNoProjection()
+     * \since QGIS 3.0
      */
     bool showNoProjection() const;
 
@@ -96,8 +96,8 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
 
     /**
      * Sets the initial \a crs to show within the dialog.
-     * \since QGIS 3.0
      * \see crs()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 

@@ -164,7 +164,7 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     /**
      * Returns a QPolygonF representing the points.
      */
-    QPolygonF asQPolygonF() const;
+    virtual QPolygonF asQPolygonF() const;
 
     /**
      * Returns the straight distance of the curve, i.e. the direct/euclidean distance

@@ -198,8 +198,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * The name of the property is used as identifier.
      *
-     * \since QGIS 3.0
      * \see name()
+     * \since QGIS 3.0
      */
     void setName( const QString &name );
 

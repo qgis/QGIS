@@ -13,7 +13,7 @@
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring
- Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
 
 .. versionadded:: 2.16
@@ -189,7 +189,7 @@ Derived classes must implement draw() to handle drawing the generated shape onto
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
 %End
 
 %TypeHeaderCode
@@ -298,13 +298,13 @@ Sets the marker's stroke color.
 %Docstring
 Returns the marker's stroke style (e.g., solid, dashed, etc)
 
-.. versionadded:: 2.4
-
 .. seealso:: :py:func:`setStrokeStyle`
 
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`penJoinStyle`
+
+.. versionadded:: 2.4
 %End
 
     void setStrokeStyle( Qt::PenStyle strokeStyle );
@@ -313,26 +313,26 @@ Sets the marker's stroke style (e.g., solid, dashed, etc)
 
 :param strokeStyle: style
 
-.. versionadded:: 2.4
-
 .. seealso:: :py:func:`strokeStyle`
 
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setPenJoinStyle`
+
+.. versionadded:: 2.4
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
 Returns the marker's stroke join style (e.g., miter, bevel, etc).
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setPenJoinStyle`
 
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`strokeStyle`
+
+.. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -341,13 +341,13 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 
 :param style: join style
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`penJoinStyle`
 
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setStrokeStyle`
+
+.. versionadded:: 2.16
 %End
 
     double strokeWidth() const;
@@ -454,7 +454,7 @@ Prepares cache image
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
+Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
 
 .. versionadded:: 2.16

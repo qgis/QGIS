@@ -184,8 +184,8 @@ class CORE_EXPORT QgsImageOperation
      * non-transparent region of the image is smaller than this minimum size,
      * it will be centered in the returned rectangle.
      * \param center return rectangle will be centered on the center of the original image if set to true
-     * \since QGIS 2.9
      * \see cropTransparent
+     * \since QGIS 2.9
      */
     static QRect nonTransparentImageRect( const QImage &image, QSize minSize = QSize(), bool center = false );
 

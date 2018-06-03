@@ -277,18 +277,11 @@ QgsVertexEditor::QgsVertexEditor(
   QgsVectorLayer *layer,
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
-  : mUpdatingTableSelection( false )
-  , mUpdatingVertexSelection( false )
+  : mCanvas( canvas )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
-
-  mLayer = layer;
-  mSelectedFeature = selectedFeature;
-  mCanvas = canvas;
-
+  setObjectName( QStringLiteral( "VertexEditor" ) );
   mTableView = new QTableView( this );
-  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mVertexModel );
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
@@ -300,8 +293,26 @@ QgsVertexEditor::QgsVertexEditor(
 
   setWidget( mTableView );
 
-  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
+
+  updateEditor( layer, selectedFeature );
+}
+
+void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature )
+{
+  if ( mVertexModel )
+  {
+    delete mVertexModel;
+  }
+
+  mLayer = layer;
+  mSelectedFeature = selectedFeature;
+
+  // TODO We really should just update the model itself.
+  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+  mTableView->setModel( mVertexModel );
+
+  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
 
 void QgsVertexEditor::updateTableSelection()
@@ -362,7 +373,15 @@ void QgsVertexEditor::zoomToVertex( int idx )
   QgsPointXY newCenter( x, y );
 
   QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QgsPointXY tCenter = t.transform( newCenter );
+  QgsPointXY tCenter;
+  try
+  {
+    tCenter = t.transform( newCenter );
+  }
+  catch ( QgsCsException & )
+  {
+    return;
+  }
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon

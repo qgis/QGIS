@@ -13,7 +13,7 @@
 class QgsReportSectionFieldGroup : QgsAbstractReportSection
 {
 %Docstring
- A report section consisting of a features
+A report section consisting of a features
 
 .. warning::
 

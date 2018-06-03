@@ -168,25 +168,25 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
      *
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
-     * \since QGIS 3.0
      * \see setDataDefinedProperties()
+     * \since QGIS 3.0
      */
     const QgsPropertyCollection &dataDefinedProperties() const { return mPropertyCollection; }
 
     /**
      * Sets the editor widget's property collection, used for data defined overrides.
      * \param collection property collection. Existing properties will be replaced.
-     * \since QGIS 3.0
      * \see dataDefinedProperties()
+     * \since QGIS 3.0
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 

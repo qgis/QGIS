@@ -11,7 +11,7 @@
 class QgsMultiLineString: QgsMultiCurve
 {
 %Docstring
- Multi line string geometry collection.
+Multi line string geometry collection.
 
 .. versionadded:: 2.10
 %End

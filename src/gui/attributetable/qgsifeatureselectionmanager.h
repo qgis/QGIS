@@ -38,23 +38,17 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
       : QObject( parent ) {}
 
     /**
-     * The number of features that are selected in this layer
-     *
-     * \returns See description
+     * Returns the number of features that are selected in this layer.
      */
     virtual int selectedFeatureCount() = 0;
 
     /**
-     * Select features
-     *
-     * \param ids            Feature ids to select
+     * Select features by feature \a ids.
      */
     virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
-     * Deselect features
-     *
-     * \param ids            Feature ids to deselect
+     * Deselect features by feature \a ids.
      */
     virtual void deselect( const QgsFeatureIds &ids ) = 0;
 

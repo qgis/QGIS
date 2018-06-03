@@ -85,8 +85,8 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
 
     /**
      * Named node
-     * \since QGIS 2.16
      * \ingroup core
+     * \since QGIS 2.16
      */
     struct NamedNode
     {

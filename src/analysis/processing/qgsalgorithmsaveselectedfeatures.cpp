@@ -82,7 +82,7 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
   int current = 0;
   double step = count > 0 ? 100.0 / count : 1;
 
-  QgsFeatureIterator it = selectLayer->getSelectedFeatures();;
+  QgsFeatureIterator it = selectLayer->getSelectedFeatures();
   QgsFeature feat;
   while ( it.nextFeature( feat ) )
   {

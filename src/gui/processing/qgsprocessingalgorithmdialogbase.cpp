@@ -127,7 +127,12 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm = algorithm;
-  setWindowTitle( QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase ) );
+  QString title;
+  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral )
+    title = mAlgorithm->displayName();
+  else
+    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+  setWindowTitle( title );
 
   QString algHelp = formatHelp( algorithm );
   if ( algHelp.isEmpty() )

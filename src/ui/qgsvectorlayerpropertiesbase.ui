@@ -2277,11 +2277,6 @@ border-radius: 2px;</string>
                         <string>image/jpeg</string>
                        </property>
                       </item>
-                      <item>
-                       <property name="text">
-                        <string>image/jpg</string>
-                       </property>
-                      </item>
                      </widget>
                     </item>
                    </layout>

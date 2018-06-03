@@ -32,9 +32,9 @@ class QgsSymbol;
  * for vector layers. Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
  *
- * \since QGIS 2.12
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 {

@@ -201,8 +201,8 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
      * Adds an expression based attribute to a feature
      * \param f feature
      * \param attrIndex attribute index
-     * \since QGIS 2.14
      * \note not available in Python bindings
+     * \since QGIS 2.14
      */
     void addExpressionAttribute( QgsFeature &f, int attrIndex ) SIP_SKIP;
 

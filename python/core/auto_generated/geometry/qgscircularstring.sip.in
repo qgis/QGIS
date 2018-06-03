@@ -14,7 +14,7 @@
 class QgsCircularString: QgsCurve
 {
 %Docstring
- Circular string geometry type
+Circular string geometry type
 
 .. versionadded:: 2.10
 %End
@@ -156,6 +156,7 @@ Sets the circular string's points
     virtual double xAt( int index ) const;
 
     virtual double yAt( int index ) const;
+
 
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;

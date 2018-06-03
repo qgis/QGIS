@@ -34,7 +34,7 @@ and to utilize configurations through various authentication method plugins
 
     bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 %Docstring
- init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
 
 :param pluginPath: the plugin path
 :param authDatabasePath: the authentication DB path
@@ -379,7 +379,7 @@ Store an authentication setting (stored as string via QVariant( value ).toString
 
     QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 %Docstring
- authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
 
 :param key: setting key
 :param defaultValue:
@@ -413,7 +413,7 @@ Store a certificate identity
 
     const QSslCertificate certIdentity( const QString &id );
 %Docstring
- certIdentity get a certificate identity by ``id`` (sha hash)
+certIdentity get a certificate identity by ``id`` (sha hash)
 
 :param id: sha hash of the cert
 
@@ -425,7 +425,7 @@ Store a certificate identity
 
     const QStringList certIdentityBundleToPem( const QString &id );
 %Docstring
- certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha hash) returned as PEM text
+certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha hash) returned as PEM text
 
 :param id: sha hash
 
@@ -436,7 +436,7 @@ Store a certificate identity
 
     const QList<QSslCertificate> certIdentities();
 %Docstring
- certIdentities get certificate identities
+certIdentities get certificate identities
 
 :return: list of certificates
 
@@ -446,7 +446,7 @@ Store a certificate identity
 
     QStringList certIdentityIds() const;
 %Docstring
- certIdentityIds get list of certificate identity ids from database
+certIdentityIds get list of certificate identity ids from database
 
 :return: list of certificate ids
 
@@ -471,7 +471,7 @@ Store an SSL certificate custom config
 
     const QgsAuthConfigSslServer sslCertCustomConfig( const QString &id, const QString &hostport );
 %Docstring
- sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
+sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
 
 :param id: sha hash
 :param hostport: string host:port
@@ -483,7 +483,7 @@ Store an SSL certificate custom config
 
     const QgsAuthConfigSslServer sslCertCustomConfigByHost( const QString &hostport );
 %Docstring
- sslCertCustomConfigByHost get an SSL certificate custom config by ``hostport`` (host:port)
+sslCertCustomConfigByHost get an SSL certificate custom config by ``hostport`` (host:port)
 
 :param hostport: host:port
 
@@ -494,7 +494,7 @@ Store an SSL certificate custom config
 
     const QList<QgsAuthConfigSslServer> sslCertCustomConfigs();
 %Docstring
- sslCertCustomConfigs get SSL certificate custom configs
+sslCertCustomConfigs get SSL certificate custom configs
 
 :return: list of SSL certificate custom config
 
@@ -546,7 +546,7 @@ Store a certificate authority
 
     const QSslCertificate certAuthority( const QString &id );
 %Docstring
- certAuthority get a certificate authority by ``id`` (sha hash)
+certAuthority get a certificate authority by ``id`` (sha hash)
 
 :param id: sha hash
 
@@ -567,7 +567,7 @@ Remove a certificate authority
 
     const QList<QSslCertificate> systemRootCAs();
 %Docstring
- systemRootCAs get root system certificate authorities
+systemRootCAs get root system certificate authorities
 
 :return: list of certificate authorities
 
@@ -576,7 +576,7 @@ Remove a certificate authority
 
     const QList<QSslCertificate> extraFileCAs();
 %Docstring
- extraFileCAs extra file-based certificate authorities
+extraFileCAs extra file-based certificate authorities
 
 :return: list of certificate authorities
 
@@ -585,7 +585,7 @@ Remove a certificate authority
 
     const QList<QSslCertificate> databaseCAs();
 %Docstring
- databaseCAs get database-stored certificate authorities
+databaseCAs get database-stored certificate authorities
 
 :return: list of certificate authorities
 
@@ -594,7 +594,7 @@ Remove a certificate authority
 
     const QMap<QString, QSslCertificate> mappedDatabaseCAs();
 %Docstring
- mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
+mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
 
 :return: sha1-mapped certificate authorities
 
@@ -614,7 +614,7 @@ Store user trust value for a certificate
 
     QgsAuthCertUtils::CertTrustPolicy certTrustPolicy( const QSslCertificate &cert );
 %Docstring
- certTrustPolicy get whether certificate ``cert`` is trusted by user
+certTrustPolicy get whether certificate ``cert`` is trusted by user
 
 :param cert:
 
@@ -635,7 +635,7 @@ Remove a certificate authority
 
     QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 %Docstring
- certificateTrustPolicy get trust policy for a particular certificate ``cert``
+certificateTrustPolicy get trust policy for a particular certificate ``cert``
 
 :param cert:
 
@@ -656,7 +656,7 @@ Gets the default certificate trust policy preferred by user
 
     const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache();
 %Docstring
- certTrustCache get cache of certificate sha1s, per trust policy
+certTrustCache get cache of certificate sha1s, per trust policy
 
 :return: trust-policy-mapped certificate sha1s
 
@@ -670,7 +670,7 @@ Rebuild certificate authority cache
 
     const QList<QSslCertificate> trustedCaCerts( bool includeinvalid = false );
 %Docstring
- trustedCaCerts get list of all trusted CA certificates
+trustedCaCerts get list of all trusted CA certificates
 
 :param includeinvalid: whether invalid certs needs to be returned
 
@@ -681,7 +681,7 @@ Rebuild certificate authority cache
 
     const QList<QSslCertificate> untrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
 %Docstring
- untrustedCaCerts get list of untrusted certificate authorities
+untrustedCaCerts get list of untrusted certificate authorities
 
 :return: list of certificates
 
@@ -695,7 +695,7 @@ Rebuild trusted certificate authorities cache
 
     const QList<QSslCertificate> trustedCaCertsCache();
 %Docstring
- trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
+trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
 
 :return: list of certificates
 
@@ -704,7 +704,7 @@ Rebuild trusted certificate authorities cache
 
     const QByteArray trustedCaCertsPemText();
 %Docstring
- trustedCaCertsPemText get concatenated string of all trusted CA certificates
+trustedCaCertsPemText get concatenated string of all trusted CA certificates
 
 :return: bye array with all PEM encoded trusted CAs
 

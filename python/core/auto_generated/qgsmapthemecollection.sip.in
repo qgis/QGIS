@@ -14,7 +14,7 @@
 class QgsMapThemeCollection : QObject
 {
 %Docstring
- Container class that allows storage of map themes consisting of visible
+Container class that allows storage of map themes consisting of visible
 map layers and layer styles.
 
 .. versionadded:: 2.12
@@ -275,9 +275,9 @@ The QgsProject on which this map theme collection works.
 Returns the master layer order (this will always match the project's QgsProject.layerOrder() ).
 All map themes will maintain the same layer order as the master layer order.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`masterVisibleLayers`
+
+.. versionadded:: 3.0
 %End
 
     QList< QgsMapLayer * > masterVisibleLayers() const;
@@ -286,9 +286,9 @@ Returns the master list of visible layers. The order of returned layers will alw
 of masterLayerOrder(), but the returned layers are filtered to only include those visible
 in the project's layer tree.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`masterLayerOrder`
+
+.. versionadded:: 3.0
 %End
 
   signals:

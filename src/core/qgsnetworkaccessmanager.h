@@ -31,7 +31,6 @@
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
- * \since 1.5
  *
  * This class implements the QGIS network access manager.  It's a singleton
  * that can be used across QGIS.
@@ -43,6 +42,7 @@
  * fallback proxy can be set.  There's also a exclude list that defines URLs
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
+ * \since 1.5
  */
 class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 {

@@ -168,10 +168,10 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
     """Verify that we have at least n rasters in multipleInput"""
     num = len(alg.parameterAsLayerList(parameters, rasters, context))
     if num < mini:
-        return 'You need to set at least {} input rasters for this algorithm!'.format(mini)
+        return False, 'You need to set at least {} input rasters for this algorithm!'.format(mini)
     if maxi and num > maxi:
-        return 'You need to set a maximum of {} input rasters for this algorithm!'.format(maxi)
-    return None
+        return False, 'You need to set a maximum of {} input rasters for this algorithm!'.format(maxi)
+    return True, None
 
 
 # def file2Output(alg, output):

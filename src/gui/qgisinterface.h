@@ -122,15 +122,15 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Create a new map canvas with the specified unique \a name.
-     * \since QGIS 3.0
      * \see closeMapCanvas()
+     * \since QGIS 3.0
      */
     virtual QgsMapCanvas *createNewMapCanvas( const QString &name ) = 0;
 
     /**
      * Closes the additional map canvas with matching \a name.
-     * \since QGIS 3.0
      * \see createNewMapCanvas()
+     * \since QGIS 3.0
      */
     virtual void closeMapCanvas( const QString &name ) = 0;
 
@@ -769,61 +769,66 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * Register a new tab in the vector layer properties dialog.
-     * \since QGIS 2.16
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
      * \see unregisterMapLayerConfigWidgetFactory()
+     * \since QGIS 2.16
      */
     virtual void registerMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
      * Unregister a previously registered tab in the vector layer properties dialog.
-     * \since QGIS 2.16
      * \see registerMapLayerConfigWidgetFactory()
+     * \since QGIS 2.16
     */
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 
     /**
      * Register a new tab in the options dialog.
-     * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterOptionsWidgetFactory() */
+     * \see unregisterOptionsWidgetFactory()
+     * \since QGIS 3.0
+     */
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
      * Unregister a previously registered tab in the options dialog.
-     * \since QGIS 3.0
      * \see registerOptionsWidgetFactory()
+     * \since QGIS 3.0
     */
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 
     /**
      * Register a new custom drop handler.
-     * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterCustomDropHandler() */
+     * \see unregisterCustomDropHandler()
+     * \since QGIS 3.0
+     */
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
      * Unregister a previously registered custom drop handler.
+     * \see registerCustomDropHandler()
      * \since QGIS 3.0
-     * \see registerCustomDropHandler() */
+     */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
     /**
      * Register a new custom drop \a handler for layout windows.
-     * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterCustomLayoutDropHandler() */
+     * \see unregisterCustomLayoutDropHandler()
+     * \since QGIS 3.0
+     */
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
     /**
      * Unregister a previously registered custom drop \a handler for layout windows.
+     * \see registerCustomLayoutDropHandler()
      * \since QGIS 3.0
-     * \see registerCustomLayoutDropHandler() */
+     */
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
     // TODO is this deprecated in favour of QgsContextHelp?
@@ -898,6 +903,15 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
 
     /**
+     * Invalidate results from the locator filter.
+     *
+     * This might be useful if the configuration of the filter changed without going through main application settings.
+     *
+     * \since QGIS 3.2
+     */
+    virtual void invalidateLocatorResults() = 0;
+
+    /**
       * Checks available datum transforms and ask user if several are available and none
       * is chosen. Dialog is shown only if global option is set accordingly.
       * \returns true if a datum transform has been specifically chosen by user or only one is available.
@@ -922,25 +936,25 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /**
      * This signal is emitted when a new layout \a designer has been opened.
-     * \since QGIS 3.0
      * \see layoutDesignerWillBeClosed()
+     * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
      * This signal is emitted before a layout \a designer is going to be closed
      * and deleted.
-     * \since QGIS 3.0
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
+     * \since QGIS 3.0
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
      * This signal is emitted after a layout designer window is closed.
-     * \since QGIS 3.0
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
+     * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 

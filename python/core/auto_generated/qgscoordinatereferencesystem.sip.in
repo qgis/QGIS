@@ -236,9 +236,9 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromOgcWmsCrs`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
@@ -260,9 +260,9 @@ Creates a CRS from a proj4 style formatted string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromProj4`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
@@ -273,9 +273,9 @@ Creates a CRS from a WKT spatial ref sys definition string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromWkt`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
@@ -286,11 +286,11 @@ Creates a CRS from a specified QGIS SRS ID.
 
 :return: matching CRS, or an invalid CRS if ID could not be found
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromSrsId`
 
 .. seealso:: :py:func:`validSrsIds`
+
+.. versionadded:: 3.0
 %End
 
 

@@ -13,7 +13,7 @@
 class QgsJsonExporter
 {
 %Docstring
- Handles exporting QgsFeature features to GeoJSON features.
+Handles exporting QgsFeature features to GeoJSON features.
 
 Note that geometries will be automatically reprojected to WGS84 to match GeoJSON spec
 if either the source vector layer or source CRS is set.
@@ -232,7 +232,7 @@ Returns a GeoJSON string representation of a list of features (feature collectio
 class QgsJsonUtils
 {
 %Docstring
- Helper utilities for working with JSON and GeoJSON conversions.
+Helper utilities for working with JSON and GeoJSON conversions.
 
 .. versionadded:: 2.16
 %End

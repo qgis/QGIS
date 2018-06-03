@@ -27,7 +27,6 @@ class QgsPrintLayout;
 /**
  * \ingroup core
  * \class QgsLayoutManager
- * \since QGIS 3.0
  *
  * \brief Manages storage of a set of layouts.
  *
@@ -37,6 +36,7 @@ class QgsPrintLayout;
  *
  * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsLayoutManager : public QObject

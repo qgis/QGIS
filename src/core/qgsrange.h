@@ -34,10 +34,10 @@
  * The inclusivity or exclusivity of bounds is considered when determining things like
  * whether ranges overlap or during calculation of range intersections.
  *
- * \since QGIS 3.0
  * \see QgsDoubleRange
  * \see QgsIntRange
  * \note not available in Python bindings (but class provided for template-based inheritance)
+ * \since QGIS 3.0
  */
 template <typename T>
 class QgsRange
@@ -178,10 +178,10 @@ class QgsRange
 
 /**
  * QgsRange which stores a range of double values.
- * \since QGIS 3.0
  * \see QgsIntRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
+ * \since QGIS 3.0
  */
 typedef QgsRange< double > QgsDoubleRange;
 
@@ -190,10 +190,10 @@ typedef QgsRange< double > QgsDoubleRange;
 
 /**
  * QgsRange which stores a range of integer values.
- * \since QGIS 3.0
  * \see QgsDoubleRange
  * \see QgsDateRange
  * \see QgsDateTimeRange
+ * \since QGIS 3.0
  */
 typedef QgsRange< int > QgsIntRange;
 
@@ -210,9 +210,9 @@ typedef QgsRange< int > QgsIntRange;
  * The inclusivity or exclusivity of bounds is considered when determining things like
  * whether ranges overlap or during calculation of range intersections.
  *
- * \since QGIS 3.0
  * \see QgsDateRange
  * \note not available in Python bindings (but class provided for template-based inheritance)
+ * \since QGIS 3.0
  */
 template <typename T>
 class QgsTemporalRange
@@ -417,8 +417,8 @@ class QgsTemporalRange
  * the bound is considered to be infinite. E.g. QgsDateRange(QDate(),QDate(2017,1,1))
  * is treated as a range containing all dates before 2017-1-1.
  * QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
- * \since QGIS 3.0
  * \see QgsDateTimeRange
+ * \since QGIS 3.0
  */
 typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
 
@@ -429,8 +429,8 @@ typedef QgsTemporalRange< QDate > QgsDateRange SIP_DOC_TEMPLATE;
  * the bound is considered to be infinite. E.g. QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1))
  * is treated as a range containing all dates before 2017-1-1.
  * QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range containing all dates after 2017-1-1.
- * \since QGIS 3.0
  * \see QgsDateRange
+ * \since QGIS 3.0
  */
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange SIP_DOC_TEMPLATE;
 

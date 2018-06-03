@@ -64,15 +64,15 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Sets the widget's current \a mode.
-     * \since QGIS 3.2
      * \see mode()
+     * \since QGIS 3.2
      */
     void setMode( Mode mode );
 
     /**
      * Returns the widget's current mode.
-     * \since QGIS 3.2
      * \see setMode()
+     * \since QGIS 3.2
      */
     Mode mode() const { return mMode; }
 

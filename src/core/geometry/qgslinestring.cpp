@@ -274,6 +274,21 @@ bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
   return result;
 }
 
+QPolygonF QgsLineString::asQPolygonF() const
+{
+  const int nb = mX.size();
+  QPolygonF points( nb );
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  QPointF *dest = points.data();
+  for ( int i = 0; i < nb; ++i )
+  {
+    *dest++ = QPointF( *x++, *y++ );
+  }
+  return points;
+}
+
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )
@@ -543,6 +558,22 @@ const double *QgsLineString::xData() const
 const double *QgsLineString::yData() const
 {
   return mY.constData();
+}
+
+const double *QgsLineString::zData() const
+{
+  if ( mZ.empty() )
+    return nullptr;
+  else
+    return mZ.constData();
+}
+
+const double *QgsLineString::mData() const
+{
+  if ( mM.empty() )
+    return nullptr;
+  else
+    return mM.constData();
 }
 
 double QgsLineString::zAt( int index ) const
@@ -1328,4 +1359,50 @@ bool QgsLineString::convertTo( QgsWkbTypes::Type type )
   {
     return QgsCurve::convertTo( type );
   }
+}
+
+void QgsLineString::filterVertices( const std::function<bool ( const QgsPoint & )> &filter )
+{
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  double *destX = srcX;
+  double *destY = srcY;
+  double *destM = srcM;
+  double *destZ = srcZ;
+
+  int filteredPoints = 0;
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX++;
+    double y = *srcY++;
+    double z = hasZ ? *srcZ++ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM++ : std::numeric_limits<double>::quiet_NaN();
+
+    if ( filter( QgsPoint( x, y, z, m ) ) )
+    {
+      filteredPoints++;
+      *destX++ = x;
+      *destY++ = y;
+      if ( hasM )
+        *destM++ = m;
+      if ( hasZ )
+        *destZ++ = z;
+    }
+  }
+
+  mX.resize( filteredPoints );
+  mY.resize( filteredPoints );
+  if ( hasZ )
+    mZ.resize( filteredPoints );
+  if ( hasM )
+    mM.resize( filteredPoints );
+
+  clearCache();
 }

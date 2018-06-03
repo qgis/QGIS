@@ -13,7 +13,7 @@ class QgsDefaultValue
 {
 %Docstring
 
- The QgsDefaultValue class provides a container for managing client
+The QgsDefaultValue class provides a container for managing client
 side default values for fields.
 
 A QgsDefaultValue consists of an expression string that will be evaluated

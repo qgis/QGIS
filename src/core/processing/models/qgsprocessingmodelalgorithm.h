@@ -302,8 +302,8 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     /**
      * Definition of a expression context variable available during model execution.
-     * \since QGIS 3.0
      * \ingroup core
+     * \since QGIS 3.0
      */
     class CORE_EXPORT VariableDefinition
     {

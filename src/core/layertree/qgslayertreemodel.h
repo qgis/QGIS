@@ -149,16 +149,16 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     /**
      * Returns filtered list of active legend nodes attached to a particular layer node
      * (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
-     * \since QGIS 2.6
      * \note Parameter skipNodeEmbeddedInParent added in QGIS 2.18
      * \see layerOriginalLegendNodes()
+     * \since QGIS 2.6
      */
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 
     /**
      * Returns original (unfiltered) list of legend nodes attached to a particular layer node
-     * \since QGIS 2.14
      * \see layerLegendNodes()
+     * \since QGIS 2.14
      */
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
 
@@ -212,8 +212,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Force only display of legend nodes which are valid for a given \a scale.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * Setting \a scale <= 0 will disable the functionality.
-     * \since QGIS 2.6
      * \see legendFilterByScale()
+     * \since QGIS 2.6
      */
     void setLegendFilterByScale( double scale );
 
@@ -221,8 +221,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      * Returns the scale which restricts the legend nodes which are visible.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * A scale <= 0 indicates that no scale filtering is being performed.
-     * \since QGIS 2.6
      * \see setLegendFilterByScale()
+     * \since QGIS 2.6
      */
     double legendFilterByScale() const { return mLegendFilterByScale; }
 

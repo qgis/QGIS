@@ -39,14 +39,15 @@ value.
 %End
 
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
-        const QList< QgsWkbTypes::GeometryType > &geometryTypes = QList< QgsWkbTypes::GeometryType >(),
+        const QList< int > &sourceTypes = QList< int >(),
         bool sort = true );
 %Docstring
 Returns a list of vector layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``geometryTypes`` list is non-empty then the layers will be sorted so that only
-layers with geometry types included in the list will be returned. Leaving the ``geometryTypes``
+The ``sourceTypes`` list should be filled with a list of QgsProcessing.SourceType values.
+If the ``sourceTypes`` list is non-empty then the layers will be sorted so that only
+layers with the specified source type included in the list will be returned. Leaving the ``sourceTypes``
 list empty will cause all vector layers, regardless of their geometry type, to be returned.
 
 If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`

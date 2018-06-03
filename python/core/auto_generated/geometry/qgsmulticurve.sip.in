@@ -11,7 +11,7 @@
 class QgsMultiCurve: QgsGeometryCollection
 {
 %Docstring
- Multi curve geometry collection.
+Multi curve geometry collection.
 
 .. versionadded:: 2.10
 %End

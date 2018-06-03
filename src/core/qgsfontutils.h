@@ -105,8 +105,8 @@ class CORE_EXPORT QgsFontUtils
      * \param document DOM document
      * \param elementName name for DOM element
      * \returns DOM element containing font settings
-     * \since QGIS 2.10
      * \see setFromXmlElement
+     * \since QGIS 2.10
      */
     static QDomElement toXmlElement( const QFont &font, QDomDocument &document, const QString &elementName );
 
@@ -116,9 +116,9 @@ class CORE_EXPORT QgsFontUtils
      * \param font font to update
      * \param element DOM element
      * \returns true if properties were successfully read from element
-     * \since QGIS 2.10
      * \see toXmlElement
      * \see setFromXmlChildNode
+     * \since QGIS 2.10
      */
     static bool setFromXmlElement( QFont &font, const QDomElement &element );
 
@@ -129,9 +129,9 @@ class CORE_EXPORT QgsFontUtils
      * \param element DOM element
      * \param childNode name of child node
      * \returns true if child node exists and properties were successfully read from node
-     * \since QGIS 2.10
      * \see setFromXmlElement
      * \see toXmlElement
+     * \since QGIS 2.10
      */
     static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
 
@@ -155,8 +155,8 @@ class CORE_EXPORT QgsFontUtils
      * Returns the localized named style of a font, if such a translation is available.
      * \param namedStyle a named style, i.e. "Bold", "Italic", etc
      * \returns The localized named style
-     * \since QGIS 2.12
      * \see untranslateNamedStyle
+     * \since QGIS 2.12
      */
     static QString translateNamedStyle( const QString &namedStyle );
 
@@ -164,8 +164,8 @@ class CORE_EXPORT QgsFontUtils
      * Returns the english named style of a font, if possible.
      * \param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
      * \returns The english named style
-     * \since QGIS 2.12
      * \see translateNamedStyle
+     * \since QGIS 2.12
      */
     static QString untranslateNamedStyle( const QString &namedStyle );
 
@@ -183,8 +183,8 @@ class CORE_EXPORT QgsFontUtils
 
     /**
      * Adds a font \a family to the list of recently used font families.
-     * \since QGIS 3.0
      * \see recentFontFamilies()
+     * \since QGIS 3.0
      */
     static void addRecentFontFamily( const QString &family );
 

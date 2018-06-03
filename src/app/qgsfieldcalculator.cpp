@@ -28,6 +28,15 @@
 
 #include <QMessageBox>
 
+// FTC = FieldTypeCombo
+constexpr int FTC_TYPE_ROLE_IDX = 0;
+constexpr int FTC_TYPE_NAME_IDX = 1;
+constexpr int FTC_MINLEN_IDX = 2;
+constexpr int FTC_MAXLEN_IDX = 3;
+constexpr int FTC_MINPREC_IDX = 4;
+constexpr int FTC_MAXPREC_IDX = 5;
+constexpr int FTC_SUBTYPE_IDX = 6;
+
 QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   : QDialog( parent )
   , mVectorLayer( vl )
@@ -338,13 +347,13 @@ void QgsFieldCalculator::populateOutputFieldTypes()
   for ( int i = 0; i < typelist.size(); i++ )
   {
     mOutputFieldTypeComboBox->addItem( typelist[i].mTypeDesc );
-    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole );
-    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + 1 );
-    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + 2 );
-    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxLen, Qt::UserRole + 3 );
-    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinPrec, Qt::UserRole + 4 );
-    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
-    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mSubType ), Qt::UserRole + 6 );
+    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mType ), Qt::UserRole + FTC_TYPE_ROLE_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mTypeName, Qt::UserRole + FTC_TYPE_NAME_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinLen, Qt::UserRole + FTC_MINLEN_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxLen, Qt::UserRole + FTC_MAXLEN_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMinPrec, Qt::UserRole + FTC_MINPREC_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + FTC_MAXPREC_IDX );
+    mOutputFieldTypeComboBox->setItemData( i, static_cast<int>( typelist[i].mSubType ), Qt::UserRole + FTC_SUBTYPE_IDX );
   }
   mOutputFieldTypeComboBox->blockSignals( false );
   mOutputFieldTypeComboBox->setCurrentIndex( 0 );
@@ -416,8 +425,8 @@ void QgsFieldCalculator::mOutputFieldNameLineEdit_textChanged( const QString &te
 
 void QgsFieldCalculator::mOutputFieldTypeComboBox_activated( int index )
 {
-  mOutputFieldWidthSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 2 ).toInt() );
-  mOutputFieldWidthSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + 3 ).toInt() );
+  mOutputFieldWidthSpinBox->setMinimum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + FTC_MINLEN_IDX ).toInt() );
+  mOutputFieldWidthSpinBox->setMaximum( mOutputFieldTypeComboBox->itemData( index, Qt::UserRole + FTC_MAXLEN_IDX ).toInt() );
   mOutputFieldWidthSpinBox->setEnabled( mOutputFieldWidthSpinBox->minimum() < mOutputFieldWidthSpinBox->maximum() );
   if ( mOutputFieldWidthSpinBox->value() < mOutputFieldWidthSpinBox->minimum() )
     mOutputFieldWidthSpinBox->setValue( mOutputFieldWidthSpinBox->minimum() );
@@ -482,14 +491,33 @@ void QgsFieldCalculator::setOkButtonState()
 void QgsFieldCalculator::setPrecisionMinMax()
 {
   int idx = mOutputFieldTypeComboBox->currentIndex();
-  int minPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 4 ).toInt();
-  int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + 5 ).toInt();
-  mOutputFieldPrecisionSpinBox->setEnabled( minPrecType < maxPrecType );
-  mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
-  mOutputFieldPrecisionSpinBox->setMaximum( std::max( minPrecType, std::min( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+  int minPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + FTC_MINPREC_IDX ).toInt();
+  int maxPrecType = mOutputFieldTypeComboBox->itemData( idx, Qt::UserRole + FTC_MAXPREC_IDX ).toInt();
+  bool precisionIsEnabled = minPrecType < maxPrecType;
+  mOutputFieldPrecisionSpinBox->setEnabled( precisionIsEnabled );
+  // Do not set min/max if it's disabled or we'll loose the default value,
+  // see https://issues.qgis.org/issues/19050 - QGIS saves integer field when
+  // I create a new real field through field calculator (Update field works as intended)
+  if ( precisionIsEnabled )
+  {
+    mOutputFieldPrecisionSpinBox->setMinimum( minPrecType );
+    mOutputFieldPrecisionSpinBox->setMaximum( std::max( minPrecType, std::min( maxPrecType, mOutputFieldWidthSpinBox->value() ) ) );
+  }
 }
 
 void QgsFieldCalculator::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/attribute_table.html#editing-attribute-values" ) );
+}
+
+QgsField QgsFieldCalculator::fieldDefinition()
+{
+  return QgsField( mOutputFieldNameLineEdit->text(),
+                   static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_ROLE_IDX ).toInt() ),
+                   mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_TYPE_NAME_IDX ).toString(),
+                   mOutputFieldWidthSpinBox->value(),
+                   mOutputFieldPrecisionSpinBox->value(),
+                   QString(),
+                   static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + FTC_SUBTYPE_IDX ).toInt() )
+                 );
 }

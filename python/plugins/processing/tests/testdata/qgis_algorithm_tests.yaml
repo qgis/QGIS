@@ -642,6 +642,22 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Rectangles ovals diamonds variable
+    params:
+      HEIGHT: id
+      INPUT:
+        name: points.gml
+        type: vector
+      ROTATION: id2
+      SEGMENTS: 1
+      SHAPE: 0
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/rectanglesovalsdiamondsvariable.gml
+        type: vector
+
   - algorithm: native:mergelines
     name: Merge lines algorithm
     params:

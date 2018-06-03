@@ -435,7 +435,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        QAction *actionVertexEditor = menu.addAction( tr( "Vertex editor" ) );
+        QAction *actionVertexEditor = menu.addAction( tr( "Vertex Editor" ) );
         connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );  //#spellok
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
@@ -1036,10 +1036,18 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     return;
 
   mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
-  mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
-  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
-  connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
-  connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+  if ( !mVertexEditor )
+  {
+    mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
+    QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+    connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+    connect( mVertexEditor.get(), &QgsVertexEditor::editorClosed, this, &QgsVertexTool::cleanupVertexEditor );
+  }
+  else
+  {
+    mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
+  }
+
   connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 

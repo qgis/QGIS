@@ -535,8 +535,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
      *
-     * \since QGIS 3.0
      * \see supportedFiltersAndFormats()
+     * \since QGIS 3.0
      */
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
@@ -631,16 +631,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * Returns the reference scale for output.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see setSymbologyScale()
+     * \since QGIS 3.0
      */
     double symbologyScale() const { return mSymbologyScale; }
 
     /**
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see symbologyScale()
+     * \since QGIS 3.0
      */
     void setSymbologyScale( double scale );
 
@@ -649,16 +649,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * Returns a list of the default dataset options for a specified driver.
      * \param driverName name of OGR driver
-     * \since QGIS 3.0
      * \see defaultLayerOptions()
+     * \since QGIS 3.0
      */
     static QStringList defaultDatasetOptions( const QString &driverName );
 
     /**
      * Returns a list of the default layer options for a specified driver.
      * \param driverName name of OGR driver
-     * \since QGIS 3.0
      * \see defaultDatasetOptions()
+     * \since QGIS 3.0
      */
     static QStringList defaultLayerOptions( const QString &driverName );
 

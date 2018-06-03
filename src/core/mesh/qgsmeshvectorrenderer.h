@@ -38,8 +38,8 @@
  *
  * Helper private class for rendering vector datasets (e.g. velocity)
  *
- * \since QGIS 3.2
  * \note not available in Python bindings
+ * \since QGIS 3.2
  */
 class QgsMeshVectorRenderer
 {

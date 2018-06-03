@@ -75,9 +75,9 @@ Returns if the form is currently in editable mode.
 %Docstring
 Returns the current mode of the form.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setMode`
+
+.. versionadded:: 2.16
 %End
 
     void setMode( Mode mode );
@@ -86,9 +86,9 @@ Sets the current mode of the form.
 
 :param mode: form mode
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`mode`
+
+.. versionadded:: 2.16
 %End
 
     void setEditCommandMessage( const QString &message );

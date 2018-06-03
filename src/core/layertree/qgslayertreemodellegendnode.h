@@ -250,15 +250,15 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
 
     /**
      * Checks all items belonging to the same layer as this node.
-     * \since QGIS 2.14
      * \see uncheckAllItems()
+     * \since QGIS 2.14
      */
     void checkAllItems();
 
     /**
      * Unchecks all items belonging to the same layer as this node.
-     * \since QGIS 2.14
      * \see checkAllItems()
+     * \since QGIS 2.14
      */
     void uncheckAllItems();
 

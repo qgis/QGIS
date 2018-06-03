@@ -29,7 +29,6 @@ class QgsAnnotation;
 /**
  * \ingroup core
  * \class QgsAnnotationManager
- * \since QGIS 3.0
  *
  * \brief Manages storage of a set of QgsAnnotation annotation objects.
  *
@@ -39,6 +38,8 @@ class QgsAnnotation;
  *
  * QgsAnnotationManager retains ownership of all the annotations contained
  * in the manager.
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationManager : public QObject
 {

@@ -57,8 +57,8 @@ class CORE_EXPORT QgsMapHitTest
      * Tests whether a symbol is visible for a specified layer.
      * \param symbol symbol to find
      * \param layer vector layer
-     * \since QGIS 2.12
      * \see legendKeyVisible()
+     * \since QGIS 2.12
      */
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 
@@ -66,8 +66,8 @@ class CORE_EXPORT QgsMapHitTest
      * Tests whether a given legend key is visible for a specified layer.
      * \param ruleKey legend rule key
      * \param layer vector layer
-     * \since QGIS 2.14
      * \see symbolVisible()
+     * \since QGIS 2.14
      */
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 
@@ -85,8 +85,8 @@ class CORE_EXPORT QgsMapHitTest
      * \param usedSymbols set for storage of visible symbols
      * \param usedSymbolsRuleKey set of storage of visible legend rule keys
      * \param context render context
-     * \since QGIS 2.12
      * \note not available in Python bindings
+     * \since QGIS 2.12
      */
     void runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context );
 

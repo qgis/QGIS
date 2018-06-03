@@ -104,10 +104,19 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Removes the interior rings from the polygon. If the minimumAllowedArea
      * parameter is specified then only rings smaller than this minimum
      * area will be removed.
-     * \since QGIS 3.0
      * \see removeInteriorRing()
+     * \since QGIS 3.0
      */
     void removeInteriorRings( double minimumAllowedArea = -1 );
+
+    /**
+     * Removes any interior rings which are not valid from the polygon.
+     *
+     * For example, this removes unclosed rings and rings with less than 4 vertices.
+     *
+     * \since QGIS 3.0
+     */
+    void removeInvalidRings();
 
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
@@ -153,7 +162,9 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     void swapXy() override;
 
     QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
+
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsCurvePolygon.

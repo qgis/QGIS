@@ -24,8 +24,8 @@
  * A QProxyStyle subclass which correctly sets the base style to match
  * the QGIS application style, and handles object lifetime by correctly
  * parenting to a parent widget.
- * \since QGIS 3.2
  * \ingroup gui
+ * \since QGIS 3.2
  */
 class GUI_EXPORT QgsProxyStyle : public QProxyStyle
 {

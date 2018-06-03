@@ -16,7 +16,7 @@
 class QgsLineString: QgsCurve
 {
 %Docstring
- Line string geometry type, with support for z-dimension and m-values.
+Line string geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 2.10
 %End
@@ -85,6 +85,8 @@ Returns the specified point from inside the line string.
     virtual double xAt( int index ) const;
 
     virtual double yAt( int index ) const;
+
+
 
 
 
@@ -216,6 +218,7 @@ segment in the line.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual QPolygonF asQPolygonF() const;
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 

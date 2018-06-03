@@ -267,18 +267,18 @@ Sets format of text to be shown on top of the symbol.
 %Docstring
 Checks all items belonging to the same layer as this node.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 2.14
 %End
 
     void uncheckAllItems();
 %Docstring
 Unchecks all items belonging to the same layer as this node.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`checkAllItems`
+
+.. versionadded:: 2.14
 %End
 
 };

@@ -190,11 +190,11 @@ Returns the feature's attributes.
 
 .. seealso:: :py:func:`setAttributes`
 
-.. versionadded:: 2.9
-
 .. note::
 
    Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+
+.. versionadded:: 2.9
 %End
 
     void setAttributes( const QgsAttributes &attrs );
@@ -351,9 +351,9 @@ Assign a field map with the feature to allow attribute access by attribute name.
                        C++: Defaults to false
                        Python: Defaults to true
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`fields`
+
+.. versionadded:: 2.9
 %End
 
     QgsFields fields() const;

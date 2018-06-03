@@ -165,8 +165,8 @@ class CORE_EXPORT QgsOgcUtils
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
@@ -205,8 +205,8 @@ class CORE_EXPORT QgsOgcUtils
     /**
      * \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     class LayerProperties
     {
@@ -238,8 +238,8 @@ class CORE_EXPORT QgsOgcUtils
      *          custom functions
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,

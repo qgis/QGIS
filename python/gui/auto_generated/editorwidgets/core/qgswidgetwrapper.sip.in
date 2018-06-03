@@ -66,7 +66,7 @@ Create a new widget wrapper
 
     QWidget *widget();
 %Docstring
- Access the widget managed by this wrapper
+Access the widget managed by this wrapper
 
 :return: The widget
 %End
@@ -139,9 +139,9 @@ another suitable widget type instead.
 %Docstring
 Returns a reference to the editor widget's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
@@ -150,9 +150,9 @@ Sets the editor widget's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
   protected:

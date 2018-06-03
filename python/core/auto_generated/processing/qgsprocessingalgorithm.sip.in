@@ -43,6 +43,7 @@ Abstract base class for processing algorithms.
       FlagCanCancel,
       FlagRequiresMatchingCrs,
       FlagNoThreading,
+      FlagDisplayNameIsLiteral,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -766,11 +767,11 @@ not be loaded.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidRasterError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. versionadded:: 3.2
 %End
 
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
@@ -781,11 +782,11 @@ not be loaded.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. versionadded:: 3.2
 %End
 
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
@@ -796,11 +797,11 @@ not be created.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidRasterError`
+
+.. versionadded:: 3.2
 %End
 
   private:

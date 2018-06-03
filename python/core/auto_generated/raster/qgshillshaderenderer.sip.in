@@ -15,7 +15,7 @@
 class QgsHillshadeRenderer : QgsRasterRenderer
 {
 %Docstring
- A renderer for generating live hillshade models.
+A renderer for generating live hillshade models.
 
 .. versionadded:: 2.16
 %End
@@ -27,7 +27,7 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 %Docstring
- A renderer for generating live hillshade models.
+A renderer for generating live hillshade models.
 
 :param input: The input raster interface
 :param band: The band in the raster to use
@@ -40,7 +40,7 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring
- Factory method to create a new renderer
+Factory method to create a new renderer
 
 :param elem: A DOM element to create the renderer from.
 :param input: The raster input interface.
@@ -99,7 +99,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
     void setAzimuth( double azimuth );
 %Docstring
- Set the azimuth of the light source.
+Set the azimuth of the light source.
 
 :param azimuth: The azimuth of the light source, between 0 and 360.0
 
@@ -108,7 +108,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
     void setAltitude( double altitude );
 %Docstring
- Set the altitude of the light source
+Set the altitude of the light source
 
 :param altitude: the altitude
 
@@ -117,7 +117,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
     void setZFactor( double zfactor );
 %Docstring
- Set the Z scaling factor of the result image.
+Set the Z scaling factor of the result image.
 
 :param zfactor: The z factor
 

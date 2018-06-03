@@ -230,7 +230,7 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( resolvedPath ) );
+      mWebView->setUrl( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
     }
 #endif
 

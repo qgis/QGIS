@@ -276,7 +276,7 @@ class GdalUtils:
         if layer is None:
             path, ext = os.path.splitext(uri)
             format = QgsVectorFileWriter.driverForExtension(ext)
-            return '"' + uri + '"', '"' + format + '"'
+            return uri, '"' + format + '"'
 
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
@@ -348,7 +348,7 @@ class GdalUtils:
             path, ext = os.path.splitext(ogrstr)
             format = QgsVectorFileWriter.driverForExtension(ext)
 
-        return '"' + ogrstr + '"', '"' + format + '"'
+        return ogrstr, '"' + format + '"'
 
     @staticmethod
     def ogrLayerName(uri):

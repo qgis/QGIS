@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils
+from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils, QgsProcessingAlgorithm
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -94,7 +94,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
                            'qgis:createspatialindex': managementToolsMenu})
 
-rasterMenu = Processing.tr('&Raster')
+rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
                            'gdal:assignprojection': projectionsMenu})
@@ -183,11 +183,16 @@ def removeMenus():
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
     if actionText is None:
-        actionText = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase) + QCoreApplication.translate('Processing', '…')
+        if alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral:
+            alg_title = alg.displayName()
+        else:
+            alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        actionText = alg_title + QCoreApplication.translate('Processing', '…')
     action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
-    action.setData(alg.id())
-    action.triggered.connect(lambda: _executeAlgorithm(alg))
-    action.setObjectName("mProcessingUserMenu_%s" % alg.id())
+    alg_id = alg.id()
+    action.setData(alg_id)
+    action.triggered.connect(lambda: _executeAlgorithm(alg_id))
+    action.setObjectName("mProcessingUserMenu_%s" % alg_id)
 
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
@@ -221,11 +226,20 @@ def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
                 algorithmsToolbar.removeAction(action)
 
 
-def _executeAlgorithm(alg):
+def _executeAlgorithm(alg_id):
+    alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
+    if alg is None:
+        dlg = MessageDialog()
+        dlg.setTitle(Processing.tr('Missing Algorithm'))
+        dlg.setMessage(
+            Processing.tr('The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)').format(alg_id))
+        dlg.exec_()
+        return
+
     ok, message = alg.canExecute()
     if not ok:
         dlg = MessageDialog()
-        dlg.setTitle(Processing.tr('Missing dependency'))
+        dlg.setTitle(Processing.tr('Missing Dependency'))
         dlg.setMessage(
             Processing.tr('<h3>Missing dependency. This algorithm cannot '
                           'be run :-( </h3>\n{0}').format(message))

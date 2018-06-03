@@ -150,17 +150,17 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns the area of the rectangle.
-     * \since QGIS 3.0
      * \see width()
      * \see height()
      * \see perimeter()
+     * \since QGIS 3.0
      */
     double area() const { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
 
     /**
      * Returns the perimeter of the rectangle.
-     * \since QGIS 3.0
      * \see area()
+     * \since QGIS 3.0
      */
     double perimeter() const { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
 
@@ -193,8 +193,8 @@ class CORE_EXPORT QgsRectangle
     /**
      * Gets rectangle enlarged by buffer.
      * \note In earlier QGIS releases this method was named buffer().
-     * \since QGIS 3.0
      * \see grow()
+     * \since QGIS 3.0
     */
     QgsRectangle buffered( double width ) const;
 

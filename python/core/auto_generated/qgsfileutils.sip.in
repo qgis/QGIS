@@ -12,7 +12,7 @@
 class QgsFileUtils
 {
 %Docstring
- Class for file utilities.
+Class for file utilities.
 
 .. versionadded:: 3.0
 %End

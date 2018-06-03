@@ -1457,9 +1457,9 @@ Returns a text format matching the settings from an input ``font``.
 Unlike setFont(), this method also handles the size and size units
 from ``font``.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`toQFont`
+
+.. versionadded:: 3.2
 %End
 
     QFont toQFont() const;
@@ -1468,9 +1468,9 @@ Returns a QFont matching the relevant settings from this text format.
 Unlike font(), this method also handles the size and size units
 from the text format.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`fromQFont`
+
+.. versionadded:: 3.2
 %End
 
     static QgsTextFormat fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );

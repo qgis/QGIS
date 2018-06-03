@@ -505,9 +505,9 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
      *
-     * \since QGIS 3.0
      *
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 

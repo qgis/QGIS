@@ -57,6 +57,10 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     mRubberBand->update();
     mSnapIndicator->setMatch( e->mapPointMatch() );
   }
+  else
+  {
+    mSnapIndicator->setMatch( e->mapPointMatch() );
+  }
 }
 
 void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )

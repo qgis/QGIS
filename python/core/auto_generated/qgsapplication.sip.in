@@ -161,7 +161,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
 
     static void setUITheme( const QString &themeName );
 %Docstring
- Set the current UI theme used to style the interface.  Use uiThemes() to
+Set the current UI theme used to style the interface.  Use uiThemes() to
 find valid themes to use. Variables found in variables.qss will be added to the stylesheet
 on load.
 
@@ -174,7 +174,7 @@ on load.
 
     static QHash<QString, QString> uiThemes();
 %Docstring
- All themes found in ~/.qgis3/themes folder.
+All themes found in ~/.qgis3/themes folder.
 The path is to the root folder for the theme
 
 :return: A hash of theme name and theme path. Valid theme folders contain style.qss
@@ -370,36 +370,36 @@ Returns the short name regular expression for line edit validator
 %Docstring
 Returns the user's operating system login account name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userFullName`
+
+.. versionadded:: 2.14
 %End
 
     static QString userFullName();
 %Docstring
 Returns the user's operating system login account full display name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userLoginName`
+
+.. versionadded:: 2.14
 %End
 
     static QString osName();
 %Docstring
 Returns a string name of the operating system QGIS is running on.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`platform`
+
+.. versionadded:: 2.14
 %End
 
     static QString platform();
 %Docstring
 Returns the QGIS platform name, e.g., "desktop" or "server".
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`osName`
+
+.. versionadded:: 2.14
 %End
 
     static QString locale();

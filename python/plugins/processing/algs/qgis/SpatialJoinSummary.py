@@ -32,6 +32,7 @@ from collections import defaultdict
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (NULL,
+                       QgsApplication,
                        QgsField,
                        QgsFields,
                        QgsFeatureSink,
@@ -73,6 +74,12 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def icon(self):
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBasicStatistics.svg")
 
     def initAlgorithm(self, config=None):
         self.predicates = (
@@ -144,8 +151,9 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def tags(self):
         return self.tr(
-            "summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial").split(
-            ',')
+            "summary,aggregate,join,intersects,intersecting,touching,within,contains,overlaps,relation,spatial,"
+            "stats,statistics,sum,maximum,minimum,mean,average,standard,deviation,"
+            "count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct").split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)

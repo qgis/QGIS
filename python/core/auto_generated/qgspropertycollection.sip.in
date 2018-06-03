@@ -14,7 +14,7 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 class QgsAbstractPropertyCollection
 {
 %Docstring
- Abstract base class for QgsPropertyCollection like objects.
+Abstract base class for QgsPropertyCollection like objects.
 
 .. versionadded:: 3.0
 %End
@@ -304,7 +304,7 @@ You can use QgsXmlUtils.readVariant to save it to an XML document.
 class QgsPropertyCollection : QgsAbstractPropertyCollection
 {
 %Docstring
- A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
+A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
 
 Properties within a collection are referenced by an integer key. This is done to avoid the cost of
 string creation and comparisons which would be required by a string key. The intended use case is that
@@ -401,7 +401,7 @@ Convenience method, creates a QgsStaticProperty and stores it within the collect
 class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 {
 %Docstring
- An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
+An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
 priority over earlier collections.
 
 .. versionadded:: 3.0

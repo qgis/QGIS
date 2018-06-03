@@ -15,7 +15,7 @@
 class QgsWkbTypes
 {
 %Docstring
- Handles storage of information regarding WKB types and their properties.
+Handles storage of information regarding WKB types and their properties.
 
 .. versionadded:: 2.10
 %End
@@ -184,9 +184,9 @@ Returns the coordinate dimension of the geometry type as an integer. Returned va
 be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
 Invalid geometry types will return a dimension of 0.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`wkbDimensions`
+
+.. versionadded:: 2.14
 %End
 
     static GeometryType geometryType( Type type );
@@ -245,13 +245,13 @@ Adds the z dimension to a WKB type and returns the new type
 
 :param type: original type
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`addM`
 
 .. seealso:: :py:func:`dropZ`
 
 .. seealso:: :py:func:`hasZ`
+
+.. versionadded:: 2.12
 %End
 
     static Type addM( Type type );
@@ -260,13 +260,13 @@ Adds the m dimension to a WKB type and returns the new type
 
 :param type: original type
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`addZ`
 
 .. seealso:: :py:func:`dropM`
 
 .. seealso:: :py:func:`hasM`
+
+.. versionadded:: 2.12
 %End
 
     static Type dropZ( Type type );
@@ -275,11 +275,11 @@ Drops the z dimension (if present) for a WKB type and returns the new type.
 
 :param type: original type
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`dropM`
 
 .. seealso:: :py:func:`addZ`
+
+.. versionadded:: 2.14
 %End
 
     static Type dropM( Type type );
@@ -288,11 +288,11 @@ Drops the m dimension (if present) for a WKB type and returns the new type.
 
 :param type: original type
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`dropZ`
 
 .. seealso:: :py:func:`addM`
+
+.. versionadded:: 2.14
 %End
 
     static Type to25D( Type type );

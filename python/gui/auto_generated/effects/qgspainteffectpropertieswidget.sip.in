@@ -14,7 +14,7 @@
 class QgsPaintEffectPropertiesWidget : QWidget
 {
 %Docstring
- A widget which modifies the properties of a QgsPaintEffect
+A widget which modifies the properties of a QgsPaintEffect
 
 .. versionadded:: 2.9
 %End

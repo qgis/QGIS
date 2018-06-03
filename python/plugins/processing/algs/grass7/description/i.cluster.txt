@@ -10,4 +10,4 @@ QgsProcessingParameterNumber|convergence|Percent convergence|QgsProcessingParame
 QgsProcessingParameterNumber|separation|Cluster separation|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
 QgsProcessingParameterNumber|min_size|Minimum number of pixels in a class|QgsProcessingParameterNumber.Integer|17|True|1|None
 QgsProcessingParameterFileDestination|signaturefile|Signature File|Txt files (*.txt)|None|False
-QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|reportfile|Final Report File|Txt files (*.txt)|None|True

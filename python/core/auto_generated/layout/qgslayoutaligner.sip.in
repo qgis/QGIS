@@ -11,7 +11,7 @@
 class QgsLayoutAligner
 {
 %Docstring
- Handles aligning and distributing sets of layout items.
+Handles aligning and distributing sets of layout items.
 
 QgsLayoutAligner contains methods for automatically aligning and distributing
 sets of layout items, e.g. aligning a group of items to top or left sides.

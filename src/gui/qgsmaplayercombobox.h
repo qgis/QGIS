@@ -61,8 +61,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
 
     /**
      * Sets a list of data providers which should be excluded from the combobox.
-     * \since QGIS 3.0
      * \see excludedProviders()
+     * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 
@@ -126,8 +126,8 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     /**
      * Returns the layer currently shown at the specified index within the combo box.
      * \param layerIndex position of layer to return
-     * \since QGIS 2.10
      * \see currentLayer
+     * \since QGIS 2.10
      */
     QgsMapLayer *layer( int layerIndex ) const;
 

@@ -364,8 +364,8 @@ class CORE_EXPORT QgsUnitTypes
      * \param keepBaseUnit set to false to allow conversion of large distances to more suitable units, e.g., meters to
      * kilometers
      * \returns formatted distance string
-     * \since QGIS 3.0
      * \see formatArea()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 
@@ -377,8 +377,8 @@ class CORE_EXPORT QgsUnitTypes
      * \param keepBaseUnit set to false to allow conversion of large areas to more suitable units, e.g., square meters to
      * square kilometers
      * \returns formatted area string
-     * \since QGIS 3.0
      * \see formatDistance()
+     * \since QGIS 3.0
      */
     Q_INVOKABLE static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 

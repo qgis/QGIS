@@ -12,7 +12,7 @@
 class QgsTriangle : QgsPolygon
 {
 %Docstring
- Triangle geometry type.
+Triangle geometry type.
 
 .. versionadded:: 3.0
 %End
