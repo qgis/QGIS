@@ -4,11 +4,12 @@
 
 INCLUDE_EXTENSIONS="h|cpp|hpp|py|c"
 EXCLUDE_LIST="(.*\\/(qtermwidget)\\/|ui_defaults\\.h|CREDITS|TODO|README|URI|^[^.]*$|.*\\.(?!($INCLUDE_EXTENSIONS)$))"
+LICENSE_CHECK="external/licensecheck/licensecheck.pl"
 
 DIR=$(git rev-parse --show-toplevel)
 
 pushd "${DIR}" || exit > /dev/null
-missing=$(! { external/licensecheck/licensecheck.pl -r -i "$EXCLUDE_LIST" src & licensecheck -r -i "$EXCLUDE_LIST" python; } | grep UNKNOWN)
+missing=$(! { "$LICENSE_CHECK" -r -i "$EXCLUDE_LIST" src & "$LICENSE_CHECK" -r -i "$EXCLUDE_LIST" python; } | grep UNKNOWN)
 
 popd || exit > /dev/null
 
