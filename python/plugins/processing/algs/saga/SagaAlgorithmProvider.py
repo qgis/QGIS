@@ -123,13 +123,16 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         return 'saga'
 
     def defaultVectorFileExtension(self, hasGeometry=True):
-        return 'shp'
+        return 'shp' if hasGeometry else 'dbf'
 
     def defaultRasterFileExtension(self):
         return 'sdat'
 
-    def supportedOutputTableExtensions(self):
-        return ['dbf']
+    def supportedOutputRasterLayerExtensions(self):
+        return ['sdat']
+
+    def supportedOutputVectorLayerExtensions(self):
+        return ['shp', 'dbf']
 
     def supportsNonFileBasedOutput(self):
         """
