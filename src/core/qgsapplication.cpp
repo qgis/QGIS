@@ -47,6 +47,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
+#include "qgsstyle.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1083,6 +1084,8 @@ void QgsApplication::exitQgis()
   delete QgsProject::instance();
 
   delete QgsProviderRegistry::instance();
+
+  QgsStyle::cleanDefaultStyle();
 
   // tear-down GDAL/OGR
   OGRCleanupAll();

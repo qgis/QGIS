@@ -134,6 +134,7 @@ returns 0 if not found
 Returns default application-wide style
 %End
 
+
     bool tagSymbol( StyleEntity type, const QString &symbol, const QStringList &tags );
 %Docstring
 Tags the symbol with the tags in the list

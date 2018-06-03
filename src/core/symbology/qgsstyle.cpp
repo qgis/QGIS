@@ -68,6 +68,11 @@ QgsStyle *QgsStyle::defaultStyle() // static
   return sDefaultStyle;
 }
 
+void QgsStyle::cleanDefaultStyle() // static
+{
+  delete sDefaultStyle;
+  sDefaultStyle = nullptr;
+}
 
 void QgsStyle::clear()
 {

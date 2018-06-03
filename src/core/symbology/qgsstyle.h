@@ -167,6 +167,9 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Returns default application-wide style
     static QgsStyle *defaultStyle();
 
+    //! Deletes the default style. Only to be used by QgsApplication::exitQgis()
+    static void cleanDefaultStyle() SIP_SKIP;
+
     /**
      * Tags the symbol with the tags in the list
      *
