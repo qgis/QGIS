@@ -791,7 +791,18 @@ void QgsProcessingModelAlgorithm::updateDestinationParameters()
       param->setName( outputIt->childId() + ':' + outputIt->name() );
       param->setDescription( outputIt->description() );
       param->setDefaultValue( outputIt->defaultValue() );
-      addParameter( param.release() );
+
+      QgsProcessingDestinationParameter *newDestParam = dynamic_cast< QgsProcessingDestinationParameter * >( param.get() );
+      if ( addParameter( param.release() ) && newDestParam )
+      {
+        if ( QgsProcessingProvider *provider = childIt->algorithm()->provider() )
+        {
+          // we need to copy the constraints given by the provider which creates this output across
+          // and replace those which have been set to match the model provider's constraints
+          newDestParam->setSupportsNonFileBasedOutput( provider->supportsNonFileBasedOutput() );
+          newDestParam->mOriginalProvider = provider;
+        }
+      }
     }
   }
 }

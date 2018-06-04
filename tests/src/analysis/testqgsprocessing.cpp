@@ -404,6 +404,62 @@ class DummyProvider3 : public QgsProcessingProvider
 
 };
 
+class DummyAlgorithm2 : public QgsProcessingAlgorithm
+{
+  public:
+
+    DummyAlgorithm2( const QString &name ) : mName( name ) { mFlags = QgsProcessingAlgorithm::flags(); }
+
+    void initAlgorithm( const QVariantMap & = QVariantMap() ) override
+    {
+      addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "vector_dest" ) ) );
+      addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "raster_dest" ) ) );
+      addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "sink" ) ) );
+    }
+    QString name() const override { return mName; }
+    QString displayName() const override { return mName; }
+    QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
+
+    Flags flags() const override { return mFlags; }
+    DummyAlgorithm2 *createInstance() const override { return new DummyAlgorithm2( name() ); }
+
+    QString mName;
+
+    Flags mFlags;
+
+};
+
+
+class DummyProvider4 : public QgsProcessingProvider
+{
+  public:
+
+    DummyProvider4()  = default;
+    QString id() const override { return QStringLiteral( "dummy4" ); }
+    QString name() const override { return QStringLiteral( "dummy4" ); }
+
+    bool supportsNonFileBasedOutput() const override
+    {
+      return false;
+    }
+
+    QStringList supportedOutputVectorLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mif" );
+    }
+
+    QStringList supportedOutputRasterLayerExtensions() const override
+    {
+      return QStringList() << QStringLiteral( "mig" );
+    }
+
+    void loadAlgorithms() override
+    {
+      QVERIFY( addAlgorithm( new DummyAlgorithm2( "alg1" ) ) );
+    }
+
+};
+
 class DummyParameterType : public QgsProcessingParameterType
 {
 
@@ -494,6 +550,7 @@ class TestQgsProcessing: public QObject
     void asPythonCommand();
     void modelerAlgorithm();
     void modelExecution();
+    void modelWithProviderWithLimitedTypes();
     void modelVectorOutputIsCompatibleType();
     void modelAcceptableValues();
     void tempUtils();
@@ -5769,6 +5826,7 @@ void TestQgsProcessing::modelerAlgorithm()
   QCOMPARE( alg7.destinationParameterDefinitions().count(), 1 );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg7.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "native" ) );
   QCOMPARE( alg7.outputDefinitions().count(), 1 );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_output" ) );
   QCOMPARE( alg7.outputDefinitions().at( 0 )->type(), QStringLiteral( "outputVector" ) );
@@ -6043,6 +6101,59 @@ void TestQgsProcessing::modelExecution()
                               "results['MY_OUT']=outputs['cx3']['OUTPUT']\n"
                               "return results" ).split( '\n' );
   QCOMPARE( actualParts, expectedParts );
+}
+
+void TestQgsProcessing::modelWithProviderWithLimitedTypes()
+{
+  QgsApplication::processingRegistry()->addProvider( new DummyProvider4() );
+
+  QgsProcessingModelAlgorithm alg( "test", "testGroup" );
+  QgsProcessingModelChildAlgorithm algc1;
+  algc1.setChildId( "cx1" );
+  algc1.setAlgorithmId( "dummy4:alg1" );
+  QMap<QString, QgsProcessingModelOutput> algc1outputs;
+  QgsProcessingModelOutput algc1out1( QStringLiteral( "my_vector_output" ) );
+  algc1out1.setChildId( "cx1" );
+  algc1out1.setChildOutputName( "vector_dest" );
+  algc1out1.setDescription( QStringLiteral( "my output" ) );
+  algc1outputs.insert( QStringLiteral( "my_vector_output" ), algc1out1 );
+  QgsProcessingModelOutput algc1out2( QStringLiteral( "my_raster_output" ) );
+  algc1out2.setChildId( "cx1" );
+  algc1out2.setChildOutputName( "raster_dest" );
+  algc1out2.setDescription( QStringLiteral( "my output" ) );
+  algc1outputs.insert( QStringLiteral( "my_raster_output" ), algc1out2 );
+  QgsProcessingModelOutput algc1out3( QStringLiteral( "my_sink_output" ) );
+  algc1out3.setChildId( "cx1" );
+  algc1out3.setChildOutputName( "sink" );
+  algc1out3.setDescription( QStringLiteral( "my output" ) );
+  algc1outputs.insert( QStringLiteral( "my_sink_output" ), algc1out3 );
+  algc1.setModelOutputs( algc1outputs );
+  alg.addChildAlgorithm( algc1 );
+  // verify that model has destination parameter created
+  QCOMPARE( alg.destinationParameterDefinitions().count(), 3 );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->name(), QStringLiteral( "cx1:my_vector_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 2 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->defaultFileExtension(), QStringLiteral( "mif" ) );
+  QVERIFY( static_cast< const QgsProcessingParameterVectorDestination * >( alg.destinationParameterDefinitions().at( 2 ) )->generateTemporaryDestination().endsWith( QStringLiteral( ".mif" ) ) );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 2 ) )->supportsNonFileBasedOutput() );
+
+  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->name(), QStringLiteral( "cx1:my_raster_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 0 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->supportedOutputRasterLayerExtensions(), QStringList() << QStringLiteral( "mig" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->defaultFileExtension(), QStringLiteral( "mig" ) );
+  QVERIFY( static_cast< const QgsProcessingParameterRasterDestination * >( alg.destinationParameterDefinitions().at( 0 ) )->generateTemporaryDestination().endsWith( QStringLiteral( ".mig" ) ) );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
+
+  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->name(), QStringLiteral( "cx1:my_sink_output" ) );
+  QCOMPARE( alg.destinationParameterDefinitions().at( 1 )->description(), QStringLiteral( "my output" ) );
+  QCOMPARE( static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->originalProvider()->id(), QStringLiteral( "dummy4" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterFeatureSink * >( alg.destinationParameterDefinitions().at( 1 ) )->supportedOutputVectorLayerExtensions(), QStringList() << QStringLiteral( "mif" ) );
+  QCOMPARE( static_cast< const QgsProcessingParameterFeatureSink * >( alg.destinationParameterDefinitions().at( 1 ) )->defaultFileExtension(), QStringLiteral( "mif" ) );
+  QVERIFY( static_cast< const QgsProcessingParameterFeatureSink * >( alg.destinationParameterDefinitions().at( 1 ) )->generateTemporaryDestination().endsWith( QStringLiteral( ".mif" ) ) );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
 }
 
 void TestQgsProcessing::modelVectorOutputIsCompatibleType()

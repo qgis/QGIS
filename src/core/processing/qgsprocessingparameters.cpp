@@ -27,6 +27,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingparametertype.h"
+#include "qgsrasterfilewriter.h"
 #include <functional>
 
 
@@ -3285,7 +3286,11 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefini
 
 QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
 {
-  if ( QgsProcessingProvider *p = provider() )
+  if ( originalProvider() )
+  {
+    return originalProvider()->defaultVectorFileExtension( hasGeometry() );
+  }
+  else if ( QgsProcessingProvider *p = provider() )
   {
     return p->defaultVectorFileExtension( hasGeometry() );
   }
@@ -3300,6 +3305,22 @@ QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
     {
       return QStringLiteral( "dbf" );
     }
+  }
+}
+
+QStringList QgsProcessingParameterFeatureSink::supportedOutputVectorLayerExtensions() const
+{
+  if ( originalProvider() )
+  {
+    return originalProvider()->supportedOutputVectorLayerExtensions();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->supportedOutputVectorLayerExtensions();
+  }
+  else
+  {
+    return QgsVectorFileWriter::supportedFormatExtensions();
   }
 }
 
@@ -3457,7 +3478,11 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
 
 QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
 {
-  if ( QgsProcessingProvider *p = provider() )
+  if ( originalProvider() )
+  {
+    return originalProvider()->defaultRasterFileExtension();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
   {
     return p->defaultRasterFileExtension();
   }
@@ -3465,6 +3490,22 @@ QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
   {
     QgsSettings settings;
     return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  }
+}
+
+QStringList QgsProcessingParameterRasterDestination::supportedOutputRasterLayerExtensions() const
+{
+  if ( originalProvider() )
+  {
+    return originalProvider()->supportedOutputRasterLayerExtensions();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->supportedOutputRasterLayerExtensions();
+  }
+  else
+  {
+    return QgsRasterFileWriter::supportedFormatExtensions();
   }
 }
 
@@ -3805,7 +3846,11 @@ QgsProcessingOutputDefinition *QgsProcessingParameterVectorDestination::toOutput
 
 QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
 {
-  if ( QgsProcessingProvider *p = provider() )
+  if ( originalProvider() )
+  {
+    return originalProvider()->defaultVectorFileExtension( hasGeometry() );
+  }
+  else if ( QgsProcessingProvider *p = provider() )
   {
     return p->defaultVectorFileExtension( hasGeometry() );
   }
@@ -3820,6 +3865,22 @@ QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
     {
       return QStringLiteral( "dbf" );
     }
+  }
+}
+
+QStringList QgsProcessingParameterVectorDestination::supportedOutputVectorLayerExtensions() const
+{
+  if ( originalProvider() )
+  {
+    return originalProvider()->supportedOutputVectorLayerExtensions();
+  }
+  else if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->supportedOutputVectorLayerExtensions();
+  }
+  else
+  {
+    return QgsVectorFileWriter::supportedFormatExtensions();
   }
 }
 

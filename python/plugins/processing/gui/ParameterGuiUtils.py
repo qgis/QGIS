@@ -68,18 +68,12 @@ def getFileFilter(param):
     elif param.type() == 'raster':
         return QgsProviderRegistry.instance().fileRasterFilters()
     elif param.type() == 'rasterDestination':
-        if param.provider() is not None:
-            exts = param.provider().supportedOutputRasterLayerExtensions()
-        else:
-            exts = QgsRasterFileWriter.supportedFormatExtensions()
+        exts = param.supportedOutputRasterLayerExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts) + ';;' + tr('All files (*.*)')
     elif param.type() in ('sink', 'vectorDestination'):
-        if param.provider() is not None:
-            exts = param.provider().supportedOutputVectorLayerExtensions()
-        else:
-            exts = QgsVectorFileWriter.supportedFormatExtensions()
+        exts = param.supportedOutputVectorLayerExtensions()
         for i in range(len(exts)):
             exts[i] = tr('{0} files (*.{1})', 'ParameterVector').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts) + ';;' + tr('All files (*.*)')
