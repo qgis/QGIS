@@ -176,6 +176,7 @@ void TestQgsStringUtils::titleCase_data()
   QTest::newRow( "last word2" ) << "Ends with small word of" << "Ends With Small Word Of";
   QTest::newRow( "string 6" ) << "Merge VRT(s)" << "Merge VRT(s)";
   QTest::newRow( "string 6" ) << "multiple sentences. more than one." << "Multiple Sentences. More Than One.";
+  QTest::newRow( "accented" ) << "extraer vértices" << "Extraer Vértices";
 }
 
 void TestQgsStringUtils::titleCase()
