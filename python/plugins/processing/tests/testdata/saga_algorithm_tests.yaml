@@ -45,3 +45,25 @@ tests:
       RESULT:
         name: expected/saga/add_grid_to_points.shp
         type: vector
+
+  - algorithm: saga:reclassifyvaluessimple
+    name: Reclassify values (simple)
+    params:
+      GRID_IN:
+        name: raster.tif
+        type: raster
+      LOOKUP:
+      - 800
+      - 840
+      - 1
+      - 840
+      - 870
+      - 2
+      - 870
+      - 1000
+      - 3
+      METHOD: 2
+    results:
+      GRID_OUT:
+        hash: 57437ebf7eb3667c5aa390598120967b0a2cd5d85751185bb445d1f8
+        type: rasterhash
