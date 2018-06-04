@@ -28,6 +28,7 @@
 
 #include "qgsdxfexport.h"
 #include "qgsdxfpallabeling.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
@@ -1076,7 +1077,21 @@ void QgsDxfExport::writeEntities()
             int nSymbolLayers = ( *symbolIt )->symbolLayerCount();
             for ( int i = 0; i < nSymbolLayers; ++i )
             {
-              addFeature( sctx, ct, lName, ( *symbolIt )->symbolLayer( i ), *symbolIt );
+              QgsSymbolLayer *sl = ( *symbolIt )->symbolLayer( i );
+              if ( !sl )
+              {
+                continue;
+              }
+
+              bool isGeometryGenerator = ( sl->layerType() == "GeometryGenerator" );
+              if ( isGeometryGenerator )
+              {
+                addGeometryGeneratorSymbolLayer( sctx, ct, lName, sl, true );
+              }
+              else
+              {
+                addFeature( sctx, ct, lName, sl, *symbolIt );
+              }
             }
           }
         }
@@ -1088,7 +1103,15 @@ void QgsDxfExport::writeEntities()
           {
             continue;
           }
-          addFeature( sctx, ct, lName, s->symbolLayer( 0 ), s );
+
+          if ( s->symbolLayer( 0 )->layerType() == "GeometryGenerator" )
+          {
+            addGeometryGeneratorSymbolLayer( sctx, ct, lName, s->symbolLayer( 0 ), false );
+          }
+          else
+          {
+            addFeature( sctx, ct, lName, s->symbolLayer( 0 ), s );
+          }
         }
 
         if ( lp )
@@ -4124,6 +4147,46 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
     isGap = !isGap;
+  }
+}
+
+void QgsDxfExport::addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers )
+{
+  QgsGeometryGeneratorSymbolLayer *gg = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( symbolLayer );
+  if ( !gg )
+  {
+    return;
+  }
+
+  const QgsFeature *fet = ctx.feature();
+  if ( !fet )
+  {
+    return;
+  }
+
+  QgsFeature f = *fet;
+
+  QgsExpressionContext &expressionContext = ctx.renderContext().expressionContext();
+  QgsExpression geomExpr( gg->geometryExpression() );
+  geomExpr.prepare( &expressionContext );
+  QgsGeometry geom = geomExpr.evaluate( &expressionContext ).value<QgsGeometry>();
+  f.setGeometry( geom );
+
+  QgsSymbol *symbol = gg->subSymbol();
+  if ( symbol && symbol->symbolLayerCount() > 0 )
+  {
+    QgsExpressionContextScope *symbolExpressionContextScope = symbol->symbolRenderContext()->expressionContextScope();
+    symbolExpressionContextScope->setFeature( f );
+
+    ctx.setFeature( &f );
+
+    int nSymbolLayers = allSymbolLayers ? symbol->symbolLayerCount() : 1;
+    for ( int i = 0; i < nSymbolLayers; ++i )
+    {
+      addFeature( ctx, ct, layer, symbol->symbolLayer( i ), symbol );
+    }
+
+    ctx.setFeature( fet );
   }
 }
 
