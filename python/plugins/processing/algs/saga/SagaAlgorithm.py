@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 
 import os
 import importlib
-from copy import deepcopy
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingUtils,
@@ -226,8 +225,8 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                     self.exportedLayers[param.name()] = files
                 else:
-                    temp_params = deepcopy(parameters)
                     for layer in layers:
+                        temp_params = {}
                         temp_params[param.name()] = layer
 
                         if not crs:
@@ -237,7 +236,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
                             crs = source.sourceCrs()
 
-                        layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, 'shp',
+                        layer_path = self.parameterAsCompatibleSourceLayerPath(temp_params, param.name(), context, ['shp'], 'shp',
                                                                                feedback=feedback)
                         if layer_path:
                             if param.name() in self.exportedLayers:
