@@ -36,7 +36,7 @@ bool QgsVirtualLayerTask::run()
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( tr( "Reload error: %1" ).arg( e.what() ) );
+    QgsDebugMsg( QStringLiteral( "Reload error: %1" ).arg( e.what() ) );
     rc = false;
   }
   return rc;
