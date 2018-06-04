@@ -68,7 +68,7 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       {
         smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
         newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
-        splitWords = QRegularExpression( QStringLiteral( "\\b" ) );
+        splitWords = QRegularExpression( QStringLiteral( "\\b" ), QRegularExpression::UseUnicodePropertiesOption );
       }
 
       const QStringList parts = string.split( splitWords, QString::SkipEmptyParts );
