@@ -5836,7 +5836,8 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                                         " FROM layer_styles"
                                         " WHERE f_table_schema=%1"
                                         " AND f_table_name=%2"
-                                        " AND f_geometry_column=%3" )
+                                        " AND f_geometry_column=%3"
+                                        " ORDER BY useasdefault DESC, update_time DESC" )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.schema() ) )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.table() ) )
                                .arg( QgsSpatiaLiteProvider::quotedValue( dsUri.geometryColumn() ) );
