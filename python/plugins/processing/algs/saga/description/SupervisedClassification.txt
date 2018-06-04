@@ -17,6 +17,6 @@ QgsProcessingParameterBoolean|WTA_2|Minimum Distance|False
 QgsProcessingParameterBoolean|WTA_3|Mahalanobis Distance|False
 QgsProcessingParameterBoolean|WTA_4|Maximum Likelihood|False
 QgsProcessingParameterBoolean|WTA_5|Spectral Angle Mapping|False
-OutputTable|CLASS_INFO|Class Information
+QgsProcessingParameterVectorDestination|CLASS_INFO|Class Information
 QgsProcessingParameterRasterDestination|CLASSES|Classification
 QgsProcessingParameterRasterDestination|QUALITY|Quality

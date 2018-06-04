@@ -15,9 +15,9 @@ QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameter
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False|1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False|1|None
 QgsProcessingParameterString|VAR_MODEL|Variogram Model|a + b * x
-OutputTable|INFO_COEFF|Regression: Coefficients
-OutputTable|INFO_MODEL|Regression: Model
-OutputTable|INFO_STEPS|Regression: Steps
+QgsProcessingParameterVectorDestination|INFO_COEFF|Regression: Coefficients
+QgsProcessingParameterVectorDestination|INFO_MODEL|Regression: Model
+QgsProcessingParameterVectorDestination|INFO_STEPS|Regression: Steps
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
 QgsProcessingParameterBoolean|INTERCEPT|Intercept|True

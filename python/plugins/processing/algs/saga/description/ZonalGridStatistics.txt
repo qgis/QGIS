@@ -5,4 +5,4 @@ QgsProcessingParameterMultipleLayers|CATLIST|Categorial Grids|3|None|True
 QgsProcessingParameterMultipleLayers|STATLIST|Grids to analyze|3|None|True
 QgsProcessingParameterRasterLayer|ASPECT|Aspect|None|True
 QgsProcessingParameterBoolean|SHORTNAMES|Short Field Names|True
-OutputTable|OUTTAB|Zonal Statistics
+QgsProcessingParameterVectorDestination|OUTTAB|Zonal Statistics
