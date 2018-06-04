@@ -1751,7 +1751,7 @@ The 2 types should match.
     }
 %End
 
-    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation

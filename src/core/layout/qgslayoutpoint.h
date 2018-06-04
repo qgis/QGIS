@@ -43,18 +43,18 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Constructor for QgsLayoutPoint.
     */
-    QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutPoint( double x, double y, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for QgsLayoutPoint.
     */
-    explicit QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QPointF point, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for an empty point, where both x and y are set to 0.
      * \param units units for measurement
     */
-    explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Sets new x and y coordinates for the point.
@@ -137,22 +137,22 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Multiplies the x and y by a scalar value.
      */
-    QgsLayoutPoint operator*( const double v ) const;
+    QgsLayoutPoint operator*( double v ) const;
 
     /**
      * Multiplies the x and y by a scalar value.
      */
-    QgsLayoutPoint operator*=( const double v );
+    QgsLayoutPoint operator*=( double v );
 
     /**
      * Divides the x and y by a scalar value.
      */
-    QgsLayoutPoint operator/( const double v ) const;
+    QgsLayoutPoint operator/( double v ) const;
 
     /**
      * Divides the x and y by a scalar value.
      */
-    QgsLayoutPoint operator/=( const double v );
+    QgsLayoutPoint operator/=( double v );
 
   private:
 

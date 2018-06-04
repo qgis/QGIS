@@ -51,7 +51,7 @@ class CORE_EXPORT QgsLayoutUtils
      * If \a allowNegative is true then angles between (-360, 360) are allowed. If false,
      * angles are converted to positive angles in the range [0, 360).
      */
-    static double normalizedAngle( const double angle, const bool allowNegative = false );
+    static double normalizedAngle( double angle, bool allowNegative = false );
 
     /**
      * Snaps an \a angle (in degrees) to its closest 45 degree angle.
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsLayoutUtils
      * \param afterMax maximum value in after range
      * \returns position scaled to range specified by afterMin and afterMax
      */
-    static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
+    static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
     /**
      * Returns a \a font where size is set in points and the size has been upscaled with FONT_WORKAROUND_SCALE
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsLayoutUtils
      *
      * The \a flags parameter allows for passing Qt::TextFlags to control appearance of rendered text.
      */
-    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), const Qt::AlignmentFlag halignment = Qt::AlignLeft, const Qt::AlignmentFlag valignment = Qt::AlignTop, const int flags = Qt::TextWordWrap );
+    static void drawText( QPainter *painter, const QRectF &rectangle, const QString &text, const QFont &font, const QColor &color = QColor(), Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap );
 
     /**
      * Calculates the largest scaled version of \a originalRect which fits within \a boundsRect, when it is rotated by
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsLayoutUtils
      * \param rotation the rotation in degrees to be applied to the rectangle
      * \returns largest scaled version of the rectangle possible
      */
-    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
+    static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, double rotation );
 
     /**
      * Decodes a \a string representing a paper orientation and returns the
@@ -231,13 +231,13 @@ class CORE_EXPORT QgsLayoutUtils
      * Returns the size in mm corresponding to a font \a pointSize.
      * \see mmToPoints()
      */
-    static double pointsToMM( const double pointSize );
+    static double pointsToMM( double pointSize );
 
     /**
      * Returns the size in points corresponding to a font \a mmSize in mm.
      * \see pointsToMM()
      */
-    static double mmToPoints( const double mmSize );
+    static double mmToPoints( double mmSize );
 
     friend class TestQgsLayoutUtils;
 };

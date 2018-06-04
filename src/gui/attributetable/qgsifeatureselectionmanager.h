@@ -79,7 +79,7 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
      * \param deselected      Ids of all features which have previously been selected but are not any more
      * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 };
 
 #endif // QGSIFEATURESELECTIONMANAGER_H

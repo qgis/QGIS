@@ -466,22 +466,22 @@ class DummyParameterType : public QgsProcessingParameterType
 
     // QgsProcessingParameterType interface
   public:
-    QgsProcessingParameterDefinition *create( const QString &name ) const
+    QgsProcessingParameterDefinition *create( const QString &name ) const override
     {
       return new QgsProcessingParameterString( name );
     }
 
-    QString description() const
+    QString description() const override
     {
       return QStringLiteral( "Description" );
     }
 
-    QString name() const
+    QString name() const override
     {
       return QStringLiteral( "ParamType" );
     }
 
-    QString id() const
+    QString id() const override
     {
       return QStringLiteral( "paramType" );
     }
@@ -821,7 +821,7 @@ class TestPostProcessor : public QgsProcessingLayerPostProcessorInterface
       : deleted( deleted )
     {}
 
-    ~TestPostProcessor()
+    ~TestPostProcessor() override
     {
       *deleted = true;
     }

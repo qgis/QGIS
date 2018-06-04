@@ -90,7 +90,7 @@ Returns a detailed message about errors while parsing a :py:class:`QgsExpression
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
     QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 

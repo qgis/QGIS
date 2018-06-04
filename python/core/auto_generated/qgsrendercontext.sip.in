@@ -255,7 +255,7 @@ of any rendering operations.
 
     void setSelectionColor( const QColor &color );
 
-    void setShowSelection( const bool showSelection );
+    void setShowSelection( bool showSelection );
 %Docstring
 Sets whether vector selections should be shown in the rendered map
 

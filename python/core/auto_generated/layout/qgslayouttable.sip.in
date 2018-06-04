@@ -124,7 +124,7 @@ Constructor for QgsLayoutTable, belonging to the specified ``layout``.
 
     ~QgsLayoutTable();
 
-    void setCellMargin( const double margin );
+    void setCellMargin( double margin );
 %Docstring
 Sets the ``margin`` distance in mm between cell borders and their contents.
 
@@ -138,7 +138,7 @@ Returns the margin distance between cell borders and their contents in mm.
 .. seealso:: :py:func:`setCellMargin`
 %End
 
-    void setEmptyTableBehavior( const EmptyTableMode mode );
+    void setEmptyTableBehavior( EmptyTableMode mode );
 %Docstring
 Sets the behavior ``mode`` for empty tables with no content rows.
 
@@ -175,7 +175,7 @@ set to ShowMessage.
 .. seealso:: :py:func:`emptyTableBehavior`
 %End
 
-    void setShowEmptyRows( const bool showEmpty );
+    void setShowEmptyRows( bool showEmpty );
 %Docstring
 Sets whether empty rows should be drawn. Tables default to hiding empty rows.
 
@@ -231,7 +231,7 @@ Returns the color used to draw header text in the table.
 .. seealso:: :py:func:`contentFontColor`
 %End
 
-    void setHeaderHAlignment( const HeaderHAlignment alignment );
+    void setHeaderHAlignment( HeaderHAlignment alignment );
 %Docstring
 Sets the horizontal ``alignment`` for table headers.
 
@@ -245,7 +245,7 @@ Returns the horizontal alignment for table headers.
 .. seealso:: :py:func:`setHeaderHAlignment`
 %End
 
-    void setHeaderMode( const HeaderMode mode );
+    void setHeaderMode( HeaderMode mode );
 %Docstring
 Sets the display ``mode`` for headers in the table. This property controls
 if and where headers are shown in the table.
@@ -301,7 +301,7 @@ Returns the color used to draw text in table body cells.
 .. seealso:: :py:func:`headerFontColor`
 %End
 
-    void setShowGrid( const bool showGrid );
+    void setShowGrid( bool showGrid );
 %Docstring
 Sets whether grid lines should be drawn in the table
 
@@ -325,7 +325,7 @@ Returns whether grid lines are drawn in the table
 .. seealso:: :py:func:`gridColor`
 %End
 
-    void setGridStrokeWidth( const double width );
+    void setGridStrokeWidth( double width );
 %Docstring
 Sets the ``width`` in mm for grid lines in the table.
 
@@ -369,7 +369,7 @@ Returns the color used for grid lines in the table.
 .. seealso:: :py:func:`gridStrokeWidth`
 %End
 
-    void setHorizontalGrid( const bool horizontalGrid );
+    void setHorizontalGrid( bool horizontalGrid );
 %Docstring
 Sets whether the grid's horizontal lines should be drawn in the table
 
@@ -397,7 +397,7 @@ Returns whether the grid's horizontal lines are drawn in the table.
 .. seealso:: :py:func:`setVerticalGrid`
 %End
 
-    void setVerticalGrid( const bool verticalGrid );
+    void setVerticalGrid( bool verticalGrid );
 %Docstring
 Sets whether the grid's vertical lines should be drawn in the table
 
@@ -504,9 +504,9 @@ Fetches the contents used for the cells in the table.
 Returns the current contents of the table. Excludes header cells.
 %End
 
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF fixedFrameSize( int frameIndex = -1 ) const;
 
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF minFrameSize( int frameIndex = -1 ) const;
 
 
     virtual bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -599,7 +599,7 @@ Calculates how many content rows are visible within a given frame.
 :return: number of visible content rows (excludes header rows)
 %End
 
-    QPair<int, int> rowRange( const int frameIndex ) const;
+    QPair<int, int> rowRange( int frameIndex ) const;
 %Docstring
 Calculates a range of rows which should be visible in a given frame.
 

@@ -55,7 +55,7 @@ Returns the page/snap grid resolution.
 .. seealso:: :py:func:`offset`
 %End
 
-    void setOffset( const QgsLayoutPoint offset );
+    void setOffset( QgsLayoutPoint offset );
 %Docstring
 Sets the ``offset`` of the page/snap grid.
 

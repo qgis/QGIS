@@ -203,7 +203,7 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
     explicit SelectedMatchFilter( double tol )
       : mTolerance( tol ) {}
 
-    virtual bool acceptMatch( const QgsPointLocator::Match &match )
+    bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
       if ( match.distance() <= mTolerance && match.layer() && match.layer()->selectedFeatureIds().contains( match.featureId() ) )
       {

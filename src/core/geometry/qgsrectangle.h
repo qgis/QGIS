@@ -232,25 +232,25 @@ class CORE_EXPORT QgsRectangle
      * Returns a rectangle offset from this one in the direction of the reversed vector.
      * \since QGIS 3.0
      */
-    QgsRectangle operator-( const QgsVector v ) const;
+    QgsRectangle operator-( QgsVector v ) const;
 
     /**
      * Returns a rectangle offset from this one in the direction of the vector.
      * \since QGIS 3.0
      */
-    QgsRectangle operator+( const QgsVector v ) const;
+    QgsRectangle operator+( QgsVector v ) const;
 
     /**
      * Moves this rectangle in the direction of the reversed vector.
      * \since QGIS 3.0
      */
-    QgsRectangle &operator-=( const QgsVector v );
+    QgsRectangle &operator-=( QgsVector v );
 
     /**
      * Moves this rectangle in the direction of the vector.
      * \since QGIS 3.0
      */
-    QgsRectangle &operator+=( const QgsVector v );
+    QgsRectangle &operator+=( QgsVector v );
 
     /**
      * Returns true if the rectangle is empty.

@@ -280,7 +280,7 @@ class CORE_EXPORT QgsRenderContext
      * \see setSelectionColor
      * \since QGIS v2.4
      */
-    void setShowSelection( const bool showSelection );
+    void setShowSelection( bool showSelection );
 
     /**
      * Returns true if the rendering optimization (geometry simplification) can be executed

@@ -259,7 +259,7 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      * Returns the extent of the layer
      * \returns QgsRectangle containing the extent of the layer
      */
-    virtual QgsRectangle extent() const;
+    QgsRectangle extent() const override;
 };
 
 #endif // QGSMESHDATAPROVIDER_H

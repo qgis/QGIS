@@ -81,7 +81,7 @@ that are not undoable on QColorRampDialog cancel.
 .. seealso:: :py:func:`acceptLiveUpdates`
 %End
 
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.

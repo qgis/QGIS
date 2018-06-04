@@ -372,7 +372,7 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
      * If \a ownsOriginalSink is true, then this object will take ownership of \a originalSink.
      */
     QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
-    ~QgsProcessingFeatureSink();
+    ~QgsProcessingFeatureSink() override;
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr ) override;

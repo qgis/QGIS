@@ -1029,7 +1029,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \see setMaximumScale
      * \see hasScaleBasedVisibility
      */
-    void setScaleBasedVisibility( const bool enabled );
+    void setScaleBasedVisibility( bool enabled );
 
     /**
      * Will advise the map canvas (and any other interested party) that this layer requires to be repainted.

@@ -34,7 +34,7 @@ for use in QGIS layouts. Measurement units are stored alongside the size.
 %End
   public:
 
-    QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutSize( double width, double height, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutSize.
 
@@ -43,12 +43,12 @@ Constructor for QgsLayoutSize.
 :param units: units for width and height
 %End
 
-    explicit QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QSizeF size, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutSize.
 %End
 
-    explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for an empty layout size
 
@@ -150,13 +150,13 @@ Decodes a size from a ``string``.
     bool operator==( const QgsLayoutSize &other ) const;
     bool operator!=( const QgsLayoutSize &other ) const;
 
-    QgsLayoutSize operator*( const double v ) const;
+    QgsLayoutSize operator*( double v ) const;
 
-    QgsLayoutSize operator*=( const double v );
+    QgsLayoutSize operator*=( double v );
 
-    QgsLayoutSize operator/( const double v ) const;
+    QgsLayoutSize operator/( double v ) const;
 
-    QgsLayoutSize operator/=( const double v );
+    QgsLayoutSize operator/=( double v );
 
 };
 

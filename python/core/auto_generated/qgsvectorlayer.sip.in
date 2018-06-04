@@ -2224,7 +2224,7 @@ Select features by their ID
 .. seealso:: :py:func:`select`
 %End
 
-    void deselect( const QgsFeatureId featureId );
+    void deselect( QgsFeatureId featureId );
 %Docstring
 Deselect feature by its ID
 
@@ -2276,7 +2276,7 @@ by the backend data provider).
 
   signals:
 
-    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring
 This signal is emitted when selection was changed
 

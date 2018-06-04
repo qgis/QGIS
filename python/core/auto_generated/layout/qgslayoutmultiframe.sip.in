@@ -112,7 +112,7 @@ Returns unique multiframe type id.
 Returns the item's icon.
 %End
 
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF fixedFrameSize( int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,
 the sizes of all frames can be recalculated by calling recalculateFrameRects().
@@ -128,7 +128,7 @@ the sizes of all frames can be recalculated by calling recalculateFrameRects().
 .. seealso:: :py:func:`recalculateFrameRects`
 %End
 
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF minFrameSize( int frameIndex = -1 ) const;
 %Docstring
 Returns the minimum size for a frames, if desired. If the minimum
 size changes, the sizes of all frames can be recalculated by calling
@@ -355,7 +355,7 @@ fixedFrameSize() method.
 .. seealso:: :py:func:`recalculateFrameSizes`
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 %Docstring
 Refreshes a data defined ``property`` for the multi frame by reevaluating the property's value
 and redrawing the item with this new value. If ``property`` is set to

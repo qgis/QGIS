@@ -220,6 +220,7 @@ segment in the line.
 
     virtual QPolygonF asQPolygonF() const;
 
+
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
     virtual bool fromWkt( const QString &wkt );

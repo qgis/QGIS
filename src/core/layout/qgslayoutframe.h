@@ -87,7 +87,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
      * \param hidePageIfEmpty set to true if page should be hidden if frame is empty
      * \see hidePageIfEmpty()
      */
-    void setHidePageIfEmpty( const bool hidePageIfEmpty );
+    void setHidePageIfEmpty( bool hidePageIfEmpty );
 
     /**
      * Returns whether the background and frame stroke should be hidden if this frame is empty
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
      * \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
      * \see hideBackgroundIfEmpty()
      */
-    void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
+    void setHideBackgroundIfEmpty( bool hideBackgroundIfEmpty );
 
     /**
      * Returns whether the frame is empty.

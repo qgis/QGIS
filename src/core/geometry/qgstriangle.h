@@ -57,7 +57,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
      * \param p2 second point
      * \param p3 third point
      */
-    explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
+    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 );
 
     bool operator==( const QgsTriangle &other ) const;
     bool operator!=( const QgsTriangle &other ) const;

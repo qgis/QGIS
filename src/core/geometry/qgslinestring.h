@@ -230,7 +230,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isEmpty() const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
-    virtual QPolygonF asQPolygonF() const override;
+    QPolygonF asQPolygonF() const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;

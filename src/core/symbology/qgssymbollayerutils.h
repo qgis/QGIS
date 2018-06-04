@@ -506,7 +506,7 @@ class CORE_EXPORT QgsSymbolLayerUtils
      * \returns mime data containing encoded colors
      * \since QGIS 2.5
      */
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) SIP_FACTORY;
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) SIP_FACTORY;
 
     /**
      * Exports colors to a gpl GIMP palette file

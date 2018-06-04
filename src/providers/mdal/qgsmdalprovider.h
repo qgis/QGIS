@@ -43,7 +43,7 @@ class QgsMdalProvider : public QgsMeshDataProvider
      * \param options generic provider options
      */
     QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-    ~QgsMdalProvider();
+    ~QgsMdalProvider() override;
 
     bool isValid() const override;
     QString name() const override;

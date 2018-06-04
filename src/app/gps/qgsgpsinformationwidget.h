@@ -82,7 +82,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     void connectGpsSlot();
     void disconnectGps();
     void populateDevices();
-    void setStatusIndicator( const FixStatus statusValue );
+    void setStatusIndicator( FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
     QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;

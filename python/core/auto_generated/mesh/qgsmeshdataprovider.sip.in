@@ -272,6 +272,7 @@ Ctor
 %End
 
     virtual QgsRectangle extent() const;
+
 %Docstring
 Returns the extent of the layer
 

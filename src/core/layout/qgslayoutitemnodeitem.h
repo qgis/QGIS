@@ -138,10 +138,10 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     double mMaxSymbolBleed = 0.0;
 
     //! Method called in addNode.
-    virtual bool _addNode( const int nodeIndex, QPointF newNode, const double radius ) = 0;
+    virtual bool _addNode( int nodeIndex, QPointF newNode, double radius ) = 0;
 
     //! Method called in removeNode.
-    virtual bool _removeNode( const int nodeIndex ) = 0;
+    virtual bool _removeNode( int nodeIndex ) = 0;
 
     //! Method called in paint.
     virtual void _draw( QgsLayoutItemRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;

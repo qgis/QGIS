@@ -72,7 +72,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      * \endcode
      */
     QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-    ~QgsMeshMemoryDataProvider();
+    ~QgsMeshMemoryDataProvider() override;
 
     bool isValid() const override;
     QString name() const override;

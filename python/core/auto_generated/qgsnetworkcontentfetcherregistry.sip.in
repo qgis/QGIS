@@ -111,7 +111,7 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    const QgsFetchedContent *fetch( const QString &url, const FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
 %Docstring
 Initialize a download for the given URL
 

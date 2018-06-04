@@ -196,7 +196,7 @@ Note that this method is 2D only and does not consider the z-value of the circle
 
 
 
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis );
 
 %Docstring
 Inherited method. Use setRadius instead.
@@ -206,7 +206,7 @@ Inherited method. Use setRadius instead.
 .. seealso:: :py:func:`setRadius`
 %End
 
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis );
 
 %Docstring
 Inherited method. Use setRadius instead.

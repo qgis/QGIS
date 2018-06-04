@@ -140,7 +140,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param extent extent used in classification (only used in quantile mode)
      * \param input raster input used in classification (only used in quantile mode)
      */
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
+    void classifyColorRamp( int classes = 0, int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr );
 
     /**
      * Classify color ramp shader
@@ -148,7 +148,7 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
      * \param extent extent used in classification (quantile mode only)
      * \param input raster input used in classification (quantile mode only)
      */
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
+    void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     //! \brief Generates and new RGB value based on one input value
     bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;

@@ -102,7 +102,7 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :return: Whether the lines intersect
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
 %Docstring
 Compute the intersection between two segments
 
@@ -140,7 +140,7 @@ Compute the intersection between two segments
        # (True, 'Point (0 0)', True)
 %End
 
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection /In,Out/ );
 %Docstring

@@ -41,8 +41,8 @@ class GUI_EXPORT QgsDetailedItemData
     void setDetail( const QString &detail );
     void setCategory( const QString &category );
     void setIcon( const QPixmap &icon );
-    void setCheckable( const bool flag );
-    void setChecked( const bool flag );
+    void setCheckable( bool flag );
+    void setChecked( bool flag );
     void setEnabled( bool flag );
 
     /**

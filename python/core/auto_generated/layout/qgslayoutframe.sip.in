@@ -79,7 +79,7 @@ Returns whether the page should be hidden (ie, not included in layout exports) i
 .. seealso:: :py:func:`setHidePageIfEmpty`
 %End
 
-    void setHidePageIfEmpty( const bool hidePageIfEmpty );
+    void setHidePageIfEmpty( bool hidePageIfEmpty );
 %Docstring
 Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
 
@@ -97,7 +97,7 @@ Returns whether the background and frame stroke should be hidden if this frame i
 .. seealso:: :py:func:`setHideBackgroundIfEmpty`
 %End
 
-    void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
+    void setHideBackgroundIfEmpty( bool hideBackgroundIfEmpty );
 %Docstring
 Sets whether the background and frame stroke should be hidden if this frame is empty
 

@@ -339,7 +339,7 @@ are retrieved through the units() method.
 .. seealso:: :py:func:`intervalX`
 %End
 
-    void setOffsetX( const double offset );
+    void setOffsetX( double offset );
 %Docstring
 Sets the ``offset`` for grid lines in the x-direction. The units
 are controlled through the setUnits method.
@@ -359,7 +359,7 @@ are retrieved through the units() method.
 .. seealso:: :py:func:`offsetY`
 %End
 
-    void setOffsetY( const double offset );
+    void setOffsetY( double offset );
 %Docstring
 Sets the ``offset`` for grid lines in the y-direction. The units
 are controlled through the setUnits method.
@@ -380,7 +380,7 @@ are retrieved through the units() method.
 %End
 
 
-    void setStyle( const GridStyle style );
+    void setStyle( GridStyle style );
 %Docstring
 Sets the grid ``style``, which controls how the grid is drawn
 over the map's contents.
@@ -412,7 +412,7 @@ with QgsLayoutItemMapGrid.Cross styles.
 .. seealso:: :py:func:`setCrossLength`
 %End
 
-    void setGridLineWidth( const double width );
+    void setGridLineWidth( double width );
 %Docstring
 Sets the ``width`` of grid lines (in layout units). This is only used for grids with QgsLayoutItemMapGrid.Solid
 or QgsLayoutItemMapGrid.Cross styles. For more control over grid line appearance, use
@@ -543,7 +543,7 @@ number of decimal places shown when drawing grid annotations.
 .. seealso:: :py:func:`setAnnotationPrecision`
 %End
 
-    void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
+    void setAnnotationDisplay( DisplayMode display, BorderSide border );
 %Docstring
 Sets what types of grid annotations should be drawn for a specified side of the map frame,
 or whether grid annotations should be disabled for the side.
@@ -554,7 +554,7 @@ or whether grid annotations should be disabled for the side.
 .. seealso:: :py:func:`annotationDisplay`
 %End
 
-    DisplayMode annotationDisplay( const BorderSide border ) const;
+    DisplayMode annotationDisplay( BorderSide border ) const;
 %Docstring
 Returns the display mode for the grid annotations on a specified side of the map
 frame. This property also specifies whether annotations have been disabled
@@ -567,7 +567,7 @@ from a side of the map frame.
 .. seealso:: :py:func:`setAnnotationDisplay`
 %End
 
-    void setAnnotationPosition( const AnnotationPosition position, const BorderSide side );
+    void setAnnotationPosition( AnnotationPosition position, BorderSide side );
 %Docstring
 Sets the ``position`` for the grid annotations on a specified ``side`` of the map
 frame.
@@ -575,7 +575,7 @@ frame.
 .. seealso:: :py:func:`annotationPosition`
 %End
 
-    AnnotationPosition annotationPosition( const BorderSide side ) const;
+    AnnotationPosition annotationPosition( BorderSide side ) const;
 %Docstring
 Returns the position for the grid annotations on a specified ``side`` of the map
 frame.
@@ -597,21 +597,21 @@ Returns the distance between the map frame and annotations. Units are in layout 
 .. seealso:: :py:func:`setAnnotationFrameDistance`
 %End
 
-    void setAnnotationDirection( const AnnotationDirection direction, const BorderSide side );
+    void setAnnotationDirection( AnnotationDirection direction, BorderSide side );
 %Docstring
 Sets the ``direction`` for drawing frame annotations for the specified map ``side``.
 
 .. seealso:: :py:func:`annotationDirection`
 %End
 
-    void setAnnotationDirection( const AnnotationDirection direction );
+    void setAnnotationDirection( AnnotationDirection direction );
 %Docstring
 Sets the ``direction`` for drawing all frame annotations.
 
 .. seealso:: :py:func:`annotationDirection`
 %End
 
-    AnnotationDirection annotationDirection( const BorderSide border ) const;
+    AnnotationDirection annotationDirection( BorderSide border ) const;
 %Docstring
 Returns the direction for drawing frame annotations, on the specified ``side``
 of the map.
@@ -664,14 +664,14 @@ Returns the grid frame style.
 .. seealso:: :py:func:`setFrameStyle`
 %End
 
-    void setFrameDivisions( const DisplayMode divisions, const BorderSide side );
+    void setFrameDivisions( DisplayMode divisions, BorderSide side );
 %Docstring
 Sets what type of grid ``divisions`` should be used for frames on a specified ``side`` of the map.
 
 .. seealso:: :py:func:`frameDivisions`
 %End
 
-    DisplayMode frameDivisions( const BorderSide side ) const;
+    DisplayMode frameDivisions( BorderSide side ) const;
 %Docstring
 Returns the type of grid divisions which are used for frames on a specified ``side`` of the map.
 
@@ -690,7 +690,7 @@ of the map item the grid frame is drawn on.
 .. seealso:: :py:func:`testFrameSideFlag`
 %End
 
-    void setFrameSideFlag( const QgsLayoutItemMapGrid::FrameSideFlag flag, bool on = true );
+    void setFrameSideFlag( QgsLayoutItemMapGrid::FrameSideFlag flag, bool on = true );
 %Docstring
 Sets whether the grid frame is drawn for a certain side of the map item.
 
@@ -716,7 +716,7 @@ is drawn on.
 .. seealso:: :py:func:`testFrameSideFlag`
 %End
 
-    bool testFrameSideFlag( const FrameSideFlag flag ) const;
+    bool testFrameSideFlag( FrameSideFlag flag ) const;
 %Docstring
 Tests whether the grid frame should be drawn on a specified side of the map
 item.

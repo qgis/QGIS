@@ -39,7 +39,7 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsFilterAlgorithm() = default;
-    ~QgsFilterAlgorithm();
+    ~QgsFilterAlgorithm() override;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;

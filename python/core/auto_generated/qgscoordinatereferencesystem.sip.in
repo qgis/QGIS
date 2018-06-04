@@ -194,7 +194,7 @@ If no prefix is specified, WKT definition is assumed.
                    / // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
 %End
 
-    explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
+    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
 %Docstring
 Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 
@@ -294,7 +294,7 @@ Creates a CRS from a specified QGIS SRS ID.
 %End
 
 
-    bool createFromId( const long id, CrsType type = PostgisCrsId );
+    bool createFromId( long id, CrsType type = PostgisCrsId );
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
@@ -325,7 +325,7 @@ and refer to QGIS internal CRS IDs.
    /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 %End
 
-    bool createFromSrid( const long srid );
+    bool createFromSrid( long srid );
 %Docstring
 Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
@@ -359,7 +359,7 @@ set up the object.
 .. seealso:: :py:func:`fromWkt`
 %End
 
-    bool createFromSrsId( const long srsId );
+    bool createFromSrsId( long srsId );
 %Docstring
 Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
 

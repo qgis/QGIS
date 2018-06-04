@@ -434,7 +434,7 @@ class CORE_EXPORT QgsUnitTypes
      *
      * \since QGIS 3.0
     */
-    Q_INVOKABLE static QgsUnitTypes::LayoutUnitType unitType( const QgsUnitTypes::LayoutUnit units );
+    Q_INVOKABLE static QgsUnitTypes::LayoutUnitType unitType( QgsUnitTypes::LayoutUnit units );
 
     /**
      * Returns a translated abbreviation representing a layout \a unit (e.g. "mm").

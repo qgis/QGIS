@@ -274,7 +274,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param menu context menu
      * \param fid feature id of the selected feature
      */
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 
   protected:
     void hideEvent( QHideEvent *event ) override;

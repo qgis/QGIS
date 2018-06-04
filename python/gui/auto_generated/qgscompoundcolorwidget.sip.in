@@ -47,7 +47,7 @@ Returns the current color for the dialog
 :return: dialog color
 %End
 
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to true.

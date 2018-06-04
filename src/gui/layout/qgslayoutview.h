@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QgsLayoutView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsLayoutView();
+    ~QgsLayoutView() override;
 
     /**
      * Returns the current layout associated with the view.

@@ -446,7 +446,7 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
      * \param colorCount number of unique colors
      * \since QGIS 2.5
      */
-    virtual void setTotalColorCount( const int colorCount );
+    virtual void setTotalColorCount( int colorCount );
 
     QString type() const override;
 

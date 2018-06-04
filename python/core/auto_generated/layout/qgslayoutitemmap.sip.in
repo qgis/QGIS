@@ -380,7 +380,7 @@ is enabled.
 .. seealso:: :py:func:`atlasDriven`
 %End
 
-    double atlasMargin( const QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
+    double atlasMargin( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
 %Docstring
 Returns the margin size (percentage) used when the map is in atlas mode.
 
@@ -546,7 +546,7 @@ associated legend items know they should update
 Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
 };

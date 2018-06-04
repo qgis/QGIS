@@ -103,7 +103,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
     QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
 
     QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
     QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;

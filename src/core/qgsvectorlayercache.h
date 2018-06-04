@@ -221,7 +221,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \returns True if this id is in the cache
      * \see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid ) const;
+    bool isFidCached( QgsFeatureId fid ) const;
 
     /**
      * Returns the set of feature IDs for features which are cached.
