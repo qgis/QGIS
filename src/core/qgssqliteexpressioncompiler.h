@@ -52,6 +52,7 @@ class CORE_EXPORT QgsSQLiteExpressionCompiler : public QgsSqlExpressionCompiler
     QString sqlFunctionFromFunctionName( const QString &fnName ) const override;
     QString castToReal( const QString &value ) const override;
     QString castToInt( const QString &value ) const override;
+    QString castToText( const QString &value ) const override;
 
 };
 

@@ -210,7 +210,10 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
       if ( success )
+      {
         mExpressionCompiled = false;
+        mCompileFailed = true;
+      }
     }
 
     if ( !success && !orderByParts.isEmpty() )

@@ -67,6 +67,14 @@ If you want to check if the iterator successfully completed, better use :py:func
 .. versionadded:: 3.0
 %End
 
+    bool compileFailed() const;
+%Docstring
+Indicator if there was an error when sending the compiled query to the server.
+This indicates that there is something wrong with the expression compiler.
+
+.. versionadded:: 3.2
+%End
+
   protected:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
@@ -141,6 +149,7 @@ Add reference
 %Docstring
 Remove reference, delete if refs == 0
 %End
+
 
 
 
@@ -249,6 +258,14 @@ find out whether the iterator is still valid or closed already
 Returns the status of expression compilation for filter expression requests.
 
 .. versionadded:: 2.16
+%End
+
+    bool compileFailed() const;
+%Docstring
+Indicator if there was an error when sending the compiled query to the server.
+This indicates that there is something wrong with the expression compiler.
+
+.. versionadded:: 3.2
 %End
 
 

@@ -83,6 +83,14 @@ class CORE_EXPORT QgsAbstractFeatureIterator
       return mValid;
     }
 
+    /**
+     * Indicator if there was an error when sending the compiled query to the server.
+     * This indicates that there is something wrong with the expression compiler.
+     *
+     * \since QGIS 3.2
+     */
+    bool compileFailed() const;
+
   protected:
 
     /**
@@ -172,6 +180,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     //! Status of compilation of filter expression
     CompileStatus mCompileStatus = NoCompilation;
+
+    bool mCompileFailed = false;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
@@ -322,6 +332,14 @@ class CORE_EXPORT QgsFeatureIterator
      * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
+
+    /**
+     * Indicator if there was an error when sending the compiled query to the server.
+     * This indicates that there is something wrong with the expression compiler.
+     *
+     * \since QGIS 3.2
+     */
+    bool compileFailed() const { return mIter->compileFailed(); }
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;

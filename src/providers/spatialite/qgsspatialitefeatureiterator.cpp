@@ -213,6 +213,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
       //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
       mExpressionCompiled = false;
       success = prepareStatement( fallbackWhereClause, -1, orderByParts.join( QStringLiteral( "," ) ) );
+      mCompileFailed = true;
     }
 
     if ( !success )

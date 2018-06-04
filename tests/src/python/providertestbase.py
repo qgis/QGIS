@@ -52,6 +52,11 @@ class ProviderTestCase(FeatureSourceTestCase):
         cannot be compiled """
         return set()
 
+    def enableCompiler(self):
+        """By default there is no expression compiling available, needs to be overridden in subclass"""
+        print('Provider does not support compiling')
+        return False
+
     def partiallyCompiledFilters(self):
         """ Individual derived provider tests should override this to return a list of expressions which
         should be partially compiled """
@@ -141,14 +146,11 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.runPolyGetFeatureTests(self.poly_provider)
 
     def testGetFeaturesExp(self):
-        try:
-            self.enableCompiler()
+        if self.enableCompiler():
             self.compiled = True
             self.runGetFeatureTests(self.source)
             if hasattr(self, 'poly_provider'):
                 self.runPolyGetFeatureTests(self.poly_provider)
-        except AttributeError:
-            print('Provider does not support compiling')
 
     def testSubsetString(self):
         if not self.source.supportsSubsetString():
@@ -232,11 +234,8 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.runOrderByTests()
 
     def testOrderByCompiled(self):
-        try:
-            self.enableCompiler()
+        if self.enableCompiler():
             self.runOrderByTests()
-        except AttributeError:
-            print('Provider does not support compiling')
 
     def runOrderByTests(self):
         FeatureSourceTestCase.runOrderByTests(self)
@@ -817,3 +816,24 @@ class ProviderTestCase(FeatureSourceTestCase):
             self.assertTrue(vl.dataProvider().deleteAttributes([0]))
             self.assertEqual(vl.dataProvider().minimumValue(0), -200)
             self.assertEqual(vl.dataProvider().maximumValue(0), 400)
+
+    def testStringComparison(self):
+        """
+        Test if string comparisons with numbers are cast by the expression
+        compiler (or work fine without doing anything :P)
+        """
+        for expression in (
+                '5 LIKE \'5\'',
+                '5 ILIKE \'5\'',
+                '15 NOT LIKE \'5\'',
+                '15 NOT ILIKE \'5\'',
+                '5 ~ \'5\''):
+            iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+            count = len([f for f in iterator])
+            self.assertEqual(count, 5)
+            self.assertFalse(iterator.compileFailed())
+            if self.enableCompiler():
+                iterator = self.source.getFeatures(QgsFeatureRequest().setFilterExpression('5 LIKE \'5\''))
+                self.assertEqual(count, 5)
+                self.assertFalse(iterator.compileFailed())
+                self.disableCompiler()
