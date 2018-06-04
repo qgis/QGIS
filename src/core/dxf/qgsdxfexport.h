@@ -454,6 +454,15 @@ class CORE_EXPORT QgsDxfExport
     void writeSymbolLayerLinetype( const QgsSymbolLayer *symbolLayer );
     void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsUnitTypes::RenderUnit u );
 
+    /**
+     * Writes geometry generator symbol layer
+        @param ctx the symbol render context
+        @param ct the coordinate transform
+        @param layer the layer name
+        @param symbolLayer the symbollayer to write to the dxf file
+        @param allSymbolLayers if true, all symbol layers of the subsymbol are writeen. If false, only the first one is written*/
+    void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
+
     void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
 
     //returns dxf palette index from symbol layer color
