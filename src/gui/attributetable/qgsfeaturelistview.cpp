@@ -400,6 +400,11 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
   {
     QTimer::singleShot( 0, this, [ this, inSelection, validEditSelectionAvailable ]()
     {
+      // The layer might have been removed between timer start and timer triggered
+      // in this case there is nothing left for us to do.
+      if ( !layerCache() )
+        return;
+
       int rowToSelect = -1;
 
       if ( inSelection )
@@ -423,7 +428,9 @@ void QgsFeatureListView::ensureEditSelection( bool inSelection )
         rowToSelect = 0;
 
       if ( rowToSelect != -1 )
+      {
         setEditSelection( mModel->mapToMaster( mModel->index( rowToSelect, 0 ) ), QItemSelectionModel::ClearAndSelect );
+      }
     } );
   }
 }
