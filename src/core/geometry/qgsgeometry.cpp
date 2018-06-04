@@ -1595,6 +1595,12 @@ double QgsGeometry::distance( const QgsGeometry &geom ) const
     return -1.0;
   }
 
+  // avoid calling geos for trivial point-to-point distance calculations
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point && QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::Point )
+  {
+    return qgsgeometry_cast< const QgsPoint * >( d->geometry.get() )->distance( *qgsgeometry_cast< const QgsPoint * >( geom.constGet() ) );
+  }
+
   QgsGeos g( d->geometry.get() );
   mLastError.clear();
   return g.distance( geom.d->geometry.get(), &mLastError );
