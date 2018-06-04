@@ -67,3 +67,63 @@ tests:
       GRID_OUT:
         hash: 57437ebf7eb3667c5aa390598120967b0a2cd5d85751185bb445d1f8
         type: rasterhash
+
+  - algorithm: saga:rastercalculator
+    name: Raster calculator, 1 input
+    params:
+      FORMULA: a*10
+      GRIDS:
+        name: raster.tif
+        type: raster
+      RESAMPLING: 3
+      TYPE: 7
+      USE_NODATA: false
+      XGRIDS:
+        params: []
+        type: multi
+    results:
+      RESULT:
+        hash: 68d805a45416467e0f1be3066dd642772cf8ffdff9535f3254cd5ffb
+        type: rasterhash
+
+  - algorithm: saga:rastercalculator
+    name: Raster calculator, 2 inputs
+    params:
+      FORMULA: a*10+b
+      GRIDS:
+        name: raster.tif
+        type: raster
+      RESAMPLING: 3
+      TYPE: 7
+      USE_NODATA: false
+      XGRIDS:
+        params:
+        - name: raster.tif
+          type: raster
+        type: multi
+    results:
+      RESULT:
+        hash: c8c2c7c32ad3eaa1ebb491aed7af7d16f1c7f574a3de1f7622894092
+        type: rasterhash
+
+  - algorithm: saga:rastercalculator
+    name: Raster calculator, 3 inputs
+    params:
+      FORMULA: a*10+b-c
+      GRIDS:
+        name: raster.tif
+        type: raster
+      RESAMPLING: 3
+      TYPE: 7
+      USE_NODATA: false
+      XGRIDS:
+        params:
+        - name: dem.tif
+          type: raster
+        - name: raster.tif
+          type: raster
+        type: multi
+    results:
+      RESULT:
+        hash: a11f159696f5726eedaa16e872fd2582cf8a88c8c1d84d72560e4647
+        type: rasterhash
