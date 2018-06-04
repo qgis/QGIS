@@ -177,8 +177,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Calls empty() internally. Providers should override empty()
      * instead if they provide an optimized version of this call.
      *
-     * \since QGIS 3.4
      * \see empty()
+     * \since QGIS 3.4
      */
     virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
 
