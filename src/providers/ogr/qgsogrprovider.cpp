@@ -5229,6 +5229,7 @@ GIntBig QgsOgrLayer::GetApproxFeatureCount()
   return OGR_L_GetFeatureCount( hLayer, TRUE );
 }
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
 static bool findMinOrMax( GDALDatasetH hDS, const QByteArray &rtreeName,
                           const char *varName, bool isMin, double &val )
 {
@@ -5276,11 +5277,13 @@ static bool findMinOrMax( GDALDatasetH hDS, const QByteArray &rtreeName,
   }
   return true;
 }
+#endif
 
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
 {
   QMutexLocker locker( &ds->mutex );
 
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
   // OGR_L_GetExtent() can be super slow on huge geopackage files
   // so implement some approximation strategy that has reasonable runtime.
   // Actually this should return a rather accurante answer.
@@ -5323,6 +5326,8 @@ OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
       return OGRERR_NONE;
     }
   }
+#endif
+
   return OGR_L_GetExtent( hLayer, psExtent, bForce );
 }
 
