@@ -112,7 +112,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def defineCharacteristicsFromFile(self):
-        with open(self.description_file) as lines:
+        with open(self.description_file, encoding="utf-8") as lines:
             line = lines.readline().strip('\n').strip()
             self._name = line
             if '|' in self._name:
