@@ -1342,71 +1342,6 @@ void QgsZipItem::init()
 
 }
 
-// internal function to scan a vsidir (zip or tar file) recursively
-// GDAL trunk has this since r24423 (05/16/12) - VSIReadDirRecursive()
-// use a copy of the function internally for now,
-// but use char ** and CSLAddString, because CPLStringList was added in gdal-1.9
-char **VSIReadDirRecursive1( const char *pszPath )
-{
-  // CPLStringList oFiles = nullptr;
-  char **papszOFiles = nullptr;
-  char **papszFiles1 = nullptr;
-  char **papszFiles2 = nullptr;
-  VSIStatBufL psStatBuf;
-  QString temp1, temp2;
-  int i, j;
-  int nCount1, nCount2;
-
-  // get listing
-  papszFiles1 = VSIReadDir( pszPath );
-  if ( ! papszFiles1 )
-    return nullptr;
-
-  // get files and directories inside listing
-  nCount1 = CSLCount( papszFiles1 );
-  for ( i = 0; i < nCount1; i++ )
-  {
-    // build complete file name for stat
-    temp1 = QString( "%1/%2" ).arg( pszPath, papszFiles1[i] );
-
-    // if is file, add it
-    if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
-         VSI_ISREG( psStatBuf.st_mode ) )
-    {
-      // oFiles.AddString( papszFiles1[i] );
-      papszOFiles = CSLAddString( papszOFiles, papszFiles1[i] );
-    }
-    else if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
-              VSI_ISDIR( psStatBuf.st_mode ) )
-    {
-      // add directory entry
-      temp2 = QString( "%1/" ).arg( papszFiles1[i] );
-
-      // oFiles.AddString( temp2.toUtf8() );
-      papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
-
-      // recursively add files inside directory
-      papszFiles2 = VSIReadDirRecursive1( temp1.toUtf8() );
-      if ( papszFiles2 )
-      {
-        nCount2 = CSLCount( papszFiles2 );
-        for ( j = 0; j < nCount2; j++ )
-        {
-          temp2 = QString( "%1/%2" ).arg( papszFiles1[i], papszFiles2[j] );
-
-          // oFiles.AddString( temp2.toUtf8() );
-          papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
-        }
-        CSLDestroy( papszFiles2 );
-      }
-    }
-  }
-  CSLDestroy( papszFiles1 );
-
-  // return oFiles.StealList();
-  return papszOFiles;
-}
-
 QVector<QgsDataItem *> QgsZipItem::createChildren()
 {
   QVector<QgsDataItem *> children;
@@ -1599,10 +1534,10 @@ QStringList QgsZipItem::getZipFileList()
 
   // get list of files inside zip file
   QgsDebugMsgLevel( QString( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + mFilePath ), 3 );
-  char **papszSiblingFiles = VSIReadDirRecursive1( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
+  char **papszSiblingFiles = VSIReadDirRecursive( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
   if ( papszSiblingFiles )
   {
-    for ( int i = 0; i < CSLCount( papszSiblingFiles ); i++ )
+    for ( int i = 0; papszSiblingFiles[i]; i++ )
     {
       tmpPath = papszSiblingFiles[i];
       QgsDebugMsgLevel( QString( "Read file %1" ).arg( tmpPath ), 3 );
