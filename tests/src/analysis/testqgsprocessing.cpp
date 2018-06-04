@@ -6391,6 +6391,18 @@ void TestQgsProcessing::convertCompatible()
   out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
   QCOMPARE( out, layer->source() );
 
+  // incompatible format, will be converted
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "tab", QString( "tab" ), &feedback );
+  QVERIFY( out != layer->source() );
+  QVERIFY( out.endsWith( ".tab" ) );
+  QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+
+  // layer as input
+  params.insert( QStringLiteral( "source" ), QVariant::fromValue( layer ) );
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
+  QCOMPARE( out, layer->source() );
+
+  // incompatible format, will be converted
   out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "tab", QString( "tab" ), &feedback );
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".tab" ) );
@@ -6402,6 +6414,12 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".shp" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
+
+  // vector layer as default
+  def.reset( new QgsProcessingParameterFeatureSource( QStringLiteral( "source" ), QString(), QList<int>(), QVariant::fromValue( layer ) ) );
+  params.remove( QStringLiteral( "source" ) );
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
+  QCOMPARE( out, layer->source() );
 }
 
 void TestQgsProcessing::create()
