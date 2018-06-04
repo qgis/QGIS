@@ -66,7 +66,8 @@ class CORE_EXPORT QgsProviderMetadata
     QgsProviderMetadata( const QString &key, const QString &description, SIP_PYCALLABLE / AllowNone / );
     % MethodCode
 
-    // Make sure the callable doesn't get garbage collected
+    // Make sure the callable doesn't get garbage collected, this is needed because refcount for a2 is 0
+    // and the creation function pointer is passed to the metadata and it needs to be kept in memory.
     Py_INCREF( a2 );
 
     Py_BEGIN_ALLOW_THREADS
