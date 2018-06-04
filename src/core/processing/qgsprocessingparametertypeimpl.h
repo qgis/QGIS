@@ -258,6 +258,7 @@ class CORE_EXPORT QgsProcessingParameterTypeCrs : public QgsProcessingParameterT
              << QObject::tr( "str: layer name. CRS of layer is used." )
              << QObject::tr( "str: layer source. CRS of layer is used." )
              << QObject::tr( "QgsMapLayer: CRS of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: CRS of source is used" )
              << QStringLiteral( "QgsProperty" );
     }
 };
@@ -411,6 +412,7 @@ class CORE_EXPORT QgsProcessingParameterTypeExtent : public QgsProcessingParamet
              << QObject::tr( "str: layer name. Extent of layer is used." )
              << QObject::tr( "str: layer source. Extent of layer is used." )
              << QObject::tr( "QgsMapLayer: Extent of layer is used" )
+             << QObject::tr( "QgsProcessingFeatureSourceDefinition: Extent of source is used" )
              << QStringLiteral( "QgsProperty" )
              << QStringLiteral( "QgsRectangle" )
              << QStringLiteral( "QgsReferencedRectangle" );

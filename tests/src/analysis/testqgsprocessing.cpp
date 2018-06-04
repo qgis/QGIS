@@ -2052,6 +2052,8 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( r1->id() ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) ) );
 
   // using map layer
   QVariantMap params;
@@ -2084,6 +2086,12 @@ void TestQgsProcessing::parameterCrs()
   // nonsense string
   params.insert( "non_optional", QString( "i'm not a crs, and nothing you can do will make me one" ) );
   QVERIFY( !QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).isValid() );
+
+  // using feature source definition
+  params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( v1->id() ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
+  params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( v1 ) ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
   QCOMPARE( def->valueAsPythonString( "EPSG:12003", context ), QStringLiteral( "'EPSG:12003'" ) );
@@ -2324,6 +2332,36 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
   QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QCOMPARE( gExt.constGet()->vertexCount(), 5 );
+  ext = gExt.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+
+  // using feature source definition
+  params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( r1->id() ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QCOMPARE( gExt.constGet()->vertexCount(), 5 );
+  ext = gExt.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 5 );
   ext = gExt.boundingBox();
   QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );

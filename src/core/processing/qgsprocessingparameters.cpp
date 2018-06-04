@@ -506,7 +506,32 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
 
   QVariant val = parameters.value( definition->name() );
 
-  QString crsText = parameterAsString( definition, parameters, context );
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
+  // maybe a map layer
+  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
+    return layer->crs();
+
+  if ( val.canConvert<QgsProperty>() )
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+
+  if ( !val.isValid() )
+  {
+    // fall back to default
+    val = definition->defaultValue();
+  }
+
+  QString crsText = val.toString();
   if ( crsText.isEmpty() )
     crsText = definition->defaultValue().toString();
 
@@ -518,9 +543,7 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
     return context.project()->crs();
 
   // maybe a map layer reference
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( qvariant_cast<QObject *>( val ) ) )
-    return layer->crs();
-  else if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
+  if ( QgsMapLayer *layer = QgsProcessingUtils::mapLayerFromString( crsText, context ) )
     return layer->crs();
 
   // else CRS from string
@@ -557,6 +580,18 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
       }
     }
     return rr;
+  }
+
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
   }
 
   // maybe parameter is a direct layer value?
@@ -654,6 +689,18 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     }
   }
 
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
   QString rectText;
   if ( val.canConvert<QgsProperty>() )
     rectText = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
@@ -740,15 +787,44 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     }
   }
 
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
+  }
+
+  QString valueAsString;
+  if ( val.canConvert<QgsProperty>() )
+    valueAsString = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+  else
+    valueAsString = val.toString();
+
   QRegularExpression rx( QStringLiteral( "^(.*?)\\s*,\\s*(.*?),\\s*(.*?),\\s*(.*?)\\s*(?:\\[(.*)\\])?\\s*$" ) );
 
-  QString valueAsString = parameterAsString( definition, parameters, context );
   QRegularExpressionMatch match = rx.match( valueAsString );
   if ( match.hasMatch() )
   {
     QgsCoordinateReferenceSystem crs( match.captured( 5 ) );
     if ( crs.isValid() )
       return crs;
+  }
+
+  if ( val.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
+    QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
+    val = fromVar.source;
+  }
+
+  if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
+  {
+    val = val.value< QgsProperty >().staticValue();
   }
 
   // try as layer crs
@@ -1369,6 +1445,11 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
 {
   if ( !input.isValid() )
     return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    return true;
+  }
 
   if ( input.canConvert<QgsProperty>() )
   {
