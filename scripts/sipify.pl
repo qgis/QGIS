@@ -694,7 +694,7 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # SIP_SKIP
-    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_OPERATOR_/ ){
+    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_SPECIAL_/ ){
         dbg_info('SIP SKIP!');
         # if multiline definition, remove previous lines
         if ( $MULTILINE_DEFINITION != MULTILINE_NO){
@@ -711,9 +711,18 @@ while ($LINE_IDX < $LINE_COUNT){
         detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
 
-        if ($LINE =~ m/SIP_PYTHON_OPERATOR_(\w+)\(\s*(\w+)\s*\)/ ){
-            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: self.$2()";
-            dbg_info("PYTHON OPERATOR $pyop");
+        if ($LINE =~ m/SIP_PYTHON_SPECIAL_(\w+)\(\s*(".*"|\w+)\s*\)/ ){
+            my $method_or_code = $2;
+            dbg_info("PYTHON SPECIAL method or code: $method_or_code");
+            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: ";
+            if ( $method_or_code =~ m/^"(.*)"$/ ){
+              $pyop .= $1;
+            }
+            else
+            {
+              $pyop .= "self.${method_or_code}()";
+            }
+            dbg_info("PYTHON SPECIAL $pyop");
             if ($python_output ne ''){
                 push @OUTPUT_PYTHON, "$pyop\n";
             }

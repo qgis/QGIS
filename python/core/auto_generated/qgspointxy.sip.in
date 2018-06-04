@@ -122,6 +122,7 @@ Returns a string representation of the point (x, y) with a preset ``precision``.
 If  ``precision`` is -1, then a default precision will be used.
 %End
 
+
     QString asWkt() const;
 %Docstring
 Returns the well known text representation for the point (e.g. "POINT(x y)").

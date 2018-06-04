@@ -495,6 +495,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsPoint {}>'.format(self.asWkt())" )
+
   protected:
 
     int childCount() const override;

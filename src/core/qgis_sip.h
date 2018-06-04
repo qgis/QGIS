@@ -198,9 +198,19 @@
 #define SIP_DOC_TEMPLATE
 
 /*
- * Define the __bool__ operator using the given method
- * sipify.pl will take care of creating the injection in qgis/{module}/__init__.py
+ * Define Python special method (bool, repr, etc.) using the given method or code
+ * sipify.pl will create a dedicated python file named according to the class
+ * and located in python/{module}/auto_additions/{classname}.py
+ * a simple method name can be provided (e.g. isValid) and sipify will create the proper code
+ * or some Python code can be provided:
+ *
+ * SIP_PYTHON_SPECIAL_BOOL( isValid )
+ * => sipify => MyClass.__bool__ = lambda self: self.isValid()
+ *
+ * SIP_PYTHON_SPECIAL_REPR( "'<MyClass {}>'format(self.toString())'" )
+ * => sipify => MyClass.__repr__ = lambda self: '<MyClass {}>'format(self.toString())'
  */
-#define SIP_PYTHON_OPERATOR_BOOL(method)
+#define SIP_PYTHON_SPECIAL_BOOL(method_or_code)
+#define SIP_PYTHON_SPECIAL_REPR(method_or_code)
 
 #endif // QGIS_SIP_H
