@@ -420,7 +420,7 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
 
-  protected:
+  private:
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
@@ -459,9 +459,7 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     bool updateSymbol( StyleEntity type, const QString &name );
 
-  private:
     Q_DISABLE_COPY( QgsStyle )
 };
-
 
 #endif

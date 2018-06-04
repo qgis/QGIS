@@ -456,52 +456,7 @@ Is emitted every time a new symbol has been added to the database
 Is emitted every time a tag or smartgroup has been added, removed, or renamed
 %End
 
-  protected:
-
-
-
-
-
-    bool openDatabase( const QString &filename );
-%Docstring
-Convenience function to open the DB and return a sqlite3 object
-%End
-
-    bool runEmptyQuery( const QString &query );
-%Docstring
-Convenience function that would run queries which don't generate return values
-
-:param query: query to run
-
-:return: success true on success
-%End
-
-    int getId( const QString &table, const QString &name );
-%Docstring
-Gets the id from the table for the given name from the database, 0 if not found
-%End
-
-    QString getName( const QString &table, int id ) const;
-%Docstring
-Gets the name from the table for the given id from the database, empty if not found
-%End
-
-    bool updateSymbol( StyleEntity type, const QString &name );
-%Docstring
-Updates the properties of an existing symbol/colorramp
-
-.. note::
-
-   This should not be called separately, only called through addSymbol or addColorRamp
-
-:param type: is either SymbolEntity or ColorrampEntity
-:param name: is the name of an existing symbol or a color ramp
-
-:return: Success state of the update operation
-%End
-
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *
