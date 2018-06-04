@@ -79,7 +79,7 @@ class CORE_EXPORT QgsProviderMetadata
       PyObject *sipResObj;
       SIP_BLOCK_THREADS
 
-      sipResObj = sipCallMethod( NULL, a2, "DD", new QString( dataSource ), sipType_QString, NULL, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
+      sipResObj = sipCallMethod( nullptr, a2, "DD", new QString( dataSource ), sipType_QString, nullptr, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
 
       if ( sipResObj )
       {
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsProviderMetadata
         {
           int state0;
           int sipIsErr = 0;
-          provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, NULL, SIP_NOT_NONE, &state0, &sipIsErr ) );
+          provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, nullptr, SIP_NOT_NONE, &state0, &sipIsErr ) );
           if ( sipIsErr != 0 )
           {
             sipReleaseType( provider, sipType_QgsDataProvider, state0 );
