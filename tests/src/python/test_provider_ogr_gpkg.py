@@ -949,6 +949,40 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.addAttribute(QgsField("c", QVariant.Int, "integer", 10)))
         self.assertTrue(vl.commitChanges())
 
+    def testApproxFeatureCountAndExtent(self):
+        """ Test perf improvement for for https://issues.qgis.org/issues/18402 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testApproxFeatureCountAndExtent.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 3)'))
+        lyr.CreateFeature(f)
+        fid = f.GetFID()
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(4 5)'))
+        lyr.CreateFeature(f)
+        lyr.DeleteFeature(fid)
+        ds = None
+        ds = ogr.Open(tmpfile, update=1)
+        ds.ExecuteSQL('DROP TABLE gpkg_ogr_contents')
+        ds = None
+
+        os.environ['QGIS_GPKG_FC_THRESHOLD'] = '1'
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        fc = vl.featureCount()
+        del os.environ['QGIS_GPKG_FC_THRESHOLD']
+        self.assertEqual(fc, 3) # didn't notice the hole
+
+        reference = QgsGeometry.fromRect(QgsRectangle(0, 1, 4, 5))
+        provider_extent = QgsGeometry.fromRect(vl.extent())
+        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
+                        provider_extent.asPolygon()[0])
+
 
 if __name__ == '__main__':
     unittest.main()

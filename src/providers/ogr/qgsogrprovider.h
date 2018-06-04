@@ -100,6 +100,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
     QStringList subLayers() const override;
+    QStringList subLayersWithoutFeatureCount() const;
     QString storageType() const override;
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QString subsetString() const override;
@@ -215,7 +216,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Does the real job of settings the subset string and adds an argument to disable update capabilities
     bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true, bool hasExistingRef = true );
 
-    void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
+    void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount ) const;
+
+    QStringList _subLayers( bool withFeatureCount ) const;
 
     QgsFields mAttributeFields;
 
@@ -564,6 +567,9 @@ class QgsOgrLayer
 
     //! Wrapper of OGR_L_GetLayerCount
     GIntBig GetFeatureCount( bool force = false );
+
+    //! Return an approximate feature count
+    GIntBig GetApproxFeatureCount();
 
     //! Wrapper of OGR_L_GetLayerCount
     OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );

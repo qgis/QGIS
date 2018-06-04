@@ -172,7 +172,8 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   {
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
-    const QStringList subLayersList( layer.dataProvider()->subLayers( ) );
+    QgsOgrProvider *ogrProvider = qobject_cast<QgsOgrProvider *>( layer.dataProvider() );
+    const QStringList subLayersList( ogrProvider->subLayersWithoutFeatureCount( ) );
     QMap< QString, int > mapLayerNameToCount;
     bool uniqueNames = true;
     int prevIdx = -1;

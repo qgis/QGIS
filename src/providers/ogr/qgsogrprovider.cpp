@@ -705,7 +705,7 @@ static OGRwkbGeometryType ogrWkbGeometryTypeFromName( const QString &typeName )
   return wkbUnknown;
 }
 
-void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const
+void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer, bool withFeatureCount ) const
 {
   QgsOgrFeatureDefn &fdef = layer->GetLayerDefn();
   // Get first column name,
@@ -731,7 +731,7 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
   if ( wkbFlatten( layerGeomType ) != wkbUnknown )
   {
-    int layerFeatureCount = layer->GetFeatureCount();
+    int layerFeatureCount = withFeatureCount ? layer->GetApproxFeatureCount() : -1;
 
     QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
@@ -823,6 +823,16 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
 QStringList QgsOgrProvider::subLayers() const
 {
+  return _subLayers( true );
+}
+
+QStringList QgsOgrProvider::subLayersWithoutFeatureCount() const
+{
+  return _subLayers( false );
+}
+
+QStringList QgsOgrProvider::_subLayers( bool withFeatureCount )  const
+{
   if ( !mValid )
   {
     return QStringList();
@@ -833,7 +843,7 @@ QStringList QgsOgrProvider::subLayers() const
 
   if ( mOgrLayer && ( mIsSubLayer || layerCount() == 1 ) )
   {
-    addSubLayerDetailsToSubLayerList( mLayerIndex, mOgrLayer );
+    addSubLayerDetailsToSubLayerList( mLayerIndex, mOgrLayer, withFeatureCount );
   }
   else
   {
@@ -856,7 +866,7 @@ QStringList QgsOgrProvider::subLayers() const
       if ( !layer )
         continue;
 
-      addSubLayerDetailsToSubLayerList( i, layer.get() );
+      addSubLayerDetailsToSubLayerList( i, layer.get(), withFeatureCount );
       if ( firstLayer == nullptr )
       {
         firstLayer = std::move( layer );
@@ -3838,7 +3848,7 @@ void QgsOgrProvider::recalculateFeatureCount()
   // so we remove it if there's any and then put it back
   if ( mOgrGeometryTypeFilter == wkbUnknown )
   {
-    mFeaturesCounted = mOgrLayer->GetFeatureCount( true );
+    mFeaturesCounted = mOgrLayer->GetApproxFeatureCount();
     if ( mFeaturesCounted == -1 )
     {
       mFeaturesCounted = QgsVectorDataProvider::UnknownCount;
@@ -5131,9 +5141,193 @@ GIntBig QgsOgrLayer::GetFeatureCount( bool force )
   return OGR_L_GetFeatureCount( hLayer, force );
 }
 
+GIntBig QgsOgrLayer::GetApproxFeatureCount()
+{
+  QMutexLocker locker( &ds->mutex );
+
+  // OGR_L_GetFeatureCount() can be super slow on huge geopackage files
+  // so implement some approximation strategy that has reasonable runtime.
+  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+  if ( driverName == QLatin1String( "GPKG" ) )
+  {
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
+                            ds->hDS, "SELECT 1 FROM gpkg_ogr_contents LIMIT 0", nullptr, nullptr );
+    CPLPopErrorHandler();
+    if ( hSqlLayer )
+    {
+      GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      return OGR_L_GetFeatureCount( hLayer, TRUE );
+    }
+
+    // Enumerate features up to a limit of 100000.
+    const GIntBig nLimit = CPLAtoGIntBig(
+                             CPLGetConfigOption( "QGIS_GPKG_FC_THRESHOLD", "100000" ) );
+    QByteArray layerName = OGR_L_GetName( hLayer );
+    QByteArray sql( "SELECT COUNT(*) FROM (SELECT 1 FROM " );
+    sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+    sql += " LIMIT ";
+    sql += CPLSPrintf( CPL_FRMT_GIB, nLimit );
+    sql += ")";
+    hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+    GIntBig res = -1;
+    if ( hSqlLayer )
+    {
+      gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+      if ( fet )
+      {
+        res = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+      }
+      GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+    }
+    if ( res >= 0 && res < nLimit )
+    {
+      // Less than 100000 features ? This is the final count
+      return res;
+    }
+    if ( res == nLimit )
+    {
+      // If we reach the threshold, then use the min and max values of the rowid
+      // hoping there are not a lot of holes.
+      // Do it in 2 separate SQL queries otherwise SQLite apparently does a
+      // full table scan...
+      sql = "SELECT MAX(ROWID) FROM ";
+      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+      GIntBig maxrowid = -1;
+      if ( hSqlLayer )
+      {
+        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+        if ( fet )
+        {
+          maxrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+        }
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      }
+
+      sql = "SELECT MIN(ROWID) FROM ";
+      sql += QgsOgrProviderUtils::quotedIdentifier( layerName, driverName );
+      hSqlLayer = GDALDatasetExecuteSQL( ds->hDS, sql, nullptr, nullptr );
+      GIntBig minrowid = 0;
+      if ( hSqlLayer )
+      {
+        gdal::ogr_feature_unique_ptr fet( OGR_L_GetNextFeature( hSqlLayer ) );
+        if ( fet )
+        {
+          minrowid = OGR_F_GetFieldAsInteger64( fet.get(), 0 );
+        }
+        GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+      }
+
+      if ( maxrowid >= minrowid )
+      {
+        return maxrowid - minrowid + 1;
+      }
+    }
+  }
+
+  return OGR_L_GetFeatureCount( hLayer, TRUE );
+}
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
+static bool findMinOrMax( GDALDatasetH hDS, const QByteArray &rtreeName,
+                          const char *varName, bool isMin, double &val )
+{
+  // We proceed by dichotomic search since unfortunately SELECT MIN(minx)
+  // in a RTree is a slow operation
+  double minval = -1e10;
+  double maxval = 1e10;
+  val = 0.0;
+  double oldval = 0.0;
+  for ( int i = 0; i < 100 && maxval - minval > 1e-15; i++ )
+  {
+    val = ( minval + maxval ) / 2;
+    if ( i > 0 && val == oldval )
+    {
+      break;
+    }
+    oldval = val;
+    QByteArray sql = "SELECT 1 FROM ";
+    sql += rtreeName;
+    sql += " WHERE ";
+    sql += varName;
+    sql += isMin ? " < " : " > ";
+    sql += CPLSPrintf( "%.18g", val );
+    sql += " LIMIT 1";
+    auto hSqlLayer = GDALDatasetExecuteSQL(
+                       hDS, sql, nullptr, nullptr );
+    GIntBig count = -1;
+    if ( hSqlLayer )
+    {
+      count = OGR_L_GetFeatureCount( hSqlLayer, true );
+      GDALDatasetReleaseResultSet( hDS, hSqlLayer );
+    }
+    if ( count < 0 )
+    {
+      return false;
+    }
+    if ( ( isMin && count == 0 ) || ( !isMin && count == 1 ) )
+    {
+      minval = val;
+    }
+    else
+    {
+      maxval = val;
+    }
+  }
+  return true;
+}
+#endif
+
 OGRErr QgsOgrLayer::GetExtent( OGREnvelope *psExtent, bool bForce )
 {
   QMutexLocker locker( &ds->mutex );
+
+#if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(2,4,0)
+  // OGR_L_GetExtent() can be super slow on huge geopackage files
+  // so implement some approximation strategy that has reasonable runtime.
+  // Actually this should return a rather accurante answer.
+  QString driverName = GDALGetDriverShortName( GDALGetDatasetDriver( ds->hDS ) );
+  if ( driverName == QLatin1String( "GPKG" ) )
+  {
+    QByteArray layerName = OGR_L_GetName( hLayer );
+    QByteArray rtreeName =
+      QgsOgrProviderUtils::quotedIdentifier( "rtree_" + layerName + "_" + OGR_L_GetGeometryColumn( hLayer ), driverName );
+
+    // Check if there is a non-empty RTree
+    QByteArray sql( "SELECT 1 FROM " );
+    sql += rtreeName;
+    sql += " LIMIT 1";
+    CPLPushErrorHandler( CPLQuietErrorHandler );
+    OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
+                            ds->hDS, sql, nullptr, nullptr );
+    CPLPopErrorHandler();
+    if ( !hSqlLayer )
+    {
+      return OGR_L_GetExtent( hLayer, psExtent, bForce );
+    }
+    bool hasFeatures = OGR_L_GetFeatureCount( hSqlLayer, true ) > 0;
+    GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
+    if ( !hasFeatures )
+    {
+      return OGRERR_FAILURE;
+    }
+
+    double minx, miny, maxx, maxy;
+    if ( findMinOrMax( ds->hDS, rtreeName, "MINX", true, minx ) &&
+         findMinOrMax( ds->hDS, rtreeName, "MINY", true, miny ) &&
+         findMinOrMax( ds->hDS, rtreeName, "MAXX", false, maxx ) &&
+         findMinOrMax( ds->hDS, rtreeName, "MAXY", false, maxy ) )
+    {
+      psExtent->MinX = minx;
+      psExtent->MinY = miny;
+      psExtent->MaxX = maxx;
+      psExtent->MaxY = maxy;
+      return OGRERR_NONE;
+    }
+  }
+#endif
+
   return OGR_L_GetExtent( hLayer, psExtent, bForce );
 }
 
