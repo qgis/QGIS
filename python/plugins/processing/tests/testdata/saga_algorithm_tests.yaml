@@ -127,3 +127,97 @@ tests:
       RESULT:
         hash: a11f159696f5726eedaa16e872fd2582cf8a88c8c1d84d72560e4647
         type: rasterhash
+
+  - algorithm: saga:simplekriging
+    name: Simple kriging
+    params:
+      BLOCK: true
+      DBLOCK: 1.0
+      FIELD: elev
+      LOG: false
+      POINTS:
+        name: pointsz.gml
+        type: vector
+      SEARCH_DIRECTION: 0
+      SEARCH_POINTS_ALL: 0
+      SEARCH_POINTS_MAX: 10
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 5.0
+      SEARCH_RANGE: 0
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 1.0
+      TQUALITY: 0
+      VAR_MAXDIST: -1.0
+      VAR_MODEL: a + b * x
+      VAR_NCLASSES: 100
+      VAR_NSKIP: 1
+    results:
+      PREDICTION:
+        hash: a1f5a1d369cef86332a914442c444d1c0753e471523cb838d0b2bc09
+        type: rasterhash
+      VARIANCE:
+        hash: 4f0378da7f0ff16326b6c404a202b004b66dbffcda38f42544a11490
+        type: rasterhash
+
+  - algorithm: saga:ordinarykriging
+    name: Ordinary Kriging
+    params:
+      BLOCK: true
+      DBLOCK: 1.0
+      FIELD: elev
+      LOG: true
+      POINTS:
+        name: pointsz.gml
+        type: vector
+      SEARCH_DIRECTION: 0
+      SEARCH_POINTS_ALL: 0
+      SEARCH_POINTS_MAX: 10
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 5.0
+      SEARCH_RANGE: 0
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 1.0
+      TQUALITY: 0
+      VAR_MAXDIST: -1.0
+      VAR_MODEL: a + b * x
+      VAR_NCLASSES: 100
+      VAR_NSKIP: 1
+    results:
+      PREDICTION:
+        hash: 0fff15c98a1c5af9eab6c242559a5f4484a7a40f5be399899b24fd39
+        type: rasterhash
+      VARIANCE:
+        hash: ec7b708609178533ac2b89cd575140415ef93c70396fa630d1c15b67
+        type: rasterhash
+
+  - algorithm: saga:universalkriging
+    name: Universal Kriging
+    params:
+      BLOCK: true
+      DBLOCK: 1.0
+      FIELD: elev
+      LOG: true
+      POINTS:
+        name: pointsz.gml
+        type: vector
+      SEARCH_DIRECTION: 0
+      SEARCH_POINTS_ALL: 0
+      SEARCH_POINTS_MAX: 10
+      SEARCH_POINTS_MIN: 3
+      SEARCH_RADIUS: 5.0
+      SEARCH_RANGE: 0
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 1.0
+      TQUALITY: 0
+      VAR_MAXDIST: -1.0
+      VAR_MODEL: a + b * x
+      VAR_NCLASSES: 100
+      VAR_NSKIP: 1
+    results:
+      PREDICTION:
+        hash: 0fff15c98a1c5af9eab6c242559a5f4484a7a40f5be399899b24fd39
+        type: rasterhash
+      VARIANCE:
+        hash: ec7b708609178533ac2b89cd575140415ef93c70396fa630d1c15b67
+        type: rasterhash
+  
