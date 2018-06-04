@@ -46,6 +46,23 @@ tests:
         name: expected/saga/add_grid_to_points.shp
         type: vector
 
+  - algorithm: saga:mergevectorlayers
+    name: Merge vector layers
+    params:
+      INPUT:
+        params:
+        - name: points.gml
+          type: vector
+        - name: points_in_polys.gml
+          type: vector
+        type: multi
+      MATCH: true
+      SRCINFO: true
+    results:
+      MERGED:
+        name: expected/saga/merge_vector_layers.shp
+        type: vector
+
   - algorithm: saga:reclassifyvaluessimple
     name: Reclassify values (simple)
     params:
