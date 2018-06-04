@@ -3572,7 +3572,7 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name )
   {
     if ( canvas->objectName() == name )
     {
-      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      QgsDebugMsg( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }
@@ -10687,7 +10687,7 @@ Qgs3DMapCanvasDockWidget *QgisApp::createNew3DMapCanvasDock( const QString &name
   {
     if ( canvas->objectName() == name )
     {
-      QgsDebugMsg( tr( "A map canvas with name '%1' already exists!" ).arg( name ) );
+      QgsDebugMsg( QStringLiteral( "A map canvas with name '%1' already exists!" ).arg( name ) );
       return nullptr;
     }
   }

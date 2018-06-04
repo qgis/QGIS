@@ -323,7 +323,7 @@ bool QgsWmsProvider::addLayers()
   Q_FOREACH ( const QString &layer, mSettings.mActiveSubLayers )
   {
     mActiveSubLayerVisibility[ layer ] = true;
-    QgsDebugMsg( "set visibility of layer '" + layer + "' to true." );
+    QgsDebugMsg( QStringLiteral( "set visibility of layer '%1' to true." ).arg( layer ) );
   }
 
   // now that the layers have changed, the extent will as well.
@@ -1326,7 +1326,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   QgsCoordinateTransform xform( wgs, dst );
   Q_NOWARN_DEPRECATED_POP
 
-  QgsDebugMsg( QString( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
+  QgsDebugMsg( QStringLiteral( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
   try
   {
     extent = xform.transformBoundingBox( extent );
@@ -1336,7 +1336,7 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
     Q_UNUSED( cse );
     return false;
   }
-  QgsDebugMsg( QString( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
+  QgsDebugMsg( QStringLiteral( "transformed layer extent %1" ).arg( extent.toString( true ) ) );
 
   //make sure extent does not contain 'inf' or 'nan'
   if ( !extent.isFinite() )
@@ -3703,7 +3703,7 @@ void QgsWmsImageDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint6
 {
   Q_UNUSED( bytesReceived );
   Q_UNUSED( bytesTotal );
-  QgsDebugMsg( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QgsDebugMsg( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
 void QgsWmsImageDownloadHandler::canceled()

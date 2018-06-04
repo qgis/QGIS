@@ -546,9 +546,9 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     {
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
-      QgsDebugMsg( tr( "Rotating raster" ) );
+      QgsDebugMsg( QStringLiteral( "Rotating raster" ) );
       int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
-      QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
+      QgsDebugMsg( QStringLiteral( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void *tmpData = malloc( size );
       if ( ! tmpData )
@@ -1896,7 +1896,7 @@ void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 byt
 {
   Q_UNUSED( bytesReceived );
   Q_UNUSED( bytesTotal );
-  QgsDebugMsgLevel( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }
 
 void QgsWcsDownloadHandler::canceled()
