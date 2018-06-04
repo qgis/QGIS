@@ -13,4 +13,4 @@ QgsProcessingParameterField|FIN_LUT_NAM|Name|None|FIN_LUT|-1|False|False
 QgsProcessingParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
 QgsProcessingParameterEnum|OUTPUT|Output as...|[0] cells;[1] percent;[2] area
 QgsProcessingParameterRasterDestination|CHANGE|Changes
-OutputTable|CHANGES|Changes
+QgsProcessingParameterVectorDestination|CHANGES|Changes

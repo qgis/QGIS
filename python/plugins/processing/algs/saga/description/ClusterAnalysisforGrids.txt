@@ -8,4 +8,4 @@ QgsProcessingParameterBoolean|NORMALISE|Normalise|True
 QgsProcessingParameterBoolean|OLDVERSION|Old Version|False
 QgsProcessingParameterBoolean|UPDATEVIEW|Update View|False
 QgsProcessingParameterRasterDestination|CLUSTER|Clusters
-OutputTable|STATISTICS|Statistics
+QgsProcessingParameterVectorDestination|STATISTICS|Statistics

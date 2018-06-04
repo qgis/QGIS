@@ -12,7 +12,7 @@ QgsProcessingParameterFeatureSource|TWO_LUT_MAX|Value (Maximum)|5|None|False
 QgsProcessingParameterFeatureSource|TWO_LUT_NAM|Name|5|None|False
 QgsProcessingParameterRasterDestination|COMBINED|Combined Classes
 QgsProcessingParameterBoolean|NOCHANGE|Report Unchanged Classes|True
-QgsProcessingParameterFeatureSource|CONFUSION|Confusion Matrix|5|None|False
+QgsProcessingParameterVectorDestination|CONFUSION|Confusion Matrix|5|None|False
 QgsProcessingParameterEnum|OUTPUT|Output as...|[0] cells;[1] percent;[2] area|False|0
-QgsProcessingParameterFeatureSource|CLASSES|Class Values|5|None|False
-QgsProcessingParameterFeatureSource|SUMMARY|Summary|5|None|False
+QgsProcessingParameterVectorDestination|CLASSES|Class Values|5|None|False
+QgsProcessingParameterVectorDestination|SUMMARY|Summary|5|None|False

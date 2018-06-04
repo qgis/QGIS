@@ -1,4 +1,4 @@
 Distance Matrix
 shapes_points
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-OutputTable|TABLE|Distance Matrix Table
+QgsProcessingParameterVectorDestination|TABLE|Distance Matrix Table
