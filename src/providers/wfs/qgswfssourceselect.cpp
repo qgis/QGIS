@@ -22,7 +22,7 @@
 #include "qgswfsprovider.h"
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsutils.h"
-#include "qgsnewhttpconnection.h"
+#include "qgswfsnewconnection.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -108,6 +108,8 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
+  QApplication::restoreOverrideCursor();
+
   QgsSettings settings;
   QgsDebugMsg( "saving settings" );
   settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/geometry" ), saveGeometry() );
@@ -204,6 +206,7 @@ void QgsWFSSourceSelect::refresh()
 
 void QgsWFSSourceSelect::capabilitiesReplyFinished()
 {
+  QApplication::restoreOverrideCursor();
   btnConnect->setEnabled( true );
 
   if ( !mCapabilities )
@@ -290,7 +293,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
+  auto nc = new QgsWFSNewConnection( this );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
@@ -303,7 +306,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
+  auto nc = new QgsWFSNewConnection( this, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
@@ -356,6 +359,7 @@ void QgsWFSSourceSelect::connectToServer()
     const bool synchronous = false;
     const bool forceRefresh = true;
     mCapabilities->requestCapabilities( synchronous, forceRefresh );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
   }
 }
 

@@ -29,6 +29,7 @@
 #include "qgsexception.h"
 #include "qgsfeedback.h"
 
+#include <algorithm>
 #include <QDir>
 #include <QProgressDialog>
 #include <QTimer>
@@ -81,7 +82,7 @@ QgsWFSFeatureDownloader::QgsWFSFeatureDownloader( QgsWFSSharedData *shared )
   , mShared( shared )
   , mStop( false )
   , mProgressDialogShowImmediately( false )
-  , mSupportsPaging( shared->mCaps.supportsPaging )
+  , mPageSize( shared->mPageSize )
   , mRemoveNSPrefix( false )
   , mNumberMatched( -1 )
   , mFeatureHitsAsyncRequest( shared->mURI )
@@ -185,7 +186,7 @@ QString QgsWFSFeatureDownloader::sanitizeFilter( QString filter )
   return filter;
 }
 
-QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool forHits )
+QUrl QgsWFSFeatureDownloader::buildURL( qint64 startIndex, int maxFeatures, bool forHits )
 {
   QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
   getFeatureUrl.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
@@ -231,7 +232,7 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
   }
   else if ( maxFeatures > 0 )
   {
-    if ( mSupportsPaging )
+    if ( mPageSize > 0 )
     {
       // Note: always include the STARTINDEX, even for zero, has some (likely buggy)
       // implementations do not return the same results if STARTINDEX=0 is specified
@@ -383,6 +384,10 @@ QUrl QgsWFSFeatureDownloader::buildURL( int startIndex, int maxFeatures, bool fo
 void QgsWFSFeatureDownloader::gotHitsResponse()
 {
   mNumberMatched = mFeatureHitsAsyncRequest.numberMatched();
+  if ( mShared->mMaxFeatures > 0 )
+  {
+    mNumberMatched = std::min( mNumberMatched, mShared->mMaxFeatures );
+  }
   if ( mNumberMatched >= 0 )
   {
     if ( mTotalDownloadedFeatureCount == 0 )
@@ -456,14 +461,41 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
   int pagingIter = 1;
   QString gmlIdFirstFeatureFirstIter;
   bool disablePaging = false;
+  qint64 maxTotalFeatures = 0;
+  if ( maxFeatures > 0 && mShared->mMaxFeatures > 0 )
+  {
+    maxTotalFeatures = std::min( maxFeatures, mShared->mMaxFeatures );
+  }
+  else if ( maxFeatures > 0 )
+  {
+    maxTotalFeatures = maxFeatures;
+  }
+  else
+  {
+    maxTotalFeatures = mShared->mMaxFeatures;
+  }
   // Top level loop to do feature paging in WFS 2.0
   while ( true )
   {
     success = true;
     QgsGmlStreamingParser *parser = mShared->createParser();
 
+    int maxFeaturesThisRequest = static_cast<int>(
+                                   std::min( maxTotalFeatures - mTotalDownloadedFeatureCount,
+                                       static_cast<qint64>( std::numeric_limits<int>::max() ) ) );
+    if ( mShared->mPageSize > 0 )
+    {
+      if ( maxFeaturesThisRequest > 0 )
+      {
+        maxFeaturesThisRequest = std::min( maxFeaturesThisRequest, mShared->mPageSize );
+      }
+      else
+      {
+        maxFeaturesThisRequest = mShared->mPageSize;
+      }
+    }
     QUrl url( buildURL( mTotalDownloadedFeatureCount,
-                        maxFeatures ? maxFeatures : mShared->mMaxFeatures, false ) );
+                        maxFeaturesThisRequest, false ) );
 
     // Small hack for testing purposes
     if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
@@ -527,11 +559,11 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
         // Some GeoServer instances in WFS 2.0 with paging throw an exception
         // e.g. http://ows.region-bretagne.fr/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rb:etudes&STARTINDEX=0&COUNT=1
         // Disabling paging helps in those cases
-        if ( mSupportsPaging && mTotalDownloadedFeatureCount == 0 &&
+        if ( mPageSize > 0 && mTotalDownloadedFeatureCount == 0 &&
              parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
         {
           QgsDebugMsg( QString( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
-          mSupportsPaging = false;
+          mPageSize = 0;
         }
         // GeoServer doesn't like typenames prefixed by namespace prefix, despite
         // the examples in the WFS 2.0 spec showing that
@@ -560,11 +592,15 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
           if ( parser->numberMatched() > 0 && mTotalDownloadedFeatureCount == 0 )
             mNumberMatched = parser->numberMatched();
           // The number returned can only be used if we aren't in paging mode
-          else if ( parser->numberReturned() > 0 && !mSupportsPaging )
+          else if ( parser->numberReturned() > 0 && mPageSize == 0 )
             mNumberMatched = parser->numberMatched();
           // We can only use the layer feature count if we don't apply a BBOX
           else if ( mShared->isFeatureCountExact() && mShared->mRect.isNull() )
             mNumberMatched = mShared->getFeatureCount( false );
+          if ( mNumberMatched > 0 && mShared->mMaxFeatures > 0 )
+          {
+            mNumberMatched = std::min( mNumberMatched, mShared->mMaxFeatures );
+          }
 
           // If we didn't get a valid mNumberMatched, we will possibly issue
           // a explicit RESULTTYPE=hits request 4 second after the beginning of
@@ -686,7 +722,7 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
 
       if ( finished )
       {
-        if ( parser->isTruncatedResponse() && !mSupportsPaging )
+        if ( parser->isTruncatedResponse() && mPageSize == 0 )
         {
           // e.g: http://services.cuzk.cz/wfs/inspire-cp-wfs.asp?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=cp:CadastralParcel
           truncatedResponse = true;
@@ -715,19 +751,20 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     retryIter = 0;
     lastValidTotalDownloadedFeatureCount = mTotalDownloadedFeatureCount;
 
-    if ( !mSupportsPaging )
+    if ( mPageSize == 0 )
       break;
     if ( maxFeatures == 1 )
       break;
     // Detect if we are at the last page
-    if ( ( mShared->mMaxFeatures > 0 && featureCountForThisResponse < mShared->mMaxFeatures ) || featureCountForThisResponse == 0 )
+    if ( ( mShared->mPageSize > 0 && featureCountForThisResponse < mShared->mPageSize ) || featureCountForThisResponse == 0 )
       break;
     ++ pagingIter;
     if ( disablePaging )
     {
-      mSupportsPaging = mShared->mCaps.supportsPaging = false;
+      mShared->mPageSize = mPageSize = 0;
       mTotalDownloadedFeatureCount = 0;
-      if ( mShared->mMaxFeaturesWasSetFromDefaultForPaging )
+      mShared->mPageSize = 0;
+      if ( mShared->mMaxFeatures == mShared->mURI.maxNumFeatures() )
       {
         mShared->mMaxFeatures = 0;
       }

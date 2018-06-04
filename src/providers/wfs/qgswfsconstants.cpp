@@ -38,12 +38,16 @@ const QString QgsWFSConstants::URI_PARAM_IGNOREAXISORIENTATION( QStringLiteral( 
 const QString QgsWFSConstants::URI_PARAM_INVERTAXISORIENTATION( QStringLiteral( "InvertAxisOrientation" ) );
 const QString QgsWFSConstants::URI_PARAM_VALIDATESQLFUNCTIONS( QStringLiteral( "validateSQLFunctions" ) );
 const QString QgsWFSConstants::URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG( QStringLiteral( "hideDownloadProgressDialog" ) );
+const QString QgsWFSConstants::URI_PARAM_PAGING_ENABLED( "pagingEnabled" );
+const QString QgsWFSConstants::URI_PARAM_PAGE_SIZE( "pageSize" );
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
 
 const QString QgsWFSConstants::CONNECTIONS_WFS( QStringLiteral( "qgis/connections-wfs/" ) );
 const QString QgsWFSConstants::SETTINGS_VERSION( QStringLiteral( "version" ) );
 const QString QgsWFSConstants::SETTINGS_MAXNUMFEATURES( QStringLiteral( "maxnumfeatures" ) );
+const QString QgsWFSConstants::SETTINGS_PAGING_ENABLED( QStringLiteral( "pagingenabled" ) );
+const QString QgsWFSConstants::SETTINGS_PAGE_SIZE( QStringLiteral( "pagesize" ) );
 
 const QString QgsWFSConstants::FIELD_GEN_COUNTER( QStringLiteral( "__qgis_gen_counter" ) );
 const QString QgsWFSConstants::FIELD_GMLID( QStringLiteral( "__qgis_gmlid" ) );
