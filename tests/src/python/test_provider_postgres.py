@@ -4,6 +4,10 @@
 Note: to prepare the DB, you need to run the sql files specified in
 tests/testdata/provider/testdata_pg.sh
 
+Read tests/README.md about writing/launching tests with PostgreSQL.
+
+Run with ctest -V -R PyQgsPostgresProvider
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -902,6 +906,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         status = vl.loadNamedStyle(mFilePath)
         self.assertTrue(status)
 
+        # The style is saved as non-default
         errorMsg = vl.saveStyleToDatabase("by day", "faded greens and elegant patterns", False, "")
         self.assertEqual(errorMsg, "")
 
@@ -930,6 +935,27 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(errmsg, "")
 
         res, errmsg = vl.deleteStyleFromDatabase("1")
+        self.assertTrue(res)
+        self.assertEqual(errmsg, "")
+
+        # We save now the style again twice but with one as default
+        errorMsg = vl.saveStyleToDatabase("related style", "faded greens and elegant patterns", False, "")
+        self.assertEqual(errorMsg, "")
+        errorMsg = vl.saveStyleToDatabase("default style", "faded greens and elegant patterns", True, "")
+        self.assertEqual(errorMsg, "")
+
+        related_count, idlist, namelist, desclist, errmsg = vl.listStylesInDatabase()
+        self.assertEqual(related_count, 2)
+        self.assertEqual(errmsg, "")
+        self.assertEqual(idlist, ["3", "2"])  # Ids must be reversed.
+        self.assertEqual(namelist, ["default style", "related style"])
+        self.assertEqual(desclist, ["faded greens and elegant patterns"] * 2)
+
+        # We remove these 2 styles
+        res, errmsg = vl.deleteStyleFromDatabase("2")
+        self.assertTrue(res)
+        self.assertEqual(errmsg, "")
+        res, errmsg = vl.deleteStyleFromDatabase("3")
         self.assertTrue(res)
         self.assertEqual(errmsg, "")
 
@@ -1066,7 +1092,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(ok)
 
     def testStyleDatabaseWithService(self):
+        """Test saving style in DB using a service file.
 
+        To run this test, you first need to create a service with:
+        [qgis_test]
+        host=localhost
+        port=5432
+        dbname=qgis_test
+        user=USERNAME
+        password=PASSWORD
+        """
         myconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             myconn = os.environ['QGIS_PGTEST_DB']

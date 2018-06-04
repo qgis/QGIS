@@ -797,6 +797,10 @@ Lists all the style in db split into related to the layer and not related to
 :param msgError:
 
 :return: the number of styles related to current layer
+
+.. note::
+
+   Since QGIS 3.2 Styles related to the layer are ordered with the default style first then by update time for Postgres, MySQL and Spatialite.
 %End
 
     virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
