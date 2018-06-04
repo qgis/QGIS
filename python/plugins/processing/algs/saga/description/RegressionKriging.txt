@@ -5,19 +5,19 @@ QgsProcessingParameterField|FIELD|Attribute|None|POINTS|-1|False|False
 QgsProcessingParameterMultipleLayers|PREDICTORS|Predictors|3|None|False
 QgsProcessingParameterRasterDestination|REGRESSION|Regression
 QgsProcessingParameterRasterDestination|PREDICTION|Prediction
-QgsProcessingParameterRasterDestination|RESIDUALS|Residuals
-QgsProcessingParameterRasterDestination|VARIANCE|Quality Measure
+QgsProcessingParameterRasterDestination|RESIDUALS|Residuals|None|True
+QgsProcessingParameterRasterDestination|VARIANCE|Quality Measure|None|True
+QgsProcessingParameterVectorDestination|INFO_COEFF|Regression: Coefficients|0|None|True
+QgsProcessingParameterVectorDestination|INFO_MODEL|Regression: Model|0|None|True
+QgsProcessingParameterVectorDestination|INFO_STEPS|Regression: Steps|0|None|True
 QgsProcessingParameterEnum|TQUALITY|Type of Quality Measure|[0] standard deviation;[1] variance|False|0
 QgsProcessingParameterBoolean|LOG|Logarithmic Transformation|False
 QgsProcessingParameterBoolean|BLOCK|Block Kriging|False
 QgsProcessingParameterNumber|DBLOCK|Block Size|QgsProcessingParameterNumber.Double|100.000000|False|0.000000|None
-QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Integer|-1.000000|False|None|None
+QgsProcessingParameterNumber|VAR_MAXDIST|Maximum Distance|QgsProcessingParameterNumber.Double|-1.000000|False|None|None
 QgsProcessingParameterNumber|VAR_NCLASSES|Lag Distance Classes|QgsProcessingParameterNumber.Integer|100|False|1|None
 QgsProcessingParameterNumber|VAR_NSKIP|Skip|QgsProcessingParameterNumber.Integer|1|False|1|None
-QgsProcessingParameterString|VAR_MODEL|Variogram Model
-QgsProcessingParameterFeatureSource|INFO_COEFF|Regression: Coefficients|5|None|True
-QgsProcessingParameterFeatureSource|INFO_MODEL|Regression: Model|5|None|True
-QgsProcessingParameterFeatureSource|INFO_STEPS|Regression: Steps|5|None|True
+QgsProcessingParameterString|VAR_MODEL|Variogram Model|a + b * x
 QgsProcessingParameterBoolean|COORD_X|Include X Coordinate|False
 QgsProcessingParameterBoolean|COORD_Y|Include Y Coordinate|False
 QgsProcessingParameterBoolean|INTERCEPT|Intercept|True
