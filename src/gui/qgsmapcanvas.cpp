@@ -466,6 +466,13 @@ QgsMapLayer *QgsMapCanvas::currentLayer()
   return mCurrentLayer;
 }
 
+QgsExpressionContextScope *QgsMapCanvas::scope()
+{
+  QgsExpressionContextScope *s = new QgsExpressionContextScope( QObject::tr( "Map Canvas" ) );
+  s->setVariable( QStringLiteral( "canvas_cursor_point" ), QgsGeometry::fromPointXY( cursorPoint() ), true );
+
+  return s;
+}
 
 void QgsMapCanvas::refresh()
 {
@@ -510,6 +517,7 @@ void QgsMapCanvas::refreshMap()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
                     << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
+                    << scope()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
@@ -862,6 +870,10 @@ QgsPointXY QgsMapCanvas::center() const
   return r.center();
 }
 
+QgsPointXY QgsMapCanvas::cursorPoint() const
+{
+  return mCursorPoint;
+}
 
 double QgsMapCanvas::rotation() const
 {
@@ -1622,9 +1634,8 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent *e )
   }
 
   // show x y on status bar
-  QPoint xy = e->pos();
-  QgsPointXY coord = getCoordinateTransform()->toMapCoordinates( xy );
-  emit xyCoordinates( coord );
+  mCursorPoint = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->mouseLastXY );
+  emit xyCoordinates( mCursorPoint );
 }
 
 void QgsMapCanvas::setMapTool( QgsMapTool *tool, bool clean )

@@ -206,6 +206,13 @@ Gets map center, in geographical coordinates
 .. versionadded:: 2.8
 %End
 
+    QgsPointXY cursorPoint() const;
+%Docstring
+Returns the last cursor position on the canvas in geographical coordinates
+
+.. versionadded:: 3.4
+%End
+
     void zoomToFullExtent();
 %Docstring
 Zoom to the full extent of all layers
@@ -625,6 +632,13 @@ overrides for expression evaluation for the map canvas render.
 .. versionadded:: 2.12
 %End
 
+
+    QgsExpressionContextScope *scope() /Factory/;
+%Docstring
+Creates a new scope which contains default variables and functions relating to the map canvas.
+
+.. versionadded:: 3.4
+%End
 
     void setSegmentationTolerance( double tolerance );
 %Docstring

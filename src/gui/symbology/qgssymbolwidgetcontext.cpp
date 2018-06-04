@@ -83,6 +83,7 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
   if ( mMapCanvas )
   {
     scopes << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
+           << mMapCanvas->scope()
            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
   }
   else

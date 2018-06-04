@@ -233,6 +233,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsPointXY center() const;
 
+    /**
+     * Returns the last cursor position on the canvas in geographical coordinates
+     * \since QGIS 3.4
+     */
+    QgsPointXY cursorPoint() const;
+
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
 
@@ -564,6 +570,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * \since QGIS 2.12
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
+
+    /**
+     * Creates a new scope which contains default variables and functions relating to the map canvas.
+     * \since QGIS 3.4
+     */
+    QgsExpressionContextScope *scope() SIP_FACTORY;
 
     /**
      * Sets the segmentation tolerance applied when rendering curved geometries
@@ -989,6 +1001,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QMetaObject::Connection mPreviewTimerConnection;
 
     QString mTheme;
+
+    QgsPointXY mCursorPoint;
 
     bool mAnnotationsVisible = true;
 
