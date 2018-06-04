@@ -321,25 +321,45 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const Qgs
     val = fromVar.source;
   }
 
-  QString layerRef;
   if ( val.canConvert<QgsProperty>() )
   {
-    layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
-  }
-  else if ( !val.isValid() || val.toString().isEmpty() )
-  {
-    // fall back to default
-    layerRef = definition->defaultValue().toString();
-  }
-  else
-  {
-    layerRef = val.toString();
+    val = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
   }
 
-  if ( layerRef.isEmpty() )
-    return QString();
+  QgsVectorLayer *vl = nullptr;
+  vl = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) );
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  if ( !vl )
+  {
+    QString layerRef;
+    if ( val.canConvert<QgsProperty>() )
+    {
+      layerRef = val.value< QgsProperty >().valueAsString( context.expressionContext(), definition->defaultValue().toString() );
+    }
+    else if ( !val.isValid() || val.toString().isEmpty() )
+    {
+      // fall back to default
+      val = definition->defaultValue();
+
+      // default value may be a vector layer
+      vl = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) );
+      if ( !vl )
+        layerRef = definition->defaultValue().toString();
+    }
+    else
+    {
+      layerRef = val.toString();
+    }
+
+    if ( !vl )
+    {
+      if ( layerRef.isEmpty() )
+        return QString();
+
+      vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+    }
+  }
+
   if ( !vl )
     return QString();
 
