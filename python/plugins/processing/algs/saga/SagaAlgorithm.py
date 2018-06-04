@@ -273,7 +273,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
                     f.write('\t'.join([col for col in param.headers()]) + '\n')
                     values = self.parameterAsMatrix(parameters, param.name(), context)
                     for i in range(0, len(values), 3):
-                        s = values[i] + '\t' + values[i + 1] + '\t' + values[i + 2] + '\n'
+                        s = '{}\t{}\t{}\n'.format(values[i], values[i + 1], values[i + 2])
                         f.write(s)
                 command += ' -{} "{}"'.format(param.name(), tempTableFile)
             elif isinstance(param, QgsProcessingParameterExtent):
