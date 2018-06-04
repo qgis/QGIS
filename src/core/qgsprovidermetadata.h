@@ -90,6 +90,7 @@ class CORE_EXPORT QgsProviderMetadata
           provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, NULL, SIP_NOT_NONE, &state0, &sipIsErr ) );
           if ( sipIsErr != 0 )
           {
+            sipReleaseType( provider, sipType_QgsDataProvider, state0 );
             provider = nullptr;
           }
         }

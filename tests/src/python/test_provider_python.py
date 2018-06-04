@@ -105,7 +105,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         # Register the provider
         r = QgsProviderRegistry.instance()
         metadata = QgsProviderMetadata(PyProvider.providerKey(), PyProvider.description(), PyProvider.createProvider)
-        r.registerProvider(metadata)
+        assert r.registerProvider(metadata)
         assert r.providerMetadata(PyProvider.providerKey()) == metadata
 
         # Create test layer
@@ -398,6 +398,12 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         extent = QgsRectangle(-73, 70, -63, 80)
         request = QgsFeatureRequest().setFilterRect(extent)
         self.assertTrue(QgsTestUtils.testProviderIteratorThreadSafety(self.source, request))
+
+    def tesRegisterSameProviderTwice(self):
+        """Test that a provider cannot be registered twice"""
+        r = QgsProviderRegistry.instance()
+        metadata = QgsProviderMetadata(PyProvider.providerKey(), PyProvider.description(), PyProvider.createProvider)
+        self.assertFalse(r.registerProvider(metadata))
 
 
 if __name__ == '__main__':

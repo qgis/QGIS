@@ -181,10 +181,11 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * \brief register a new vector data provider from its \a providerMetadata
+     * \return true on success, false if a provider with the same key was already registered
      * \note ownership of the QgsProviderMetadata instance is transferred to the registry
      * \since QGIS 3.2
      */
-    void registerProvider( QgsProviderMetadata *providerMetadata SIP_TRANSFER );
+    bool registerProvider( QgsProviderMetadata *providerMetadata SIP_TRANSFER );
 
     /**
      * Open the given vector data source
