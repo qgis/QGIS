@@ -1831,11 +1831,34 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
      */
     void setCreateByDefault( bool createByDefault );
 
+  protected:
+
+    /**
+     * Original (source) provider which this parameter has been derived from.
+     * In the case of destination parameters which are part of model algorithms, this
+     * will reflect the child algorithm's provider which actually generates the
+     * parameter, as opposed to the provider which this parameter belongs to (i.e.
+     * the model provider)
+     * \since QGIS 3.2
+     */
+    QgsProcessingProvider *originalProvider() const { return mOriginalProvider; }
+
   private:
+
+    /**
+     * Original (source) provider which this parameter has been derived from.
+     * In the case of destination parameters which are part of model algorithms, this
+     * will reflect the child algorithm's provider which actually generates the
+     * parameter, as opposed to the provider which this parameter belongs to (i.e.
+     * the model provider)
+     */
+    QgsProcessingProvider *mOriginalProvider = nullptr;
 
     bool mSupportsNonFileBasedOutputs = true;
     bool mCreateByDefault = true;
 
+    friend class QgsProcessingModelAlgorithm;
+    friend class TestQgsProcessing;
 };
 
 
@@ -1871,6 +1894,13 @@ class CORE_EXPORT QgsProcessingParameterFeatureSink : public QgsProcessingDestin
     QString asScriptCode() const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+
+    /**
+     * Returns a list of the vector format file extensions supported by this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
      * Returns the layer type for sinks associated with the parameter.
@@ -1941,6 +1971,13 @@ class CORE_EXPORT QgsProcessingParameterVectorDestination : public QgsProcessing
     QString defaultFileExtension() const override;
 
     /**
+     * Returns a list of the vector format file extensions supported by this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+
+    /**
      * Returns the layer type for this created vector layer.
      * \see setDataType()
      */
@@ -2004,6 +2041,13 @@ class CORE_EXPORT QgsProcessingParameterRasterDestination : public QgsProcessing
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
     QgsProcessingOutputDefinition *toOutputDefinition() const override SIP_FACTORY;
     QString defaultFileExtension() const override;
+
+    /**
+     * Returns a list of the raster format file extensions supported for this parameter.
+     * \see defaultFileExtension()
+     * \since QGIS 3.2
+     */
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Creates a new parameter using the definition from a script code.
