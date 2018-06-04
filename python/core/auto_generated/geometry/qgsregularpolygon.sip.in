@@ -38,7 +38,7 @@ The regular polygon is defined by a center point with a number of sides/vertices
 Constructor for QgsRegularPolygon.
 %End
 
-    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, double radius, double azimuth, unsigned int numberSides, ConstructionOption circle );
 %Docstring
 Constructs a regular polygon by ``center`` and parameters for the first vertex. An empty regular polygon is returned if ``numberSides`` < 3 or ``ConstructionOption`` isn't valid.
 
@@ -49,7 +49,7 @@ Constructs a regular polygon by ``center`` and parameters for the first vertex. 
 :param circle: Option to create the polygon. see ConstructionOption
 %End
 
-    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, unsigned int numberSides, ConstructionOption circle );
 %Docstring
 Constructs a regular polygon by ``center`` and another point.
 
@@ -59,7 +59,7 @@ Constructs a regular polygon by ``center`` and another point.
 :param circle: Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
 %End
 
-    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numberSides );
+    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, unsigned int numberSides );
 %Docstring
 Constructs a regular polygon by two points of the first side.
 
@@ -123,7 +123,7 @@ Radius is unchanged. The first vertex is reprojected from the new center.
 .. seealso:: :py:func:`center`
 %End
 
-    void setRadius( const double radius );
+    void setRadius( double radius );
 %Docstring
 Sets the radius.
 Center is unchanged. The first vertex is reprojected from the center with the new radius.
@@ -139,7 +139,7 @@ Radius is unchanged. The center is reprojected from the new first vertex.
 .. seealso:: :py:func:`firstVertex`
 %End
 
-    void setNumberSides( const unsigned int numberSides );
+    void setNumberSides( unsigned int numberSides );
 %Docstring
 Sets the number of sides.
 If numberSides < 3, the number of sides is unchanged.

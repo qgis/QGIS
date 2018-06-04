@@ -43,11 +43,11 @@ Constructor for QgsVector taking x and y component values.
 
     QgsVector operator+( QgsVector other ) const;
 
-    QgsVector &operator+=( const QgsVector other );
+    QgsVector &operator+=( QgsVector other );
 
-    QgsVector operator-( const QgsVector other ) const;
+    QgsVector operator-( QgsVector other ) const;
 
-    QgsVector &operator-=( const QgsVector other );
+    QgsVector &operator-=( QgsVector other );
 
     double length() const;
 %Docstring

@@ -67,7 +67,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param allowOpacity set to false to disable opacity modification
      * \since QGIS 3.0
      */
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 
     /**
      * Returns a color selection from a color dialog.
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \returns Selected color on accepted() or initialColor on rejected().
      */
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
-                            const bool allowOpacity = false );
+                            bool allowOpacity = false );
 
   signals:
 

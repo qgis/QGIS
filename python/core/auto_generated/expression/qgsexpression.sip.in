@@ -388,7 +388,7 @@ This function returns variables in each expression between [% and %].
 .. versionadded:: 3.2
 %End
 
-    static double evaluateToDouble( const QString &text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, double fallbackValue );
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant double
 value.

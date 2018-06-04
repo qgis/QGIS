@@ -117,7 +117,7 @@ Set the source color ramp. Ownership is transferred to the renderer.
 Sets the color ramp type
 %End
 
-    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
+    void classifyColorRamp( int classes = 0, int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
 %Docstring
 Classify color ramp shader
 
@@ -127,7 +127,7 @@ Classify color ramp shader
 :param input: raster input used in classification (only used in quantile mode)
 %End
 
-    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
+    void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
 %Docstring
 Classify color ramp shader
 

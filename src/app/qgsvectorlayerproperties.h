@@ -230,7 +230,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void initDiagramTab();
 
     //! Adds a new join to mJoinTreeWidget
-    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
+    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
 
     void updateAuxiliaryStoragePage( bool reset = false );
     void deleteAuxiliaryField( int index );

@@ -46,7 +46,7 @@ class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui:
 
     void toggleSourceControls();
 
-    void toggleAtlasSpecificControls( const bool atlasEnabled );
+    void toggleAtlasSpecificControls( bool atlasEnabled );
 
   private slots:
     void mRefreshPushButton_clicked();

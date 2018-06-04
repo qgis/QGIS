@@ -326,7 +326,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
     void applyGradient( const QgsSymbolRenderContext &context, QBrush &brush, const QColor &color, const QColor &color2,
                         GradientColorType gradientColorType, QgsColorRamp *gradientRamp, GradientType gradientType,
                         GradientCoordinateMode coordinateMode, GradientSpread gradientSpread,
-                        QPointF referencePoint1, QPointF referencePoint2, const double angle );
+                        QPointF referencePoint1, QPointF referencePoint2, double angle );
 
     //! Rotates a reference point by a specified angle around the point (0.5, 0.5)
     QPointF rotateReferencePoint( QPointF refPoint, double angle );
@@ -747,7 +747,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param mode coordinate mode
      * \see coordinateMode
      */
-    void setCoordinateMode( const FillCoordinateMode mode );
+    void setCoordinateMode( FillCoordinateMode mode );
 
     /**
      * Coordinate mode for fill. Controls how the top left corner of the image
@@ -762,7 +762,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
      * \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
      * \see opacity()
      */
-    void setOpacity( const double opacity );
+    void setOpacity( double opacity );
 
     /**
      * Returns the opacity for the raster image used in the fill.
@@ -901,7 +901,7 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
   private:
 
     //! Applies the image pattern to the brush
-    void applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double opacity,
+    void applyPattern( QBrush &brush, const QString &imageFilePath, double width, double opacity,
                        const QgsSymbolRenderContext &context );
 };
 

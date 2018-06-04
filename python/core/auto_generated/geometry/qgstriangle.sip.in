@@ -41,7 +41,7 @@ Construct a QgsTriangle from three :py:class:`QgsPoint`.
 :param p3: third point
 %End
 
-    explicit QgsTriangle( const QPointF p1, const QPointF p2, const QPointF p3 );
+    explicit QgsTriangle( QPointF p1, QPointF p2, QPointF p3 );
 %Docstring
 Construct a QgsTriangle from three QPointF.
 

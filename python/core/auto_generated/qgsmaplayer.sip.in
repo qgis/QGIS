@@ -1170,7 +1170,7 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 .. seealso:: :py:func:`setScaleBasedVisibility`
 %End
 
-    void setScaleBasedVisibility( const bool enabled );
+    void setScaleBasedVisibility( bool enabled );
 %Docstring
 Sets whether scale based visibility is enabled for the layer.
 

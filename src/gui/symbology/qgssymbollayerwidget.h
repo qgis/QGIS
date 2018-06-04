@@ -559,7 +559,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
     void mVerticalAnchorComboBox_currentIndexChanged( int index );
     void setWidth();
     void setHeight();
-    void lockAspectRatioChanged( const bool locked );
+    void lockAspectRatioChanged( bool locked );
     void setAngle();
     void setOffset();
     void updateAssistantSymbol();

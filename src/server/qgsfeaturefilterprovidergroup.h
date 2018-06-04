@@ -40,13 +40,13 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
     /**
      * Returns a clone of the object
      * \returns A clone
      */
-    QgsFeatureFilterProvider *clone() const SIP_FACTORY;
+    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Add another filter provider to the group

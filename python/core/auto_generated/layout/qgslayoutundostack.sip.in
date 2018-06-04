@@ -124,7 +124,7 @@ Manually pushes a ``command`` to the stack, and takes ownership of the command.
 
   signals:
 
-    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+    void undoRedoOccurredForItems( QSet< QString > itemUuids );
 %Docstring
 Emitted when an undo or redo action has occurred, which affected a
 set of layout ``itemUuids``.

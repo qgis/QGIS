@@ -214,7 +214,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transforms a rectangle from the source CRS to the destination CRS.
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.

@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert measurement into
      * \returns measurement converted to target units
     */
-    QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
     /**
      * Converts a layout size from one unit to another.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert size into
      * \returns size converted to target units
     */
-    QgsLayoutSize convert( const QgsLayoutSize &size, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutSize convert( const QgsLayoutSize &size, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
     /**
      * Converts a layout point from one unit to another.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutMeasurementConverter
      * \param targetUnits units to convert point into
      * \returns point converted to target units
     */
-    QgsLayoutPoint convert( const QgsLayoutPoint &point, const QgsUnitTypes::LayoutUnit targetUnits ) const;
+    QgsLayoutPoint convert( const QgsLayoutPoint &point, QgsUnitTypes::LayoutUnit targetUnits ) const;
 
   private:
 

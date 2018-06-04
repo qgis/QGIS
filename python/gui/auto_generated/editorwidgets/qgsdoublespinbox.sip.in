@@ -51,7 +51,7 @@ Constructor for QgsDoubleSpinBox.
 :param parent: parent widget
 %End
 
-    void setShowClearButton( const bool showClearButton );
+    void setShowClearButton( bool showClearButton );
 %Docstring
 Sets whether the widget will show a clear button. The clear button
 allows users to reset the widget to a default or empty state.
@@ -68,7 +68,7 @@ Returns whether the widget is showing a clear button.
 .. seealso:: :py:func:`setShowClearButton`
 %End
 
-    void setExpressionsEnabled( const bool enabled );
+    void setExpressionsEnabled( bool enabled );
 %Docstring
 Sets if the widget will allow entry of simple expressions, which are
 evaluated and then discarded.

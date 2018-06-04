@@ -802,7 +802,7 @@ The path to the raster image used for the fill.
 .. seealso:: :py:func:`setImageFilePath`
 %End
 
-    void setCoordinateMode( const FillCoordinateMode mode );
+    void setCoordinateMode( FillCoordinateMode mode );
 %Docstring
 Set the coordinate mode for fill. Controls how the top left corner of the image
 fill is positioned relative to the feature.
@@ -822,7 +822,7 @@ fill is positioned relative to the feature.
 .. seealso:: :py:func:`setCoordinateMode`
 %End
 
-    void setOpacity( const double opacity );
+    void setOpacity( double opacity );
 %Docstring
 Sets the ``opacity`` for the raster image used in the fill.
 

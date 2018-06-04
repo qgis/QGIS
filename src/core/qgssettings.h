@@ -151,7 +151,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * In addition, query functions such as childGroups(), childKeys(), and allKeys()
      * are based on the group. By default, no group is set.
      */
-    void beginGroup( const QString &prefix, const QgsSettings::Section section = QgsSettings::NoSection );
+    void beginGroup( const QString &prefix, QgsSettings::Section section = QgsSettings::NoSection );
     //! Resets the group to what it was before the corresponding beginGroup() call.
     void endGroup();
     //! Returns a list of all keys, including subkeys, that can be read using the QSettings object.
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
      * An optional Section argument can be used to set a value to a specific Section.
      */
-    void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
+    void setValue( const QString &key, const QVariant &value, QgsSettings::Section section = QgsSettings::NoSection );
 
     /**
      * Returns the value for setting key. If the setting doesn't exist, it will be
@@ -198,7 +198,7 @@ class CORE_EXPORT QgsSettings : public QObject
      */
 #ifndef SIP_RUN
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    const Section section = NoSection ) const;
+                    Section section = NoSection ) const;
 #else
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
@@ -382,7 +382,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * Returns true if there exists a setting called key; returns false otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
-    bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
+    bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
 
@@ -394,9 +394,9 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     void sync();
     //! Removes the setting key and any sub-settings of key in a section.
-    void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
+    void remove( const QString &key, QgsSettings::Section section = QgsSettings::NoSection );
     //! Returns the sanitized and prefixed key
-    QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
+    QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();
 

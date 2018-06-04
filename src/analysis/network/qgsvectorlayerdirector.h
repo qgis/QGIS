@@ -65,7 +65,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
                             const QString &bothDirectionValue,
-                            const Direction defaultDirection
+                            Direction defaultDirection
                           );
 
     /*

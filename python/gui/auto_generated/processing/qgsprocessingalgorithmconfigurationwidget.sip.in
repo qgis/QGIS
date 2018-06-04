@@ -30,7 +30,7 @@ configuration options directly on algorithm level, in addition to parameters.
 %Docstring
 Creates a new QgsProcessingAlgorithmConfigurationWidget
 %End
-    virtual ~QgsProcessingAlgorithmConfigurationWidget();
+    ~QgsProcessingAlgorithmConfigurationWidget();
 
     virtual QVariantMap configuration() const = 0;
 %Docstring

@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Selects the specified \a items.
      */
-    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
+    virtual void selectItems( QList< QgsLayoutItem * > items ) = 0;
 
   public slots:
 

@@ -97,7 +97,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \param showMenu set to false to hide the drop-down menu
      * \see showMenu
      */
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.

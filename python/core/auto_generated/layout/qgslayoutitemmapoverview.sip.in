@@ -88,7 +88,7 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
 Returns a reference to an overview with matching overviewId within the stack.
 %End
 
-    QgsLayoutItemMapOverview *overview( const int index ) const;
+    QgsLayoutItemMapOverview *overview( int index ) const;
 %Docstring
 Returns a reference to an overview at the specified ``index`` within the stack.
 %End
@@ -175,7 +175,7 @@ Retrieves the blending mode used for drawing the overview.
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-    void setBlendMode( const QPainter::CompositionMode mode );
+    void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the blending ``mode`` used for drawing the overview.
 
@@ -190,7 +190,7 @@ the extent of the overview map.
 .. seealso:: :py:func:`setInverted`
 %End
 
-    void setInverted( const bool inverted );
+    void setInverted( bool inverted );
 %Docstring
 Sets whether the overview frame is ``inverted``, ie, whether the shaded area is drawn outside
 the extent of the overview map.
@@ -205,7 +205,7 @@ Returns whether the extent of the map is forced to center on the overview.
 .. seealso:: :py:func:`setCentered`
 %End
 
-    void setCentered( const bool centered );
+    void setCentered( bool centered );
 %Docstring
 Sets whether the extent of the map is forced to center on the overview
 

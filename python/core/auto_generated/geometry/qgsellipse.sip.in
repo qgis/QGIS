@@ -34,7 +34,7 @@ Constructor for QgsEllipse.
 
     virtual ~QgsEllipse();
 
-    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 );
 %Docstring
 Constructs an ellipse by defining all the members.
 
@@ -146,21 +146,21 @@ Sets the center point.
 .. seealso:: :py:func:`rcenter`
 %End
 
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis );
 %Docstring
 Sets the semi-major axis.
 
 .. seealso:: :py:func:`semiMajorAxis`
 %End
 
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis );
 %Docstring
 Sets the semi-minor axis.
 
 .. seealso:: :py:func:`semiMinorAxis`
 %End
 
-    void setAzimuth( const double azimuth );
+    void setAzimuth( double azimuth );
 %Docstring
 Sets the azimuth (orientation).
 

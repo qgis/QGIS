@@ -173,7 +173,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the \a margin distance in mm between cell borders and their contents.
      * \see cellMargin()
      */
-    void setCellMargin( const double margin );
+    void setCellMargin( double margin );
 
     /**
      * Returns the margin distance between cell borders and their contents in mm.
@@ -185,7 +185,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the behavior \a mode for empty tables with no content rows.
      * \see emptyTableBehavior()
      */
-    void setEmptyTableBehavior( const EmptyTableMode mode );
+    void setEmptyTableBehavior( EmptyTableMode mode );
 
     /**
      * Returns the behavior mode for empty tables. This property controls
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \param showEmpty set to true to show empty rows in the table
      * \see showEmptyRows()
      */
-    void setShowEmptyRows( const bool showEmpty );
+    void setShowEmptyRows( bool showEmpty );
 
     /**
      * Returns whether empty rows are drawn in the table.
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * Sets the horizontal \a alignment for table headers.
      * \see headerHAlignment()
      */
-    void setHeaderHAlignment( const HeaderHAlignment alignment );
+    void setHeaderHAlignment( HeaderHAlignment alignment );
 
     /**
      * Returns the horizontal alignment for table headers.
@@ -272,7 +272,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * if and where headers are shown in the table.
      * \see headerMode()
      */
-    void setHeaderMode( const HeaderMode mode );
+    void setHeaderMode( HeaderMode mode );
 
     /**
      * Returns the display mode for headers in the table. This property controls
@@ -318,7 +318,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setGridStrokeWidth()
      * \see setGridColor()
      */
-    void setShowGrid( const bool showGrid );
+    void setShowGrid( bool showGrid );
 
     /**
      * Returns whether grid lines are drawn in the table
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setShowGrid()
      * \see setGridColor()
      */
-    void setGridStrokeWidth( const double width );
+    void setGridStrokeWidth( double width );
 
     /**
      * Returns the width of grid lines in the table in mm.
@@ -368,7 +368,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setGridColor()
      * \see setVerticalGrid()
      */
-    void setHorizontalGrid( const bool horizontalGrid );
+    void setHorizontalGrid( bool horizontalGrid );
 
     /**
      * Returns whether the grid's horizontal lines are drawn in the table.
@@ -387,7 +387,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \see setGridColor()
      * \see setHorizontalGrid()
      */
-    void setVerticalGrid( const bool verticalGrid );
+    void setVerticalGrid( bool verticalGrid );
 
     /**
      * Returns whether the grid's vertical lines are drawn in the table.
@@ -471,8 +471,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     QgsLayoutTableContents &contents() { return mTableContents; }
 
-    QSizeF fixedFrameSize( const int frameIndex = -1 ) const override;
-    QSizeF minFrameSize( const int frameIndex = -1 ) const override;
+    QSizeF fixedFrameSize( int frameIndex = -1 ) const override;
+    QSizeF minFrameSize( int frameIndex = -1 ) const override;
 
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
@@ -613,7 +613,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      * \param frameIndex index number for frame
      * \returns row range
      */
-    QPair<int, int> rowRange( const int frameIndex ) const;
+    QPair<int, int> rowRange( int frameIndex ) const;
 
     /**
      * Draws the horizontal grid lines for the table.

@@ -201,7 +201,7 @@ class CORE_EXPORT QgsPaintEffect
      * \param enabled set to false to disable the effect
      * \see enabled
      */
-    void setEnabled( const bool enabled );
+    void setEnabled( bool enabled );
 
     /**
      * Returns the draw mode for the effect. This property only has an
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsPaintEffect
      * \param drawMode draw mode for effect
      * \see drawMode
      */
-    void setDrawMode( const DrawMode drawMode );
+    void setDrawMode( DrawMode drawMode );
 
   protected:
 

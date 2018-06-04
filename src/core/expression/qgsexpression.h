@@ -457,7 +457,7 @@ class CORE_EXPORT QgsExpression
      * for one-off evaluations only.
      * \since QGIS 2.7
      */
-    static double evaluateToDouble( const QString &text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, double fallbackValue );
 
     enum SpatialOperator
     {

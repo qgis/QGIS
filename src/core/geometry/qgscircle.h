@@ -208,14 +208,14 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMajorAxis( const double semiMajorAxis ) override;
+    void setSemiMajorAxis( double semiMajorAxis ) override;
 
     /**
      * Inherited method. Use setRadius instead.
      * \see radius()
      * \see setRadius()
      */
-    void setSemiMinorAxis( const double semiMinorAxis ) override;
+    void setSemiMinorAxis( double semiMinorAxis ) override;
 
     //! Returns the radius of the circle
     double radius() const {return mSemiMajorAxis;}

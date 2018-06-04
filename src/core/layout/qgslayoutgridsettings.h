@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see offset()
      * \see setResolution()
      */
-    void setOffset( const QgsLayoutPoint offset );
+    void setOffset( QgsLayoutPoint offset );
 
     /**
      * Returns the offset of the page/snap grid.

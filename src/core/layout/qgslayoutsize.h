@@ -47,18 +47,18 @@ class CORE_EXPORT QgsLayoutSize
      * \param height height
      * \param units units for width and height
     */
-    QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutSize( double width, double height, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for QgsLayoutSize.
     */
-    explicit QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QSizeF size, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for an empty layout size
      * \param units units for measurement
     */
-    explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Sets new \a width and \a height for the size.
@@ -141,22 +141,22 @@ class CORE_EXPORT QgsLayoutSize
     /**
      * Multiplies the width and height by a scalar value.
      */
-    QgsLayoutSize operator*( const double v ) const;
+    QgsLayoutSize operator*( double v ) const;
 
     /**
      * Multiplies the width and height by a scalar value.
      */
-    QgsLayoutSize operator*=( const double v );
+    QgsLayoutSize operator*=( double v );
 
     /**
      * Divides the width and height by a scalar value.
      */
-    QgsLayoutSize operator/( const double v ) const;
+    QgsLayoutSize operator/( double v ) const;
 
     /**
      * Divides the width and height by a scalar value.
      */
-    QgsLayoutSize operator/=( const double v );
+    QgsLayoutSize operator/=( double v );
 
   private:
 

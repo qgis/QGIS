@@ -131,7 +131,7 @@ format used by this constructor.
 %End
     ~QgsSettings();
 
-    void beginGroup( const QString &prefix, const QgsSettings::Section section = QgsSettings::NoSection );
+    void beginGroup( const QString &prefix, QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
 Appends prefix to the current group.
 The current group is automatically prepended to all keys specified to QSettings.
@@ -191,7 +191,7 @@ Sets the current array index to i. Calls to functions such as setValue(), value(
 remove(), and contains() will operate on the array entry at that index.
 %End
 
-    void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
+    void setValue( const QString &key, const QVariant &value, QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
 Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
 An optional Section argument can be used to set a value to a specific Section.
@@ -222,7 +222,7 @@ An optional Section argument can be used to get a value from a specific Section.
 %End
 
 
-    bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
+    bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
 %Docstring
 Returns true if there exists a setting called key; returns false otherwise.
 If a group is set using beginGroup(), key is taken to be relative to that group.
@@ -239,11 +239,11 @@ changed in the meantime by another application.
 This function is called automatically from QSettings's destructor and by the event
 loop at regular intervals, so you normally don't need to call it yourself.
 %End
-    void remove( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection );
+    void remove( const QString &key, QgsSettings::Section section = QgsSettings::NoSection );
 %Docstring
 Removes the setting key and any sub-settings of key in a section.
 %End
-    QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
+    QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
 %Docstring
 Returns the sanitized and prefixed key
 %End

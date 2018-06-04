@@ -2005,7 +2005,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \see deselect(const QgsFeatureIds&)
      */
-    void deselect( const QgsFeatureId featureId );
+    void deselect( QgsFeatureId featureId );
 
     /**
      * Deselect features by their ID
@@ -2056,7 +2056,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param deselected      Ids of all features which have previously been selected but are not any more
      * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 
     //! This signal is emitted when modifications has been done on layer
     void layerModified();

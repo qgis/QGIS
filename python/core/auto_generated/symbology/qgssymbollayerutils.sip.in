@@ -525,7 +525,7 @@ Attempts to parse mime data as a list of named colors
 .. versionadded:: 2.5
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) /Factory/;
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) /Factory/;
 %Docstring
 Creates mime data from a list of named colors
 

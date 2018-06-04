@@ -247,7 +247,7 @@ Emitted when the form changes mode.
 :param mode: new mode
 %End
 
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 %Docstring
 Emitted when selecting context menu on the feature list to create the context menu individually
 

@@ -48,7 +48,7 @@ Sets the title for the color dialog
 :param title: title for dialog box
 %End
 
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to true.
@@ -59,7 +59,7 @@ for the color dialog. Defaults to true.
 %End
 
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
-                            const bool allowOpacity = false );
+                            bool allowOpacity = false );
 %Docstring
 Returns a color selection from a color dialog.
 

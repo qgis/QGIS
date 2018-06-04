@@ -101,7 +101,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * transferred to the stack object.
      * \see appendEffect
      */
-    bool insertEffect( const int index, QgsPaintEffect *effect SIP_TRANSFER );
+    bool insertEffect( int index, QgsPaintEffect *effect SIP_TRANSFER );
 
     /**
      * Replaces the effect at a specified position within the stack.
@@ -109,13 +109,13 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      * \param effect QgsPaintEffect to replace with. Ownership of the effect will be
      * transferred to the stack object.
      */
-    bool changeEffect( const int index, QgsPaintEffect *effect SIP_TRANSFER );
+    bool changeEffect( int index, QgsPaintEffect *effect SIP_TRANSFER );
 
     /**
      * Removes an effect from the stack and returns a pointer to it.
      * \param index position of effect to take
      */
-    QgsPaintEffect *takeEffect( const int index SIP_TRANSFERBACK );
+    QgsPaintEffect *takeEffect( int index SIP_TRANSFERBACK );
 
     /**
      * Returns a pointer to the list of effects currently contained by

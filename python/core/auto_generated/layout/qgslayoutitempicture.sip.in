@@ -284,7 +284,7 @@ and reloads and redraws the picture.
 Forces a recalculation of the picture's frame size
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     virtual bool containsAdvancedEffects() const;
 

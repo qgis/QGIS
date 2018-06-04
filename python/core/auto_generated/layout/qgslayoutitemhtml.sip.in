@@ -200,7 +200,7 @@ overriding the styles specified within the HTML source.
 .. seealso:: :py:func:`userStylesheetEnabled`
 %End
 
-    void setUserStylesheetEnabled( const bool enabled );
+    void setUserStylesheetEnabled( bool enabled );
 %Docstring
 Sets whether user stylesheets are ``enabled`` for the HTML content.
 
@@ -230,7 +230,7 @@ Returns whether user stylesheets are enabled for the HTML content.
 
   public slots:
 
-    void loadHtml( const bool useCache = false, const QgsExpressionContext *context = 0 );
+    void loadHtml( bool useCache = false, const QgsExpressionContext *context = 0 );
 %Docstring
 Reloads the html source from the url and redraws the item.
 
@@ -249,7 +249,7 @@ Reloads the html source from the url and redraws the item.
 Recalculates the frame sizes for the current viewport dimensions
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
   protected:
