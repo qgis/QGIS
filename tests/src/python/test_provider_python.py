@@ -155,6 +155,7 @@ class TestPyQgsPythonProvider(unittest.TestCase, ProviderTestCase):
         """
         pass
 
+    @unittest.skipIf(os.environ.get("TRAVIS", False), "Skipped on Travis")
     def testGetFeaturesDestinationCrs(self):
         """Skip this if on travis, passes locally and fails with no reason on Travis"""
         super().testGetFeaturesDestinationCrs()
