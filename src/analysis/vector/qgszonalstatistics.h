@@ -26,10 +26,12 @@
 
 #include "qgis_analysis.h"
 #include "qgsfeedback.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
 class QgsRasterLayer;
+class QgsRasterInterface;
 class QgsRasterDataProvider;
 class QgsRectangle;
 class QgsField;
@@ -61,13 +63,36 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
     /**
-     * Constructor for QgsZonalStatistics.
+     * Convenience constructor for QgsZonalStatistics, using an input raster layer.
+     *
+     * The raster layer must exist for the lifetime of the zonal statistics calculation.
+     *
+     * \warning Constructing QgsZonalStatistics using this method is not thread safe, and
+     * the constructor which accepts a QgsRasterInterface should be used instead.
      */
     QgsZonalStatistics( QgsVectorLayer *polygonLayer,
                         QgsRasterLayer *rasterLayer,
                         const QString &attributePrefix = QString(),
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+
+    /**
+     * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
+     *
+     * \warning The raster interface must exist for the lifetime of the zonal statistics calculation. For thread
+     * safe use, always use a cloned raster interface.
+     *
+     * \since QGIS 3.2
+     */
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterInterface *rasterInterface,
+                        const QgsCoordinateReferenceSystem &rasterCrs,
+                        double rasterUnitsPerPixelX,
+                        double rasterUnitsPerPixelY,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+
 
     /**
      * Starts the calculation
@@ -147,8 +172,12 @@ class ANALYSIS_EXPORT QgsZonalStatistics
 
     QString getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields );
 
-    QgsRasterLayer *mRasterLayer = nullptr;
-    QgsRasterDataProvider *mRasterProvider = nullptr;
+    QgsRasterInterface *mRasterInterface = nullptr;
+    QgsCoordinateReferenceSystem mRasterCrs;
+
+    double mCellSizeX = 0;
+    double mCellSizeY = 0;
+
     //! Raster band to calculate statistics
     int mRasterBand = 0;
     QgsVectorLayer *mPolygonLayer = nullptr;
