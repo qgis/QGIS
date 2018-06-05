@@ -455,7 +455,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
   QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
   QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
 
-  QgsRasterBlock *block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
+  std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
     double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
@@ -486,7 +486,6 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
     }
     currentY -= cellSizeY;
   }
-  delete block;
 }
 
 bool QgsZonalStatistics::validPixel( float value ) const
