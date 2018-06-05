@@ -105,7 +105,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self._short_description = ''
         self._group = ''
         self._groupId = ''
-        self.groupIdRegex = re.compile('^[^\s\(]+')
+        self.groupIdRegex = re.compile(r'^[^\s\(]+')
         self.grass7Name = ''
         self.params = []
         self.hardcodedStrings = []
