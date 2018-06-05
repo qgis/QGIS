@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>277</width>
+    <width>373</width>
     <height>459</height>
    </rect>
   </property>
@@ -80,12 +80,25 @@
       </widget>
      </item>
      <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
       <widget class="QToolButton" name="mButtonAdvanced">
        <property name="toolTip">
         <string>Advanced options</string>
        </property>
        <property name="text">
-        <string>…</string>
+        <string>Advanced</string>
        </property>
        <property name="popupMode">
         <enum>QToolButton::InstantPopup</enum>
