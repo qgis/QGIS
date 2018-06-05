@@ -59,6 +59,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mUpdatesEnabled( true )
     , mMapCanvas( nullptr )
     , mDrawCanvasItems( true )
+    , mDrawSelection( false )
     , mAtlasDriven( false )
     , mAtlasScalingMode( Auto )
     , mAtlasMargin( 0.10 )
@@ -229,7 +230,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
-  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
+  jobMapSettings.setFlag( QgsMapSettings::DrawSelection, mDrawSelection );
   jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
 
   if ( mComposition->plotStyle() == QgsComposition::Print ||

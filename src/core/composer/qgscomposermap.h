@@ -639,6 +639,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
     bool drawCanvasItems() const { return mDrawCanvasItems; }
 
+    /** Set the flag to draw selection in map
+     * @note this function was added in version 2.18.21
+     * @note not available in Python bindings
+     */
+    void setDrawSelection( bool b ) { mDrawSelection = b; }
+    /** Get the flag to draw selection in map
+     * @note this function was added in version 2.18.21
+     * @note not available in Python bindings
+     */
+    bool drawSelection() const { return mDrawSelection; }
+
     /** Returns the conversion factor map units -> mm*/
     double mapUnitsToMM() const;
 
@@ -938,6 +949,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QGraphicsView* mMapCanvas;
     /** True if annotation items, rubber band, etc. from the main canvas should be displayed*/
     bool mDrawCanvasItems;
+
+    /** True if selection has to be drawn. For server only! */
+    bool mDrawSelection;
 
     /** Adjusts an extent rectangle to match the provided item width and height, so that extent
      * center of extent remains the same */

@@ -279,6 +279,9 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
       }
     }
 
+    // Draw Selection
+    currentMap->setDrawSelection( true );
+
     //grid space x / y
     currentMap->grid()->setIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
     currentMap->grid()->setIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
