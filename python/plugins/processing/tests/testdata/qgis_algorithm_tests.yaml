@@ -1652,7 +1652,7 @@ tests:
       NUMBER: 3.0
     results:
       OUTPUT:
-        hash: e453e9e36ce314d5197963ac27872a0cc3dfe43764ed586a334c66f0
+        hash: 56172fe81f40efba9fadcaeccdbab247e99c8725990a94d9609769f6
         type: rasterhash
 
   - algorithm: native:lineintersections
