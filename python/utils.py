@@ -195,8 +195,12 @@ def qgis_excepthook(type, value, tb):
 
 def installErrorHook():
     """
-    Installs the QGIS application error/warning hook
-    :return:
+    Installs the QGIS application error/warning hook. This causes Python exceptions
+    to be intercepted by the QGIS application and shown in the main window message bar
+    and in custom dialogs.
+
+    Generally you shouldn't call this method - it's automatically called by
+    the QGIS app on startup, and has no use in standalone applications and scripts.
     """
     sys.excepthook = qgis_excepthook
     warnings.showwarning = showWarning
