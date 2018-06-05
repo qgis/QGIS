@@ -143,7 +143,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                                             double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats );
 
     //! Tests whether a pixel's value should be included in the result
-    bool validPixel( float value ) const;
+    bool validPixel( double value ) const;
 
     QString getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields );
 
@@ -153,8 +153,6 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     int mRasterBand = 0;
     QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
-    //! The nodata value of the input layer
-    float mInputNodataValue = -1;
     Statistics mStatistics = QgsZonalStatistics::All;
 };
 
