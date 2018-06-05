@@ -62,6 +62,11 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         self._transform = QgsCoordinateTransform()
         if self._request.destinationCrs().isValid() and self._request.destinationCrs() != self._source._provider.crs():
             self._transform = QgsCoordinateTransform(self._source._provider.crs(), self._request.destinationCrs(), self._request.transformContext())
+        try:
+            self._filter_rect = self.filterRectToSourceCrs(self._transform)
+        except QgsCsException as e:
+            self.close()
+            return
         self._filter_rect = self.filterRectToSourceCrs(self._transform)
         if not self._filter_rect.isNull():
             self._select_rect_geom = QgsGeometry.fromRect(self._filter_rect)
