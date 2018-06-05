@@ -75,7 +75,7 @@ class DefineProjection(QgisAlgorithm):
 
         provider = layer.dataProvider()
         ds = provider.dataSourceUri()
-        p = re.compile('\|.*')
+        p = re.compile(r'\|.*')
         dsPath = p.sub('', ds)
 
         if dsPath.lower().endswith('.shp'):
