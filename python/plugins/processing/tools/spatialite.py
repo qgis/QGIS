@@ -66,7 +66,7 @@ class GeoDB:
         try:
             self._exec_sql(c, u'SELECT spatialite_version()')
             rep = c.fetchall()
-            v = [int(x) if x.isdigit() else x for x in re.findall("\d+|[a-zA-Z]+", rep[0][0])]
+            v = [int(x) if x.isdigit() else x for x in re.findall(r"\d+|[a-zA-Z]+", rep[0][0])]
 
             # Add SpatiaLite support
             if v >= [4, 1, 0]:
