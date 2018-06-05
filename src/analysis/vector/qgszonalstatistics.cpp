@@ -62,7 +62,6 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   }
 
   mRasterProvider = mRasterLayer->dataProvider();
-  mInputNodataValue = mRasterProvider->sourceNoDataValue( mRasterBand );
 
   //get geometry info about raster layer
   int nCellsXProvider = mRasterProvider->xSize();
@@ -402,7 +401,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
     for ( int j = 0; j < nCellsX; ++j )
     {
       double pixelValue = block->value( i, j );
-      if ( validPixel( pixelValue ) )
+      if ( validPixel( pixelValue ) && !block->isNoData( i, j ) )
       {
         QgsPoint cellCenter( cellCenterX, cellCenterY );
         if ( polyEngine->contains( &cellCenter ) )
@@ -446,7 +445,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
     for ( int j = 0; j < nCellsX; ++j )
     {
       double pixelValue = block->value( i, j );
-      if ( !validPixel( pixelValue ) )
+      if ( !validPixel( pixelValue ) || block->isNoData( i, j ) )
       {
         continue;
       }
@@ -474,9 +473,9 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
   }
 }
 
-bool QgsZonalStatistics::validPixel( float value ) const
+bool QgsZonalStatistics::validPixel( double value ) const
 {
-  return !( value == mInputNodataValue || std::isnan( value ) );
+  return !std::isnan( value );
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )

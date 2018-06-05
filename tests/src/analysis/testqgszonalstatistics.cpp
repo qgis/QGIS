@@ -40,10 +40,12 @@ class TestQgsZonalStatistics : public QObject
 
     void testStatistics();
     void testReprojection();
+    void testNoData();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsRasterLayer *mRasterLayer = nullptr;
+    QString mTempPath;
 };
 
 void TestQgsZonalStatistics::initTestCase()
@@ -54,19 +56,19 @@ void TestQgsZonalStatistics::initTestCase()
 
   QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataPath = myDataPath + "/zonalstatistics/";
-  QString myTempPath = QDir::tempPath() + '/';
+  mTempPath = QDir::tempPath() + '/';
 
   // copy test data to temp directory
   QDir testDir( myTestDataPath );
   QStringList files = testDir.entryList( QDir::Files | QDir::NoDotAndDotDot );
   for ( int i = 0; i < files.size(); ++i )
   {
-    QFile::remove( myTempPath + files.at( i ) );
-    QVERIFY( QFile::copy( myTestDataPath + files.at( i ), myTempPath + files.at( i ) ) );
+    QFile::remove( mTempPath + files.at( i ) );
+    QVERIFY( QFile::copy( myTestDataPath + files.at( i ), mTempPath + files.at( i ) ) );
   }
 
-  mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
-  mRasterLayer = new QgsRasterLayer( myTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  mVectorLayer = new QgsVectorLayer( mTempPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+  mRasterLayer = new QgsRasterLayer( mTempPath + "edge_problem.asc", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mVectorLayer << mRasterLayer );
 }
@@ -244,6 +246,60 @@ void TestQgsZonalStatistics::testReprojection()
   QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
   QCOMPARE( f.attribute( "variance" ).toDouble(), 0.13888888888889 );
+}
+
+void TestQgsZonalStatistics::testNoData()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // test that zonal stats respects no data and user set no data values
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "polys2.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+
+  QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = vectorLayer->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 16.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 13428.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 103.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 90536.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 0.0 );
+
+  // with user no data
+  rasterLayer->dataProvider()->setUserNoDataValue( 1, QgsRasterRangeList() << QgsRasterRange( 842, 852 )
+      << QgsRasterRange( 877, 891 ) );
+
+  zs = QgsZonalStatistics( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "un" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  it = vectorLayer->getFeatures( request );
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 8.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 6652.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 52.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 45374.0 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 0.0 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )
