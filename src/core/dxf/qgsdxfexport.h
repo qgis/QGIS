@@ -385,10 +385,19 @@ class CORE_EXPORT QgsDxfExport
     void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
 
     /**
-     * Calculates a scaling factor to convert from map units to a specified symbol unit.
-     * The \a scale parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     */
-    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+     * Returns scale factor for conversion to map units
+    * @param scaleDenominator the map scale denominator
+    * @param symbolUnits the symbol output units
+    * @param mapUnits the map units
+    * @param mapUnitsPerPixel Map units per pixel*/
+    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+
+    /**
+     * Clips value to scale minimum/maximum
+    * @param value the value to clip
+    * @param scale the scale dependent minimum/maximum values
+    * @param pixelToMMFactor pixels per mm*/
+    void clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const;
 
     //! Returns cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );

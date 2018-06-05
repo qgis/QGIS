@@ -930,7 +930,7 @@ void QgsDxfExport::writeBlocks()
     writeGroup( 1, QLatin1String( "" ) );
 
     // maplayer 0 -> block receives layer from INSERT statement
-    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits ), QStringLiteral( "0" ), ctx );
+    ml->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, ml->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), QStringLiteral( "0" ), ctx );
 
     writeGroup( 0, QStringLiteral( "ENDBLK" ) );
     writeHandle();
@@ -965,6 +965,9 @@ void QgsDxfExport::writeEntities()
   ctx.setScaleFactor( 96.0 / 25.4 );
   ctx.setMapToPixel( QgsMapToPixel( 1.0 / mFactor, mExtent.center().x(), mExtent.center().y(), mExtent.width() * mFactor,
                                     mExtent.height() * mFactor, 0 ) );
+
+  ctx.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  ctx.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
 
   // label engine
   QgsLabelingEngine engine;
@@ -3435,7 +3438,7 @@ void QgsDxfExport::writePoint( const QgsPoint &pt, const QString &layer, const Q
     const QgsMarkerSymbolLayer *msl = dynamic_cast< const QgsMarkerSymbolLayer * >( symbolLayer );
     if ( msl && symbol )
     {
-      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
+      if ( symbolLayer->writeDxf( *this, mapUnitScaleFactor( mSymbologyScale, msl->sizeUnit(), mMapUnits, ctx.renderContext().mapToPixel().mapUnitsPerPixel() ), layer, ctx, QPointF( pt.x(), pt.y() ) ) )
       {
         return;
       }
@@ -3982,14 +3985,53 @@ QgsRenderContext QgsDxfExport::renderContext() const
   return context;
 }
 
-double QgsDxfExport::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits )
+double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
   if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
   {
     return 1.0;
   }
-  // MM symbol unit
-  return scale * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0;
+  else if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
+  {
+    return ( scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0 );
+  }
+  else if ( symbolUnits == QgsUnitTypes::RenderPixels )
+  {
+    return mapUnitsPerPixel;
+  }
+  return 1.0;
+}
+
+void QgsDxfExport::clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const
+{
+  if ( !scale.minSizeMMEnabled && !scale.maxSizeMMEnabled )
+  {
+    return;
+  }
+
+  double mapUnitsPerPixel = mMapSettings.mapToPixel().mapUnitsPerPixel();
+
+  double minSizeMU = -DBL_MAX;
+  if ( scale.minSizeMMEnabled )
+  {
+    minSizeMU = scale.minSizeMM * pixelToMMFactor * mapUnitsPerPixel;
+  }
+  if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
+  {
+    minSizeMU = qMax( minSizeMU, value );
+  }
+  value = qMax( value, minSizeMU );
+
+  double maxSizeMU = DBL_MAX;
+  if ( scale.maxSizeMMEnabled )
+  {
+    maxSizeMU = scale.maxSizeMM * pixelToMMFactor * mapUnitsPerPixel;
+  }
+  if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
+  {
+    maxSizeMU = qMin( maxSizeMU, value );
+  }
+  value = qMin( value, maxSizeMU );
 }
 
 QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
@@ -4122,7 +4164,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   QVector<qreal>::const_iterator dashIt = pattern.constBegin();
   for ( ; dashIt != pattern.constEnd(); ++dashIt )
   {
-    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits ) );
+    length += ( *dashIt * mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() ) );
   }
 
   writeGroup( 0, QStringLiteral( "LTYPE" ) );
@@ -4143,7 +4185,7 @@ void QgsDxfExport::writeLinetype( const QString &styleName, const QVector<qreal>
   {
     // map units or mm?
     double segmentLength = ( isGap ? -*dashIt : *dashIt );
-    segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits );
+    segmentLength *= mapUnitScaleFactor( mSymbologyScale, u, mMapUnits, mMapSettings.mapToPixel().mapUnitsPerPixel() );
     writeGroup( 49, segmentLength );
     writeGroup( 74, 0 );
     isGap = !isGap;

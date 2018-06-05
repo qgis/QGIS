@@ -594,15 +594,18 @@ Qt::PenStyle QgsSimpleLineSymbolLayer::dxfPenStyle() const
 double QgsSimpleLineSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const
 {
   double width = mWidth;
-
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyStrokeWidth ) )
   {
     context.setOriginalValueVariable( mWidth );
-    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth )
-            * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
+    width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mWidth );
   }
 
-  return width * e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits() );
+  width *= e.mapUnitScaleFactor( e.symbologyScale(), widthUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mWidthUnit == QgsUnitTypes::RenderMapUnits )
+  {
+    e.clipValueToMapUnitScale( width, mWidthMapUnitScale, context.renderContext().scaleFactor() );
+  }
+  return width;
 }
 
 QColor QgsSimpleLineSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
@@ -625,7 +628,13 @@ double QgsSimpleLineSymbolLayer::dxfOffset( const QgsDxfExport &e, QgsSymbolRend
     context.setOriginalValueVariable( mOffset );
     offset = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyOffset, context.renderContext().expressionContext(), mOffset );
   }
-  return offset;
+
+  offset *= e.mapUnitScaleFactor( e.symbologyScale(), offsetUnit(), e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
+  if ( mOffsetUnit == QgsUnitTypes::RenderMapUnits )
+  {
+    e.clipValueToMapUnitScale( offset, mOffsetMapUnitScale, context.renderContext().scaleFactor() );
+  }
+  return -offset; //direction seems to be inverse to symbology offset
 }
 
 /////////
