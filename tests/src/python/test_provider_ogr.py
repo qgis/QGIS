@@ -18,7 +18,8 @@ import sys
 import tempfile
 
 from osgeo import gdal, ogr  # NOQA
-from qgis.core import (QgsFeature, QgsFeatureRequest, QgsSettings, QgsDataProvider,
+from qgis.PyQt.QtCore import QVariant
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsField, QgsSettings, QgsDataProvider,
                        QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
 from qgis.testing import start_app, unittest
 
@@ -318,10 +319,10 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
-    def testEditGeoJson(self):
-        """ Test bugfix of https://issues.qgis.org/issues/18596 """
+    def testEditGeoJsonRemoveField(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (deleting an existing field)"""
 
-        datasource = os.path.join(self.basetestpath, 'testEditGeoJson.json')
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonRemoveField.json')
         with open(datasource, 'wt') as f:
             f.write("""{
 "type": "FeatureCollection",
@@ -333,12 +334,40 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteAttribute(1))
         self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 4 - 1)
 
         f = QgsFeature()
         self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
         self.assertEqual(f['x'], 1)
         self.assertEqual(f['z'], 3)
         self.assertEqual(f['w'], 4)
+
+    def testEditGeoJsonAddField(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
+        with open(datasource, 'wt') as f:
+            f.write("""{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "x": 1 }, "geometry": { "type": "Point", "coordinates": [ 0, 0 ] } } ] }""")
+
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('strfield', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 1 + 1)
+
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertIsNone(f['strfield'])
+
+        # Completely reload file
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        # As we didn't set any value to the new field, it is not written at
+        # all in the GeoJSON file, so it has disappeared
+        self.assertEqual(len(vl.fields()), 1)
 
 
 if __name__ == '__main__':

@@ -4264,7 +4264,14 @@ bool QgsOgrProvider::leaveUpdateMode()
     // use GDALDatasetFlush().
     if ( mGDALDriverName == QLatin1String( "GeoJSON" ) )
     {
+      // Backup fields since if we created new fields, but didn't populate it
+      // with any feature yet, it will disappear.
+      QgsFields oldFields = mAttributeFields;
       reloadData();
+      if ( mValid )
+      {
+        mAttributeFields = oldFields;
+      }
     }
     return true;
   }
