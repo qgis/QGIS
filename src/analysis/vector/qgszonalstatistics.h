@@ -84,10 +84,19 @@ class ANALYSIS_EXPORT QgsZonalStatistics
           : mStoreValues( storeValues )
           , mStoreValueCounts( storeValueCounts )
         {
-          reset();
         }
-        void reset() { sum = 0; count = 0; max = -FLT_MAX; min = FLT_MAX; valueCount.clear(); values.clear(); }
-        void addValue( float value, double weight = 1.0 )
+
+        void reset()
+        {
+          sum = 0;
+          count = 0;
+          max = std::numeric_limits<double>::lowest();
+          min = std::numeric_limits<double>::max();
+          valueCount.clear();
+          values.clear();
+        }
+
+        void addValue( double value, double weight = 1.0 )
         {
           if ( weight < 1.0 )
           {
@@ -106,16 +115,16 @@ class ANALYSIS_EXPORT QgsZonalStatistics
           if ( mStoreValues )
             values.append( value );
         }
-        double sum;
-        double count;
-        float max;
-        float min;
-        QMap< float, int > valueCount;
-        QList< float > values;
+        double sum = 0.0;
+        double count = 0.0;
+        double max = std::numeric_limits<double>::lowest();
+        double min = std::numeric_limits<double>::max();
+        QMap< double, int > valueCount;
+        QList< double > values;
 
       private:
-        bool mStoreValues;
-        bool mStoreValueCounts;
+        bool mStoreValues = false;
+        bool mStoreValueCounts = false;
     };
 
     /**
