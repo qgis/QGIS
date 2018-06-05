@@ -167,6 +167,9 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Returns default application-wide style
     static QgsStyle *defaultStyle();
 
+    //! Deletes the default style. Only to be used by QgsApplication::exitQgis()
+    static void cleanDefaultStyle() SIP_SKIP;
+
     /**
      * Tags the symbol with the tags in the list
      *
@@ -417,7 +420,7 @@ class CORE_EXPORT QgsStyle : public QObject
     //! Is emitted every time a tag or smartgroup has been added, removed, or renamed
     void groupsModified();
 
-  protected:
+  private:
 
     QgsSymbolMap mSymbols;
     QgsVectorColorRampMap mColorRamps;
@@ -436,10 +439,9 @@ class CORE_EXPORT QgsStyle : public QObject
      * Convenience function that would run queries which don't generate return values
      *
      *  \param query query to run
-     *  \param freeQuery release query memory
      *  \returns success true on success
      */
-    bool runEmptyQuery( char *query, bool freeQuery = true );
+    bool runEmptyQuery( const QString &query );
 
     //! Gets the id from the table for the given name from the database, 0 if not found
     int getId( const QString &table, const QString &name );
@@ -457,9 +459,7 @@ class CORE_EXPORT QgsStyle : public QObject
      */
     bool updateSymbol( StyleEntity type, const QString &name );
 
-  private:
     Q_DISABLE_COPY( QgsStyle )
 };
-
 
 #endif

@@ -18,6 +18,7 @@
 #include "qgssqliteutils.h"
 
 #include <sqlite3.h>
+#include <stdarg.h>
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {
@@ -88,4 +89,15 @@ sqlite3_statement_unique_ptr sqlite3_database_unique_ptr::prepare( const QString
   sqlite3_statement_unique_ptr s;
   s.reset( preparedStatement );
   return s;
+}
+
+QString QgsSqlite3Mprintf( const char *format, ... )
+{
+  va_list ap;
+  va_start( ap, format );
+  char *c_str = sqlite3_vmprintf( format, ap );
+  va_end( ap );
+  QString res( QString::fromUtf8( c_str ) );
+  sqlite3_free( c_str );
+  return res;
 }

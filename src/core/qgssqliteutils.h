@@ -135,7 +135,15 @@ class CORE_EXPORT sqlite3_database_unique_ptr : public std::unique_ptr< sqlite3,
      * argument will be filled with the sqlite3 result code.
      */
     sqlite3_statement_unique_ptr prepare( const QString &sql, int &resultCode ) const;
-
 };
+
+
+/**
+ * Wraps sqlite3_mprintf() by automatically freeing the memory.
+ * \note not available in Python bindings.
+ * \since QGIS 3.2
+ */
+QString CORE_EXPORT QgsSqlite3Mprintf( const char *format, ... );
+
 
 #endif // QGSSQLITEUTILS_H

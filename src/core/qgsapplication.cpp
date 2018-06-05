@@ -47,6 +47,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
+#include "qgsstyle.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1088,6 +1089,8 @@ void QgsApplication::exitQgis()
   // QgsProjContextStore object is still alive. Otherwise if this later object
   // is destroyed before the static variables of the cache, we might use freed memory.
   QgsCoordinateTransform::invalidateCache();
+
+  QgsStyle::cleanDefaultStyle();
 
   // tear-down GDAL/OGR
   OGRCleanupAll();
