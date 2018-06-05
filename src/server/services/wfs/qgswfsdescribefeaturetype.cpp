@@ -139,10 +139,7 @@ namespace QgsWfs
         continue;
       }
 
-      QString name = layer->name();
-      if ( !layer->shortName().isEmpty() )
-        name = layer->shortName();
-      name = name.replace( ' ', '_' );
+      QString name = layerTypeName( layer );
 
       if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
       {
@@ -180,10 +177,7 @@ namespace QgsWfs
       return;
     }
 
-    QString typeName = layer->name();
-    if ( !layer->shortName().isEmpty() )
-      typeName = layer->shortName();
-    typeName = typeName.replace( ' ', '_' );
+    QString typeName = layerTypeName( layer );
 
     //xsd:element
     QDomElement elementElem = doc.createElement( QStringLiteral( "element" )/*xsd:element*/ );

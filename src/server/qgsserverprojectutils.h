@@ -20,6 +20,7 @@
 
 #include "qgis_server.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
 
 #ifdef SIP_RUN
 % ModuleHeaderCode

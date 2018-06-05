@@ -1598,7 +1598,7 @@ QColor QgsOgcUtils::colorFromOgcFill( const QDomElement &fillElement )
 }
 
 
-QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element )
+QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer )
 {
   if ( element.isNull() || !element.hasChildNodes() )
     return nullptr;
@@ -1619,7 +1619,7 @@ QgsExpression *QgsOgcUtils::expressionFromOgcFilter( const QDomElement &element 
   while ( !childElem.isNull() )
   {
     QString errorMsg;
-    QgsExpressionNode *node = nodeFromOgcFilter( childElem, errorMsg );
+    QgsExpressionNode *node = nodeFromOgcFilter( childElem, errorMsg, layer );
     if ( !node )
     {
       // invalid expression, parser error
@@ -1702,7 +1702,7 @@ static bool isSpatialOperator( const QString &tagName )
 
 
 
-QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString &errorMessage )
+QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
   if ( element.isNull() )
     return nullptr;
@@ -1710,7 +1710,7 @@ QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString
   // check for binary operators
   if ( isBinaryOperator( element.tagName() ) )
   {
-    return nodeBinaryOperatorFromOgcFilter( element, errorMessage );
+    return nodeBinaryOperatorFromOgcFilter( element, errorMessage, layer );
   }
 
   // check for spatial operators
@@ -1731,7 +1731,7 @@ QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString
   }
   else if ( element.tagName() == QLatin1String( "Literal" ) )
   {
-    return nodeLiteralFromOgcFilter( element, errorMessage );
+    return nodeLiteralFromOgcFilter( element, errorMessage, layer );
   }
   else if ( element.tagName() == QLatin1String( "Function" ) )
   {
@@ -1752,7 +1752,7 @@ QgsExpressionNode *QgsOgcUtils::nodeFromOgcFilter( QDomElement &element, QString
 
 
 
-QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage )
+QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
   if ( element.isNull() )
     return nullptr;
@@ -1771,7 +1771,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( Q
   }
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpressionNode *expr = nodeFromOgcFilter( operandElem, errorMessage ), *leftOp = expr;
+  QgsExpressionNode *expr = nodeFromOgcFilter( operandElem, errorMessage, layer ), *leftOp = expr;
   if ( !expr )
   {
     if ( errorMessage.isEmpty() )
@@ -1781,7 +1781,7 @@ QgsExpressionNodeBinaryOperator *QgsOgcUtils::nodeBinaryOperatorFromOgcFilter( Q
 
   for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
   {
-    QgsExpressionNode *opRight = nodeFromOgcFilter( operandElem, errorMessage );
+    QgsExpressionNode *opRight = nodeFromOgcFilter( operandElem, errorMessage, layer );
     if ( !opRight )
     {
       if ( errorMessage.isEmpty() )
@@ -1960,7 +1960,7 @@ QgsExpressionNodeFunction *QgsOgcUtils::nodeFunctionFromOgcFilter( QDomElement &
 
 
 
-QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage )
+QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer )
 {
   if ( element.isNull() || element.tagName() != QLatin1String( "Literal" ) )
   {
@@ -1980,7 +1980,7 @@ QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, 
     {
       // found a element node (e.g. PropertyName), convert it
       QDomElement operandElem = childNode.toElement();
-      operand = nodeFromOgcFilter( operandElem, errorMessage );
+      operand = nodeFromOgcFilter( operandElem, errorMessage, layer );
       if ( !operand )
       {
         delete root;
@@ -1994,12 +1994,36 @@ QgsExpressionNode *QgsOgcUtils::nodeLiteralFromOgcFilter( QDomElement &element, 
       // probably a text/CDATA node
       QVariant value = childNode.nodeValue();
 
-      // try to convert the node content to number if possible,
-      // otherwise let's use it as string
-      bool ok;
-      double d = value.toDouble( &ok );
-      if ( ok )
-        value = d;
+      bool converted = false;
+
+      // try to convert the node content to corresponding field type if possible
+      if ( layer != nullptr )
+      {
+        QDomElement propertyNameElement = element.previousSiblingElement( QLatin1String( "PropertyName" ) );
+        if ( propertyNameElement.isNull() || propertyNameElement.tagName() != QLatin1String( "PropertyName" ) )
+        {
+          propertyNameElement = element.nextSiblingElement( QLatin1String( "PropertyName" ) );
+        }
+        if ( !propertyNameElement.isNull() || propertyNameElement.tagName() == QLatin1String( "PropertyName" ) )
+        {
+          int fieldIndex = layer->fields().indexOf( propertyNameElement.firstChild().nodeValue() );
+          if ( fieldIndex != -1 )
+          {
+            QgsField field = layer->fields().field( propertyNameElement.firstChild().nodeValue() );
+            field.convertCompatible( value );
+            converted = true;
+          }
+        }
+      }
+      if ( !converted )
+      {
+        // try to convert the node content to number if possible,
+        // otherwise let's use it as string
+        bool ok;
+        double d = value.toDouble( &ok );
+        if ( ok )
+          value = d;
+      }
 
       operand = new QgsExpressionNodeLiteral( value );
       if ( !operand )

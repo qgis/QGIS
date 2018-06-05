@@ -21,6 +21,7 @@
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -368,6 +369,13 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                   "</Intersects>"
                                   "</Filter>" )
                                 << QStringLiteral( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
+
+  QTest::newRow( "Literal conversion" ) << QString(
+                                          "<Filter><PropertyIsEqualTo>"
+                                          "<PropertyName>LITERAL</PropertyName>"
+                                          "<Literal>+2</Literal>"
+                                          "</PropertyIsEqualTo></Filter>" )
+                                        << QStringLiteral( "LITERAL = '+2'" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -379,7 +387,9 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( doc.setContent( xmlText, true ) );
   QDomElement rootElem = doc.documentElement();
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem ) );
+  QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
+
+  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );
