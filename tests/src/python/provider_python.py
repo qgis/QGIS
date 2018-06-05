@@ -47,6 +47,7 @@ from qgis.core import (
     QgsGeometryEngine,
     QgsSpatialIndex,
     QgsDataProvider,
+    QgsCsException,
 )
 
 from qgis.PyQt.QtCore import QVariant
