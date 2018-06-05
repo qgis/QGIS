@@ -9,6 +9,7 @@ IF (WITH_SERVER)
 ENDIF (WITH_SERVER)
 
 ADD_PYTHON_TEST(PyCoreAdittions test_core_additions.py)
+ADD_PYTHON_TEST(PyPythonRepr test_python_repr.py)
 ADD_PYTHON_TEST(PyQgsActionManager test_qgsactionmanager.py)
 ADD_PYTHON_TEST(PyQgsAFSProvider test_provider_afs.py)
 ADD_PYTHON_TEST(PyQgsPythonProvider test_provider_python.py)

@@ -162,6 +162,7 @@ Sets the circular string's points
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;
 
 
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const;

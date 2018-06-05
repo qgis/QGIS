@@ -253,6 +253,7 @@ Returns true if the circle contains the ``point``.
     virtual QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const;
 
 
+
 };
 
 /************************************************************************

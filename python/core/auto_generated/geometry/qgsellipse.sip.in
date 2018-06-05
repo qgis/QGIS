@@ -248,6 +248,7 @@ returns a string representation of the ellipse.
 Members will be truncated to the specified precision.
 %End
 
+
   protected:
 
 };

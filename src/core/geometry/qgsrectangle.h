@@ -541,6 +541,8 @@ class CORE_EXPORT QgsRectangle
       return QVariant::fromValue( *this );
     }
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsRectange {}>'.format(self.asWktCoordinates())" )
+
   private:
 
     double mXmin = 0.0;

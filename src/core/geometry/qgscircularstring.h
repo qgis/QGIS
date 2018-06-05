@@ -146,6 +146,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsCircularString {}>'.format(self.asWkt())" )
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;

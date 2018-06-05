@@ -54,6 +54,7 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     virtual QgsMultiPolygon *createEmptyWithSameType() const /Factory/;
 
 
+
   protected:
 
     virtual bool wktOmitChildType() const;

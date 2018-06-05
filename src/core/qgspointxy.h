@@ -156,8 +156,6 @@ class CORE_EXPORT QgsPointXY
      */
     QString toString( int precision = -1 ) const;
 
-    SIP_PYTHON_SPECIAL_REPR( "'<QgsPointXY {}>'.format(self.toString())" )
-
     /**
      * Returns the well known text representation for the point (e.g. "POINT(x y)").
      * The wkt is created without an SRID.

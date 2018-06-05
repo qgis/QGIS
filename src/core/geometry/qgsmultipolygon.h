@@ -65,6 +65,8 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 
     QgsMultiPolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsMultiPolygon {}>'.format(self.asWkt())" )
+
   protected:
 
     bool wktOmitChildType() const override;

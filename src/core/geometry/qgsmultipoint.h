@@ -66,6 +66,8 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 
     QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsMultiPoint {}>'.format(self.asWkt())" )
+
   protected:
 
     bool wktOmitChildType() const override;

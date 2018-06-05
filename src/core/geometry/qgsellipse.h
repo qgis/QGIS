@@ -240,6 +240,8 @@ class CORE_EXPORT QgsEllipse
      */
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsEllipse {}>'.format(self.toString())" )
+
   protected:
     QgsPoint mCenter;
     double mSemiMajorAxis = 0.0;

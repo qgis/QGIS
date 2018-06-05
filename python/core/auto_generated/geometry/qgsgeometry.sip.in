@@ -1290,6 +1290,7 @@ Exports the geometry to WKT
    precision parameter added in QGIS 2.4
 %End
 
+
     QString asJson( int precision = 17 ) const;
 %Docstring
 Exports the geometry to a GeoJSON string.

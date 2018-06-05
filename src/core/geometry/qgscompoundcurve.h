@@ -146,6 +146,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
     QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsCompoundCurve {}>'.format(self.asWkt())" )
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;

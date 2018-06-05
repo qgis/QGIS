@@ -2,3 +2,4 @@
 QgsGeometry.BufferSide.baseClass = QgsGeometry
 QgsGeometry.EndCapStyle.baseClass = QgsGeometry
 QgsGeometry.JoinStyle.baseClass = QgsGeometry
+QgsGeometry.__repr__ = lambda self: '<QgsGeometry {}>'.format(self.asWkt())

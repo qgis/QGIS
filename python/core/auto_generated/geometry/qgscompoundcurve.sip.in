@@ -166,6 +166,7 @@ Appends first point if not already closed.
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 
 
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const;

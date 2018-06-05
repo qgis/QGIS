@@ -322,6 +322,7 @@ Converts the rectangle to a 3D box, with the specified
 
     operator QVariant() const;
 
+
 };
 
 

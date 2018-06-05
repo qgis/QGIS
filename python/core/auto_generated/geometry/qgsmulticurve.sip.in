@@ -57,6 +57,7 @@ Returns a copy of the multi curve, where each component curve has had its line d
 
 
 
+
 };
 
 

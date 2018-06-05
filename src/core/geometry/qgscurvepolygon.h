@@ -204,6 +204,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsCurvePolygon {}>'.format(self.asWkt())" )
+
   protected:
 
     int childCount() const override;

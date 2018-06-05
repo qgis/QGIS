@@ -53,6 +53,7 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
 
 
+
   protected:
 
     virtual bool wktOmitChildType() const;

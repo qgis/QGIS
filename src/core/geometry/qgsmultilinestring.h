@@ -65,6 +65,8 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
 
     QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsMultiLineString {}>'.format(self.asWkt())" )
+
   protected:
 
     bool wktOmitChildType() const override;

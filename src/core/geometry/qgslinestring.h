@@ -346,6 +346,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsLineString {}>'.format(self.asWkt())" )
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;

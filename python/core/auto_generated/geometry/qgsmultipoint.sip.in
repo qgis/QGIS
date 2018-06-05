@@ -55,6 +55,7 @@ Multi point geometry collection.
     virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
 
 
+
   protected:
 
     virtual bool wktOmitChildType() const;

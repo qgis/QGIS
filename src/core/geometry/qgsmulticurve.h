@@ -73,6 +73,8 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
 
     QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
+    SIP_PYTHON_SPECIAL_REPR( "'<QgsMulitCurve {}>'.format(self.asWkt())" )
+
 
 };
 
