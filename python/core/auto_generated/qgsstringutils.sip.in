@@ -13,7 +13,7 @@
 class QgsStringReplacement
 {
 %Docstring
- A representation of a single string replacement.
+A representation of a single string replacement.
 
 .. versionadded:: 3.0
 %End
@@ -88,7 +88,7 @@ Creates a new QgsStringReplacement from an encoded properties map.
 class QgsStringReplacementCollection
 {
 %Docstring
- A collection of string replacements (specified using QgsStringReplacement objects).
+A collection of string replacements (specified using QgsStringReplacement objects).
 
 .. versionadded:: 3.0
 %End
@@ -117,7 +117,7 @@ Returns the list of string replacements in this collection.
 Sets the list of string replacements in this collection.
 
 :param replacements: list of string replacements to apply. Replacements are applied in the
-order they are specified here.
+                     order they are specified here.
 
 .. seealso:: :py:func:`replacements`
 %End
@@ -158,7 +158,7 @@ Reads the collection state from an XML element.
 class QgsStringUtils
 {
 %Docstring
- Utility functions for working with strings.
+Utility functions for working with strings.
 
 .. versionadded:: 2.11
 %End
@@ -174,6 +174,7 @@ class QgsStringUtils
       AllUppercase,
       AllLowercase,
       ForceFirstLetterToCapital,
+      TitleCase,
     };
 
     static QString capitalize( const QString &string, Capitalization capitalization );
@@ -186,6 +187,17 @@ Converts a string by applying capitalization rules to the string.
 :return: capitalized string
 
 .. versionadded:: 3.0
+%End
+
+    static QString ampersandEncode( const QString &string );
+%Docstring
+Makes a raw string safe for inclusion as a HTML/XML string literal.
+
+This includes replacing '<' with '&lt;', '>' with '&gt;', '&' with '&amp', and
+any extended unicode characters with the XML style &#233; encoded versions
+of these characters.
+
+.. versionadded:: 3.2
 %End
 
     static int levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive = false );

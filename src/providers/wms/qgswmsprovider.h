@@ -117,12 +117,13 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
+     * \param uri HTTP URL of the Web Server.  If needed a proxy will be used
      *                otherwise we contact the host directly.
-     * \param   capabilities   Optionally existing parsed capabilities for the given URI
+     * \param options generic data provider options
+     * \param capabilities Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = nullptr );
+    QgsWmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, const QgsWmsCapabilities *capabilities = nullptr );
 
 
     ~QgsWmsProvider() override;
@@ -165,7 +166,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual QString getTileUrl() const;
     virtual QString getLegendGraphicUrl() const;
 
-    //! get WMS version string
+    //! Gets WMS version string
     QString wmsVersion();
 
     /**
@@ -338,11 +339,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
       QRectF rect; //!< Destination rectangle for a tile (in screen coordinates)
       QImage img;  //!< Cached tile to be drawn
     } TileImage;
-    //! Get tiles from a different resolution to cover the missing areas
+    //! Gets tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
     /**
-     * Return the full url to request legend graphic
+     * Returns the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
      * \since QGIS 2.8
@@ -551,7 +552,7 @@ class QgsWmsStatistics
       int cacheMisses = 0;
     };
 
-    //! get reference to layer's statistics - insert to map if does not exist yet
+    //! Gets reference to layer's statistics - insert to map if does not exist yet
     static Stat &statForUri( const QString &uri ) { return sData[uri]; }
 
   protected:

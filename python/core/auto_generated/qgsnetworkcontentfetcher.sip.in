@@ -14,13 +14,13 @@
 class QgsNetworkContentFetcher : QObject
 {
 %Docstring
- HTTP network content fetcher. A simple method for fetching remote HTTP content
+HTTP network content fetcher. A simple method for fetching remote HTTP content
 and converting the content to standard formats. Url redirects are automatically
 handled.
 
-.. versionadded:: 2.5
-
 .. seealso:: :py:class:`QgsNetworkContentFetcherTask`
+
+.. versionadded:: 2.5
 %End
 
 %TypeHeaderCode

@@ -48,7 +48,7 @@ class QuantizedMeshTerrainChunkLoader : public TerrainChunkLoader
       mapSettings.setExtent( mTerrain->terrainToMapTransform().transformBoundingBox( tileRect ) );
     }
 
-    virtual void load() override
+    void load() override
     {
       QuantizedMeshGeometry::downloadTileIfMissing( tx, ty, tz );
       qmt = QuantizedMeshGeometry::readTile( tx, ty, tz, tileRect );

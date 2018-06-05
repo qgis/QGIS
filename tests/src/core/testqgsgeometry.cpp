@@ -417,7 +417,7 @@ void TestQgsGeometry::isEmpty()
   geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( !geom.isNull() );
 
-  geom.set( 0 );
+  geom.set( nullptr );
   QVERIFY( geom.isNull() );
 
   QgsGeometryCollection collection;
@@ -432,7 +432,7 @@ void TestQgsGeometry::operatorBool()
   geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( geom );
 
-  geom.set( 0 );
+  geom.set( nullptr );
   QVERIFY( !geom );
 }
 
@@ -1131,6 +1131,15 @@ void TestQgsGeometry::point()
   p.swapXy();
   QCOMPARE( p.x(), 2.2 );
   QCOMPARE( p.y(), 1.1 );
+  QCOMPARE( p.z(), 3.3 );
+  QCOMPARE( p.m(), 4.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
+
+  // filter vertex
+  p = QgsPoint( 1.1, 2.2, 3.3, 4.4, QgsWkbTypes::PointZM );
+  p.filterVertices( []( const QgsPoint & )-> bool { return false; } );
+  QCOMPARE( p.x(), 1.1 );
+  QCOMPARE( p.y(), 2.2 );
   QCOMPARE( p.z(), 3.3 );
   QCOMPARE( p.m(), 4.4 );
   QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
@@ -2608,6 +2617,17 @@ void TestQgsGeometry::circularString()
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
   swapLine.swapXy();
   QCOMPARE( swapLine.asWkt(), QStringLiteral( "CircularStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
+
+  // filter vertex
+  QgsCircularString filterLine;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() < 5;
+  };
+  filterLine.filterVertices( filter ); // no crash
+  filterLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  filterLine.filterVertices( filter );
+  QCOMPARE( filterLine.asWkt( 2 ), QStringLiteral( "CircularStringZM (1 2 3 4, 4 12 13 14)" ) );
 }
 
 
@@ -2645,6 +2665,13 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray.yAt( 1 ), 12.0 );
   QCOMPARE( fromArray.xAt( 2 ), 3.0 );
   QCOMPARE( fromArray.yAt( 2 ), 13.0 );
+  QCOMPARE( *fromArray.xData(), 1.0 );
+  QCOMPARE( *( fromArray.xData() + 1 ), 2.0 );
+  QCOMPARE( *( fromArray.xData() + 2 ), 3.0 );
+  QCOMPARE( *fromArray.yData(), 11.0 );
+  QCOMPARE( *( fromArray.yData() + 1 ), 12.0 );
+  QCOMPARE( *( fromArray.yData() + 2 ), 13.0 );
+
   // unbalanced
   xx = QVector< double >() << 1 << 2;
   yy = QVector< double >() << 11 << 12 << 13;
@@ -2768,6 +2795,19 @@ void TestQgsGeometry::lineString()
   QCOMPARE( fromArray8.yAt( 2 ), 13.0 );
   QCOMPARE( fromArray8.zAt( 2 ), 23.0 );
   QCOMPARE( fromArray8.mAt( 2 ), 33.0 );
+
+  QCOMPARE( *fromArray8.xData(), 1.0 );
+  QCOMPARE( *( fromArray8.xData() + 1 ), 2.0 );
+  QCOMPARE( *( fromArray8.xData() + 2 ), 3.0 );
+  QCOMPARE( *fromArray8.yData(), 11.0 );
+  QCOMPARE( *( fromArray8.yData() + 1 ), 12.0 );
+  QCOMPARE( *( fromArray8.yData() + 2 ), 13.0 );
+  QCOMPARE( *fromArray8.zData(), 21.0 );
+  QCOMPARE( *( fromArray8.zData() + 1 ), 22.0 );
+  QCOMPARE( *( fromArray8.zData() + 2 ), 23.0 );
+  QCOMPARE( *fromArray8.mData(), 31.0 );
+  QCOMPARE( *( fromArray8.mData() + 1 ), 32.0 );
+  QCOMPARE( *( fromArray8.mData() + 2 ), 33.0 );
 
   // from QList<QgsPointXY>
   QgsLineString fromPtsA = QgsLineString( QVector< QgsPoint >() );
@@ -2964,6 +3004,12 @@ void TestQgsGeometry::lineString()
   QgsPointSequence pts;
   l8.points( pts );
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  QCOMPARE( *l8.xData(), 1.0 );
+  QCOMPARE( *( l8.xData() + 1 ), 2.0 );
+  QCOMPARE( *( l8.xData() + 2 ), 3.0 );
+  QCOMPARE( *l8.yData(), 2.0 );
+  QCOMPARE( *( l8.yData() + 1 ), 3.0 );
+  QCOMPARE( *( l8.yData() + 2 ), 4.0 );
 
   //setPoints with empty list, should clear linestring
   l8.setPoints( QgsPointSequence() );
@@ -3114,7 +3160,7 @@ void TestQgsGeometry::lineString()
 
   //append to empty
   QgsLineString l10;
-  l10.append( 0 );
+  l10.append( nullptr );
   QVERIFY( l10.isEmpty() );
   QCOMPARE( l10.numPoints(), 0 );
 
@@ -4495,6 +4541,17 @@ void TestQgsGeometry::lineString()
   swapLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
   swapLine.swapXy();
   QCOMPARE( swapLine.asWkt( 2 ), QStringLiteral( "LineStringZM (2 11 3 4, 12 11 13 14, 12 111 23 24)" ) );
+
+  // filter vertex
+  QgsLineString filterLine;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() < 5;
+  };
+  filterLine.filterVertices( filter ); // no crash
+  filterLine.setPoints( QgsPointSequence()  << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  filterLine.filterVertices( filter );
+  QCOMPARE( filterLine.asWkt( 2 ), QStringLiteral( "LineStringZM (1 2 3 4, 4 12 13 14)" ) );
 }
 
 void TestQgsGeometry::polygon()
@@ -4521,7 +4578,7 @@ void TestQgsGeometry::polygon()
   //set exterior ring
 
   //try with no ring
-  QgsLineString *ext = 0;
+  QgsLineString *ext = nullptr;
   p1.setExteriorRing( ext );
   QVERIFY( p1.isEmpty() );
   QCOMPARE( p1.numInteriorRings(), 0 );
@@ -4645,7 +4702,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p6.numInteriorRings(), 0 );
   QVERIFY( !p6.interiorRing( -1 ) );
   QVERIFY( !p6.interiorRing( 0 ) );
-  p6.addInteriorRing( 0 );
+  p6.addInteriorRing( nullptr );
   QCOMPARE( p6.numInteriorRings(), 0 );
   QgsLineString *ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
@@ -6255,6 +6312,40 @@ void TestQgsGeometry::polygon()
   swapPolygon.addInteriorRing( swapLine.clone() );
   swapPolygon.swapXy();
   QCOMPARE( swapPolygon.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(2 1 5 6, 2.01 11.01 15 16, 2.01 11 25 26, 2 11 5 6, 2 1 5 6))" ) );
+
+  // filter vertex
+  QgsPolygon filterPolygon;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() > 5;
+  };
+  filterPolygon.filterVertices( filter ); // no crash
+  QgsLineString filterPolygonRing;
+  filterPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  filterPolygon.setExteriorRing( filterPolygonRing.clone() );
+  filterPolygon.filterVertices( filter );
+  QCOMPARE( filterPolygon.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  filterPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  filterPolygon.addInteriorRing( filterPolygonRing.clone() );
+  filterPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM ) << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  filterPolygon.addInteriorRing( filterPolygonRing.clone() );
+  filterPolygon.filterVertices( filter );
+  QCOMPARE( filterPolygon.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 11 12 13 14, 11 22 23 24, 11 2 3 4),(10 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 11 2 5 6, 10 2 5 6),(11.01 2.01 15 16, 11 2.01 25 26))" ) );
+
+  // remove invalid rings
+  QgsPolygon invalidRingPolygon;
+  invalidRingPolygon.removeInvalidRings(); // no crash
+  QgsLineString removeInvalidPolygonRing;
+  removeInvalidPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 4, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 11, 22, 23, 24, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  invalidRingPolygon.setExteriorRing( removeInvalidPolygonRing.clone() );
+  invalidRingPolygon.removeInvalidRings();
+  QCOMPARE( invalidRingPolygon.asWkt(), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4))" ) );
+  removeInvalidPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM )  << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 10, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  invalidRingPolygon.addInteriorRing( removeInvalidPolygonRing.clone() );
+  removeInvalidPolygonRing.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 11.01, 2.01, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2.01, 25, 26, QgsWkbTypes::PointZM ) << QgsPoint( 1, 2, 5, 6, QgsWkbTypes::PointZM ) );
+  invalidRingPolygon.addInteriorRing( removeInvalidPolygonRing.clone() );
+  invalidRingPolygon.removeInvalidRings();
+  QCOMPARE( invalidRingPolygon.asWkt( 2 ), QStringLiteral( "PolygonZM ((11 2 3 4, 4 12 13 14, 11 12 13 14, 11 22 23 24, 11 2 3 4),(1 2 5 6, 11.01 2.01 15 16, 11 2.01 25 26, 1 2 5 6))" ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -7740,7 +7831,7 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( p6.numInteriorRings(), 0 );
   QVERIFY( !p6.interiorRing( -1 ) );
   QVERIFY( !p6.interiorRing( 0 ) );
-  p6.addInteriorRing( 0 );
+  p6.addInteriorRing( nullptr );
   QCOMPARE( p6.numInteriorRings(), 0 );
   QgsCircularString *ring = new QgsCircularString();
   ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
@@ -11024,6 +11115,23 @@ void TestQgsGeometry::compoundCurve()
   swapCurve.swapXy();
   QCOMPARE( swapCurve.asWkt(), QStringLiteral( "CompoundCurveZM (CircularStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(111 12 23 24, 122 22 33 34))" ) );
 
+  // filter vertices
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() > 5;
+  };
+  QgsCompoundCurve filterCurve;
+  filterCurve.filterVertices( filter ); //no crash
+  nodeLine.setPoints( QgsPointSequence()   << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM )   << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) );
+  filterCurve.addCurve( nodeLine.clone() );
+  filterCurve.filterVertices( filter );
+  QCOMPARE( filterCurve.asWkt(), QStringLiteral( "CompoundCurveZM (CircularStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24))" ) );
+  QgsLineString lsFilter;
+  lsFilter.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, QgsWkbTypes::PointZM ) << QgsPoint( 22, 122, 33, 34, QgsWkbTypes::PointZM ) << QgsPoint( 1, 111, 23, 24, QgsWkbTypes::PointZM ) );
+  filterCurve.addCurve( lsFilter.clone() );
+  filterCurve.filterVertices( filter );
+  QCOMPARE( filterCurve.asWkt(), QStringLiteral( "CompoundCurveZM (CircularStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),(12 111 23 24, 22 122 33 34))" ) );
+
 }
 
 void TestQgsGeometry::multiPoint()
@@ -11503,6 +11611,20 @@ void TestQgsGeometry::multiPoint()
   mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
   QVERIFY( !mp.removeDuplicateNodes() );
   QCOMPARE( mp.numGeometries(), 2 );
+
+  // filter vertex
+  QgsMultiPoint filterPoint;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() < 5;
+  };
+  filterPoint.filterVertices( filter ); // no crash
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 3, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 1, 0, 4, 8 ) );
+  filterPoint.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 11, 0, 4, 8 ) );
+  filterPoint.filterVertices( filter );
+  QCOMPARE( filterPoint.asWkt( 2 ), QStringLiteral( "MultiPointZM ((3 0 4 8),(1 0 4 8))" ) );
 }
 
 void TestQgsGeometry::multiLineString()
@@ -15414,6 +15536,23 @@ void TestQgsGeometry::geometryCollection()
   swapCollect.addGeometry( swapLine.clone() );
   swapCollect.swapXy();
   QCOMPARE( swapCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (11 2 3 4, 11 12 13 14, 111 12 23 24),LineStringZM (2 11 5 6, 1.99 11.01 15 16, 2.01 11.02 25 26))" ) );
+
+  // filter vertices
+  QgsGeometryCollection filterCollect;
+  auto filter = []( const QgsPoint & point )-> bool
+  {
+    return point.x() > 5;
+  };
+  QgsLineString filterLine;
+  filterCollect.filterVertices( filter ); // no crash
+  filterLine.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  filterCollect.addGeometry( filterLine.clone() );
+  filterCollect.filterVertices( filter );
+  QCOMPARE( filterCollect.asWkt(), QStringLiteral( "GeometryCollection (LineStringZM (11 12 13 14, 111 12 23 24))" ) );
+  filterLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 5, 6, QgsWkbTypes::PointZM ) << QgsPoint( 1.01, 1.99, 15, 16, QgsWkbTypes::PointZM ) << QgsPoint( 11.02, 2.01, 25, 26, QgsWkbTypes::PointZM ) );
+  filterCollect.addGeometry( filterLine.clone() );
+  filterCollect.filterVertices( filter );
+  QCOMPARE( filterCollect.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineStringZM (11 12 13 14, 111 12 23 24),LineStringZM (11 2 5 6, 11.02 2.01 25 26))" ) );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

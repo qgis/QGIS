@@ -123,12 +123,12 @@ class QgsTextLabelFeature : public QgsLabelFeature
       }
     }
 
-    //! Get data-defined values
+    //! Gets data-defined values
     const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
-    //! Set data-defined values
+    //! Sets data-defined values
     void setDataDefinedValues( const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant > &values ) { mDataDefinedValues = values; }
 
-    //! Set font to be used for rendering
+    //! Sets font to be used for rendering
     void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
     //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }

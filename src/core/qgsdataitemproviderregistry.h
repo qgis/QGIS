@@ -46,7 +46,7 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     //! QgsDataItemProviderRegistry cannot be copied.
     QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
 
-    //! Get list of available providers
+    //! Gets list of available providers
     QList<QgsDataItemProvider *> providers() const { return mProviders; }
 
     //! Add a provider implementation. Takes ownership of the object.

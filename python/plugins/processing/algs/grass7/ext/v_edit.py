@@ -34,9 +34,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'input_txt', context)
             and alg.parameterAsString(parameters, 'input', context)):
-        return alg.tr("You need to set either an input ASCII file or inline data!")
+        return False, alg.tr("You need to set either an input ASCII file or inline data!")
 
-    return None
+    return True, None
 
 
 def processCommand(alg, parameters, context, feedback):

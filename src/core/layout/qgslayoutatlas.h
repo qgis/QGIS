@@ -26,12 +26,15 @@ class QgsLayout;
 
 /**
  * \ingroup core
- * Class used to render an Atlas, iterating over geometry features.
- * prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
- * This class is used for printing, exporting to PDF and images.
- * \note This class should not be created directly. For the atlas to function correctly
- * the atlasComposition() property for QgsComposition should be used to retrieve a
- * QgsLayoutAtlas which is automatically created and attached to the composition.
+ * Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
+ *
+ * QgsLayoutAtlas implement the QgsAbstractLayoutIterator interface, allowing them to be used
+ * directly with QgsLayoutExporter to automatically output all pages from the atlas.
+ *
+ * For QgsPrintLayout layouts, it is not necessary to manually construct a
+ * QgsLayoutAtlas object. Instead, the atlas attached to the print layout
+ * should be used. This can be retrieved by calling QgsPrintLayout::atlas().
+ *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject

@@ -1230,8 +1230,8 @@ class CORE_EXPORT QgsTextFormat
      * Returns a text format matching the settings from an input \a font.
      * Unlike setFont(), this method also handles the size and size units
      * from \a font.
-     * \since QGIS 3.2
      * \see toQFont()
+     * \since QGIS 3.2
      */
     static QgsTextFormat fromQFont( const QFont &font );
 
@@ -1239,8 +1239,8 @@ class CORE_EXPORT QgsTextFormat
      * Returns a QFont matching the relevant settings from this text format.
      * Unlike font(), this method also handles the size and size units
      * from the text format.
-     * \since QGIS 3.2
      * \see fromQFont()
+     * \since QGIS 3.2
      */
     QFont toQFont() const;
 

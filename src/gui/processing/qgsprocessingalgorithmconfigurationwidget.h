@@ -32,8 +32,8 @@ class QgsProcessingAlgorithmConfigurationWidget;
  * A configuration widget for processing algorithms allows providing additional
  * configuration options directly on algorithm level, in addition to parameters.
  *
- * \since QGIS 3.2
  * \ingroup gui
+ * \since QGIS 3.2
  */
 class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
 {
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */
     QgsProcessingAlgorithmConfigurationWidget( QWidget *parent = nullptr );
-    virtual ~QgsProcessingAlgorithmConfigurationWidget() = default;
+    ~QgsProcessingAlgorithmConfigurationWidget() override = default;
 
     /**
      * Read the current configuration from this widget.
@@ -62,8 +62,8 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget
 /**
  * Interface base class for factories for algorithm configuration widgets.
  *
- * \since QGIS 3.2
  * \ingroup gui
+ * \since QGIS 3.2
  */
 class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidgetFactory
 {

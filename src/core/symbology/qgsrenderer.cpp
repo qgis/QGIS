@@ -223,47 +223,51 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     return nullptr;
   }
 
+  // create empty FeatureTypeStyle element to merge Rule's from all FeatureTypeStyle's
+  QDomElement mergedFeatTypeStyle = featTypeStyleElem.cloneNode( false ).toElement();
+
   // use the RuleRenderer when more rules are present or the rule
   // has filters or min/max scale denominators set,
   // otherwise use the SingleSymbol renderer
   bool needRuleRenderer = false;
   int ruleCount = 0;
 
-  QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
-  while ( !ruleElem.isNull() )
+  while ( !featTypeStyleElem.isNull() )
   {
-    ruleCount++;
-
-    // more rules present, use the RuleRenderer
-    if ( ruleCount > 1 )
+    QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
+    while ( !ruleElem.isNull() )
     {
-      QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
-      needRuleRenderer = true;
-      break;
-    }
+      ruleCount++;
 
-    QDomElement ruleChildElem = ruleElem.firstChildElement();
-    while ( !ruleChildElem.isNull() )
-    {
-      // rule has filter or min/max scale denominator, use the RuleRenderer
-      if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
-           ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
-           ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+      // append a clone of all Rules to the merged FeatureTypeStyle element
+      mergedFeatTypeStyle.appendChild( ruleElem.cloneNode().toElement() );
+      // more rules present, use the RuleRenderer
+
+      if ( ruleCount > 1 )
       {
-        QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+        QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
         needRuleRenderer = true;
-        break;
       }
 
-      ruleChildElem = ruleChildElem.nextSiblingElement();
-    }
+      QDomElement ruleChildElem = ruleElem.firstChildElement();
+      while ( !ruleChildElem.isNull() )
+      {
+        // rule has filter or min/max scale denominator, use the RuleRenderer
+        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+             ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
+             ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        {
+          QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+          needRuleRenderer = true;
+          break;
+        }
 
-    if ( needRuleRenderer )
-    {
-      break;
-    }
+        ruleChildElem = ruleChildElem.nextSiblingElement();
+      }
 
-    ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+      ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+    }
+    featTypeStyleElem = featTypeStyleElem.nextSiblingElement( QStringLiteral( "FeatureTypeStyle" ) );
   }
 
   QString rendererType;
@@ -285,7 +289,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     return nullptr;
   }
 
-  QgsFeatureRenderer *r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  QgsFeatureRenderer *r = m->createRendererFromSld( mergedFeatTypeStyle, geomType );
   return r;
 }
 

@@ -333,7 +333,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setId( const QString &id );
 
     /**
-     * Get item display name. This is the item's id if set, and if
+     * Gets item display name. This is the item's id if set, and if
      * not, a user-friendly string identifying item type.
      * \see id()
      * \see setId()
@@ -351,14 +351,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * on a QgsLayoutItem, as some item types (e.g., groups) need to override
      * the visibility toggle.
      */
-    virtual void setVisibility( const bool visible );
+    virtual void setVisibility( bool visible );
 
     /**
      * Sets whether the item is \a locked, preventing mouse interactions with the item.
      * \see isLocked()
      * \see lockChanged()
      */
-    void setLocked( const bool locked );
+    void setLocked( bool locked );
 
     /**
      * Returns true if the item is locked, and cannot be interacted with using the mouse.
@@ -668,7 +668,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFrameStrokeWidth()
      * \see setFrameStrokeColor()
      */
-    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
 
     /**
      * Returns true if the item has a background.
@@ -709,7 +709,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Sets the item's composition blending \a mode.
      * \see blendMode()
      */
-    void setBlendMode( const QPainter::CompositionMode mode );
+    void setBlendMode( QPainter::CompositionMode mode );
 
     /**
      * Returns the item's opacity. This method should be used instead of
@@ -861,7 +861,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * QgsLayoutObject::AllProperties then all data defined properties for the item will be
      * refreshed.
     */
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     /**
      * Sets the layout item's \a rotation, in degrees clockwise.
@@ -879,7 +879,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setItemRotation()
      * \see itemRotation()
     */
-    virtual void rotateItem( const double angle, const QPointF &transformOrigin );
+    virtual void rotateItem( double angle, const QPointF &transformOrigin );
 
   signals:
 
@@ -1134,9 +1134,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QSizeF applyFixedSize( const QSizeF &targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
 
-    double applyDataDefinedRotation( const double rotation );
+    double applyDataDefinedRotation( double rotation );
     void updateStoredItemPosition();
-    QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
+    QPointF itemPositionAtReferencePoint( ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
     bool shouldBlockUndoCommands() const;
 

@@ -48,7 +48,7 @@ Sets the title for the color dialog
 :param title: title for dialog box
 %End
 
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to true.
@@ -59,9 +59,9 @@ for the color dialog. Defaults to true.
 %End
 
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
-                            const bool allowOpacity = false );
+                            bool allowOpacity = false );
 %Docstring
-Return a color selection from a color dialog.
+Returns a color selection from a color dialog.
 
 :param initialColor: the initial color of the selection dialog.
 :param parent: parent widget
@@ -69,8 +69,6 @@ Return a color selection from a color dialog.
 :param allowOpacity: set to true to allow modification of color opacity value (transparency)
 
 :return: Selected color on accepted() or initialColor on rejected().
-
-.. seealso:: :py:func:`getLiveColor`
 %End
 
   signals:

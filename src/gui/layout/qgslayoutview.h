@@ -76,7 +76,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QgsLayoutView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsLayoutView();
+    ~QgsLayoutView() override;
 
     /**
      * Returns the current layout associated with the view.
@@ -592,7 +592,7 @@ class GUI_EXPORT QgsLayoutViewMenuProvider
   public:
     virtual ~QgsLayoutViewMenuProvider() = default;
 
-    //! Return a newly created menu instance (or null pointer on error)
+    //! Returns a newly created menu instance (or null pointer on error)
     virtual QMenu *createContextMenu( QWidget *parent SIP_TRANSFER, QgsLayout *layout, QPointF layoutPoint ) const = 0 SIP_FACTORY;
 };
 

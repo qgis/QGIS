@@ -14,7 +14,7 @@
 class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring
- The QgsMapLayerModel class is a model to display layers in widgets.
+The QgsMapLayerModel class is a model to display layers in widgets.
 
 .. seealso:: :py:class:`QgsMapLayerProxyModel`
 
@@ -38,22 +38,22 @@ class QgsMapLayerModel : QAbstractItemModel
 
     explicit QgsMapLayerModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
- QgsMapLayerModel creates a model to display layers in widgets.
+QgsMapLayerModel creates a model to display layers in widgets.
 %End
 
     explicit QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent = 0 );
 %Docstring
- QgsMapLayerModel creates a model to display a specific list of layers in a widget.
+QgsMapLayerModel creates a model to display a specific list of layers in a widget.
 %End
 
     void setItemsCheckable( bool checkable );
 %Docstring
- setItemsCheckable defines if layers should be selectable in the widget
+setItemsCheckable defines if layers should be selectable in the widget
 %End
 
     void checkAll( Qt::CheckState checkState );
 %Docstring
- checkAll changes the checkstate for all the layers
+checkAll changes the checkstate for all the layers
 %End
 
     void setAllowEmptyLayer( bool allowEmpty );
@@ -94,7 +94,7 @@ Returns true if the model includes layer's CRS in the display role.
 
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
 %Docstring
- layersChecked returns the list of layers which are checked (or unchecked)
+layersChecked returns the list of layers which are checked (or unchecked)
 %End
     bool itemsCheckable() const;
 %Docstring
@@ -103,7 +103,7 @@ returns if the items can be checked or not
 
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 %Docstring
- indexFromLayer returns the model index for a given layer
+indexFromLayer returns the model index for a given layer
 
 .. seealso:: :py:func:`layerFromIndex`
 %End
@@ -112,9 +112,9 @@ returns if the items can be checked or not
 %Docstring
 Returns the map layer corresponding to the specified ``index``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`indexFromLayer`
+
+.. versionadded:: 3.0
 %End
 
     void setAdditionalItems( const QStringList &items );
@@ -130,7 +130,7 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 
     QStringList additionalItems() const;
 %Docstring
-Return the list of additional (non map layer) items included at the end of the model.
+Returns the list of additional (non map layer) items included at the end of the model.
 
 .. seealso:: :py:func:`setAdditionalItems`
 

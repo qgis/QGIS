@@ -81,7 +81,7 @@ and 1.0 (fully opaque).
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 %Docstring
-Get symbology items if provided by renderer
+Gets symbology items if provided by renderer
 %End
 
     virtual void readXml( const QDomElement &rendererElem );

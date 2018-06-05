@@ -234,11 +234,11 @@ Returns the interval between individual markers. Units are specified through int
 %Docstring
 Sets the interval between individual markers.
 
-:param interval: interval size. Units are specified through setIntervalUnits()
+:param interval: interval size. Units are specified through setIntervalUnit()
 
 .. seealso:: :py:func:`interval`
 
-.. seealso:: :py:func:`setIntervalUnits`
+.. seealso:: :py:func:`setIntervalUnit`
 %End
 
     Placement placement() const;
@@ -260,13 +260,13 @@ This setting has no effect for Vertex or CentralPoint placements.
 
 :return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
 
-.. versionadded:: 2.3
-
 .. seealso:: :py:func:`setOffsetAlongLine`
 
 .. seealso:: :py:func:`offsetAlongLineUnit`
 
 .. seealso:: :py:func:`placement`
+
+.. versionadded:: 2.3
 %End
 
     void setOffsetAlongLine( double offsetAlongLine );
@@ -277,15 +277,15 @@ distance between the marker and the start of the line or the end of the line res
 This setting has no effect for Vertex or CentralPoint placements.
 
 :param offsetAlongLine: Distance to offset markers along the line. The offset
-unit is set via setOffsetAlongLineUnit.
-
-.. versionadded:: 2.3
+                        unit is set via setOffsetAlongLineUnit.
 
 .. seealso:: :py:func:`offsetAlongLine`
 
 .. seealso:: :py:func:`setOffsetAlongLineUnit`
 
 .. seealso:: :py:func:`setPlacement`
+
+.. versionadded:: 2.3
 %End
 
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;

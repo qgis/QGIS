@@ -40,7 +40,7 @@ Construct a new color swatch grid.
 
     QString context() const;
 %Docstring
-Get the current context for the grid
+Gets the current context for the grid
 
 :return: context string which is passed to scheme for color generation
 
@@ -58,7 +58,7 @@ Sets the current context for the grid
 
     QColor baseColor() const;
 %Docstring
-Get the base color for the widget
+Gets the base color for the widget
 
 :return: base color which is passed to scheme for color generation
 
@@ -159,7 +159,7 @@ Sets the base color for the color grid
 
     QColor baseColor() const;
 %Docstring
-Get the base color for the color grid
+Gets the base color for the color grid
 
 :return: base color which is passed to scheme for color generation
 
@@ -168,7 +168,7 @@ Get the base color for the color grid
 
     QString context() const;
 %Docstring
-Get the current context for the color grid
+Gets the current context for the color grid
 
 :return: context string which is passed to scheme for color generation
 
@@ -190,8 +190,8 @@ Sets whether the parent menu should be dismissed and closed when a color is sele
 from the action's color widget.
 
 :param dismiss: set to true (default) to immediately close the menu when a color is selected
-from the widget. If set to false, the colorChanged signal will be emitted but the menu will
-stay open.
+                from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+                stay open.
 
 .. seealso:: :py:func:`dismissOnColorSelection`
 

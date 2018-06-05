@@ -52,13 +52,13 @@ Sets the project's title.
 
 :param title: new title
 
-.. versionadded:: 2.4
-
 .. note::
 
    Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
 
 .. seealso:: :py:func:`title`
+
+.. versionadded:: 2.4
 %End
 
     QString title() const;
@@ -110,7 +110,8 @@ Returns QFileInfo object for the project's associated file.
 .. seealso:: :py:func:`fileName`
 
 .. versionadded:: 2.9
-\deprecated
+
+.. deprecated:: Use absoluteFilePath(), baseName() or lastModifiedTime() instead
 %End
 
     QgsProjectStorage *projectStorage() const;
@@ -148,22 +149,22 @@ Returns the base name of the project file without the path and without extension
 %Docstring
 Returns the project's native coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setCrs`
 
 .. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.0
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the project's native coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`crs`
 
 .. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 3.0
 %End
 
     QString ellipsoid() const;
@@ -195,11 +196,11 @@ Returns a copy of the project's coordinate transform context, which stores vario
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setTransformContext`
 
 .. seealso:: :py:func:`transformContextChanged`
+
+.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -208,11 +209,11 @@ Sets the project's coordinate transform ``context``, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformContext`
 
 .. seealso:: :py:func:`transformContextChanged`
+
+.. versionadded:: 3.0
 %End
 
     void clear();
@@ -371,7 +372,7 @@ Remove the given key
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
-Return keys with values -- do not return keys that contain other keys
+Returns keys with values -- do not return keys that contain other keys
 
 .. note::
 
@@ -380,7 +381,7 @@ Return keys with values -- do not return keys that contain other keys
 
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
-Return keys with keys -- do not return keys that contain only values
+Returns keys with keys -- do not return keys that contain only values
 
 .. note::
 
@@ -392,7 +393,7 @@ Return keys with keys -- do not return keys that contain only values
 
     QgsPathResolver pathResolver() const;
 %Docstring
-Return path resolver object with considering whether the project uses absolute
+Returns path resolver object with considering whether the project uses absolute
 or relative paths and using current project's path.
 
 .. versionadded:: 3.0
@@ -412,7 +413,7 @@ Turn filename read from the project file to an absolute path
 
     QString error() const;
 %Docstring
-Return error message from previous read/write
+Returns error message from previous read/write
 %End
 
     void setBadLayerHandler( QgsProjectBadLayerHandler *handler /Transfer/ );
@@ -448,42 +449,42 @@ Convenience function to query topological editing status
 %Docstring
 Convenience function to query default distance measurement units for project.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setDistanceUnits`
 
 .. seealso:: :py:func:`areaUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
 %Docstring
 Sets the default distance measurement units for the project.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`distanceUnits`
 
 .. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 3.0
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
 %Docstring
 Convenience function to query default area measurement units for project.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`distanceUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Sets the default area measurement units for the project.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`areaUnits`
 
 .. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 3.0
 %End
 
     QString homePath() const;
@@ -531,14 +532,14 @@ the project.
 
     QgsLayerTree *layerTreeRoot() const;
 %Docstring
-Return pointer to the root (invisible) node of the project's layer tree
+Returns pointer to the root (invisible) node of the project's layer tree
 
 .. versionadded:: 2.4
 %End
 
     QgsLayerTreeRegistryBridge *layerTreeRegistryBridge() const;
 %Docstring
-Return pointer to the helper class that synchronizes map layer registry with layer tree
+Returns pointer to the helper class that synchronizes map layer registry with layer tree
 
 .. versionadded:: 2.4
 %End
@@ -547,11 +548,11 @@ Return pointer to the helper class that synchronizes map layer registry with lay
 %Docstring
 Returns pointer to the project's map theme collection.
 
-.. versionadded:: 2.12
-
 .. note::
 
    renamed in QGIS 3.0, formerly :py:class:`QgsVisibilityPresetCollection`
+
+.. versionadded:: 2.12
 %End
 
     QgsAnnotationManager *annotationManager();
@@ -574,7 +575,7 @@ Set a list of layers which should not be taken into account on map identificatio
 
     QStringList nonIdentifiableLayers() const;
 %Docstring
-Get the list of layers which currently should not be taken into account on map identification
+Gets the list of layers which currently should not be taken into account on map identification
 %End
 
     bool autoTransaction() const;
@@ -729,17 +730,17 @@ Add a list of layers to the map of loaded layers.
 The layersAdded() and layerWasAdded() signals will always be emitted.
 The legendLayersAdded() signal is emitted only if addToLegend is true.
 
-:param mapLayers:  A list of layer which should be added to the registry
-:param addToLegend:   If true (by default), the layers will be added to the
-legend and to the main canvas. If you have a private
-layer you can set this parameter to false to hide it.
+:param mapLayers: A list of layer which should be added to the registry
+:param addToLegend: If true (by default), the layers will be added to the
+                    legend and to the main canvas. If you have a private
+                    layer you can set this parameter to false to hide it.
 :param takeOwnership: Ownership will be transferred to the layer registry.
-If you specify false here you have take care of deleting
-the layers yourself. Not available in Python.
+                      If you specify false here you have take care of deleting
+                      the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-successfully. If a layer is invalid, or already exists in the registry,
-it will not be part of the returned QList.
+         successfully. If a layer is invalid, or already exists in the registry,
+         it will not be part of the returned QList.
 
 
 .. note::
@@ -751,9 +752,9 @@ it will not be part of the returned QList.
    takeOwnership is not available in the Python bindings - the registry will always
    take ownership
 
-.. versionadded:: 1.8
-
 .. seealso:: :py:func:`addMapLayer`
+
+.. versionadded:: 1.8
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *mapLayer /Transfer/,
@@ -769,11 +770,11 @@ addMapLayers() instead.
 
 :param mapLayer: A layer to add to the registry
 :param addToLegend: If true (by default), the layer will be added to the
-legend and to the main canvas. If you have a private
-layer you can set this parameter to false to hide it.
+                    legend and to the main canvas. If you have a private
+                    layer you can set this parameter to false to hide it.
 :param takeOwnership: Ownership will be transferred to the layer registry.
-If you specify false here you have take care of deleting
-the layer yourself. Not available in Python.
+                      If you specify false here you have take care of deleting
+                      the layer yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
 
@@ -810,11 +811,11 @@ of any layers these layers will also be deleted.
 
    As a side-effect the QgsProject instance is marked dirty.
 
-.. versionadded:: 1.8
-
 .. seealso:: :py:func:`removeMapLayer`
 
 .. seealso:: :py:func:`removeAllMapLayers`
+
+.. versionadded:: 1.8
 %End
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
@@ -936,22 +937,22 @@ Returns the current auxiliary storage.
 %Docstring
 Returns a reference to the project's metadata store.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setMetadata`
 
 .. seealso:: :py:func:`metadataChanged`
+
+.. versionadded:: 3.2
 %End
 
     void setMetadata( const QgsProjectMetadata &metadata );
 %Docstring
 Sets the project's ``metadata`` store.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`metadata`
 
 .. seealso:: :py:func:`metadataChanged`
+
+.. versionadded:: 3.2
 %End
 
     QSet<QgsMapLayer *> requiredLayers() const;
@@ -991,7 +992,7 @@ Emitted, after the basic initialization of a layer from the project
 file is done. You can use this signal to read additional information
 from the project file.
 
-:param mapLayer:  The map layer which is being initialized
+:param mapLayer: The map layer which is being initialized
 :param layerNode: The layer node from the project file
 %End
 
@@ -1000,7 +1001,7 @@ from the project file.
 Emitted, when a layer is being saved. You can use this method to save
 additional information to the layer.
 
-:param mapLayer:  The map layer which is being initialized
+:param mapLayer: The map layer which is being initialized
 :param layerElem: The layer element from the project file
 :param doc: The document
 %End
@@ -1030,7 +1031,7 @@ Emitted when a layer is loaded
 
     void loadingLayerMessageReceived( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 %Docstring
- Emitted when loading layers has produced some messages
+Emitted when loading layers has produced some messages
 
 :param layerName: the layer name
 :param messages: a list of pairs of Qgis.MessageLevel and messages
@@ -1082,11 +1083,11 @@ Emitted when the CRS of the project has changed.
 %Docstring
 Emitted when the project ``ellipsoid`` is changed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setEllipsoid`
 
 .. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -1094,9 +1095,9 @@ Emitted when the project ``ellipsoid`` is changed.
 %Docstring
 Emitted when the project transformContext() is changed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.0
 %End
 
     void missingDatumTransforms( const QStringList &missingTransforms );
@@ -1216,7 +1217,7 @@ Emitted when a layer is about to be removed from the registry.
 %Docstring
 Emitted after one or more layers were removed from the registry.
 
-:param layerIds:  A list of IDs of the layers which were removed.
+:param layerIds: A list of IDs of the layers which were removed.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 %End
@@ -1294,11 +1295,11 @@ The snapping configuration for this project.
 Flag the project as dirty (modified). If this flag is set, the user will
 be asked to save changes to the project before closing the current project.
 
-.. versionadded:: 2.4
-
 .. note::
 
    promoted to public slot in 2.16
+
+.. versionadded:: 2.4
 %End
 
     void setPresetHomePath( const QString &path );
@@ -1306,13 +1307,13 @@ be asked to save changes to the project before closing the current project.
 Sets the project's home ``path``. If an empty path is specified than the
 home path will be automatically determined from the project's file path.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`presetHomePath`
 
 .. seealso:: :py:func:`homePath`
 
 .. seealso:: :py:func:`homePathChanged`
+
+.. versionadded:: 3.2
 %End
 
 };

@@ -100,11 +100,11 @@ class CORE_EXPORT QgsColorSchemeRegistry
      * \param flag flag to match
      * \returns list of color schemes with flag set
      */
-    QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
+    QList<QgsColorScheme *> schemes( QgsColorScheme::SchemeFlag flag ) const;
 
 
     /**
-     * Return color schemes of a specific type
+     * Returns color schemes of a specific type
      * \param schemeList destination list for matching schemes
      * \note not available in Python bindings
      */

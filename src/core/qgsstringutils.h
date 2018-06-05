@@ -188,6 +188,7 @@ class CORE_EXPORT QgsStringUtils
       AllUppercase = QFont::AllUppercase, //!< Convert all characters to uppercase
       AllLowercase = QFont::AllLowercase,  //!< Convert all characters to lowercase
       ForceFirstLetterToCapital = QFont::Capitalize, //!< Convert just the first letter of each word to uppercase, leave the rest untouched
+      TitleCase = QFont::Capitalize + 1000, //!< Simple title case conversion - does not fully grammatically parse the text and uses simple rules only. Note that this method does not convert any characters to lowercase, it only uppercases required letters. Callers must ensure that input strings are already lowercased.
     };
 
     /**
@@ -198,6 +199,16 @@ class CORE_EXPORT QgsStringUtils
      * \since QGIS 3.0
      */
     static QString capitalize( const QString &string, Capitalization capitalization );
+
+    /**
+     * Makes a raw string safe for inclusion as a HTML/XML string literal.
+     *
+     * This includes replacing '<' with '&lt;', '>' with '&gt;', '&' with '&amp', and
+     * any extended unicode characters with the XML style &#233; encoded versions
+     * of these characters.
+     * \since QGIS 3.2
+     */
+    static QString ampersandEncode( const QString &string );
 
     /**
      * Returns the Levenshtein edit distance between two strings. This equates to the minimum

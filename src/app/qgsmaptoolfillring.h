@@ -31,7 +31,7 @@ class APP_EXPORT QgsMapToolFillRing: public QgsMapToolCapture
   private:
 
     /**
-     * Return the geometry of the ring under the point p and sets fid to the feature id
+     * Returns the geometry of the ring under the point p and sets fid to the feature id
      */
     QgsGeometry ringUnderPoint( const QgsPointXY &p, QgsFeatureId &fid );
 

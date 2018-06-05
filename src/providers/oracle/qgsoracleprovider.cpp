@@ -45,8 +45,8 @@
 const QString ORACLE_KEY = "oracle";
 const QString ORACLE_DESCRIPTION = "Oracle data provider";
 
-QgsOracleProvider::QgsOracleProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsOracleProvider::QgsOracleProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mValid( false )
   , mIsQuery( false )
   , mPrimaryKeyType( PktUnknown )
@@ -462,7 +462,7 @@ void QgsOracleProvider::setExtent( QgsRectangle &newExtent )
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsOracleProvider::wkbType() const
 {
@@ -492,7 +492,7 @@ QgsFeatureIterator QgsOracleProvider::getFeatures( const QgsFeatureRequest &requ
 }
 
 /**
- * Return the number of fields
+ * Returns the number of fields
  */
 uint QgsOracleProvider::fieldCount() const
 {
@@ -1820,7 +1820,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
   QByteArray wkb = geom.asWkb();
 
   wkbPtr ptr;
-  ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : 0;
+  ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : nullptr;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
@@ -2142,7 +2142,7 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsOracleProvider::featureCount() const
 {
@@ -2840,7 +2840,9 @@ QgsVectorLayerExporter::ExportError QgsOracleProvider::createEmptyLayer(
 
   // use the provider to edit the table1
   dsUri.setDataSource( ownerName, tableName, geometryColumn, QString(), primaryKey );
-  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri() );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsOracleProvider *provider = new QgsOracleProvider( dsUri.uri(), providerOptions );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -3029,9 +3031,9 @@ QString  QgsOracleProvider::description() const
  * Class factory to return a pointer to a newly created
  * QgsOracleProvider object
  */
-QGISEXTERN QgsOracleProvider *classFactory( const QString *uri )
+QGISEXTERN QgsOracleProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsOracleProvider( *uri );
+  return new QgsOracleProvider( *uri, options );
 }
 
 /**
@@ -3039,7 +3041,7 @@ QGISEXTERN QgsOracleProvider *classFactory( const QString *uri )
 */
 QGISEXTERN QString providerKey()
 {
-  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_KEY : 0;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_KEY : nullptr;
 }
 
 /**
@@ -3047,7 +3049,7 @@ QGISEXTERN QString providerKey()
  */
 QGISEXTERN QString description()
 {
-  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_DESCRIPTION : 0;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_DESCRIPTION : nullptr;
 }
 
 /**
@@ -3190,12 +3192,6 @@ QGISEXTERN void cleanupProvider()
 }
 
 // ----------
-
-
-QgsOracleSharedData::QgsOracleSharedData()
-  : mFidCounter( 0 )
-{
-}
 
 QgsFeatureId QgsOracleSharedData::lookupFid( const QVariantList &v )
 {

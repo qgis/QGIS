@@ -69,6 +69,8 @@ QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
 QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  if ( !selectLayer )
+    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   QString dest;
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
@@ -80,7 +82,7 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
   int current = 0;
   double step = count > 0 ? 100.0 / count : 1;
 
-  QgsFeatureIterator it = selectLayer->getSelectedFeatures();;
+  QgsFeatureIterator it = selectLayer->getSelectedFeatures();
   QgsFeature feat;
   while ( it.nextFeature( feat ) )
   {

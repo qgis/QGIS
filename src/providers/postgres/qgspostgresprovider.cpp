@@ -89,8 +89,8 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 
 
 
-QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
+QgsPostgresProvider::QgsPostgresProvider( QString const &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
   , mShared( new QgsPostgresSharedData )
 {
 
@@ -651,7 +651,7 @@ void QgsPostgresProvider::setExtent( QgsRectangle &newExtent )
 }
 
 /**
- * Return the feature type
+ * Returns the feature type
  */
 QgsWkbTypes::Type QgsPostgresProvider::wkbType() const
 {
@@ -2029,15 +2029,41 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       delim = ',';
     }
 
-    if ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 )
+    // Optimization: if we have a single primary key column whose default value
+    // is a sequence, and that none of the features have a value set for that
+    // column, then we can completely omit inserting it.
+    bool skipSinglePKField = false;
+
+    if ( ( mPrimaryKeyType == PktInt || mPrimaryKeyType == PktFidMap || mPrimaryKeyType == PktUint64 ) )
     {
-      Q_FOREACH ( int idx, mPrimaryKeyAttrs )
+      if ( mPrimaryKeyAttrs.size() == 1 &&
+           defaultValueClause( mPrimaryKeyAttrs[0] ).startsWith( "nextval(" ) )
       {
-        insert += delim + quotedIdentifier( field( idx ).name() );
-        values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
-        delim = ',';
-        fieldId << idx;
-        defaultValues << defaultValueClause( idx );
+        bool foundNonNullPK = false;
+        int idx = mPrimaryKeyAttrs[0];
+        for ( int i = 0; i < flist.size(); i++ )
+        {
+          QgsAttributes attrs2 = flist[i].attributes();
+          QVariant v2 = attrs2.value( idx, QVariant( QVariant::Int ) );
+          if ( !v2.isNull() )
+          {
+            foundNonNullPK = true;
+            break;
+          }
+        }
+        skipSinglePKField = !foundNonNullPK;
+      }
+
+      if ( !skipSinglePKField )
+      {
+        for ( int idx : mPrimaryKeyAttrs )
+        {
+          insert += delim + quotedIdentifier( field( idx ).name() );
+          values += delim + QStringLiteral( "$%1" ).arg( defaultValues.size() + offset );
+          delim = ',';
+          fieldId << idx;
+          defaultValues << defaultValueClause( idx );
+        }
       }
     }
 
@@ -2048,6 +2074,8 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
       QVariant v = attributevec.value( idx, QVariant( QVariant::Int ) ); // default to NULL for missing attributes
+      if ( skipSinglePKField && idx == mPrimaryKeyAttrs[0] )
+        continue;
       if ( fieldId.contains( idx ) )
         continue;
 
@@ -3118,7 +3146,7 @@ bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFea
 }
 
 /**
- * Return the feature count
+ * Returns the feature count
  */
 long QgsPostgresProvider::featureCount() const
 {
@@ -3935,7 +3963,9 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
-  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ) );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  std::unique_ptr< QgsPostgresProvider > provider = qgis::make_unique< QgsPostgresProvider >( dsUri.uri( false ), providerOptions );
   if ( !provider->isValid() )
   {
     if ( errorMessage )
@@ -4399,9 +4429,9 @@ bool QgsPostgresProvider::hasMetadata() const
  * Class factory to return a pointer to a newly created
  * QgsPostgresProvider object
  */
-QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri )
+QGISEXTERN QgsPostgresProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsPostgresProvider( *uri );
+  return new QgsPostgresProvider( *uri, options );
 }
 
 /**

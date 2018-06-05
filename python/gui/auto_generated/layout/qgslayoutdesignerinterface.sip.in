@@ -57,7 +57,7 @@ Returns the layout view utilized by the designer.
 Returns the designer's message bar.
 %End
 
-    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
+    virtual void selectItems( QList< QgsLayoutItem * > items ) = 0;
 %Docstring
 Selects the specified ``items``.
 %End

@@ -24,7 +24,7 @@ Evaluates NMEA sentences coming from a GPS device
 
     QgsNmeaConnection( QIODevice *device );
 %Docstring
- Constructs a QgsNmeaConnection with given ``device``.
+Constructs a QgsNmeaConnection with given ``device``.
 %End
 
   protected slots:

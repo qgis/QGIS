@@ -24,7 +24,7 @@
 #include "qgstolerance.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
-
+#include "qgssnapindicator.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -34,6 +34,7 @@
 
 QgsMapToolMoveFeature::QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, QgisApp::instance()->cadDockWidget() )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator>( canvas ) )
   , mMode( mode )
 {
   mToolName = tr( "Move feature" );
@@ -54,6 +55,11 @@ void QgsMapToolMoveFeature::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     mRubberBand->setTranslationOffset( offsetX, offsetY );
     mRubberBand->updatePosition();
     mRubberBand->update();
+    mSnapIndicator->setMatch( e->mapPointMatch() );
+  }
+  else
+  {
+    mSnapIndicator->setMatch( e->mapPointMatch() );
   }
 }
 
@@ -64,6 +70,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   {
     delete mRubberBand;
     mRubberBand = nullptr;
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
     cadDockWidget()->clear();
     notifyNotEditableLayer();
     return;
@@ -152,6 +159,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mMovedFeatures.clear();
           delete mRubberBand;
           mRubberBand = nullptr;
+          mSnapIndicator->setMatch( QgsPointLocator::Match() );
           return;
         }
       }
@@ -170,6 +178,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       cadDockWidget()->clear();
       delete mRubberBand;
       mRubberBand = nullptr;
+      mSnapIndicator->setMatch( QgsPointLocator::Match() );
       return;
     }
 
@@ -190,6 +199,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         }
         delete mRubberBand;
         mRubberBand = nullptr;
+        mSnapIndicator->setMatch( QgsPointLocator::Match() );
         cadDockWidget()->clear();
         break;
 
@@ -202,6 +212,7 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           emit messageEmitted( *errorMsg, Qgis::Critical );
           delete mRubberBand;
           mRubberBand = nullptr;
+          mSnapIndicator->setMatch( QgsPointLocator::Match() );
         }
         break;
     }
@@ -216,6 +227,7 @@ void QgsMapToolMoveFeature::deactivate()
   //delete rubber band
   delete mRubberBand;
   mRubberBand = nullptr;
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
   QgsMapTool::deactivate();
 }
@@ -227,5 +239,6 @@ void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )
     cadDockWidget()->clear();
     delete mRubberBand;
     mRubberBand = nullptr;
+    mSnapIndicator->setMatch( QgsPointLocator::Match() );
   }
 }

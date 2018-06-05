@@ -31,7 +31,9 @@
 
 #include "qgsquickmapcanvasmap.h"
 #include "qgsquickmapsettings.h"
+#include "qgsquickmessagelogmodel.h"
 #include "qgsquickplugin.h"
+#include "qgsquickscalebarkit.h"
 #include "qgsquickutils.h"
 
 static QObject *_utilsProvider( QQmlEngine *engine, QJSEngine *scriptEngine )
@@ -55,11 +57,10 @@ void QgsQuickPlugin::registerTypes( const char *uri )
   qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
   qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
   qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
+  qmlRegisterType< QgsQuickMessageLogModel >( uri, 0, 1, "MessageLogModel" );
+  qmlRegisterType< QgsQuickScaleBarKit >( uri, 0, 1, "ScaleBarKit" );
   qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
 
   qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", _utilsProvider );
-
-  qmlRegisterUncreatableType< QgsRelationManager >( uri, 0, 1, "RelationManager", "The relation manager is available from the Project. Try `qgisProject.relationManager`" );
-  qmlRegisterUncreatableType< QgsMessageLog >( uri, 0, 1, "QgsMessageLog", "Expose MessageLevel" );
 }
 

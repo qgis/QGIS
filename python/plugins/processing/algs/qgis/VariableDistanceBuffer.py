@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsWkbTypes,
+from qgis.core import (QgsApplication,
+                       QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingAlgorithm,
@@ -58,7 +59,10 @@ class VariableDistanceBuffer(QgisAlgorithm):
     MITER_LIMIT = 'MITER_LIMIT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'buffer.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBuffer.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmBuffer.svg")
 
     def group(self):
         return self.tr('Vector geometry')

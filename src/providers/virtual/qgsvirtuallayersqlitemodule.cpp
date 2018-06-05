@@ -14,7 +14,7 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <cstdint>
 #include <stdexcept>
@@ -116,7 +116,8 @@ struct VTable
       , mCrs( -1 )
       , mValid( true )
     {
-      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source ) );
+      QgsDataProvider::ProviderOptions providerOptions;
+      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source, providerOptions ) );
       if ( !mProvider )
       {
         throw std::runtime_error( "Invalid provider" );

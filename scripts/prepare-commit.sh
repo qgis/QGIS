@@ -91,8 +91,10 @@ for f in $MODIFIED; do
 
   cp $f $m
   ASTYLEPROGRESS=" [$i/$N]" astyle.sh $f
-  diff -u $m $f >>$ASTYLEDIFF
-  rm $m
+  if diff -u $m $f >>$ASTYLEDIFF; then
+    # no difference found
+    rm $m
+  fi
 done
 
 if [ -s "$ASTYLEDIFF" ]; then
@@ -100,10 +102,11 @@ if [ -s "$ASTYLEDIFF" ]; then
     # review astyle changes
     colordiff <$ASTYLEDIFF | less -r
   else
-    echo "Files changed"
+    echo "Files changed (see $ASTYLEDIFF)"
   fi
+else
+  rm $ASTYLEDIFF
 fi
-rm $ASTYLEDIFF
 
 
 # verify SIP files
@@ -121,7 +124,7 @@ for f in $MODIFIED; do
       m=python/$sip_file.$REV.prepare
       touch python/$sip_file
       cp python/$sip_file $m
-      ${TOPLEVEL}/scripts/sipify.pl $f > python/$sip_file
+      ${TOPLEVEL}/scripts/sipify.pl -s python/$sip_file -p python/${module}/__init__.py $f
       if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
         echo "python/$sip_file is not up to date"
       fi

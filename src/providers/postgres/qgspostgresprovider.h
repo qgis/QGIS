@@ -87,8 +87,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * host=localhost dbname=test [user=gsherman [password=xxx] | authcfg=xxx] table=test.alaska (the_geom)
      * \param uri String containing the required parameters to connect to the database
      * and query the table.
+     * \param options generic data provider options
      */
-    explicit QgsPostgresProvider( QString const &uri = QString() );
+    explicit QgsPostgresProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
 
     ~QgsPostgresProvider() override;
@@ -101,7 +102,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsLayerMetadata layerMetadata() const override;
 
     /**
-     * Return the number of layers for the current data source
+     * Returns the number of layers for the current data source
      * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
@@ -109,7 +110,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
-     * Return a string representation of the endian-ness for the layer
+     * Returns a string representation of the endian-ness for the layer
      */
     static QString endianString();
 
@@ -166,10 +167,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
 
-    //! Get the postgres connection
+    //! Gets the postgres connection
     PGconn *pgConnection();
 
-    //! Get the table name associated with this provider instance
+    //! Gets the table name associated with this provider instance
     QString getTableName();
 
     QString subsetString() const override;
@@ -254,7 +255,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString geomParam( int offset ) const;
 
     /**
-     * Get parametrized primary key clause
+     * Gets parametrized primary key clause
      * \param offset specifies offset to use for the pk value parameter
      * \param alias specifies an optional alias given to the subject table
      */
@@ -296,7 +297,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool parseDomainCheckConstraint( QStringList &enumValues, const QString &attributeName ) const;
 
     /**
-     * Return the type of primary key for a PK field
+     * Returns the type of primary key for a PK field
      *
      * \param fld the field to determine PK type of
      * \returns the PrimaryKeyType

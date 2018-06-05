@@ -29,7 +29,6 @@ class QgsAnnotation;
 /**
  * \ingroup core
  * \class QgsAnnotationManager
- * \since QGIS 3.0
  *
  * \brief Manages storage of a set of QgsAnnotation annotation objects.
  *
@@ -39,6 +38,8 @@ class QgsAnnotation;
  *
  * QgsAnnotationManager retains ownership of all the annotations contained
  * in the manager.
+ *
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationManager : public QObject
 {
@@ -67,8 +68,8 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      * Returns true if the removal was successful, or false if the removal failed (eg as a result
      * of removing an annotation which is not contained in the manager).
      * \see addAnnotation()
-     * \see compositionRemoved()
-     * \see compositionAboutToBeRemoved()
+     * \see annotationRemoved()
+     * \see annotationAboutToBeRemoved()
      * \see clear()
      */
     bool removeAnnotation( QgsAnnotation *annotation );

@@ -15,7 +15,7 @@
 class QgsFieldExpressionWidget : QWidget
 {
 %Docstring
- The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
+The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
 It contains a combo boxto display the fields and expression and a button to open the expression dialog.
 The combo box is editable, allowing expressions to be edited inline.
 The validity of the expression is checked live on key press, invalid expressions are displayed in red.
@@ -30,7 +30,7 @@ only when editing in the line edit is finished (focus lost, enter key pressed).
 
     explicit QgsFieldExpressionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
+QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
 %End
 
     void setExpressionDialogTitle( const QString &title );
@@ -49,7 +49,7 @@ Appends a scope to the current expression context.
 
     const QString expressionDialogTitle();
 %Docstring
-return the title used for the expression dialog
+Returns the title used for the expression dialog
 %End
 
     void setFilters( QgsFieldProxyModel::Filters filters );
@@ -66,12 +66,12 @@ currently used filter on list of fields
 
     void setGeomCalculator( const QgsDistanceArea &da );
 %Docstring
-set the geometry calculator used in the expression dialog
+Sets the geometry calculator used in the expression dialog
 %End
 
     QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
 %Docstring
- currentField returns the currently selected field or expression if allowed
+currentField returns the currently selected field or expression if allowed
 
 :param isExpression: determines if the string returned is the name of a field or an expression
 :param isValid: determines if the expression (or field) returned is valid
@@ -79,7 +79,7 @@ set the geometry calculator used in the expression dialog
 
     bool isValidExpression( QString *expressionError = 0 ) const;
 %Docstring
-Return true if the current expression is valid
+Returns true if the current expression is valid
 %End
 
     bool isExpression() const;
@@ -89,7 +89,7 @@ If the content is not just a simple field this method will return true.
 
     QString currentText() const;
 %Docstring
-Return the current text that is set in the expression area
+Returns the current text that is set in the expression area
 %End
 
     QString asExpression() const;
@@ -125,7 +125,7 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
 
 :param generator: A QgsExpressionContextGenerator class that will be used to
-create an expression context when required.
+                  create an expression context when required.
 
 .. versionadded:: 3.0
 %End
@@ -212,10 +212,10 @@ when expression has been edited (finished) it will be added to the model
 
     void updateLineEditStyle( const QString &expression = QString() );
 %Docstring
- updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+updateLineEditStyle will re-style (color/font) the line edit depending on content and status
 
 :param expression: if expression is given it will be evaluated for the given string, otherwise it takes
-current expression from the model
+                   current expression from the model
 %End
 
     bool isExpressionValid( const QString &expressionStr );

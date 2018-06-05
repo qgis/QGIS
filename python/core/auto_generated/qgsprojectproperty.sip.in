@@ -189,9 +189,9 @@ The name of the property is used as identifier.
 %Docstring
 The name of the property is used as identifier.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`name`
+
+.. versionadded:: 3.0
 %End
 
     virtual QVariant value() const;
@@ -262,7 +262,7 @@ Returns any sub-keys contained by this property that do not contain other keys.
 
     void subkeyList( QStringList &entries ) const;
 %Docstring
-Return any sub-keys contained by this property which themselves contain other keys.
+Returns any sub-keys contained by this property which themselves contain other keys.
 
 .. seealso:: :py:func:`entryList`
 %End

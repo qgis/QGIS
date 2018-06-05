@@ -90,10 +90,10 @@ class GUI_EXPORT QgsAuthGuiUtils
     //! Store master password into the wallet
     static void passwordHelperSync( QgsMessageBar *msgbar, int timeout = 0 );
 
-    //! Set password helper enabled (enable/disable)
+    //! Sets password helper enabled (enable/disable)
     static void passwordHelperEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
 
-    //! Set password helper logging enabled (enable/disable)
+    //! Sets password helper logging enabled (enable/disable)
     static void passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
 
 };

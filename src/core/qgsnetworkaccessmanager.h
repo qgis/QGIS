@@ -31,7 +31,6 @@
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
- * \since 1.5
  *
  * This class implements the QGIS network access manager.  It's a singleton
  * that can be used across QGIS.
@@ -43,6 +42,7 @@
  * fallback proxy can be set.  There's also a exclude list that defines URLs
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
+ * \since 1.5
  */
 class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 {
@@ -70,19 +70,19 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
     QStringList excludeList() const;
 
-    //! set fallback proxy and URL that shouldn't use it.
+    //! Sets fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
-    //! Get name for QNetworkRequest::CacheLoadControl
+    //! Gets name for QNetworkRequest::CacheLoadControl
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
-    //! Get QNetworkRequest::CacheLoadControl from name
+    //! Gets QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
     //! Setup the NAM according to the user's settings
     void setupDefaultProxyAndCache();
 
-    //! return whether the system proxy should be used
+    //! Returns whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:

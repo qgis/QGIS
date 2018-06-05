@@ -64,6 +64,8 @@ class CORE_EXPORT QgsExpressionNodeUnaryOperator : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
 
@@ -162,6 +164,9 @@ class CORE_EXPORT QgsExpressionNodeBinaryOperator : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes( ) const override; SIP_SKIP
+
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
@@ -241,6 +246,8 @@ class CORE_EXPORT QgsExpressionNodeInOperator : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
@@ -284,6 +291,9 @@ class CORE_EXPORT QgsExpressionNodeFunction : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
@@ -321,6 +331,9 @@ class CORE_EXPORT QgsExpressionNodeLiteral : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;
@@ -356,6 +369,9 @@ class CORE_EXPORT QgsExpressionNodeColumnRef : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+    QList<const QgsExpressionNode *> nodes( ) const override; SIP_SKIP
+
     bool needsGeometry() const override;
 
     QgsExpressionNode *clone() const override SIP_FACTORY;
@@ -394,7 +410,7 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
         WhenThen &operator=( const WhenThen &rh ) = delete;
 
         /**
-         * Get a deep copy of this WhenThen combination.
+         * Gets a deep copy of this WhenThen combination.
          */
         QgsExpressionNodeCondition::WhenThen *clone() const SIP_FACTORY;
 
@@ -456,6 +472,10 @@ class CORE_EXPORT QgsExpressionNodeCondition : public QgsExpressionNode
 
     QSet<QString> referencedColumns() const override;
     QSet<QString> referencedVariables() const override;
+    QSet<QString> referencedFunctions() const override;
+
+    QList<const QgsExpressionNode *> nodes() const override; SIP_SKIP
+
     bool needsGeometry() const override;
     QgsExpressionNode *clone() const override SIP_FACTORY;
     bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const override;

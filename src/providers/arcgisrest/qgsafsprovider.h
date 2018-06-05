@@ -36,7 +36,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString &uri );
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
@@ -73,9 +73,9 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
 
   private:
-    bool mValid;
+    bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;
-    int mObjectIdFieldIdx;
+    int mObjectIdFieldIdx = -1;
     QString mLayerName;
     QString mLayerDescription;
     QgsLayerMetadata mLayerMetadata;

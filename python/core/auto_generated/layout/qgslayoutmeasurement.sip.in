@@ -13,7 +13,7 @@
 class QgsLayoutMeasurement
 {
 %Docstring
- This class provides a method of storing measurements for use in QGIS layouts
+This class provides a method of storing measurements for use in QGIS layouts
 using a variety of different measurement units.
 
 .. seealso:: :py:class:`QgsLayoutMeasurementConverter`
@@ -26,7 +26,7 @@ using a variety of different measurement units.
 %End
   public:
 
-    explicit QgsLayoutMeasurement( const double length, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutMeasurement( double length, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutMeasurement.
 
@@ -80,21 +80,21 @@ Decodes a measurement from a ``string``.
     bool operator==( const QgsLayoutMeasurement &other ) const;
     bool operator!=( const QgsLayoutMeasurement &other ) const;
 
-    QgsLayoutMeasurement operator+( const double v ) const;
+    QgsLayoutMeasurement operator+( double v ) const;
 
-    QgsLayoutMeasurement operator+=( const double v );
+    QgsLayoutMeasurement operator+=( double v );
 
-    QgsLayoutMeasurement operator-( const double v ) const;
+    QgsLayoutMeasurement operator-( double v ) const;
 
-    QgsLayoutMeasurement operator-=( const double v );
+    QgsLayoutMeasurement operator-=( double v );
 
-    QgsLayoutMeasurement operator*( const double v ) const;
+    QgsLayoutMeasurement operator*( double v ) const;
 
-    QgsLayoutMeasurement operator*=( const double v );
+    QgsLayoutMeasurement operator*=( double v );
 
-    QgsLayoutMeasurement operator/( const double v ) const;
+    QgsLayoutMeasurement operator/( double v ) const;
 
-    QgsLayoutMeasurement operator/=( const double v );
+    QgsLayoutMeasurement operator/=( double v );
 
 };
 

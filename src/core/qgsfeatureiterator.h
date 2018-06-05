@@ -57,8 +57,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider. When nextFeature()/fetchFeature() is reasonably fast, it is not necessary
      * to implement this method. The default implementation does nothing.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     virtual void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
@@ -82,6 +82,14 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     {
       return mValid;
     }
+
+    /**
+     * Indicator if there was an error when sending the compiled query to the server.
+     * This indicates that there is something wrong with the expression compiler.
+     *
+     * \since QGIS 3.2
+     */
+    bool compileFailed() const;
 
   protected:
 
@@ -139,12 +147,12 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
      * \since QGIS 3.0
      */
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const SIP_THROW( QgsCsException );
 
     //! A copy of the feature request.
     QgsFeatureRequest mRequest;
 
-    //! Set to true, as soon as the iterator is closed.
+    //! Sets to true, as soon as the iterator is closed.
     bool mClosed = false;
 
     /**
@@ -172,6 +180,8 @@ class CORE_EXPORT QgsAbstractFeatureIterator
 
     //! Status of compilation of filter expression
     CompileStatus mCompileStatus = NoCompilation;
+
+    bool mCompileFailed = false;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
@@ -276,15 +286,13 @@ class CORE_EXPORT QgsFeatureIterator
     % End
 #endif
 
-    //! construct invalid iterator
+    //! Construct invalid iterator
     QgsFeatureIterator() = default;
-#ifndef SIP_RUN
-    //! construct a valid iterator
-    QgsFeatureIterator( QgsAbstractFeatureIterator *iter );
-#endif
-    //! copy constructor copies the iterator, increases ref.count
+    //! Construct a valid iterator
+    QgsFeatureIterator( QgsAbstractFeatureIterator *iter SIP_TRANSFER );
+    //! Copy constructor copies the iterator, increases ref.count
     QgsFeatureIterator( const QgsFeatureIterator &fi );
-    //! destructor deletes the iterator if it has no more references
+    //! Destructor deletes the iterator if it has no more references
     ~QgsFeatureIterator();
 
     QgsFeatureIterator &operator=( const QgsFeatureIterator &other );
@@ -312,8 +320,8 @@ class CORE_EXPORT QgsFeatureIterator
      * if it must stopped. This is mostly useful for iterators where a single
      * nextFeature()/fetchFeature() iteration might be very long. A typical use case is the
      * WFS provider.
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     void setInterruptionChecker( QgsFeedback *interruptionChecker ) SIP_SKIP;
 
@@ -322,6 +330,14 @@ class CORE_EXPORT QgsFeatureIterator
      * \since QGIS 2.16
      */
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const { return mIter->compileStatus(); }
+
+    /**
+     * Indicator if there was an error when sending the compiled query to the server.
+     * This indicates that there is something wrong with the expression compiler.
+     *
+     * \since QGIS 3.2
+     */
+    bool compileFailed() const { return mIter->compileFailed(); }
 
     friend bool operator== ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;
     friend bool operator!= ( const QgsFeatureIterator &fi1, const QgsFeatureIterator &fi2 ) SIP_SKIP;

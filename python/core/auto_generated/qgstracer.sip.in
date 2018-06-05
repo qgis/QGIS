@@ -34,11 +34,11 @@ Constructor for QgsTracer.
 
     QList<QgsVectorLayer *> layers() const;
 %Docstring
-Get layers used for tracing
+Gets layers used for tracing
 %End
     void setLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
-Set layers used for tracing
+Sets layers used for tracing
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -57,16 +57,16 @@ Sets the ``crs`` and transform ``context`` used for tracing.
 
     QgsRectangle extent() const;
 %Docstring
-Get extent to which graph's features will be limited (empty extent means no limit)
+Gets extent to which graph's features will be limited (empty extent means no limit)
 %End
     void setExtent( const QgsRectangle &extent );
 %Docstring
-Set extent to which graph's features will be limited (empty extent means no limit)
+Sets extent to which graph's features will be limited (empty extent means no limit)
 %End
 
     double offset() const;
 %Docstring
-Get offset in map units that should be applied to the traced paths returned from findShortestPath().
+Gets offset in map units that should be applied to the traced paths returned from findShortestPath().
 Positive offset for right side, negative offset for left side.
 
 .. versionadded:: 3.0
@@ -82,7 +82,7 @@ Positive offset for right side, negative offset for left side.
 
     void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
 %Docstring
-Get extra parameters for offset curve algorithm (used when offset is non-zero)
+Gets extra parameters for offset curve algorithm (used when offset is non-zero)
 
 .. versionadded:: 3.0
 %End
@@ -96,11 +96,11 @@ Set extra parameters for offset curve algorithm (used when offset is non-zero)
 
     int maxFeatureCount() const;
 %Docstring
-Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
 %End
     void setMaxFeatureCount( int count );
 %Docstring
-Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
 %End
 
     bool init();

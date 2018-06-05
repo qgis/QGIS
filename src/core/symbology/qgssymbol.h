@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSymbol
 
     virtual ~QgsSymbol();
 
-    //! return new default symbol for specified geometry type
+    //! Returns new default symbol for specified geometry type
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
     SymbolType type() const { return mType; }
@@ -117,9 +117,9 @@ class CORE_EXPORT QgsSymbol
     /**
      * Returns list of symbol layers contained in the symbol.
      * \returns symbol layers list
-     * \since QGIS 2.7
      * \see symbolLayer
      * \see symbolLayerCount
+     * \since QGIS 2.7
      */
     QgsSymbolLayerList symbolLayers() { return mLayers; }
 
@@ -127,18 +127,18 @@ class CORE_EXPORT QgsSymbol
      * Returns a specific symbol layers contained in the symbol.
      * \param layer layer number
      * \returns corresponding symbol layer
-     * \since QGIS 2.7
      * \see symbolLayers
      * \see symbolLayerCount
+     * \since QGIS 2.7
      */
     QgsSymbolLayer *symbolLayer( int layer );
 
     /**
      * Returns total number of symbol layers contained in the symbol.
      * \returns count of symbol layers
-     * \since QGIS 2.7
      * \see symbolLayers
      * \see symbolLayer
+     * \since QGIS 2.7
      */
     int symbolLayerCount() const { return mLayers.count(); }
 
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsSymbol
     QString dump() const;
 
     /**
-     * Get a deep copy of this symbol.
+     * Gets a deep copy of this symbol.
      * Needs to be reimplemented by subclasses.
      * Ownership is transferred to the caller.
      */
@@ -281,8 +281,8 @@ class CORE_EXPORT QgsSymbol
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
      * \param clipFeaturesToExtent set to true to enable clipping (defaults to true)
-     * \since QGIS 2.9
      * \see clipFeaturesToExtent
+     * \since QGIS 2.9
      */
     void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
 
@@ -292,13 +292,13 @@ class CORE_EXPORT QgsSymbol
      * will be clipped. This speeds up rendering of the feature, but may have undesirable
      * side effects for certain symbol types.
      * \returns true if features will be clipped
-     * \since QGIS 2.9
      * \see setClipFeaturesToExtent
+     * \since QGIS 2.9
      */
     bool clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
     /**
-     * Return a list of attributes required to render this feature.
+     * Returns a list of attributes required to render this feature.
      * This should include any attributes required by the symbology including
      * the ones required by expressions.
      */
@@ -632,15 +632,15 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Returns the marker angle for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the angle of
      * the first symbol layer.
-     * \since QGIS 2.16
      * \see setAngle()
+     * \since QGIS 2.16
      */
     double angle() const;
 
     /**
      * Set data defined angle for whole symbol (including all symbol layers).
-     * \since QGIS 3.0
      * \see dataDefinedAngle()
+     * \since QGIS 3.0
      */
     void setDataDefinedAngle( const QgsProperty &property );
 
@@ -648,8 +648,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Returns data defined angle for whole symbol (including all symbol layers).
      * \returns data defined angle, or invalid property if angle is not set
      * at the marker level.
-     * \since QGIS 3.0
      * \see setDataDefinedAngle()
+     * \since QGIS 3.0
      */
     QgsProperty dataDefinedAngle() const;
 
@@ -684,30 +684,30 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     /**
      * Sets the size units for the whole symbol (including all symbol layers).
      * \param unit size units
-     * \since QGIS 2.16
      * \see sizeUnit()
      * \see setSizeMapUnitScale()
      * \see setSize()
+     * \since QGIS 2.16
      */
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 
     /**
      * Returns the size units for the whole symbol (including all symbol layers).
      * \returns size units, or mixed units if symbol layers have different units
-     * \since QGIS 2.16
      * \see setSizeUnit()
      * \see sizeMapUnitScale()
      * \see size()
+     * \since QGIS 2.16
      */
     QgsUnitTypes::RenderUnit sizeUnit() const;
 
     /**
      * Sets the size map unit scale for the whole symbol (including all symbol layers).
      * \param scale map unit scale
-     * \since QGIS 2.16
      * \see sizeMapUnitScale()
      * \see setSizeUnit()
      * \see setSize()
+     * \since QGIS 2.16
      */
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 
@@ -715,17 +715,17 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Returns the size map unit scale for the whole symbol. Note that for symbols with
      * multiple symbol layers, this will correspond just to the map unit scale
      * for the first symbol layer.
-     * \since QGIS 2.16
      * \see setSizeMapUnitScale()
      * \see sizeUnit()
      * \see size()
+     * \since QGIS 2.16
      */
     QgsMapUnitScale sizeMapUnitScale() const;
 
     /**
      * Set data defined size for whole symbol (including all symbol layers).
-     * \since QGIS 3.0
      * \see dataDefinedSize()
+     * \since QGIS 3.0
      */
     void setDataDefinedSize( const QgsProperty &property );
 
@@ -733,8 +733,8 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
      * Returns data defined size for whole symbol (including all symbol layers).
      * \returns data defined size, or invalid property if size is not set
      * at the marker level.
-     * \since QGIS 3.0
      * \see setDataDefinedSize
+     * \since QGIS 3.0
      */
     QgsProperty dataDefinedSize() const;
 
@@ -795,8 +795,8 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
      * Returns data defined width for whole symbol (including all symbol layers).
      * \returns data defined width, or invalid property if size is not set
      * at the line level. Caller takes responsibility for deleting the returned object.
-     * \since QGIS 3.0
      * \see setDataDefinedWidth
+     * \since QGIS 3.0
      */
     QgsProperty dataDefinedWidth() const;
 

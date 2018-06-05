@@ -68,7 +68,7 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
      */
     bool allowEmptyFieldName() const;
 
-    //! return the currently selected field
+    //! Returns the currently selected field
     QString currentField() const;
 
     /**

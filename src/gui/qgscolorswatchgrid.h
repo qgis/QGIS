@@ -50,7 +50,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QSize sizeHint() const override;
 
     /**
-     * Get the current context for the grid
+     * Gets the current context for the grid
      * \returns context string which is passed to scheme for color generation
      * \see setContext
      */
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void setContext( const QString &context );
 
     /**
-     * Get the base color for the widget
+     * Gets the base color for the widget
      * \returns base color which is passed to scheme for color generation
      * \see setBaseColor
      */
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
      * Updates the widget's tooltip for a given color index
      * \param colorIdx color index to use for calculating tooltip
      */
-    void updateTooltip( const int colorIdx );
+    void updateTooltip( int colorIdx );
 
     /**
      * Generates a checkboard pattern for transparent color backgrounds
@@ -209,14 +209,14 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     void setBaseColor( const QColor &baseColor );
 
     /**
-     * Get the base color for the color grid
+     * Gets the base color for the color grid
      * \returns base color which is passed to scheme for color generation
      * \see setBaseColor
      */
     QColor baseColor() const;
 
     /**
-     * Get the current context for the color grid
+     * Gets the current context for the color grid
      * \returns context string which is passed to scheme for color generation
      * \see setContext
      */

@@ -15,7 +15,7 @@
 class QgsDiagramLayerSettings
 {
 %Docstring
- Stores the settings for rendering of all diagrams for a layer.
+Stores the settings for rendering of all diagrams for a layer.
 
 QgsDiagramSettings stores the settings related to rendering the individual diagrams themselves, while
 QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
@@ -119,7 +119,7 @@ is set to a line type.
 
 :param flags: placement value
 
-.. seealso:: :py:func:`getPlacement`
+.. seealso:: :py:func:`linePlacementFlags`
 
 .. versionadded:: 2.16
 %End
@@ -316,9 +316,9 @@ Returns the set of any fields referenced by the layer's diagrams.
 %Docstring
 Returns a reference to the diagram's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -328,9 +328,9 @@ Sets the diagram's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 };
@@ -339,7 +339,7 @@ Sets the diagram's property collection, used for data defined overrides.
 class QgsDiagramSettings
 {
 %Docstring
- Stores the settings for rendering a single diagram.
+Stores the settings for rendering a single diagram.
 
 QgsDiagramSettings stores the settings related to rendering the individual diagrams themselves, while
 QgsDiagramLayerSettings stores settings which control how ALL diagrams within a layer are rendered.
@@ -453,7 +453,7 @@ Additional diagram settings for interpolated size rendering.
 class QgsDiagramRenderer
 {
 %Docstring
- Evaluates and returns the diagram settings relating to a diagram for a specific feature.
+Evaluates and returns the diagram settings relating to a diagram for a specific feature.
 %End
 
 %TypeHeaderCode
@@ -547,11 +547,9 @@ Returns list of legend nodes for the diagram
 %Docstring
 Returns true if renderer will show legend items for diagram attributes.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setAttributeLegend`
 
-.. seealso:: :py:func:`sizeLegend`
+.. versionadded:: 2.16
 %End
 
     void setAttributeLegend( bool enabled );
@@ -560,11 +558,9 @@ Sets whether the renderer will show legend items for diagram attributes.
 
 :param enabled: set to true to show diagram attribute legend
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`attributeLegend`
 
-.. seealso:: :py:func:`setSizeLegend`
+.. versionadded:: 2.16
 %End
 
   protected:

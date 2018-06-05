@@ -67,7 +67,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
     void removeFieldFormatter( const QString &id );
 
     /**
-     * Get a field formatter by its id. If there is no such id registered,
+     * Gets a field formatter by its id. If there is no such id registered,
      * a default QgsFallbackFieldFormatter with a null id will be returned instead.
      */
     QgsFieldFormatter *fieldFormatter( const QString &id ) const;

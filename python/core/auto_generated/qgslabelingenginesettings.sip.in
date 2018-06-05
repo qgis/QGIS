@@ -45,16 +45,16 @@ Stores global configuration for labeling engine
 
     void clear();
 %Docstring
-Return the configuration to the defaults
+Returns the configuration to the defaults
 %End
 
     void setFlags( Flags flags );
 %Docstring
-Set flags of the labeling engine
+Sets flags of the labeling engine
 %End
     Flags flags() const;
 %Docstring
-Get flags of the labeling engine
+Gets flags of the labeling engine
 %End
     bool testFlag( Flag f ) const;
 %Docstring
@@ -62,21 +62,21 @@ Test whether a particular flag is enabled
 %End
     void setFlag( Flag f, bool enabled = true );
 %Docstring
-Set whether a particual flag is enabled
+Sets whether a particual flag is enabled
 %End
 
     void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const;
 %Docstring
-Get number of candidate positions that will be generated for each label feature (default to 8)
+Gets number of candidate positions that will be generated for each label feature (default to 8)
 %End
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
 %Docstring
-Set number of candidate positions that will be generated for each label feature
+Sets number of candidate positions that will be generated for each label feature
 %End
 
     void setSearchMethod( Search s );
 %Docstring
-Set which search method to use for removal collisions between labels
+Sets which search method to use for removal collisions between labels
 %End
     Search searchMethod() const;
 %Docstring

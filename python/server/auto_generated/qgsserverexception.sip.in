@@ -14,7 +14,7 @@
 class QgsServerException
 {
 %Docstring
- Exception base class for server exceptions.
+Exception base class for server exceptions.
 
 .. versionadded:: 3.0
 %End
@@ -50,7 +50,7 @@ The defaolt implementation return text/xml format.
 class QgsOgcServiceException
 {
 %Docstring
- Exception base class for service exceptions.
+Exception base class for service exceptions.
 
 Note that this exception is associated with a default return code 200 which may be
 not appropriate in some situations.
@@ -70,32 +70,26 @@ Construction
 
     QString message() const;
 %Docstring
-
-:return: message
+Returns the exception message
 %End
 
     QString code()    const;
 %Docstring
-
-:return: code
+Returns the exception code
 %End
 
     QString locator() const;
 %Docstring
-
-:return: locator
+Returns the locator
 %End
 
     QString version() const;
 %Docstring
-return exception version
+Returns the exception version
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
 
-%Docstring
-Overridden from :py:class:`QgsServerException`
-%End
 
 };
 

@@ -224,7 +224,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     void updateFieldFromExpressionSelected();
     void viewModeChanged( QgsAttributeForm::Mode mode );
     void formFilterSet( const QString &filter, QgsAttributeForm::FilterType type );
-    void showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
 
   private:
     QMenu *mMenuActions = nullptr;
@@ -243,7 +243,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QgsAttributeEditorContext mEditorContext;
 
     void updateMultiEditButtonState();
-    void deleteFeature( const QgsFeatureId fid );
+    void deleteFeature( QgsFeatureId fid );
 
     friend class TestQgsAttributeTable;
 };

@@ -115,7 +115,7 @@ the previously used toolbutton to pop out. *
 
     QAction *action();
 %Docstring
-Return associated action with map tool or NULL if no action is associated
+Returns associated action with map tool or NULL if no action is associated
 %End
 
     void setButton( QAbstractButton *button );
@@ -126,12 +126,12 @@ as setAction() function except it works with a button instead of an QAction. *
 
     QAbstractButton *button();
 %Docstring
-Return associated button with map tool or NULL if no button is associated
+Returns associated button with map tool or NULL if no button is associated
 %End
 
     virtual void setCursor( const QCursor &cursor );
 %Docstring
-Set a user defined cursor
+Sets a user defined cursor
 %End
 
     virtual void activate();
@@ -163,7 +163,7 @@ Emit map tool changed with the old tool
 
     static double searchRadiusMM();
 %Docstring
-Get search radius in mm. Used by identify, tip etc.
+Gets search radius in mm. Used by identify, tip etc.
 The values is currently set in identify tool options (move somewhere else?)
 and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 
@@ -172,7 +172,7 @@ and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 
     static double searchRadiusMU( const QgsRenderContext &context );
 %Docstring
-Get search radius in map units for given context. Used by identify, tip etc.
+Gets search radius in map units for given context. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3
@@ -180,7 +180,7 @@ The values is calculated from searchRadiusMM().
 
     static double searchRadiusMU( QgsMapCanvas *canvas );
 %Docstring
-Get search radius in map units for given canvas. Used by identify, tip etc.
+Gets search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
 .. versionadded:: 2.3

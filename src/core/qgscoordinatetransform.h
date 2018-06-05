@@ -68,12 +68,12 @@ class CORE_EXPORT QgsCoordinateTransform
      * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
-     * \deprecated Use of this constructor is strongly discouraged, as it will not
      * correctly handle the user's datum transform setup. Instead the constructor
      * variant which accepts a QgsCoordinateTransformContext or QgsProject
      * argument should be used instead. It is highly likely that this constructor
      * will be removed in future QGIS versions.
      * \note Not available in Python bindings.
+     * \deprecated Use of this constructor is strongly discouraged, as it will not
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_SKIP;
 
@@ -203,7 +203,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
      * Transform the point specified by x,y from the source CRS to the destination CRS.
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed point
      */
-    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transforms a rectangle from the source CRS to the destination CRS.
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
@@ -242,7 +242,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * heights) and must be expressed in its vertical units (generally meters)
      * \param direction transform direction (defaults to ForwardTransform)
      */
-    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms an array of x, y and z float coordinates in place, from the source CRS to the destination CRS.
@@ -307,7 +307,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param polygon polygon to transform (occurs in place)
      * \param direction transform direction (defaults to forward transformation)
      */
-    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
+    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
      * Transforms a rectangle to the destination CRS.
@@ -317,7 +317,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed rectangle
      */
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
      * Transform an array of coordinates to the destination CRS.
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param z array of z coordinates to transform
      * \param direction transform direction (defaults to ForwardTransform)
      */
-    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const SIP_THROW( QgsCsException );
 
     /**
      * Returns true if the transform short circuits because the source and destination are equivalent.
@@ -346,7 +346,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
-     * \see datumTransformInfo()
      */
     int sourceDatumTransformId() const;
 
@@ -360,7 +359,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
-     * \see datumTransformInfo()
      */
     void setSourceDatumTransformId( int datumId );
 
@@ -374,7 +372,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
-     * \see datumTransformInfo()
      */
     int destinationDatumTransformId() const;
 
@@ -388,7 +385,6 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see QgsDatumTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
-     * \see datumTransformInfo()
      */
     void setDestinationDatumTransformId( int datumId );
 

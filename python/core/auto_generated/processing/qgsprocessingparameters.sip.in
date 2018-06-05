@@ -322,7 +322,7 @@ method.
     QVariantMap &metadata();
 %Docstring
 Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
-in order to customise their appearance and behavior.
+in order to customize their appearance and behavior.
 
 .. seealso:: :py:func:`setMetadata`
 %End
@@ -330,7 +330,7 @@ in order to customise their appearance and behavior.
     void setMetadata( const QVariantMap &metadata );
 %Docstring
 Sets the parameter's freeform ``metadata``. This is mostly used by parameter widget wrappers
-in order to customise their appearance and behavior.
+in order to customize their appearance and behavior.
 
 .. seealso:: :py:func:`metadata`
 %End
@@ -1029,7 +1029,7 @@ effect if hasFixedNumberRows() is true.
 
 .. seealso:: :py:func:`setNumberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows`
+.. seealso:: :py:func:`setHasFixedNumberRows`
 %End
 
     void setNumberRows( int rows );
@@ -1039,7 +1039,7 @@ effect if hasFixedNumberRows() is true.
 
 .. seealso:: :py:func:`numberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows`
+.. seealso:: :py:func:`setHasFixedNumberRows`
 %End
 
     bool hasFixedNumberRows() const;
@@ -1903,6 +1903,19 @@ a value of false indicates that the destination should not be created by default
 .. seealso:: :py:func:`createByDefault`
 %End
 
+  protected:
+
+    QgsProcessingProvider *originalProvider() const;
+%Docstring
+Original (source) provider which this parameter has been derived from.
+In the case of destination parameters which are part of model algorithms, this
+will reflect the child algorithm's provider which actually generates the
+parameter, as opposed to the provider which this parameter belongs to (i.e.
+the model provider)
+
+.. versionadded:: 3.2
+%End
+
 };
 
 
@@ -1947,6 +1960,15 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+%Docstring
+Returns a list of the vector format file extensions supported by this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
 
     QgsProcessing::SourceType dataType() const;
 %Docstring
@@ -2029,6 +2051,15 @@ Returns the type name for the parameter class.
     virtual QString defaultFileExtension() const;
 
 
+    virtual QStringList supportedOutputVectorLayerExtensions() const;
+%Docstring
+Returns a list of the vector format file extensions supported by this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
+
     QgsProcessing::SourceType dataType() const;
 %Docstring
 Returns the layer type for this created vector layer.
@@ -2102,6 +2133,15 @@ Returns the type name for the parameter class.
 
     virtual QString defaultFileExtension() const;
 
+
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
+%Docstring
+Returns a list of the raster format file extensions supported for this parameter.
+
+.. seealso:: :py:func:`defaultFileExtension`
+
+.. versionadded:: 3.2
+%End
 
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring

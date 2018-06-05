@@ -138,6 +138,10 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
 
     /**
      * Returns whether the specified \a page number should be included in exports of the layouts.
+     *
+     * \warning This will always return true unless the layout is being currently exported -- it cannot
+     * be used in advance to determine whether a given page will be exported!
+     *
      * \see pageIsEmpty()
      */
     bool shouldExportPage( int page ) const;
@@ -287,7 +291,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * it does not consider x coordinates and vertical coordinates before the first page or
      * after the last page will still return the nearest page.
      *
-     * \see predicatePageNumberForPoint()
+     * \see predictPageNumberForPoint()
      * \see pageAtPoint()
      * \see positionOnPage()
      */

@@ -123,7 +123,7 @@ class CORE_EXPORT QgsPointXY
     }
 
     /**
-     * Get the x value of the point
+     * Gets the x value of the point
      * \returns x coordinate
      */
     double x() const
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsPointXY
     }
 
     /**
-     * Get the y value of the point
+     * Gets the y value of the point
      * \returns y coordinate
      */
     double y() const
@@ -154,7 +154,7 @@ class CORE_EXPORT QgsPointXY
     QString toString( int precision = -1 ) const;
 
     /**
-     * Return the well known text representation for the point (e.g. "POINT(x y)").
+     * Returns the well known text representation for the point (e.g. "POINT(x y)").
      * The wkt is created without an SRID.
      */
     QString asWkt() const;

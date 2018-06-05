@@ -211,7 +211,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         virtual ~FieldValueConverter() = default;
 
         /**
-         * Return a possibly modified field definition. Default implementation will return provided field unmodified.
+         * Returns a possibly modified field definition. Default implementation will return provided field unmodified.
          * \param field original field definition
          * \returns possibly modified field definition
          */
@@ -423,10 +423,10 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
          * allows for conversion of geometryless tables to null geometries, etc */
         QgsWkbTypes::Type overrideGeometryType = QgsWkbTypes::Unknown;
 
-        //! Set to true to force creation of multi* geometries
+        //! Sets to true to force creation of multi* geometries
         bool forceMulti = false;
 
-        //! Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
+        //! Sets to true to include z dimension in output. This option is only valid if overrideGeometryType is set
         bool includeZ = false;
 
         /**
@@ -525,7 +525,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
      *
-     * \see supportedOutputVectorLayerExtensions()
+     * \see supportedFormatExtensions()
      */
     static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 
@@ -535,8 +535,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
      *
-     * \since QGIS 3.0
      * \see supportedFiltersAndFormats()
+     * \since QGIS 3.0
      */
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
@@ -631,16 +631,16 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * Returns the reference scale for output.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see setSymbologyScale()
+     * \since QGIS 3.0
      */
     double symbologyScale() const { return mSymbologyScale; }
 
     /**
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see symbologyScale()
+     * \since QGIS 3.0
      */
     void setSymbologyScale( double scale );
 
@@ -649,21 +649,21 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     /**
      * Returns a list of the default dataset options for a specified driver.
      * \param driverName name of OGR driver
-     * \since QGIS 3.0
      * \see defaultLayerOptions()
+     * \since QGIS 3.0
      */
     static QStringList defaultDatasetOptions( const QString &driverName );
 
     /**
      * Returns a list of the default layer options for a specified driver.
      * \param driverName name of OGR driver
-     * \since QGIS 3.0
      * \see defaultDatasetOptions()
+     * \since QGIS 3.0
      */
     static QStringList defaultLayerOptions( const QString &driverName );
 
     /**
-     * Get the ogr geometry type from an internal QGIS wkb type enum.
+     * Gets the ogr geometry type from an internal QGIS wkb type enum.
      *
      * Will drop M values and convert Z to 2.5D where required.
      * \note not available in Python bindings
@@ -671,7 +671,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static OGRwkbGeometryType ogrTypeFromWkbType( QgsWkbTypes::Type type ) SIP_SKIP;
 
     /**
-     * Return edition capabilities for an existing dataset name.
+     * Returns edition capabilities for an existing dataset name.
      * \since QGIS 3.0
      */
     static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );

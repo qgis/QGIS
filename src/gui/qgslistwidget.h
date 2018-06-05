@@ -28,8 +28,8 @@
 /**
  * \ingroup gui
  * Table model to edit a QVariantList.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsListModel : public QAbstractTableModel
 {
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsListWidget: public QgsTableWidgetBase
     void setList( const QVariantList &list );
 
     /**
-     * Get the edit value.
+     * Gets the edit value.
      * \returns the QVariantList
      */
     QVariantList list() const { return mModel.list(); }

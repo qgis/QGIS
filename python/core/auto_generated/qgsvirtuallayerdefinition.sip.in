@@ -120,34 +120,34 @@ Add a layer with a source, a provider and an encoding
 
     const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const;
 %Docstring
-Get access to the source layers
+Gets access to the source layers
 %End
 
     QString query() const;
 %Docstring
-Get the SQL query
+Gets the SQL query
 %End
     void setQuery( const QString &query );
 %Docstring
-Set the SQL query
+Sets the SQL query
 %End
 
     QString filePath() const;
 %Docstring
-Get the file path. May be empty
+Gets the file path. May be empty
 %End
     void setFilePath( const QString &filePath );
 %Docstring
-Set the file path
+Sets the file path
 %End
 
     QString uid() const;
 %Docstring
-Get the name of the field with unique identifiers
+Gets the name of the field with unique identifiers
 %End
     void setUid( const QString &uid );
 %Docstring
-Set the name of the field with unique identifiers
+Sets the name of the field with unique identifiers
 %End
 
     void setLazy( bool lazy );
@@ -157,11 +157,11 @@ delayed until an explicit reloading of the layer.
 
 :param lazy: True to delay the loading, false otherwise
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`QgsDataProvider.reloadData`
 
 .. seealso:: :py:func:`isLazy`
+
+.. versionadded:: 3.2
 %End
 
     bool isLazy() const;
@@ -170,47 +170,47 @@ Returns the lazy mode.
 
 :return: True if the loading is delayed, false otherwise.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setLazy`
+
+.. versionadded:: 3.2
 %End
 
     QString geometryField() const;
 %Docstring
-Get the name of the geometry field. Empty if no geometry field
+Gets the name of the geometry field. Empty if no geometry field
 %End
     void setGeometryField( const QString &geometryField );
 %Docstring
-Set the name of the geometry field
+Sets the name of the geometry field
 %End
 
     QgsWkbTypes::Type geometryWkbType() const;
 %Docstring
-Get the type of the geometry
+Gets the type of the geometry
 QgsWkbTypes.NoGeometry to hide any geometry
 QgsWkbTypes.Unknown for unknown types
 %End
     void setGeometryWkbType( QgsWkbTypes::Type t );
 %Docstring
-Set the type of the geometry
+Sets the type of the geometry
 %End
 
     long geometrySrid() const;
 %Docstring
-Get the SRID of the geometry
+Gets the SRID of the geometry
 %End
     void setGeometrySrid( long srid );
 %Docstring
-Set the SRID of the geometry
+Sets the SRID of the geometry
 %End
 
     QgsFields fields() const;
 %Docstring
-Get field definitions
+Gets field definitions
 %End
     void setFields( const QgsFields &fields );
 %Docstring
-Set field definitions
+Sets field definitions
 %End
 
     bool hasSourceLayer( const QString &name ) const;

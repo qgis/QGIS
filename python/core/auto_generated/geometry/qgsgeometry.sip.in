@@ -44,6 +44,9 @@ can be accessed via the geometry() method or set using the setGeometry() method.
 #include "qgsgeometry.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum OperationResult
     {
@@ -96,11 +99,11 @@ This is much faster then calling the non-const get() method.
 
    In QGIS 2.x this method was named geometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`set`
 
 .. seealso:: :py:func:`get`
+
+.. versionadded:: 3.0
 %End
 
     QgsAbstractGeometry *get();
@@ -114,11 +117,11 @@ and a deep copy. Where possible, use constGet() instead.
 
    In QGIS 2.x this method was named geometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`constGet`
 
 .. seealso:: :py:func:`set`
+
+.. versionadded:: 3.0
 %End
 
     void set( QgsAbstractGeometry *geometry /Transfer/ );
@@ -129,11 +132,11 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 
    In QGIS 2.x this method was named setGeometry().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`get`
 
 .. seealso:: :py:func:`constGet`
+
+.. versionadded:: 3.0
 %End
 
     bool isNull() const;
@@ -141,11 +144,11 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 Returns true if the geometry is null (ie, contains no underlying geometry
 accessible via geometry() ).
 
-.. seealso:: :py:func:`geometry`
-
-.. versionadded:: 2.10
+.. seealso:: :py:func:`get`
 
 .. seealso:: :py:func:`isEmpty`
+
+.. versionadded:: 2.10
 %End
 
     static QgsGeometry fromWkt( const QString &wkt );
@@ -172,9 +175,9 @@ and will respect any Z or M dimensions present in the input points.
 
    In QGIS 2.x this method was available as fromPolyline().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`fromPolyline`
+
+.. versionadded:: 3.0
 %End
 
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
@@ -277,9 +280,9 @@ equality test performed by isGeosEqual().
 
    Comparing two null geometries will return false.
 
-.. versionadded:: 1.5
-
 .. seealso:: :py:func:`isGeosEqual`
+
+.. versionadded:: 1.5
 %End
 
     bool isGeosEqual( const QgsGeometry & ) const;
@@ -298,9 +301,9 @@ by equals() instead.
 
    Comparing two null geometries will return false.
 
-.. versionadded:: 1.5
-
 .. seealso:: :py:func:`equals`
+
+.. versionadded:: 1.5
 %End
 
     bool isGeosValid() const;
@@ -369,9 +372,9 @@ If the default approximate provided by this method is insufficient, use hausdorf
 
 In case of error -1 will be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hausdorffDistanceDensify`
+
+.. versionadded:: 3.0
 %End
 
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
@@ -390,9 +393,9 @@ distance returned approach the true Hausdorff distance for the geometries.
 
 In case of error -1 will be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`hausdorffDistance`
+
+.. versionadded:: 3.0
 %End
 
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
@@ -416,9 +419,9 @@ Returns the bisector angle for this geometry at the specified vertex.
 
 :return: bisector angle, in radians clockwise from north
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`interpolateAngle`
+
+.. versionadded:: 3.0
 %End
 
     void adjacentVertices( int atVertex, int &beforeVertex /Out/, int &afterVertex /Out/ ) const;
@@ -487,12 +490,12 @@ Deletes the vertex at the given position number and item
 (first number is index 0)
 
 :return: false if atVertex does not correspond to a valid vertex
-on this geometry (including if this geometry is a Point),
-or if the number of remaining vertices in the linestring
-would be less than two.
-It is up to the caller to distinguish between
-these error conditions.  (Or maybe we add another method to this
-object to help make the distinction?)
+         on this geometry (including if this geometry is a Point),
+         or if the number of remaining vertices in the linestring
+         would be less than two.
+         It is up to the caller to distinguish between
+         these error conditions.  (Or maybe we add another method to this
+         object to help make the distinction?)
 %End
 
     QgsPoint vertexAt( int atVertex ) const;
@@ -515,18 +518,18 @@ ring and item (first number is index 0))
 %Docstring
 Returns the nearest point on this geometry to another geometry.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`shortestLine`
+
+.. versionadded:: 2.14
 %End
 
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
 %Docstring
 Returns the shortest line joining this geometry to another geometry.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`nearestPoint`
+
+.. versionadded:: 2.14
 %End
 
     double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
@@ -546,9 +549,9 @@ Searches for the closest segment of geometry to the given point
 :param point: Specifies the point for search
 :param minDistPoint: Receives the nearest point on the segment
 :param afterVertex: Receives index of the vertex after the closest segment. The vertex
-before the closest segment is always afterVertex - 1
+                    before the closest segment is always afterVertex - 1
 :param leftOf: Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
-that the test was unsuccessful, e.g. for a point exactly on the line)
+               that the test was unsuccessful, e.g. for a point exactly on the line)
 :param epsilon: epsilon for segment snapping
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
@@ -629,9 +632,7 @@ Translates this geometry by dx, dy, dz and dm.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    OperationResult transform( const QgsCoordinateTransform &ct,
-                               QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform,
-                               bool transformZ = false );
+    OperationResult transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
 %Docstring
 Transforms this geometry as described by the coordinate transform ``ct``.
 
@@ -712,9 +713,9 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`boundingBox`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -904,27 +905,27 @@ of segments used to approximate curves
 %Docstring
 Returns a buffer region around the geometry, with additional style options.
 
-:param distance:    buffer distance
-:param segments:    for round joins, number of segments to approximate quarter-circle
+:param distance: buffer distance
+:param segments: for round joins, number of segments to approximate quarter-circle
 :param endCapStyle: end cap style
-:param joinStyle:   join style for corners in geometry
-:param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
-
-.. versionadded:: 2.4
+:param joinStyle: join style for corners in geometry
+:param miterLimit: limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 2.4
 %End
 
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
 Returns an offset line at a given distance and side from an input line.
 
-:param distance:    buffer distance
-:param segments:    for round joins, number of segments to approximate quarter-circle
-:param joinStyle:   join style for corners in geometry
-:param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
+:param distance: buffer distance
+:param segments: for round joins, number of segments to approximate quarter-circle
+:param joinStyle: join style for corners in geometry
+:param miterLimit: limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
 
 .. versionadded:: 2.4
 %End
@@ -943,13 +944,13 @@ applied to one side of the line.
 :param miterLimit: limit on the miter ratio used for very sharp corners
 
 :return: buffered geometry, or an empty geometry if buffer could not be
-calculated
-
-.. versionadded:: 3.0
+         calculated
 
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry taperedBuffer( double startWidth, double endWidth, int segments ) const;
@@ -965,13 +966,13 @@ curves in the buffer.
 
 Non (multi)curve input geometries will return a null output geometry.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`variableWidthBufferByM`
+
+.. versionadded:: 3.2
 %End
 
     QgsGeometry variableWidthBufferByM( int segments ) const;
@@ -984,13 +985,13 @@ curves in the buffer.
 
 Non (multi)linestring input geometries will return a null output geometry.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`buffer`
 
 .. seealso:: :py:func:`singleSidedBuffer`
 
 .. seealso:: :py:func:`taperedBuffer`
+
+.. versionadded:: 3.2
 %End
 
     QgsGeometry extendLine( double startDistance, double endDistance ) const;
@@ -1015,9 +1016,9 @@ If the geometry has z or m values present then these will be linearly interpolat
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`densifyByDistance`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry densifyByDistance( double distance ) const;
@@ -1033,9 +1034,9 @@ If the geometry has z or m values present then these will be linearly interpolat
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`densifyByCount`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry centroid() const;
@@ -1160,9 +1161,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-.. versionadded:: 2.0
-
 .. seealso:: :py:func:`lineLocatePoint`
+
+.. versionadded:: 2.0
 %End
 
     double lineLocatePoint( const QgsGeometry &point ) const;
@@ -1194,9 +1195,9 @@ of the node is returned.
 
 :param distance: distance along geometry
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`angleAtVertex`
+
+.. versionadded:: 3.0
 %End
 
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
@@ -1240,8 +1241,8 @@ Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
 
 :return: a LineString or MultiLineString geometry, with any connected lines
-joined. An empty geometry will be returned if the input geometry was not a
-MultiLineString geometry.
+         joined. An empty geometry will be returned if the input geometry was not a
+         MultiLineString geometry.
 
 .. versionadded:: 3.0
 %End
@@ -1345,7 +1346,7 @@ if wkbType is WKBMultiPolygon, otherwise an empty list
 
     QVector<QgsGeometry> asGeometryCollection() const;
 %Docstring
-Return contents of the geometry as a list of geometries
+Returns contents of the geometry as a list of geometries
 
 .. versionadded:: 1.1
 %End
@@ -1425,9 +1426,9 @@ empty if none of the child geometries match the desired type.
 Modifies geometry to avoid intersections with the layers specified in project properties
 
 :return: 0 in case of success,
-1 if geometry is not of polygon type,
-2 if avoid intersection would change the geometry type,
-3 other error during intersection removal
+         1 if geometry is not of polygon type,
+         2 if avoid intersection would change the geometry type,
+         3 other error during intersection removal
 
 :param avoidIntersectionsLayers: list of layers to check for intersections
 :param ignoreFeatures: possibility to give a list of features where intersections should be ignored (not available in Python bindings)
@@ -1486,12 +1487,11 @@ by calling `error()` on the returned geometry.
 Validates geometry and produces a list of geometry errors.
 The ``method`` argument dictates which validator to utilize.
 
-.. versionadded:: 1.5
-
 .. note::
 
    Available in Python bindings since QGIS 1.6
-   *
+
+.. versionadded:: 1.5
 %End
 
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
@@ -1519,9 +1519,9 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`requiresConversionToStraightSegments`
+
+.. versionadded:: 2.10
 %End
 
     bool requiresConversionToStraightSegments() const;
@@ -1529,9 +1529,9 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 Returns true if the geometry is a curved geometry type which requires conversion to
 display as straight line segments.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`convertToStraightSegment`
+
+.. versionadded:: 2.10
 %End
 
     void mapToPixel( const QgsMapToPixel &mtp );
@@ -1560,9 +1560,9 @@ If a matching vertex was found, it will be stored in ``id``.
 
 Returns true if vertex was found.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`vertexNrFromVertexId`
+
+.. versionadded:: 2.10
 %End
 
     int vertexNrFromVertexId( QgsVertexId id ) const;
@@ -1574,9 +1574,9 @@ to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
 
-.. versionadded:: 2.10
-
 .. seealso:: :py:func:`vertexIdFromVertexNr`
+
+.. versionadded:: 2.10
 %End
 
     QString lastError() const;
@@ -1587,6 +1587,7 @@ was performed on the geometry.
 
 .. versionadded:: 3.0
 %End
+
 
     static QgsGeometry fromQPointF( QPointF point );
 %Docstring
@@ -1642,14 +1643,14 @@ The 2 types should match.
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: true if objects are
-- polylines and have the same number of points and all
-points are equal within the specified tolerance
-- polygons and have the same number of points and all
-points are equal within the specified tolerance
-- multipolygons and  have the same number of polygons, the polygons have the same number
-of rings, and each ring has the same number of points and all points are equal
-within the specified
-tolerance
+         - polylines and have the same number of points and all
+         points are equal within the specified tolerance
+         - polygons and have the same number of points and all
+         points are equal within the specified tolerance
+         - multipolygons and  have the same number of polygons, the polygons have the same number
+         of rings, and each ring has the same number of points and all points are equal
+         within the specified
+         tolerance
 
 .. versionadded:: 2.9
 %End
@@ -1750,7 +1751,7 @@ tolerance
     }
 %End
 
-    QgsGeometry smooth( const unsigned int iterations = 1, const double offset = 0.25,
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
                         double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
@@ -1760,10 +1761,10 @@ If input geometries contain Z or M values, these will also be smoothed and the o
 geometry will retain the same dimensionality as the input geometry.
 
 :param iterations: number of smoothing iterations to run. More iterations results
-in a smoother geometry
+                   in a smoother geometry
 :param offset: fraction of line to create new vertices along, between 0 and 1.0,
-e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
-of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+               e.g., the default value of 0.25 will create new vertices 25% and 75% along each line segment
+               of the geometry for each iteration. Smaller values result in "tighter" smoothing.
 :param minimumDistance: minimum segment length to apply smoothing to
 :param maxAngle: maximum angle at node (0-180) at which smoothing will be applied
 

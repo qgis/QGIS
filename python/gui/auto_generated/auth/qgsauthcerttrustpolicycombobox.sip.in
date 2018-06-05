@@ -33,23 +33,23 @@ Construct a combo box for defining certificate trust policy
 
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
 %Docstring
-Get currently set trust policy
+Gets currently set trust policy
 %End
 
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 %Docstring
-Get trust policy for a given index of combobox
+Gets trust policy for a given index of combobox
 %End
 
   public slots:
     void setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 %Docstring
-Set current trust policy
+Sets current trust policy
 %End
 
     void setDefaultTrustPolicy( QgsAuthCertUtils::CertTrustPolicy defaultpolicy );
 %Docstring
-Set default trust policy
+Sets default trust policy
 %End
 
 };

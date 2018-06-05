@@ -2,4 +2,4 @@ Global Moran's I for Grids
 statistics_grid
 QgsProcessingParameterRasterLayer|GRID|Grid|None|False
 QgsProcessingParameterEnum|CONTIGUITY|Case of contiguity|[0] Rook;[1] Queen
-OutputTable|RESULT|Result
+QgsProcessingParameterVectorDestination|RESULT|Result

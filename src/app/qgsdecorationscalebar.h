@@ -39,7 +39,7 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     QgsDecorationScaleBar( QObject *parent = nullptr );
 
   public slots:
-    //! set values on the gui when a project is read or the gui first loaded
+    //! Sets values on the gui when a project is read or the gui first loaded
     void projectRead() override;
     //! save values to the project
     void saveToProject() override;

@@ -12,7 +12,7 @@
 class QgsLayoutItemMapItem : QgsLayoutObject
 {
 %Docstring
- An item which is drawn inside a QgsLayoutItemMap, e.g., a grid or map overview.
+An item which is drawn inside a QgsLayoutItemMap, e.g., a grid or map overview.
 
 .. versionadded:: 3.0
 %End
@@ -126,13 +126,13 @@ Returns true if the item is drawn using advanced effects, such as blend modes.
 class QgsLayoutItemMapItemStack
 {
 %Docstring
- A collection of map items which are drawn above the map content in a
+A collection of map items which are drawn above the map content in a
 :py:class:`QgsLayoutItemMap`. The item stack controls which items are drawn and the
 order they are drawn in.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsLayoutItemMapItem`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -246,15 +246,11 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 %Docstring
 Returns a reference to an item which matching ``itemId`` within the stack.
-
-.. seealso:: :py:func:`constItem`
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;
 %Docstring
 Returns a reference to the item at the specified ``index`` within the stack.
-
-.. seealso:: :py:func:`constItem`
 %End
 
 

@@ -18,9 +18,9 @@ QgsReferencedGeometryBase classes represent some form of geometry primitive
 (such as rectangles) which have an optional coordinate reference system
 associated with them.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsReferencedRectangle`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

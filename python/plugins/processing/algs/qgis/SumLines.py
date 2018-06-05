@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsField,
                        QgsGeometry,
@@ -57,7 +58,10 @@ class SumLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumLengthLines.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumLengthLines.svg")
 
     def group(self):
         return self.tr('Vector analysis')

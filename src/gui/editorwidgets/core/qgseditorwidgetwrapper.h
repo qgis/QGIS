@@ -157,20 +157,20 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 
     /**
-     * Get the current constraint status.
+     * Gets the current constraint status.
      * \returns true if the constraint is valid or if there's no constraint,
      * false otherwise
-     * \since QGIS 2.16
      * \see constraintFailureReason()
      * \see isBlockingCommit()
+     * \since QGIS 2.16
      */
     bool isValidConstraint() const;
 
     /**
      * Returns true if the widget is preventing the feature from being committed. This may be true as a result
      * of attribute values failing enforced field constraints.
-     * \since QGIS 3.0
      * \see isValidConstraint()
+     * \since QGIS 3.0
      */
     bool isBlockingCommit() const;
 
@@ -190,24 +190,29 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void setHint( const QString &hintText );
 
     /**
-     * Getter of constraintResult
-     * It's the current result of the constraint on the widget influencing it's visualization.
+     * Returns the constraint result, which is the current result of the constraint
+     * on the widget influencing its visualization.
+     *
      * \since QGIS 3.0
      */
     ConstraintResult constraintResult() const;
 
     /**
-     * Getter of constraintResultVisible
-     * Defines if the constraint result should be visualized on the widget (with color).
+     * Returns whether the constraint result is visible.
+     *
+     * Returns true if the constraint result will be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
+     *
      * \since QGIS 3.0
      */
     bool constraintResultVisible() const;
 
     /**
-     * Setter of constraintResultVisible
-     * Defines if the constraint result should be visualized on the widget (with color).
+     * Sets whether the constraint result is visible.
+     *
+     * Controls if the constraint result should be visualized on the widget (with color).
      * This will be disabled when the form is not editable.
+     *
      * \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
      * \since QGIS 3.0
      */
@@ -277,7 +282,43 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void updateConstraintWidgetStatus();
 
+
+    /**
+     * The feature currently being edited, in its current state
+     *
+     * \return the feature currently being edited, in its current state
+     * \since QGIS 3.2
+     */
+    QgsFeature formFeature() const { return mFormFeature; }
+
+    /**
+     * Set the feature currently being edited to \a feature
+     *
+     * \since QGIS 3.2
+     */
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature; }
+
+    /**
+     * Update the feature currently being edited by changing its
+     * attribute \a attributeName to \a attributeValue
+     *
+     * \return bool true on success
+     * \since QGIS 3.2
+     */
+    bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
+
+
   private:
+
+    /**
+     * mFieldIdx the widget feature field id
+     */
+    int mFieldIdx = -1;
+
+    /**
+     * The feature currently being edited, in its current state
+     */
+    QgsFeature mFormFeature;
 
     /**
      * Boolean storing the current validity of the constraint for this widget.
@@ -296,8 +337,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     //! The current constraint result
     bool mConstraintResultVisible = false;
 
-    int mFieldIdx;
-    QgsFeature mFeature;
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
 
 };

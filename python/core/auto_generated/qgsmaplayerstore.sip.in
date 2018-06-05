@@ -94,12 +94,12 @@ The layersAdded() and layerWasAdded() signals will always be emitted.
 
 :param layers: A list of layer which should be added to the store.
 :param takeOwnership: Ownership will be transferred to the layer store.
-If you specify false here you have take care of deleting
-the layers yourself. Not available in Python.
+                      If you specify false here you have take care of deleting
+                      the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-successfully. If a layer is invalid, or already exists in the store,
-it will not be part of the returned list.
+         successfully. If a layer is invalid, or already exists in the store,
+         it will not be part of the returned list.
 
 
 .. seealso:: :py:func:`addMapLayer`
@@ -117,8 +117,8 @@ addMapLayers() instead.
 
 :param layer: A layer to add to the store
 :param takeOwnership: Ownership will be transferred to the layer store.
-If you specify false here you have take care of deleting
-the layers yourself. Not available in Python.
+                      If you specify false here you have take care of deleting
+                      the layers yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
 
@@ -287,7 +287,7 @@ Emitted when a layer is about to be removed from the store.
 %Docstring
 Emitted after one or more layers were removed from the store.
 
-:param layerIds:  A list of IDs of the layers which were removed.
+:param layerIds: A list of IDs of the layers which were removed.
 
 .. seealso:: :py:func:`layersWillBeRemoved`
 %End
@@ -318,8 +318,6 @@ You can use this signal to do easy (and fast) cleanup.
 Emitted when one or more layers were added to the store.
 
 :param layers: List of layers which have been added.
-
-.. seealso:: :py:func:`legendLayersAdded`
 
 .. seealso:: :py:func:`layerWasAdded`
 %End

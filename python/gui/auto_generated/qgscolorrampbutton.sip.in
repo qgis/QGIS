@@ -39,7 +39,7 @@ Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 
     QgsColorRamp *colorRamp() const /Factory/;
 %Docstring
-Return a copy of the current color ramp.
+Returns a copy of the current color ramp.
 
 .. seealso:: :py:func:`setColorRamp`
 %End
@@ -81,7 +81,7 @@ that are not undoable on QColorRampDialog cancel.
 .. seealso:: :py:func:`acceptLiveUpdates`
 %End
 
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.
@@ -106,7 +106,7 @@ Sets the default color ramp for the button, which is shown in the button's drop-
 "default color ramp" option.
 
 :param colorramp: default color ramp for the button. Set to a null pointer to disable the default color
-ramp option. The ramp will be cloned and ownership is not transferred.
+                  ramp option. The ramp will be cloned and ownership is not transferred.
 
 .. seealso:: :py:func:`defaultColorRamp`
 %End
@@ -117,7 +117,7 @@ Returns a copy of the default color ramp for the button, which is shown in the b
 "default color ramp" option.
 
 :return: default color ramp for the button. Returns a null pointer if the default color ramp
-option is disabled.
+         option is disabled.
 
 .. seealso:: :py:func:`setDefaultColorRamp`
 %End
@@ -128,14 +128,14 @@ Sets whether a random colors option is shown in the button's drop-down menu.
 
 :param showRandom: set to true to show a random colors option
 
-.. seealso:: :py:func:`showRandom`
+.. seealso:: :py:func:`showRandomColorRamp`
 %End
 
     bool showRandomColorRamp() const;
 %Docstring
 Returns whether random colors option is shown in the button's drop-down menu.
 
-.. seealso:: :py:func:`setShowRandom`
+.. seealso:: :py:func:`setShowRandomColorRamp`
 %End
 
     bool isRandomColorRamp() const;
@@ -179,7 +179,7 @@ Returns true if the current color is null.
     void setContext( const QString &context );
 %Docstring
 Sets the context string for the color ramp button. The context string is passed to all color ramp
-preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
 based on the context.
 
 :param context: context string for the color dialog button's color ramp preview icons
@@ -190,7 +190,7 @@ based on the context.
     QString context() const;
 %Docstring
 Returns the context string for the color ramp button. The context string is passed to all color ramp
-preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
 based on the context.
 
 :return: context context string for the color dialog button's color ramp preview icons
@@ -265,7 +265,7 @@ if the color ramp is different to the previous color ramp.
 Sets the background pixmap for the button based upon current color ramp.
 
 :param colorramp: Color ramp for button background. If no color ramp is specified, the button's current
-color ramp will be used
+                  color ramp will be used
 %End
 
     void setToDefaultColorRamp();

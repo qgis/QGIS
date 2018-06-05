@@ -246,8 +246,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
     double distance( double x, double y ) const;
 
@@ -281,8 +281,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const;
 
@@ -402,8 +402,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
     QString asJson( int precision = 17 ) const override;
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
@@ -440,6 +439,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsPoint.

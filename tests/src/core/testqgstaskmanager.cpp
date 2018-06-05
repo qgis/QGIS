@@ -284,7 +284,7 @@ void TestQgsTaskManager::task()
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   // test flags
-  task.reset( new TestTask( QStringLiteral( "desc" ), 0 ) );
+  task.reset( new TestTask( QStringLiteral( "desc" ), nullptr ) );
   QVERIFY( !task->canCancel() );
   QVERIFY( !( task->flags() & QgsTask::CanCancel ) );
   task.reset( new TestTask( QStringLiteral( "desc" ), QgsTask::CanCancel ) );
@@ -329,14 +329,17 @@ void TestQgsTaskManager::addTask()
 
   QSignalSpy spy( &manager, &QgsTaskManager::taskAdded );
 
+  // null task
+  QVERIFY( !manager.addTask( nullptr ) );
+
   //add a task
   CancelableTask *task = new CancelableTask();
   long id = manager.addTask( task );
-  QCOMPARE( id, 0L );
+  QCOMPARE( id, 1L );
   QCOMPARE( manager.tasks().count(), 1 );
   QCOMPARE( manager.count(), 1 );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   while ( !task->isActive() )
   {
     QCoreApplication::processEvents();
@@ -346,18 +349,18 @@ void TestQgsTaskManager::addTask()
   QCOMPARE( task->status(), QgsTask::Running );
 
   //retrieve task
-  QCOMPARE( manager.task( 0L ), task );
+  QCOMPARE( manager.task( 1L ), task );
   QCOMPARE( manager.tasks().at( 0 ), task );
 
   //add a second task
   CancelableTask *task2 = new CancelableTask();
   id = manager.addTask( task2 );
-  QCOMPARE( id, 1L );
+  QCOMPARE( id, 2L );
   QCOMPARE( manager.tasks().count(), 2 );
   QCOMPARE( manager.count(), 2 );
-  QCOMPARE( manager.task( 0L ), task );
+  QCOMPARE( manager.task( 1L ), task );
   QVERIFY( manager.tasks().contains( task ) );
-  QCOMPARE( manager.task( 1L ), task2 );
+  QCOMPARE( manager.task( 2L ), task2 );
   QVERIFY( manager.tasks().contains( task2 ) );
   while ( !task2->isActive() )
   {
@@ -368,7 +371,7 @@ void TestQgsTaskManager::addTask()
   QCOMPARE( task2->status(), QgsTask::Running );
 
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
 
   task->cancel();
   task2->cancel();
@@ -649,8 +652,8 @@ void TestQgsTaskManager::taskId()
   TestTask *task3 = new TestTask();
 
   QCOMPARE( manager.taskId( nullptr ), -1L );
-  QCOMPARE( manager.taskId( task ), 0L );
-  QCOMPARE( manager.taskId( task2 ), 1L );
+  QCOMPARE( manager.taskId( task ), 1L );
+  QCOMPARE( manager.taskId( task2 ), 2L );
   QCOMPARE( manager.taskId( task3 ), -1L );
 
   delete task3;
@@ -725,7 +728,7 @@ void TestQgsTaskManager::progressChanged()
 
   QCOMPARE( task->progress(), 50.0 );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( spy.last().at( 1 ).toDouble(), 50.0 );
   //multiple running tasks, so finalTaskProgressChanged(double) should not be emitted
   QCOMPARE( spy2.count(), 0 );
@@ -733,7 +736,7 @@ void TestQgsTaskManager::progressChanged()
   task2->emitProgressChanged( 75.0 );
   QCOMPARE( task2->progress(), 75.0 );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
   QCOMPARE( spy.last().at( 1 ).toDouble(), 75.0 );
   QCOMPARE( spy2.count(), 0 );
 
@@ -799,7 +802,7 @@ void TestQgsTaskManager::statusChanged()
   flushEvents();
 
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Running );
 
   task->terminate();
@@ -809,7 +812,7 @@ void TestQgsTaskManager::statusChanged()
   }
   flushEvents();
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Terminated );
 
   task2->finish();
@@ -819,7 +822,7 @@ void TestQgsTaskManager::statusChanged()
   }
   flushEvents();
   QCOMPARE( spy.count(), 3 );
-  QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
+  QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
 }
 
@@ -1126,7 +1129,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   QCOMPARE( spyProgress.count(), 0 );
   subTask->emitProgressChanged( 50 );
   QCOMPARE( spyProgress.count(), 1 );
-  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 1LL );
   // subTask itself is 50% done, so with it's child task it's sitting at overall 25% done
   // (one task 50%, one task not started)
   // parent task has two tasks (itself + subTask), and subTask is 25% done.... so parent
@@ -1135,11 +1138,11 @@ void TestQgsTaskManager::managerWithSubTasks()
 
   subsubTask->emitProgressChanged( 100 );
   QCOMPARE( spyProgress.count(), 2 );
-  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( spyProgress.last().at( 1 ).toInt(), 38 );
   parent->emitProgressChanged( 50 );
   QCOMPARE( spyProgress.count(), 3 );
-  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( spyProgress.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( spyProgress.last().at( 1 ).toInt(), 63 );
 
   //manager should not emit statusChanged signals for subtasks
@@ -1152,7 +1155,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   }
   flushEvents();
   QCOMPARE( statusSpy.count(), 1 );
-  QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 1 ).toInt() ), QgsTask::Running );
 
   subTask->finish();
@@ -1170,7 +1173,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   }
   flushEvents();
   QCOMPARE( statusSpy.count(), 2 );
-  QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 0LL );
+  QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 1LL );
   QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 1 ).toInt() ), QgsTask::Complete );
 
 

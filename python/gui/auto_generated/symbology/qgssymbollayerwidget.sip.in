@@ -213,7 +213,7 @@ Creates a new QgsSimpleFillSymbolLayerWidget.
 class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring
- Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
+Widget for configuring QgsFilledMarkerSymbolLayer symbol layers.
 
 .. versionadded:: 2.16
 %End
@@ -489,7 +489,7 @@ Enables or disables svg fill color, stroke color and stroke width based on wheth
 svg file supports custom parameters.
 
 :param resetValues: set to true to overwrite existing layer fill color, stroke color and stroke width
-with default values from svg file
+                    with default values from svg file
 %End
 
 };

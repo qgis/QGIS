@@ -5,6 +5,7 @@
 
 #include "mdal_utils.hpp"
 #include <fstream>
+#include <iostream>
 
 bool MDAL::fileExists( const std::string &filename )
 {
@@ -47,10 +48,49 @@ size_t MDAL::toSizeT( const std::string &str )
   int i = atoi( str.c_str() );
   if ( i < 0 ) // consistent with atoi return
     i = 0;
-  return i;
+  return static_cast< size_t >( i );
 }
 
 double MDAL::toDouble( const std::string &str )
 {
   return atof( str.c_str() );
+}
+
+std::string MDAL::baseName( const std::string &filename )
+{
+  // https://stackoverflow.com/a/8520815/2838364
+  std::string fname( filename );
+
+  // Remove directory if present.
+  // Do this before extension removal incase directory has a period character.
+  const size_t last_slash_idx = fname.find_last_of( "\\/" );
+  if ( std::string::npos != last_slash_idx )
+  {
+    fname.erase( 0, last_slash_idx + 1 );
+  }
+
+  // Remove extension if present.
+  const size_t period_idx = fname.rfind( '.' );
+  if ( std::string::npos != period_idx )
+  {
+    fname.erase( period_idx );
+  }
+  return fname;
+}
+
+bool MDAL::contains( const std::string &str, const std::string &substr )
+{
+  return str.find( substr ) != std::string::npos;
+}
+
+void MDAL::debug( const std::string &message )
+{
+  //TODO something smarter
+  std::cout << message << std::endl;
+}
+
+bool MDAL::toBool( const std::string &str )
+{
+  int i = atoi( str.c_str() );
+  return i != 0;
 }

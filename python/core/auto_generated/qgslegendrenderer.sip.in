@@ -14,7 +14,7 @@
 class QgsLegendRenderer
 {
 %Docstring
- The QgsLegendRenderer class handles automatic layout and rendering of legend.
+The QgsLegendRenderer class handles automatic layout and rendering of legend.
 The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
 within QgsLegendRenderer.
 
@@ -39,7 +39,7 @@ Run the layout algorithm and determine the size required for legend
 
     void setLegendSize( QSizeF s );
 %Docstring
-Set the preferred resulting legend size.
+Sets the preferred resulting legend size.
 %End
 
     QSizeF legendSize() const;

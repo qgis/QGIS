@@ -53,16 +53,16 @@ class CORE_EXPORT QgsAuthMethodConfig
     bool operator!=( const QgsAuthMethodConfig &other ) const;
 
     /**
-     * Get 'authcfg' 7-character alphanumeric ID of the config
+     * Gets 'authcfg' 7-character alphanumeric ID of the config
      * \note This is set by QgsAuthManager when the config is initially stored
      */
     const QString id() const { return mId; }
-    //! Set auth config ID
+    //! Sets auth config ID
     void setId( const QString &id ) { mId = id; }
 
-    //! Get name of configuration
+    //! Gets name of configuration
     const QString name() const { return mName; }
-    //! Set name of configuration
+    //! Sets name of configuration
     void setName( const QString &name ) { mName = name; }
 
     //! A URI to auto-select a config when connecting to a resource
@@ -73,9 +73,9 @@ class CORE_EXPORT QgsAuthMethodConfig
     QString method() const { return mMethod; }
     void setMethod( const QString &method ) { mMethod = method; }
 
-    //! Get version of the configuration
+    //! Gets version of the configuration
     int version() const { return mVersion; }
-    //! Set version of the configuration
+    //! Sets version of the configuration
     void setVersion( int version ) { mVersion = version; }
 
     /**
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsAuthMethodConfig
      */
     void loadConfigString( const QString &configstr );
 
-    //! Get extended configuration, mapped to key/value pairs of QStrings
+    //! Gets extended configuration, mapped to key/value pairs of QStrings
     QgsStringMap configMap() const { return mConfigMap; }
 
     /**
@@ -129,14 +129,14 @@ class CORE_EXPORT QgsAuthMethodConfig
     int removeConfig( const QString &key );
 
     /**
-     * Return a config's value
+     * Returns a config's value
      * \param key Config key
      * \param defaultvalue Default value, if key not found
      */
     QString config( const QString &key, const QString &defaultvalue = QString() ) const;
 
     /**
-     * Return a config's list of values
+     * Returns a config's list of values
      * \param key
      */
     QStringList configList( const QString &key ) const;
@@ -231,17 +231,17 @@ class CORE_EXPORT QgsPkiBundle
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
-    //! Set client certificate object
+    //! Sets client certificate object
     void setClientCert( const QSslCertificate &cert );
 
     //! Private key object
     const QSslKey clientKey() const { return mCertKey; }
-    //! Set private key object
+    //! Sets private key object
     void setClientKey( const QSslKey &certkey );
 
     //! Chain of Certificate Authorities for client certificate
     const QList<QSslCertificate> caChain() const { return mCaChain; }
-    //! Set chain of Certificate Authorities for client certificate
+    //! Sets chain of Certificate Authorities for client certificate
     void setCaChain( const QList<QSslCertificate> &cachain ) { mCaChain = cachain; }
 
   private:
@@ -277,19 +277,19 @@ class CORE_EXPORT QgsPkiConfigBundle
     //! Authentication method configuration
     const QgsAuthMethodConfig config() const { return mConfig; }
 
-    //! Set authentication method configuration
+    //! Sets authentication method configuration
     void setConfig( const QgsAuthMethodConfig &config ) { mConfig = config; }
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
 
-    //! Set client certificate object
+    //! Sets client certificate object
     void setClientCert( const QSslCertificate &cert ) { mCert = cert; }
 
     //! Private key object
     const QSslKey clientCertKey() const { return mCertKey; }
 
-    //! Set private key object
+    //! Sets private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
 
     /**
@@ -376,29 +376,29 @@ class CORE_EXPORT QgsAuthConfigSslServer
 
     //! Server certificate object
     const QSslCertificate sslCertificate() const { return mSslCert; }
-    //! Set server certificate object
+    //! Sets server certificate object
     void setSslCertificate( const QSslCertificate &cert ) { mSslCert = cert; }
 
     //! Server host:port string
     const QString sslHostPort() const  { return mSslHostPort; }
-    //! Set server host:port string
+    //! Sets server host:port string
     void setSslHostPort( const QString &hostport ) { mSslHostPort = hostport; }
 
     //! SSL server protocol to use in connections
     QSsl::SslProtocol sslProtocol() const { return mSslProtocol; }
-    //! Set SSL server protocol to use in connections
+    //! Sets SSL server protocol to use in connections
     void setSslProtocol( QSsl::SslProtocol protocol ) { mSslProtocol = protocol; }
 
     //! SSL server errors to ignore in connections
     const QList<QSslError> sslIgnoredErrors() const;
     //! SSL server errors (as enum list) to ignore in connections
     const QList<QSslError::SslError> sslIgnoredErrorEnums() const { return mSslIgnoredErrors; }
-    //! Set SSL server errors (as enum list) to ignore in connections
+    //! Sets SSL server errors (as enum list) to ignore in connections
     void setSslIgnoredErrorEnums( const QList<QSslError::SslError> &errors ) { mSslIgnoredErrors = errors; }
 
     //! SSL client's peer verify mode to use in connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const { return mSslPeerVerifyMode; }
-    //! Set SSL client's peer verify mode to use in connections
+    //! Sets SSL client's peer verify mode to use in connections
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode ) { mSslPeerVerifyMode = mode; }
 
     /**
@@ -415,12 +415,12 @@ class CORE_EXPORT QgsAuthConfigSslServer
 
     //! Version of the configuration (used for future upgrading)
     int version() const { return mVersion; }
-    //! Set version of the configuration (used for future upgrading)
+    //! Sets version of the configuration (used for future upgrading)
     void setVersion( int version ) { mVersion = version; }
 
     //! Qt version when the configuration was made (SSL protocols may differ)
     int qtVersion() const { return mQtVersion; }
-    //! Set Qt version when the configuration was made (SSL protocols may differ)
+    //! Sets Qt version when the configuration was made (SSL protocols may differ)
     void setQtVersion( int version ) { mQtVersion = version; }
 
     //! Configuration as a concatenated string

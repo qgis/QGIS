@@ -30,21 +30,21 @@ It will only be instantiated by {:py:class:`QgsEditorWidgetFactory`}
 %Docstring
 Create a new configuration widget
 
-:param vl:       The layer for which the configuration dialog will be created
+:param vl: The layer for which the configuration dialog will be created
 :param fieldIdx: The index of the field on the layer for which this dialog will be created
-:param parent:   A parent widget
+:param parent: A parent widget
 %End
 
     virtual QVariantMap config() = 0;
 %Docstring
- Create a configuration from the current GUI state
+Create a configuration from the current GUI state
 
 :return: A widget configuration
 %End
 
     virtual void setConfig( const QVariantMap &config ) = 0;
 %Docstring
- Update the configuration widget to represent the given configuration.
+Update the configuration widget to represent the given configuration.
 
 :param config: The configuration which should be represented by this widget
 %End

@@ -31,8 +31,8 @@
  * Draws a label describing the current report section within a layout designer view.
  *
  * \note not available in Python bindings
- * \since QGIS 3.0
  *
+ * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutReportSectionLabel: public QGraphicsRectItem
 {
@@ -43,8 +43,6 @@ class GUI_EXPORT QgsLayoutReportSectionLabel: public QGraphicsRectItem
      * Constructor for QgsLayoutReportSectionLabel.
      */
     QgsLayoutReportSectionLabel( QgsLayout *layout, QgsLayoutView *view );
-
-    ~QgsLayoutReportSectionLabel();
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 

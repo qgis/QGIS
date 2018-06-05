@@ -96,10 +96,10 @@ class CORE_EXPORT QgsLayerDefinition
          */
         DependencySorter( const QString &fileName );
 
-        //! Get the layer nodes in an order where they can be loaded incrementally without dependency break
+        //! Gets the layer nodes in an order where they can be loaded incrementally without dependency break
         QVector<QDomNode> sortedLayerNodes() const { return mSortedLayerNodes; }
 
-        //! Get the layer IDs in an order where they can be loaded incrementally without dependency break
+        //! Gets the layer IDs in an order where they can be loaded incrementally without dependency break
         QStringList sortedLayerIds() const { return mSortedLayerIds; }
 
         //! Whether some cyclic dependency has been detected

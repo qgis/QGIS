@@ -49,7 +49,7 @@ class CORE_EXPORT QgsDataItemProvider
     //! Human-readable name of the provider name
     virtual QString name() = 0;
 
-    //! Return combination of flags from QgsDataProvider::DataCapabilities
+    //! Returns combination of flags from QgsDataProvider::DataCapabilities
     virtual int capabilities() = 0;
 
     /**

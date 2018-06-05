@@ -31,6 +31,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsMapLayer,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterEnum,
@@ -106,7 +107,7 @@ class gdaltindex(GdalAlgorithm):
         return 'tileindex'
 
     def displayName(self):
-        return self.tr('Tile Index')
+        return self.tr('Tile index')
 
     def group(self):
         return self.tr('Raster miscellaneous')
@@ -150,7 +151,7 @@ class gdaltindex(GdalAlgorithm):
             arguments.append('-src_srs_name {}'.format(crs_field))
 
         if crs_format:
-            arguments.append('-src_srs_format {}'.format(self.modes[crs_format][1]))
+            arguments.append('-src_srs_format {}'.format(self.formats[crs_format][1]))
 
         if target_crs.isValid():
             arguments.append('-t_srs')

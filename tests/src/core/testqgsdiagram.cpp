@@ -122,7 +122,7 @@ class TestQgsDiagram : public QObject
     // will be called before each testfunction is executed
     void init()
     {
-      mPointsLayer->setDiagramRenderer( 0 );
+      mPointsLayer->setDiagramRenderer( nullptr );
       QgsDiagramLayerSettings dls;
       mPointsLayer->setDiagramLayerSettings( dls );
     }
@@ -209,7 +209,7 @@ class TestQgsDiagram : public QObject
 
       QVERIFY( imageCheck( "piediagram_expression" ) );
 
-      mPointsLayer->setDiagramRenderer( 0 );
+      mPointsLayer->setDiagramRenderer( nullptr );
     }
 
     void testDataDefinedPosition()

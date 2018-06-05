@@ -94,7 +94,7 @@ The root node is not transferred by the model.
 
     void setFlags( QgsLayerTreeModel::Flags f );
 %Docstring
-Set OR-ed combination of model flags
+Sets OR-ed combination of model flags
 %End
     void setFlag( Flag f, bool on = true );
 %Docstring
@@ -102,7 +102,7 @@ Enable or disable a model flag
 %End
     Flags flags() const;
 %Docstring
-Return OR-ed combination of model flags
+Returns OR-ed combination of model flags
 %End
     bool testFlag( Flag f ) const;
 %Docstring
@@ -111,12 +111,12 @@ Check whether a flag is enabled
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 %Docstring
-Return layer tree node for given index. Returns root node for invalid index.
+Returns layer tree node for given index. Returns root node for invalid index.
 Returns null pointer if index does not refer to a layer tree node (e.g. it is a legend node)
 %End
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 %Docstring
-Return index for a given node. If the node does not belong to the layer tree, the result is undefined
+Returns index for a given node. If the node does not belong to the layer tree, the result is undefined
 %End
 
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
@@ -128,14 +128,14 @@ If ``skipInternal`` is true, a node is included in the output list only if no pa
 
     static QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index );
 %Docstring
-Return legend node for given index. Returns null for invalid index
+Returns legend node for given index. Returns null for invalid index
 
 .. versionadded:: 2.6
 %End
 
     QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
 %Docstring
-Return index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
+Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
 If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
 
 .. versionadded:: 2.6
@@ -143,30 +143,30 @@ If the legend node is belongs to the tree but it is filtered out, invalid model 
 
     QList<QgsLayerTreeModelLegendNode *> layerLegendNodes( QgsLayerTreeLayer *nodeLayer, bool skipNodeEmbeddedInParent = false );
 %Docstring
-Return filtered list of active legend nodes attached to a particular layer node
+Returns filtered list of active legend nodes attached to a particular layer node
 (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
-
-.. versionadded:: 2.6
 
 .. note::
 
    Parameter skipNodeEmbeddedInParent added in QGIS 2.18
 
 .. seealso:: :py:func:`layerOriginalLegendNodes`
+
+.. versionadded:: 2.6
 %End
 
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
 %Docstring
-Return original (unfiltered) list of legend nodes attached to a particular layer node
-
-.. versionadded:: 2.14
+Returns original (unfiltered) list of legend nodes attached to a particular layer node
 
 .. seealso:: :py:func:`layerLegendNodes`
+
+.. versionadded:: 2.14
 %End
 
     QgsLayerTreeModelLegendNode *legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
 %Docstring
-Return legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
+Returns legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
 
 .. versionadded:: 2.18
 %End
@@ -186,7 +186,7 @@ and rule key.
 
     QgsLayerTree *rootGroup() const;
 %Docstring
-Return pointer to the root node of the layer tree. Always a non-null pointer.
+Returns pointer to the root node of the layer tree. Always a non-null pointer.
 %End
 
     void setRootGroup( QgsLayerTree *newRootGroup );
@@ -204,29 +204,29 @@ Not necessary to call when layer's renderer is changed as the model listens to t
 
     QModelIndex currentIndex() const;
 %Docstring
-Get index of the item marked as current. Item marked as current is underlined.
+Gets index of the item marked as current. Item marked as current is underlined.
 %End
     void setCurrentIndex( const QModelIndex &currentIndex );
 %Docstring
-Set index of the current item. May be used by view. Item marked as current is underlined.
+Sets index of the current item. May be used by view. Item marked as current is underlined.
 %End
 
     void setLayerTreeNodeFont( int nodeType, const QFont &font );
 %Docstring
-Set font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
+Sets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
 %End
     QFont layerTreeNodeFont( int nodeType ) const;
 %Docstring
-Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
+Gets font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
 %End
 
     void setAutoCollapseLegendNodes( int nodeCount );
 %Docstring
-Set at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
+Sets at what number of legend nodes the layer node should be collapsed. Setting -1 disables the auto-collapse (default).
 %End
     int autoCollapseLegendNodes() const;
 %Docstring
-Return at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
+Returns at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
 %End
 
     void setLegendFilterByScale( double scale );
@@ -235,9 +235,9 @@ Force only display of legend nodes which are valid for a given ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Setting ``scale`` <= 0 will disable the functionality.
 
-.. versionadded:: 2.6
-
 .. seealso:: :py:func:`legendFilterByScale`
+
+.. versionadded:: 2.6
 %End
 
     double legendFilterByScale() const;
@@ -246,9 +246,9 @@ Returns the scale which restricts the legend nodes which are visible.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale <= 0 indicates that no scale filtering is being performed.
 
-.. versionadded:: 2.6
-
 .. seealso:: :py:func:`setLegendFilterByScale`
+
+.. versionadded:: 2.6
 %End
 
     void setLegendFilterByMap( const QgsMapSettings *settings );
@@ -289,7 +289,7 @@ so that legend nodes that use map units can be scaled currectly
 
     void legendMapViewData( double *mapUnitsPerPixel /Out/, int *dpi /Out/, double *scale  /Out/ ) const;
 %Docstring
-Get hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
+Gets hints about map view - to be used in legend nodes. Arguments that are not null will receive values.
 If there are no valid map view data (from previous call to setLegendMapViewData()), returned values are zeros.
 
 .. versionadded:: 2.6
@@ -297,7 +297,7 @@ If there are no valid map view data (from previous call to setLegendMapViewData(
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 
 .. versionadded:: 2.10
 %End

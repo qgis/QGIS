@@ -137,7 +137,7 @@ class CORE_EXPORT QgsLayoutUndoStack : public QObject
      * Emitted when an undo or redo action has occurred, which affected a
      * set of layout \a itemUuids.
      */
-    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+    void undoRedoOccurredForItems( QSet< QString > itemUuids );
 
   private slots:
 

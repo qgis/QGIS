@@ -54,7 +54,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
-    QgsAmsProvider( const QString &uri );
+    QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
@@ -91,7 +91,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
 
   private:
-    bool mValid;
+    bool mValid = false;
     QgsAmsLegendFetcher *mLegendFetcher = nullptr;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;

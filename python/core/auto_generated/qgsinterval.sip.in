@@ -15,7 +15,7 @@
 class QgsInterval
 {
 %Docstring
- A representation of the interval between two datetime values.
+A representation of the interval between two datetime values.
 
 .. versionadded:: 2.16
 %End

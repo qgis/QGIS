@@ -44,23 +44,23 @@ Unique type string of the labeling configuration implementation
 
     virtual QgsAbstractVectorLayerLabeling *clone() const = 0 /Factory/;
 %Docstring
-Return a new copy of the object
+Returns a new copy of the object
 %End
 
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 %Docstring
-Return labeling configuration as XML element
+Returns labeling configuration as XML element
 %End
 
     virtual QStringList subProviders() const;
 %Docstring
-Get list of sub-providers within the layer's labeling.
+Gets list of sub-providers within the layer's labeling.
 %End
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 %Docstring
-Get associated label settings. In case of multiple sub-providers with different settings,
+Gets associated label settings. In case of multiple sub-providers with different settings,
 they are identified by their ID (e.g. in case of rule-based labeling, provider ID == rule key)
 %End
 

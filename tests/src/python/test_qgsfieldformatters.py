@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
-                       QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter, QgsSettings)
+                       QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter,
+                       QgsSettings, QgsGeometry, QgsPointXY)
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.testing import start_app, unittest
@@ -132,6 +133,39 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         _test("{1,2,3}", ["1", "2", "3"])
         _test(['1', '2', '3'], ["1", "2", "3"])
         _test('not an array', ['not an array'])
+
+    def test_expressionRequiresFormScope(self):
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['ONE', 'TWO'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormVariables("@current_geometry"))
+        self.assertEqual(res, ['current_geometry'])
+
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresFormScope(""))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value('TWO')"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value ( 'TWO' )"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("@current_geometry"))
+
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("", QgsFeature()))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry", QgsFeature()))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", QgsFeature()))
+
+        layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
+                               "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+        f = QgsFeature(layer.fields())
+        f.setAttributes([1, 'value'])
+        point = QgsGeometry.fromPointXY(QgsPointXY(123, 456))
+        f.setGeometry(point)
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_geometry", f))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", f))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'pkid' )", f))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry current_value ( 'pkid' )", f))
+
+        QgsProject.instance().removeMapLayer(layer.id())
 
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):

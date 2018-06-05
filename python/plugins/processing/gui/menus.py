@@ -32,7 +32,7 @@ from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from qgis.utils import iface
-from qgis.core import QgsApplication, QgsMessageLog
+from qgis.core import QgsApplication, QgsMessageLog, QgsStringUtils, QgsProcessingAlgorithm
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.AlgorithmExecutor import execute
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -94,7 +94,7 @@ defaultMenuEntries.update({'native:reprojectlayer': managementToolsMenu,
                            'native:mergevectorlayers': managementToolsMenu,
                            'qgis:createspatialindex': managementToolsMenu})
 
-rasterMenu = Processing.tr('&Raster')
+rasterMenu = QApplication.translate('MainWindow', '&Raster')
 projectionsMenu = rasterMenu + "/" + Processing.tr('Projections')
 defaultMenuEntries.update({'gdal:warpreproject': projectionsMenu,
                            'gdal:assignprojection': projectionsMenu})
@@ -182,9 +182,17 @@ def removeMenus():
 
 
 def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, addButton=False):
-    action = QAction(icon or alg.icon(), actionText or alg.displayName(), iface.mainWindow())
-    action.triggered.connect(lambda: _executeAlgorithm(alg))
-    action.setObjectName("mProcessingUserMenu_%s" % alg.id())
+    if actionText is None:
+        if alg.flags() & QgsProcessingAlgorithm.FlagDisplayNameIsLiteral:
+            alg_title = alg.displayName()
+        else:
+            alg_title = QgsStringUtils.capitalize(alg.displayName(), QgsStringUtils.TitleCase)
+        actionText = alg_title + QCoreApplication.translate('Processing', '…')
+    action = QAction(icon or alg.icon(), actionText, iface.mainWindow())
+    alg_id = alg.id()
+    action.setData(alg_id)
+    action.triggered.connect(lambda: _executeAlgorithm(alg_id))
+    action.setObjectName("mProcessingUserMenu_%s" % alg_id)
 
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
@@ -199,11 +207,11 @@ def addAlgorithmEntry(alg, menuName, submenuName, actionText=None, icon=None, ad
         algorithmsToolbar.addAction(action)
 
 
-def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=True):
+def removeAlgorithmEntry(alg, menuName, submenuName, delButton=True):
     if menuName:
         menu = getMenu(menuName, iface.mainWindow().menuBar())
         subMenu = getMenu(submenuName, menu)
-        action = findAction(subMenu.actions(), alg, actionText)
+        action = findAction(subMenu.actions(), alg)
         if action is not None:
             subMenu.removeAction(action)
 
@@ -213,16 +221,25 @@ def removeAlgorithmEntry(alg, menuName, submenuName, actionText=None, delButton=
     if delButton:
         global algorithmsToolbar
         if algorithmsToolbar is not None:
-            action = findAction(algorithmsToolbar.actions(), alg, actionText)
+            action = findAction(algorithmsToolbar.actions(), alg)
             if action is not None:
                 algorithmsToolbar.removeAction(action)
 
 
-def _executeAlgorithm(alg):
+def _executeAlgorithm(alg_id):
+    alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
+    if alg is None:
+        dlg = MessageDialog()
+        dlg.setTitle(Processing.tr('Missing Algorithm'))
+        dlg.setMessage(
+            Processing.tr('The algorithm "{}" is no longer available. (Perhaps a plugin was uninstalled?)').format(alg_id))
+        dlg.exec_()
+        return
+
     ok, message = alg.canExecute()
     if not ok:
         dlg = MessageDialog()
-        dlg.setTitle(Processing.tr('Missing dependency'))
+        dlg.setTitle(Processing.tr('Missing Dependency'))
         dlg.setMessage(
             Processing.tr('<h3>Missing dependency. This algorithm cannot '
                           'be run :-( </h3>\n{0}').format(message))
@@ -260,8 +277,8 @@ def getMenu(name, parent):
         return parent.addMenu(name)
 
 
-def findAction(actions, alg, actionText=None):
+def findAction(actions, alg):
     for action in actions:
-        if action.text() in [actionText, alg.displayName(), alg.name()]:
+        if action.data() == alg.id():
             return action
     return None

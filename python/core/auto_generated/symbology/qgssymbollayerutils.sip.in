@@ -197,9 +197,9 @@ Draws a symbol layer preview to a QPicture
 
 :return: QPicture containing symbol layer preview
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`symbolLayerPreviewIcon`
+
+.. versionadded:: 2.9
 %End
 
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
@@ -360,7 +360,7 @@ Create ogr feature style string for brush
 
     static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
 %Docstring
- Creates a SE 1.1 anchor point element as a child of the specified element
+Creates a SE 1.1 anchor point element as a child of the specified element
 
 :param doc: The document
 :param element: The parent element
@@ -380,8 +380,6 @@ Creates a OGC Expression element based on the provided function expression
 :param doc: The document owning the element
 :param element: The element parent
 :param function: The expression to be encoded
-
-:return:
 %End
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
     static bool functionFromSldElement( QDomElement &element, QString &function );
@@ -508,10 +506,10 @@ Attempts to parse mime data as a color
 
 :param data: mime data to parse
 :param hasAlpha: will be set to true if mime data was interpreted as a color containing
-an explicit alpha value
+                 an explicit alpha value
 
 :return: valid color if mimedata could be interpreted as a color, otherwise an
-invalid color
+         invalid color
 
 .. versionadded:: 2.5
 %End
@@ -527,7 +525,7 @@ Attempts to parse mime data as a list of named colors
 .. versionadded:: 2.5
 %End
 
-    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) /Factory/;
+    static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, bool allFormats = true ) /Factory/;
 %Docstring
 Creates mime data from a list of named colors
 
@@ -620,12 +618,12 @@ Returns a point on the line from startPoint to directionPoint that is a certain 
 
     static QStringList listSvgFiles();
 %Docstring
-Return a list of all available svg files
+Returns a list of all available svg files
 %End
 
     static QStringList listSvgFilesAt( const QString &directory );
 %Docstring
-Return a list of svg files at the specified directory
+Returns a list of svg files at the specified directory
 %End
 
     static QString svgSymbolNameToPath( const QString &name, const QgsPathResolver &pathResolver );
@@ -661,7 +659,7 @@ Calculate whether a point is within of a QPolygonF
 
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
 %Docstring
-Return a new valid expression instance for given field or expression string.
+Returns a new valid expression instance for given field or expression string.
 If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
 If the string is empty, returns null pointer.
 This is useful when accepting input which could be either a non-quoted field name or expression.
@@ -671,7 +669,7 @@ This is useful when accepting input which could be either a non-quoted field nam
 
     static QString fieldOrExpressionFromExpression( QgsExpression *expression );
 %Docstring
-Return a field name if the whole expression is just a name of the field .
+Returns a field name if the whole expression is just a name of the field .
 Returns full expression string if the expression is more complex than just one field.
 Using just expression->expression() method may return quoted field name, but that is not
 wanted for saving (due to backward compatibility) or display in GUI.

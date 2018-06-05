@@ -78,7 +78,7 @@ Update a network request with authentication components
 :param request: The network request to update
 :param authcfg: Authentication configuration ID
 :param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-for custom updater code specific to the provider
+                     for custom updater code specific to the provider
 
 :return: Whether the update succeeded
 %End
@@ -91,7 +91,7 @@ Update a network reply with authentication components
 :param reply: The network reply object to update
 :param authcfg: Authentication configuration ID
 :param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-for custom updater code specific to the provider
+                     for custom updater code specific to the provider
 
 :return: Whether the update succeeded
 %End
@@ -104,7 +104,7 @@ Update data source connection items with authentication components
 :param connectionItems: QStringlist of 'key=value' pairs, as utilized in :py:func:`QgsDataSourceUri.connectionInfo()`
 :param authcfg: Authentication configuration ID
 :param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
-for custom updater code specific to the provider
+                     for custom updater code specific to the provider
 
 :return: Whether the update succeeded
 %End
@@ -117,7 +117,7 @@ Update proxy settings with authentication components
 :param proxy:
 :param authcfg: Authentication configuration ID
 :param dataprovider: Textual key for a data provider, e.g. 'proxy', that allows
-for custom updater code specific to the provider
+                     for custom updater code specific to the provider
 
 :return: Whether the update succeeded
 %End
@@ -161,16 +161,16 @@ Tag signifying that this is an authentcation method (e.g. for use as title in me
 
     void setVersion( int version );
 %Docstring
-Set the version of the auth method (useful for future upgrading)
+Sets the version of the auth method (useful for future upgrading)
 %End
 
     void setExpansions( QgsAuthMethod::Expansions expansions );
 %Docstring
-Set the support expansions (points in providers where the authentication is injected) of the auth method
+Sets the support expansions (points in providers where the authentication is injected) of the auth method
 %End
     void setDataProviders( const QStringList &dataproviders );
 %Docstring
-Set list of data providers this auth method supports
+Sets list of data providers this auth method supports
 %End
 
 

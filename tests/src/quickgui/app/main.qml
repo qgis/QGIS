@@ -37,4 +37,36 @@ ApplicationWindow {
       console.log("clicked:" + screenPoint)
     }
   }
+
+  Drawer {
+    id: logPanel
+    visible: true
+    modal: true
+    interactive: true
+    height: window.height
+    width: QgsQuick.Utils.dp * 700
+    edge: Qt.RightEdge
+    z: 2 // make sure items from here are on top of the Z-order
+
+    background: Rectangle {
+      color: "white"
+    }
+
+    QgsQuick.MessageLog {
+      id: messageLog
+      width: parent.width
+      height: parent.height
+      model: QgsQuick.MessageLogModel {}
+      visible: true
+    }
+  }
+
+  QgsQuick.ScaleBar {
+    id: scaleBar
+    y: window.height - height
+    height: 50
+    mapSettings: mapCanvas.mapSettings
+    preferredWidth: 115 * QgsQuick.Utils.dp
+    z: 1
+  }
 }

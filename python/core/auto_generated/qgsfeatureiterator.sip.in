@@ -67,6 +67,14 @@ If you want to check if the iterator successfully completed, better use :py:func
 .. versionadded:: 3.0
 %End
 
+    bool compileFailed() const;
+%Docstring
+Indicator if there was an error when sending the compiled query to the server.
+This indicates that there is something wrong with the expression compiler.
+
+.. versionadded:: 3.2
+%End
+
   protected:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
@@ -76,7 +84,7 @@ need to implement!!
 
 :param f: The feature to write to
 
-:return:  true if a feature was written to f
+:return: true if a feature was written to f
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
@@ -89,7 +97,7 @@ redirect this call to fetchFeature so the default check will be omitted.
 
 :param f: The feature to write to
 
-:return:  true if a feature was written to f
+:return: true if a feature was written to f
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
@@ -103,7 +111,7 @@ so the default check will be omitted.
 
 :param f: The feature to write to
 
-:return:  true if a feature was written to f
+:return: true if a feature was written to f
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
@@ -118,7 +126,7 @@ QgsFeatureRequest.destinationCrs() set on the request is respected.
 %End
 
 
-    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const throw( QgsCsException );
 %Docstring
 Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
@@ -141,6 +149,7 @@ Add reference
 %Docstring
 Remove reference, delete if refs == 0
 %End
+
 
 
 
@@ -214,11 +223,15 @@ Wrapper for iterator of features from vector data provider or vector layer
 
     QgsFeatureIterator();
 %Docstring
-construct invalid iterator
+Construct invalid iterator
+%End
+    QgsFeatureIterator( QgsAbstractFeatureIterator *iter /Transfer/ );
+%Docstring
+Construct a valid iterator
 %End
     QgsFeatureIterator( const QgsFeatureIterator &fi );
 %Docstring
-copy constructor copies the iterator, increases ref.count
+Copy constructor copies the iterator, increases ref.count
 %End
     ~QgsFeatureIterator();
 
@@ -249,6 +262,14 @@ find out whether the iterator is still valid or closed already
 Returns the status of expression compilation for filter expression requests.
 
 .. versionadded:: 2.16
+%End
+
+    bool compileFailed() const;
+%Docstring
+Indicator if there was an error when sending the compiled query to the server.
+This indicates that there is something wrong with the expression compiler.
+
+.. versionadded:: 3.2
 %End
 
 

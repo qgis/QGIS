@@ -55,17 +55,17 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void removeHeader( const QString &key ) override;
 
     /**
-     * Return the header value
+     * Returns the header value
      */
     QString header( const QString &key ) const override;
 
     /**
-     * Return all the headers
+     * Returns all the headers
      */
     QMap<QString, QString> headers() const override { return mHeaders; }
 
     /**
-     * Return true if the headers have alredy been sent
+     * Returns true if the headers have alredy been sent
      */
     bool headersSent() const override;
 
@@ -76,7 +76,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void setStatusCode( int code ) override;
 
     /**
-     * Return the http status code
+     * Returns the http status code
      */
     int statusCode() const override { return mStatusCode; }
 
@@ -92,7 +92,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void sendError( int code,  const QString &message ) override;
 
     /**
-     * Return the underlying QIODevice
+     * Returns the underlying QIODevice
      */
     QIODevice *io() override;
 
@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void clear() override;
 
     /**
-     * Get the data written so far
+     * Gets the data written so far
      *
      * This is implementation dependent: some implementations may not
      * give access to the underlying and return an empty array.
@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsBufferServerResponse: public QgsServerResponse
     void truncate() override;
 
     /**
-     * Return body
+     * Returns body
      */
     QByteArray body() const { return mBody; }
 

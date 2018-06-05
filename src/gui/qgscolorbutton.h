@@ -82,7 +82,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QSize sizeHint() const override;
 
     /**
-     * Return the currently selected color.
+     * Returns the currently selected color.
      * \returns currently selected color
      * \see setColor
      */
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see allowOpacity()
      * \since QGIS 3.0
      */
-    void setAllowOpacity( const bool allowOpacity );
+    void setAllowOpacity( bool allowOpacity );
 
     /**
      * Returns whether opacity modification (transparency) is permitted
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param showMenu set to false to hide the drop-down menu
      * \see showMenu
      */
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.
@@ -141,7 +141,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param behavior behavior when button is clicked
      * \see behavior
      */
-    void setBehavior( const Behavior behavior );
+    void setBehavior( Behavior behavior );
 
     /**
      * Returns the behavior for when the button is clicked.
@@ -203,25 +203,25 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     /**
      * Sets whether a set to null (clear) option is shown in the button's drop-down menu.
      * \param showNull set to true to show a null option
-     * \since QGIS 2.16
      * \see showNull()
      * \see isNull()
+     * \since QGIS 2.16
      */
     void setShowNull( bool showNull );
 
     /**
      * Returns whether the set to null (clear) option is shown in the button's drop-down menu.
-     * \since QGIS 2.16
      * \see setShowNull()
      * \see isNull()
+     * \since QGIS 2.16
      */
     bool showNull() const;
 
     /**
      * Returns true if the current color is null.
-     * \since QGIS 2.16
      * \see setShowNull()
      * \see showNull()
+     * \since QGIS 2.16
      */
     bool isNull() const;
 
@@ -237,7 +237,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Sets the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \param context context string for the color button's color swatch grids
      * \see context
@@ -246,7 +246,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     /**
      * Returns the context string for the color button. The context string is passed to all color swatch
-     * grids shown in the button's drop-down menu, to allow them to customise their display colors
+     * grids shown in the button's drop-down menu, to allow them to customize their display colors
      * based on the context.
      * \returns context string for the color button's color swatch grids
      * \see setContext
@@ -454,7 +454,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
-    QPixmap createMenuIcon( const QColor &color, const bool showChecks = true );
+    QPixmap createMenuIcon( const QColor &color, bool showChecks = true );
 
   private slots:
 

@@ -43,6 +43,7 @@ Abstract base class for processing algorithms.
       FlagCanCancel,
       FlagRequiresMatchingCrs,
       FlagNoThreading,
+      FlagDisplayNameIsLiteral,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -106,7 +107,20 @@ provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
 Returns the translated algorithm name, which should be used for any user-visible display
 of the algorithm name.
 
+Algorithm display names should be short, e.g. ideally no more than 3 or 4 words.
+The name should use sentence case (e.g. "Raster layer statistics", not "Raster Layer Statistics").
+
 .. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`shortDescription`
+%End
+
+    virtual QString shortDescription() const;
+%Docstring
+Returns an optional translated short description of the algorithm. This should be
+at most a single sentence, e.g. "Converts 2D features to 3D by sampling a DEM raster."
+
+.. versionadded:: 3.2
 %End
 
     virtual QStringList tags() const;
@@ -273,8 +287,7 @@ manner.
 Returns true if this algorithm generates HTML outputs.
 %End
 
-    QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
+    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok /Out/ = 0, const QVariantMap &configuration = QVariantMap() ) const;
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call
@@ -287,7 +300,7 @@ Algorithm progress should be reported using the supplied ``feedback`` object.
 If specified, ``ok`` will be set to true if algorithm was successfully run.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations.
+         values such as statistical calculations.
 
 .. note::
 
@@ -312,7 +325,7 @@ calling runPrepared() (which is safe to do in any thread).
    of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
-    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
 %Docstring
 Runs the algorithm, which has been prepared by an earlier call to prepare().
 This method is safe to call from any thread. Returns true if the algorithm was successfully executed.
@@ -455,7 +468,7 @@ See the notes in addParameter() for a description of when this occurs.
 .. seealso:: :py:func:`initAlgorithm`
 %End
 
-    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Prepares the algorithm to run using the specified ``parameters``. Algorithms should implement
 their logic for evaluating parameter values here. The evaluated parameter results should
@@ -489,7 +502,7 @@ will be canceled.
 .. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Runs the algorithm using the specified ``parameters``. Algorithms should implement
 their custom processing logic here.
@@ -513,16 +526,16 @@ to indicate that a fatal error occurred within the execution. Python based subcl
 should raise GeoAlgorithmExecutionException for the same purpose.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations. Unless the algorithm subclass overrides
-the postProcessAlgorithm() step this returned map will be used as the output for the
-algorithm.
+         values such as statistical calculations. Unless the algorithm subclass overrides
+         the postProcessAlgorithm() step this returned map will be used as the output for the
+         algorithm.
 
 .. seealso:: :py:func:`prepareAlgorithm`
 
 .. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Allows the algorithm to perform any required cleanup tasks. The returned variant map
 includes the results evaluated by the algorithm. These may be output layer references, or calculated
@@ -544,8 +557,8 @@ postProcessAlgorithm will not be called if the prepareAlgorithm() step failed (r
 or if an exception was raised by the processAlgorithm() step.
 
 :return: A map of algorithm outputs. These may be output layer references, or calculated
-values such as statistical calculations. Implementations which return a non-empty
-map will override any results returned by processAlgorithm().
+         values such as statistical calculations. Implementations which return a non-empty
+         map will override any results returned by processAlgorithm().
 
 .. seealso:: :py:func:`prepareAlgorithm`
 
@@ -754,11 +767,11 @@ not be loaded.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidRasterError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. versionadded:: 3.2
 %End
 
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
@@ -769,11 +782,11 @@ not be loaded.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidSinkError`
+
+.. versionadded:: 3.2
 %End
 
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
@@ -784,11 +797,11 @@ not be created.
 The ``parameters`` argument should give the algorithms parameter map, and the ``name``
 should correspond to the invalid source parameter name.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`invalidSourceError`
 
 .. seealso:: :py:func:`invalidRasterError`
+
+.. versionadded:: 3.2
 %End
 
   private:
@@ -907,7 +920,7 @@ Returns the source's coordinate reference system. This will only return a valid 
 called from a subclasses' processFeature() implementation.
 %End
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException ) = 0 /VirtualErrorHandler=processing_exception_handler/;
 %Docstring
 Processes an individual input ``feature`` from the source. Algorithms should implement their
 logic in this method for performing the algorithm's operation (e.g. replacing the feature's
@@ -932,8 +945,8 @@ can break valid model execution - so use with extreme caution, and consider usin
 ``feedback`` to instead report non-fatal processing failures for features instead.
 %End
 
-     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+
 
     virtual QgsFeatureRequest request() const;
 %Docstring

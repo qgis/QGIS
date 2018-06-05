@@ -36,7 +36,7 @@ Path to a movie, e.g. animated GIF
 
     QIcon icon() const;
 %Docstring
-Get the icons representation in the current frame.
+Gets the icons representation in the current frame.
 This will need to be called repeatedly, whenever a frameChanged()
 signal is emitted.
 %End

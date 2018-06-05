@@ -26,6 +26,7 @@
 #include "qgsunittypes.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsfeaturelistmodel.h"
 
 #include "qgstest.h"
 
@@ -49,6 +50,7 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
     void testNoGeom();
     void testSelected();
+    void testSortByDisplayExpression();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -208,8 +210,6 @@ void TestQgsAttributeTable::testNoGeom()
 void TestQgsAttributeTable::testSelected()
 {
   // test attribute table opening in show selected mode
-  QgsSettings s;
-
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
@@ -239,6 +239,38 @@ void TestQgsAttributeTable::testSelected()
   tempLayer->removeSelection();
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
+}
+
+void TestQgsAttributeTable::testSortByDisplayExpression()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 3.2 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 1.8 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setAttribute( 1, 5.0 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  dlg->mMainView->mFeatureList->setDisplayExpression( "pk" );
+  QgsFeatureListModel *listModel = dlg->mMainView->mFeatureListModel;
+  QCOMPARE( listModel->rowCount(), 3 );
+
+  QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1 ) );
+  QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 2 ) );
+  QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 3 ) );
+
+  dlg->mMainView->mFeatureList->setDisplayExpression( "col1" );
+  QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1.8 ) );
+  QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 3.2 ) );
+  QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 5.0 ) );
 }
 
 void TestQgsAttributeTable::testRegression15974()

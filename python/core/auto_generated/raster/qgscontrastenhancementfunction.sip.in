@@ -26,24 +26,54 @@ a specified bounding range.
     QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction();
 
-    virtual int enhance( double );
+    virtual int enhance( double value );
 %Docstring
- A customizable method that takes in a double and returns a int between 0 and 255
+A customizable method that takes in a double ``value`` and returns a int between 0 and 255.
 %End
 
-    virtual bool isValueInDisplayableRange( double );
+    virtual bool isValueInDisplayableRange( double value );
 %Docstring
- A customicable method to indicate if the pixels is displayable
+A customizable method to indicate if a pixel's value is within the displayable range.
 %End
 
-    void setMaximumValue( double );
+    void setMaximumValue( double value );
 %Docstring
- Mustator for the maximum value
+Sets the maximum ``value``.
+
+.. seealso:: :py:func:`maximumValue`
+
+.. seealso:: :py:func:`setMinimumValue`
 %End
 
-    void setMinimumValue( double );
+    void setMinimumValue( double value );
 %Docstring
- Mutator for the minimum value
+Sets the minimum ``value``.
+
+.. seealso:: :py:func:`minimumValue`
+
+.. seealso:: :py:func:`setMaximumValue`
+%End
+
+    double maximumValue() const;
+%Docstring
+Returns the maximum value.
+
+.. seealso:: :py:func:`setMaximumValue`
+
+.. seealso:: :py:func:`minimumValue`
+
+.. versionadded:: 3.2
+%End
+
+    double minimumValue() const;
+%Docstring
+Returns the minimum value.
+
+.. seealso:: :py:func:`setMinimumValue`
+
+.. seealso:: :py:func:`maximumValue`
+
+.. versionadded:: 3.2
 %End
 
   protected:

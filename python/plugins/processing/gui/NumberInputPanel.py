@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import math
 import sip
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal, QSize
@@ -49,10 +50,12 @@ from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class ModelerNumberInputPanel(BASE, WIDGET):

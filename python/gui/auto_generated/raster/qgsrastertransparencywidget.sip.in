@@ -14,7 +14,7 @@
 class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 {
 %Docstring
- Widget to control a layers transparency and related options
+Widget to control a layers transparency and related options
 %End
 
 %TypeHeaderCode
@@ -24,7 +24,7 @@ class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
- Widget to control a layers transparency and related options
+Widget to control a layers transparency and related options
 %End
 
   public slots:

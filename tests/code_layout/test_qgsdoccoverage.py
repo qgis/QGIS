@@ -58,8 +58,21 @@ class TestQgsDocCoverage(unittest.TestCase):
             for cls, props in list(parser.undocumented_members.items()):
                 print(('\n\nClass {}, {}/{} members documented\n'.format(colored(cls, 'yellow'), props['documented'], props['members'])))
                 for mem in props['missing_members']:
-                    print((colored('  ' + mem, 'yellow', attrs=['bold'])))
+                    print((colored('  "' + mem + '"', 'yellow', attrs=['bold'])))
 
+        if parser.noncompliant_members:
+            for cls, props in list(parser.noncompliant_members.items()):
+                print(('\n\nClass {}, non-compliant members found\n'.format(colored(cls, 'yellow'))))
+                for p in props:
+                    for mem, error in p.items():
+                        print((colored('  ' + mem + ': ' + error, 'yellow', attrs=['bold'])))
+
+        if parser.broken_links:
+            for cls, props in list(parser.broken_links.items()):
+                print(('\n\nClass {}, broken see also links found\n'.format(colored(cls, 'yellow'))))
+                for member, links in props.items():
+                    for l in links:
+                        print((colored('  ' + member + ': ' + l, 'yellow', attrs=['bold'])))
         # self.assertEquals(len(parser.undocumented_string), 0, 'FAIL: new undocumented members have been introduced, please add documentation for these members')
 
         if parser.classes_missing_group:
@@ -88,6 +101,8 @@ class TestQgsDocCoverage(unittest.TestCase):
         self.assertTrue(not parser.classes_missing_group, 'Classes without \\group tag found')
         self.assertTrue(not parser.classes_missing_version_added, 'Classes without \\since version tag found')
         self.assertTrue(not parser.classes_missing_brief, 'Classes without \\brief description found')
+        self.assertTrue(not parser.noncompliant_members, 'Non compliant members found')
+        self.assertTrue(not parser.broken_links, 'Broken links found')
 
 
 if __name__ == '__main__':

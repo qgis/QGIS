@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import re
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir, pyqtSignal
@@ -49,20 +50,26 @@ from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class DestinationSelectionPanel(BASE, WIDGET):
 
     SAVE_TO_TEMP_FILE = QCoreApplication.translate(
         'DestinationSelectionPanel', '[Save to temporary file]')
+    SAVE_TO_TEMP_FOLDER = QCoreApplication.translate(
+        'DestinationSelectionPanel', '[Save to temporary folder]')
     SAVE_TO_TEMP_LAYER = QCoreApplication.translate(
         'DestinationSelectionPanel', '[Create temporary layer]')
     SKIP_OUTPUT = QCoreApplication.translate(
         'DestinationSelectionPanel', '[Skip output]')
 
     skipOutputChanged = pyqtSignal(bool)
+    destinationChanged = pyqtSignal()
 
     def __init__(self, parameter, alg, default_selection=False):
         super(DestinationSelectionPanel, self).__init__(None)
@@ -81,12 +88,13 @@ class DestinationSelectionPanel(BASE, WIDGET):
         self.leText.textEdited.connect(self.textChanged)
 
     def textChanged(self):
-        self.use_temporary = False
+        self.use_temporary = not self.leText.text()
+        self.destinationChanged.emit()
 
     def outputIsSkipped(self):
         """
         Returns true if output is set to be skipped
-signal        """
+        """
         return not self.leText.text() and not self.use_temporary
 
     def skipOutput(self):
@@ -94,6 +102,7 @@ signal        """
         self.leText.setText('')
         self.use_temporary = False
         self.skipOutputChanged.emit(True)
+        self.destinationChanged.emit()
 
     def selectOutput(self):
         if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
@@ -150,11 +159,14 @@ signal        """
     def saveToTemporary(self):
         if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.supportsNonFileBasedOutput():
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_LAYER)
+        elif isinstance(self.parameter, QgsProcessingParameterFolderDestination):
+            self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FOLDER)
         else:
             self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
         self.leText.setText('')
         self.use_temporary = True
         self.skipOutputChanged.emit(False)
+        self.destinationChanged.emit()
 
     def saveToPostGIS(self):
         dlg = PostgisTableSelector(self, self.parameter.name().lower())
@@ -180,6 +192,7 @@ signal        """
             self.leText.setText("postgis:" + uri.uri())
 
             self.skipOutputChanged.emit(False)
+            self.destinationChanged.emit()
 
     def saveToGeopackage(self):
         file_filter = self.tr('GeoPackage files (*.gpkg);;All files (*.*)', 'OutputFile')
@@ -211,6 +224,7 @@ signal        """
             self.leText.setText("ogr:" + uri.uri())
 
             self.skipOutputChanged.emit(False)
+            self.destinationChanged.emit()
 
     def selectFile(self):
         file_filter = getFileFilter(self.parameter)
@@ -253,6 +267,7 @@ signal        """
                 settings.setValue(last_ext_path, os.path.splitext(filename)[1].lower())
 
             self.skipOutputChanged.emit(False)
+            self.destinationChanged.emit()
 
     def selectEncoding(self):
         dialog = QgsEncodingSelectionDialog(
@@ -261,6 +276,7 @@ signal        """
             self.encoding = dialog.encoding()
             settings = QgsSettings()
             settings.setValue('/Processing/encoding', self.encoding)
+            self.destinationChanged.emit()
         dialog.deleteLater()
 
     def selectDirectory(self):
@@ -274,8 +290,9 @@ signal        """
         if dirName:
             self.leText.setText(QDir.toNativeSeparators(dirName))
             settings.setValue('/Processing/LastOutputPath', dirName)
-
-        self.skipOutputChanged.emit(False)
+            self.use_temporary = False
+            self.skipOutputChanged.emit(False)
+            self.destinationChanged.emit()
 
     def setValue(self, value):
         if not value:
@@ -294,11 +311,13 @@ signal        """
                     self.leText.setText(value.sink.staticValue())
                     self.use_temporary = False
                     self.skipOutputChanged.emit(False)
+                    self.destinationChanged.emit()
                 self.encoding = value.createOptions['fileEncoding']
             else:
                 self.leText.setText(value)
                 self.use_temporary = False
                 self.skipOutputChanged.emit(False)
+                self.destinationChanged.emit()
 
     def getValue(self):
         key = None
@@ -313,7 +332,7 @@ signal        """
             return None
 
         if isinstance(self.parameter, QgsProcessingParameterFolderDestination):
-            return self.leText.text()
+            return key
 
         if isinstance(self.parameter, QgsProcessingParameterFileDestination):
             return key

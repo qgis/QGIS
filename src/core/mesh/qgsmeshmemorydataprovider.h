@@ -29,6 +29,15 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
 
+struct QgsMeshMemoryDataset
+{
+  QMap<QString, QString> metadata;
+  QVector<QgsMeshDatasetValue> values;
+  bool isScalar = true;
+  bool isOnVertices = true;
+  bool valid = false;
+};
+
 /**
  * \ingroup core
  * Provides data stored in-memory for QgsMeshLayer. Useful for plugins or tests.
@@ -62,8 +71,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      *    );
      * \endcode
      */
-    QgsMeshMemoryDataProvider( const QString &uri = QString() );
-    ~QgsMeshMemoryDataProvider();
+    QgsMeshMemoryDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     bool isValid() const override;
     QString name() const override;
@@ -75,20 +83,56 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QgsMeshVertex vertex( int index ) const override;
     QgsMeshFace face( int index ) const override;
 
+
+    /**
+     * Adds dataset to a mesh in-memory data provider from data string
+     *
+     * Data string constains simple definition of datasets
+     * Each entry is separated by "\n" sign and section deliminer "---"
+     * First section defines the type of dataset: Vertex/Face Vector/Scalar
+     * Second section defines the metadata: key: value pairs
+     * Third section defines the values. One value on line. For vectors separated by comma
+     *
+     * For example:
+     *
+     *  \code
+     *    QString uri(
+     *      "Vertex Vector \n" \
+     *      "---"
+     *      "name: MyVertexVectorDataset \n" \
+     *      "time: 0 \n" \
+     *      "---"
+     *      "3, 2 \n" \
+     *      "1, -2 \n"
+     *    );
+     * \endcode
+     */
+    bool addDataset( const QString &uri ) override;
+    int datasetCount() const override;
+
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
+    QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
+
     //! Returns the memory provider key
     static QString providerKey();
     //! Returns the memory provider description
     static QString providerDescription();
     //! Provider factory
-    static QgsMeshMemoryDataProvider *createProvider( const QString &uri );
+    static QgsMeshMemoryDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
   private:
-    bool splitSections( const QString &uri );
+    bool splitMeshSections( const QString &uri );
+    bool addMeshVertices( const QString &def );
+    bool addMeshFaces( const QString &def );
 
-    bool addVertices( const QString &def );
-    bool addFaces( const QString &def );
+    bool splitDatasetSections( const QString &uri, QgsMeshMemoryDataset &dataset );
+    bool setDatasetType( const QString &uri, QgsMeshMemoryDataset &dataset );
+    bool addDatasetMetadata( const QString &def, QgsMeshMemoryDataset &dataset );
+    bool addDatasetValues( const QString &def, QgsMeshMemoryDataset &dataset );
+    bool checkDatasetValidity( QgsMeshMemoryDataset &dataset );
 
     QVector<QgsMeshVertex> mVertices;
     QVector<QgsMeshFace> mFaces;
+    QVector<QgsMeshMemoryDataset> mDatasets;
 
     bool mIsValid = false;
 };

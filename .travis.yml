@@ -54,7 +54,21 @@ matrix:
             - silversearcher-ag
             - expect-dev  # unbuffer
             - coreutils
+            # dependencies for licensecheck
+            - cpanminus
             - libyaml-tiny-perl
+            - libio-socket-ssl-perl
+            - libhttp-date-perl
+            - libgetopt-long-descriptive-perl
+            - libmoo-perl
+            - libnamespace-clean-perl
+            - libpath-tiny-perl
+            - libpod-constants-perl
+            - libscalar-list-utils-perl
+            - libsort-key-perl
+            - libstrictures-perl
+            - libstring-escape-perl
+            - libtry-tiny-perl
     # OSX based build with QT4 and Python 2
 #    - os: osx
 #      osx_image: xcode8.3 # MacOS 10.12: Sierra

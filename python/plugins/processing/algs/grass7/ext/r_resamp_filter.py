@@ -33,7 +33,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     y_radius = alg.parameterAsString(parameters, 'y_radius', context)
 
     if (not radius and not x_radius and not y_radius) or (radius and (x_radius or y_radius)):
-        return alg.tr("You need to set either radius or x_radius and y_radius!")
+        return False, alg.tr("You need to set either radius or x_radius and y_radius!")
     elif (x_radius and not y_radius) or (y_radius and not x_radius):
-        return alg.tr("You need to set x_radius and y_radius!")
-    return None
+        return False, alg.tr("You need to set x_radius and y_radius!")
+    return True, None

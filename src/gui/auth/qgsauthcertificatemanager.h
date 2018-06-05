@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
      */
     explicit QgsAuthCertManager( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Get access to embedded editors widget
+    //! Gets access to embedded editors widget
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }
 
   private:

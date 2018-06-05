@@ -55,7 +55,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     State state() const { return mState; }
 
     /**
-     * Sets the field associated with this button. This is used to customise the widget menu
+     * Sets the field associated with this button. This is used to customize the widget menu
      * and tooltips to match the field properties.
      * \param field associated field
      */
@@ -66,7 +66,6 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /**
      * Sets whether the associated field contains mixed values.
      * \param mixed whether field values are mixed
-     * \see isMixed()
      * \see setIsChanged()
      * \see resetChanges()
      */
@@ -75,7 +74,6 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
     /**
      * Sets whether the associated field has changed.
      * \param changed whether field has changed
-     * \see isChanged()
      * \see setIsMixed()
      * \see resetChanges()
      */

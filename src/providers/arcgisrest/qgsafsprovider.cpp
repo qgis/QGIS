@@ -37,10 +37,8 @@
 static const QString TEXT_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
 static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Server data provider" );
 
-QgsAfsProvider::QgsAfsProvider( const QString &uri )
-  : QgsVectorDataProvider( uri )
-  , mValid( false )
-  , mObjectIdFieldIdx( -1 )
+QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   mSharedData.reset( new QgsAfsSharedData() );
   mSharedData->mGeometryType = QgsWkbTypes::Unknown;

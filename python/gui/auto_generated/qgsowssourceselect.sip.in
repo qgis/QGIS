@@ -14,7 +14,7 @@
 class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
 %Docstring
-  Dialog to create connections and add layers WCS etc.
+Dialog to create connections and add layers WCS etc.
 
 This dialog allows the user to define and save connection information
 for WMS servers, etc.
@@ -56,7 +56,7 @@ show whatever error is exposed.
 
     void showStatusMessage( const QString &message );
 %Docstring
-Set status message to theMessage
+Sets status message to theMessage
 %End
 
   protected:
@@ -101,7 +101,7 @@ Clear previously set formats
 
     void populateCrs();
 %Docstring
-Set supported CRSs
+Sets supported CRSs
 %End
 
     void clearCrs();
@@ -131,7 +131,7 @@ Connection info (uri)
 
     void setConnectionListPosition();
 %Docstring
-Set the server connection combo box to that stored in the config file.
+Sets the server connection combo box to that stored in the config file.
 %End
 
     void addDefaultServers();
@@ -142,7 +142,7 @@ Add a few example servers to the list.
 
     virtual void populateLayerList();
 %Docstring
- Populate the layer list.
+Populate the layer list.
 
 \retval false if the layers could not be retrieved or parsed
 %End

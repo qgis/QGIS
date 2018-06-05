@@ -37,7 +37,7 @@ asynchronous API for map rendering.
 
     QgsRectangle extent() const;
 %Docstring
-Return geographical coordinates of the rectangle that should be rendered.
+Returns geographical coordinates of the rectangle that should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
 of output size. Use visibleExtent() to get the resulting extent.
@@ -53,39 +53,39 @@ of output size. Use visibleExtent() to get the resulting extent.
 
     QSize outputSize() const;
 %Docstring
-Return the size of the resulting map image
+Returns the size of the resulting map image
 %End
     void setOutputSize( QSize size );
 %Docstring
-Set the size of the resulting map image
+Sets the size of the resulting map image
 %End
 
     double rotation() const;
 %Docstring
 Returns the rotation of the resulting map image, in degrees clockwise.
 
-.. versionadded:: 2.8
-
 .. seealso:: :py:func:`setRotation`
+
+.. versionadded:: 2.8
 %End
 
     void setRotation( double rotation );
 %Docstring
 Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
-.. versionadded:: 2.8
-
 .. seealso:: :py:func:`rotation`
+
+.. versionadded:: 2.8
 %End
 
     double outputDpi() const;
 %Docstring
-Return DPI used for conversion between real world units (e.g. mm) and pixels
+Returns DPI used for conversion between real world units (e.g. mm) and pixels
 Default value is 96
 %End
     void setOutputDpi( double dpi );
 %Docstring
-Set DPI used for conversion between real world units (e.g. mm) and pixels
+Sets DPI used for conversion between real world units (e.g. mm) and pixels
 %End
 
     void setMagnificationFactor( double factor );
@@ -94,29 +94,29 @@ Set the magnification factor.
 
 :param factor: the factor of magnification
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`magnificationFactor`
+
+.. versionadded:: 2.16
 %End
 
     double magnificationFactor() const;
 %Docstring
-Return the magnification factor.
-
-.. versionadded:: 2.16
+Returns the magnification factor.
 
 .. seealso:: :py:func:`setMagnificationFactor`
+
+.. versionadded:: 2.16
 %End
 
     QStringList layerIds() const;
 %Docstring
-Get list of layer IDs for map rendering
+Gets list of layer IDs for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
-Get list of layers for map rendering
+Gets list of layers for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
@@ -132,7 +132,7 @@ The layers are stored in the reverse order of how they are rendered (layer with 
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
-Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+Gets map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
 
 .. versionadded:: 2.8
 %End
@@ -146,13 +146,13 @@ Set map of map layer style overrides (key: layer ID, value: style name) where a 
 
     QString customRenderFlags() const;
 %Docstring
-Get custom rendering flags. Layers might honour these to alter their rendering.
+Gets custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: custom flags strings, separated by ';'
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setCustomRenderFlags`
+
+.. versionadded:: 2.16
 %End
 
     void setCustomRenderFlags( const QString &customRenderFlags );
@@ -161,9 +161,9 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
 :param customRenderFlags: custom flags strings, separated by ';'
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`customRenderFlags`
+
+.. versionadded:: 2.16
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -177,7 +177,7 @@ returns CRS of destination coordinate reference system
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
-Get units of map's geographical coordinates - used for scale calculation
+Gets units of map's geographical coordinates - used for scale calculation
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -188,9 +188,9 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`ellipsoid`
+
+.. versionadded:: 3.0
 %End
 
     QString ellipsoid() const;
@@ -198,27 +198,27 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setEllipsoid`
+
+.. versionadded:: 3.0
 %End
 
     void setBackgroundColor( const QColor &color );
 %Docstring
-Set the background color of the map
+Sets the background color of the map
 %End
     QColor backgroundColor() const;
 %Docstring
-Get the background color of the map
+Gets the background color of the map
 %End
 
     void setSelectionColor( const QColor &color );
 %Docstring
-Set color that is used for drawing of selected vector features
+Sets color that is used for drawing of selected vector features
 %End
     QColor selectionColor() const;
 %Docstring
-Get color that is used for drawing of selected vector features
+Gets color that is used for drawing of selected vector features
 %End
 
     enum Flag
@@ -241,7 +241,7 @@ Get color that is used for drawing of selected vector features
 
     void setFlags( QgsMapSettings::Flags flags );
 %Docstring
-Set combination of flags that will be used for rendering
+Sets combination of flags that will be used for rendering
 %End
     void setFlag( Flag flag, bool on = true );
 %Docstring
@@ -249,7 +249,7 @@ Enable or disable a particular flag (other flags are not affected)
 %End
     Flags flags() const;
 %Docstring
-Return combination of flags used for rendering
+Returns combination of flags used for rendering
 %End
     bool testFlag( Flag flag ) const;
 %Docstring
@@ -271,18 +271,18 @@ Check whether the map settings are valid and can be used for rendering
 %End
     QgsRectangle visibleExtent() const;
 %Docstring
-Return the actual extent derived from requested extent that takes takes output image size into account
+Returns the actual extent derived from requested extent that takes takes output image size into account
 %End
 
     QPolygonF visiblePolygon() const;
 %Docstring
-Return the visible area as a polygon (may be rotated)
+Returns the visible area as a polygon (may be rotated)
 
 .. versionadded:: 2.8
 %End
     double mapUnitsPerPixel() const;
 %Docstring
-Return the distance in geographical coordinates that equals to one pixel in the map
+Returns the distance in geographical coordinates that equals to one pixel in the map
 %End
 
     double scale() const;
@@ -317,9 +317,9 @@ Returns the coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setTransformContext`
+
+.. versionadded:: 3.0
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -328,9 +328,9 @@ Sets the coordinate transform ``context``, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformContext`
+
+.. versionadded:: 3.0
 %End
 
     const QgsPathResolver &pathResolver() const;
@@ -338,9 +338,9 @@ from a source to destination coordinate reference system.
 Returns the path resolver for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setPathResolver`
+
+.. versionadded:: 3.0
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );
@@ -348,9 +348,9 @@ during rendering operations, e.g. for resolving relative symbol paths.
 Sets the path ``resolver`` for conversion between relative and absolute paths
 during rendering operations, e.g. for resolving relative symbol paths.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`pathResolver`
+
+.. versionadded:: 3.0
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -367,7 +367,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
- transform bounding box from layer's CRS to output CRS
+transform bounding box from layer's CRS to output CRS
 
 .. seealso:: :py:func:`layerToMapCoordinates`
 
@@ -376,7 +376,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
- transform bounding box from output CRS to layer's CRS
+transform bounding box from output CRS to layer's CRS
 
 .. seealso:: :py:func:`mapToLayerCoordinates`
 
@@ -385,14 +385,14 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsPointXY layerToMapCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
- transform point coordinates from layer's CRS to output CRS
+transform point coordinates from layer's CRS to output CRS
 
 :return: the transformed point
 %End
 
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
- transform rectangle from layer's CRS to output CRS
+transform rectangle from layer's CRS to output CRS
 
 .. seealso:: :py:func:`layerExtentToOutputExtent`
 
@@ -401,14 +401,14 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsPointXY mapToLayerCoordinates( const QgsMapLayer *layer, QgsPointXY point ) const;
 %Docstring
- transform point coordinates from output CRS to layer's CRS
+transform point coordinates from output CRS to layer's CRS
 
 :return: the transformed point
 %End
 
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
- transform rectangle from output CRS to layer's CRS
+transform rectangle from output CRS to layer's CRS
 
 .. seealso:: :py:func:`outputExtentToLayerExtent`
 
@@ -417,9 +417,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
 %Docstring
- Return coordinate transform from layer's CRS to destination CRS
-
-:param layer:
+Returns the coordinate transform from layer's CRS to destination CRS
 
 :return: transform - may be invalid if the transform is not needed
 %End

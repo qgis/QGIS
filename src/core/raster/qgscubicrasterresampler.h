@@ -57,7 +57,7 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
     static inline int lowerN3( int i );
 
     //creates a QRgb by applying bounds checks
-    static inline QRgb createPremultipliedColor( const int r, const int g, const int b, const int a );
+    static inline QRgb createPremultipliedColor( int r, int g, int b, int a );
 
     //control points
 

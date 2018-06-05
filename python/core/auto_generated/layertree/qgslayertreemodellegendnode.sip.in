@@ -37,27 +37,27 @@ and customized look.
 
     QgsLayerTreeLayer *layerNode() const;
 %Docstring
-Return pointer to the parent layer node
+Returns pointer to the parent layer node
 %End
 
     QgsLayerTreeModel *model() const;
 %Docstring
-Return pointer to model owning this legend node
+Returns pointer to model owning this legend node
 %End
 
     virtual Qt::ItemFlags flags() const;
 %Docstring
-Return item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
+Returns item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
 %End
 
     virtual QVariant data( int role ) const = 0;
 %Docstring
-Return data associated with the item. Must be implemented in derived class.
+Returns data associated with the item. Must be implemented in derived class.
 %End
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
-Set some data associated with the item. Default implementation does nothing and returns false.
+Sets some data associated with the item. Default implementation does nothing and returns false.
 %End
 
     virtual bool isEmbeddedInParent() const;
@@ -112,7 +112,7 @@ Draws label on the right side of the item
 
 :param settings: Legend layout configuration
 :param ctx: Context for rendering - may be null if only doing layout without actual rendering
-:param symbolSize:  Real size of the associated symbol - used for correct positioning when rendering
+:param symbolSize: Real size of the associated symbol - used for correct positioning when rendering
 
 :return: Size of the label (may span multiple lines)
 %End
@@ -267,18 +267,18 @@ Sets format of text to be shown on top of the symbol.
 %Docstring
 Checks all items belonging to the same layer as this node.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`uncheckAllItems`
+
+.. versionadded:: 2.14
 %End
 
     void uncheckAllItems();
 %Docstring
 Unchecks all items belonging to the same layer as this node.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`checkAllItems`
+
+.. versionadded:: 2.14
 %End
 
 };

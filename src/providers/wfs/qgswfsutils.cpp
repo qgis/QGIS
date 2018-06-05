@@ -138,19 +138,6 @@ bool QgsWFSUtils::removeDir( const QString &dirName )
   return dir.rmdir( dirName );
 }
 
-QString QgsWFSUtils::typeNameParameterForVersion( const QString &WfsVersion )
-{
-  // WFS 2.0 uses the plural form TYPENAMES
-  if ( WfsVersion.startsWith( '2' ) )
-  {
-    return QString( "typeNames" );
-  }
-  else
-  {
-    return QString( "typeName" );
-  }
-}
-
 
 // We use a keep alive mechanism where every KEEP_ALIVE_DELAY ms we update
 // a shared memory segment with the current timestamp. This way, other QGIS

@@ -13,7 +13,7 @@
 class QgsPoint: QgsAbstractGeometry
 {
 %Docstring
- Point geometry type, with support for z-dimension and m-values.
+Point geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 3.0
 %End
@@ -21,6 +21,9 @@ class QgsPoint: QgsAbstractGeometry
 %TypeHeaderCode
 #include "qgspoint.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
@@ -189,9 +192,9 @@ Returns the distance between this point and a specified x, y coordinate. In cert
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`distanceSquared`
+
+.. versionadded:: 3.0
 %End
 
     double distance( const QgsPoint &other ) const;
@@ -231,9 +234,9 @@ Returns the 3D distance between this point and a specified x, y, z coordinate. I
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`distanceSquared`
+
+.. versionadded:: 3.0
 %End
 
     double distance3D( const QgsPoint &other ) const;
@@ -293,8 +296,8 @@ M value is preserved.
 :param inclination: angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
 
 :return: The point projected. If a 2D point is projected a 3D point will be returned except if
-inclination is 90. A 3D point is always returned if a 3D point is projected.
-Example:
+         inclination is 90. A 3D point is always returned if a 3D point is projected.
+         Example:
 .. code-block:: python
 
        p = QgsPoint( 1, 2 ) # 2D point
@@ -357,8 +360,8 @@ Example:
 
     virtual void draw( QPainter &p ) const;
 
-     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false );
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     virtual QgsCoordinateSequence coordinateSequence() const;

@@ -68,18 +68,18 @@ Sets whether users are permitted to overwrite existing names. If true, then
 the dialog will reflect that the new name will overwrite an existing name. If false,
 then the dialog will not accept names which already exist.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`overwriteEnabled`
+
+.. versionadded:: 2.12
 %End
 
     bool overwriteEnabled() const;
 %Docstring
 Returns whether users are permitted to overwrite existing names.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setOverwriteEnabled`
+
+.. versionadded:: 2.12
 %End
 
     void setConflictingNameWarning( const QString &string );
@@ -88,18 +88,18 @@ Sets the string used for warning users if a conflicting name exists.
 
 :param string: warning string. If empty a default warning string will be used.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`conflictingNameWarning`
+
+.. versionadded:: 2.12
 %End
 
     QString conflictingNameWarning() const;
 %Docstring
 Returns the string used for warning users if a conflicting name exists.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setConflictingNameWarning`
+
+.. versionadded:: 2.12
 %End
 
     QString name() const;

@@ -14,7 +14,7 @@
 class QgsImageOperation
 {
 %Docstring
- Contains operations and filters which apply to QImages
+Contains operations and filters which apply to QImages
 
 A set of optimised pixel manipulation operations and filters which can be applied
 to QImages. All operations only apply to ARGB32 format images, and it is left up
@@ -46,7 +46,7 @@ on which is faster for the particular operation.
       FlipVertical
     };
 
-    static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
+    static void convertToGrayscale( QImage &image, GrayscaleMode mode = GrayscaleLuminosity );
 %Docstring
 Convert a QImage to a grayscale image. Alpha channel is preserved.
 
@@ -54,32 +54,32 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
 :param mode: mode to use during grayscale conversion
 %End
 
-    static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
+    static void adjustBrightnessContrast( QImage &image, int brightness, double contrast );
 %Docstring
 Alter the brightness or contrast of a QImage.
 
 :param image: QImage to alter
 :param brightness: brightness value, in the range -255 to 255. A brightness value of 0 indicates
-no change to brightness, a negative value will darken the image, and a positive value will brighten
-the image.
+                   no change to brightness, a negative value will darken the image, and a positive value will brighten
+                   the image.
 :param contrast: contrast value. Must be a positive or zero value. A value of 1.0 indicates no change
-to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
-contrast of the image.
+                 to the contrast, a value of 0 represents an image with 0 contrast, and a value > 1.0 will increase the
+                 contrast of the image.
 %End
 
-    static void adjustHueSaturation( QImage &image, const double saturation, const QColor &colorizeColor = QColor(),
-                                     const double colorizeStrength = 1.0 );
+    static void adjustHueSaturation( QImage &image, double saturation, const QColor &colorizeColor = QColor(),
+                                     double colorizeStrength = 1.0 );
 %Docstring
 Alter the hue or saturation of a QImage.
 
 :param image: QImage to alter
 :param saturation: double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
 :param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
-colorization.
+                      colorization.
 :param colorizeStrength: double between 0 and 1, where 0 = no colorization and 1.0 = full colorization
 %End
 
-    static void multiplyOpacity( QImage &image, const double factor );
+    static void multiplyOpacity( QImage &image, double factor );
 %Docstring
 Multiplies opacity of image pixel values by a factor.
 
@@ -115,10 +115,10 @@ using a color ramp.
 
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
-for the distance transform operation
+                   for the distance transform operation
 %End
 
-    static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
+    static void stackBlur( QImage &image, int radius, bool alphaOnly = false );
 %Docstring
 Performs a stack blur on an image. Stack blur represents a good balance between
 speed and blur quality.
@@ -133,7 +133,7 @@ speed and blur quality.
    alphaOnly is set to false, or ARGB32 if alphaOnly is true
 %End
 
-    static QImage *gaussianBlur( QImage &image, const int radius ) /Factory/;
+    static QImage *gaussianBlur( QImage &image, int radius ) /Factory/;
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
 quality blur.
@@ -162,13 +162,13 @@ Calculates the non-transparent region of an image.
 
 :param image: source image
 :param minSize: minimum size for returned region, if desired. If the
-non-transparent region of the image is smaller than this minimum size,
-it will be centered in the returned rectangle.
+                non-transparent region of the image is smaller than this minimum size,
+                it will be centered in the returned rectangle.
 :param center: return rectangle will be centered on the center of the original image if set to true
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`cropTransparent`
+
+.. versionadded:: 2.9
 %End
 
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
@@ -177,8 +177,8 @@ Crop any transparent border from around an image.
 
 :param image: source image
 :param minSize: minimum size for cropped image, if desired. If the
-cropped image is smaller than the minimum size, it will be centered
-in the returned image.
+                cropped image is smaller than the minimum size, it will be centered
+                in the returned image.
 :param center: cropped image will be centered on the center of the original image if set to true
 
 .. versionadded:: 2.9

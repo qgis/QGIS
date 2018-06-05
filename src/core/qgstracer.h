@@ -48,9 +48,9 @@ class CORE_EXPORT QgsTracer : public QObject
     QgsTracer();
     ~QgsTracer() override;
 
-    //! Get layers used for tracing
+    //! Gets layers used for tracing
     QList<QgsVectorLayer *> layers() const { return mLayers; }
-    //! Set layers used for tracing
+    //! Sets layers used for tracing
     void setLayers( const QList<QgsVectorLayer *> &layers );
 
     /**
@@ -65,13 +65,13 @@ class CORE_EXPORT QgsTracer : public QObject
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
-    //! Get extent to which graph's features will be limited (empty extent means no limit)
+    //! Gets extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
-    //! Set extent to which graph's features will be limited (empty extent means no limit)
+    //! Sets extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle &extent );
 
     /**
-     * Get offset in map units that should be applied to the traced paths returned from findShortestPath().
+     * Gets offset in map units that should be applied to the traced paths returned from findShortestPath().
      * Positive offset for right side, negative offset for left side.
      * \since QGIS 3.0
      */
@@ -85,7 +85,7 @@ class CORE_EXPORT QgsTracer : public QObject
     void setOffset( double offset );
 
     /**
-     * Get extra parameters for offset curve algorithm (used when offset is non-zero)
+     * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
      * \since QGIS 3.0
      */
     void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
@@ -96,9 +96,9 @@ class CORE_EXPORT QgsTracer : public QObject
      */
     void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
 
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    //! Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
     int maxFeatureCount() const { return mMaxFeatureCount; }
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    //! Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
     void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
 
     /**

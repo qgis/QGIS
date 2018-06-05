@@ -12,9 +12,9 @@
 class QgsMapLayerConfigWidgetFactory
 {
 %Docstring
+Factory class for creating custom map layer property pages
 
 .. versionadded:: 2.16
-Factory class for creating custom map layer property pages
 %End
 
 %TypeHeaderCode
@@ -36,7 +36,7 @@ Constructor
 
     virtual QIcon icon() const;
 %Docstring
- The icon that will be shown in the UI for the panel.
+The icon that will be shown in the UI for the panel.
 
 :return: A QIcon for the panel icon.
 %End
@@ -50,7 +50,7 @@ Set the icon for the factory object.
 
     virtual QString title() const;
 %Docstring
- The title of the panel.
+The title of the panel.
 
 :return: Title of the panel
 
@@ -103,14 +103,14 @@ Set support flag for style dock
 
     virtual bool supportsLayer( QgsMapLayer *layer ) const;
 %Docstring
- Check if the layer is supported for this widget.
+Check if the layer is supported for this widget.
 
 :return: True if this layer is supported for this widget
 %End
 
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent /TransferThis/ = 0 ) const = 0 /Factory/;
 %Docstring
- Factory function to create the widget on demand as needed by the dock.
+Factory function to create the widget on demand as needed by the dock.
 
 :param layer: The active layer in the dock.
 :param canvas: The map canvas.

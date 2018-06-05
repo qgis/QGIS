@@ -171,7 +171,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Catch exceptions when sending event to receiver.
     bool notify( QObject *receiver, QEvent *event ) override;
 
-    //! Set the FileOpen event receiver
+    //! Sets the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject *receiver );
 
     /**
@@ -359,29 +359,29 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the user's operating system login account name.
-     * \since QGIS 2.14
      * \see userFullName()
+     * \since QGIS 2.14
      */
     static QString userLoginName();
 
     /**
      * Returns the user's operating system login account full display name.
-     * \since QGIS 2.14
      * \see userLoginName()
+     * \since QGIS 2.14
      */
     static QString userFullName();
 
     /**
      * Returns a string name of the operating system QGIS is running on.
-     * \since QGIS 2.14
      * \see platform()
+     * \since QGIS 2.14
      */
     static QString osName();
 
     /**
      * Returns the QGIS platform name, e.g., "desktop" or "server".
-     * \since QGIS 2.14
      * \see osName()
+     * \since QGIS 2.14
      */
     static QString platform();
 
@@ -441,7 +441,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! deletes provider registry and map layer registry
     static void exitQgis();
 
-    //! get application icon
+    //! Gets application icon
     static QString appIconPath();
 
     //! Constants for endian-ness
@@ -472,10 +472,12 @@ class CORE_EXPORT QgsApplication : public QApplication
 #endif
 
     /**
-     * \brief get a standard css style sheet for reports.
+     * Returns a standard css style sheet for reports.
+     *
      * Typically you will use this method by doing:
      * QString myStyle = QgsApplication::reportStyleSheet();
      * textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+     *
      * \returns QString containing the CSS 2.1 compliant stylesheet.
      * \note you can use the special Qt extensions too, for example
      * the gradient fills for backgrounds.
@@ -539,7 +541,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void applyGdalSkippedDrivers();
 
     /**
-     * Get maximum concurrent thread count
+     * Gets maximum concurrent thread count
      * \since QGIS 2.4 */
     static int maxThreads() { return ABISYM( mMaxThreads ); }
 
@@ -576,8 +578,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's raster renderer registry, used for managing raster layer renderers.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsRasterRendererRegistry *rasterRendererRegistry() SIP_SKIP;
 
@@ -654,8 +656,8 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /**
      * Returns the application's annotation registry, used for managing annotation types.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     static QgsAnnotationRegistry *annotationRegistry() SIP_SKIP;
 
@@ -673,13 +675,12 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QgsRuntimeProfiler *profiler();
 
     /**
-     * Get the registry of available field formatters.
+     * Gets the registry of available field formatters.
      */
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 
     /**
      * Returns registry of available 3D renderers.
-     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     static Qgs3DRendererRegistry *renderer3DRegistry();
@@ -709,7 +710,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * This does not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static QVariantMap customVariables();
@@ -718,7 +719,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Custom expression variables for this application.
      * Do not include generated variables (like system name, user name etc.)
      *
-     * \see QgsExpressionContextUtils::globalVariables().
+     * \see QgsExpressionContextUtils::globalScope().
      * \since QGIS 3.0
      */
     static void setCustomVariables( const QVariantMap &customVariables );

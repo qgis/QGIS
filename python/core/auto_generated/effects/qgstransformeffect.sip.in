@@ -12,7 +12,7 @@
 class QgsTransformEffect : QgsPaintEffect
 {
 %Docstring
- A paint effect which applies transformations (such as move,
+A paint effect which applies transformations (such as move,
 scale and rotate) to a picture.
 
 .. versionadded:: 2.9

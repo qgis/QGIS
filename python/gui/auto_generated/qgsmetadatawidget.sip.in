@@ -13,7 +13,7 @@
 class QgsMetadataWidget : QWidget
 {
 %Docstring
- A wizard to edit metadata on a map layer.
+A wizard to edit metadata on a map layer.
 
 .. versionadded:: 3.0
 %End
@@ -43,18 +43,18 @@ the layer's metadata..
 %Docstring
 Sets the widget's current ``mode``.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`mode`
+
+.. versionadded:: 3.2
 %End
 
     Mode mode() const;
 %Docstring
 Returns the widget's current mode.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setMode`
+
+.. versionadded:: 3.2
 %End
 
     void setMetadata( const QgsAbstractMetadataBase *metadata );

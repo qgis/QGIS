@@ -96,9 +96,9 @@ Returns the size mode for the scale bar segments.
 
 .. seealso:: :py:func:`setSegmentSizeMode`
 
-.. seealso:: :py:func:`minBarWidth`
+.. seealso:: :py:func:`minimumBarWidth`
 
-.. seealso:: :py:func:`maxBarWidth`
+.. seealso:: :py:func:`maximumBarWidth`
 %End
 
     void setSegmentSizeMode( SegmentSizeMode mode );

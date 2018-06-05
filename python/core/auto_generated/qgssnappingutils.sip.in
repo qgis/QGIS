@@ -44,7 +44,7 @@ Constructor for QgsSnappingUtils
 
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
-Get a point locator for the given layer. If such locator does not exist, it will be created
+Gets a point locator for the given layer. If such locator does not exist, it will be created
 %End
 
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
@@ -68,7 +68,7 @@ Assign current map settings to the utils - used for conversion between screen co
 
     void setCurrentLayer( QgsVectorLayer *layer );
 %Docstring
-Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
 %End
     QgsVectorLayer *currentLayer() const;
 %Docstring
@@ -86,7 +86,7 @@ The current layer used if mode is SnapCurrentLayer
 
     void setIndexingStrategy( IndexingStrategy strategy );
 %Docstring
-Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
 %End
     IndexingStrategy indexingStrategy() const;
 %Docstring
@@ -109,10 +109,10 @@ snapping_layer2 = QgsSnappingUtils.LayerConfig(layer2, QgsPointLocator.Vertex an
 snapper.setLayers([snapping_layer1, snapping_layer2])
 ```
 
-:param l:   The vector layer for which this configuration is
-:param t:   Which parts of the geometry should be snappable
+:param l: The vector layer for which this configuration is
+:param t: Which parts of the geometry should be snappable
 :param tol: The tolerance radius in which the snapping will trigger
-:param u:   The unit in which the tolerance is specified
+:param u: The unit in which the tolerance is specified
 %End
 
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
@@ -131,7 +131,7 @@ Query layers used for snapping
 
     QString dump();
 %Docstring
-Get extra information about the instance
+Gets extra information about the instance
 
 .. versionadded:: 2.14
 %End

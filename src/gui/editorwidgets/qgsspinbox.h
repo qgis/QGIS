@@ -78,7 +78,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * \param showClearButton set to true to show the clear button, or false to hide it
      * \see showClearButton()
      */
-    void setShowClearButton( const bool showClearButton );
+    void setShowClearButton( bool showClearButton );
 
     /**
      * Returns whether the widget is showing a clear button.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * \param enabled set to true to allow expression entry
      * \since QGIS 2.7
      */
-    void setExpressionsEnabled( const bool enabled );
+    void setExpressionsEnabled( bool enabled );
 
     /**
      * Returns whether the widget will allow entry of simple expressions, which are
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
-    //! Set the current value to the value defined by the clear value.
+    //! Sets the current value to the value defined by the clear value.
     void clear() override;
 
     /**
@@ -146,7 +146,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
   private:
     int frameWidth() const;
-    bool shouldShowClearForValue( const int value ) const;
+    bool shouldShowClearForValue( int value ) const;
 
     QgsSpinBoxLineEdit *mLineEdit = nullptr;
 

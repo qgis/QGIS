@@ -26,6 +26,7 @@ __copyright__ = '(C) 2018, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -35,8 +36,11 @@ from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.core import QgsApplication
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'enummodelerwidgetbase.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'enummodelerwidgetbase.ui'))
 
 
 class EnumModelerWidget(BASE, WIDGET):
@@ -135,6 +139,8 @@ class EnumModelerWidget(BASE, WIDGET):
             model.appendRow(item)
 
     def setDefault(self, indexes):
+        if indexes is None:
+            return
         model = self.lstItems.model()
         if not isinstance(indexes, (list, tuple)):
             indexes = [indexes]

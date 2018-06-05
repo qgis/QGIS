@@ -37,7 +37,7 @@ Constructor for QgsProcessingRegistry.
 
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
-Get list of available providers.
+Gets list of available providers.
 %End
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
@@ -131,14 +131,14 @@ Will emit parameterTypeRemoved.
 
     QgsProcessingParameterType *parameterType( const QString &id ) const;
 %Docstring
-Return the parameter type registered for ``id``.
+Returns the parameter type registered for ``id``.
 
 .. versionadded:: 3.2
 %End
 
     QList<QgsProcessingParameterType *> parameterTypes() const;
 %Docstring
-Return a list with all known parameter types.
+Returns a list with all known parameter types.
 
 .. versionadded:: 3.2
 %End

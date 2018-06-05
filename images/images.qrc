@@ -76,29 +76,42 @@
         <file>north_arrows/gpsarrow2.svg</file>
         <file>splash/splash.png</file>
         <file>composer/missing_image.svg</file>
+        <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
+        <file>themes/default/algorithms/mAlgorithmBasicStatistics.svg</file>
         <file>themes/default/algorithms/mAlgorithmBuffer.svg</file>
         <file>themes/default/algorithms/mAlgorithmCentroids.svg</file>
         <file>themes/default/algorithms/mAlgorithmCheckGeometry.svg</file>
         <file>themes/default/algorithms/mAlgorithmClip.svg</file>
         <file>themes/default/algorithms/mAlgorithmCollect.svg</file>
         <file>themes/default/algorithms/mAlgorithmConvexHull.svg</file>
+        <file>themes/default/algorithms/mAlgorithmCreateGrid.svg</file>
         <file>themes/default/algorithms/mAlgorithmDelaunay.svg</file>
         <file>themes/default/algorithms/mAlgorithmDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmDissolve.svg</file>
-        <file>themes/default/algorithms/mAlgorithmAddGeometryAttributes.svg</file>
+        <file>themes/default/algorithms/mAlgorithmDistanceMatrix.svg</file>
         <file>themes/default/algorithms/mAlgorithmExtractVertices.svg</file>
+        <file>themes/default/algorithms/mAlgorithmExtractLayerExtent.svg</file>
         <file>themes/default/algorithms/mAlgorithmIntersect.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineIntersections.svg</file>
         <file>themes/default/algorithms/mAlgorithmLineToPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmMeanCoordinates.svg</file>
         <file>themes/default/algorithms/mAlgorithmMergeLayers.svg</file>
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
+        <file>themes/default/algorithms/mAlgorithmNearestNeighbour.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
+        <file>themes/default/algorithms/mAlgorithmRegularPoints.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSelectLocation.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSelectRandom.svg</file>
         <file>themes/default/algorithms/mAlgorithmSimplify.svg</file>
         <file>themes/default/algorithms/mAlgorithmSingleToMulti.svg</file>
         <file>themes/default/algorithms/mAlgorithmSplitLayer.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSumLengthLines.svg</file>
+        <file>themes/default/algorithms/mAlgorithmSumPoints.svg</file>
         <file>themes/default/algorithms/mAlgorithmSymmetricalDifference.svg</file>
         <file>themes/default/algorithms/mAlgorithmUnion.svg</file>
+        <file>themes/default/algorithms/mAlgorithmUniqueValues.svg</file>
         <file>themes/default/algorithms/mAlgorithmVoronoi.svg</file>
         <file>themes/default/cap_flat.svg</file>
         <file>themes/default/cap_round.svg</file>
@@ -108,11 +121,9 @@
         <file>themes/default/console/iconCodepadConsole.svg</file>
         <file>themes/default/console/iconHelpConsole.svg</file>
         <file>themes/default/console/iconHideToolConsole.svg</file>
-        <file>themes/default/console/iconOpenConsole.svg</file>
         <file>themes/default/console/iconQtCoreConsole.svg</file>
         <file>themes/default/console/iconQtGuiConsole.svg</file>
         <file>themes/default/console/mIconRunConsole.svg</file>
-        <file>themes/default/console/iconSaveConsole.svg</file>
         <file>themes/default/console/iconSettingsConsole.svg</file>
         <file>themes/default/console/iconProcessingConsole.svg</file>
         <file>themes/default/console/consoleHelp.png</file>
@@ -123,8 +134,6 @@
         <file>themes/default/console/iconRestoreTabsConsole.svg</file>
         <file>themes/default/console/iconFileTabsMenuConsole.svg</file>
         <file>themes/default/console/iconShowEditorConsole.svg</file>
-        <file>themes/default/console/iconSaveAsConsole.svg</file>
-        <file>themes/default/console/iconRunScriptConsole.svg</file>
         <file>themes/default/console/iconCommentEditorConsole.svg</file>
         <file>themes/default/console/iconUncommentEditorConsole.svg</file>
         <file>themes/default/console/iconClassTreeWidgetConsole.svg</file>
@@ -135,7 +144,6 @@
         <file>themes/default/console/iconSearchNextEditorConsole.svg</file>
         <file>themes/default/console/iconSearchPrevEditorConsole.svg</file>
         <file>themes/default/console/iconSyntaxErrorConsole.svg</file>
-        <file>themes/default/console/iconResetColorConsole.svg</file>
         <file>themes/default/copyright_label.svg</file>
         <file>themes/default/dbmanager.svg</file>
         <file>themes/default/extents.svg</file>
@@ -335,6 +343,7 @@
         <file>themes/default/mActionSaveEdits.svg</file>
         <file>themes/default/mActionSaveMapAsImage.svg</file>
         <file>themes/default/mActionScaleBar.svg</file>
+        <file>themes/default/mActionScriptOpen.svg</file>
         <file>themes/default/mActionSelect.svg</file>
         <file>themes/default/mActionSelectAll.svg</file>
         <file>themes/default/mActionSelectedToTop.svg</file>

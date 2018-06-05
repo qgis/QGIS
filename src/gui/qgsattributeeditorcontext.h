@@ -63,6 +63,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       , mVectorLayerTools( parentContext.mVectorLayerTools )
       , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
+      , mFormFeature( parentContext.mFormFeature )
       , mFormMode( formMode )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
@@ -189,6 +190,21 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
+    /**
+     * Returns current feature from the currently edited form or table row
+     * \see setFormFeature()
+     * \since QGIS 3.2
+     */
+    QgsFeature formFeature() const { return mFormFeature; }
+
+    /**
+     * Set current \a feature for the currently edited form or table row
+     * \see formFeature()
+     * \since QGIS 3.2
+     */
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
+
+
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
@@ -197,6 +213,8 @@ class GUI_EXPORT QgsAttributeEditorContext
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
     RelationMode mRelationMode = Undefined;
+    //! Store the values of the currently edited form or table row
+    QgsFeature mFormFeature;
     FormMode mFormMode = Embed;
     bool mAllowCustomUi = true;
 };

@@ -1043,7 +1043,7 @@ namespace QgsWfs
       {
         response.setHeader( "Content-Type", "application/vnd.geo+json; charset=utf-8" );
 
-        if ( crs.isValid() )
+        if ( crs.isValid() && !rect->isEmpty() )
         {
           QgsGeometry exportGeom = QgsGeometry::fromRect( *rect );
           QgsCoordinateTransform transform;
@@ -1062,6 +1062,9 @@ namespace QgsWfs
             Q_UNUSED( cse );
           }
         }
+        // EPSG:4326 max extent is -180, -90, 180, 90
+        rect = new QgsRectangle( rect->intersect( new QgsRectangle( -180.0, -90.0, 180.0, 90.0 ) ) );
+
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
         fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";
         fcString += QLatin1String( " \"features\": [\n" );

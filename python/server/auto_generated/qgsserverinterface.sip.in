@@ -38,14 +38,14 @@ a certain priority through the registerFilter( QgsServerFilter* , int) method.
 
     virtual QgsCapabilitiesCache *capabilitiesCache() = 0 /KeepReference/;
 %Docstring
-Get pointer to the capabiblities cache
+Gets pointer to the capabiblities cache
 
 :return: :py:class:`QgsCapabilitiesCache`
 %End
 
     virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
 %Docstring
-Get pointer to the request handler
+Gets pointer to the request handler
 
 :return: :py:class:`QgsRequestHandler`
 %End
@@ -67,7 +67,7 @@ Set the filters map
 
     virtual QgsServerFiltersMap filters() = 0;
 %Docstring
-Return the list of current :py:class:`QgsServerFilter`
+Returns the list of current :py:class:`QgsServerFilter`
 
 :return: QgsServerFiltersMap list of :py:class:`QgsServerFilter`
 %End
@@ -87,12 +87,12 @@ Gets the registered access control filters
 
     virtual QString getEnv( const QString &name ) const = 0;
 %Docstring
-Return an enrironment variable, used to pass  environment variables to Python
+Returns an enrironment variable, used to pass  environment variables to Python
 %End
 
     virtual QString configFilePath() = 0;
 %Docstring
-Return the configuration file path
+Returns the configuration file path
 
 :return: QString containing the configuration file path
 %End
@@ -113,7 +113,7 @@ Remove entry from config cache
 
     virtual QgsServiceRegistry *serviceRegistry() = 0 /KeepReference/;
 %Docstring
-Return the service registry
+Returns the service registry
 
 :return: :py:class:`QgsServiceResgistry`
 %End

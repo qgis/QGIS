@@ -19,7 +19,6 @@ handling custom null value representations.
 When using QgsFilterLineEdit the value(), setValue() and clearValue() methods should be used
 instead of QLineEdit's text(), setText() and clear() methods, and the valueChanged()
 signal should be used instead of textChanged().
-*
 %End
 
 %TypeHeaderCode
@@ -158,7 +157,7 @@ is equal to ClearToDefault.
 Sets the current text for the widget with support for handling null values.
 
 :param value: The text to set. If a null string is provided, the text shown in the
-widget will be set to the current nullValue().
+              widget will be set to the current nullValue().
 
 .. seealso:: :py:func:`value`
 %End
@@ -215,6 +214,7 @@ Will select all text when this widget receives the focus.
 
 
     virtual bool event( QEvent *event );
+
 %Docstring
 Reimplemented to enable/disable the clear action
 depending on read-only status

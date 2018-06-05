@@ -27,12 +27,12 @@ class QgsDxfExport
 
         QgsVectorLayer *layer() const;
 %Docstring
-Return the layer
+Returns the layer
 %End
 
         int layerOutputAttributeIndex() const;
 %Docstring
-Return the attribute index used to split into multiple layers.
+Returns the attribute index used to split into multiple layers.
 The attribute value is used for layer names.
 %End
 
@@ -68,18 +68,18 @@ Set map settings and assign layer name attributes
 %Docstring
 Sets the export flags.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`flags`
+
+.. versionadded:: 3.0
 %End
 
     QgsDxfExport::Flags flags() const;
 %Docstring
 Returns the export flags.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setFlags`
+
+.. versionadded:: 3.0
 %End
 
     void addLayers( const QList< QgsDxfExport::DxfLayer > &layers );
@@ -98,9 +98,9 @@ Add layers to export
 Set reference ``scale`` for output.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`symbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     double symbologyScale() const;
@@ -108,9 +108,9 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setSymbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
@@ -147,7 +147,7 @@ Set symbology export mode
 
     QgsDxfExport::SymbologyExport symbologyExport() const;
 %Docstring
-Get symbology export mode
+Gets symbology export mode
 
 :return: mode
 
@@ -163,7 +163,7 @@ Set extent of area to export
 
     QgsRectangle extent() const;
 %Docstring
-Get extent of area to export
+Gets extent of area to export
 
 :return: area to export
 
@@ -209,14 +209,14 @@ Retrieve whether the output should be forced to 2d
 
     static int closestColorMatch( QRgb color );
 %Docstring
-Get DXF palette index of nearest entry for given color
+Gets DXF palette index of nearest entry for given color
 
 :param color:
 %End
 
     QString layerName( const QString &id, const QgsFeature &f ) const;
 %Docstring
-Get layer name for feature
+Gets layer name for feature
 
 :param id: layer id of layer
 :param f: feature of layer
@@ -226,7 +226,7 @@ Get layer name for feature
 
     QString layerName( QgsVectorLayer *vl ) const;
 %Docstring
-Get name for layer respecting the use layer title as layer name mode
+Gets name for layer respecting the use layer title as layer name mode
 
 :param vl: the vector layer
 
@@ -405,17 +405,17 @@ The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:100
 
     static QString dxfLayerName( const QString &name );
 %Docstring
-Return cleaned layer name for use in DXF
+Returns cleaned layer name for use in DXF
 %End
 
     static QString dxfEncoding( const QString &name );
 %Docstring
-return DXF encoding for Qt encoding
+Returns DXF encoding for Qt encoding
 %End
 
     static QStringList encodings();
 %Docstring
-return list of available DXF encodings
+Returns list of available DXF encodings
 %End
 
 

@@ -28,7 +28,7 @@ This is a dialog to build and manage a list of order by clauses.
 %Docstring
 Create a new order by dialog. This helps building order by structures.
 
-:param layer:  The vector layer for which the order by should be produced
+:param layer: The vector layer for which the order by should be produced
 :param parent: The parent widget, optional
 %End
 
@@ -39,7 +39,7 @@ Set the order by to manage
 
     QgsFeatureRequest::OrderBy orderBy();
 %Docstring
-Get the order by defined in the dialog
+Gets the order by defined in the dialog
 %End
 
   protected:

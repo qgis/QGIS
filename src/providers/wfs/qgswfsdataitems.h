@@ -86,7 +86,7 @@ class QgsWfsLayerItem : public QgsLayerItem
   private slots:
 
     /**
-     * Get style of the active data item (geonode layer item) and copy it to the clipboard.
+     * Gets style of the active data item (geonode layer item) and copy it to the clipboard.
      */
     void copyStyle();
 

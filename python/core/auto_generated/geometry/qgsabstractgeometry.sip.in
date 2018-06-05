@@ -17,7 +17,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 class QgsAbstractGeometry
 {
 %Docstring
- Abstract base class for all geometries
+Abstract base class for all geometries
 
 .. versionadded:: 2.10
 %End
@@ -55,6 +55,9 @@ class QgsAbstractGeometry
     else
       sipType = 0;
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
 
     enum SegmentationToleranceType
@@ -179,9 +182,9 @@ Returns a WKB representation of the geometry.
 
 .. seealso:: :py:func:`asWkt`
 
-.. seealso:: :py:func:`asGML2`
+.. seealso:: :py:func:`asGml2`
 
-.. seealso:: :py:func:`asGML3`
+.. seealso:: :py:func:`asGml3`
 
 .. seealso:: :py:func:`asJson`
 
@@ -255,19 +258,17 @@ Returns a GeoJSON representation of the geometry.
 %End
 
 
-    virtual void transform( const QgsCoordinateTransform &ct,
-                            QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                            bool transformZ = false ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException ) = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
 
 :param ct: coordinate transform
 :param d: transformation direction
 :param transformZ: set to true to also transform z coordinates. This requires that
-the z coordinates in the geometry represent height relative to the vertical datum
-of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
-units (generally meters). If false, then z coordinates will not be changed by the
-transform.
+                   the z coordinates in the geometry represent height relative to the vertical datum
+                   of the source CRS (generally ellipsoidal heights) and are expressed in its vertical
+                   units (generally meters). If false, then z coordinates will not be changed by the
+                   transform.
 %End
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
@@ -303,7 +304,7 @@ Returns -1 if a corresponding vertex could not be found.
 Returns next vertex id and coordinates
 
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
-in this variable if found.
+           in this variable if found.
 :param vertex: container for found node
 
 :return: false if at end
@@ -343,9 +344,9 @@ Searches for the closest segment of the geometry to a given point.
 :param segmentPt: storage for the closest point within the geometry
 :param vertexAfter: storage for the ID of the vertex at the end of the closest segment
 :param leftOf: indicates whether the point lies on the left side of the geometry (-1 if point is to the left
-of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
-be determined, e.g. point exactly on a line)
-false if point is to right of segment)
+               of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+               be determined, e.g. point exactly on a line)
+               false if point is to right of segment)
 :param epsilon: epsilon for segment snapping
 
 :return: squared distance to closest segment or negative value on error
@@ -541,11 +542,11 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 
 :return: true on success
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`dropZValue`
 
 .. seealso:: :py:func:`addMValue`
+
+.. versionadded:: 2.12
 %End
 
     virtual bool addMValue( double mValue = 0 ) = 0;
@@ -556,11 +557,11 @@ Adds a measure to the geometry, initialized to a preset value.
 
 :return: true on success
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`dropMValue`
 
 .. seealso:: :py:func:`addZValue`
+
+.. versionadded:: 2.12
 %End
 
     virtual bool dropZValue() = 0;
@@ -623,10 +624,6 @@ To create it, the geometry is default constructed and then the WKB is changed.
 .. seealso:: :py:func:`clone`
 
 .. versionadded:: 3.0
-
-.. note::
-
-   Not available in Python bindings
 %End
 
   protected:
@@ -729,7 +726,7 @@ Returns true if the vertex id is valid
 class QgsVertexIterator
 {
 %Docstring
- Java-style iterator for traversal of vertices of a geometry
+Java-style iterator for traversal of vertices of a geometry
 
 .. versionadded:: 3.0
 %End
@@ -755,7 +752,7 @@ Find out whether there are more vertices
 
     QgsPoint next();
 %Docstring
-Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
 %End
 
     QgsVertexIterator *__iter__();

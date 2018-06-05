@@ -23,7 +23,7 @@
 
 
 /**
- * A dialog for customising the properties of an exported image file.
+ * A dialog for customizing the properties of an exported image file.
  * \since QGIS 3.0
 */
 class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
@@ -37,7 +37,7 @@ class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutIm
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsLayoutImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsLayoutImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the initial resolution displayed in the dialog.

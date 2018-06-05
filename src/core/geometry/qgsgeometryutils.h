@@ -138,7 +138,7 @@ class CORE_EXPORT QgsGeometryUtils
      *   # (True, 'Point (0 0)', True)
      * \endcode
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance = 1e-8, bool acceptImproperIntersection = false );
 
     /**
      * \brief Compute the intersection of a line and a circle.
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param intersection the initial point and the returned intersection point
      * \return true if an intersection has been found
      */
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection SIP_INOUT );
 
@@ -292,8 +292,8 @@ class CORE_EXPORT QgsGeometryUtils
      * to the shorter arc from \a p1 to \a p2. If it is false, the longer arc from \a p1
      * to \a p2 will be used (i.e. winding the other way around the circle).
      *
-     * \since QGIS 3.2
      * \see segmentMidPoint()
+     * \since QGIS 3.2
      */
     static QgsPoint segmentMidPointFromCenter( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &center, bool useShortestArc = true );
 
@@ -462,8 +462,8 @@ class CORE_EXPORT QgsGeometryUtils
      * use a \a fraction < 0 or > 1, in which case the returned point
      * is extrapolated from the supplied line.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLine( double x1, double y1, double x2, double y2, double fraction );
 
@@ -480,8 +480,8 @@ class CORE_EXPORT QgsGeometryUtils
      * Any Z or M values present in the input points will also be interpolated
      * and present in the returned point.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLineByValue()
+     * \since QGIS 3.0.2
      */
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
 
@@ -494,13 +494,13 @@ class CORE_EXPORT QgsGeometryUtils
      * point will be linearly interpolated to match position corresponding to
      * the target \a value.
      *
-     * \since QGIS 3.0.2
      * \see interpolatePointOnLine()
+     * \since QGIS 3.0.2
      */
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
 
     /**
-     * Return the gradient of a line defined by points \a pt1 and \a pt2.
+     * Returns the gradient of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \returns The gradient of this linear entity, or infinity if vertical
@@ -509,7 +509,7 @@ class CORE_EXPORT QgsGeometryUtils
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 
     /**
-     * Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
+     * Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points \a pt1 and \a pt2.
      * \param pt1 first point.
      * \param pt2 second point.
      * \param a Output parameter, a coefficient of the equation.

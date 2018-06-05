@@ -104,7 +104,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri );
+    /**
+     * Constructor for QgsRasterDataProvider.
+     *
+     * The \a uri argument gives a provider-specific uri indicating the underlying data
+     * source and it's parameters.
+     *
+     * The \a options argument specifies generic provider options.
+     */
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     QgsRasterInterface *clone() const override = 0;
 
@@ -220,13 +228,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! Read block of data using given extent and size.
     QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    //! Return true if source band has no data value
+    //! Returns true if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
 
-    //! \brief Get source nodata value usage
+    //! Returns the source nodata value usage
     virtual bool useSourceNoDataValue( int bandNo ) const { return mUseSrcNoDataValue.value( bandNo - 1 ); }
 
-    //! \brief Set source nodata value usage
+    //! Sets the source nodata value usage
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
 
     //! Value representing no data value.
@@ -234,7 +242,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList &noData );
 
-    //! Get list of user no data value ranges
+    //! Returns a list of user no data value ranges.
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const { return mUserNoDataValue.value( bandNo - 1 ); }
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const
@@ -252,9 +260,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual bool supportsLegendGraphic() const { return false; }
 
     /**
-     * \brief Returns the legend rendered as pixmap
+     * Returns the legend rendered as pixmap
      *
-     *  useful for that layer that need to get legend layer remotely as WMS
+     * This is useful for layers which need to get legend layers remotely as WMS.
+     *
      * \param scale Optional parameter that is the Scale of the layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
@@ -270,7 +279,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /**
-     * \brief Get an image downloader for the raster legend
+     * Returns a new image downloader for the raster legend.
      *
      * \param mapSettings map settings for legend providers supporting
      *                    contextual legends.
@@ -279,8 +288,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         legend at all. Ownership of the returned object is transferred
      *         to caller.
      *
-     * \since QGIS 2.8
      *
+     * \since QGIS 2.8
      */
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) SIP_FACTORY
     {
@@ -304,7 +313,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /**
-     * \brief Accessor for the raster layers pyramid list.
+     * Returns the raster layers pyramid list.
      * \param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
      * A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -318,7 +327,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool hasPyramids();
 
     /**
-     * Get metadata in a format suitable for feeding directly
+     * Returns metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
     virtual QString htmlMetadata() = 0;

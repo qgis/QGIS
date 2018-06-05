@@ -12,7 +12,7 @@
 class QgsLayerMetadataFormatter
 {
 %Docstring
- Class for metadata formatter.
+Class for metadata formatter.
 
 .. versionadded:: 3.0
 %End

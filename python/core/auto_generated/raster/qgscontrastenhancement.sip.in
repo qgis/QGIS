@@ -51,7 +51,7 @@ Helper function that returns the minimum possible value for a GDAL data type.
 
     static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
 %Docstring
-Return a string to serialize ContrastEnhancementAlgorithm.
+Returns a string to serialize ContrastEnhancementAlgorithm.
 %End
 
     static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
@@ -61,12 +61,12 @@ Deserialize ContrastEnhancementAlgorithm.
 
     double maximumValue() const;
 %Docstring
- Return the maximum value for the contrast enhancement range.
+Returns the maximum value for the contrast enhancement range.
 %End
 
     double minimumValue() const;
 %Docstring
- Return the minimum value for the contrast enhancement range.
+Returns the minimum value for the contrast enhancement range.
 %End
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
@@ -79,7 +79,7 @@ Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 m
 
     bool isValueInDisplayableRange( double value );
 %Docstring
-Return true if a pixel ``value`` is in displayable range, false if pixel
+Returns true if a pixel ``value`` is in displayable range, false if pixel
 is outside of range (i.e. clipped).
 %End
 

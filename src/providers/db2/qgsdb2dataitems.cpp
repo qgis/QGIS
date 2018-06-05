@@ -200,7 +200,7 @@ QVector<QgsDataItem *> QgsDb2ConnectionItem::createChildren()
   //QVector<QgsDataItem*> newLayers;
   while ( db2GC.populateLayerProperty( layer ) )
   {
-    QgsDb2SchemaItem *schemaItem = NULL;
+    QgsDb2SchemaItem *schemaItem = nullptr;
     Q_FOREACH ( QgsDataItem *child, children )
     {
       if ( child->name() == layer.schemaName )
@@ -435,7 +435,7 @@ QList<QAction *> QgsDb2RootItem::actions( QWidget *parent )
 
 QWidget *QgsDb2RootItem::paramWidget()
 {
-  return NULL;
+  return nullptr;
 }
 
 void QgsDb2RootItem::newConnection()
@@ -523,7 +523,7 @@ bool QgsDb2SchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
   QgsDb2ConnectionItem *conn = qobject_cast<QgsDb2ConnectionItem *>( parent() );
   if ( !conn )
-    return 0;
+    return false;
 
   return conn->handleDrop( data, mName );
 }
@@ -564,7 +564,7 @@ QgsDb2LayerItem *QgsDb2SchemaItem::addLayer( QgsDb2LayerProperty layerProperty, 
       }
       else
       {
-        return NULL;
+        return nullptr;
       }
   }
 

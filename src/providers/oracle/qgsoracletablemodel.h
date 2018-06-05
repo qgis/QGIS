@@ -32,7 +32,6 @@ class QgsOracleTableModel : public QStandardItemModel
     Q_OBJECT
   public:
     QgsOracleTableModel();
-    ~QgsOracleTableModel();
 
     //! Adds entry for one database table to the model
     void addTableEntry( const QgsOracleLayerProperty &property );
@@ -56,7 +55,7 @@ class QgsOracleTableModel : public QStandardItemModel
       DbtmColumns
     };
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     QString layerURI( const QModelIndex &index, const QgsDataSourceUri &connInfo );
 
@@ -64,7 +63,7 @@ class QgsOracleTableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 
 #endif // QGSORACLETABLEMODEL_H

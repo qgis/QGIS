@@ -34,7 +34,7 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 
   public:
     //! Default constructor
-    Bezier3D();
+    Bezier3D() = default;
     //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
     Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
 
@@ -71,11 +71,6 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 #ifndef SIP_RUN
 
 //-----------------------------------------------constructors, destructor and assignment operator------------------------------
-
-inline Bezier3D::Bezier3D() : ParametricLine()//default constructor
-{
-
-}
 
 inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly ) : ParametricLine( parent, controlpoly )
 {

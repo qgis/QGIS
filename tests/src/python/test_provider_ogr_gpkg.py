@@ -841,8 +841,11 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testSubSetStringEditable_bug17795(self):
         """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
 
+        tmpfile = os.path.join(self.basetestpath, 'testSubSetStringEditable_bug17795.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
+
         isEditable = QgsVectorDataProvider.ChangeAttributeValues
-        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+        testPath = tmpfile + '|layername=bug_17795'
 
         vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
         self.assertTrue(vl.isValid())
@@ -868,7 +871,10 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         def _lessdigits(s):
             return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
 
-        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+        tmpfile = os.path.join(self.basetestpath, 'testSubsetStringExtent_bug17863.gpkg')
+        shutil.copy(TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg', tmpfile)
+
+        testPath = tmpfile + '|layername=bug_17795'
         subSetString = '"name" = \'int\''
         subSet = '|layername=bug_17795|subset=%s' % subSetString
 
@@ -896,6 +902,86 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         # This was failing in bug 17863
         self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
         self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+    def testRequestWithoutGeometryOnLayerMixedGeometry(self):
+        """ Test bugfix for https://issues.qgis.org/issues/19077 """
+
+        # Issue is more a generic one of the OGR provider, but easy to trigger with GPKG
+
+        tmpfile = os.path.join(self.basetestpath, 'testRequestWithoutGeometryOnLayerMixedGeometry.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbUnknown, options=['SPATIAL_INDEX=NO'])
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 0)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LINESTRING(0 0,1 0)'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|geometrytype=Point|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+        features = [f for f in vl.getFeatures(request)]
+        self.assertEqual(len(features), 1)
+
+    def testAddingTwoIntFieldsWithWidth(self):
+        """ Test buggfix for https://issues.qgis.org/issues/19009 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testRequestWithoutGeometryOnLayerMixedGeometry.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+        lyr.CreateField(ogr.FieldDefn('a', ogr.OFTInteger))
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField("b", QVariant.Int, "integer", 10)))
+        self.assertTrue(vl.commitChanges())
+
+        vl.startEditing()
+        self.assertTrue(vl.addAttribute(QgsField("c", QVariant.Int, "integer", 10)))
+        self.assertTrue(vl.commitChanges())
+
+    def testApproxFeatureCountAndExtent(self):
+        """ Test perf improvement for for https://issues.qgis.org/issues/18402 """
+
+        tmpfile = os.path.join(self.basetestpath, 'testApproxFeatureCountAndExtent.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 3)'))
+        lyr.CreateFeature(f)
+        fid = f.GetFID()
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(4 5)'))
+        lyr.CreateFeature(f)
+        lyr.DeleteFeature(fid)
+        ds = None
+        ds = ogr.Open(tmpfile, update=1)
+        ds.ExecuteSQL('DROP TABLE gpkg_ogr_contents')
+        ds = None
+
+        os.environ['QGIS_GPKG_FC_THRESHOLD'] = '1'
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        fc = vl.featureCount()
+        del os.environ['QGIS_GPKG_FC_THRESHOLD']
+        self.assertEqual(fc, 3) # didn't notice the hole
+
+        reference = QgsGeometry.fromRect(QgsRectangle(0, 1, 4, 5))
+        provider_extent = QgsGeometry.fromRect(vl.extent())
+        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
+                        provider_extent.asPolygon()[0])
 
 
 if __name__ == '__main__':

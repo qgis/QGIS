@@ -114,13 +114,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     };
 
     /**
-     * Constructor of the vector provider
-     * \param uri  uniform resource locator (URI) for a dataset
+     * Constructor for a vector data provider.
+     *
+     * The \a uri argument specifies the uniform resource locator (URI) for the associated dataset.
+     *
+     * Additional creation options are specified within the \a options value.
      */
-    QgsVectorDataProvider( const QString &uri = QString() );
+    QgsVectorDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 
     /**
-     * Return feature source object that can be used for querying provider's data. The returned feature source
+     * Returns feature source object that can be used for querying provider's data. The returned feature source
      * is independent from provider - any changes to provider's state (e.g. change of subset string) will not be
      * reflected in the feature source, therefore it can be safely used for processing in background without
      * having to care about possible changes within provider that may happen concurrently. Also, even in the case
@@ -170,7 +173,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     QString sourceName() const override { return QString(); }
 
     /**
-     * Return a short comment for the data that this provider is
+     * Returns a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
     virtual QString dataComment() const;
@@ -246,16 +249,16 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Removes all features from the layer. This requires either the FastTruncate or DeleteFeatures capability.
      * Providers with the FastTruncate capability will use an optimised method to truncate the layer.
      * \returns true in case of success and false in case of failure.
-     * \since QGIS 3.0
      * \see deleteFeatures()
+     * \since QGIS 3.0
      */
     virtual bool truncate();
 
     /**
      * Cancels the current reloading of data.
      * \returns true if the reloading has been correctly interrupted, false otherwise
-     * \since QGIS 3.2
      * \see reloadData()
+     * \since QGIS 3.2
      */
     virtual bool cancelReload();
 
@@ -332,8 +335,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     /**
      * Returns any constraints which are present at the provider for a specified
      * field index.
-     * \since QGIS 3.0
      * \see skipConstraintCheck()
+     * \since QGIS 3.0
      */
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 
@@ -341,8 +344,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Returns true if a constraint check should be skipped for a specified field (e.g., if
      * the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
      * passed which can help refine the skip constraint check.
-     * \since QGIS 3.0
      * \see fieldConstraints()
+     * \since QGIS 3.0
      */
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
 
@@ -383,7 +386,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual void setEncoding( const QString &e );
 
     /**
-     * Get encoding which is used for accessing data
+     * Gets encoding which is used for accessing data
      */
     QString encoding() const;
 
@@ -393,22 +396,22 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     int fieldNameIndex( const QString &fieldName ) const;
 
     /**
-     * Return a map where the key is the name of the field and the value is its index
+     * Returns a map where the key is the name of the field and the value is its index
      */
     QMap<QString, int> fieldNameMap() const;
 
     /**
-     * Return list of indexes to fetch all attributes in nextFeature()
+     * Returns list of indexes to fetch all attributes in nextFeature()
      */
     virtual QgsAttributeList attributeIndexes() const;
 
     /**
-     * Return list of indexes of fields that make up the primary key
+     * Returns list of indexes of fields that make up the primary key
      */
     virtual QgsAttributeList pkAttributeIndexes() const;
 
     /**
-     * Return list of indexes to names for QgsPalLabeling fix
+     * Returns list of indexes to names for QgsPalLabeling fix
      */
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 
@@ -465,7 +468,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void clearErrors();
 
     /**
-     * Get recorded errors
+     * Gets recorded errors
      */
     QStringList errors() const;
 
@@ -485,7 +488,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * Creates a new vector layer feature renderer, using provider backend specific information.
      *
      * The \a configuration map can be used to pass provider-specific configuration maps to the provider to
-     * allow customisation of the returned renderer. Support and format of \a configuration varies by provider.
+     * allow customization of the returned renderer. Support and format of \a configuration varies by provider.
      *
      * When called with an empty \a configuration map the provider's default renderer will be returned.
      *
@@ -515,7 +518,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual void forceReload();
 
     /**
-     * Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
+     * Gets the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
      */
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
@@ -529,20 +532,20 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
 
     /**
-     * Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
+     * Gets metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
      * \returns The provider metadata
      */
     virtual QVariantMap metadata() const { return QVariantMap(); }
 
     /**
-     * Get the translated metadata key.
+     * Gets the translated metadata key.
      * \param mdKey The metadata key
      * \returns The translated metadata value
      */
     virtual QString translateMetadataKey( const QString &mdKey ) const { return mdKey; }
 
     /**
-     * Get the translated metadata value.
+     * Gets the translated metadata value.
      * \param mdKey The metadata key
      * \param value The metadata value
      * \returns The translated metadata value
@@ -606,7 +609,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
 
     /**
-     * Get this providers encoding
+     * Gets this providers encoding
      *
      * \since QGIS 3.0
      */

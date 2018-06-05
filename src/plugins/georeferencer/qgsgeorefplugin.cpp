@@ -98,7 +98,7 @@ void QgsGeorefPlugin::initGui()
 
   // Add to the toolbar & menu
   mQGisIface->addRasterToolBarIcon( mActionRunGeoref );
-  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->addPluginToRasterMenu( QString(), mActionRunGeoref );
 }
 
 void QgsGeorefPlugin::run()
@@ -113,7 +113,7 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->rasterMenu()->removeAction( mActionRunGeoref );
   mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
@@ -123,7 +123,7 @@ void QgsGeorefPlugin::unload()
   mPluginGui = nullptr;
 }
 
-//! Set icons to the current theme
+//! Sets icons to the current theme
 void QgsGeorefPlugin::setCurrentTheme( const QString & )
 {
   if ( mActionRunGeoref )

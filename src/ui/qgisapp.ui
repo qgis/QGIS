@@ -44,12 +44,12 @@
     </widget>
     <widget class="QMenu" name="mProjectToStorageMenu">
      <property name="title">
-      <string>Save to</string>
+      <string>Save To</string>
      </property>
     </widget>
     <widget class="QMenu" name="mProjectFromStorageMenu">
      <property name="title">
-      <string>Open from</string>
+      <string>Open From</string>
      </property>
     </widget>
     <widget class="QMenu" name="menuImport_Export">
@@ -285,7 +285,7 @@
     </widget>
     <widget class="QMenu" name="mMenuPasteAs">
      <property name="title">
-      <string>Paste Features as</string>
+      <string>Paste Features As</string>
      </property>
      <addaction name="mActionPasteAsNewVector"/>
      <addaction name="mActionPasteAsNewMemoryVector"/>
@@ -437,6 +437,7 @@
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
    <addaction name="mActionVertexTool"/>
+   <addaction name="mActionMultiEditAttributes"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
    <addaction name="mActionCopyFeatures"/>

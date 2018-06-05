@@ -24,7 +24,7 @@ Raster data container.
 
     QgsRasterBlock( Qgis::DataType dataType, int width, int height );
 %Docstring
- Constructor which allocates data block in memory
+Constructor which allocates data block in memory
 
 :param dataType: raster data type
 :param width: width of data matrix
@@ -35,7 +35,7 @@ Raster data container.
 
     bool reset( Qgis::DataType dataType, int width, int height );
 %Docstring
- Reset block
+Reset block
 
 :param dataType: raster data type
 :param width: width of data matrix
@@ -47,14 +47,14 @@ Raster data container.
 
     bool isValid() const;
 %Docstring
- Returns true if the block is valid (correctly filled with data).
+Returns true if the block is valid (correctly filled with data).
 An empty block may still be valid (if zero size block was requested).
 If the block is not valid, error may be retrieved by error() method.
 %End
 
     void setValid( bool valid );
 %Docstring
- Mark block as valid or invalid
+Mark block as valid or invalid
 %End
 
     bool isEmpty() const;
@@ -110,9 +110,9 @@ Not the difference between this method and hasNoDataValue().
 %Docstring
 Sets cell value that will be considered as "no data".
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.0
 %End
 
     void resetNoDataValue();
@@ -120,14 +120,14 @@ Sets cell value that will be considered as "no data".
 Reset no data value: if there was a no data value previously set,
 it will be discarded.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`noDataValue`
+
+.. versionadded:: 3.0
 %End
 
     double noDataValue() const;
 %Docstring
-Return no data value. If the block does not have a no data value the
+Returns no data value. If the block does not have a no data value the
 returned value is undefined.
 
 :return: No data value
@@ -137,7 +137,7 @@ returned value is undefined.
 
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 %Docstring
-Get byte array representing a value.
+Gets byte array representing a value.
 
 :param dataType: data type
 :param value: value
@@ -147,7 +147,7 @@ Get byte array representing a value.
 
     double value( int row, int column ) const;
 %Docstring
- Read a single value if type of block is numeric. If type is color,
+Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
 
 :param row: row index
@@ -158,7 +158,7 @@ returned value is undefined.
 
     double value( qgssize index ) const;
 %Docstring
- Read a single value if type of block is numeric. If type is color,
+Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
 
 :param index: data matrix index (long type in Python)
@@ -168,7 +168,7 @@ returned value is undefined.
 
     QRgb color( int row, int column ) const;
 %Docstring
- Read a single color
+Read a single color
 
 :param row: row index
 :param column: column index
@@ -178,7 +178,7 @@ returned value is undefined.
 
     QRgb color( qgssize index ) const;
 %Docstring
- Read a single value
+Read a single value
 
 :param index: data matrix index (long type in Python)
 
@@ -187,7 +187,7 @@ returned value is undefined.
 
     bool isNoData( int row, int column );
 %Docstring
- Check if value at position is no data
+Check if value at position is no data
 
 :param row: row index
 :param column: column index
@@ -197,7 +197,7 @@ returned value is undefined.
 
     bool isNoData( qgssize index );
 %Docstring
- Check if value at position is no data
+Check if value at position is no data
 
 :param index: data matrix index (long type in Python)
 
@@ -206,7 +206,7 @@ returned value is undefined.
 
     bool setValue( int row, int column, double value );
 %Docstring
- Set value on position
+Set value on position
 
 :param row: row index
 :param column: column index
@@ -217,7 +217,7 @@ returned value is undefined.
 
     bool setValue( qgssize index, double value );
 %Docstring
- Set value on index (indexed line by line)
+Set value on index (indexed line by line)
 
 :param index: data matrix index (long type in Python)
 :param value: the value to be set
@@ -227,7 +227,7 @@ returned value is undefined.
 
     bool setColor( int row, int column, QRgb color );
 %Docstring
- Set color on position
+Set color on position
 
 :param row: row index
 :param column: column index
@@ -238,7 +238,7 @@ returned value is undefined.
 
     bool setColor( qgssize index, QRgb color );
 %Docstring
- Set color on index (indexed line by line)
+Set color on index (indexed line by line)
 
 :param index: data matrix index (long type in Python)
 :param color: the color to be set, QRgb value
@@ -248,7 +248,7 @@ returned value is undefined.
 
     bool setIsNoData( int row, int column );
 %Docstring
- Set no data on pixel
+Set no data on pixel
 
 :param row: row index
 :param column: column index
@@ -258,7 +258,7 @@ returned value is undefined.
 
     bool setIsNoData( qgssize index );
 %Docstring
- Set no data on pixel
+Set no data on pixel
 
 :param index: data matrix index (long type in Python)
 
@@ -267,21 +267,21 @@ returned value is undefined.
 
     bool setIsNoData();
 %Docstring
- Set the whole block to no data
+Set the whole block to no data
 
 :return: true on success *
 %End
 
     bool setIsNoDataExcept( QRect exceptRect );
 %Docstring
- Set the whole block to no data except specified rectangle
+Set the whole block to no data except specified rectangle
 
 :return: true on success *
 %End
 
     void setIsData( int row, int column );
 %Docstring
- Remove no data flag on pixel. If the raster block does not have an explicit
+Remove no data flag on pixel. If the raster block does not have an explicit
 no data value set then an internal map of no data pixels is maintained for the block.
 In this case it is possible to reset a pixel to flag it as having valid data using this
 method. This method has no effect for raster blocks with an explicit no data value set.
@@ -294,7 +294,7 @@ method. This method has no effect for raster blocks with an explicit no data val
 
     void setIsData( qgssize index );
 %Docstring
- Remove no data flag on pixel. If the raster block does not have an explicit
+Remove no data flag on pixel. If the raster block does not have an explicit
 no data value set then an internal map of no data pixels is maintained for the block.
 In this case it is possible to reset a pixel to flag it as having valid data using this
 method. This method has no effect for raster blocks with an explicit no data value set.
@@ -306,7 +306,7 @@ method. This method has no effect for raster blocks with an explicit no data val
 
     QByteArray data() const;
 %Docstring
-Get access to raw data.
+Gets access to raw data.
 The returned QByteArray instance is not a copy of the data: it only refers to the array
 owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
 still exists. Writing to the returned QByteArray will not affect the original data:
@@ -336,7 +336,7 @@ overwrite data somewhere in the middle of the internal buffer.
 
     static QString printValue( double value );
 %Docstring
- Print double value with all necessary significant digits.
+Print double value with all necessary significant digits.
 It is ensured that conversion back to double gives the same number.
 
 :param value: the value to be printed
@@ -347,7 +347,7 @@ It is ensured that conversion back to double gives the same number.
 
     bool convert( Qgis::DataType destDataType );
 %Docstring
- Convert data to different type.
+Convert data to different type.
 
 :param destDataType: dest data type
 
@@ -356,18 +356,14 @@ It is ensured that conversion back to double gives the same number.
 
     QImage image() const;
 %Docstring
- Get image if type is color.
-
-:return: image *
+Returns an image containing the block data, if the block's data type is color.
 %End
 
     bool setImage( const QImage *image );
 %Docstring
- set image.
+Sets the block data via an ``image``.
 
-:param image: image
-
-:return: true on success *
+:return: true on success
 %End
 
 
@@ -383,19 +379,19 @@ Apply band scale and offset to raster block values
 
     QgsError error() const;
 %Docstring
- Get error
+Returns the last error
 %End
 
     void setError( const QgsError &error );
 %Docstring
- Set error
+Sets the last error
 %End
 
     QString toString() const;
 
     static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
 %Docstring
- For extent and width, height find rectangle covered by subextent.
+For extent and width, height find rectangle covered by subextent.
 The output rect has x oriented from left to right and y from top to bottom
 (upper-left to lower-right orientation).
 

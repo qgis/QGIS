@@ -139,7 +139,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         if ( vlayer )
         {
           QAction *actionZoomSelected = actions->actionZoomToSelection( mCanvas, menu );
-          actionZoomSelected->setEnabled( !vlayer->selectedFeatures().isEmpty() );
+          actionZoomSelected->setEnabled( !vlayer->selectedFeatureIds().isEmpty() );
           menu->addAction( actionZoomSelected );
         }
         menu->addAction( actions->actionShowInOverview( menu ) );
@@ -263,10 +263,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         // save as vector file
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save Features as…" ), menuExportVector );
+        QAction *actionSaveAs = new QAction( tr( "Save Features As…" ), menuExportVector );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );
         menuExportVector->addAction( actionSaveAs );
-        QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features as…" ), menuExportVector );
+        QAction *actionSaveSelectedFeaturesAs = new QAction( tr( "Save Selected Features As…" ), menuExportVector );
         connect( actionSaveSelectedFeaturesAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile( nullptr, true ); } );
         actionSaveSelectedFeaturesAs->setEnabled( vlayer->selectedFeatureCount() > 0 );
         menuExportVector->addAction( actionSaveSelectedFeaturesAs );
@@ -284,7 +284,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       else if ( rlayer )
       {
         QMenu *menuExportRaster = new QMenu( tr( "Export" ), menu );
-        QAction *actionSaveAs = new QAction( tr( "Save as…" ), menuExportRaster );
+        QAction *actionSaveAs = new QAction( tr( "Save As…" ), menuExportRaster );
         QAction *actionSaveAsDefinitionLayer = new QAction( tr( "Save as Layer Definition File…" ), menuExportRaster );
         QAction *actionSaveStyle = new QAction( tr( "Save as QGIS Layer Style File…" ), menuExportRaster );
         connect( actionSaveAs, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->saveAsFile(); } );

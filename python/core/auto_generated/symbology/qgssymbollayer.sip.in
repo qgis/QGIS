@@ -145,9 +145,9 @@ Returns the symbol layer property definitions.
 %Docstring
 Returns true if symbol layer is enabled and will be drawn.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setEnabled`
+
+.. versionadded:: 3.0
 %End
 
     void setEnabled( bool enabled );
@@ -156,9 +156,9 @@ Sets whether symbol layer is enabled and should be drawn. Disabled
 layers are not drawn, but remain part of the symbol and can be re-enabled
 when desired.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`enabled`
+
+.. versionadded:: 3.0
 %End
 
     virtual QColor color() const;
@@ -180,7 +180,7 @@ Set stroke color. Supported by marker and fill layers.
 
     virtual QColor strokeColor() const;
 %Docstring
-Get stroke color. Supported by marker and fill layers.
+Gets stroke color. Supported by marker and fill layers.
 
 .. versionadded:: 2.1
 %End
@@ -194,7 +194,7 @@ Set fill color. Supported by marker and fill layers.
 
     virtual QColor fillColor() const;
 %Docstring
-Get fill color. Supported by marker and fill layers.
+Gets fill color. Supported by marker and fill layers.
 
 .. versionadded:: 2.1
 %End
@@ -233,7 +233,7 @@ Returns the symbol's sub symbol, if present.
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
-set layer's subsymbol. takes ownership of the passed symbol
+Sets layer's subsymbol. takes ownership of the passed symbol
 %End
 
     QgsSymbol::SymbolType type() const;
@@ -296,11 +296,9 @@ required by any data defined properties associated with the layer.
 Sets a data defined property for the layer. Any existing property with the same key
 will be overwritten.
 
+.. seealso:: :py:func:`dataDefinedProperties`
+
 .. versionadded:: 3.0
-
-.. seealso:: :py:func:`getDataDefinedProperty`
-
-.. seealso:: :py:func:`removeDataDefinedProperty`
 %End
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -310,42 +308,42 @@ write as DXF
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
-get line width
+Gets line width
 %End
 
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
-get offset
+Gets offset
 %End
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 %Docstring
-get color
+Gets color
 %End
 
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 %Docstring
-get angle
+Gets angle
 %End
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 %Docstring
-get dash pattern
+Gets dash pattern
 %End
 
     virtual Qt::PenStyle dxfPenStyle() const;
 %Docstring
-get pen style
+Gets pen style
 %End
 
     virtual QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
 %Docstring
-get brush/fill color
+Gets brush/fill color
 %End
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 %Docstring
-get brush/fill style
+Gets brush/fill style
 %End
 
     QgsPaintEffect *paintEffect() const;
@@ -354,9 +352,9 @@ Returns the current paint effect for the layer.
 
 :return: paint effect
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 2.9
 %End
 
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
@@ -365,9 +363,9 @@ Sets the current paint effect for the layer.
 
 :param effect: paint effect. Ownership is transferred to the layer.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`paintEffect`
+
+.. versionadded:: 2.9
 %End
 
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
@@ -384,9 +382,9 @@ be called prior to evaluating data defined properties.
 %Docstring
 Returns a reference to the symbol layer's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
+.. seealso:: :py:func:`setDataDefinedProperties`
 
-.. seealso:: :py:func:`setProperties`
+.. versionadded:: 3.0
 %End
 
 
@@ -396,9 +394,9 @@ Sets the symbol layer's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`properties`
+
+.. versionadded:: 3.0
 %End
 
   protected:
@@ -440,7 +438,7 @@ Copies paint effect of this layer to another symbol layer
 class QgsMarkerSymbolLayer : QgsSymbolLayer
 {
 %Docstring
- Abstract base class for marker symbol layers.
+Abstract base class for marker symbol layers.
 %End
 
 %TypeHeaderCode
@@ -503,11 +501,11 @@ is usually used for orienting symbols to match a line's angle.
 
 :param lineAngle: Angle in degrees clockwise from north, valid values are between 0 and 360
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`setAngle`
 
 .. seealso:: :py:func:`angle`
+
+.. versionadded:: 2.9
 %End
 
     void setSize( double size );
@@ -531,7 +529,7 @@ Returns the symbol size. Units are specified by sizeUnit().
 
 .. seealso:: :py:func:`sizeUnit`
 
-.. seealso:: :py:func:`sizeUnitMapScale`
+.. seealso:: :py:func:`sizeMapUnitScale`
 %End
 
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
@@ -677,7 +675,7 @@ Returns the map unit scale for the symbol's offset.
 Sets the horizontal anchor point for positioning the symbol.
 
 :param h: anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
-the marker's desired location.
+          the marker's desired location.
 
 .. seealso:: :py:func:`horizontalAnchorPoint`
 
@@ -699,7 +697,7 @@ the horizontal anchor point is aligned with the marker's desired location.
 Sets the vertical anchor point for positioning the symbol.
 
 :param v: anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
-the marker's desired location.
+          the marker's desired location.
 
 .. seealso:: :py:func:`verticalAnchorPoint`
 

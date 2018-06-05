@@ -31,7 +31,7 @@ email                : marco.hugentobler at sourcepole dot com
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
 #define CATCH_GEOS(r) \
-  catch (GEOSException &e) \
+  catch (GEOSException &) \
   { \
     return r; \
   }
@@ -58,9 +58,28 @@ static void throwGEOSException( const char *fmt, ... )
   va_end( ap );
 
   qWarning( "GEOS exception: %s", buffer );
+  QString message = QString::fromUtf8( buffer );
 
-  throw GEOSException( QString::fromUtf8( buffer ) );
+#ifdef _MSC_VER
+  // stupid stupid MSVC, *SOMETIMES* raises it's own exception if we throw GEOSException, resulting in a crash!
+  // see https://issues.qgis.org/issues/14752
+  // if you want to test alternative fixes for this, run the testqgsexpression.cpp test suite - that will crash
+  // and burn on the "line_interpolate_point point" test if a GEOSException is thrown.
+  // TODO - find a real fix for the underlying issue
+  try
+  {
+    throw GEOSException( message );
+  }
+  catch ( ... )
+  {
+    // oops, msvc threw an exception when we tried to throw the exception!
+    // just throw nothing instead (except your mouse at your monitor)
+  }
+#else
+  throw GEOSException( message );
+#endif
 }
+
 
 static void printGEOSNotice( const char *fmt, ... )
 {
@@ -1186,35 +1205,29 @@ std::unique_ptr<QgsLineString> QgsGeos::sequenceToLinestring( const GEOSGeometry
   const GEOSCoordSequence *cs = GEOSGeom_getCoordSeq_r( geosinit.ctxt, geos );
   unsigned int nPoints;
   GEOSCoordSeq_getSize_r( geosinit.ctxt, cs, &nPoints );
-  QVector< double > xOut;
-  xOut.reserve( nPoints );
-  QVector< double > yOut;
-  yOut.reserve( nPoints );
+  QVector< double > xOut( nPoints );
+  QVector< double > yOut( nPoints );
   QVector< double > zOut;
   if ( hasZ )
-    zOut.reserve( nPoints );
+    zOut.resize( nPoints );
   QVector< double > mOut;
   if ( hasM )
-    mOut.reserve( nPoints );
-  double x = 0;
-  double y = 0;
-  double z = 0;
-  double m = 0;
+    mOut.resize( nPoints );
+  double *x = xOut.data();
+  double *y = yOut.data();
+  double *z = zOut.data();
+  double *m = mOut.data();
   for ( unsigned int i = 0; i < nPoints; ++i )
   {
-    GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, &x );
-    xOut << x;
-    GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, &y );
-    yOut << y;
+    GEOSCoordSeq_getX_r( geosinit.ctxt, cs, i, x++ );
+    GEOSCoordSeq_getY_r( geosinit.ctxt, cs, i, y++ );
     if ( hasZ )
     {
-      GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, &z );
-      zOut << z;
+      GEOSCoordSeq_getZ_r( geosinit.ctxt, cs, i, z++ );
     }
     if ( hasM )
     {
-      GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, &m );
-      mOut << m;
+      GEOSCoordSeq_getOrdinate_r( geosinit.ctxt, cs, i, 3, m++ );
     }
   }
   std::unique_ptr< QgsLineString > line( new QgsLineString( xOut, yOut, zOut, mOut ) );
@@ -1750,19 +1763,33 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
       QgsDebugMsg( QStringLiteral( "GEOS Exception: Could not create coordinate sequence for %1 points in %2 dimensions" ).arg( numPoints ).arg( coordDims ) );
       return nullptr;
     }
+
+    const double *xData = line->xData();
+    const double *yData = line->yData();
+    const double *zData = hasZ ? line->zData() : nullptr;
+    const double *mData = hasM ? line->mData() : nullptr;
+
     if ( precision > 0. )
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( line->xAt( i % numPoints ) / precision ) * precision );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( line->yAt( i % numPoints ) / precision ) * precision );
+        if ( i >= numPoints )
+        {
+          // start reading back from start of line
+          xData = line->xData();
+          yData = line->yData();
+          zData = hasZ ? line->zData() : nullptr;
+          mData = hasM ? line->mData() : nullptr;
+        }
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, std::round( *xData++ / precision ) * precision );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, std::round( *yData++ / precision ) * precision );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( line->zAt( i % numPoints ) / precision ) * precision );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, std::round( *zData++ / precision ) * precision );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( i % numPoints ) );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( *mData++ ) );
         }
       }
     }
@@ -1770,15 +1797,23 @@ GEOSCoordSequence *QgsGeos::createCoordinateSequence( const QgsCurve *curve, dou
     {
       for ( int i = 0; i < numOutPoints; ++i )
       {
-        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, line->xAt( i % numPoints ) );
-        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, line->yAt( i % numPoints ) );
+        if ( i >= numPoints )
+        {
+          // start reading back from start of line
+          xData = line->xData();
+          yData = line->yData();
+          zData = hasZ ? line->zData() : nullptr;
+          mData = hasM ? line->mData() : nullptr;
+        }
+        GEOSCoordSeq_setX_r( geosinit.ctxt, coordSeq, i, *xData++ );
+        GEOSCoordSeq_setY_r( geosinit.ctxt, coordSeq, i, *yData++ );
         if ( hasZ )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, line->zAt( i % numPoints ) );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 2, *zData++ );
         }
         if ( hasM )
         {
-          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, line->mAt( i % numPoints ) );
+          GEOSCoordSeq_setOrdinate_r( geosinit.ctxt, coordSeq, i, 3, *mData++ );
         }
       }
     }
@@ -2357,7 +2392,7 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException & )
   {
     atLeastTwoIntersections = false;
   }
@@ -2575,7 +2610,7 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
       }
     }
   }
-  catch ( GEOSException &e )
+  catch ( GEOSException & )
   {
     nIntersections = 0;
   }

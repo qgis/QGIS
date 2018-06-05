@@ -59,7 +59,7 @@ Constructor
     QUrl url() const;
 %Docstring
 
-:return:  the request url
+:return: the request url
 %End
 
     QgsServerRequest::Method method() const;
@@ -70,7 +70,7 @@ Constructor
 
     QgsServerRequest::Parameters parameters() const;
 %Docstring
-Return a map of query parameters with keys converted
+Returns a map of query parameters with keys converted
 to uppercase
 %End
 
@@ -81,7 +81,7 @@ Set a parameter
 
     QString parameter( const QString &key ) const;
 %Docstring
-Get a parameter value
+Gets a parameter value
 %End
 
     void removeParameter( const QString &key );
@@ -91,7 +91,7 @@ Remove a parameter
 
     QString header( const QString &name ) const;
 %Docstring
-Return the header value
+Returns the header value
 
 :param name: of the header
 
@@ -108,7 +108,7 @@ Set an header
 
     QMap<QString, QString> headers() const;
 %Docstring
-Return the header map
+Returns the header map
 
 :return: the headers map
 %End
@@ -122,7 +122,7 @@ Remove an header
 
     virtual QByteArray data() const;
 %Docstring
-Return post/put data
+Returns post/put data
 Check for QByteArray.isNull() to check if data
 is available.
 %End

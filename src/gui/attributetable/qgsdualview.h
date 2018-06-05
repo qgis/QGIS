@@ -112,7 +112,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setFilterMode( QgsAttributeTableFilterModel::FilterMode filterMode );
 
     /**
-     * Get the filter mode
+     * Gets the filter mode
      *
      * \returns the filter mode
      */
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
 
     /**
-     * Get a list of currently visible feature ids.
+     * Gets a list of currently visible feature ids.
      */
     QgsFeatureIds filteredFeatures() { return mFilterModel->filteredFeatures(); }
 
@@ -194,7 +194,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void setSortExpression( const QString &sortExpression, Qt::SortOrder sortOrder = Qt::AscendingOrder );
 
     /**
-     * Get the expression used for sorting the table and feature list.
+     * Gets the expression used for sorting the table and feature list.
      */
     QString sortExpression() const;
 
@@ -274,7 +274,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \param menu context menu
      * \param fid feature id of the selected feature
      */
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 
   protected:
     void hideEvent( QHideEvent *event ) override;

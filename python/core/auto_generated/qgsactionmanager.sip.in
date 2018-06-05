@@ -91,7 +91,7 @@ Removes all actions
 
     QList<QgsAction> actions( const QString &actionScope = QString() ) const;
 %Docstring
-Return a list of actions that are available in the given action scope.
+Returns a list of actions that are available in the given action scope.
 If no action scope is provided, all actions will be returned.
 
 .. versionadded:: 3.0
@@ -99,7 +99,7 @@ If no action scope is provided, all actions will be returned.
 
     QgsVectorLayer *layer() const;
 %Docstring
-Return the layer
+Returns the layer
 %End
 
     bool writeXml( QDomNode &layer_node ) const;
@@ -114,7 +114,7 @@ Reads the actions in in XML format
 
     QgsAction action( QUuid id );
 %Docstring
-Get an action by its id.
+Gets an action by its id.
 
 .. versionadded:: 3.0
 %End

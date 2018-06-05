@@ -66,7 +66,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
   public:
     QgsDb2ConnectionItem( QgsDataItem *parent, QString name, QString path );
 
-    static bool ConnInfoFromSettings( const QString connName,
+    static bool ConnInfoFromSettings( QString connName,
                                       QString &connInfo, QString &errorMsg );
 
     static bool ConnInfoFromParameters(

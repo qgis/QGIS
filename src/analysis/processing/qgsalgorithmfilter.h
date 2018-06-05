@@ -39,7 +39,7 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsFilterAlgorithm() = default;
-    ~QgsFilterAlgorithm();
+    ~QgsFilterAlgorithm() override;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -47,7 +47,7 @@ class QgsFilterAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
-    virtual Flags flags() const override;
+    Flags flags() const override;
     QString shortHelpString() const override;
     QgsFilterAlgorithm *createInstance() const override SIP_FACTORY;
 

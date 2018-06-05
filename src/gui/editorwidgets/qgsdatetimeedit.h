@@ -106,8 +106,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      *  -> returns empty (toString) or invalid (fromString) values
      *  - QDateTimeEdit::setMinimumDateTime does not support dates < '0100-01-01'
      *  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
-    * \since QGIS 3.0
     * \note not available in Python bindings
+    * \since QGIS 3.0
     */
     void setMinimumEditDateTime()
     {

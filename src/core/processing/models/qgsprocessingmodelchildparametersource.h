@@ -25,8 +25,8 @@
 
 /**
  * Source for the value of a parameter for a child algorithm within a model.
- * \since QGIS 3.0
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelChildParameterSource
 {

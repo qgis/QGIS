@@ -69,14 +69,14 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     Qgis::DataType dataType( int bandNo ) const override;
 
-    //! \brief set source and destination CRS
+    //! Sets the source and destination CRS
     void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
                  int srcDatumTransform = -1, int destDatumTransform = -1 );
 
-    //! \brief Get source CRS
+    //! Returns the source CRS
     QgsCoordinateReferenceSystem sourceCrs() const { return mSrcCRS; }
 
-    //! \brief Get destination CRS
+    //! Returns the destination CRS
     QgsCoordinateReferenceSystem destinationCrs() const { return mDestCRS; }
 
     Precision precision() const { return mPrecision; }
@@ -134,9 +134,9 @@ class ProjectorData
     ProjectorData &operator=( const ProjectorData &other ) = delete;
 
     /**
-     * \brief Get source row and column indexes for current source extent and resolution
-        If source pixel is outside source extent srcRow and srcCol are left unchanged.
-        \returns true if inside source
+     * Returns the source row and column indexes for current source extent and resolution.
+     * If the source pixel is outside source extent srcRow and srcCol are left unchanged.
+     * \returns true if inside source
      */
     bool srcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
@@ -146,17 +146,19 @@ class ProjectorData
 
   private:
 
-    //! \brief get destination point for _current_ destination position
+    //! Returns the destination point for _current_ destination position.
     void destPointOnCPMatrix( int row, int col, double *theX, double *theY );
 
-    //! \brief Get matrix upper left row/col indexes for destination row/col
+    //! Returns the matrix upper left row index for destination row.
     int matrixRow( int destRow );
+
+    //! Returns the matrix upper left col index for destination col.
     int matrixCol( int destCol );
 
-    //! \brief Get precise source row and column indexes for current source extent and resolution
+    //! Returns precise source row and column indexes for current source extent and resolution.
     inline bool preciseSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
-    //! \brief Get approximate source row and column indexes for current source extent and resolution
+    //! Returns approximate source row and column indexes for current source extent and resolution.
     inline bool approximateSrcRowCol( int destRow, int destCol, int *srcRow, int *srcCol );
 
     //! \brief insert rows to matrix
@@ -196,7 +198,7 @@ class ProjectorData
     //! Calc / switch helper
     void nextHelper();
 
-    //! Get mCPMatrix as string
+    //! Gets mCPMatrix as string
     QString cpToString();
 
     /**

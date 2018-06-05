@@ -13,7 +13,7 @@
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring
- Curve polygon geometry type
+Curve polygon geometry type
 
 .. versionadded:: 2.10
 %End
@@ -120,15 +120,24 @@ Removes the interior rings from the polygon. If the minimumAllowedArea
 parameter is specified then only rings smaller than this minimum
 area will be removed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`removeInteriorRing`
+
+.. versionadded:: 3.0
+%End
+
+    void removeInvalidRings();
+%Docstring
+Removes any interior rings which are not valid from the polygon.
+
+For example, this removes unclosed rings and rings with less than 4 vertices.
+
+.. versionadded:: 3.0
 %End
 
     virtual void draw( QPainter &p ) const;
 
-     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false );
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 
@@ -199,6 +208,7 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
+
 
 
     virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;

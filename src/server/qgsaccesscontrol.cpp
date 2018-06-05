@@ -86,7 +86,7 @@ QgsFeatureFilterProvider *QgsAccessControl::clone() const
   return new QgsAccessControl( *this );
 }
 
-//! Return an additional subset string (typically SQL) filter
+//! Returns an additional subset string (typically SQL) filter
 QString QgsAccessControl::extraSubsetString( const QgsVectorLayer *layer ) const
 {
   QStringList sqls;
@@ -102,7 +102,7 @@ QString QgsAccessControl::extraSubsetString( const QgsVectorLayer *layer ) const
   return sqls.isEmpty() ? QString() : QStringLiteral( "((" ).append( sqls.join( QStringLiteral( ") AND (" ) ) ).append( "))" );
 }
 
-//! Return the layer read right
+//! Returns the layer read right
 bool QgsAccessControl::layerReadPermission( const QgsMapLayer *layer ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
@@ -116,7 +116,7 @@ bool QgsAccessControl::layerReadPermission( const QgsMapLayer *layer ) const
   return true;
 }
 
-//! Return the layer insert right
+//! Returns the layer insert right
 bool QgsAccessControl::layerInsertPermission( const QgsVectorLayer *layer ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
@@ -130,7 +130,7 @@ bool QgsAccessControl::layerInsertPermission( const QgsVectorLayer *layer ) cons
   return true;
 }
 
-//! Return the layer update right
+//! Returns the layer update right
 bool QgsAccessControl::layerUpdatePermission( const QgsVectorLayer *layer ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
@@ -144,7 +144,7 @@ bool QgsAccessControl::layerUpdatePermission( const QgsVectorLayer *layer ) cons
   return true;
 }
 
-//! Return the layer delete right
+//! Returns the layer delete right
 bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer *layer ) const
 {
   QgsAccessControlFilterMap::const_iterator acIterator;
@@ -158,7 +158,7 @@ bool QgsAccessControl::layerDeletePermission( const QgsVectorLayer *layer ) cons
   return true;
 }
 
-//! Return the authorized layer attributes
+//! Returns the authorized layer attributes
 QStringList QgsAccessControl::layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const
 {
   QStringList currentAttributes( attributes );

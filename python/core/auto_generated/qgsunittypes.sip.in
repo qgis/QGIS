@@ -14,7 +14,7 @@
 class QgsUnitTypes
 {
 %Docstring
- Helper functions for various unit types.
+Helper functions for various unit types.
 
 .. versionadded:: 2.14
 %End
@@ -22,6 +22,9 @@ class QgsUnitTypes
 %TypeHeaderCode
 #include "qgsunittypes.h"
 %End
+  public:
+    static const QMetaObject staticMetaObject;
+
   public:
     enum DistanceUnit
     {
@@ -349,13 +352,13 @@ Returns an distance formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of distance
 :param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
-kilometers
+                     kilometers
 
 :return: formatted distance string
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`formatArea`
+
+.. versionadded:: 3.0
 %End
 
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
@@ -366,13 +369,13 @@ Returns an area formatted as a friendly string.
 :param decimals: number of decimal places to show
 :param unit: unit of area
 :param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
-square kilometers
+                     square kilometers
 
 :return: formatted area string
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`formatDistance`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -435,7 +438,7 @@ Decodes a layout unit from a string.
 .. versionadded:: 3.0
 %End
 
-    static QgsUnitTypes::LayoutUnitType unitType( const QgsUnitTypes::LayoutUnit units );
+    static QgsUnitTypes::LayoutUnitType unitType( QgsUnitTypes::LayoutUnit units );
 %Docstring
 Returns the type for a unit of measurement.
 

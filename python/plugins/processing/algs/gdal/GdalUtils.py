@@ -29,15 +29,16 @@ import os
 import subprocess
 import platform
 import re
+import warnings
 
 import psycopg2
 
-from osgeo import gdal
-from osgeo import ogr
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 
 from qgis.core import (Qgis,
                        QgsApplication,
-                       QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -49,7 +50,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal  # NOQA
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        from osgeo import gdal  # NOQA
 
     gdalAvailable = True
 except:
@@ -273,7 +276,7 @@ class GdalUtils:
         if layer is None:
             path, ext = os.path.splitext(uri)
             format = QgsVectorFileWriter.driverForExtension(ext)
-            return '"' + uri + '"', '"' + format + '"'
+            return uri, '"' + format + '"'
 
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
@@ -345,7 +348,7 @@ class GdalUtils:
             path, ext = os.path.splitext(ogrstr)
             format = QgsVectorFileWriter.driverForExtension(ext)
 
-        return '"' + ogrstr + '"', '"' + format + '"'
+        return ogrstr, '"' + format + '"'
 
     @staticmethod
     def ogrLayerName(uri):
@@ -414,7 +417,7 @@ class GdalUtils:
         return listFile
 
     @staticmethod
-    def gdal_crs_string(crs: QgsCoordinateReferenceSystem) -> str:
+    def gdal_crs_string(crs):
         """
         Converts a QgsCoordinateReferenceSystem to a string understandable
         by GDAL

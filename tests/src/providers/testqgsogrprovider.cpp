@@ -95,9 +95,9 @@ void TestQgsOgrProvider::setupProxy()
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
     QVERIFY( vl.isValid() );
-    const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", NULL );
+    const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com:1234" );
-    const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", NULL );
+    const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", nullptr );
     QCOMPARE( proxyCredentials, "username:password" );
   }
 
@@ -111,9 +111,9 @@ void TestQgsOgrProvider::setupProxy()
     QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
     QgsVectorLayer vl( mTestDataDir + '/' + QStringLiteral( "lines.shp" ), QStringLiteral( "proxy_test" ), QLatin1Literal( "ogr" ) );
     QVERIFY( vl.isValid() );
-    const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", NULL );
+    const char *proxyConfig = CPLGetConfigOption( "GDAL_HTTP_PROXY", nullptr );
     QCOMPARE( proxyConfig, "myproxyhostname.com" );
-    const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", NULL );
+    const char *proxyCredentials = CPLGetConfigOption( "GDAL_HTTP_PROXYUSERPWD", nullptr );
     QCOMPARE( proxyCredentials, "username" );
   }
 

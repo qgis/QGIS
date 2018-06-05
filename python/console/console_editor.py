@@ -77,7 +77,31 @@ class KeyFilter(QObject):
 
 
 class Editor(QsciScintilla):
+
     MARKER_NUM = 6
+    DEFAULT_COLOR = "#4d4d4c"
+    KEYWORD_COLOR = "#8959a8"
+    CLASS_COLOR = "#4271ae"
+    METHOD_COLOR = "#4271ae"
+    DECORATION_COLOR = "#3e999f"
+    NUMBER_COLOR = "#c82829"
+    COMMENT_COLOR = "#8e908c"
+    COMMENT_BLOCK_COLOR = "#8e908c"
+    BACKGROUND_COLOR = "#ffffff"
+    CURSOR_COLOR = "#636363"
+    CARET_LINE_COLOR = "#efefef"
+    SINGLE_QUOTE_COLOR = "#718c00"
+    DOUBLE_QUOTE_COLOR = "#718c00"
+    TRIPLE_SINGLE_QUOTE_COLOR = "#eab700"
+    TRIPLE_DOUBLE_QUOTE_COLOR = "#eab700"
+    MARGIN_BACKGROUND_COLOR = "#efefef"
+    MARGIN_FOREGROUND_COLOR = "#636363"
+    SELECTION_BACKGROUND_COLOR = "#d7d7d7"
+    SELECTION_FOREGROUND_COLOR = "#303030"
+    MATCHED_BRACE_BACKGROUND_COLOR = "#b7f907"
+    MATCHED_BRACE_FOREGROUND_COLOR = "#303030"
+    EDGE_COLOR = "#efefef"
+    FOLD_COLOR = "#efefef"
 
     def __init__(self, parent=None):
         super(Editor, self).__init__(parent)
@@ -100,13 +124,9 @@ class Editor(QsciScintilla):
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
-        # fm = QFontMetrics(font)
         fontmetrics = QFontMetrics(font)
-        self.setMarginsFont(font)
         self.setMarginWidth(0, fontmetrics.width("0000") + 5)
         self.setMarginLineNumbers(0, True)
-        self.setMarginsForegroundColor(QColor("#3E3EE3"))
-        self.setMarginsBackgroundColor(QColor("#f9f9f9"))
         self.setCaretLineVisible(True)
         self.setCaretWidth(2)
 
@@ -117,17 +137,14 @@ class Editor(QsciScintilla):
         # self.setMinimumWidth(300)
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
-        self.setMatchedBraceBackgroundColor(QColor("#b7f907"))
 
         # Folding
         self.setFolding(QsciScintilla.PlainFoldStyle)
-        self.setFoldMarginColors(QColor("#f4f4f4"), QColor("#f4f4f4"))
         # self.setWrapMode(QsciScintilla.WrapWord)
 
         # Edge Mode
         self.setEdgeMode(QsciScintilla.EdgeLine)
         self.setEdgeColumn(80)
-        self.setEdgeColor(QColor("#FF0000"))
 
         # self.setWrapMode(QsciScintilla.WrapCharacter)
         self.setWhitespaceVisibility(QsciScintilla.WsVisibleAfterIndent)
@@ -182,6 +199,18 @@ class Editor(QsciScintilla):
         self.modificationAttempted.connect(self.fileReadOnly)
 
     def settingsEditor(self):
+        self.setSelectionForegroundColor(QColor(self.settings.value("pythonConsole/selectionForegroundColorEditor", QColor(self.SELECTION_FOREGROUND_COLOR))))
+        self.setSelectionBackgroundColor(QColor(self.settings.value("pythonConsole/selectionBackgroundColorEditor", QColor(self.SELECTION_BACKGROUND_COLOR))))
+        self.setMatchedBraceBackgroundColor(QColor(self.settings.value("pythonConsole/matchedBraceBackgroundColorEditor", QColor(self.MATCHED_BRACE_BACKGROUND_COLOR))))
+        self.setMatchedBraceForegroundColor(QColor(self.settings.value("pythonConsole/matchedBraceForegroundColorEditor", QColor(self.MATCHED_BRACE_FOREGROUND_COLOR))))
+        self.setMarginsForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
+        self.setMarginsBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
+        self.setIndentationGuidesForegroundColor(QColor(self.settings.value("pythonConsole/marginForegroundColorEditor", QColor(self.MARGIN_FOREGROUND_COLOR))))
+        self.setIndentationGuidesBackgroundColor(QColor(self.settings.value("pythonConsole/marginBackgroundColorEditor", QColor(self.MARGIN_BACKGROUND_COLOR))))
+        self.setEdgeColor(QColor(self.settings.value("pythonConsole/edgeColorEditor", QColor(self.EDGE_COLOR))))
+        foldColor = QColor(self.settings.value("pythonConsole/foldColorEditor", QColor(self.FOLD_COLOR)))
+        self.setFoldMarginColors(foldColor, foldColor)
+
         # Set Python lexer
         self.setLexers()
         threshold = self.settings.value("pythonConsole/autoCompThresholdEditor", 2, type=int)
@@ -198,8 +227,8 @@ class Editor(QsciScintilla):
         else:
             self.setAutoCompletionSource(self.AcsNone)
 
-        caretLineColorEditor = self.settings.value("pythonConsole/caretLineColorEditor", QColor("#fcf3ed"))
-        cursorColorEditor = self.settings.value("pythonConsole/cursorColorEditor", QColor(Qt.black))
+        caretLineColorEditor = self.settings.value("pythonConsole/caretLineColorEditor", QColor(self.CARET_LINE_COLOR))
+        cursorColorEditor = self.settings.value("pythonConsole/cursorColorEditor", QColor(self.CURSOR_COLOR))
         self.setCaretLineBackgroundColor(caretLineColorEditor)
         self.setCaretForegroundColor(cursorColorEditor)
 
@@ -232,23 +261,26 @@ class Editor(QsciScintilla):
             font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
-        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColorEditor", QColor(Qt.gray))), 1)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColorEditor", QColor(Qt.darkGreen))), 5)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColorEditor", QColor(Qt.blue))), 8)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColorEditor", QColor(Qt.darkGray))), 9)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColorEditor", QColor(Qt.darkBlue))), 15)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColorEditor", QColor(Qt.gray))), 12)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(Qt.blue))), 4)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(Qt.blue))), 3)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(Qt.blue))), 6)
-        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(Qt.blue))), 7)
+        self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))))
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentFontColorEditor", QColor(self.COMMENT_COLOR))), 1)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/numberFontColorEditor", QColor(self.NUMBER_COLOR))), 2)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/keywordFontColorEditor", QColor(self.KEYWORD_COLOR))), 5)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/classFontColorEditor", QColor(self.CLASS_COLOR))), 8)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/methodFontColorEditor", QColor(self.METHOD_COLOR))), 9)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/decorFontColorEditor", QColor(self.DECORATION_COLOR))), 15)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/commentBlockFontColorEditor", QColor(self.COMMENT_BLOCK_COLOR))), 12)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/singleQuoteFontColorEditor", QColor(self.SINGLE_QUOTE_COLOR))), 4)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/doubleQuoteFontColorEditor", QColor(self.DOUBLE_QUOTE_COLOR))), 3)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleSingleQuoteFontColorEditor", QColor(self.TRIPLE_SINGLE_QUOTE_COLOR))), 6)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/tripleDoubleQuoteFontColorEditor", QColor(self.TRIPLE_DOUBLE_QUOTE_COLOR))), 7)
+        self.lexer.setColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(self.DEFAULT_COLOR))), 13)
         self.lexer.setFont(font, 1)
         self.lexer.setFont(font, 3)
         self.lexer.setFont(font, 4)
+        self.lexer.setFont(font, QsciLexerPython.UnclosedString)
 
         for style in range(0, 33):
-            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColorEditor", QColor(Qt.white)))
+            paperColor = QColor(self.settings.value("pythonConsole/paperBackgroundColorEditor", QColor(self.BACKGROUND_COLOR)))
             self.lexer.setPaper(paperColor, style)
 
         self.api = QsciAPIs(self.lexer)
@@ -283,7 +315,9 @@ class Editor(QsciScintilla):
     def contextMenuEvent(self, e):
         menu = QMenu(self)
         iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
-        iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.svg")
+        iconRunScript = QgsApplication.getThemeIcon("mActionStart.svg")
+        iconUndo = QgsApplication.getThemeIcon("mActionUndo.svg")
+        iconRedo = QgsApplication.getThemeIcon("mActionRedo.svg")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.svg")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.svg")
         iconUncommentEditor = QgsApplication.getThemeIcon("console/iconUncommentEditorConsole.svg")
@@ -308,12 +342,12 @@ class Editor(QsciScintilla):
                        QCoreApplication.translate("PythonConsole", "Run Script"),
                        self.runScriptCode, 'Shift+Ctrl+E')
         menu.addSeparator()
-        undoAction = menu.addAction(
-            QCoreApplication.translate("PythonConsole", "Undo"),
-            self.undo, QKeySequence.Undo)
-        redoAction = menu.addAction(
-            QCoreApplication.translate("PythonConsole", "Redo"),
-            self.redo, 'Ctrl+Shift+Z')
+        undoAction = menu.addAction(iconUndo,
+                                    QCoreApplication.translate("PythonConsole", "Undo"),
+                                    self.undo, QKeySequence.Undo)
+        redoAction = menu.addAction(iconRedo,
+                                    QCoreApplication.translate("PythonConsole", "Redo"),
+                                    self.redo, 'Ctrl+Shift+Z')
         menu.addSeparator()
         menu.addAction(iconFind,
                        QCoreApplication.translate("PythonConsole", "Find Text"),

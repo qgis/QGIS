@@ -182,12 +182,12 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
     static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
 
-    //! Set the version of the auth method (useful for future upgrading)
+    //! Sets the version of the auth method (useful for future upgrading)
     void setVersion( int version ) { mVersion = version; }
 
-    //! Set the support expansions (points in providers where the authentication is injected) of the auth method
+    //! Sets the support expansions (points in providers where the authentication is injected) of the auth method
     void setExpansions( QgsAuthMethod::Expansions expansions ) { mExpansions = expansions; }
-    //! Set list of data providers this auth method supports
+    //! Sets list of data providers this auth method supports
     void setDataProviders( const QStringList &dataproviders ) { mDataProviders = dataproviders; }
 
     QgsAuthMethod::Expansions mExpansions;

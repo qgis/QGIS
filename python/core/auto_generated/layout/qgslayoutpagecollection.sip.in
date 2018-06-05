@@ -12,7 +12,7 @@
 class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 {
 %Docstring
- A manager for a collection of pages in a layout.
+A manager for a collection of pages in a layout.
 
 .. versionadded:: 3.0
 %End
@@ -99,6 +99,11 @@ Returns a list of layout items on the specified ``page`` index.
     bool shouldExportPage( int page ) const;
 %Docstring
 Returns whether the specified ``page`` number should be included in exports of the layouts.
+
+.. warning::
+
+   This will always return true unless the layout is being currently exported -- it cannot
+   be used in advance to determine whether a given page will be exported!
 
 .. seealso:: :py:func:`pageIsEmpty`
 %End
@@ -258,7 +263,7 @@ first page.
    it does not consider x coordinates and vertical coordinates before the first page or
    after the last page will still return the nearest page.
 
-.. seealso:: :py:func:`predicatePageNumberForPoint`
+.. seealso:: :py:func:`predictPageNumberForPoint`
 
 .. seealso:: :py:func:`pageAtPoint`
 

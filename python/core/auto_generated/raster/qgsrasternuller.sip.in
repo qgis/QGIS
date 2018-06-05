@@ -46,7 +46,7 @@ Raster pipe that deals with null values.
 
     void setOutputNoDataValue( int bandNo, double noData );
 %Docstring
- Set output no data value.
+Sets the output no data value.
 %End
 
 };

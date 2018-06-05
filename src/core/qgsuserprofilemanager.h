@@ -57,7 +57,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     static QString resolveProfilesFolder( const QString &basePath = QString() );
 
     /**
-     * Return the profile from the given root profile location.
+     * Returns the profile from the given root profile location.
      * If no name is given it returns a profile called "default".
      * By default will create the profile folder if not found.
      * By default will init the user settings.
@@ -110,8 +110,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     bool rootLocationIsSet() const;
 
     /**
-     * A list of all found profile names.
-     * \return
+     * Returns a list of all found profile names.
      */
     QStringList allProfiles() const;
 
@@ -144,7 +143,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void setDefaultFromActive();
 
     /**
-     * Return the profile found for a given name.
+     * Returns the profile found for a given name.
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */

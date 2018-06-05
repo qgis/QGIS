@@ -13,7 +13,7 @@ class QgsPaintEffectWidget /External/;
 class QgsPaintEffectAbstractMetadata
 {
 %Docstring
- Stores metadata about a paint effect class.
+Stores metadata about a paint effect class.
 
 .. note::
 
@@ -84,7 +84,7 @@ if there's no GUI for the paint effect class.
 class QgsPaintEffectRegistry
 {
 %Docstring
- Registry of available paint effects.
+Registry of available paint effects.
 
 QgsPaintEffectRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.paintEffectRegistry()`
@@ -127,7 +127,7 @@ Creates a new paint effect given the effect name and properties map.
 :param properties: encoded string map of effect properties
 
 :return: new paint effect of specified class, or None if matching
-paint effect could not be created
+         paint effect could not be created
 %End
 
     QgsPaintEffect *createEffect( const QDomElement &element ) const /Factory/;
@@ -138,7 +138,7 @@ properties.
 :param element: encoded DOM element of effect properties
 
 :return: new paint effect, or None if matching
-paint effect could not be created
+         paint effect could not be created
 %End
 
     QStringList effects() const;
@@ -167,9 +167,9 @@ Tests whether a paint effect matches the default effects stack.
 
 :return: true if effect is default stack
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`defaultStack`
+
+.. versionadded:: 2.12
 %End
 
   private:

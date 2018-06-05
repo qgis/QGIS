@@ -64,9 +64,17 @@ to generic QgsVectorDataProvider's) depends on it.
       CustomData
     };
 
-    QgsDataProvider( const QString &uri = QString() );
+
+    struct ProviderOptions
+    {
+      int unused; //! @todo remove me once there are actual members here (breaks SIP <4.19)
+    };
+
+    QgsDataProvider( const QString &uri = QString(), const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
 %Docstring
 Create a new dataprovider with the specified in the ``uri``.
+
+Additional creation options are specified within the ``options`` value.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -87,7 +95,7 @@ connection string
 
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const;
 %Docstring
-Get the data source specification. This may be a path or database
+Gets the data source specification. This may be a path or database
 connection string
 
 :param expandAuthConfig: Whether to expand any assigned authentication configuration
@@ -110,7 +118,7 @@ Set the data source specification.
 
     QgsDataSourceUri uri() const;
 %Docstring
-Get the data source specification.
+Gets the data source specification.
 
 .. versionadded:: 3.0
 %End
@@ -183,7 +191,7 @@ layers in some way at the server, before it serves them to the provider.
 
     virtual uint subLayerCount() const;
 %Docstring
-return the number of layers for the current data source
+Returns the number of layers for the current data source
 %End
 
 
@@ -206,7 +214,7 @@ Set the visibility of the given sublayer name
 
     virtual QString name() const = 0;
 %Docstring
-Return a provider name
+Returns a provider name
 
 Essentially just returns the provider key.  Should be used to build file
 dialogs so that providers can be shown with their supported types. Thus
@@ -223,9 +231,9 @@ anything strange with regards to their name or description?
 
     virtual QString description() const = 0;
 %Docstring
-Return description
+Returns description
 
-Return a terse string describing what the provider is.
+Returns a terse string describing what the provider is.
 
 \note
 
@@ -237,7 +245,7 @@ anything strange with regards to their name or description?
 
     virtual QString fileVectorFilters() const;
 %Docstring
-Return vector file filter string
+Returns vector file filter string
 
 Returns a string suitable for a QFileDialog of vector file formats
 supported by the data provider.  Naturally this will be an empty string
@@ -252,7 +260,7 @@ databases and servers.
 
     virtual QString fileRasterFilters() const;
 %Docstring
-Return raster file filter string
+Returns raster file filter string
 
 Returns a string suitable for a QFileDialog of raster file formats
 supported by the data provider.  Naturally this will be an empty string
@@ -282,7 +290,7 @@ Current time stamp of data source
 
     virtual QgsError error() const;
 %Docstring
-Get current status error. This error describes some principal problem
+Gets current status error. This error describes some principal problem
 for which provider cannot work and thus is not valid. It is not last error
 after accessing data by block(), identify() etc.
 %End
@@ -347,7 +355,7 @@ It depends on the provider which properties are supported.
 
     QVariant providerProperty( ProviderProperty property, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
-Get the current value of a certain provider property.
+Gets the current value of a certain provider property.
 It depends on the provider which properties are supported.
 
 .. versionadded:: 2.16
@@ -428,7 +436,7 @@ Add error message
 
     void setError( const QgsError &error );
 %Docstring
-Set error message
+Sets error message
 %End
 
 };

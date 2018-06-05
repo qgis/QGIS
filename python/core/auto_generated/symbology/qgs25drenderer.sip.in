@@ -44,7 +44,7 @@ Create a new 2.5D renderer from XML
 
     QColor roofColor() const;
 %Docstring
-Get the roof color
+Gets the roof color
 %End
 
     void setRoofColor( const QColor &roofColor );
@@ -54,7 +54,7 @@ Set the roof color
 
     QColor wallColor() const;
 %Docstring
-Get the wall color
+Gets the wall color
 %End
 
     void setWallColor( const QColor &wallColor );
@@ -69,12 +69,12 @@ Set wall shading enabled
 
     bool wallShadingEnabled() const;
 %Docstring
-Get wall shading enabled
+Gets wall shading enabled
 %End
 
     QColor shadowColor() const;
 %Docstring
-Get the shadow's color
+Gets the shadow's color
 %End
 
     void setShadowColor( const QColor &shadowColor );
@@ -84,7 +84,7 @@ Set the shadow's color
 
     double shadowSpread() const;
 %Docstring
-Get the shadow's spread distance in map units
+Gets the shadow's spread distance in map units
 %End
 
     void setShadowSpread( double shadowSpread );

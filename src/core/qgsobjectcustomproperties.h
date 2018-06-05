@@ -41,13 +41,13 @@ class CORE_EXPORT QgsObjectCustomProperties
      */
     QgsObjectCustomProperties() = default;
 
-    //! Return list of stored keys
+    //! Returns list of stored keys
     QStringList keys() const;
 
     //! Add an entry to the store. If the entry with the keys exists already, it will be overwritten
     void setValue( const QString &key, const QVariant &value );
 
-    //! Return value for the given key. If the key is not stored, default value will be used
+    //! Returns value for the given key. If the key is not stored, default value will be used
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 
     //! Remove a key (entry) from the store

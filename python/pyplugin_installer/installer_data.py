@@ -214,7 +214,7 @@ class Repositories(QObject):
     def urlParams(self):
         """ return GET parameters to be added to every request """
         # Strip down the point release segment from the version string
-        return "?qgis=%s" % re.sub('\.\d*$', '', pyQgisVersion())
+        return "?qgis={}".format(re.sub(r'\.\d*$', '', pyQgisVersion()))
 
     # ----------------------------------------- #
     def setRepositoryData(self, reposName, key, value):
@@ -414,7 +414,7 @@ class Repositories(QObject):
                         trusted = True
                     icon = pluginNodes.item(i).firstChildElement("icon").text().strip()
                     if icon and not icon.startswith("http"):
-                        icon = "http://%s/%s" % (QUrl(self.mRepositories[reposName]["url"]).host(), icon)
+                        icon = "http://{}/{}".format(QUrl(self.mRepositories[reposName]["url"]).host(), icon)
 
                     if pluginNodes.item(i).toElement().hasAttribute("plugin_id"):
                         plugin_id = pluginNodes.item(i).toElement().attribute("plugin_id")
@@ -473,7 +473,7 @@ class Repositories(QObject):
                 if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 200:
                     self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
                 else:
-                    self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
+                    self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " {} {}".format(
                         reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
                         reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
                     )
@@ -583,10 +583,10 @@ class Plugins(QObject):
                 If failed, fallbacks to the standard metadata """
             locale = QLocale.system().name()
             if locale and fct in translatableAttributes:
-                value = metadataParser("%s[%s]" % (fct, locale))
+                value = metadataParser("{}[{}]".format(fct, locale))
                 if value:
                     return value
-                value = metadataParser("%s[%s]" % (fct, locale.split("_")[0]))
+                value = metadataParser("{}[{}]".format(fct, locale.split("_")[0]))
                 if value:
                     return value
             return metadataParser(fct)
@@ -614,7 +614,7 @@ class Plugins(QObject):
             # if compatible, add the plugin to the list
             if not isCompatible(pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion):
                 error = "incompatible"
-                errorDetails = "%s - %s" % (qgisMinimumVersion, qgisMaximumVersion)
+                errorDetails = "{} - {}".format(qgisMinimumVersion, qgisMaximumVersion)
         elif not os.path.exists(metadataFile):
             error = "broken"
             errorDetails = QCoreApplication.translate("QgsPluginInstaller", "Missing metadata file")

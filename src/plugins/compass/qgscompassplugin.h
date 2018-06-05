@@ -62,7 +62,7 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     virtual QString category();
 
     /**
-     * Return the plugin type
+     * Returns the plugin type
      */
     virtual int type();
     //! Destructor

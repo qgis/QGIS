@@ -21,7 +21,6 @@ A QgsFeatureFilterProvider provides a method for modifying a QgsFeatureRequest i
 additional filters to the request.
 
 .. versionadded:: 2.14
-*
 %End
 
 %TypeHeaderCode

@@ -55,7 +55,7 @@ This will be appended to controlImagePath
 
     QString imageToHash( const QString &imageFile );
 %Docstring
-Get an md5 hash that uniquely identifies an image
+Gets an md5 hash that uniquely identifies an image
 %End
 
     void setRenderedImage( const QString &imageFileName );
@@ -80,7 +80,7 @@ Set tolerance for color components used by runTest() and compareImages().
 Default value is 0.
 
 :param colorTolerance: is maximum difference for each color component
-including alpha to be considered correct.
+                       including alpha to be considered correct.
 
 .. versionadded:: 2.1
 %End
@@ -100,11 +100,11 @@ Sets the largest allowable difference in size between the rendered and the expec
 Test using renderer to generate the image to be compared.
 
 :param testName: - to be used as the basis for writing a file to
-e.g. /tmp/theTestName.png
+                 e.g. /tmp/theTestName.png
 :param mismatchCount: - defaults to 0 - the number of pixels that
-are allowed to be different from the control image. In some cases
-rendering may be non-deterministic. This parameter allows you to account
-for that by providing a tolerance.
+                      are allowed to be different from the control image. In some cases
+                      rendering may be non-deterministic. This parameter allows you to account
+                      for that by providing a tolerance.
 
 .. note::
 
@@ -116,18 +116,18 @@ for that by providing a tolerance.
 Test using two arbitrary images (map renderer will not be used)
 
 :param testName: - to be used as the basis for writing a file to
-e.g. /tmp/theTestName.png
+                 e.g. /tmp/theTestName.png
 :param mismatchCount: - defaults to 0 - the number of pixels that
-are allowed to be different from the control image. In some cases
-rendering may be non-deterministic. This parameter allows you to account
-for that by providing a tolerance.
+                      are allowed to be different from the control image. In some cases
+                      rendering may be non-deterministic. This parameter allows you to account
+                      for that by providing a tolerance.
 :param renderedImageFile: to optionally override the output filename
 \note: make sure to call setExpectedImage and setRenderedImage first.
 %End
 
     bool isKnownAnomaly( const QString &diffImageFile );
 %Docstring
-Get a list of all the anomalies. An anomaly is a rendered difference
+Gets a list of all the anomalies. An anomaly is a rendered difference
 file where there is some red pixel content (indicating a render check
 mismatch), but where the output was still acceptable. If the render
 diff matches one of these anomalies we will still consider it to be
@@ -160,14 +160,10 @@ dash messages will be sent immediately.
 
     QVector<QgsDartMeasurement> dartMeasurements() const;
 %Docstring
-Get access to buffered dash messages.
+Gets access to buffered dash messages.
 Only will return something if you call enableDashBuffering( true ); before.
 
 :return: buffered dash messages
-
-.. note::
-
-   not available in Python bindings
 %End
 
   protected:

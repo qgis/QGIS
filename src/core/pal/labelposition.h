@@ -138,10 +138,10 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
+      //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      //! Get distance from this label to a point. If point lies inside, returns negative number.
+      //! Gets distance from this label to a point. If point lies inside, returns negative number.
       double getDistanceToPoint( double xp, double yp ) const;
 
       //! Returns true if this label crosses the specified line
@@ -165,15 +165,13 @@ namespace pal
       void offsetPosition( double xOffset, double yOffset );
 
       /**
-       * \brief return id
-       * \returns id
+       * Returns the id
        */
       int getId() const;
 
 
       /**
-       * \brief return the feature corresponding to this labelposition
-       * \returns the feature
+       * Returns the feature corresponding to this labelposition
        */
       FeaturePart *getFeaturePart();
 
@@ -223,14 +221,14 @@ namespace pal
       void validateCost();
 
       /**
-       * \brief get the down-left x coordinate
-       * \returns x coordinate
+       * Returns the down-left x coordinate.
+       * \see getY()
        */
       double getX( int i = 0 ) const;
 
       /**
-       * \brief get the down-left y coordinate
-       * \returns y coordinate
+       * Returns the down-left y coordinate.
+       * \see getX()
        */
       double getY( int i = 0 ) const;
 
@@ -238,8 +236,7 @@ namespace pal
       double getHeight() const { return h; }
 
       /**
-       * \brief get alpha
-       * \returns alpha to rotate text (in rad)
+       * Returns the angle to rotate text (in rad).
        */
       double getAlpha() const;
       bool getReversed() const { return reversed; }

@@ -10,7 +10,7 @@
 
 
 
-class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
+class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
 {
 
 %TypeHeaderCode
@@ -27,6 +27,7 @@ Constructor for FeatureInfo.
 %End
 
         bool isNew;
+
         bool isEdited;
     };
 
@@ -44,7 +45,12 @@ Constructor for QgsFeatureListModel
 %End
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
+
     QgsVectorLayerCache *layerCache();
+%Docstring
+Returns the vector layer cache which is being used to populate the model.
+%End
+
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
@@ -52,7 +58,7 @@ Constructor for QgsFeatureListModel
 
     void setInjectNull( bool injectNull );
 %Docstring
- If true is specified, a NULL value will be injected
+If true is specified, a NULL value will be injected
 
 :param injectNull: state of null value injection
 
@@ -61,7 +67,7 @@ Constructor for QgsFeatureListModel
 
     bool injectNull();
 %Docstring
- Returns the current state of null value injection
+Returns the current state of null value injection
 
 :return: If a NULL value is added
 
@@ -72,24 +78,37 @@ Constructor for QgsFeatureListModel
 
     bool setDisplayExpression( const QString &expression );
 %Docstring
-\param  expression   A QgsExpression compatible string.
+
+:param expression: A QgsExpression compatible string.
 
 :return: true if the expression could be set, false if there was a parse error.
-If it fails, the old expression will still be applied. Call parserErrorString()
-for a meaningful error message.
+         If it fails, the old expression will still be applied. Call parserErrorString()
+         for a meaningful error message.
 %End
 
     QString parserErrorString();
 %Docstring
- Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
+Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End
 
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
+
     QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
+%Docstring
+Returns the feature ID corresponding to an ``index`` from the model.
+
+.. seealso:: :py:func:`fidToIdx`
+%End
+
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
+%Docstring
+Returns the model index corresponding to a feature ID.
+
+.. seealso:: :py:func:`idxToFid`
+%End
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
@@ -102,8 +121,6 @@ for a meaningful error message.
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-
     virtual QModelIndex parent( const QModelIndex &child ) const;
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -115,11 +132,54 @@ for a meaningful error message.
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
+    bool sortByDisplayExpression() const;
+%Docstring
+Sort this model by its display expression.
+
+.. versionadded:: 3.2
+%End
+
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
+%Docstring
+Sort this model by its display expression.
+
+.. note::
+
+   Not compatible with injectNull, if sorting by display expression is enabled,
+   injectNull will automatically turned off.
+
+.. versionadded:: 3.2
+%End
+
   public slots:
-    void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
-    void onEndRemoveRows( const QModelIndex &parent, int first, int last );
-    void onBeginInsertRows( const QModelIndex &parent, int first, int last );
-    void onEndInsertRows( const QModelIndex &parent, int first, int last );
+
+ void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling beginRemoveRows()
+
+.. deprecated:: Use beginRemoveRows() instead
+%End
+
+ void onEndRemoveRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling endRemoveRows()
+
+.. deprecated:: Use endRemoveRows() instead
+%End
+
+ void onBeginInsertRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling beginInsertRows()
+
+.. deprecated:: use beginInsertRows() instead
+%End
+
+ void onEndInsertRows( const QModelIndex &parent, int first, int last );
+%Docstring
+Does nothing except for calling endInsertRows()
+
+.. deprecated:: use endInsertRows() instead
+%End
 
 };
 

@@ -48,66 +48,66 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    //! Get current arrow width
+    //! Gets current arrow width
     double arrowWidth() const { return mArrowWidth; }
-    //! Set the arrow width
+    //! Sets the arrow width
     void setArrowWidth( double width ) { mArrowWidth = width; }
-    //! Get the unit for the arrow width
+    //! Gets the unit for the arrow width
     QgsUnitTypes::RenderUnit arrowWidthUnit() const { return mArrowWidthUnit; }
-    //! Set the unit for the arrow width
+    //! Sets the unit for the arrow width
     void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowWidthUnit = unit; }
-    //! Get the scale for the arrow width
+    //! Gets the scale for the arrow width
     QgsMapUnitScale arrowWidthUnitScale() const { return mArrowWidthUnitScale; }
-    //! Set the scale for the arrow width
+    //! Sets the scale for the arrow width
     void setArrowWidthUnitScale( const QgsMapUnitScale &scale ) { mArrowWidthUnitScale = scale; }
 
-    //! Get current arrow start width. Only meaningful for single headed arrows
+    //! Gets current arrow start width. Only meaningful for single headed arrows
     double arrowStartWidth() const { return mArrowStartWidth; }
-    //! Set the arrow start width
+    //! Sets the arrow start width
     void setArrowStartWidth( double width ) { mArrowStartWidth = width; }
-    //! Get the unit for the arrow start width
+    //! Gets the unit for the arrow start width
     QgsUnitTypes::RenderUnit arrowStartWidthUnit() const { return mArrowStartWidthUnit; }
-    //! Set the unit for the arrow start width
+    //! Sets the unit for the arrow start width
     void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit ) { mArrowStartWidthUnit = unit; }
-    //! Get the scale for the arrow start width
+    //! Gets the scale for the arrow start width
     QgsMapUnitScale arrowStartWidthUnitScale() const { return mArrowStartWidthUnitScale; }
-    //! Set the scale for the arrow start width
+    //! Sets the scale for the arrow start width
     void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale ) { mArrowStartWidthUnitScale = scale; }
 
-    //! Get the current arrow head length
+    //! Gets the current arrow head length
     double headLength() const { return mHeadLength; }
-    //! Set the arrow head length
+    //! Sets the arrow head length
     void setHeadLength( double length ) { mHeadLength = length; }
-    //! Get the unit for the head length
+    //! Gets the unit for the head length
     QgsUnitTypes::RenderUnit headLengthUnit() const { return mHeadLengthUnit; }
-    //! Set the unit for the head length
+    //! Sets the unit for the head length
     void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit ) { mHeadLengthUnit = unit; }
-    //! Get the scale for the head length
+    //! Gets the scale for the head length
     QgsMapUnitScale headLengthUnitScale() const { return mHeadLengthUnitScale; }
-    //! Set the scale for the head length
+    //! Sets the scale for the head length
     void setHeadLengthUnitScale( const QgsMapUnitScale &scale ) { mHeadLengthUnitScale = scale; }
 
-    //! Get the current arrow head height
+    //! Gets the current arrow head height
     double headThickness() const { return mHeadThickness; }
-    //! Set the arrow head height
+    //! Sets the arrow head height
     void setHeadThickness( double thickness ) { mHeadThickness = thickness; }
-    //! Get the unit for the head height
+    //! Gets the unit for the head height
     QgsUnitTypes::RenderUnit headThicknessUnit() const { return mHeadThicknessUnit; }
-    //! Set the unit for the head height
+    //! Sets the unit for the head height
     void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit ) { mHeadThicknessUnit = unit; }
-    //! Get the scale for the head height
+    //! Gets the scale for the head height
     QgsMapUnitScale headThicknessUnitScale() const { return mHeadThicknessUnitScale; }
-    //! Set the scale for the head height
+    //! Sets the scale for the head height
     void setHeadThicknessUnitScale( const QgsMapUnitScale &scale ) { mHeadThicknessUnitScale = scale; }
 
-    //! Return whether it is a curved arrow or a straight one
+    //! Returns whether it is a curved arrow or a straight one
     bool isCurved() const { return mIsCurved; }
-    //! Set whether it is a curved arrow or a straight one
+    //! Sets whether it is a curved arrow or a straight one
     void setIsCurved( bool isCurved ) { mIsCurved = isCurved; }
 
-    //! Return whether the arrow is repeated along the line or not
+    //! Returns whether the arrow is repeated along the line or not
     bool isRepeated() const { return mIsRepeated; }
-    //! Set whether the arrow is repeated along the line
+    //! Sets whether the arrow is repeated along the line
     void setIsRepeated( bool isRepeated ) { mIsRepeated = isRepeated; }
 
     //! Possible head types
@@ -118,9 +118,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
       HeadDouble    //< Two heads
     };
 
-    //! Get the current head type
+    //! Gets the current head type
     HeadType headType() const { return mHeadType; }
-    //! Set the head type
+    //! Sets the head type
     void setHeadType( HeadType type ) { mHeadType = type; }
 
     //! Possible arrow types
@@ -131,9 +131,9 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
       ArrowRightHalf  //< Halved arrow, only the right side of the arrow is rendered (for straight arrows) or the side toward the interior (for curved arrows)
     };
 
-    //! Get the current arrow type
+    //! Gets the current arrow type
     ArrowType arrowType() const { return mArrowType; }
-    //! Set the arrow type
+    //! Sets the arrow type
     void setArrowType( ArrowType type ) { mArrowType = type; }
 
     QgsStringMap properties() const override;

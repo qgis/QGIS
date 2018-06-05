@@ -524,10 +524,10 @@ QgsGraduatedSymbolRendererWidget::QgsGraduatedSymbolRendererWidget( QgsVectorLay
   // menus for data-defined rotation/size
   QMenu *advMenu = new QMenu( this );
 
-  advMenu->addAction( tr( "Symbol levels…" ), this, SLOT( showSymbolLevels() ) );
+  advMenu->addAction( tr( "Symbol Levels…" ), this, SLOT( showSymbolLevels() ) );
   if ( mGraduatedSymbol->type() == QgsSymbol::Marker )
   {
-    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined size legend…" ) );
+    QAction *actionDdsLegend = advMenu->addAction( tr( "Data-defined Size Legend…" ) );
     // only from Qt 5.6 there is convenience addAction() with new style connection
     connect( actionDdsLegend, &QAction::triggered, this, &QgsGraduatedSymbolRendererWidget::dataDefinedSizeLegend );
   }
@@ -878,11 +878,11 @@ void QgsGraduatedSymbolRendererWidget::reapplySizes()
 
 void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 {
-  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  std::unique_ptr< QgsSymbol > newSymbol( mGraduatedSymbol->clone() );
   if ( panel && panel->dockMode() )
   {
-    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.get(), mStyle, mLayer, panel );
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol.release(), mStyle, mLayer, panel );
     dlg->setContext( mContext );
 
     connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );

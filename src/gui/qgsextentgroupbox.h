@@ -138,15 +138,15 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     /**
      * Sets the base part of \a title of the group box (will be appended with extent state)
-     * \since QGIS 2.12
      * \see titleBase()
+     * \since QGIS 2.12
      */
     void setTitleBase( const QString &title );
 
     /**
      * Returns the base part of title of the group box (will be appended with extent state).
-     * \since QGIS 2.12
      * \see setTitleBase()
+     * \since QGIS 2.12
      */
     QString titleBase() const;
 
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
      * \since QGIS 3.0
-     * */
+     */
     QSize ratio() const { return mRatio; }
 
   public slots:
@@ -198,7 +198,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
      * To unset a fixed aspect ratio, set the width and height to zero.
      * \param ratio aspect ratio's width and height
      * \since QGIS 3.0
-     * */
+     */
     void setRatio( QSize ratio ) { mRatio = ratio; }
 
   signals:

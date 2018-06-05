@@ -53,62 +53,62 @@ Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable m
 
     QgsLayerTreeModel *layerTreeModel() const;
 %Docstring
-Get access to the model casted to :py:class:`QgsLayerTreeModel`
+Gets access to the model casted to :py:class:`QgsLayerTreeModel`
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();
 %Docstring
-Get access to the default actions that may be used with the tree view
+Gets access to the default actions that may be used with the tree view
 %End
 
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider /Transfer/ );
 %Docstring
-Set provider for context menu. Takes ownership of the instance
+Sets provider for context menu. Takes ownership of the instance
 %End
     QgsLayerTreeViewMenuProvider *menuProvider() const;
 %Docstring
-Return pointer to the context menu provider. May be null
+Returns pointer to the context menu provider. May be null
 %End
 
     QgsMapLayer *currentLayer() const;
 %Docstring
-Get currently selected layer. May be null
+Gets currently selected layer. May be null
 %End
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
-Set currently selected layer. Null pointer will deselect any layer.
+Sets currently selected layer. Null pointer will deselect any layer.
 %End
 
     QgsLayerTreeNode *currentNode() const;
 %Docstring
-Get current node. May be null
+Gets current node. May be null
 %End
     QgsLayerTreeGroup *currentGroupNode() const;
 %Docstring
-Get current group node. If a layer is current node, the function will return parent group. May be null.
+Gets current group node. If a layer is current node, the function will return parent group. May be null.
 %End
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
-Get current legend node. May be null if current node is not a legend node.
+Gets current legend node. May be null if current node is not a legend node.
 
 .. versionadded:: 2.14
 %End
 
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
-Return list of selected nodes
+Returns list of selected nodes
 
 :param skipInternal: If true, will ignore nodes which have an ancestor in the selection
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
-Return list of selected nodes filtered to just layer nodes
+Returns list of selected nodes filtered to just layer nodes
 %End
 
     QList<QgsMapLayer *> selectedLayers() const;
 %Docstring
-Get list of selected layers
+Gets list of selected layers
 %End
 
     void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
@@ -227,7 +227,7 @@ instance to provide custom context menus (opened upon right-click).
 
     virtual QMenu *createContextMenu() = 0 /Factory/;
 %Docstring
-Return a newly created menu instance (or null pointer on error)
+Returns a newly created menu instance (or null pointer on error)
 %End
 };
 

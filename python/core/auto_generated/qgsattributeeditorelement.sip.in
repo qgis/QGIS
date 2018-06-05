@@ -63,7 +63,7 @@ Constructor
 
     QString name() const;
 %Docstring
-Return the name of this element
+Returns the name of this element
 
 :return: The name for this element
 %End
@@ -77,14 +77,14 @@ The type of this element
 
     QgsAttributeEditorElement *parent() const;
 %Docstring
-Get the parent of this element.
+Gets the parent of this element.
 
 .. versionadded:: 3.0
 %End
 
     QDomElement toDomElement( QDomDocument &doc ) const;
 %Docstring
-Get the XML Dom element to save this element.
+Gets the XML Dom element to save this element.
 
 :param doc: The QDomDocument which is used to create new XML elements
 
@@ -133,7 +133,7 @@ attribute form if it is set to the drag and drop designer.
 %Docstring
 Creates a new attribute editor container
 
-:param name:   The name to show as title
+:param name: The name to show as title
 :param parent: The parent. May be another container.
 %End
 
@@ -163,7 +163,7 @@ Returns if this container is going to be rendered as a group box
 
     QList<QgsAttributeEditorElement *> children() const;
 %Docstring
-Get a list of the children elements of this container
+Gets a list of the children elements of this container
 
 :return: A list of elements
 %End
@@ -189,7 +189,7 @@ Change the name of this container
 
     int columnCount() const;
 %Docstring
-Get the number of columns in this group
+Gets the number of columns in this group
 %End
 
     void setColumnCount( int columnCount );
@@ -240,16 +240,14 @@ This element will load a field's widget onto the form.
 %Docstring
 Creates a new attribute editor element which represents a field
 
-:param name:   The name of the element
-:param idx:    The index of the field which should be embedded
+:param name: The name of the element
+:param idx: The index of the field which should be embedded
 :param parent: The parent of this widget (used as container)
 %End
 
     int idx() const;
 %Docstring
-Return the index of the field
-
-:return:
+Returns the index of the field.
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
@@ -284,22 +282,22 @@ This element will load a relation editor onto the form.
 %Docstring
 Creates a new element which embeds a relation.
 
-:param relationId:   The id of the relation to embed
-:param parent:       The parent (used as container)
+:param relationId: The id of the relation to embed
+:param parent: The parent (used as container)
 %End
 
     QgsAttributeEditorRelation( const QgsRelation &relation, QgsAttributeEditorElement *parent );
 %Docstring
 Creates a new element which embeds a relation.
 
-:param relation:     The relation to embed
-:param parent:       The parent (used as container)
+:param relation: The relation to embed
+:param parent: The parent (used as container)
 %End
 
 
     const QgsRelation &relation() const;
 %Docstring
-Get the id of the relation which shall be embedded
+Gets the id of the relation which shall be embedded
 
 :return: the id
 %End

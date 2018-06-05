@@ -179,7 +179,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
         : loadDefaultStyle( loadDefaultStyle )
       {}
 
-      //! Set to true if the default layer style should be loaded
+      //! Sets to true if the default layer style should be loaded
       bool loadDefaultStyle = true;
     };
 
@@ -245,38 +245,63 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 
-    //! Return time stamp for given file name
+    //! Returns time stamp for given file name
     static QDateTime lastModified( const QString   &name );
 
-    //! [ data provider interface ] Set the data provider
-    void setDataProvider( const QString &provider );
+    /**
+     * Set the data provider.
+     * \deprecated Use the version with ProviderOptions instead.
+     */
+    Q_DECL_DEPRECATED void setDataProvider( const QString &provider ) SIP_DEPRECATED;
 
-    //! \brief  Accessor for raster layer type (which is a read only property)
+    /**
+     * Set the data provider.
+     * \param provider provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
+     * \param options provider options
+     * \since QGIS 3.2
+     */
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+
+    /**
+     * Returns the raster layer type (which is a read only property).
+     */
     LayerType rasterType() { return mRasterType; }
 
-    //! Set raster renderer. Takes ownership of the renderer object
+    //! Sets raster renderer. Takes ownership of the renderer object
     void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
-    //! Set raster resample filter. Takes ownership of the resample filter object
+    //! Sets raster resample filter. Takes ownership of the resample filter object
     QgsRasterResampleFilter *resampleFilter() const { return mPipe.resampleFilter(); }
 
     QgsBrightnessContrastFilter *brightnessFilter() const { return mPipe.brightnessFilter(); }
     QgsHueSaturationFilter *hueSaturationFilter() const { return mPipe.hueSaturationFilter(); }
 
-    //! Get raster pipe
+    /**
+     * Returns the raster pipe.
+     */
     QgsRasterPipe *pipe() { return &mPipe; }
 
-    //! \brief Accessor that returns the width of the (unclipped) raster
+    /**
+     * Returns the width of the (unclipped) raster.
+     * \see height()
+     */
     int width() const;
 
-    //! \brief Accessor that returns the height of the (unclipped) raster
+    /**
+     * Returns the height of the (unclipped) raster.
+     * \see width()
+     */
     int height() const;
 
-    //! \brief Get the number of bands in this layer
+    /**
+     * Returns the number of bands in this layer.
+     */
     int bandCount() const;
 
-    //! \brief Get the name of a band given its number
+    /**
+     * Returns the name of a band given its number.
+     */
     QString bandName( int bandNoInt ) const;
 
     // Returns nullptr if not using the data provider model (i.e. directly using GDAL)
@@ -356,14 +381,14 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
     /**
-     * \brief Return default contrast enhancemnt settings for that type of raster.
+     * Returns default contrast enhancement settings for that type of raster.
      *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
       QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
 
-    //! \brief Set default contrast enhancement
+    //! Sets the default contrast enhancement
     void setDefaultContrastEnhancement();
 
     QStringList subLayers() const override;

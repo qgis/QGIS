@@ -41,8 +41,8 @@ class QInputEvent;
  * Also is responsible for mouse interactions such as resizing and moving selected items.
  *
  * \note not available in Python bindings
- * \since QGIS 3.0
  *
+ * \since QGIS 3.0
 */
 class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
 {
@@ -209,7 +209,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     void hideAlignItems();
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    void collectItems( const QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
+    void collectItems( QList< QgsLayoutItem * > items, QList< QgsLayoutItem * > &collected );
 
 };
 

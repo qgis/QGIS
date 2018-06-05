@@ -108,7 +108,7 @@ class QgsSelectedFeature: public QObject
     void replaceVertexMap();
 
     /**
-     * Get the layer of the selected feature
+     * Gets the layer of the selected feature
      * \returns used vector layer
      */
     QgsVectorLayer *vlayer();

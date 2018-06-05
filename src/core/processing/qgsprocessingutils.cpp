@@ -51,7 +51,7 @@ QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *
   return layers;
 }
 
-QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *project, const QList<QgsWkbTypes::GeometryType> &geometryTypes, bool sort )
+QList<QgsVectorLayer *> QgsProcessingUtils::compatibleVectorLayers( QgsProject *project, const QList<int> &geometryTypes, bool sort )
 {
   if ( !project )
     return QList<QgsVectorLayer *>();
@@ -81,7 +81,7 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   QList<QgsMapLayer *> layers;
   Q_FOREACH ( QgsRasterLayer *rl, compatibleRasterLayers( project, false ) )
     layers << rl;
-  Q_FOREACH ( QgsVectorLayer *vl, compatibleVectorLayers( project, QList< QgsWkbTypes::GeometryType >(), false ) )
+  Q_FOREACH ( QgsVectorLayer *vl, compatibleVectorLayers( project, QList< int >(), false ) )
     layers << vl;
 
   if ( sort )
@@ -288,10 +288,16 @@ bool QgsProcessingUtils::canUseLayer( const QgsRasterLayer *layer )
   return layer && layer->providerType() == QStringLiteral( "gdal" );
 }
 
-bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<QgsWkbTypes::GeometryType> &geometryTypes )
+bool QgsProcessingUtils::canUseLayer( const QgsVectorLayer *layer, const QList<int> &sourceTypes )
 {
   return layer &&
-         ( geometryTypes.isEmpty() || geometryTypes.contains( layer->geometryType() ) );
+         ( sourceTypes.isEmpty()
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorPoint ) && layer->geometryType() == QgsWkbTypes::PointGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorLine ) && layer->geometryType() == QgsWkbTypes::LineGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorPolygon ) && layer->geometryType() == QgsWkbTypes::PolygonGeometry )
+           || ( sourceTypes.contains( QgsProcessing::TypeVectorAnyGeometry ) && layer->isSpatial() )
+           || sourceTypes.contains( QgsProcessing::TypeVector )
+         );
 }
 
 QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
@@ -330,7 +336,7 @@ void QgsProcessingUtils::parseDestinationString( QString &destination, QString &
         if ( !dsUri.table().isEmpty() )
         {
           layerName = dsUri.table();
-          options.insert( "layerName", layerName );
+          options.insert( QStringLiteral( "layerName" ), layerName );
         }
         uri = dsUri.database();
       }
@@ -654,6 +660,7 @@ QList<int> QgsProcessingUtils::fieldNamesToIndices( const QStringList &fieldName
   QList<int> indices;
   if ( !fieldNames.isEmpty() )
   {
+    indices.reserve( fieldNames.count() );
     for ( const QString &f : fieldNames )
     {
       int idx = fields.lookupField( f );
@@ -663,6 +670,7 @@ QList<int> QgsProcessingUtils::fieldNamesToIndices( const QStringList &fieldName
   }
   else
   {
+    indices.reserve( fields.count() );
     for ( int i = 0; i < fields.count(); ++i )
       indices.append( i );
   }

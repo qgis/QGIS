@@ -133,18 +133,18 @@ Returns the currently selected state for the widget's extent.
 %Docstring
 Sets the base part of ``title`` of the group box (will be appended with extent state)
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`titleBase`
+
+.. versionadded:: 2.12
 %End
 
     QString titleBase() const;
 %Docstring
 Returns the base part of title of the group box (will be appended with extent state).
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setTitleBase`
+
+.. versionadded:: 2.12
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -162,7 +162,6 @@ Returns the current fixed aspect ratio to be used when dragging extent onto the 
 If the aspect ratio isn't fixed, the width and height will be set to zero.
 
 .. versionadded:: 3.0
-*
 %End
 
   public slots:
@@ -204,7 +203,6 @@ To unset a fixed aspect ratio, set the width and height to zero.
 :param ratio: aspect ratio's width and height
 
 .. versionadded:: 3.0
-*
 %End
 
   signals:

@@ -73,7 +73,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
 
-    //! Get the view mode for the dual view
+    //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
@@ -148,15 +148,15 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void addFeature();
     void duplicateFeature();
     void linkFeature();
-    void deleteFeature( const QgsFeatureId featureid = QgsFeatureId() );
+    void deleteFeature( QgsFeatureId featureid = QgsFeatureId() );
     void deleteSelectedFeatures();
-    void unlinkFeature( const QgsFeatureId featureid = QgsFeatureId() );
+    void unlinkFeature( QgsFeatureId featureid = QgsFeatureId() );
     void unlinkSelectedFeatures();
     void zoomToSelectedFeatures();
     void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
-    void showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
 
   private:
     void updateUi();

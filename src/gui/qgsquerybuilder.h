@@ -98,13 +98,13 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     void onTextChanged( const QString &text );
 
     /**
-     * Get all distinct values for the field. Values are inserted
+     * Gets all distinct values for the field. Values are inserted
      * into the value list box
      */
     void btnGetAllValues_clicked();
 
     /**
-     * Get sample distinct values for the selected field. The sample size is
+     * Gets sample distinct values for the selected field. The sample size is
      * limited to an arbitrary value (currently set to 25). The values
      * are inserted into the values list box.
      */

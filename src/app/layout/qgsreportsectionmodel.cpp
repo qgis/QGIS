@@ -29,7 +29,7 @@ QgsReportSectionModel::QgsReportSectionModel( QgsReport *report, QObject *parent
 Qt::ItemFlags QgsReportSectionModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return 0;
+    return nullptr;
 
   return QAbstractItemModel::flags( index );
 }

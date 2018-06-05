@@ -55,8 +55,6 @@ Returns the map canvas associated with the widget.
 
 .. seealso:: :py:func:`setMapCanvas`
 
-.. seealso:: :py:func:`canvasExtent`
-
 .. versionadded:: 2.16
 %End
 
@@ -64,23 +62,23 @@ Returns the map canvas associated with the widget.
 
     QgsRectangle extent();
 %Docstring
-Return the extent selected by the user.
+Returns the extent selected by the user.
 Either an empty extent for 'full' or the current visible extent.
 %End
 
     int sampleSize();
 %Docstring
-Return the selected sample size.
+Returns the selected sample size.
 %End
 
     void setFromMinMaxOrigin( const QgsRasterMinMaxOrigin & );
 %Docstring
- Set the "source" of min/max values.
+Sets the "source" of min/max values.
 %End
 
     QgsRasterMinMaxOrigin minMaxOrigin();
 %Docstring
- Return a QgsRasterMinMaxOrigin object with the widget values.
+Returns a QgsRasterMinMaxOrigin object with the widget values.
 %End
 
     void hideUpdatedExtent();
@@ -100,12 +98,12 @@ Uncheck cumulative cut, min/max, std-dev radio buttons
 
     bool isCollapsed() const;
 %Docstring
-Return if the widget is collaped.
+Returns if the widget is collaped.
 %End
 
     void setCollapsed( bool b );
 %Docstring
-Set collapsed state of widget
+Sets collapsed state of widget
 %End
 
   signals:

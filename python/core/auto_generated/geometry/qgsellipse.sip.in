@@ -13,7 +13,7 @@
 class QgsEllipse
 {
 %Docstring
- Ellipse geometry type.
+Ellipse geometry type.
 
 An ellipse is defined by a center point with a semi-major axis, a semi-minor axis and an azimuth.
 The azimuth is the north angle to the first quadrant (always oriented on the semi-major axis), in degrees. By default, the semi-major axis is oriented to the east (90 degrees).
@@ -34,7 +34,7 @@ Constructor for QgsEllipse.
 
     virtual ~QgsEllipse();
 
-    QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
+    QgsEllipse( const QgsPoint &center, double semiMajorAxis, double semiMinorAxis, double azimuth = 90 );
 %Docstring
 Constructs an ellipse by defining all the members.
 
@@ -146,21 +146,21 @@ Sets the center point.
 .. seealso:: :py:func:`rcenter`
 %End
 
-    virtual void setSemiMajorAxis( const double semiMajorAxis );
+    virtual void setSemiMajorAxis( double semiMajorAxis );
 %Docstring
 Sets the semi-major axis.
 
 .. seealso:: :py:func:`semiMajorAxis`
 %End
 
-    virtual void setSemiMinorAxis( const double semiMinorAxis );
+    virtual void setSemiMinorAxis( double semiMinorAxis );
 %Docstring
 Sets the semi-minor axis.
 
 .. seealso:: :py:func:`semiMinorAxis`
 %End
 
-    void setAzimuth( const double azimuth );
+    void setAzimuth( double azimuth );
 %Docstring
 Sets the azimuth (orientation).
 

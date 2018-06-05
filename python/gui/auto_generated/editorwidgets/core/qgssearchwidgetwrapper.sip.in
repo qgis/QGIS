@@ -94,18 +94,18 @@ Shows a search widget on a filter form.
 %Docstring
 Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`nonExclusiveFilterFlags`
+
+.. versionadded:: 2.16
 %End
 
     static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
 %Docstring
 Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`exclusiveFilterFlags`
+
+.. versionadded:: 2.16
 %End
 
     static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
@@ -121,27 +121,27 @@ Returns a translated string representing a filter flag.
 %Docstring
 Create a new widget wrapper
 
-:param vl:        The layer on which the field is
-:param fieldIdx:  The field which will be controlled
-:param parent:    A parent widget for this widget wrapper and the created widget.
+:param vl: The layer on which the field is
+:param fieldIdx: The field which will be controlled
+:param parent: A parent widget for this widget wrapper and the created widget.
 %End
 
     virtual FilterFlags supportedFlags() const;
 %Docstring
 Returns filter flags supported by the search widget.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`defaultFlags`
+
+.. versionadded:: 2.16
 %End
 
     virtual FilterFlags defaultFlags() const;
 %Docstring
 Returns the filter flags which should be set by default for the search widget.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`supportedFlags`
+
+.. versionadded:: 2.16
 %End
 
     virtual QString expression() const = 0;
@@ -165,7 +165,7 @@ when its expression changes
 
     QString createFieldIdentifier() const;
 %Docstring
-Get a field name or expression to use as field comparison.
+Gets a field name or expression to use as field comparison.
 If in SearchMode returns a quoted field identifier.
 If in AggregateSearchMode returns an appropriate aggregate expression.
 

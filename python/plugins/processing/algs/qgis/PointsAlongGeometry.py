@@ -31,7 +31,8 @@ import math
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsWkbTypes,
                        QgsField,
@@ -57,7 +58,10 @@ class PointsAlongGeometry(QgisAlgorithm):
     END_OFFSET = 'END_OFFSET'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmExtractVertices.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmExtractVertices.svg")
 
     def tags(self):
         return self.tr('create,interpolate,points,lines,regular,distance,by').split(',')

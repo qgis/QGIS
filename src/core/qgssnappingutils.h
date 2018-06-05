@@ -58,7 +58,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     // main actions
 
-    //! Get a point locator for the given layer. If such locator does not exist, it will be created
+    //! Gets a point locator for the given layer. If such locator does not exist, it will be created
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 
     //! Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
@@ -76,7 +76,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     void setMapSettings( const QgsMapSettings &settings );
     QgsMapSettings mapSettings() const { return mMapSettings; }
 
-    //! Set current layer so that if mode is SnapCurrentLayer we know which layer to use
+    //! Sets current layer so that if mode is SnapCurrentLayer we know which layer to use
     void setCurrentLayer( QgsVectorLayer *layer );
     //! The current layer used if mode is SnapCurrentLayer
     QgsVectorLayer *currentLayer() const { return mCurrentLayer; }
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
       IndexExtent         //!< For all layer build index of extent given in map settings
     };
 
-    //! Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
+    //! Sets a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be
     void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
     //! Find out which strategy is used for indexing - by default hybrid indexing is used
     IndexingStrategy indexingStrategy() const { return mStrategy; }
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     QList<QgsSnappingUtils::LayerConfig> layers() const { return mLayers; }
 
     /**
-     * Get extra information about the instance
+     * Gets extra information about the instance
      * \since QGIS 2.14
      */
     QString dump();
@@ -200,12 +200,12 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
-    //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
+    //! Gets destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
 
-    //! return a locator (temporary or not) according to the indexing strategy
+    //! Returns a locator (temporary or not) according to the indexing strategy
     QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
-    //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
+    //! Returns a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator *temporaryLocatorForLayer( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );
 
     typedef QPair< QgsVectorLayer *, QgsRectangle > LayerAndAreaOfInterest;

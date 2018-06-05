@@ -96,9 +96,9 @@ Returns the size mode for the scale bar segments.
 
 .. seealso:: :py:func:`setSegmentSizeMode`
 
-.. seealso:: :py:func:`minBarWidth`
+.. seealso:: :py:func:`minimumBarWidth`
 
-.. seealso:: :py:func:`maxBarWidth`
+.. seealso:: :py:func:`maximumBarWidth`
 %End
 
     void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
@@ -318,8 +318,6 @@ Sets the line ``width`` in millimeters for lines in the scalebar.
 %Docstring
 Returns the pen used for drawing outlines in the scalebar.
 
-.. seealso:: :py:func:`setPen`
-
 .. seealso:: :py:func:`brush`
 %End
 
@@ -328,8 +326,6 @@ Returns the pen used for drawing outlines in the scalebar.
 Returns the primary brush for the scalebar.
 
 :return: QBrush used for filling the scalebar
-
-.. seealso:: :py:func:`setBrush`
 
 .. seealso:: :py:func:`brush2`
 
@@ -342,8 +338,6 @@ Returns the secondary brush for the scalebar. This is used for alternating color
 as single and double box styles.
 
 :return: QBrush used for secondary color areas
-
-.. seealso:: :py:func:`setBrush2`
 
 .. seealso:: :py:func:`brush`
 %End
@@ -511,7 +505,7 @@ Returns the scale bar style name.
 Adjusts the scale bar box size and updates the item.
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     virtual void finalizeRestoreFromXml();
 

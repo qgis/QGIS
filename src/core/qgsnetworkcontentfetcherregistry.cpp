@@ -21,7 +21,6 @@
 #include "qgsapplication.h"
 
 QgsNetworkContentFetcherRegistry::QgsNetworkContentFetcherRegistry()
-  : QObject()
 {
 }
 

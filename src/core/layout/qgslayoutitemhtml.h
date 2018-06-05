@@ -193,7 +193,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      * \see userStylesheetEnabled()
      * \see setUserStylesheet()
      */
-    void setUserStylesheetEnabled( const bool enabled );
+    void setUserStylesheetEnabled( bool enabled );
 
     /**
      * Returns whether user stylesheets are enabled for the HTML content.
@@ -219,12 +219,12 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      * \see setUrl
      * \see url
      */
-    void loadHtml( const bool useCache = false, const QgsExpressionContext *context = nullptr );
+    void loadHtml( bool useCache = false, const QgsExpressionContext *context = nullptr );
 
     //! Recalculates the frame sizes for the current viewport dimensions
     void recalculateFrameSizes() override;
 
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
 

@@ -65,8 +65,8 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 // TODO: colortable - use comon baseclass with gdal, mapserver does not support http://trac.osgeo.org/mapserver/ticket/1671
 
-QgsWcsProvider::QgsWcsProvider( const QString &uri )
-  : QgsRasterDataProvider( uri )
+QgsWcsProvider::QgsWcsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsRasterDataProvider( uri, options )
   , mCachedViewExtent( 0 )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
@@ -430,7 +430,8 @@ QgsWcsProvider::~QgsWcsProvider()
 
 QgsWcsProvider *QgsWcsProvider::clone() const
 {
-  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri() );
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWcsProvider *provider = new QgsWcsProvider( dataSourceUri(), providerOptions );
   provider->copyBaseSettings( *this );
   return provider;
 }
@@ -545,9 +546,9 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     {
       // Rotate counter clockwise
       // If GridOffsets With GeoServer,
-      QgsDebugMsg( tr( "Rotating raster" ) );
+      QgsDebugMsg( QStringLiteral( "Rotating raster" ) );
       int pixelSize = QgsRasterBlock::typeSize( dataType( bandNo ) );
-      QgsDebugMsg( QString( "pixelSize = %1" ).arg( pixelSize ) );
+      QgsDebugMsg( QStringLiteral( "pixelSize = %1" ).arg( pixelSize ) );
       int size = width * height * pixelSize;
       void *tmpData = malloc( size );
       if ( ! tmpData )
@@ -1581,9 +1582,9 @@ QMap<QString, QString> QgsWcsProvider::supportedMimes()
   return mimes;
 }
 
-QGISEXTERN QgsWcsProvider *classFactory( const QString *uri )
+QGISEXTERN QgsWcsProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsWcsProvider( *uri );
+  return new QgsWcsProvider( *uri, options );
 }
 
 QGISEXTERN QString providerKey()
@@ -1895,7 +1896,7 @@ void QgsWcsDownloadHandler::cacheReplyProgress( qint64 bytesReceived, qint64 byt
 {
   Q_UNUSED( bytesReceived );
   Q_UNUSED( bytesTotal );
-  QgsDebugMsgLevel( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ), 3 );
 }
 
 void QgsWcsDownloadHandler::canceled()

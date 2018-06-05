@@ -62,7 +62,7 @@ Writes the contents of vector layer to a different datasource.
 :param uri: URI for destination data source
 :param providerKey: string key for destination data provider
 :param destCRS: destination CRS, or an invalid (default constructed) CRS if
-not available
+                not available
 :param onlySelected: set to true to export only selected features
 :param errorMessage: if non-null, will be set to any error messages
 :param options: optional provider dataset options
@@ -86,7 +86,7 @@ Constructor for QgsVectorLayerExporter.
 :param fields: fields to include in created layer
 :param geometryType: destination geometry type
 :param crs: desired CRS, or an invalid (default constructed) CRS if
-not available
+            not available
 :param overwrite: set to true to overwrite any existing data source
 :param options: optional provider dataset options
 %End
@@ -141,11 +141,11 @@ QgsTask task which performs a QgsVectorLayerExporter layer export operation as a
 task. This can be used to export a vector layer out to a provider without blocking the
 QGIS interface.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsVectorFileWriterTask`
 
 .. seealso:: :py:class:`QgsRasterFileWriterTask`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

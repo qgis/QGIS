@@ -25,6 +25,8 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_utils.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.cpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.cpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.cpp
   )
 
   SET(MDAL_LIB_HDRS
@@ -33,6 +35,8 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_loader.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/mdal_defines.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_2dm.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
+    ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
   )
 
   UNSET(MDAL_LIBRARY)

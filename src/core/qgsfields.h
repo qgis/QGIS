@@ -125,7 +125,7 @@ class CORE_EXPORT QgsFields
     //! Check whether the container is empty
     bool isEmpty() const;
 
-    //! Return number of items
+    //! Returns number of items
     int count() const;
 
 #ifdef SIP_RUN
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Return number of items
+    //! Returns number of items
     int size() const;
 
     /**
@@ -145,18 +145,18 @@ class CORE_EXPORT QgsFields
     QStringList names() const;
 
     /**
-     * Return if a field index is valid
+     * Returns if a field index is valid
      * \param i  Index of the field which needs to be checked
      * \returns   True if the field exists
      */
     bool exists( int i ) const;
 
 #ifndef SIP_RUN
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField operator[]( int i ) const;
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField &operator[]( int i ) SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -168,7 +168,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField at( int i ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -184,7 +184,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field at particular index (must be in range 0..N-1)
+    //! Gets field at particular index (must be in range 0..N-1)
     QgsField field( int fieldIdx ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field with matching name
+    //! Gets field with matching name
     QgsField field( const QString &name ) const SIP_FACTORY;
 #ifdef SIP_RUN
     % MethodCode
@@ -217,7 +217,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin (value from an enumeration)
+    //! Gets field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -233,7 +233,7 @@ class CORE_EXPORT QgsFields
     % End
 #endif
 
-    //! Get field's origin index (its meaning is specific to each type of origin)
+    //! Gets field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const;
 #ifdef SIP_RUN
     % MethodCode
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsFields
 #endif
 
     /**
-     * Get the field index from the field name.
+     * Gets the field index from the field name.
      * This method is case sensitive and only matches the data source
      * name of the field.
      * Alias for indexOf
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsFields
     int indexFromName( const QString &fieldName ) const;
 
     /**
-     * Get the field index from the field name.
+     * Gets the field index from the field name.
      * This method is case sensitive and only matches the data source
      * name of the field.
      *
@@ -428,40 +428,40 @@ class CORE_EXPORT QgsFields
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constBegin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator constEnd() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator begin() const noexcept;
 
     /**
      * Returns a const STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     const_iterator end() const noexcept;
 
     /**
      * Returns an STL-style iterator pointing to the first item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator begin();
 
@@ -469,8 +469,8 @@ class CORE_EXPORT QgsFields
     /**
      * Returns an STL-style iterator pointing to the imaginary item after the last item in the list.
      *
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     iterator end();
 

@@ -125,14 +125,14 @@ class CORE_EXPORT QgsClipper
     static void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
-    static bool inside( const double x, const double y, Boundary b );
+    static bool inside( double x, double y, Boundary b );
 
     static bool inside( QPointF pt, Boundary b, double val );
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
-    static QgsPointXY intersect( const double x1, const double y1,
-                                 const double x2, const double y2,
+    static QgsPointXY intersect( double x1, double y1,
+                                 double x2, double y2,
                                  Boundary b );
 
     static QPointF intersectRect( QPointF pt1,

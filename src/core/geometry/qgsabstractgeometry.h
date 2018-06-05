@@ -52,7 +52,6 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
  */
 class CORE_EXPORT QgsAbstractGeometry
 {
-    Q_GADGET
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -86,6 +85,9 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = 0;
     SIP_END
 #endif
+
+    Q_GADGET
+
   public:
 
     //! Segmentation tolerance as maximum angle or maximum difference between approximation and circle
@@ -215,8 +217,8 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns a WKB representation of the geometry.
      * \see asWkt
-     * \see asGML2
-     * \see asGML3
+     * \see asGml2
+     * \see asGml3
      * \see asJson()
      * \since QGIS 3.0
      */
@@ -280,9 +282,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * units (generally meters). If false, then z coordinates will not be changed by the
      * transform.
      */
-    virtual void transform( const QgsCoordinateTransform &ct,
-                            QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                            bool transformZ = false ) = 0;
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) SIP_THROW( QgsCsException ) = 0;
 
     /**
      * Transforms the x and y components of the geometry using a QTransform object \a t.
@@ -518,9 +518,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * Adds a z-dimension to the geometry, initialized to a preset value.
      * \param zValue initial z-value for all nodes
      * \returns true on success
-     * \since QGIS 2.12
      * \see dropZValue()
      * \see addMValue()
+     * \since QGIS 2.12
      */
     virtual bool addZValue( double zValue = 0 ) = 0;
 
@@ -528,9 +528,9 @@ class CORE_EXPORT QgsAbstractGeometry
      * Adds a measure to the geometry, initialized to a preset value.
      * \param mValue initial m-value for all nodes
      * \returns true on success
-     * \since QGIS 2.12
      * \see dropMValue()
      * \see addZValue()
+     * \since QGIS 2.12
      */
     virtual bool addMValue( double mValue = 0 ) = 0;
 
@@ -568,6 +568,17 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool convertTo( QgsWkbTypes::Type type );
 
 #ifndef SIP_RUN
+
+    /**
+     * Filters the vertices from the geometry in place, removing any which do not return true for the \a filter function
+     * check. Has no meaning when called on a single point geometry.
+     *
+     * Depending on the \a filter used, this may result in an invalid geometry.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.2
+     */
+    virtual void filterVertices( const std::function< bool( const QgsPoint & ) > &filter );
 
     /**
      * \ingroup core
@@ -650,7 +661,6 @@ class CORE_EXPORT QgsAbstractGeometry
      * To create it, the geometry is default constructed and then the WKB is changed.
      * \see clone()
      * \since 3.0
-     * \note Not available in Python bindings
      */
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
 
@@ -803,7 +813,7 @@ class CORE_EXPORT QgsVertexIterator
       return g && g->vertices_end() != i;
     }
 
-    //! Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
+    //! Returns next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
     QgsPoint next();
 
 #ifdef SIP_RUN

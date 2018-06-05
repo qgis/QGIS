@@ -13,7 +13,7 @@
 class QgsCurveTransform
 {
 %Docstring
- Handles scaling of input values to output values by using a curve created
+Handles scaling of input values to output values by using a curve created
 from smoothly joining a number of set control points.
 
 QgsCurveTransform assists in creation of curve type transforms, typically seen in
@@ -142,7 +142,7 @@ You can use QgsXmlUtils.writeVariant to load it from an XML document.
 class QgsPropertyTransformer
 {
 %Docstring
- Abstract base class for objects which transform the calculated value of a property.
+Abstract base class for objects which transform the calculated value of a property.
 Possible uses include transformers which map a value into a scaled size or color from a gradient.
 
 .. versionadded:: 3.0
@@ -296,14 +296,14 @@ Attempts to parse an expression into a corresponding property transformer.
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding property transformer, or None if expression could not
-be parsed to a transformer.
+         be parsed to a transformer.
 %End
 
   protected:
@@ -320,7 +320,7 @@ This applies any curve transforms which may exist on the transformer.
 class QgsGenericNumericTransformer : QgsPropertyTransformer
 {
 %Docstring
- QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
+QgsPropertyTransformer subclass for scaling an input numeric value into an output numeric value.
 
 .. versionadded:: 3.0
 %End
@@ -365,14 +365,14 @@ Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTran
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding :py:class:`QgsSizeScaleTransformer`, or None if expression could not
-be parsed to a size scale transformer.
+         be parsed to a size scale transformer.
 %End
 
     double value( double input ) const;
@@ -386,9 +386,9 @@ Calculates the size corresponding to a specific ``input`` value.
 %Docstring
 Returns the minimum calculated size.
 
-.. seealso:: :py:func:`setMinSize`
+.. seealso:: :py:func:`setMinOutputValue`
 
-.. seealso:: :py:func:`maxSize`
+.. seealso:: :py:func:`maxOutputValue`
 %End
 
     void setMinOutputValue( double size );
@@ -397,16 +397,16 @@ Sets the minimum calculated size.
 
 :param size: minimum size
 
-.. seealso:: :py:func:`minSize`
+.. seealso:: :py:func:`minOutputValue`
 
-.. seealso:: :py:func:`setMaxSize`
+.. seealso:: :py:func:`setMaxOutputValue`
 %End
 
     double maxOutputValue() const;
 %Docstring
 Returns the maximum calculated size.
 
-.. seealso:: :py:func:`minSize`
+.. seealso:: :py:func:`minOutputValue`
 %End
 
     void setMaxOutputValue( double size );
@@ -415,16 +415,16 @@ Sets the maximum calculated size.
 
 :param size: maximum size
 
-.. seealso:: :py:func:`maxSize`
+.. seealso:: :py:func:`maxOutputValue`
 
-.. seealso:: :py:func:`setMinSize`
+.. seealso:: :py:func:`setMinOutputValue`
 %End
 
     double nullOutputValue() const;
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-.. seealso:: :py:func:`setNullSize`
+.. seealso:: :py:func:`setNullOutputValue`
 %End
 
     void setNullOutputValue( double size );
@@ -433,7 +433,7 @@ Sets the size value for when an expression evaluates to NULL.
 
 :param size: null size
 
-.. seealso:: :py:func:`nullSize`
+.. seealso:: :py:func:`nullOutputValue`
 %End
 
     double exponent() const;
@@ -441,8 +441,6 @@ Sets the size value for when an expression evaluates to NULL.
 Returns the exponent for an exponential expression.
 
 .. seealso:: :py:func:`setExponent`
-
-.. seealso:: :py:func:`type`
 %End
 
     void setExponent( double exponent );
@@ -460,7 +458,7 @@ Sets the exponent for an exponential expression.
 class QgsSizeScaleTransformer : QgsPropertyTransformer
 {
 %Docstring
- QgsPropertyTransformer subclass for scaling a value into a size according to various
+QgsPropertyTransformer subclass for scaling a value into a size according to various
 scaling methods.
 
 .. versionadded:: 3.0
@@ -516,14 +514,14 @@ Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
-is used to calculate the input to the property transformer. This will be set to an
-empty string if a field reference is the transformer input.
+                       is used to calculate the input to the property transformer. This will be set to an
+                       empty string if a field reference is the transformer input.
 :param fieldName: will be set to a field name which is used to calculate the input
-to the property transformer. This will be set to an
-empty string if an expression is the transformer input.
+                  to the property transformer. This will be set to an
+                  empty string if an expression is the transformer input.
 
 :return: corresponding QgsSizeScaleTransformer, or None if expression could not
-be parsed to a size scale transformer.
+         be parsed to a size scale transformer.
 %End
 
     double size( double value ) const;
@@ -631,7 +629,7 @@ the size from a value).
 class QgsColorRampTransformer : QgsPropertyTransformer
 {
 %Docstring
- QgsPropertyTransformer subclass for transforming a numeric value into a color from a
+QgsPropertyTransformer subclass for transforming a numeric value into a color from a
 color ramp.
 
 .. versionadded:: 3.0
@@ -713,7 +711,7 @@ Sets the color corresponding to a null value.
 
 :param color: null color
 
-.. seealso:: :py:func:`nullSize`
+.. seealso:: :py:func:`nullColor`
 %End
 
     QString rampName() const;

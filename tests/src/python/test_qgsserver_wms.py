@@ -48,11 +48,11 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
-    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs'):
+    def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs', version='1.3.0'):
         project = self.testdata_path + project
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (urllib.parse.quote(project), request)
+        query_string = 'https://www.qgis.org/?MAP=%s&SERVICE=WMS&VERSION=%s&REQUEST=%s' % (urllib.parse.quote(project), version, request)
         if extra is not None:
             query_string += extra
         header, body = self._execute_request(query_string)
@@ -65,7 +65,8 @@ class TestQgsServerWMSTestBase(QgsServerTestBase):
         response = re.sub(RE_STRIP_UNCHECKABLE, b'*****', response)
         expected = re.sub(RE_STRIP_UNCHECKABLE, b'*****', expected)
 
-        self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
+        msg = "request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8'))
+        self.assertXMLEqual(response, expected, msg=msg)
 
 
 class TestQgsServerWMS(TestQgsServerWMSTestBase):
@@ -163,6 +164,50 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
 
         self.wms_request_compare('GetCapabilities', reference_file='wms_getcapabilities_without_title', project='test_project_without_title.qgs')
 
+    def test_wms_getcapabilities_versions(self):
+        # default version 1.3.0 when empty VERSION parameter
+        project = os.path.join(self.testdata_path, "test_project.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='')
+
+        # default version 1.3.0 when VERSION = 1.3.0 parameter
+        project = os.path.join(self.testdata_path, "test_project.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='1.3.0')
+
+        # version 1.1.1
+        project = os.path.join(self.testdata_path, "test_project.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_1_1', version='1.1.1')
+
+        # default version 1.3.0 when invalid VERSION parameter
+        project = os.path.join(self.testdata_path, "test_project.qgs")
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMS",
+            "REQUEST": "GetCapabilities",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self.wms_request_compare(qs, reference_file='wms_getcapabilities_1_3_0', version='33.33.33')
+
     def test_wms_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
@@ -244,7 +289,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         f.close()
 
         # clean header in doc
-        doc = doc.replace('Content-Length: 5775\n', '')
+        doc = doc.replace('Content-Length: 6575\n', '')
         doc = doc.replace('Content-Type: text/xml; charset=utf-8\n\n', '')
         doc = doc.replace('<?xml version="1.0" encoding="utf-8"?>\n', '')
 

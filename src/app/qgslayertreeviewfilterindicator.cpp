@@ -54,11 +54,11 @@ void QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren( QgsLayerTreeNode 
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
-        if ( vlayer->dataProvider() )
+        if ( vlayer )
         {
-          connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
+          connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
 
-          addOrRemoveIndicator( childLayerNode, vlayer->dataProvider() );
+          addOrRemoveIndicator( childLayerNode, vlayer );
         }
       }
       else if ( !childLayerNode->layer() )
@@ -89,8 +89,8 @@ void QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren( QgsLayerTree
       QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
-        if ( vlayer->dataProvider() )
-          disconnect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
+        if ( vlayer )
+          disconnect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
       }
     }
   }
@@ -105,29 +105,29 @@ void QgsLayerTreeViewFilterIndicatorProvider::onLayerLoaded()
 
   if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ) )
   {
-    if ( vlayer->dataProvider() )
+    if ( vlayer )
     {
-      connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
+      connect( vlayer, &QgsVectorLayer::subsetStringChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged );
 
-      addOrRemoveIndicator( nodeLayer, vlayer->dataProvider() );
+      addOrRemoveIndicator( nodeLayer, vlayer );
     }
   }
 }
 
 
-void QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged()
+void QgsLayerTreeViewFilterIndicatorProvider::onSubsetStringChanged()
 {
-  QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( sender() );
-  if ( !provider )
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
+  if ( !vlayer )
     return;
 
   // walk the tree and find layer node that needs to be updated
   const QList<QgsLayerTreeLayer *> layerNodes = mLayerTreeView->layerTreeModel()->rootGroup()->findLayers();
   for ( QgsLayerTreeLayer *node : layerNodes )
   {
-    if ( node->layer() && node->layer()->dataProvider() == provider )
+    if ( node->layer() && node->layer() == vlayer )
     {
-      addOrRemoveIndicator( node, provider );
+      addOrRemoveIndicator( node, vlayer );
       break;
     }
   }
@@ -141,14 +141,14 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     return;
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-  if ( !vlayer || !vlayer->dataProvider() )
+  if ( !vlayer )
     return;
 
   // launch the query builder
   QgsQueryBuilder qb( vlayer );
-  qb.setSql( vlayer->dataProvider()->subsetString() );
+  qb.setSql( vlayer->subsetString() );
   if ( qb.exec() )
-    vlayer->dataProvider()->setSubsetString( qb.sql() );
+    vlayer->setSubsetString( qb.sql() );
 }
 
 QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorProvider::newIndicator( const QString &filter )
@@ -167,9 +167,9 @@ void QgsLayerTreeViewFilterIndicatorProvider::updateIndicator( QgsLayerTreeViewI
 }
 
 
-void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider )
+void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer )
 {
-  QString filter = provider->subsetString();
+  QString filter = vlayer->subsetString();
   if ( !filter.isEmpty() )
   {
     const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );

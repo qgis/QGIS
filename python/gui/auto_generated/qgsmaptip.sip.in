@@ -48,11 +48,11 @@ Default constructor
 Show a maptip at a given point on the map canvas
 
 :param thepLayer: a qgis vector map layer pointer that will
-be used to provide the attribute data for the map tip.
+                  be used to provide the attribute data for the map tip.
 :param mapPosition: a reference to the position of the cursor
-in map coordinatess.
+                    in map coordinatess.
 :param pixelPosition: a reference to the position of the cursor
-in pixel coordinates.
+                      in pixel coordinates.
 :param mpMapCanvas: a map canvas on which the tip is drawn
 %End
 

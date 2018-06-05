@@ -58,7 +58,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
     bool searchHighlight( const QString &text );
 
     /**
-     * Return the widget
+     * Returns the widget
      */
     QWidget *widget() {return mWidget;}
 

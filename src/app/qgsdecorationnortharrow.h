@@ -40,7 +40,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     QgsDecorationNorthArrow( QObject *parent = nullptr );
 
   public slots:
-    //! Set values on the gui when a project is read or the gui first loaded
+    //! Sets values on the gui when a project is read or the gui first loaded
     void projectRead() override;
     //! Save values to the project
     void saveToProject() override;
@@ -50,7 +50,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     //! Draw some arbitrary text to the screen
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
-    //! Return the north arrow SVG path
+    //! Returns the north arrow SVG path
     QString svgPath();
 
   private:

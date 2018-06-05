@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import operator
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
@@ -50,8 +51,11 @@ from processing.gui.ProviderActions import (ProviderActions,
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
 
 
 class ProcessingToolbox(QgsDockWidget, WIDGET):
@@ -69,6 +73,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
+
+        self.searchBox.setShowSearchIcon(True)
 
         self.searchBox.textChanged.connect(self.textChanged)
         self.searchBox.returnPressed.connect(self.activateCurrent)
@@ -160,8 +166,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         elif isinstance(item, TreeAlgorithmItem):
             # hide if every part of text is not contained somewhere in either the item text or item user role
             item_text = [item.text(0).lower(), item.data(0, ProcessingToolbox.NAME_ROLE).lower()]
-            item_text.append(item.alg.id())
-            item_text.extend(item.data(0, ProcessingToolbox.TAG_ROLE))
+            item_text.append(item.alg.id().lower())
+            if item.alg.shortDescription():
+                item_text.append(item.alg.shortDescription().lower())
+            item_text.extend([t.lower() for t in item.data(0, ProcessingToolbox.TAG_ROLE)])
 
             hide = bool(text) and not all(
                 any(part in t for t in item_text)
@@ -508,8 +516,9 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.ALG_ITEM)
 
     def formatAlgorithmTooltip(self, alg):
-        return '<p><b>{}</b></p><p>{}</p>'.format(
+        return '<p><b>{}</b></p>{}<p>{}</p>'.format(
             alg.displayName(),
+            '<p>{}</p>'.format(alg.shortDescription()) if alg.shortDescription() else '',
             QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
         )
 

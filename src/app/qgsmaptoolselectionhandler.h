@@ -62,7 +62,7 @@ class QgsDistanceWidget : public QWidget
     void distanceEditingCanceled();
 
   protected:
-    virtual bool eventFilter( QObject *obj, QEvent *ev ) override;
+    bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   private:
     QHBoxLayout *mLayout = nullptr;

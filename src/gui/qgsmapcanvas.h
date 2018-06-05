@@ -108,15 +108,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayers() calls can be made.
      *
-     * \since QGIS 3.0
      * \see layers()
+     * \since QGIS 3.0
      */
     void setLayers( const QList<QgsMapLayer *> &layers );
 
     void setCurrentLayer( QgsMapLayer *layer );
 
     /**
-     * Get access to properties used for map rendering
+     * Gets access to properties used for map rendering
      * \since QGIS 2.4
      */
     const QgsMapSettings &mapSettings() const SIP_KEEPREFERENCE;
@@ -134,7 +134,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setMapSettingsFlags( QgsMapSettings::Flags flags );
 
     /**
-     * Get access to the labeling results (may be null)
+     * Gets access to the labeling results (may be null)
      * \since QGIS 2.4
      */
     const QgsLabelingResults *labelingResults() const;
@@ -206,11 +206,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Returns the combined extent for all layers on the map canvas
     QgsRectangle fullExtent() const;
 
-    //! Set the extent of the map canvas
+    //! Sets the extent of the map canvas
     void setExtent( const QgsRectangle &r, bool magnified = false );
 
     /**
-     * Get the current map canvas rotation in clockwise degrees
+     * Gets the current map canvas rotation in clockwise degrees
      * \since QGIS 2.8
      */
     double rotation() const;
@@ -228,7 +228,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setCenter( const QgsPointXY &center );
 
     /**
-     * Get map center, in geographical coordinates
+     * Gets map center, in geographical coordinates
      * \since QGIS 2.8
      */
     QgsPointXY center() const;
@@ -270,8 +270,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * \note If the features or geometries are already available, flashGeometries() is much more efficient.
      *
-     * \since QGIS 3.0
      * \see flashGeometries()
+     * \since QGIS 3.0
      */
     void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
@@ -286,14 +286,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * The \a startColor and \a endColor can be specified, along with the number of
      * \a flashes and \a duration of each flash (in milliseconds).
      *
-     * \since QGIS 3.0
      * \see flashFeatureIds()
+     * \since QGIS 3.0
      */
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
                           const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
                           int flashes = 3, int duration = 500 );
 
-    //! \brief Sets the map tool currently being used on the canvas
+    //! Sets the map tool currently being used on the canvas
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
 
     /**
@@ -328,14 +328,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emits signal scaleChanged to update scale in main window
     void updateScale();
 
-    //! return the map layer at position index in the layer stack
+    //! Returns the map layer at position index in the layer stack
     QgsMapLayer *layer( int index );
 
-    //! return number of layers on the map
+    //! Returns number of layers on the map
     int layerCount() const;
 
     /**
-     * Return the list of layers shown within the map canvas.
+     * Returns the list of layers shown within the map canvas.
      * \see setLayers()
      */
     QList<QgsMapLayer *> layers() const;
@@ -378,8 +378,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns the stored overrides of styles for layers.
-     * \since QGIS 2.12
      * \see setLayerStyleOverrides().
+     * \since QGIS 2.12
      */
     QMap<QString, QString> layerStyleOverrides() const;
 
@@ -391,8 +391,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * to first clear the theme association by calling setTheme() with an
      * empty string before setLayerStyleOverrides() calls can be made.
      *
-     * \since QGIS 2.12
      * \see layerStyleOverrides()
+     * \since QGIS 2.12
      */
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 
@@ -411,19 +411,19 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      *
      * If an empty string is passed then the current theme association will be
      * cleared.
-     * \since QGIS 3.0
      * \see theme()
+     * \since QGIS 3.0
      */
     void setTheme( const QString &theme );
 
     /**
      * Returns the map's theme shown in the canvas, if set.
-     * \since QGIS 3.0
      * \see setTheme()
+     * \since QGIS 3.0
      */
     QString theme() const { return mTheme; }
 
-    //! Get the current coordinate transform
+    //! Gets the current coordinate transform
     const QgsMapToPixel *getCoordinateTransform();
 
     //! Find out whether rendering is in progress
@@ -432,7 +432,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! returns current layer (set by legend widget)
     QgsMapLayer *currentLayer();
 
-    //! set wheel zoom factor (should be greater than 1)
+    //! Sets wheel zoom factor (should be greater than 1)
     void setWheelFactor( double factor );
 
     /**
@@ -458,8 +458,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns whether the scale is locked, so zooming can be performed using magnication.
-     * \since QGIS 2.16
      * \see setScaleLocked()
+     * \since QGIS 2.16
      */
     bool scaleLocked() const { return mScaleLocked;}
 
@@ -518,7 +518,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsPreviewEffect::PreviewMode previewMode() const;
 
     /**
-     * Return snapping utility class that is associated with map canvas.
+     * Returns snapping utility class that is associated with map canvas.
      *  If no snapping utils instance has been associated previously, an internal will be created for convenience
      *  (so map tools do not need to test for existence of the instance).
      *
@@ -543,8 +543,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * expression evaluation for the map canvas render. This method will overwrite the existing expression
      * context scope for the canvas.
      * \param scope new expression context scope
-     * \since QGIS 2.12
      * \see expressionContextScope()
+     * \since QGIS 2.12
      */
     void setExpressionContextScope( const QgsExpressionContextScope &scope ) { mExpressionContextScope = scope; }
 
@@ -552,16 +552,16 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * Returns a reference to the expression context scope for the map canvas. This scope is injected
      * into the expression context used for rendering the map, and can be used to apply specific variable
      * overrides for expression evaluation for the map canvas render.
-     * \since QGIS 2.12
      * \see setExpressionContextScope()
+     * \since QGIS 2.12
      */
     QgsExpressionContextScope &expressionContextScope() { return mExpressionContextScope; }
 
     /**
      * Returns a const reference to the expression context scope for the map canvas.
-     * \since QGIS 2.12
      * \see setExpressionContextScope()
      * \note not available in Python bindings
+     * \since QGIS 2.12
      */
     const QgsExpressionContextScope &expressionContextScope() const { return mExpressionContextScope; } SIP_SKIP
 
@@ -583,15 +583,15 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Returns true if annotations are visible within the map canvas.
-     * \since QGIS 3.0
      * \see setAnnotationsVisible()
+     * \since QGIS 3.0
      */
     bool annotationsVisible() const { return mAnnotationsVisible; }
 
     /**
      * Sets whether annotations are \a visible in the canvas.
-     * \since QGIS 3.0
      * \see annotationsVisible()
+     * \since QGIS 3.0
      */
     void setAnnotationsVisible( bool visible );
 
@@ -683,8 +683,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     /**
      * Lock the scale, so zooming can be performed using magnication
-     * \since QGIS 2.16
      * \see scaleLocked()
+     * \since QGIS 2.16
      */
     void setScaleLocked( bool isLocked );
 

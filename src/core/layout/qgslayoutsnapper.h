@@ -50,7 +50,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      * Sets the snap \a tolerance (in pixels) to use when snapping.
      * \see snapTolerance()
      */
-    void setSnapTolerance( const int snapTolerance );
+    void setSnapTolerance( int snapTolerance );
 
     /**
      * Returns the snap tolerance (in pixels) to use when snapping.

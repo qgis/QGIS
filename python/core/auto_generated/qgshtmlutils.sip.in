@@ -12,7 +12,7 @@
 class QgsHtmlUtils
 {
 %Docstring
- Class for HTML utilities.
+Class for HTML utilities.
 
 .. versionadded:: 3.0
 %End

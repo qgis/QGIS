@@ -57,6 +57,9 @@ class QTimer;
  * \ingroup core
  * Singleton offering an interface to manage the authentication configuration database
  * and to utilize configurations through various authentication method plugins
+ *
+ * QgsAuthManager should not usually be directly created, but rather accessed through
+ * QgsApplication::authManager().
  */
 class CORE_EXPORT QgsAuthManager : public QObject
 {
@@ -85,7 +88,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     ~QgsAuthManager() override;
 
-    //! Set up the application instance of the authentication database connection
+    //! Sets up the application instance of the authentication database connection
     QSqlDatabase authDatabaseConnection() const;
 
     //! Name of the authentication database table that stores configs
@@ -193,56 +196,56 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Instantiate and register existing C++ core authentication methods from plugins
     bool registerCoreAuthMethods();
 
-    //! Get mapping of authentication config ids and their base configs (not decrypted data)
+    //! Gets mapping of authentication config ids and their base configs (not decrypted data)
     QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString &dataprovider = QString() );
 
     //! Sync the confg/authentication method cache with what is in database
     void updateConfigAuthMethods();
 
     /**
-     * Get authentication method from the config/provider cache
+     * Gets authentication method from the config/provider cache
      * \param authcfg Authentication config id
      */
     QgsAuthMethod *configAuthMethod( const QString &authcfg );
 
     /**
-     * Get key of authentication method associated with config ID
+     * Gets key of authentication method associated with config ID
      * \param authcfg
      */
     QString configAuthMethodKey( const QString &authcfg ) const;
 
     /**
-     * Get keys of supported authentication methods
+     * Gets keys of supported authentication methods
      */
     QStringList authMethodsKeys( const QString &dataprovider = QString() );
 
     /**
-     * Get authentication method from the config/provider cache via its key
+     * Gets authentication method from the config/provider cache via its key
      * \param authMethodKey Authentication method key
      */
     QgsAuthMethod *authMethod( const QString &authMethodKey );
 
     /**
-     * Get available authentication methods mapped to their key
+     * Gets available authentication methods mapped to their key
      * \param dataprovider Provider key filter, returning only methods that support a particular provider
      * \note not available in Python bindings
      */
     QgsAuthMethodsMap authMethodsMap( const QString &dataprovider = QString() ) SIP_SKIP;
 
     /**
-     * Get authentication method edit widget via its key
+     * Gets authentication method edit widget via its key
      * \param authMethodKey Authentication method key
      * \param parent Parent widget
      */
     QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
 
     /**
-     * Get supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+     * Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
      * \param authcfg
      */
     QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
 
-    //! Get a unique generated 7-character string to assign to as config id
+    //! Gets a unique generated 7-character string to assign to as config id
     const QString uniqueConfigId() const;
 
     /**
@@ -252,15 +255,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool configIdUnique( const QString &id ) const;
 
     /**
-     * Return whether a string includes an authcfg ID token
+     * Returns whether a string includes an authcfg ID token
      * \param txt String to check
      */
     bool hasConfigId( const QString &txt ) const;
 
-    //! Return regular expression for authcfg=.{7} key/value token for authentication ids
+    //! Returns the regular expression for authcfg=.{7} key/value token for authentication ids
     QString configIdRegex() const { return AUTH_CFG_REGEX;}
 
-    //! Get list of authentication ids from database
+    //! Gets list of authentication ids from database
     QStringList configIds() const;
 
     /**
@@ -395,7 +398,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QSslCertificate certIdentity( const QString &id );
 
     /**
-     * Get a certificate identity bundle by \a id (sha hash).
+     * Gets a certificate identity bundle by \a id (sha hash).
      * \param id sha shash
      * \return a pair with the certificate and its SSL key
      * \note not available in Python bindings
@@ -494,7 +497,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //! Store a certificate authority
     bool storeCertAuthority( const QSslCertificate &cert );
 
-    //! Get a certificate authority by id (sha hash)
+    //! Gets a certificate authority by id (sha hash)
 
     /**
      * \brief certAuthority get a certificate authority by \a id (sha hash)
@@ -577,10 +580,10 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
 
-    //! Set the default certificate trust policy perferred by user
+    //! Sets the default certificate trust policy preferred by user
     bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
 
-    //! Get the default certificate trust policy perferred by user
+    //! Gets the default certificate trust policy preferred by user
     QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
 
     /**
@@ -649,7 +652,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Password helper enabled setter
      * \note not available in Python bindings
      */
-    void setPasswordHelperEnabled( const bool enabled ) SIP_SKIP;
+    void setPasswordHelperEnabled( bool enabled ) SIP_SKIP;
 
     /**
      * Password helper logging enabled getter
@@ -661,7 +664,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Password helper logging enabled setter
      * \note not available in Python bindings
      */
-    void setPasswordHelperLoggingEnabled( const bool enabled ) SIP_SKIP;
+    void setPasswordHelperLoggingEnabled( bool enabled ) SIP_SKIP;
 
     /**
      * Store the password manager into the wallet
@@ -756,7 +759,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     //////////////////////////////////////////////////////////////////////////////
     // Password Helper methods
 
-    //! Return name for logging
+    //! Returns the name for logging
     QString passwordHelperName() const;
 
     //! Print a debug message in QGIS

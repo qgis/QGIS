@@ -12,7 +12,7 @@
 class QgsMapDecoration
 {
 %Docstring
- Interface for map decorations.
+Interface for map decorations.
 
 .. versionadded:: 3.0
 %End

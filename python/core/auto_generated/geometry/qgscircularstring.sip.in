@@ -14,7 +14,7 @@
 class QgsCircularString: QgsCurve
 {
 %Docstring
- Circular string geometry type
+Circular string geometry type
 
 .. versionadded:: 2.10
 %End
@@ -115,8 +115,8 @@ Sets the circular string's points
 
     virtual void draw( QPainter &p ) const;
 
-     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false );
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) throw( QgsCsException );
+
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     virtual void addToPainterPath( QPainterPath &path ) const;
@@ -156,6 +156,7 @@ Sets the circular string's points
     virtual double xAt( int index ) const;
 
     virtual double yAt( int index ) const;
+
 
 
     virtual QgsCircularString *createEmptyWithSameType() const /Factory/;

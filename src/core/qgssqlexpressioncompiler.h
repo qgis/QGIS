@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsexpressionnodeimpl.h"
 
 class QgsExpression;
 class QgsExpressionNode;
@@ -31,9 +32,9 @@ class QgsExpressionNode;
  *
  * This class is designed to be overridden by providers to take advantage of expression compilation,
  * so that feature requests can take advantage of the provider's native filtering support.
- * \since QGIS 2.14
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
+ * \since QGIS 2.14
  */
 
 class CORE_EXPORT QgsSqlExpressionCompiler
@@ -80,6 +81,22 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      */
     virtual QString result();
 
+    /**
+     * Returns true if \a op is one of
+     *
+     * - LIKE
+     * - ILIKE
+     * - NOT LIKE
+     * - NOT ILIKE
+     * - ~ (regexp)
+     *
+     * In such cases the left operator will be cast to string to behave equal to
+     * QGIS own expression engine.
+     *
+     * \since QGIS 3.2
+     */
+    bool opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op );
+
   protected:
 
     /**
@@ -108,7 +125,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
     /**
-     * Return the SQL function for the expression function.
+     * Returns the SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \returns the SQL function name
@@ -116,7 +133,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
     /**
-     * Return the Arguments for SQL function for the expression function.
+     * Returns the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
      * \param fnName expression function name
      * \param fnArgs arguments from expression
@@ -131,6 +148,23 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * \since QGIS 3.0
      */
     virtual QString castToReal( const QString &value ) const;
+
+    /**
+     * Casts a value to a text result. Subclasses that support casting to text may implement this function
+     * to get equal behavior to the QGIS expression engine when string comparison operators are applied
+     * on non-string data.
+     *
+     * Example:
+     *
+     *     579 LIKE '5%'
+     *
+     * which on a postgres database needs to be
+     *
+     *     579::text LIKE '5%'
+     *
+     * \since QGIS 3.2
+     */
+    virtual QString castToText( const QString &value ) const;
 
     /**
      * Casts a value to a integer result. Subclasses must reimplement this to cast a numeric value to a integer

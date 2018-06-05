@@ -13,9 +13,9 @@
 class QgsVectorLayerDirector : QgsGraphDirector
 {
 %Docstring
+Determine making the graph from vector line layer
 
 .. versionadded:: 3.0
- Determine making the graph from vector line layer
 %End
 
 %TypeHeaderCode
@@ -35,7 +35,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                             const QString &directDirectionValue,
                             const QString &reverseDirectionValue,
                             const QString &bothDirectionValue,
-                            const Direction defaultDirection
+                            Direction defaultDirection
                           );
 %Docstring
 Default constructor
@@ -46,7 +46,7 @@ Default constructor
 :param reverseDirectionValue: value for reversed one-way road
 :param bothDirectionValue: value for two-way (bidirectional) road
 :param defaultDirection: default direction. Will be used if corresponding
-attribute value is not set or does not equal to the given values
+                         attribute value is not set or does not equal to the given values
 %End
 
      virtual void makeGraph( QgsGraphBuilderInterface *builder,

@@ -55,7 +55,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
 
     /**
-     * Get list of available providers.
+     * Gets list of available providers.
      */
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 
@@ -156,14 +156,14 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     void removeParameterType( QgsProcessingParameterType *type );
 
     /**
-     * Return the parameter type registered for \a id.
+     * Returns the parameter type registered for \a id.
      *
      * \since QGIS 3.2
      */
     QgsProcessingParameterType *parameterType( const QString &id ) const;
 
     /**
-     * Return a list with all known parameter types.
+     * Returns a list with all known parameter types.
      *
      * \since QGIS 3.2
      */

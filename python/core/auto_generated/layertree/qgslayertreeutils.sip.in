@@ -33,7 +33,7 @@ Try to load custom layer order from \verbatim <legend> \endverbatim tag from pro
 %End
     static QDomElement writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
 %Docstring
-Return \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
+Returns \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
 %End
 
     static QString checkStateToXml( Qt::CheckState state );
@@ -47,11 +47,11 @@ Convert QString to Qt.CheckState
 
     static bool layersEditable( const QList<QgsLayerTreeLayer *> &layerNodes );
 %Docstring
-Return true if any of the layers is editable
+Returns true if any of the layers is editable
 %End
     static bool layersModified( const QList<QgsLayerTreeLayer *> &layerNodes );
 %Docstring
-Return true if any of the layers is modified
+Returns true if any of the layers is modified
 %End
 
     static void removeInvalidLayers( QgsLayerTreeGroup *group );
@@ -66,24 +66,21 @@ Remove subtree of embedded groups and replaces it with a custom property embedde
 
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 %Docstring
-
-.. note::
-
-   not available in Python bindings
+Updates an embedded ``group`` from a ``project``.
 %End
 
     static QStringList invisibleLayerList( QgsLayerTreeNode *node );
 %Docstring
-get invisible layers
+Gets invisible layers
 %End
 
     static void setLegendFilterByExpression( QgsLayerTreeLayer &layer, const QString &expr, bool enabled = true );
 %Docstring
-Set the expression filter of a legend layer
+Sets the expression filter of a legend layer
 %End
     static QString legendFilterByExpression( const QgsLayerTreeLayer &layer, bool *enabled = 0 );
 %Docstring
-Return the expression filter of a legend layer
+Returns the expression filter of a legend layer
 %End
     static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
 %Docstring

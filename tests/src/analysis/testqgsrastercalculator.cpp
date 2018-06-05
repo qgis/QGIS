@@ -199,7 +199,7 @@ void TestQgsRasterCalculator::singleOp()
   QFETCH( double, value );
   QFETCH( double, expected );
 
-  QgsRasterCalcNode node( op, new QgsRasterCalcNode( value ), 0 );
+  QgsRasterCalcNode node( op, new QgsRasterCalcNode( value ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
@@ -225,7 +225,7 @@ void TestQgsRasterCalculator::singleOpMatrices()
 
   QgsRasterMatrix m( 2, 3, d, -1.0 );
 
-  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), 0 );
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
@@ -349,7 +349,7 @@ void TestQgsRasterCalculator::dualOpMatrixMatrix()
 void TestQgsRasterCalculator::rasterRefOp()
 {
   // test single op run on raster ref
-  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( QStringLiteral( "raster" ) ), 0 );
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( QStringLiteral( "raster" ) ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );

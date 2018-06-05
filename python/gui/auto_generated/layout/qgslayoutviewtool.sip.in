@@ -172,7 +172,7 @@ item and should have its properties displayed in any designer windows.
 
   protected:
 
-    void setFlags( const QgsLayoutViewTool::Flags flags );
+    void setFlags( QgsLayoutViewTool::Flags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for the tool.
 

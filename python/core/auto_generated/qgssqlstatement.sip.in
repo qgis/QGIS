@@ -59,14 +59,14 @@ Returns root node of the statement. Root node is null is parsing has failed
 
     QString statement() const;
 %Docstring
-Return the original, unmodified statement string.
+Returns the original, unmodified statement string.
 If there was none supplied because it was constructed by sole
 API calls, dump() will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Return  statement string, constructed from the internal
+Returns the statement string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 statement() instead.
@@ -270,7 +270,7 @@ Takes ownership of the provided node
 
         QList<QgsSQLStatement::Node *> list();
 %Docstring
-Return list
+Returns list
 %End
 
         int count() const;
@@ -492,12 +492,12 @@ Constructor
 
         QString name() const;
 %Docstring
-Return function name
+Returns function name
 %End
 
         QgsSQLStatement::NodeList *args() const;
 %Docstring
-Return arguments
+Returns arguments
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
@@ -564,7 +564,7 @@ Constructor with table and column name
 
         void setDistinct( bool distinct = true );
 %Docstring
-Set whether this is prefixed by DISTINCT
+Sets whether this is prefixed by DISTINCT
 %End
 
         QString tableName() const;
@@ -620,7 +620,7 @@ Constructor
 
         void setAlias( const QString &alias );
 %Docstring
-Set alias name
+Sets alias name
 %End
 
         QgsSQLStatement::Node *column() const;
@@ -843,7 +843,7 @@ Constructor
 
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins /Transfer/ );
 %Docstring
-Set joins
+Sets joins
 %End
         void appendJoin( QgsSQLStatement::NodeJoin *join /Transfer/ );
 %Docstring
@@ -851,36 +851,36 @@ Append a join
 %End
         void setWhere( QgsSQLStatement::Node *where /Transfer/ );
 %Docstring
-Set where clause
+Sets where clause
 %End
         void setOrderBy( const QList<QgsSQLStatement::NodeColumnSorted *> &orderBy /Transfer/ );
 %Docstring
-Set order by columns
+Sets order by columns
 %End
 
         QList<QgsSQLStatement::NodeTableDef *> tables() const;
 %Docstring
-Return the list of tables
+Returns the list of tables
 %End
         QList<QgsSQLStatement::NodeSelectedColumn *> columns() const;
 %Docstring
-Return the list of columns
+Returns the list of columns
 %End
         bool distinct() const;
 %Docstring
-Return if the SELECT is DISTINCT
+Returns if the SELECT is DISTINCT
 %End
         QList<QgsSQLStatement::NodeJoin *> joins() const;
 %Docstring
-Return the list of joins
+Returns the list of joins
 %End
         QgsSQLStatement::Node *where() const;
 %Docstring
-Return the where clause
+Returns the where clause
 %End
         QList<QgsSQLStatement::NodeColumnSorted *> orderBy() const;
 %Docstring
-Return the list of order by columns
+Returns the list of order by columns
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;

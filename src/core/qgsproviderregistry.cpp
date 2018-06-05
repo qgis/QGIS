@@ -362,7 +362,7 @@ QDir QgsProviderRegistry::libraryDirectory() const
 
 
 // typedef for the QgsDataProvider class factory
-typedef QgsDataProvider *classFactoryFunction_t( const QString * );
+typedef QgsDataProvider *classFactoryFunction_t( const QString *, const QgsDataProvider::ProviderOptions &options );
 
 
 /* Copied from QgsVectorLayer::setDataProvider
@@ -372,7 +372,7 @@ typedef QgsDataProvider *classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource )
+QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey, QString const &dataSource, const QgsDataProvider::ProviderOptions &options )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -386,7 +386,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
 
   if ( metadata->createFunction() )
   {
-    return metadata->createFunction()( dataSource );
+    return metadata->createFunction()( dataSource, options );
   }
 
   // load the plugin
@@ -426,7 +426,7 @@ QgsDataProvider *QgsProviderRegistry::createProvider( QString const &providerKey
     return nullptr;
   }
 
-  QgsDataProvider *dataProvider = classFactory( &dataSource );
+  QgsDataProvider *dataProvider = classFactory( &dataSource, options );
   if ( !dataProvider )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the data provider plugin %1" ).arg( lib ) );
@@ -523,6 +523,27 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
 
     registerGui( parent );
   }
+}
+
+bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )
+{
+  if ( providerMetadata )
+  {
+    if ( mProviders.find( providerMetadata->key() ) == mProviders.end() )
+    {
+      mProviders[ providerMetadata->key() ] = providerMetadata;
+      return true;
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Cannot register provider metadata: a provider with the same key (%1) was already registered!" ).arg( providerMetadata->key() ), 2 );
+    }
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Trying to register a null metadata provider!" ), 2 );
+  }
+  return false;
 }
 
 QString QgsProviderRegistry::fileVectorFilters() const

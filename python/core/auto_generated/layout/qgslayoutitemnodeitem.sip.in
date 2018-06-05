@@ -44,8 +44,8 @@ Add a node in current shape.
 :param point: is the location of the new node (in scene coordinates)
 :param checkArea: is a flag to indicate if there's a space constraint.
 :param radius: is the space contraint and is used only if checkArea is
-true. Typically, if this flag is true, the new node has to be nearer
-than radius to the shape to be added.
+               true. Typically, if this flag is true, the new node has to be nearer
+               than radius to the shape to be added.
 %End
 
     void setDisplayNodes( bool display = true );
@@ -68,7 +68,7 @@ index of the nearest node or -1 if no node was found.
 
 :param point: is the location to search for nodes from (in scene coordinates)
 :param searchInRadius: is a flag to indicate if the area of research is
-limited in space.
+                       limited in space.
 :param radius: is only used if searchInRadius is true
 %End
 
@@ -135,12 +135,12 @@ Constructor for a QgsLayoutNodesItem with the given ``polygon`` nodes, attached 
 
 
 
-    virtual bool _addNode( const int nodeIndex, QPointF newNode, const double radius ) = 0;
+    virtual bool _addNode( int nodeIndex, QPointF newNode, double radius ) = 0;
 %Docstring
 Method called in addNode.
 %End
 
-    virtual bool _removeNode( const int nodeIndex ) = 0;
+    virtual bool _removeNode( int nodeIndex ) = 0;
 %Docstring
 Method called in removeNode.
 %End

@@ -12,7 +12,7 @@
 class QgsEffectStack : QgsPaintEffect
 {
 %Docstring
- A paint effect which consists of a stack of other chained paint effects
+A paint effect which consists of a stack of other chained paint effects
 
 Effect stacks can be used to apply multiple paint effects to a QPicture. For
 instance, an effect stack may blur then apply a drop shadow.
@@ -56,7 +56,7 @@ Constructor for empty QgsEffectStack.
 Creates a new QgsEffectStack effect from a single initial effect.
 
 :param effect: initial effect to add to the stack. The effect will
-be cloned, so ownership is not transferred to the stack.
+               be cloned, so ownership is not transferred to the stack.
 
 :return: new QgsEffectStack containing initial effect
 %End
@@ -88,32 +88,32 @@ Unused for QgsEffectStack, props parameter will be ignored
 Appends an effect to the end of the stack.
 
 :param effect: QgsPaintEffect to append. Ownership of the effect will be
-transferred to the stack object.
+               transferred to the stack object.
 
 .. seealso:: :py:func:`insertEffect`
 %End
 
-    bool insertEffect( const int index, QgsPaintEffect *effect /Transfer/ );
+    bool insertEffect( int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Inserts an effect at a specified index within the stack.
 
 :param index: position to insert the effect
 :param effect: QgsPaintEffect to insert. Ownership of the effect will be
-transferred to the stack object.
+               transferred to the stack object.
 
 .. seealso:: :py:func:`appendEffect`
 %End
 
-    bool changeEffect( const int index, QgsPaintEffect *effect /Transfer/ );
+    bool changeEffect( int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Replaces the effect at a specified position within the stack.
 
 :param index: position of effect to replace
 :param effect: QgsPaintEffect to replace with. Ownership of the effect will be
-transferred to the stack object.
+               transferred to the stack object.
 %End
 
-    QgsPaintEffect *takeEffect( const int index /TransferBack/ );
+    QgsPaintEffect *takeEffect( int index /TransferBack/ );
 %Docstring
 Removes an effect from the stack and returns a pointer to it.
 

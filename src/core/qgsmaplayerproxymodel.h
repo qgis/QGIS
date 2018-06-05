@@ -76,18 +76,18 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 
     //! offer the possibility to except some layers to be listed
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
-    //! Get the list of maplayers which are excluded from the list
+    //! Gets the list of maplayers which are excluded from the list
     QList<QgsMapLayer *> exceptedLayerList() {return mExceptList;}
 
-    //! Set the list of maplayer ids which are excluded from the list
+    //! Sets the list of maplayer ids which are excluded from the list
     void setExceptedLayerIds( const QStringList &ids );
-    //! Get the list of maplayer ids which are excluded from the list
+    //! Gets the list of maplayer ids which are excluded from the list
     QStringList exceptedLayerIds() const;
 
     /**
      * Sets a list of data providers which should be excluded from the model.
-     * \since QGIS 3.0
      * \see excludedProviders()
+     * \since QGIS 3.0
      */
     void setExcludedProviders( const QStringList &providers );
 

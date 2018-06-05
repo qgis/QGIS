@@ -157,8 +157,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Set the display \a name of the layer.
-     * \since QGIS 2.16
      * \see name()
+     * \since QGIS 2.16
      */
     void setName( const QString &name );
 
@@ -395,7 +395,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual void reload() {}
 
     /**
-     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * Returns new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) = 0 SIP_FACTORY;
@@ -404,7 +404,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual QgsRectangle extent() const;
 
     /**
-     * Return the status of the layer. An invalid layer is one which has a bad datasource
+     * Returns the status of the layer. An invalid layer is one which has a bad datasource
      * or other problem. Child classes set this flag when initialized.
      * \returns true if the layer is valid and can be accessed
      */
@@ -529,7 +529,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void removeCustomProperty( const QString &key );
 
     /**
-     * Get current status error. This error describes some principal problem
+     * Gets current status error. This error describes some principal problem
      *  for which layer cannot work and thus is not valid. It is not last error
      *  after accessing data by draw() etc.
      */
@@ -780,8 +780,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param errorMessage reference to string that will be updated with any error messages
      * \param context reading context (used for transform from relative to absolute paths)
      * \returns true in case of success.
-     * \since QGIS 2.16
      * \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     * \since QGIS 2.16
      */
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
@@ -802,16 +802,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *  \param errorMessage reference to string that will be updated with any error messages
      *  \param context writing context (used for transform from absolute to relative paths)
      *  \returns true in case of success.
-     *  \since QGIS 2.16
      *  \note To be implemented in subclasses. Default implementation does nothing and returns false.
+     *  \since QGIS 2.16
      */
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
-    //! Return pointer to layer's undo stack
+    //! Returns pointer to layer's undo stack
     QUndoStack *undoStack();
 
     /**
-     * Return pointer to layer's style undo stack
+     * Returns pointer to layer's style undo stack
      *  \since QGIS 2.16
      */
     QUndoStack *undoStackStyles();
@@ -850,7 +850,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QgsMapLayerLegend *legend() const;
 
     /**
-     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * Gets access to the layer's style manager. Style manager allows switching between multiple styles.
      * \since QGIS 2.8
      */
     QgsMapLayerStyleManager *styleManager() const;
@@ -871,10 +871,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Tests whether the layer should be visible at the specified \a scale.
      *  The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \returns true if the layer is visible at the given scale.
-     * \since QGIS 2.16
      * \see minimumScale()
      * \see maximumScale()
      * \see hasScaleBasedVisibility()
+     * \since QGIS 2.16
      */
     bool isInScaleRange( double scale ) const;
 
@@ -914,18 +914,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns true if auto refresh is enabled for the layer.
-     * \since QGIS 3.0
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
+     * \since QGIS 3.0
      */
     bool hasAutoRefreshEnabled() const;
 
     /**
      * Returns the auto refresh interval (in milliseconds). Note that
      * auto refresh is only active when hasAutoRefreshEnabled() is true.
-     * \since QGIS 3.0
-     * \see autoRefreshEnabled()
+     * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
+     * \since QGIS 3.0
      */
     int autoRefreshInterval() const;
 
@@ -936,33 +936,33 @@ class CORE_EXPORT QgsMapLayer : public QObject
      *
      * Note that auto refresh triggers deferred repaints of the layer. Any map
      * canvas must be refreshed separately in order to view the refreshed layer.
-     * \since QGIS 3.0
      * \see autoRefreshInterval()
      * \see setAutoRefreshEnabled()
+     * \since QGIS 3.0
      */
     void setAutoRefreshInterval( int interval );
 
     /**
      * Sets whether auto refresh is enabled for the layer.
-     * \since QGIS 3.0
      * \see hasAutoRefreshEnabled()
      * \see setAutoRefreshInterval()
+     * \since QGIS 3.0
      */
     void setAutoRefreshEnabled( bool enabled );
 
     /**
      * Returns a reference to the layer's metadata store.
-     * \since QGIS 3.0
      * \see setMetadata()
      * \see metadataChanged()
+     * \since QGIS 3.0
      */
     virtual const QgsLayerMetadata &metadata() const;
 
     /**
      * Sets the layer's \a metadata store.
-     * \since QGIS 3.0
      * \see metadata()
      * \see metadataChanged()
+     * \since QGIS 3.0
      */
     virtual void setMetadata( const QgsLayerMetadata &metadata );
 
@@ -1027,9 +1027,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \param enabled set to true to enable scale based visibility
      * \see setMinimumScale
      * \see setMaximumScale
-     * \see scaleBasedVisibility
+     * \see hasScaleBasedVisibility
      */
-    void setScaleBasedVisibility( const bool enabled );
+    void setScaleBasedVisibility( bool enabled );
 
     /**
      * Will advise the map canvas (and any other interested party) that this layer requires to be repainted.
@@ -1115,8 +1115,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Signal emitted whenever a change affects the layer's style. Ie this may be triggered
      * by renderer changes, label style changes, or other style changes such as blend
      * mode or layer opacity changes.
-     * \since QGIS 2.16
      * \see rendererChanged()
+     * \since QGIS 2.16
     */
     void styleChanged();
 
@@ -1179,10 +1179,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     void clone( QgsMapLayer *layer ) const;
 
-    //! Set the extent
+    //! Sets the extent
     virtual void setExtent( const QgsRectangle &rect );
 
-    //! Set whether layer is valid or not - should be used in constructor.
+    //! Sets whether layer is valid or not - should be used in constructor.
     void setValid( bool valid );
 
     /**
@@ -1259,7 +1259,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Add error message
     void appendError( const QgsErrorMessage &error ) { mError.append( error );}
-    //! Set error message
+    //! Sets error message
     void setError( const QgsError &error ) { mError = error;}
 
     //! Extent of the layer
@@ -1379,15 +1379,15 @@ Q_DECLARE_METATYPE( QgsMapLayer * )
 
 /**
  * Weak pointer for QgsMapLayer
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 typedef QPointer< QgsMapLayer > QgsWeakMapLayerPointer;
 
 /**
  * A list of weak pointers to QgsMapLayers.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 typedef QList< QgsWeakMapLayerPointer > QgsWeakMapLayerPointerList;
 #endif

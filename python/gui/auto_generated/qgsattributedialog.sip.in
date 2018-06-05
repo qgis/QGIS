@@ -22,19 +22,19 @@ class QgsAttributeDialog : QDialog
 %Docstring
 Create an attribute dialog for a given layer and feature
 
-:param vl:                The layer for which the dialog will be generated
-:param thepFeature:       A feature for which the dialog will be generated
-:param featureOwner:      Set to true, if the dialog should take ownership of the feature
-:param parent:            A parent widget for the dialog
+:param vl: The layer for which the dialog will be generated
+:param thepFeature: A feature for which the dialog will be generated
+:param featureOwner: Set to true, if the dialog should take ownership of the feature
+:param parent: A parent widget for the dialog
 :param showDialogButtons: True: Show the dialog buttons accept/cancel
-:param context:           The context in which this dialog is created
+:param context: The context in which this dialog is created
 %End
 
     ~QgsAttributeDialog();
 
     void setHighlight( QgsHighlight *h );
 %Docstring
- setHighlight
+setHighlight
 
 :param h: The highlight. Ownership is taken.
 %End
@@ -55,7 +55,7 @@ Is this dialog editable?
 Toggles the form mode.
 
 :param mode: form mode. For example, if set to QgsAttributeForm.AddFeatureMode, the dialog will be editable even with an invalid feature and
-will add a new feature when the form is accepted.
+             will add a new feature when the form is accepted.
 %End
 
     void setEditCommandMessage( const QString &message );

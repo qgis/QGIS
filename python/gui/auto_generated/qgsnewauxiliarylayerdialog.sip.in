@@ -13,7 +13,7 @@ class QgsNewAuxiliaryLayerDialog: QDialog
 {
 %Docstring
 
- A dialog to create a new auxiliary layer
+A dialog to create a new auxiliary layer
 
 .. versionadded:: 3.0
 %End

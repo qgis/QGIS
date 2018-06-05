@@ -49,19 +49,31 @@ def algorithmHelp(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         print('{} ({})\n'.format(alg.displayName(), alg.id()))
-        print(alg.shortHelpString())
+        if alg.shortDescription():
+            print(alg.shortDescription() + '\n')
+        if alg.shortHelpString():
+            print(alg.shortHelpString() + '\n')
         print('\n----------------')
         print('Input parameters')
         print('----------------')
         for p in alg.parameterDefinitions():
-            print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
-            if p.description():
-                print('\t' + p.description())
+            print('\n{}: {}'.format(p.name(), p.description()))
+
+            print('\n\tParameter type:\t{}'.format(p.__class__.__name__))
 
             if isinstance(p, QgsProcessingParameterEnum):
                 opts = []
                 for i, o in enumerate(p.options()):
-                    opts.append('\t\t{} - {}'.format(i, o))
+                    opts.append('\t\t- {}: {}'.format(i, o))
+                print('\n\tAvailable values:\n{}'.format('\n'.join(opts)))
+
+            parameter_type = QgsApplication.processingRegistry().parameterType(p.type())
+            accepted_types = parameter_type.acceptedPythonTypes() if parameter_type is not None else []
+            if accepted_types:
+                opts = []
+                for t in accepted_types:
+                    opts.append('\t\t- {}'.format(t))
+                print('\n\tAccepted data types:')
                 print('\n'.join(opts))
 
         print('\n----------------')

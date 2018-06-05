@@ -63,7 +63,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     int userCount() const;
 
     /**
-     * Get current number of lines.
+     * Gets current number of lines.
      *   \returns number of lines */
     int numLines();
     int numAreas();
@@ -90,7 +90,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QMap<int, QList<QgsGrassUndoCommand *> > &undoCommands() { return mUndoCommands; }
 
     /**
-     * Get geometry of line.
+     * Gets geometry of line.
      * \returns geometry (point,line or polygon(GV_FACE)) or 0 */
     QgsAbstractGeometry *lineGeometry( int id );
     QgsAbstractGeometry *nodeGeometry( int id );
@@ -116,7 +116,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     void clearUndoCommands();
 
     /**
-     * Get layer, layer is created and loaded if not yet.
+     * Gets layer, layer is created and loaded if not yet.
      *  \param field
      *  \returns pointer to layer or 0 if layer doe not exist */
     QgsGrassVectorMapLayer *openLayer( int field );
@@ -148,7 +148,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QString toString();
 
     /**
-     * Get topology symbol code
+     * Gets topology symbol code
      * \param lid line or area number
      * \param type geometry type */
     TopoSymbol topoSymbol( int lid );

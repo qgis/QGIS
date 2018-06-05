@@ -12,7 +12,7 @@
 class QgsFileWidget : QWidget
 {
 %Docstring
- The QgsFileWidget class creates a widget for selecting a file or a folder.
+The QgsFileWidget class creates a widget for selecting a file or a folder.
 %End
 
 %TypeHeaderCode
@@ -43,21 +43,21 @@ class QgsFileWidget : QWidget
 
     explicit QgsFileWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsFileWidget creates a widget for selecting a file or a folder.
+QgsFileWidget creates a widget for selecting a file or a folder.
 %End
 
     QString filePath();
 %Docstring
- Returns the current file path(s)
+Returns the current file path(s)
 when multiple files are selected, they are quoted and separated
 by a single space (for example: '"/path/foo" "path/bar"')
 
-.. seealso:: :py:func:`filePaths`
+.. seealso:: :py:func:`splitFilePaths`
 %End
 
     static QStringList splitFilePaths( const QString &path );
 %Docstring
- Split the the quoted and space separated ``path`` and returns a QString list
+Split the the quoted and space separated ``path`` and returns a QString list
 
 .. seealso:: :py:func:`filePath`
 %End
@@ -79,7 +79,7 @@ returns the open file dialog title
 
     void setDialogTitle( const QString &title );
 %Docstring
- setDialogTitle defines the open file dialog title
+setDialogTitle defines the open file dialog title
 
 .. note::
 
@@ -93,7 +93,7 @@ returns the filters used for QDialog.getOpenFileName
 
     void setFilter( const QString &filter );
 %Docstring
- setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
+setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
 
 :param filter: Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
 %End

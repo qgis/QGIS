@@ -90,10 +90,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      */
     void reloadConnections( ) override;
 
-    //! Get pointer to the active layer (layer selected in the legend)
+    //! Gets pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer() override;
 
-    //! set the active layer (layer selected in the legend)
+    //! Sets the active layer (layer selected in the legend)
     bool setActiveLayer( QgsMapLayer *layer ) override;
 
     /**
@@ -201,7 +201,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 #endif
     void openURL( const QString &url, bool useQgisDocDirectory = true ) override;
 
-    //! Return a pointer to the map canvas used by qgisapp
+    //! Returns a pointer to the map canvas used by qgisapp
     QgsMapCanvas *mapCanvas() override;
 
     QList< QgsMapCanvas * > mapCanvases() override;
@@ -239,7 +239,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 
-    //! Return changeable options built from settings and/or defaults
+    //! Returns changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultStyleSheetOptions() override;
 
     /**
@@ -250,7 +250,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Save changed default option keys/values to user settings
     void saveStyleSheetOptions( const QMap<QString, QVariant> &opts ) override;
 
-    //! Get reference font for initial qApp (may not be same as QgisApp)
+    //! Gets reference font for initial qApp (may not be same as QgisApp)
     QFont defaultStyleSheetFont() override;
 
     //! Add action to the plugins menu
@@ -289,7 +289,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Remove specified dock widget from main window (doesn't delete it).
     void removeDockWidget( QDockWidget *dockwidget ) override;
 
-    //! return CAD dock widget
+    //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() override;
 
     /**
@@ -328,16 +328,18 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     /**
      * Register a new custom drop \a handler.
-     * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
-     * \see unregisterCustomDropHandler() */
+     * \see unregisterCustomDropHandler()
+     * \since QGIS 3.0
+     */
     void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /**
      * Unregister a previously registered custom drop \a handler.
+     * \see registerCustomDropHandler()
      * \since QGIS 3.0
-     * \see registerCustomDropHandler() */
+     */
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
@@ -439,9 +441,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionAddRasterLayer() override;
     QAction *actionAddPgLayer() override;
     QAction *actionAddWmsLayer() override;
-    //! Get access to the native Add ArcGIS FeatureServer action.
+    //! Gets access to the native Add ArcGIS FeatureServer action.
     QAction *actionAddAfsLayer() override;
-    //! Get access to the native Add ArcGIS MapServer action.
+    //! Gets access to the native Add ArcGIS MapServer action.
     QAction *actionAddAmsLayer() override;
     QAction *actionCopyLayerStyle() override;
     QAction *actionPasteLayerStyle() override;
@@ -529,19 +531,20 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void preloadForm( const QString &uifile ) override;
 
     /**
-     * Return vector layers in edit mode
+     * Returns the vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list
      */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const override;
 
-    //! Get timeout for timed messages: default of 5 seconds
+    //! Gets timeout for timed messages: default of 5 seconds
     int messageTimeout() override;
 
     QgsStatusBar *statusBarIface() override;
 
     void registerLocatorFilter( QgsLocatorFilter *filter ) override;
     void deregisterLocatorFilter( QgsLocatorFilter *filter ) override;
+    void invalidateLocatorResults() override;
 
     bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) override;
 

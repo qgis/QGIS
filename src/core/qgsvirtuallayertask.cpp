@@ -19,8 +19,7 @@
 #include "qgslogger.h"
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
-  : QgsTask()
-  , mDefinition( definition )
+  : mDefinition( definition )
 {
   mDefinition.setLazy( true );
   mLayer = qgis::make_unique<QgsVectorLayer>( mDefinition.toString(), "layer", "virtual" );
@@ -36,7 +35,7 @@ bool QgsVirtualLayerTask::run()
   }
   catch ( std::exception &e )
   {
-    QgsDebugMsg( tr( "Reload error: %1" ).arg( e.what() ) );
+    QgsDebugMsg( QStringLiteral( "Reload error: %1" ).arg( e.what() ) );
     rc = false;
   }
   return rc;

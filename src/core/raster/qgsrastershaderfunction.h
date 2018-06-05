@@ -118,6 +118,9 @@ class CORE_EXPORT QgsRasterShaderFunction
     */
     double maximumValue() const { return mMaximumValue; }
 
+    /**
+     * Returns legend symbology items if provided by renderer.
+     */
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
   protected:

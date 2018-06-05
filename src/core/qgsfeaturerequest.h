@@ -238,7 +238,7 @@ class CORE_EXPORT QgsFeatureRequest
         CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
-         * Get a copy as a list of OrderByClauses
+         * Gets a copy as a list of OrderByClauses
          *
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
@@ -295,7 +295,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
     /**
-     * Return the filter type which is currently set on this request
+     * Returns the filter type which is currently set on this request
      *
      * \returns Filter type
      */
@@ -324,14 +324,14 @@ class CORE_EXPORT QgsFeatureRequest
      */
     const QgsRectangle &filterRect() const { return mFilterRect; }
 
-    //! Set feature ID that should be fetched.
+    //! Sets feature ID that should be fetched.
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
-    //! Get the feature ID that should be fetched.
+    //! Gets the feature ID that should be fetched.
     QgsFeatureId filterFid() const { return mFilterFid; }
 
-    //! Set feature IDs that should be fetched.
+    //! Sets feature IDs that should be fetched.
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
-    //! Get feature IDs that should be fetched.
+    //! Gets feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
     /**
@@ -354,8 +354,8 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets a callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
-     * \since QGIS 3.0
      * \see invalidGeometryCallback()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -380,9 +380,9 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
@@ -411,17 +411,17 @@ class CORE_EXPORT QgsFeatureRequest
 
     /**
      * Returns the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
      * \see setExpressionContext
      * \see filterExpression
+     * \since QGIS 2.12
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
     /**
      * Sets the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
      * \see expressionContext
      * \see setFilterExpression
+     * \since QGIS 2.12
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -460,7 +460,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
-     * Return a list of order by clauses specified for this feature request.
+     * Returns a list of order by clauses specified for this feature request.
      *
      * \since QGIS 2.14
      */
@@ -488,7 +488,7 @@ class CORE_EXPORT QgsFeatureRequest
      */
     long limit() const { return mLimit; }
 
-    //! Set flags that affect how features will be fetched
+    //! Sets flags that affect how features will be fetched
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
     const Flags &flags() const { return mFlags; }
 
@@ -499,15 +499,15 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
-     * Return the subset of attributes which at least need to be fetched
+     * Returns the subset of attributes which at least need to be fetched
      * \returns A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
     /**
@@ -517,7 +517,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 
     /**
-     * Get simplification method for geometries that will be fetched
+     * Gets simplification method for geometries that will be fetched
      * \since QGIS 2.2
      */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
@@ -570,9 +570,9 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets a callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set. This function will be
      * called using the feature which encountered the transform error as a parameter.
-     * \since QGIS 3.0
      * \see transformErrorCallback()
      * \see setDestinationCrs()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
@@ -597,10 +597,10 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      * \see destinationCrs()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 
@@ -673,7 +673,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
     virtual ~QgsAbstractFeatureSource();
 
     /**
-     * Get an iterator for features matching the specified request
+     * Gets an iterator for features matching the specified request
      * \param request The request
      * \returns A feature iterator
      */

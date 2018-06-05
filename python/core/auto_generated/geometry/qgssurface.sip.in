@@ -20,7 +20,7 @@ class QgsSurface: QgsAbstractGeometry
 
     virtual QgsPolygon *surfaceToPolygon() const = 0 /Factory/;
 %Docstring
-Get a polygon representation of this surface.
+Gets a polygon representation of this surface.
 Ownership is transferred to the caller.
 %End
 

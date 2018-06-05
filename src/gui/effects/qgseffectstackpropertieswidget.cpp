@@ -399,7 +399,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPaintEffects.svg" ) ) );
-  mButton->setToolTip( tr( "Customise effects" ) );
+  mButton->setToolTip( tr( "Customize effects" ) );
   layout->addWidget( mButton );
 
   setFocusPolicy( Qt::StrongFocus );

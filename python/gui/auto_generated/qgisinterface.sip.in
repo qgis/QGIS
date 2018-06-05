@@ -84,18 +84,18 @@ Returns a list of all map canvases open in the app.
 %Docstring
 Create a new map canvas with the specified unique ``name``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`closeMapCanvas`
+
+.. versionadded:: 3.0
 %End
 
     virtual void closeMapCanvas( const QString &name ) = 0;
 %Docstring
 Closes the additional map canvas with matching ``name``.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createNewMapCanvas`
+
+.. versionadded:: 3.0
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -106,7 +106,7 @@ for toolbars contained within docks is returned.
 
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 %Docstring
-Return vector layers in edit mode
+Returns vector layers in edit mode
 
 :param modified: whether to return only layers that have been modified
 
@@ -115,12 +115,12 @@ Return vector layers in edit mode
 
     virtual QgsMapLayer *activeLayer() = 0;
 %Docstring
-Get pointer to the active layer (layer selected in the legend)
+Returns a pointer to the active layer (layer selected in the legend)
 %End
 
     virtual QgsMapCanvas *mapCanvas() = 0;
 %Docstring
-Return a pointer to the map canvas
+Returns a pointer to the map canvas
 %End
 
     virtual QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() = 0;
@@ -132,12 +132,12 @@ Returns a pointer to the layer tree canvas bridge
 
     virtual QWidget *mainWindow() = 0;
 %Docstring
-Return a pointer to the main window (instance of QgisApp in case of QGIS)
+Returns a pointer to the main window (instance of QgisApp in case of QGIS)
 %End
 
     virtual QgsMessageBar *messageBar() = 0;
 %Docstring
-Return the message bar of the main app
+Returns the message bar of the main app
 %End
 
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
@@ -150,12 +150,12 @@ Returns all currently open layout designers.
 
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 %Docstring
-Return changeable options built from settings and/or defaults
+Returns changeable options built from settings and/or defaults
 %End
 
     virtual QFont defaultStyleSheetFont() = 0;
 %Docstring
-Get reference font for initial qApp (may not be same as QgisApp)
+Returns a reference font for initial qApp (may not be same as QgisApp)
 %End
 
     virtual QgsAdvancedDigitizingDockWidget *cadDockWidget() = 0;
@@ -167,45 +167,178 @@ Advanced digitizing dock widget
 
 
     virtual QMenu *projectMenu() = 0;
+%Docstring
+Returns a reference to the main window "Project" menu.
+%End
+
     virtual QMenu *editMenu() = 0;
+%Docstring
+Returns a reference to the main window "Edit" menu.
+%End
+
     virtual QMenu *viewMenu() = 0;
+%Docstring
+Returns a reference to the main window "View" menu.
+%End
+
     virtual QMenu *layerMenu() = 0;
+%Docstring
+Returns a reference to the main window "Layer" menu.
+%End
+
     virtual QMenu *newLayerMenu() = 0;
+%Docstring
+Returns a reference to the main window "Create New Layer" menu.
+%End
+
     virtual QMenu *addLayerMenu() = 0;
 %Docstring
+Returns a reference to the main window "Add Layer" menu.
 
 .. versionadded:: 2.5
 %End
+
     virtual QMenu *settingsMenu() = 0;
+%Docstring
+Returns a reference to the main window "Settings" menu.
+%End
+
     virtual QMenu *pluginMenu() = 0;
+%Docstring
+Returns a reference to the main window "Plugin" menu.
+%End
+
     virtual QMenu *rasterMenu() = 0;
+%Docstring
+Returns a reference to the main window "Raster" menu.
+%End
+
     virtual QMenu *databaseMenu() = 0;
+%Docstring
+Returns a reference to the main window "Database" menu.
+%End
+
     virtual QMenu *vectorMenu() = 0;
+%Docstring
+Returns a reference to the main window "Vector" menu.
+%End
+
     virtual QMenu *webMenu() = 0;
+%Docstring
+Returns a reference to the main window "Web" menu.
+%End
+
     virtual QMenu *firstRightStandardMenu() = 0;
+%Docstring
+Returns a reference to the right most standard menu, which is
+usually the last menu item before the "Help" menu.
+
+This can be used to insert additional top-level menus into
+their correct position BEFORE the help menu.
+%End
+
     virtual QMenu *windowMenu() = 0;
+%Docstring
+Returns a reference to the main window "Window" menu.
+%End
+
     virtual QMenu *helpMenu() = 0;
+%Docstring
+Returns a reference to the main window "Help" menu.
+%End
+
 
     virtual QToolBar *fileToolBar() = 0;
+%Docstring
+Returns a reference to the main window "File" toolbar.
+%End
+
     virtual QToolBar *layerToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Layer" toolbar.
+%End
+
     virtual QToolBar *mapNavToolToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Map Navigation" toolbar.
+%End
+
     virtual QToolBar *digitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Digitize" toolbar.
+%End
+
     virtual QToolBar *advancedDigitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Advanced Digitizing" toolbar.
+%End
+
     virtual QToolBar *shapeDigitizeToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Shape Digitizing" toolbar.
+
+.. versionadded:: 3.0
+%End
+
     virtual QToolBar *attributesToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Attributes" toolbar.
+%End
+
     virtual QToolBar *pluginToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Plugin" toolbar.
+%End
+
     virtual QToolBar *helpToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Help" toolbar.
+%End
+
     virtual QToolBar *rasterToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Raster" toolbar.
+%End
+
     virtual QToolBar *vectorToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Vector" toolbar.
+%End
+
     virtual QToolBar *databaseToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Database" toolbar.
+%End
+
     virtual QToolBar *webToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Web" toolbar.
+%End
 
     virtual QAction *actionNewProject() = 0;
+%Docstring
+Returns the native New Project action.
+%End
     virtual QAction *actionOpenProject() = 0;
+%Docstring
+Returns the Open Project action.
+%End
     virtual QAction *actionSaveProject() = 0;
+%Docstring
+Returns the native Save Project action.
+%End
     virtual QAction *actionSaveProjectAs() = 0;
+%Docstring
+Returns the native Save Project As action.
+%End
     virtual QAction *actionSaveMapAsImage() = 0;
+%Docstring
+Returns the native Save Map as Image action.
+%End
     virtual QAction *actionProjectProperties() = 0;
+%Docstring
+Returns the native Project Properties action.
+%End
 
     virtual QAction *actionCreatePrintLayout() = 0;
 %Docstring
@@ -217,113 +350,159 @@ Create new print layout action
 Show layout manager action
 %End
     virtual QAction *actionExit() = 0;
+%Docstring
+Returns the Exit QGIS action.
+%End
+
 
     virtual QAction *actionCutFeatures() = 0;
+%Docstring
+Returns the native Cut Features action.
+%End
     virtual QAction *actionCopyFeatures() = 0;
+%Docstring
+Returns the native Copy Features action.
+%End
     virtual QAction *actionPasteFeatures() = 0;
+%Docstring
+Returns the native Paste Features action.
+%End
     virtual QAction *actionAddFeature() = 0;
+%Docstring
+Returns the native Add Feature action.
+%End
     virtual QAction *actionDeleteSelected() = 0;
+%Docstring
+Returns the native Delete Selected Features action.
+%End
     virtual QAction *actionMoveFeature() = 0;
+%Docstring
+Returns the native Move Features action.
+%End
     virtual QAction *actionSplitFeatures() = 0;
+%Docstring
+Returns the native Split Features action.
+%End
     virtual QAction *actionSplitParts() = 0;
+%Docstring
+Returns the native Split Parts action.
+%End
     virtual QAction *actionAddRing() = 0;
+%Docstring
+Returns the native Add Ring action.
+%End
     virtual QAction *actionAddPart() = 0;
+%Docstring
+Returns the native Add Part action.
+%End
     virtual QAction *actionSimplifyFeature() = 0;
+%Docstring
+Returns the native Simplify/Smooth Features action.
+%End
     virtual QAction *actionDeleteRing() = 0;
+%Docstring
+Returns the native Delete Ring action.
+%End
     virtual QAction *actionDeletePart() = 0;
+%Docstring
+Returns the native Delete Part action.
+%End
     virtual QAction *actionVertexTool() = 0;
+%Docstring
+Returns the native Vertex Tool action.
+%End
 
     virtual QAction *actionPan() = 0;
 %Docstring
-Get access to the native pan action. Call trigger() on it to set the default pan map tool.
+Returns the native pan action. Call trigger() on it to set the default pan map tool.
 %End
     virtual QAction *actionPanToSelected() = 0;
 %Docstring
-Get access to the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
+Returns the native pan to selected action. Call trigger() on it to pan the map canvas to the selection.
 %End
     virtual QAction *actionZoomIn() = 0;
 %Docstring
-Get access to the native zoom in action. Call trigger() on it to set the default zoom in map tool.
+Returns the native zoom in action. Call trigger() on it to set the default zoom in map tool.
 %End
     virtual QAction *actionZoomOut() = 0;
 %Docstring
-Get access to the native zoom out action. Call trigger() on it to set the default zoom out map tool.
+Returns the native zoom out action. Call trigger() on it to set the default zoom out map tool.
 %End
     virtual QAction *actionSelect() = 0;
 %Docstring
-Get access to the native select action. Call trigger() on it to set the default select map tool.
+Returns the native select action. Call trigger() on it to set the default select map tool.
 %End
     virtual QAction *actionSelectRectangle() = 0;
 %Docstring
-Get access to the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
+Returns the native select rectangle action. Call trigger() on it to set the default select rectangle map tool.
 %End
     virtual QAction *actionSelectPolygon() = 0;
 %Docstring
-Get access to the native select polygon action. Call trigger() on it to set the default select polygon map tool.
+Returns the native select polygon action. Call trigger() on it to set the default select polygon map tool.
 %End
     virtual QAction *actionSelectFreehand() = 0;
 %Docstring
-Get access to the native select freehand action. Call trigger() on it to set the default select freehand map tool.
+Returns the native select freehand action. Call trigger() on it to set the default select freehand map tool.
 %End
     virtual QAction *actionSelectRadius() = 0;
 %Docstring
-Get access to the native select radius action. Call trigger() on it to set the default select radius map tool.
+Returns the native select radius action. Call trigger() on it to set the default select radius map tool.
 %End
     virtual QAction *actionIdentify() = 0;
 %Docstring
-Get access to the native identify action. Call trigger() on it to set the default identify map tool.
+Returns the native identify action. Call trigger() on it to set the default identify map tool.
 %End
     virtual QAction *actionFeatureAction() = 0;
 %Docstring
-Get access to the native run action feature action. Call trigger() on it to set the default run feature action map tool.
+Returns the native run action feature action. Call trigger() on it to set the default run feature action map tool.
 %End
     virtual QAction *actionMeasure() = 0;
 %Docstring
-Get access to the native measure action. Call trigger() on it to set the default measure map tool.
+Returns the native measure action. Call trigger() on it to set the default measure map tool.
 %End
     virtual QAction *actionMeasureArea() = 0;
 %Docstring
-Get access to the native measure area action. Call trigger() on it to set the default measure area map tool.
+Returns the native measure area action. Call trigger() on it to set the default measure area map tool.
 %End
     virtual QAction *actionZoomFullExtent() = 0;
 %Docstring
-Get access to the native zoom full extent action. Call trigger() on it to zoom to the full extent.
+Returns the native zoom full extent action. Call trigger() on it to zoom to the full extent.
 %End
     virtual QAction *actionZoomToLayer() = 0;
 %Docstring
-Get access to the native zoom to layer action. Call trigger() on it to zoom to the active layer.
+Returns the native zoom to layer action. Call trigger() on it to zoom to the active layer.
 %End
     virtual QAction *actionZoomToSelected() = 0;
 %Docstring
-Get access to the native zoom to selected action. Call trigger() on it to zoom to the current selection.
+Returns the native zoom to selected action. Call trigger() on it to zoom to the current selection.
 %End
     virtual QAction *actionZoomLast() = 0;
 %Docstring
-Get access to the native zoom last action. Call trigger() on it to zoom to last.
+Returns the native zoom last action. Call trigger() on it to zoom to last.
 %End
     virtual QAction *actionZoomNext() = 0;
 %Docstring
-Get access to the native zoom next action. Call trigger() on it to zoom to next.
+Returns the native zoom next action. Call trigger() on it to zoom to next.
 %End
     virtual QAction *actionZoomActualSize() = 0;
 %Docstring
-Get access to the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
+Returns the native zoom resolution (100%) action. Call trigger() on it to zoom to actual size.
 %End
     virtual QAction *actionMapTips() = 0;
 %Docstring
-Get access to the native map tips action. Call trigger() on it to toggle map tips.
+Returns the native map tips action. Call trigger() on it to toggle map tips.
 %End
     virtual QAction *actionNewBookmark() = 0;
 %Docstring
-Get access to the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
+Returns the native new bookmark action. Call trigger() on it to open the new bookmark dialog.
 %End
     virtual QAction *actionShowBookmarks() = 0;
 %Docstring
-Get access to the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
+Returns the native show bookmarks action. Call trigger() on it to open the bookmarks dialog.
 %End
     virtual QAction *actionDraw() = 0;
 %Docstring
-Get access to the native draw action.
+Returns the native draw action.
 %End
 
     virtual QAction *actionNewVectorLayer() = 0;
@@ -333,11 +512,11 @@ Get access to the native draw action.
     virtual QAction *actionAddWmsLayer() = 0;
     virtual QAction *actionAddAfsLayer() = 0;
 %Docstring
-Get access to the native Add ArcGIS FeatureServer action.
+Returns the native Add ArcGIS FeatureServer action.
 %End
     virtual QAction *actionAddAmsLayer() = 0;
 %Docstring
-Get access to the native Add ArcGIS MapServer action.
+Returns the native Add ArcGIS MapServer action.
 %End
     virtual QAction *actionCopyLayerStyle() = 0;
     virtual QAction *actionPasteLayerStyle() = 0;
@@ -402,7 +581,7 @@ or stopEditing while giving the user the appropriate dialogs.
 
     virtual int messageTimeout() = 0;
 %Docstring
-Get timeout for timed messages: default of 5 seconds
+Returns the timeout for timed messages: default of 5 seconds
 %End
 
     virtual QgsStatusBar *statusBarIface() = 0;
@@ -760,30 +939,28 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 %Docstring
 Register a new tab in the vector layer properties dialog.
 
-.. versionadded:: 2.16
-
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
    be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterMapLayerPropertiesFactory`
+.. seealso:: :py:func:`unregisterMapLayerConfigWidgetFactory`
+
+.. versionadded:: 2.16
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the vector layer properties dialog.
 
-.. versionadded:: 2.16
+.. seealso:: :py:func:`registerMapLayerConfigWidgetFactory`
 
-.. seealso:: :py:func:`registerMapLayerPropertiesFactory`
+.. versionadded:: 2.16
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Register a new tab in the options dialog.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -791,22 +968,22 @@ Register a new tab in the options dialog.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
 Unregister a previously registered tab in the options dialog.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerOptionsWidgetFactory`
+
+.. versionadded:: 3.0
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop handler.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -814,22 +991,22 @@ Register a new custom drop handler.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop handler.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerCustomDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Register a new custom drop ``handler`` for layout windows.
-
-.. versionadded:: 3.0
 
 .. note::
 
@@ -837,15 +1014,17 @@ Register a new custom drop ``handler`` for layout windows.
    be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
+
+.. versionadded:: 3.0
 %End
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 %Docstring
 Unregister a previously registered custom drop ``handler`` for layout windows.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`registerCustomLayoutDropHandler`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -858,8 +1037,9 @@ QGIS documentation, set useQgisDocDirectory to false.
 
 :param url: URL to open
 :param useQgisDocDirectory: If true, the URL will be formed by concatenating
-url to the QGIS documentation directory path (prefix/share/doc)
-\deprecated
+                            url to the QGIS documentation directory path (prefix/share/doc)
+
+.. deprecated:: Use QDesktopServices instead
 %End
 
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
@@ -924,6 +1104,15 @@ deregisterLocatorFilter() to deregister their filters upon plugin unload to avoi
 .. versionadded:: 3.0
 %End
 
+    virtual void invalidateLocatorResults() = 0;
+%Docstring
+Invalidate results from the locator filter.
+
+This might be useful if the configuration of the filter changed without going through main application settings.
+
+.. versionadded:: 3.2
+%End
+
     virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 %Docstring
 Checks available datum transforms and ask user if several are available and none
@@ -954,9 +1143,9 @@ can change their tool button icons.
 %Docstring
 This signal is emitted when a new layout ``designer`` has been opened.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
+
+.. versionadded:: 3.0
 %End
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
@@ -964,22 +1153,22 @@ This signal is emitted when a new layout ``designer`` has been opened.
 This signal is emitted before a layout ``designer`` is going to be closed
 and deleted.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
+
+.. versionadded:: 3.0
 %End
 
     void layoutDesignerClosed();
 %Docstring
 This signal is emitted after a layout designer window is closed.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
 .. seealso:: :py:func:`layoutDesignerOpened`
+
+.. versionadded:: 3.0
 %End
 
     void initializationCompleted();

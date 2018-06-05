@@ -34,6 +34,9 @@ geometry and a list of field/values attributes.
 #endif
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     SIP_PYOBJECT __iter__();
 %MethodCode
@@ -163,7 +166,7 @@ Copy constructor
 
     QgsFeatureId id() const;
 %Docstring
-Get the feature ID for this feature.
+Gets the feature ID for this feature.
 
 :return: feature ID
 
@@ -187,11 +190,11 @@ Returns the feature's attributes.
 
 .. seealso:: :py:func:`setAttributes`
 
-.. versionadded:: 2.9
-
 .. note::
 
    Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+
+.. versionadded:: 2.9
 %End
 
     void setAttributes( const QgsAttributes &attrs );
@@ -345,12 +348,12 @@ Assign a field map with the feature to allow attribute access by attribute name.
 
 :param fields: The attribute fields which this feature holds
 :param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
-C++: Defaults to false
-Python: Defaults to true
-
-.. versionadded:: 2.9
+                       C++: Defaults to false
+                       Python: Defaults to true
 
 .. seealso:: :py:func:`fields`
+
+.. versionadded:: 2.9
 %End
 
     QgsFields fields() const;

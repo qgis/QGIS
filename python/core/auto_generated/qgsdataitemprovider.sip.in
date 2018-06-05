@@ -40,7 +40,7 @@ Human-readable name of the provider name
 
     virtual int capabilities() = 0;
 %Docstring
-Return combination of flags from QgsDataProvider.DataCapabilities
+Returns combination of flags from QgsDataProvider.DataCapabilities
 %End
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;

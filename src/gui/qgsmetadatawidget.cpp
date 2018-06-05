@@ -153,7 +153,7 @@ void QgsMetadataWidget::setMode( QgsMetadataWidget::Mode mode )
 
   mIdLabel->setText( tr( "This page describes the basic attribution of the %1. Please use the tooltips for more information." ).arg( type ) );
   mLabelCategories->setText( tr( "%1 categories." ).arg( typeUpper ) );
-  mLabelContact->setText( tr( "Contact describe the owner of the %1." ).arg( type ) );
+  mLabelContact->setText( tr( "Contacts related to the %1." ).arg( type ) );
   mLabelLinks->setText( tr( "Links describe ancillary resources and information related to this %1." ).arg( type ) );
   mLabelHistory->setText( tr( "History about the %1." ).arg( type ) );
   labelKeywords->setText( tr( "<html><head/><body><p>Keywords are optional, and provide a way to provide additional descriptive information about "

@@ -173,7 +173,7 @@ Constructor
 
         virtual QgsField fieldDefinition( const QgsField &field );
 %Docstring
-Return a possibly modified field definition. Default implementation will return provided field unmodified.
+Returns a possibly modified field definition. Default implementation will return provided field unmodified.
 
 :param field: original field definition
 
@@ -267,7 +267,7 @@ Write contents of vector layer to an (OGR supported) vector formt
 :param symbologyScale: scale of symbology
 :param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
 :param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
-allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+                             allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
 :param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
 :param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
@@ -301,7 +301,7 @@ Writes a layer out to a vector file.
 :param fileName: file name to write to
 :param fileEncoding: encoding to use
 :param ct: coordinate transform to reproject exported geometries with, or invalid transform
-for no transformation
+           for no transformation
 :param driverName: OGR driver to use
 :param onlySelected: write only selected features of layer
 :param errorMessage: pointer to buffer fo error message
@@ -313,7 +313,7 @@ for no transformation
 :param symbologyScale: scale of symbology
 :param filterExtent: if not a null pointer, only features intersecting the extent will be saved (added in QGIS 2.4)
 :param overrideGeometryType: set to a valid geometry type to override the default geometry type for the layer. This parameter
-allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
+                             allows for conversion of geometryless tables to null geometries, etc (added in QGIS 2.14)
 :param forceMulti: set to true to force creation of multi* geometries (added in QGIS 2.14)
 :param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
@@ -427,7 +427,7 @@ Returns a list or pairs, with format filter string as first element and OGR form
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
+.. seealso:: :py:func:`supportedFormatExtensions`
 %End
 
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
@@ -437,9 +437,9 @@ Returns a list of file extensions for supported formats.
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`supportedFiltersAndFormats`
+
+.. versionadded:: 3.0
 %End
 
     static bool supportsFeatureStyles( const QString &driverName );
@@ -540,9 +540,9 @@ Delete a shapefile (and its accompanying shx / dbf / prf)
 Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setSymbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     void setSymbologyScale( double scale );
@@ -550,9 +550,9 @@ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Set reference ``scale`` for output.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`symbologyScale`
+
+.. versionadded:: 3.0
 %End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
@@ -563,9 +563,9 @@ Returns a list of the default dataset options for a specified driver.
 
 :param driverName: name of OGR driver
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`defaultLayerOptions`
+
+.. versionadded:: 3.0
 %End
 
     static QStringList defaultLayerOptions( const QString &driverName );
@@ -574,15 +574,15 @@ Returns a list of the default layer options for a specified driver.
 
 :param driverName: name of OGR driver
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`defaultDatasetOptions`
+
+.. versionadded:: 3.0
 %End
 
 
     static QgsVectorFileWriter::EditionCapabilities editionCapabilities( const QString &datasetName );
 %Docstring
-Return edition capabilities for an existing dataset name.
+Returns edition capabilities for an existing dataset name.
 
 .. versionadded:: 3.0
 %End

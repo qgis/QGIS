@@ -83,12 +83,12 @@ QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather a
 
     QStringList providers() const;
 %Docstring
-Return list of all registered providers
+Returns list of all registered providers
 %End
 
     QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 %Docstring
-Get provider object from the provider's ID
+Gets provider object from the provider's ID
 %End
 
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider /Transfer/ );

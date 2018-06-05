@@ -95,7 +95,7 @@ Check whether the container is empty
 
     int count() const;
 %Docstring
-Return number of items
+Returns number of items
 %End
 
     int __len__() const;
@@ -105,7 +105,7 @@ Return number of items
 
     int size() const;
 %Docstring
-Return number of items
+Returns number of items
 %End
 
     QStringList names() const;
@@ -117,11 +117,11 @@ Returns a list with field names
 
     bool exists( int i ) const;
 %Docstring
-Return if a field index is valid
+Returns if a field index is valid
 
-:param i:  Index of the field which needs to be checked
+:param i: Index of the field which needs to be checked
 
-:return:   True if the field exists
+:return: True if the field exists
 %End
 
 
@@ -136,7 +136,7 @@ Return if a field index is valid
 
     QgsField at( int i ) const /Factory/;
 %Docstring
-Get field at particular index (must be in range 0..N-1)
+Gets field at particular index (must be in range 0..N-1)
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -152,7 +152,7 @@ Get field at particular index (must be in range 0..N-1)
 
     QgsField field( int fieldIdx ) const /Factory/;
 %Docstring
-Get field at particular index (must be in range 0..N-1)
+Gets field at particular index (must be in range 0..N-1)
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -168,7 +168,7 @@ Get field at particular index (must be in range 0..N-1)
 
     QgsField field( const QString &name ) const /Factory/;
 %Docstring
-Get field with matching name
+Gets field with matching name
 %End
 %MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
@@ -185,7 +185,7 @@ Get field with matching name
 
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 %Docstring
-Get field's origin (value from an enumeration)
+Gets field's origin (value from an enumeration)
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -201,7 +201,7 @@ Get field's origin (value from an enumeration)
 
     int fieldOriginIndex( int fieldIdx ) const;
 %Docstring
-Get field's origin index (its meaning is specific to each type of origin)
+Gets field's origin index (its meaning is specific to each type of origin)
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -217,7 +217,7 @@ Get field's origin index (its meaning is specific to each type of origin)
 
     int indexFromName( const QString &fieldName ) const;
 %Docstring
-Get the field index from the field name.
+Gets the field index from the field name.
 This method is case sensitive and only matches the data source
 name of the field.
 Alias for indexOf
@@ -231,7 +231,7 @@ Alias for indexOf
 
     int indexOf( const QString &fieldName ) const;
 %Docstring
-Get the field index from the field name.
+Gets the field index from the field name.
 This method is case sensitive and only matches the data source
 name of the field.
 

@@ -193,11 +193,6 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
 }
 
-QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
-{
-}
-
-
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
   QgsDatumTransformDialog dlg;

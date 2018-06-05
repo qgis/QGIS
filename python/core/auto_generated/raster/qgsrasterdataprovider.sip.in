@@ -17,7 +17,7 @@
 class QgsImageFetcher : QObject
 {
 %Docstring
- Handles asynchronous download of images
+Handles asynchronous download of images
 
 .. versionadded:: 2.8
 %End
@@ -82,7 +82,15 @@ Base class for raster data providers.
 
     QgsRasterDataProvider();
 
-    QgsRasterDataProvider( const QString &uri );
+    QgsRasterDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options = QgsDataProvider::ProviderOptions() );
+%Docstring
+Constructor for QgsRasterDataProvider.
+
+The ``uri`` argument gives a provider-specific uri indicating the underlying data
+source and it's parameters.
+
+The ``options`` argument specifies generic provider options.
+%End
 
     virtual QgsRasterInterface *clone() const = 0;
 
@@ -151,17 +159,17 @@ Read block of data using given extent and size.
 
     virtual bool sourceHasNoDataValue( int bandNo ) const;
 %Docstring
-Return true if source band has no data value
+Returns true if source band has no data value
 %End
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
 %Docstring
- Get source nodata value usage
+Returns the source nodata value usage
 %End
 
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
 %Docstring
- Set source nodata value usage
+Sets the source nodata value usage
 %End
 
     virtual double sourceNoDataValue( int bandNo ) const;
@@ -173,33 +181,34 @@ Value representing no data value.
 
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const;
 %Docstring
-Get list of user no data value ranges
+Returns a list of user no data value ranges.
 %End
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
 
     virtual QStringList subLayers() const;
 %Docstring
- Returns the sublayers of this layer - useful for providers that manage
+Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS *
 %End
 
     virtual bool supportsLegendGraphic() const;
 %Docstring
- Returns whether the provider supplies a legend graphic
+Returns whether the provider supplies a legend graphic
 %End
 
 
     virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) /Factory/;
 %Docstring
- Get an image downloader for the raster legend
+Returns a new image downloader for the raster legend.
 
 :param mapSettings: map settings for legend providers supporting
-contextual legends.
+                    contextual legends.
 
 :return: a download handler or null if the provider does not support
-legend at all. Ownership of the returned object is transferred
-to caller.
+         legend at all. Ownership of the returned object is transferred
+         to caller.
+
 
 
 .. versionadded:: 2.8
@@ -211,28 +220,28 @@ to caller.
                                    const QStringList &configOptions = QStringList(),
                                    QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
- Create pyramid overviews
+Create pyramid overviews
 %End
 
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 %Docstring
- Accessor for the raster layers pyramid list.
+Returns the raster layers pyramid list.
 
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
-A pyramid list defines the
-POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
-ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
-list.
+                     A pyramid list defines the
+                     POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
+                     ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
+                     list.
 %End
 
     bool hasPyramids();
 %Docstring
- Returns true if raster has at least one populated histogram.
+Returns true if raster has at least one populated histogram.
 %End
 
     virtual QString htmlMetadata() = 0;
 %Docstring
-Get metadata in a format suitable for feeding directly
+Returns metadata in a format suitable for feeding directly
 into a subset of the GUI raster properties "Metadata" tab.
 %End
 
@@ -240,7 +249,7 @@ into a subset of the GUI raster properties "Metadata" tab.
 
     virtual QString lastErrorTitle() = 0;
 %Docstring
- Returns the caption error text for the last error in this provider
+Returns the caption error text for the last error in this provider
 
 If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.
@@ -250,7 +259,7 @@ call a QMessageBox to display the contents.
 
     virtual QString lastError() = 0;
 %Docstring
-   Returns the verbose error text for the last error in this provider
+Returns the verbose error text for the last error in this provider
 
 If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.

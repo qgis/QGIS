@@ -12,12 +12,6 @@
 
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
-%Docstring
-
-.. note::
-
-   not available in Python bindings
-%End
 
 %TypeHeaderCode
 #include "qgsrelationwidgetwrapper.h"

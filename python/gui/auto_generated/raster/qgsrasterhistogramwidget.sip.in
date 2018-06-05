@@ -35,7 +35,7 @@ Save the histogram as an image to disk
 
     void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = 0 );
 %Docstring
-Set the renderer widget (or just its name if there is no widget)
+Sets the renderer widget (or just its name if there is no widget)
 %End
 
     void setActive( bool activeFlag );
@@ -45,7 +45,7 @@ Activate the histogram widget
 
     bool computeHistogram( bool forceComputeFlag );
 %Docstring
- Compute the histogram on demand.
+Compute the histogram on demand.
 %End
 
     void histoAction( const QString &actionName, bool actionFlag = true );
@@ -61,7 +61,7 @@ Apply a histoActionTriggered() event.
   public slots:
     void refreshHistogram();
 %Docstring
- slot executed when user wishes to refresh raster histogramwidget
+slot executed when user wishes to refresh raster histogramwidget
 %End
 
     virtual void apply();

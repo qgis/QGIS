@@ -14,7 +14,7 @@
 class QgsLayerDefinition
 {
 %Docstring
- The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
+The QgsLayerDefinition class holds generic methods for loading/exporting QLR files.
 
 QLR files are an export of the layer xml including the style and datasource location.  There is no link
 to the QLR file once loaded.  Consider the QLR file a mini project file for layers and styles.  QLR
@@ -97,12 +97,12 @@ Constructor
 
         QVector<QDomNode> sortedLayerNodes() const;
 %Docstring
-Get the layer nodes in an order where they can be loaded incrementally without dependency break
+Gets the layer nodes in an order where they can be loaded incrementally without dependency break
 %End
 
         QStringList sortedLayerIds() const;
 %Docstring
-Get the layer IDs in an order where they can be loaded incrementally without dependency break
+Gets the layer IDs in an order where they can be loaded incrementally without dependency break
 %End
 
         bool hasCycle() const;

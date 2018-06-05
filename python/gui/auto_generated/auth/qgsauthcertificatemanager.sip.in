@@ -54,7 +54,7 @@ Construct a dialog wrapper for widget to manage available certificate editors
 
     QgsAuthCertEditors *certEditorsWidget();
 %Docstring
-Get access to embedded editors widget
+Gets access to embedded editors widget
 %End
 
 };

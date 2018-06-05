@@ -34,8 +34,8 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
-QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri )
-  : QgsDataProvider( uri )
+QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options )
+  : QgsDataProvider( uri, options )
 {
   QgsSettings settings;
   setEncoding( settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString() );
@@ -343,40 +343,22 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
     if ( field.type() != nativeType.mType )
       continue;
 
-    if ( field.length() == -1 )
-    {
-      // source length unlimited
-      if ( nativeType.mMinLen > -1 || nativeType.mMaxLen > -1 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
+    if ( field.length() > 0 )
     {
       // source length limited
-      if ( nativeType.mMinLen > -1 && nativeType.mMaxLen > -1 &&
-           ( field.length() < nativeType.mMinLen || field.length() > nativeType.mMaxLen ) )
+      if ( ( nativeType.mMinLen > 0 && field.length() < nativeType.mMinLen ) ||
+           ( nativeType.mMaxLen > 0 && field.length() > nativeType.mMaxLen ) )
       {
         // source length exceeds destination limits
         continue;
       }
     }
 
-    if ( field.precision() == -1 )
+    if ( field.precision() > 0 )
     {
-      // source precision unlimited / n/a
-      if ( nativeType.mMinPrec > -1 || nativeType.mMaxPrec > -1 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
-    {
-      // source precision unlimited / n/a
-      if ( nativeType.mMinPrec > -1 && nativeType.mMaxPrec > -1 &&
-           ( field.precision() < nativeType.mMinPrec || field.precision() > nativeType.mMaxPrec ) )
+      // source precision limited
+      if ( ( nativeType.mMinPrec > 0 && field.precision() < nativeType.mMinPrec ) ||
+           ( nativeType.mMaxPrec > 0 && field.precision() > nativeType.mMaxPrec ) )
       {
         // source precision exceeds destination limits
         continue;
@@ -426,6 +408,12 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
 
 QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
+  QStringList results;
+
+  // Safety belt
+  if ( index < 0 || index >= fields().count() )
+    return results;
+
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
@@ -438,7 +426,6 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   QgsFeatureIterator fi = getFeatures( request );
 
   QSet<QString> set;
-  QStringList results;
 
   while ( fi.nextFeature( f ) )
   {

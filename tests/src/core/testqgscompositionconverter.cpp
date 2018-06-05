@@ -150,7 +150,7 @@ class TestQgsCompositionConverter: public QObject
 
   private:
 
-    void checkRenderedImage( QgsLayout *layout, const QString &testName, const int pageNumber = 0 );
+    void checkRenderedImage( QgsLayout *layout, const QString &testName, int pageNumber = 0 );
 
     QDomElement loadComposer( const QString &name );
 

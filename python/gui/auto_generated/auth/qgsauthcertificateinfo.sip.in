@@ -61,7 +61,7 @@ Construct a dialog displaying detailed info on a certificate and its hierarchica
 
     QgsAuthCertInfo *certInfoWidget();
 %Docstring
-Get access to embedded info widget
+Gets access to embedded info widget
 %End
 
     bool trustCacheRebuilt();

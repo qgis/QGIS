@@ -18,6 +18,9 @@ class QgsRelation
 #include "qgsrelation.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum RelationStrength
     {
@@ -46,7 +49,7 @@ Creates a relation from an XML structure. Used for reading .qgs projects.
 Writes a relation to an XML structure. Used for saving .qgs projects
 
 :param node: The parent node in which the relation will be created
-:param doc:  The document in which the relation will be saved
+:param doc: The document in which the relation will be saved
 %End
 
     void setId( const QString &id );
@@ -82,8 +85,8 @@ Add a field pairs which is part of this relation
 The first element of each pair are the field names of the foreign key.
 The second element of each pair are the field names of the matching primary key.
 
-:param referencingField:  The field name on the referencing (child) layer (FK)
-:param referencedField:   The field name on the referenced (parent) layer  (PK)
+:param referencingField: The field name on the referencing (child) layer (FK)
+:param referencedField: The field name on the referenced (parent) layer  (PK)
 %End
 
 
@@ -124,11 +127,11 @@ which have a foreign key pointing to the provided feature.
 
 :return: expression filter string for all the referencing features
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`getRelatedFeatures`
 
 .. seealso:: :py:func:`getRelatedFeaturesRequest`
+
+.. versionadded:: 2.16
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
@@ -139,10 +142,6 @@ which is referenced by the provided feature.
 :param attributes: An attribute vector containing the foreign key
 
 :return: A request the referenced feature
-
-.. note::
-
-   not available in Python bindings
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature &feature ) const;
@@ -280,14 +279,14 @@ Compares the two QgsRelation, ignoring the name and the ID.
 
     QString resolveReferencedField( const QString &referencingField ) const;
 %Docstring
-Get the referenced field counterpart given a referencing field.
+Gets the referenced field counterpart given a referencing field.
 
 .. versionadded:: 3.0
 %End
 
     QString resolveReferencingField( const QString &referencedField ) const;
 %Docstring
-Get the referencing field counterpart given a referenced field.
+Gets the referencing field counterpart given a referenced field.
 
 .. versionadded:: 3.0
 %End

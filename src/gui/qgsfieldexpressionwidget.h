@@ -69,7 +69,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
-    //! return the title used for the expression dialog
+    //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
     //! setFilters allows fitering according to the type of field
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
-    //! set the geometry calculator used in the expression dialog
+    //! Sets the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /**
@@ -91,7 +91,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Return true if the current expression is valid
+      * Returns true if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     bool isExpression() const;
 
     /**
-      * Return the current text that is set in the expression area
+      * Returns the current text that is set in the expression area
       */
     QString currentText() const;
 

@@ -84,55 +84,55 @@ class QgsWFSDataSourceURI
 
     explicit QgsWFSDataSourceURI( const QString &uri );
 
-    //! Return the URI, avoiding expansion of authentication configuration, which is handled during network access
+    //! Returns the URI, avoiding expansion of authentication configuration, which is handled during network access
     const QString uri( bool expandAuthConfig = false ) const;
 
-    //! Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
+    //! Returns base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
-    //! Return request URL (with SERVICE=WFS parameter)
+    //! Returns request URL (with SERVICE=WFS parameter)
     QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
 
-    //! Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
+    //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
 
-    //! Return user defined limit of features to download. 0=no limitation
+    //! Returns user defined limit of features to download. 0=no limitation
     int maxNumFeatures() const;
 
-    //! Set user defined limit of features to download
+    //! Sets user defined limit of features to download
     void setMaxNumFeatures( int maxNumFeatures );
 
-    //! Get typename (with prefix)
+    //! Gets typename (with prefix)
     QString typeName() const;
 
-    //! Set typename (with prefix)
+    //! Sets typename (with prefix)
     void setTypeName( const QString &typeName );
 
-    //! Get SRS name (in the normalized form EPSG:xxxx)
+    //! Gets SRS name (in the normalized form EPSG:xxxx)
     QString SRSName() const;
 
-    //! Set SRS name (in the normalized form EPSG:xxxx)
+    //! Sets SRS name (in the normalized form EPSG:xxxx)
     void setSRSName( const QString &crsString );
 
-    //! Set version
+    //! Sets version
     void setVersion( const QString &versionString );
 
-    //! Get OGC filter xml or a QGIS expression
+    //! Gets OGC filter xml or a QGIS expression
     QString filter() const;
 
-    //! Set OGC filter xml or a QGIS expression
+    //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
-    //! Get SQL query
+    //! Gets SQL query
     QString sql() const;
 
-    //! Set SQL query
+    //! Sets SQL query
     void setSql( const QString &sql );
 
-    //! Get GetFeature output format
+    //! Gets GetFeature output format
     QString outputFormat() const;
 
-    //! Set GetFeature output format
+    //! Sets GetFeature output format
     void setOutputFormat( const QString &outputFormat );
 
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
@@ -150,7 +150,7 @@ class QgsWFSDataSourceURI
     //! Whether to hide download progress dialog in QGIS main app. Defaults to false
     bool hideDownloadProgressDialog() const;
 
-    //! Return authorization parameters
+    //! Returns authorization parameters
     QgsWFSAuthorization &auth() { return mAuth; }
 
     //! Builds a derived uri from a base uri
@@ -160,10 +160,10 @@ class QgsWFSDataSourceURI
                           const QString &sql = QString(),
                           bool restrictToCurrentViewExtent = false );
 
-    //! Set Get DCP endpoints
+    //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );
 
-    //! Set Post DCP endpoints
+    //! Sets Post DCP endpoints
     void setPostEndpoints( const QgsStringMap &map );
 
   private:

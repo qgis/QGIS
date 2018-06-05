@@ -439,7 +439,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
   public slots:
 
     void refresh() override;
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
     void draw( QgsLayoutItemRenderContext &context ) override;

@@ -92,6 +92,7 @@ void QgsValueRelationConfigDlg::editExpression()
     return;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
+  context << QgsExpressionContextUtils::formScope( );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );

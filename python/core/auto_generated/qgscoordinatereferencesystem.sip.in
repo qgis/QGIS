@@ -157,6 +157,9 @@ both flavors.
 #include "qgscoordinatereferencesystem.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum CrsType
     {
@@ -188,10 +191,10 @@ If no prefix is specified, WKT definition is assumed.
 :param definition: A String containing a coordinate reference system definition.
 
 .. seealso:: :py:func:`createFromString`
-/ // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
+                   / // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
 %End
 
-    explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
+    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
 %Docstring
 Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS CRS ID.
 
@@ -202,7 +205,7 @@ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS 
 
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
-/ // TODO QGIS 3: remove type and always use EPSG code
+             / // TODO QGIS 3: remove type and always use EPSG code
 %End
 
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -233,9 +236,9 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromOgcWmsCrs`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
@@ -257,9 +260,9 @@ Creates a CRS from a proj4 style formatted string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromProj4`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
@@ -270,9 +273,9 @@ Creates a CRS from a WKT spatial ref sys definition string.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromWkt`
+
+.. versionadded:: 3.0
 %End
 
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
@@ -283,15 +286,15 @@ Creates a CRS from a specified QGIS SRS ID.
 
 :return: matching CRS, or an invalid CRS if ID could not be found
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`createFromSrsId`
 
 .. seealso:: :py:func:`validSrsIds`
+
+.. versionadded:: 3.0
 %End
 
 
-    bool createFromId( const long id, CrsType type = PostgisCrsId );
+    bool createFromId( long id, CrsType type = PostgisCrsId );
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
@@ -322,14 +325,14 @@ and refer to QGIS internal CRS IDs.
    /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 %End
 
-    bool createFromSrid( const long srid );
+    bool createFromSrid( long srid );
 %Docstring
 Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
 :param srid: The PostGIS SRID for the desired spatial reference system.
 
 :return: True on success else false
-/     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
+         /     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
 %End
 
     bool createFromWkt( const QString &wkt );
@@ -356,7 +359,7 @@ set up the object.
 .. seealso:: :py:func:`fromWkt`
 %End
 
-    bool createFromSrsId( const long srsId );
+    bool createFromSrsId( long srsId );
 %Docstring
 Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
 
@@ -497,7 +500,7 @@ pieces of information about CRS.
    The ellipsoid and projection acronyms must be set as well as the proj4string!
 
 :return: long the SrsId of the matched CRS, zero if no match was found
-   /    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
+            /    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
@@ -540,7 +543,7 @@ Returns the internal CRS ID, if available.
 Returns PostGIS SRID for the CRS.
 
 :return: the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
-/    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
+         /    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
 %End
 
     QString authid() const;
@@ -663,7 +666,7 @@ Set user hint for validation
 
     QString validationHint();
 %Docstring
-Get user hint for validation
+Gets user hint for validation
 %End
 
     static int syncDatabase();
@@ -671,7 +674,7 @@ Get user hint for validation
 Update proj.4 parameters in our database from proj.4
 
 :return: number of updated CRS on success and
-negative number of failed updates in case of errors.
+         negative number of failed updates in case of errors.
 
 .. note::
 

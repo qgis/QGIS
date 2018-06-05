@@ -14,7 +14,7 @@
 class QgsAggregateCalculator
 {
 %Docstring
- Utility class for calculating aggregates for a field (or expression) over the features
+Utility class for calculating aggregates for a field (or expression) over the features
 from a vector layer. It is recommended that QgsVectorLayer.aggregate() is used rather then
 directly using this class, as the QgsVectorLayer method can handle delegating aggregate calculation
 to a data provider for remote calculation.
@@ -125,7 +125,7 @@ Calculates the value of an aggregate.
 
 :param aggregate: aggregate to calculate
 :param fieldOrExpression: source field or expression to use as basis for aggregated values.
-If an expression is used, then the context parameter must be set.
+                          If an expression is used, then the context parameter must be set.
 :param context: expression context for evaluating expressions
 :param ok: if specified, will be set to true if aggregate calculation was successful
 

@@ -33,6 +33,7 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingOutputHtml,
@@ -99,6 +100,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 text = widget.getValue()
                 if out.checkValueIsAcceptable(text):
                     if isinstance(out, (QgsProcessingParameterRasterDestination,
+                                        QgsProcessingParameterVectorDestination,
                                         QgsProcessingParameterFeatureSink)):
                         # load rasters and sinks on completion
                         parameters[out.name()] = QgsProcessingOutputLayerDefinition(text, project)

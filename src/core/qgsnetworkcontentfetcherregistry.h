@@ -55,27 +55,31 @@ class CORE_EXPORT QgsFetchedContent : public QObject
 
     //! Constructs a FetchedContent with pointer to the downloaded file and status of the download
     explicit QgsFetchedContent( const QString &url, QTemporaryFile *file = nullptr, ContentStatus status = NotStarted )
-      : QObject(), mUrl( url ), mFile( file ), mStatus( status ) {}
+      : mUrl( url )
+      , mFile( file )
+      , mStatus( status )
+    {}
 
-    ~QgsFetchedContent()
+    ~QgsFetchedContent() override
     {
-      mFile->close();
+      if ( mFile )
+        mFile->close();
       delete mFile;
     }
 
 
 #ifndef SIP_RUN
-    //! Return a pointer to the local file, a null pointer if the file is not accessible yet.
+    //! Returns a pointer to the local file, a null pointer if the file is not accessible yet.
     QFile *file() const {return mFile;}
 #endif
 
-    //! Return the path to the local file, an empty string if the file is not accessible yet.
+    //! Returns the path to the local file, an empty string if the file is not accessible yet.
     const QString filePath() const {return mFilePath;}
 
-    //! Return the status of the download
+    //! Returns the status of the download
     ContentStatus status() const {return mStatus;}
 
-    //! Return the potential error of the download
+    //! Returns the potential error of the download
     QNetworkReply::NetworkError error() const {return mError;}
 
   public slots:
@@ -134,7 +138,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
     //! Create the registry for temporary downloaded files
     explicit QgsNetworkContentFetcherRegistry();
 
-    ~QgsNetworkContentFetcherRegistry();
+    ~QgsNetworkContentFetcherRegistry() override;
 
     /**
      * \brief Initialize a download for the given URL
@@ -142,7 +146,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
-    const QgsFetchedContent *fetch( const QString &url, const FetchingMode fetchingMode = DownloadLater );
+    const QgsFetchedContent *fetch( const QString &url, FetchingMode fetchingMode = DownloadLater );
 
 #ifndef SIP_RUN
 

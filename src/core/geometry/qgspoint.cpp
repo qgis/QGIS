@@ -592,6 +592,10 @@ bool QgsPoint::convertTo( QgsWkbTypes::Type type )
   return false;
 }
 
+void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & )
+{
+  // no meaning for points
+}
 
 QPointF QgsPoint::toQPointF() const
 {

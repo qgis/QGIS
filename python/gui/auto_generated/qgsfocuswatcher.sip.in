@@ -30,7 +30,7 @@ caught using the emitted signals.
 Constructor for QgsFocusWatcher.
 
 :param parent: parent widget to catch focus events for. This class will automatically be
-installed as an event filter for parent.
+               installed as an event filter for parent.
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );

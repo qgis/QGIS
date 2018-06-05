@@ -49,7 +49,7 @@ Remove any stored style data (will get invalid)
 
     QString xmlData() const;
 %Docstring
-Return XML content of the style
+Returns XML content of the style
 %End
 
     void readFromLayer( QgsMapLayer *layer );
@@ -110,7 +110,7 @@ The style manager will be parented to ``layer``.
 
     QgsMapLayer *layer() const;
 %Docstring
-Get pointer to the associated map layer
+Gets pointer to the associated map layer
 %End
 
     void reset();
@@ -129,7 +129,7 @@ Write configuration (for project saving)
 
     QStringList styles() const;
 %Docstring
-Return list of all defined style names
+Returns list of all defined style names
 %End
 
     QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
@@ -143,7 +143,7 @@ Gets available styles for the associated map layer.
 
     QgsMapLayerStyle style( const QString &name ) const;
 %Docstring
-Return data of a stored style - accessed by its unique name
+Returns data of a stored style - accessed by its unique name
 %End
 
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
@@ -176,7 +176,7 @@ Rename a stored style to a different name
 
     QString currentStyle() const;
 %Docstring
-Return name of the current style
+Returns name of the current style
 %End
 
     bool setCurrentStyle( const QString &name );

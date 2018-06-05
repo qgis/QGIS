@@ -92,7 +92,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void showOrHide();
     //! show the help document
     void help();
-    //! Set the Coordinate Reference System used for displaying non canvas CRS coord
+    //! Sets the Coordinate Reference System used for displaying non canvas CRS coord
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
     void mouseClicked( const QgsPointXY &point );
@@ -145,7 +145,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! user coordinate display precision
     int mUserCrsDisplayPrecision;
 
-    //! Get the path to the icon from the best available theme
+    //! Gets the path to the icon from the best available theme
     QString getIconPath( const QString &name );
 
     ////////////////////////////////////////////////////////////////////

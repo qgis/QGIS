@@ -45,12 +45,19 @@ Constructor for QgsLocatorResult.
 
     double score;
 
+    QString group;
+
 };
 
 class QgsLocatorFilter : QObject
 {
 %Docstring
 Abstract base class for filters which collect locator results.
+
+.. note::
+
+   If the configuration of the filter is changed outside of the main application settings,
+   one needs to invalidate current results of the locator widget: see QgisInterface.invalidateLocatorResults
 
 .. versionadded:: 3.0
 %End
@@ -220,7 +227,7 @@ Sets whether the filter is ``enabled``.
 %Docstring
 Should return true if the filter has a configuration widget.
 
-.. seealso:: :py:func:`createConfigWidget`
+.. seealso:: :py:func:`openConfigWidget`
 %End
 
     virtual void openConfigWidget( QWidget *parent = 0 );

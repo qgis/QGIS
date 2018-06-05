@@ -312,8 +312,8 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Returns true if the scope has a feature associated with it.
-     * \since QGIS 3.0
      * \see feature()
+     * \since QGIS 3.0
      */
     bool hasFeature() const { return mHasFeature; }
 
@@ -336,9 +336,9 @@ class CORE_EXPORT QgsExpressionContextScope
 
     /**
      * Removes any feature associated with the scope.
-     * \since QGIS 3.0
      * \see setFeature()
      * \see hasFeature()
+     * \since QGIS 3.0
      */
     void removeFeature() { mHasFeature = false; mFeature = QgsFeature(); }
 
@@ -584,12 +584,12 @@ class CORE_EXPORT QgsExpressionContext
     QgsExpressionContextScope *popScope();
 
     /**
-     * Return all scopes from this context and remove them, leaving this context without
+     * Returns all scopes from this context and remove them, leaving this context without
      * any context.
      * Ownership is transferred to the caller.
      *
-     * \since QGIS 3.0
      * \note Not available in Python
+     * \since QGIS 3.0
      */
     QList<QgsExpressionContextScope *> takeScopes() SIP_SKIP;
 
@@ -611,8 +611,8 @@ class CORE_EXPORT QgsExpressionContext
 
     /**
      * Returns true if the context has a feature associated with it.
-     * \since QGIS 3.0
      * \see feature()
+     * \since QGIS 3.0
      */
     bool hasFeature() const;
 
@@ -740,6 +740,13 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QgsExpressionContextScope *globalScope() SIP_FACTORY;
 
     /**
+     * Creates a new scope which contains functions and variables from the current attribute form/table feature.
+     * The variables and values in this scope will reflect the current state of the form/row being edited.
+     * \since QGIS 3.2
+     */
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ) ) SIP_FACTORY;
+
+    /**
      * Sets a global context variable. This variable will be contained within scopes retrieved via
      * globalScope().
      * \param name variable name
@@ -823,14 +830,14 @@ class CORE_EXPORT QgsExpressionContextUtils
     static QList<QgsExpressionContextScope *> globalProjectLayerScopes( const QgsMapLayer *layer ) SIP_FACTORY;
 
     /**
-     * Sets a layer context variable. This variable will be contained within scopes retrieved via
-     * layerScope().
-     * \param layer map layer
-     * \param name variable name
-     * \param value variable value
-     * \see setLayerVariables()
-     * \see layerScope()
-     */
+      * Sets a layer context variable. This variable will be contained within scopes retrieved via
+      * layerScope().
+      * \param layer map layer
+      * \param name variable name
+      * \param value variable value
+      * \see setLayerVariables()
+      * \see layerScope()
+      */
     static void setLayerVariable( QgsMapLayer *layer, const QString &name, const QVariant &value );
 
     /**
@@ -905,9 +912,9 @@ class CORE_EXPORT QgsExpressionContextUtils
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
      * For instance, item size and position.
-     * \since QGIS 3.0
      * \see setLayoutItemVariable()
      * \see setLayoutItemVariables()
+     * \since QGIS 3.0
      */
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
 

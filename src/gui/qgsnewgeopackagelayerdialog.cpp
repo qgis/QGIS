@@ -128,10 +128,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   } );
 }
 
-QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
-{
-}
-
 void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrsSelector->setCrs( crs );

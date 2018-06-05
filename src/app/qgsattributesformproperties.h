@@ -87,9 +87,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }
@@ -214,7 +211,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     QString mInitFilePath;
     QString mInitCode;
 
-    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *const widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
+    QTreeWidgetItem *loadAttributeEditorTreeItem( QgsAttributeEditorElement *widgetDef, QTreeWidgetItem *parent, DnDTree *tree );
 
   private slots:
     void addTabOrGroupButton();
@@ -271,7 +268,7 @@ class DnDTree : public QTreeWidget
     // QTreeWidget interface
   protected:
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
+    QMimeData *mimeData( QList<QTreeWidgetItem *> items ) const override;
 
 
   private slots:

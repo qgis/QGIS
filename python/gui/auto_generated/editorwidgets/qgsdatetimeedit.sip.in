@@ -11,7 +11,7 @@
 class QgsDateTimeEdit : QDateTimeEdit
 {
 %Docstring
- The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
 
 .. warning::
 
@@ -39,7 +39,7 @@ Determines if the widget allows setting null date/time.
 
     void setDateTime( const QDateTime &dateTime );
 %Docstring
- setDateTime set the date time in the widget and handles null date times.
+setDateTime set the date time in the widget and handles null date times.
 
 .. note::
 
@@ -48,7 +48,7 @@ Determines if the widget allows setting null date/time.
 
     QDateTime dateTime() const;
 %Docstring
- dateTime returns the date time which can eventually be a null date/time
+dateTime returns the date time which can eventually be a null date/time
 
 .. note::
 

@@ -16,7 +16,7 @@
 class QgsLineString: QgsCurve
 {
 %Docstring
- Line string geometry type, with support for z-dimension and m-values.
+Line string geometry type, with support for z-dimension and m-values.
 
 .. versionadded:: 2.10
 %End
@@ -87,6 +87,10 @@ Returns the specified point from inside the line string.
     virtual double yAt( int index ) const;
 
 
+
+
+
+
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
@@ -94,7 +98,7 @@ Returns the z-coordinate of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
-does not have a z dimension
+         does not have a z dimension
 
 .. seealso:: :py:func:`setZAt`
 %End
@@ -106,7 +110,7 @@ Returns the m value of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: m value of node, or ``nan`` if index is out of bounds or the line
-does not have m values
+         does not have m values
 
 .. seealso:: :py:func:`setMAt`
 %End
@@ -116,7 +120,7 @@ does not have m values
 Sets the x-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string.
+              node must already exist in line string.
 :param x: x-coordinate of node
 
 .. seealso:: :py:func:`xAt`
@@ -127,7 +131,7 @@ node must already exist in line string.
 Sets the y-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string.
+              node must already exist in line string.
 :param y: y-coordinate of node
 
 .. seealso:: :py:func:`yAt`
@@ -138,7 +142,7 @@ node must already exist in line string.
 Sets the z-coordinate of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string, and the line string must have z-dimension.
+              node must already exist in line string, and the line string must have z-dimension.
 :param z: z-coordinate of node
 
 .. seealso:: :py:func:`zAt`
@@ -149,7 +153,7 @@ node must already exist in line string, and the line string must have z-dimensio
 Sets the m value of the specified node in the line string.
 
 :param index: index of node, where the first node in the line is 0. Corresponding
-node must already exist in line string, and the line string must have m values.
+              node must already exist in line string, and the line string must have m values.
 :param m: m value of node
 
 .. seealso:: :py:func:`mAt`
@@ -214,6 +218,8 @@ segment in the line.
 
     virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
+    virtual QPolygonF asQPolygonF() const;
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 
@@ -258,8 +264,8 @@ of the curve.
     virtual void draw( QPainter &p ) const;
 
 
-     virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false );
+    virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false )  throw( QgsCsException );
+
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 

@@ -29,12 +29,12 @@ class for creating plugin specific layers
 
     virtual QgsPluginLayer *createLayer() /Factory/;
 %Docstring
-Return new layer of this type. Return NULL on error
+Returns new layer of this type. Return NULL on error
 %End
 
     virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
 %Docstring
-Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
+Returns new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
 
 .. versionadded:: 2.10
 %End
@@ -87,7 +87,7 @@ Remove plugin layer type and return true on success
 
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 %Docstring
-Return plugin layer type metadata or NULL if doesn't exist
+Returns plugin layer type metadata or NULL if doesn't exist
 %End
 
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) /Factory/;

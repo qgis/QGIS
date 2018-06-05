@@ -32,17 +32,17 @@ Construct a container for QgsReadWriteContext error or warning messages
 
         QString message() const;
 %Docstring
-Return the message string
+Returns the message string
 %End
 
         Qgis::MessageLevel level() const;
 %Docstring
-Return the message level
+Returns the message level
 %End
 
         QStringList categories() const;
 %Docstring
-Return the stack of categories of the message
+Returns the stack of categories of the message
 %End
 
     };
@@ -93,7 +93,7 @@ Push a category to the stack
 
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
-Return the stored messages and remove them
+Returns the stored messages and remove them
 
 .. versionadded:: 3.2
 %End

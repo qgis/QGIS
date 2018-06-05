@@ -13,7 +13,7 @@
 class QgsOgcUtils
 {
 %Docstring
- The QgsOgcUtils class provides various utility functions for conversion between
+The QgsOgcUtils class provides various utility functions for conversion between
 OGC (Open Geospatial Consortium) standards and QGIS internal representations.
 
 Currently supported standards:
@@ -37,8 +37,8 @@ Currently supported standards:
 Static method that creates geometry from GML
 
 :param xmlString: xml representation of the geometry. GML elements are expected to be
-in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
-"gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
+                  in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
+                  "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
 %End
 
     static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
@@ -139,7 +139,7 @@ Creates OGC filter XML element. Supports minimum standard filter
 according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
 
 :return: valid \verbatim <Filter> \endverbatim QDomElement on success,
-otherwise null QDomElement
+         otherwise null QDomElement
 %End
 
     enum FilterVersion
@@ -155,7 +155,7 @@ otherwise null QDomElement
 Creates an OGC expression XML element.
 
 :return: valid OGC expression QDomElement on success,
-otherwise null QDomElement
+         otherwise null QDomElement
 %End
 
     static QDomElement expressionToOgcExpression( const QgsExpression &exp,
@@ -171,7 +171,7 @@ otherwise null QDomElement
 Creates an OGC expression XML element.
 
 :return: valid OGC expression QDomElement on success,
-otherwise null QDomElement
+         otherwise null QDomElement
 %End
 
 

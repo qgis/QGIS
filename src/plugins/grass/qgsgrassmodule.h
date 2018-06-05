@@ -80,16 +80,16 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
     // Returns empty list if not found.
     static QStringList execArguments( QString module );
 
-    //! Get environment for process to start GRASS modules (set PATH)
+    //! Gets environment for process to start GRASS modules (set PATH)
     static QProcessEnvironment processEnvironment( bool direct );
 
     //! Returns true if module is direct
     bool isDirect() { return mDirect; }
 
-    //! Get name of library path environment variable
+    //! Gets name of library path environment variable
     static QString libraryPathVariable();
 
-    //! Set LD_LIBRARY_PATH or equivalent to GRASS Direct library
+    //! Sets LD_LIBRARY_PATH or equivalent to GRASS Direct library
     static void setDirectLibraryPath( QProcessEnvironment &environment );
 
     QStringList errors() { return mErrors; }

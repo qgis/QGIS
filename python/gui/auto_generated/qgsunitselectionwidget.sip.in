@@ -16,11 +16,11 @@ A widget which allows the user to choose the minimum and maximum scale of an obj
 and millimeters. This widget is designed to allow users to edit the properties of a
 QgsMapUnitScale object.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:class:`QgsMapUnitScaleDialog`
 
 .. seealso:: :py:class:`QgsUnitSelectionWidget`
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -173,7 +173,7 @@ Sets the units which the user can choose from in the combobox. Clears any existi
 
     int getUnit() const;
 %Docstring
-Get the selected unit index
+Gets the selected unit index
 %End
 
     QgsUnitTypes::RenderUnit unit() const;

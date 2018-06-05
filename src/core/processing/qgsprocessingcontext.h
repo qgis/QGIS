@@ -186,8 +186,8 @@ class CORE_EXPORT QgsProcessingContext
 
         /**
          * Layer post-processor. May be nullptr if no post-processing is required.
-         * \since QGIS 3.2
          * \see setPostProcessor()
+         * \since QGIS 3.2
          */
         QgsProcessingLayerPostProcessorInterface *postProcessor() const;
 
@@ -196,8 +196,8 @@ class CORE_EXPORT QgsProcessingContext
          *
          * Ownership of \a processor is transferred.
          *
-         * \since QGIS 3.2
          * \see postProcessor()
+         * \since QGIS 3.2
          */
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor SIP_TRANSFER );
 
@@ -226,11 +226,11 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns true if the given \a layer (by ID or datasource) will be loaded into the current project
      * upon completion of the algorithm or model.
-     * \since QGIS 3.2
      * \see layersToLoadOnCompletion()
      * \see setLayersToLoadOnCompletion()
      * \see addLayerToLoadOnCompletion()
      * \see layerToLoadOnCompletionDetails()
+     * \since QGIS 3.2
      */
     bool willLoadLayerOnCompletion( const QString &layer ) const
     {
@@ -263,11 +263,11 @@ class CORE_EXPORT QgsProcessingContext
      * \warning First check willLoadLayerOnCompletion(), or calling this method will incorrectly
      * add \a layer as a layer to load on completion.
      *
-     * \since QGIS 3.2
      * \see willLoadLayerOnCompletion()
      * \see addLayerToLoadOnCompletion()
      * \see setLayersToLoadOnCompletion()
      * \see layersToLoadOnCompletion()
+     * \since QGIS 3.2
      */
     QgsProcessingContext::LayerDetails &layerToLoadOnCompletionDetails( const QString &layer )
     {
@@ -292,8 +292,8 @@ class CORE_EXPORT QgsProcessingContext
      * Sets a callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
-     * \since QGIS 3.0
      * \see invalidGeometryCallback()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; }
@@ -316,9 +316,9 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
+     * \since QGIS 3.0
      */
     SIP_SKIP std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; }
 
@@ -326,8 +326,8 @@ class CORE_EXPORT QgsProcessingContext
      * Sets a callback function to use when encountering a transform error when iterating
      * features. This function will be
      * called using the feature which encountered the transform error as a parameter.
-     * \since QGIS 3.0
      * \see transformErrorCallback()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
     void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
@@ -350,10 +350,9 @@ class CORE_EXPORT QgsProcessingContext
     /**
      * Returns the callback function to use when encountering a transform error when iterating
      * features.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
-     * \see destinationCrs()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 

@@ -57,7 +57,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     QSize sizeHint() const override;
 
     /**
-     * Return a copy of the current color ramp.
+     * Returns a copy of the current color ramp.
      * \see setColorRamp()
      */
     QgsColorRamp *colorRamp() const SIP_FACTORY;
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      * \param showMenu set to false to hide the drop-down menu
      * \see showMenu
      */
-    void setShowMenu( const bool showMenu );
+    void setShowMenu( bool showMenu );
 
     /**
      * Returns whether the drop-down menu is shown for the button.
@@ -127,13 +127,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     /**
      * Sets whether a random colors option is shown in the button's drop-down menu.
      * \param showRandom set to true to show a random colors option
-     * \see showRandom()
+     * \see showRandomColorRamp()
      */
     void setShowRandomColorRamp( bool showRandom ) { mShowRandomColorRamp = showRandom; }
 
     /**
      * Returns whether random colors option is shown in the button's drop-down menu.
-     * \see setShowRandom()
+     * \see setShowRandomColorRamp()
      */
     bool showRandomColorRamp() const { return mShowRandomColorRamp; }
 
@@ -168,7 +168,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Sets the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
      * based on the context.
      * \param context context string for the color dialog button's color ramp preview icons
      * \see context
@@ -177,7 +177,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
 
     /**
      * Returns the context string for the color ramp button. The context string is passed to all color ramp
-     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
+     * preview icons shown in the button's drop-down menu, to (eventually) allow them to customize their display colors
      * based on the context.
      * \returns context context string for the color dialog button's color ramp preview icons
      * \see setContext

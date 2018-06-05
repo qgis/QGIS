@@ -45,12 +45,12 @@ class QgsTextLabelFeature : public QgsLabelFeature
     //! calculate data for info(). setDefinedFont() must have been called already.
     void calculateInfo( bool curvedLabeling, QFontMetricsF *fm, const QgsMapToPixel *xform, double maxinangle, double maxoutangle );
 
-    //! Get data-defined values
+    //! Gets data-defined values
     const QMap< QgsPalLayerSettings::Property, QVariant > &dataDefinedValues() const { return mDataDefinedValues; }
-    //! Set data-defined values
+    //! Sets data-defined values
     void setDataDefinedValues( const QMap< QgsPalLayerSettings::Property, QVariant > &values ) { mDataDefinedValues = values; }
 
-    //! Set font to be used for rendering
+    //! Sets font to be used for rendering
     void setDefinedFont( const QFont &f ) { mDefinedFont = f; }
     //! Font to be used for rendering
     QFont definedFont() { return mDefinedFont; }

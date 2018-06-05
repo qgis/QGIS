@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer *layer() const { return mLayer; }
 
-        //! Set the map layer for this record
+        //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
 
         //! Whether current style is valid and should be applied
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
         /**
-         * Return set with only records for valid layers
+         * Returns set with only records for valid layers
          * \note not available in Python bindings
          */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
@@ -252,7 +252,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
 
     /**
-     * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
+     * Gets layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
      * \since QGIS 3.0
      */
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
@@ -301,8 +301,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the master layer order (this will always match the project's QgsProject::layerOrder() ).
      * All map themes will maintain the same layer order as the master layer order.
-     * \since QGIS 3.0
      * \see masterVisibleLayers()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterLayerOrder() const;
 
@@ -310,8 +310,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the master list of visible layers. The order of returned layers will always match those
      * of masterLayerOrder(), but the returned layers are filtered to only include those visible
      * in the project's layer tree.
-     * \since QGIS 3.0
      * \see masterLayerOrder()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterVisibleLayers() const;
 

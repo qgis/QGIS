@@ -66,8 +66,8 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void mRotationSpinBox_valueChanged( double d );
     void mFontColorButton_colorChanged( const QColor &color );
     void mBufferColorButton_colorChanged( const QColor &color );
-    void mHaliComboBox_currentIndexChanged( const int index );
-    void mValiComboBox_currentIndexChanged( const int index );
+    void mHaliComboBox_currentIndexChanged( int index );
+    void mValiComboBox_currentIndexChanged( int index );
     void mLabelTextLineEdit_textChanged( const QString &text );
 
   private:

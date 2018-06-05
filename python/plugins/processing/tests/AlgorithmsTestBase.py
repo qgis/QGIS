@@ -117,6 +117,12 @@ class AlgorithmsTest(object):
 
         feedback = QgsProcessingFeedback()
 
+        print('Algorithm parameters are {}'.format(parameters))
+
+        # first check that algorithm accepts the parameters we pass...
+        ok, msg = alg.checkParameterValues(parameters, context)
+        self.assertTrue(ok, 'Algorithm failed checkParameterValues with result {}'.format(msg))
+
         if expectFailure:
             try:
                 results, ok = alg.run(parameters, context, feedback)

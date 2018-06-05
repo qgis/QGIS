@@ -118,7 +118,7 @@ class eVisDatabaseConnection
     //! \brief The database object
     QSqlDatabase mDatabase;
 
-    //! \brief Sets the error messages
+    //! Sets the error messages
     void setLastError( const QString &error )
     {
       mLastError = error;

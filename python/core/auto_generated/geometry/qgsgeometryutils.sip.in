@@ -14,7 +14,7 @@
 class QgsGeometryUtils
 {
 %Docstring
- Contains various geometry utility functions.
+Contains various geometry utility functions.
 
 .. versionadded:: 2.10
 %End
@@ -102,9 +102,9 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :return: Whether the lines intersect
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false );
 %Docstring
- Compute the intersection between two segments
+Compute the intersection between two segments
 
 :param p1: First segment start point
 :param p2: First segment end point
@@ -115,8 +115,8 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
 :param tolerance: The tolerance to use
 :param acceptImproperIntersection: By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
 
-:return:  Whether the segments intersect
-* Example:
+:return: Whether the segments intersect
+         * Example:
 .. code-block:: python
 
        ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
@@ -140,11 +140,11 @@ supported and is retrieved from the first 3D point amongst ``p1`` and
        # (True, 'Point (0 0)', True)
 %End
 
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+    static bool lineCircleIntersection( const QgsPointXY &center, double radius,
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection /In,Out/ );
 %Docstring
- Compute the intersection of a line and a circle.
+Compute the intersection of a line and a circle.
 If the intersection has two solutions (points),
 the closest point to the initial ``intersection`` point is returned.
 
@@ -206,7 +206,7 @@ Returns the number of tangents (either 0 or 2).
 
     static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
- Project the point on a segment
+Project the point on a segment
 
 :param p: The point
 :param s1: The segment start point
@@ -286,9 +286,9 @@ If ``useShortestArc`` is true, then the midpoint returned will be that correspon
 to the shorter arc from ``p1`` to ``p2``. If it is false, the longer arc from ``p1``
 to ``p2`` will be used (i.e. winding the other way around the circle).
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`segmentMidPoint`
+
+.. versionadded:: 3.2
 %End
 
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -405,7 +405,7 @@ M value is computed if one of this point have M.
 :param pt2: second point.
 
 :return: New point at middle between points pt1 and pt2.
-* Example:
+         * Example:
 .. code-block:: python
 
        p = QgsPoint( 4, 6 ) # 2D point
@@ -432,9 +432,9 @@ the end of the line (``x2``, ``y2``). However, it is possible to
 use a ``fraction`` < 0 or > 1, in which case the returned point
 is extrapolated from the supplied line.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
 %End
 
     static QgsPoint interpolatePointOnLine( const QgsPoint &p1, const QgsPoint &p2, double fraction );
@@ -451,9 +451,9 @@ is extrapolated from the supplied line.
 Any Z or M values present in the input points will also be interpolated
 and present in the returned point.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLineByValue`
+
+.. versionadded:: 3.0.2
 %End
 
     static QgsPointXY interpolatePointOnLineByValue( double x1, double y1, double v1, double x2, double y2, double v2, double value );
@@ -466,14 +466,14 @@ at the start of the line (``v1``) and end of the line (``v2``). The returned
 point will be linearly interpolated to match position corresponding to
 the target ``value``.
 
-.. versionadded:: 3.0.2
-
 .. seealso:: :py:func:`interpolatePointOnLine`
+
+.. versionadded:: 3.0.2
 %End
 
     static double gradient( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
-Return the gradient of a line defined by points ``pt1`` and ``pt2``.
+Returns the gradient of a line defined by points ``pt1`` and ``pt2``.
 
 :param pt1: first point.
 :param pt2: second point.
@@ -486,7 +486,7 @@ Return the gradient of a line defined by points ``pt1`` and ``pt2``.
     static void coefficients( const QgsPoint &pt1, const QgsPoint &pt2,
                               double &a /Out/, double &b /Out/, double &c /Out/ );
 %Docstring
-Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
+Returns the coefficients (a, b, c for equation "ax + by + c = 0") of a line defined by points ``pt1`` and ``pt2``.
 
 :param pt1: first point.
 :param pt2: second point.
@@ -499,7 +499,7 @@ Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defin
 
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
- Create a perpendicular line segment from p to segment [s1, s2]
+Create a perpendicular line segment from p to segment [s1, s2]
 
 :param p: The point
 :param s1: The segment start point
@@ -552,7 +552,7 @@ An algorithm to calculate an (approximate) intersection of two lines in 3D.
 :param intersection: is the result intersection, of it can be found.
 
 :return: true if the intersection can be found, false - otherwise.
-example:
+         example:
 .. code-block:: python
 
        QgsGeometryUtils.linesIntersection3D(QgsVector3D(0,0,0), QgsVector3D(5,0,0), QgsVector3D(2,1,0), QgsVector3D(2,3,0))

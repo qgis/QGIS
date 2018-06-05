@@ -45,17 +45,17 @@ Standard constructor
 
     Type type() const;
 %Docstring
-Return the dependency type
+Returns the dependency type
 %End
 
     Origin origin() const;
 %Docstring
-Return the dependency origin
+Returns the dependency origin
 %End
 
     QString layerId() const;
 %Docstring
-Return the ID of the layer this dependency depends on
+Returns the ID of the layer this dependency depends on
 %End
 
     bool operator==( const QgsMapLayerDependency &other ) const;

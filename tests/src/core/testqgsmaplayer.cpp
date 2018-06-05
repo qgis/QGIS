@@ -34,7 +34,7 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-      : QObject( 0 )
+      : QObject( nullptr )
     {}
     QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
   public slots:

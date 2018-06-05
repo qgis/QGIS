@@ -73,7 +73,7 @@ class QgsFeatureRenderer
 
     static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
-return a new renderer - used by default in vector layers
+Returns a new renderer - used by default in vector layers
 %End
 
     QString type() const;
@@ -94,7 +94,7 @@ Must be called between startRender() and stopRender() calls.
 
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Return symbol for feature. The difference compared to symbolForFeature() is that it returns original
+Returns symbol for feature. The difference compared to symbolForFeature() is that it returns original
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
 of a symbol for use in rendering.
 
@@ -103,7 +103,7 @@ of a symbol for use in rendering.
 
     virtual QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 %Docstring
-Return legend keys matching a specified feature.
+Returns legend keys matching a specified feature.
 
 .. versionadded:: 2.14
 %End
@@ -113,8 +113,8 @@ Return legend keys matching a specified feature.
 Must be called when a new render cycle is started. A call to startRender() must always
 be followed by a corresponding call to stopRender() after all features have been rendered.
 
-:param context:  Additional information passed to the renderer about the job which will be rendered
-:param fields:   The fields available for rendering
+:param context: Additional information passed to the renderer about the job which will be rendered
+:param fields: The fields available for rendering
 
 .. seealso:: :py:func:`stopRender`
 
@@ -154,7 +154,7 @@ will be combined with a filter returned from this method.
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
 %Docstring
-Return a list of attributes required by this renderer. Attributes not listed in here may
+Returns a list of attributes required by this renderer. Attributes not listed in here may
 not have been requested from the provider at rendering time.
 
 :return: A set of attributes
@@ -256,11 +256,11 @@ Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document
 
 :param node: the node in the SLD document whose the UserStyle element
-is a child
+             is a child
 :param geomType: the geometry type of the features, used to convert
-Symbolizer elements
+                 Symbolizer elements
 :param errorMessage: it will contain the error message if something
-went wrong
+                     went wrong
 
 :return: the renderer
 %End
@@ -317,7 +317,7 @@ If supported by the renderer, return classification attribute for the use in leg
 
     void setVertexMarkerAppearance( int type, int size );
 %Docstring
-set type and size of editing vertex markers for subsequent rendering
+Sets type and size of editing vertex markers for subsequent rendering
 %End
 
     virtual bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
@@ -351,7 +351,7 @@ extended to support renderers that may use more symbols per feature - similar to
 Allows for a renderer to modify the extent of a feature request prior to rendering
 
 :param extent: reference to request's filter extent. Modify extent to change the
-extent of feature request
+               extent of feature request
 :param context: render context
 
 .. versionadded:: 2.7
@@ -363,9 +363,9 @@ Returns the current paint effect for the renderer.
 
 :return: paint effect
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`setPaintEffect`
+
+.. versionadded:: 2.9
 %End
 
     void setPaintEffect( QgsPaintEffect *effect );
@@ -374,18 +374,18 @@ Sets the current paint effect for the renderer.
 
 :param effect: paint effect. Ownership is transferred to the renderer.
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`paintEffect`
+
+.. versionadded:: 2.9
 %End
 
     bool forceRasterRender() const;
 %Docstring
 Returns whether the renderer must render as a raster.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setForceRasterRender`
+
+.. versionadded:: 2.12
 %End
 
     void setForceRasterRender( bool forceRaster );
@@ -393,8 +393,8 @@ Returns whether the renderer must render as a raster.
 Sets whether the renderer should be rendered to a raster destination.
 
 :param forceRaster: set to true if renderer must be drawn on a raster surface.
-This may be desirable for highly detailed layers where rendering as a vector
-would result in a large, complex vector output.
+                    This may be desirable for highly detailed layers where rendering as a vector
+                    would result in a large, complex vector output.
 
 .. seealso:: :py:func:`forceRasterRender`
 
@@ -403,15 +403,15 @@ would result in a large, complex vector output.
 
     QgsFeatureRequest::OrderBy orderBy() const;
 %Docstring
-Get the order in which features shall be processed by this renderer.
-
-.. versionadded:: 2.14
+Gets the order in which features shall be processed by this renderer.
 
 .. note::
 
    this property has no effect if orderByEnabled() is false
 
 .. seealso:: :py:func:`orderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
@@ -422,20 +422,20 @@ Define the order in which features shall be processed by this renderer.
 
    this property has no effect if orderByEnabled() is false
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setOrderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     bool orderByEnabled() const;
 %Docstring
 Returns whether custom ordering will be applied before features are processed by this renderer.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`orderBy`
 
 .. seealso:: :py:func:`setOrderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     void setOrderByEnabled( bool enabled );
@@ -444,11 +444,11 @@ Sets whether custom ordering should be applied before features are processed by 
 
 :param enabled: set to true to enable custom feature ordering
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setOrderBy`
 
 .. seealso:: :py:func:`orderByEnabled`
+
+.. versionadded:: 2.14
 %End
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );

@@ -12,7 +12,7 @@
 class QgsScopedExpressionFunction : QgsExpressionFunction
 {
 %Docstring
- Expression function for use within a QgsExpressionContextScope. This differs from a
+Expression function for use within a QgsExpressionContextScope. This differs from a
 standard QgsExpression.Function in that it requires an implemented
 clone() method.
 
@@ -78,7 +78,7 @@ Returns a clone of the function.
 class QgsExpressionContextScope
 {
 %Docstring
- Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
+Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
@@ -167,7 +167,7 @@ Removes a variable from the context scope, if found.
 :param name: name of variable to remove
 
 :return: true if variable was removed from the scope, false if matching variable was not
-found within the scope
+         found within the scope
 %End
 
     bool hasVariable( const QString &name ) const;
@@ -296,9 +296,9 @@ Adds a function to the scope.
 %Docstring
 Returns true if the scope has a feature associated with it.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`feature`
+
+.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -328,11 +328,11 @@ feature set by the scope will be overwritten.
 %Docstring
 Removes any feature associated with the scope.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setFeature`
 
 .. seealso:: :py:func:`hasFeature`
+
+.. versionadded:: 3.0
 %End
 
     void setFields( const QgsFields &fields );
@@ -348,7 +348,7 @@ fields set by the scope will be overwritten.
 class QgsExpressionContext
 {
 %Docstring
- Expression contexts are used to encapsulate the parameters around which a QgsExpression should
+Expression contexts are used to encapsulate the parameters around which a QgsExpression should
 be evaluated. QgsExpressions can then utilize the information stored within a context to contextualise
 their evaluated result. A QgsExpressionContext consists of a stack of QgsExpressionContextScope objects,
 where scopes added later to the stack will override conflicting variables and functions from scopes
@@ -532,7 +532,7 @@ Returns whether a variable is read only, and should not be modifiable by users.
 :param name: variable name
 
 :return: true if variable is read only. Read only status will be taken from last
-matching scope which contains a matching variable.
+         matching scope which contains a matching variable.
 %End
 
     QString description( const QString &name ) const;
@@ -625,9 +625,9 @@ existing features within the context.
 %Docstring
 Returns true if the context has a feature associated with it.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`feature`
+
+.. versionadded:: 3.0
 %End
 
     QgsFeature feature() const;
@@ -660,7 +660,7 @@ Convenience function for retrieving the fields for the context, if set.
 Sets the original value variable value for the context.
 
 :param value: value for original value variable. This usually represents the an original widget
-value before any data defined overrides have been applied.
+              value before any data defined overrides have been applied.
 
 .. versionadded:: 2.12
 %End
@@ -746,7 +746,7 @@ Clears all cached values from the context.
 class QgsExpressionContextUtils
 {
 %Docstring
- Contains utilities for working with QgsExpressionContext objects, including methods
+Contains utilities for working with QgsExpressionContext objects, including methods
 for creating scopes for specific uses (e.g., project scopes, layer scopes).
 
 .. versionadded:: 2.12
@@ -763,6 +763,14 @@ Creates a new scope which contains variables and functions relating to the globa
 For instance, QGIS version numbers and variables specified through QGIS options.
 
 .. seealso:: :py:func:`setGlobalVariable`
+%End
+
+    static QgsExpressionContextScope *formScope( const QgsFeature &formFeature = QgsFeature( ) ) /Factory/;
+%Docstring
+Creates a new scope which contains functions and variables from the current attribute form/table feature.
+The variables and values in this scope will reflect the current state of the form/row being edited.
+
+.. versionadded:: 3.2
 %End
 
     static void setGlobalVariable( const QString &name, const QVariant &value );
@@ -978,11 +986,11 @@ For instance, current page name and number.
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutItem`.
 For instance, item size and position.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setLayoutItemVariable`
 
 .. seealso:: :py:func:`setLayoutItemVariables`
+
+.. versionadded:: 3.0
 %End
 
     static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );

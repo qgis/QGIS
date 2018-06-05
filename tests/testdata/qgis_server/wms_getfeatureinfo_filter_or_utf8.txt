@@ -8,14 +8,12 @@ Content-Type: text/xml; charset=utf-8
    <Attribute value="2" name="id"/>
    <Attribute value="two" name="name"/>
    <Attribute value="two àò" name="utf8nameè"/>
-   <Attribute value="1" name="orig_ogc_fid"/>
    <BoundingBox maxy="5606017.8743" maxx="913214.6741" miny="5606017.8743" CRS="EPSG:3857" minx="913214.6741"/>
   </Feature>
   <Feature id="2">
    <Attribute value="3" name="id"/>
    <Attribute value="three" name="name"/>
    <Attribute value="three èé↓" name="utf8nameè"/>
-   <Attribute value="2" name="orig_ogc_fid"/>
    <BoundingBox maxy="5606011.4565" maxx="913204.9128" miny="5606011.4565" CRS="EPSG:3857" minx="913204.9128"/>
   </Feature>
  </Layer>

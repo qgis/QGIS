@@ -42,12 +42,13 @@ for module in "${modules[@]}"; do
   while read -r sipfile; do
       echo "$sipfile.in"
       header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
+      pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sipfile)
       if [ ! -f $header ]; then
         echo "*** Missing header: $header for sipfile $sipfile"
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $header > python/$sipfile.in &
+        ./scripts/sipify.pl -s python/$sipfile.in -p python/${module}/auto_additions/${pyfile} $header &
       fi
       count=$((count+1))
   done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )

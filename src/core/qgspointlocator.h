@@ -72,19 +72,19 @@ class CORE_EXPORT QgsPointLocator : public QObject
     ~QgsPointLocator() override;
 
     /**
-     * Get associated layer
+     * Gets associated layer
      * \since QGIS 2.14
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
     /**
-     * Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+     * Gets destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
      * \since QGIS 2.14
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
 
     /**
-     * Get extent of the area point locator covers - if null then it caches the whole layer
+     * Gets extent of the area point locator covers - if null then it caches the whole layer
      * \since QGIS 2.14
      */
     const QgsRectangle *extent() const { return mExtent; }
@@ -261,7 +261,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     MatchList pointInPolygon( const QgsPointXY &point );
 
     /**
-     * Return how many geometries are cached in the index
+     * Returns how many geometries are cached in the index
      * \since QGIS 2.14
      */
     int cachedGeometryCount() const { return mGeoms.count(); }

@@ -12,7 +12,7 @@
 class QgsPropertyDefinition
 {
 %Docstring
- Definition for a property.
+Definition for a property.
 
 QgsPropertyDefinition defines the type of values allowed for a property, and
 handles descriptive names and help text for using the property. Definitions
@@ -92,7 +92,7 @@ Constructor for custom QgsPropertyDefinitions.
 :param dataType: the data type for the property
 :param description: can be any localised string describing what the property is used for.
 :param helpText: parameter should specify a descriptive string for users outlining the types
-of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
+                 of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
 :param origin: The origin of the property
 :param comment: A free comment for the property
 %End
@@ -170,7 +170,7 @@ override assistants.
 class QgsProperty
 {
 %Docstring
- A store for object properties.
+A store for object properties.
 
 QgsProperty objects are used for storing properties for objects, which can then be transformed to
 a QVariant value by evaluating them against a supplied :py:class:`QgsExpressionContext`. Multiple QgsProperty objects
@@ -318,8 +318,8 @@ expression context.
 Calculates the current value of the property, including any transforms which are set for the property
 
 :param context: QgsExpressionContext to evaluate the property for. The variables and functions contained
-in the expression context can be used to alter the calculated value for the property, so that a property
-is able to respond to the current environment, layers and features within QGIS.
+                in the expression context can be used to alter the calculated value for the property, so that a property
+                is able to respond to the current environment, layers and features within QGIS.
 :param defaultValue: default value to return if the property is not active or cannot be calculated
 :param ok: if specified, will be set to true if conversion was successful
 
@@ -462,7 +462,7 @@ You can use QgsXmlUtils.readVariant to load it from an XML document.
 Sets an optional transformer to use for manipulating the calculated values for the property.
 
 :param transformer: transformer to install. Ownership is transferred to the property, and any
-existing transformer will be deleted. Set to null to remove an existing transformer.
+                    existing transformer will be deleted. Set to null to remove an existing transformer.
 
 .. seealso:: :py:func:`transformer`
 %End

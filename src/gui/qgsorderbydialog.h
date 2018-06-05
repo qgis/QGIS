@@ -54,7 +54,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 
     /**
-     * Get the order by defined in the dialog
+     * Gets the order by defined in the dialog
      */
     QgsFeatureRequest::OrderBy orderBy();
 

@@ -59,7 +59,7 @@ Sets the editable scope for the widget. Only variables from the editable scope c
 be modified by users.
 
 :param scopeIndex: index of current editable scope. Set to -1 to disable
-editing and make the widget read-only.
+                   editing and make the widget read-only.
 
 .. seealso:: :py:func:`editableScope`
 %End

@@ -14,10 +14,9 @@
 class QgsFeatureFilter : QgsFeatureFilterProvider
 {
 %Docstring
- A feature filter provider allowing to set filter expressions on a per-layer basis.
+A feature filter provider allowing to set filter expressions on a per-layer basis.
 
 .. versionadded:: 3.0
-*
 %End
 
 %TypeHeaderCode
@@ -29,7 +28,8 @@ class QgsFeatureFilter : QgsFeatureFilterProvider
 Constructor
 %End
 
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
 %Docstring
 Filter the features of the layer
 
@@ -37,9 +37,10 @@ Filter the features of the layer
 :param filterFeatures: the request to fill
 %End
 
-    QgsFeatureFilterProvider *clone() const /Factory/;
+    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+
 %Docstring
-Return a clone of the object
+Returns a clone of the object
 
 :return: A clone
 %End

@@ -264,10 +264,10 @@ the table changing size to accommodate the new displayed feature attributes.
 Sets the attributes to display in the table.
 
 :param fields: list of fields names from the vector layer to show.
-Set to an empty list to show all feature attributes.
+               Set to an empty list to show all feature attributes.
 :param refresh: set to true to force the table to refetch features from its vector layer
-and immediately update the display of the table. This may result in the table changing size
-to accommodate the new displayed feature attributes.
+                and immediately update the display of the table. This may result in the table changing size
+                to accommodate the new displayed feature attributes.
 %End
 
 
@@ -295,7 +295,7 @@ be replaced by a line break.
     virtual void finalizeRestoreFromXml();
 
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 
   protected:

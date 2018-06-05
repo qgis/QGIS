@@ -28,7 +28,7 @@ remove from the current selection or select within the current selection.
 %Docstring
 Creates a new selection dialog.
 
-:param layer:     The layer on which the selection is to be performed.
+:param layer: The layer on which the selection is to be performed.
 :param startText: A default expression text to be applied (Defaults to empty)
 :param parent: parent object (owner)
 %End
@@ -93,7 +93,7 @@ Saves the window geometry
 Implementation for done (default behavior when pressing esc)
 Calls close, so the window geometry gets saved and the object deleted.
 
-:param r:   Result value. Unused.
+:param r: Result value. Unused.
 %End
 
 };

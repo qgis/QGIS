@@ -34,7 +34,7 @@ Constructor for QgsAttributeTableView
 
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 %Docstring
- setFeatureSelectionManager
+setFeatureSelectionManager
 
 :param featureSelectionManager: We will take ownership
 %End
@@ -47,7 +47,7 @@ events. These are used to disable / enable live synchronisation with the map can
 which can be slow due to recurring canvas repaints.
 
 :param object: The object which is the target of the event.
-:param event:  The intercepted event
+:param event: The intercepted event
 
 :return: Returns always false, so the event gets processed
 %End
@@ -121,9 +121,9 @@ Saves geometry to the settings on close
 %Docstring
 Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
 
-:param menu:     If additional QMenuItems are added, they will show up in the context menu.
-:param atIndex:  The QModelIndex, to which the context menu belongs. Relative to the source model.
-In most cases, this will be a :py:class:`QgsAttributeTableFilterModel`
+:param menu: If additional QMenuItems are added, they will show up in the context menu.
+:param atIndex: The QModelIndex, to which the context menu belongs. Relative to the source model.
+                In most cases, this will be a :py:class:`QgsAttributeTableFilterModel`
 %End
 
     void columnResized( int column, int width );

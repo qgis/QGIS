@@ -162,7 +162,7 @@ class QgsGlobeFeatureSourceFactory : public osgEarth::Features::FeatureSourceDri
       supportsExtension( "osgearth_feature_qgis", "QGIS feature driver for osgEarth" );
     }
 
-    virtual osgDB::ReaderWriter::ReadResult readObject( const std::string &file_name, const osgDB::Options *options ) const override
+    osgDB::ReaderWriter::ReadResult readObject( const std::string &file_name, const osgDB::Options *options ) const override
     {
       // this function seems to be called for every plugin
       // we declare supporting the special extension "osgearth_feature_qgis"

@@ -23,8 +23,8 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
 #include "qgsprocessingcontext.h"
-#include "qgsprocessingutils.h"
 #include "qgsfeaturesource.h"
+#include "qgsprocessingutils.h"
 #include <QString>
 #include <QVariant>
 #include <QIcon>
@@ -73,6 +73,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
+      FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -146,9 +147,21 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the translated algorithm name, which should be used for any user-visible display
      * of the algorithm name.
+     *
+     * Algorithm display names should be short, e.g. ideally no more than 3 or 4 words.
+     * The name should use sentence case (e.g. "Raster layer statistics", not "Raster Layer Statistics").
+     *
      * \see name()
+     * \see shortDescription()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns an optional translated short description of the algorithm. This should be
+     * at most a single sentence, e.g. "Converts 2D features to 3D by sampling a DEM raster."
+     * \since QGIS 3.2
+     */
+    virtual QString shortDescription() const;
 
     /**
      * Returns a list of tags which relate to the algorithm, and are used to assist users in searching
@@ -310,8 +323,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \note this method can only be called from the main thread. Use prepare(), runPrepared() and postProcess()
      * if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
      */
-    QVariantMap run( const QVariantMap &parameters,
-                     QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap() ) const;
+    QVariantMap run( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool *ok SIP_OUT = nullptr, const QVariantMap &configuration = QVariantMap() ) const;
 
     /**
      * Prepares the algorithm for execution. This must be run in the main thread, and allows the algorithm
@@ -336,7 +348,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
      * of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
      */
-    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException );
 
     /**
      * Should be called in the main thread following the completion of runPrepared(). This method
@@ -487,7 +499,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see processAlgorithm()
      * \see postProcessAlgorithm()
      */
-    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Runs the algorithm using the specified \a parameters. Algorithms should implement
@@ -519,7 +531,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see prepareAlgorithm()
      * \see postProcessAlgorithm()
      */
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Allows the algorithm to perform any required cleanup tasks. The returned variant map
@@ -548,7 +560,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see prepareAlgorithm()
      * \see processAlgorithm()
      */
-    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
     /**
      * Evaluates the parameter with matching \a name to a static string value.
@@ -751,10 +763,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidRasterError()
      * \see invalidSinkError()
+     * \since QGIS 3.2
      */
     static QString invalidSourceError( const QVariantMap &parameters, const QString &name );
 
@@ -765,10 +777,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidSourceError()
      * \see invalidSinkError()
+     * \since QGIS 3.2
      */
     static QString invalidRasterError( const QVariantMap &parameters, const QString &name );
 
@@ -779,10 +791,10 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * The \a parameters argument should give the algorithms parameter map, and the \a name
      * should correspond to the invalid source parameter name.
      *
-     * \since QGIS 3.2
      *
      * \see invalidSourceError()
      * \see invalidRasterError()
+     * \since QGIS 3.2
      */
     static QString invalidSinkError( const QVariantMap &parameters, const QString &name );
 
@@ -939,10 +951,9 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * can break valid model execution - so use with extreme caution, and consider using
      * \a feedback to instead report non-fatal processing failures for features instead.
      */
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
+    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) SIP_THROW( QgsProcessingException ) = 0 SIP_VIRTUALERRORHANDLER( processing_exception_handler );
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override SIP_THROW( QgsProcessingException );
 
     /**
      * Returns the feature request used for fetching features to process from the

@@ -20,6 +20,9 @@ This is the class is providing tolerance value in map unit values.
 #include "qgstolerance.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
 
     enum UnitType
     {

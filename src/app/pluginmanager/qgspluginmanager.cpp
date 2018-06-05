@@ -112,6 +112,8 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
 
   // Preset widgets
   leFilter->setFocus( Qt::MouseFocusReason );
+  leFilter->setShowSearchIcon( true );
+  leFilter->setPlaceholderText( tr( "Search" ) );
   wvDetails->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
   // Connect other signals

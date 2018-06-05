@@ -179,7 +179,7 @@ transform coordinates to.
 .. seealso:: :py:func:`sourceCrs`
 %End
 
-    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
 %Docstring
 Transform the point from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -191,7 +191,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+    QgsPointXY transform( double x, double y, TransformDirection direction = ForwardTransform ) const;
 %Docstring
 Transform the point specified by x,y from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -204,7 +204,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed point
 %End
 
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, bool handle180Crossover = false ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -216,12 +216,12 @@ the returned rectangle.
 :param rectangle: rectangle to transform
 :param direction: transform direction (defaults to ForwardTransform)
 :param handle180Crossover: set to true if destination CRS is geographic and handling of extents
-crossing the 180 degree longitude line is required
+                           crossing the 180 degree longitude line is required
 
 :return: rectangle in destination CRS
 %End
 
-    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
+    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
 %Docstring
 Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -230,8 +230,8 @@ otherwise points are transformed from destination to source CRS.
 :param x: array of x coordinates of points to transform
 :param y: array of y coordinates of points to transform
 :param z: array of z coordinates of points to transform. The z coordinates of the points
-must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
-heights) and must be expressed in its vertical units (generally meters)
+          must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
+          heights) and must be expressed in its vertical units (generally meters)
 :param direction: transform direction (defaults to ForwardTransform)
 %End
 
@@ -239,7 +239,7 @@ heights) and must be expressed in its vertical units (generally meters)
 
 
 
-    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
+    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
 %Docstring
 Transforms a polygon to the destination coordinate system.
 
@@ -247,7 +247,7 @@ Transforms a polygon to the destination coordinate system.
 :param direction: transform direction (defaults to forward transformation)
 %End
 
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -259,7 +259,7 @@ otherwise points are transformed from destination to source CRS.
 :return: transformed rectangle
 %End
 
-    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw( QgsCsException );
 %Docstring
 Transform an array of coordinates to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -290,8 +290,6 @@ but can be manually overwritten by a call to setSourceDatumTransformId().
 .. seealso:: :py:func:`setSourceDatumTransformId`
 
 .. seealso:: :py:func:`destinationDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setSourceDatumTransformId( int datumId );
@@ -307,8 +305,6 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`sourceDatumTransformId`
 
 .. seealso:: :py:func:`setDestinationDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     int destinationDatumTransformId() const;
@@ -324,8 +320,6 @@ but can be manually overwritten by a call to setDestinationDatumTransformId().
 .. seealso:: :py:func:`setDestinationDatumTransformId`
 
 .. seealso:: :py:func:`sourceDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setDestinationDatumTransformId( int datumId );
@@ -341,8 +335,6 @@ Calling this method will overwrite any automatically calculated datum transform.
 .. seealso:: :py:func:`destinationDatumTransformId`
 
 .. seealso:: :py:func:`setSourceDatumTransformId`
-
-.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     static void invalidateCache();

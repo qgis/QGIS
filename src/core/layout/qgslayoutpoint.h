@@ -29,12 +29,12 @@
  * for use in QGIS layouts. Measurement units are stored alongside the position.
  *
  * \see QgsLayoutMeasurementConverter
- * \since QGIS 3.0
  * \note This class does not inherit from QPointF since QPointF includes methods which should not apply
  * to positions with with units. For instance, the + and - operators would mislead users of this class
  * to believe that addition of two QgsLayoutPoints with different unit types would automatically convert
  * units. Instead, all unit conversion must be handled by a QgsLayoutMeasurementConverter so that
  * conversion between paper and screen units can be correctly performed.
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutPoint
 {
@@ -43,18 +43,18 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Constructor for QgsLayoutPoint.
     */
-    QgsLayoutPoint( const double x, const double y, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutPoint( double x, double y, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for QgsLayoutPoint.
     */
-    explicit QgsLayoutPoint( const QPointF point, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QPointF point, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for an empty point, where both x and y are set to 0.
      * \param units units for measurement
     */
-    explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutPoint( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Sets new x and y coordinates for the point.
@@ -137,22 +137,22 @@ class CORE_EXPORT QgsLayoutPoint
     /**
      * Multiplies the x and y by a scalar value.
      */
-    QgsLayoutPoint operator*( const double v ) const;
+    QgsLayoutPoint operator*( double v ) const;
 
     /**
      * Multiplies the x and y by a scalar value.
      */
-    QgsLayoutPoint operator*=( const double v );
+    QgsLayoutPoint operator*=( double v );
 
     /**
      * Divides the x and y by a scalar value.
      */
-    QgsLayoutPoint operator/( const double v ) const;
+    QgsLayoutPoint operator/( double v ) const;
 
     /**
      * Divides the x and y by a scalar value.
      */
-    QgsLayoutPoint operator/=( const double v );
+    QgsLayoutPoint operator/=( double v );
 
   private:
 

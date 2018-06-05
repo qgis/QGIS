@@ -688,7 +688,7 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            return self.widget.setValue(value)
         else:
             options = self._getOptions()
 
@@ -901,6 +901,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setCurrentIndex(self.combo.findText(filename))
             else:
                 self.combo.setEditText(filename)
+            self.widgetValueHasChanged.emit(self)
 
     def setValue(self, value):
         if value is None or value == NULL:
@@ -915,9 +916,10 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setAdditionalItems(items)
                 self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
-            self.widget.setText(value)
+            self.widget.setValue(value)
         else:
             self.setComboValue(value, combobox=self.combo)
+        self.widgetValueHasChanged.emit(self)
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -962,9 +964,11 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
                 self.combo.setCurrentIndex(self.combo.findText(filename))
             else:
                 self.combo.setEditText(filename)
+            self.widgetValueHasChanged.emit(self)
 
 
 class EnumWidgetWrapper(WidgetWrapper):
+    NOT_SELECTED = '[Not selected]'
 
     def createWidget(self, useCheckBoxes=False, columns=1):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
@@ -984,6 +988,10 @@ class EnumWidgetWrapper(WidgetWrapper):
                 return widget
         else:
             self.combobox = QComboBox()
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combobox.addItem(self.NOT_SELECTED, self.NOT_SET_OPTION)
+            for i, option in enumerate(self.param.options()):
+                self.combobox.addItem(option, i)
             values = self.dialog.getAvailableValuesOfType(QgsProcessingParameterEnum)
             for v in values:
                 self.combobox.addItem(self.dialog.resolveValueDescription(v), v)
@@ -1131,6 +1139,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 self.combo.setCurrentIndex(self.combo.findText(filename))
             else:
                 self.combo.setEditText(filename)
+            self.widgetValueHasChanged.emit(self)
 
     def setValue(self, value):
         if value is None or value == NULL:
@@ -1148,6 +1157,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             self.widget.setValue(value)
         else:
             self.setComboValue(value, combobox=self.combo)
+        self.widgetValueHasChanged.emit(self)
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -1275,6 +1285,10 @@ class StringWidgetWrapper(WidgetWrapper):
 
 class ExpressionWidgetWrapper(WidgetWrapper):
 
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        super().__init__(param, dialog, row, col, **kwargs)
+        self.context = dataobjects.createContext()
+
     def createWidget(self):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             if self.param.parentLayerParameterName():
@@ -1307,11 +1321,10 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
-        context = dataobjects.createContext()
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
-            layer, ok = layer.source.valueAsString(context.expressionContext())
+            layer, ok = layer.source.valueAsString(self.context.expressionContext())
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
         self.widget.setLayer(layer)
 
     def setValue(self, value):
@@ -1428,6 +1441,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setCurrentIndex(self.combo.findText(filename))
             else:
                 self.combo.setEditText(filename)
+            self.widgetValueHasChanged.emit(self)
 
     def setValue(self, value):
         if value is None or value == NULL:
@@ -1442,9 +1456,10 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setAdditionalItems(items)
                 self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.setText(value)
+            return self.widget.setValue(value)
         else:
             self.setComboValue(value, combobox=self.combo)
+        self.widgetValueHasChanged.emit(self)
 
     def value(self):
         if self.dialogType == DIALOG_STANDARD:
@@ -1467,6 +1482,10 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
 class TableFieldWidgetWrapper(WidgetWrapper):
     NOT_SET = '[Not set]'
+
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        super().__init__(param, dialog, row, col, **kwargs)
+        self.context = dataobjects.createContext()
 
     def createWidget(self):
         self._layer = None
@@ -1511,11 +1530,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
-        context = dataobjects.createContext()
         if isinstance(layer, QgsProcessingFeatureSourceDefinition):
-            layer, ok = layer.source.valueAsString(context.expressionContext())
+            layer, ok = layer.source.valueAsString(self.context.expressionContext())
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
         self._layer = layer
         self.refreshItems()
 
@@ -1590,6 +1608,10 @@ class TableFieldWidgetWrapper(WidgetWrapper):
 class BandWidgetWrapper(WidgetWrapper):
     NOT_SET = '[Not set]'
 
+    def __init__(self, param, dialog, row=0, col=0, **kwargs):
+        super().__init__(param, dialog, row, col, **kwargs)
+        self.context = dataobjects.createContext()
+
     def createWidget(self):
         self._layer = None
 
@@ -1621,11 +1643,10 @@ class BandWidgetWrapper(WidgetWrapper):
         self.setLayer(wrapper.value())
 
     def setLayer(self, layer):
-        context = dataobjects.createContext()
         if isinstance(layer, QgsProcessingParameterRasterLayer):
-            layer, ok = layer.source.valueAsString(context.expressionContext())
+            layer, ok = layer.source.valueAsString(self.context.expressionContext())
         if isinstance(layer, str):
-            layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+            layer = QgsProcessingUtils.mapLayerFromString(layer, self.context)
         self._layer = layer
         self.refreshItems()
 

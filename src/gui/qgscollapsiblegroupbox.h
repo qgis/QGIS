@@ -121,7 +121,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
      */
     void setSyncGroup( const QString &grp );
 
-    //! Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    //! Sets this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
     //! If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
@@ -202,7 +202,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     // set custom QgsSettings pointer if group box was already created from QtDesigner promotion
     void setSettings( QgsSettings *settings );
 
-    //! set this to false to not save/restore collapsed state
+    //! Sets this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save ) { mSaveCollapsedState = save; }
 
     /**
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     bool saveCollapsedState() { return mSaveCollapsedState; }
     bool saveCheckedState() { return mSaveCheckedState; }
 
-    //! Set this to a defined string to share save/restore states across different parent dialogs
+    //! Sets this to a defined string to share save/restore states across different parent dialogs
     void setSettingGroup( const QString &group ) { mSettingGroup = group; }
     //! Returns the name of the setting group in which the collapsed state will be saved
     QString settingGroup() const { return mSettingGroup; }

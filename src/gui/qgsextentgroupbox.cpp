@@ -78,6 +78,7 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
 {
   if ( mOutputCrs != outputCrs )
   {
+    bool prevExtentEnabled = isChecked();
     switch ( mExtentState )
     {
       case CurrentExtent:
@@ -116,6 +117,8 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
         break;
     }
 
+    if ( !prevExtentEnabled )
+      setChecked( false );
   }
 
 }

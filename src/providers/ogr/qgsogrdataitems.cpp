@@ -166,13 +166,14 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
   QgsVectorLayer layer( path, QStringLiteral( "ogr_tmp" ), QStringLiteral( "ogr" ) );
   if ( ! layer.isValid( ) )
   {
-    QgsDebugMsgLevel( tr( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Layer is not a valid %1 Vector layer %2" ).arg( path ), 3 );
   }
   else
   {
     // Collect mixed-geom layers
     QMultiMap<int, QStringList> subLayersMap;
-    const QStringList subLayersList( layer.dataProvider()->subLayers( ) );
+    QgsOgrProvider *ogrProvider = qobject_cast<QgsOgrProvider *>( layer.dataProvider() );
+    const QStringList subLayersList( ogrProvider->subLayersWithoutFeatureCount( ) );
     QMap< QString, int > mapLayerNameToCount;
     bool uniqueNames = true;
     int prevIdx = -1;

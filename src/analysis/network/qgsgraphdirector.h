@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
 
-    ~QgsGraphDirector()
+    ~QgsGraphDirector() override
     {
       qDeleteAll( mStrategies );
     }

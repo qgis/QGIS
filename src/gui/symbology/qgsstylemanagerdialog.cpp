@@ -124,7 +124,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( groupModel, &QStandardItemModel::itemChanged,
            this, &QgsStyleManagerDialog::groupRenamed );
 
-  QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
+  QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
   connect( actnTagSymbols, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
   groupMenu->addAction( actnTagSymbols );
   connect( actnFinishTagging, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );

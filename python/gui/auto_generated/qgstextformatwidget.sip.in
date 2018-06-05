@@ -15,7 +15,7 @@
 class QgsTextFormatWidget : QWidget, protected Ui::QgsTextFormatWidgetBase
 {
 %Docstring
-A widget for customising text formatting settings.
+A widget for customizing text formatting settings.
 
 QgsTextFormatWidget provides a widget for controlling the appearance of text rendered
 using QgsTextRenderer. The widget includes all settings contained within
@@ -131,7 +131,7 @@ Updates label placement options to reflect current state of widget
 class QgsTextFormatDialog : QDialog
 {
 %Docstring
-A simple dialog for customising text formatting settings.
+A simple dialog for customizing text formatting settings.
 
 QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
@@ -168,7 +168,7 @@ Returns the current formatting settings defined by the widget.
 class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
 {
 %Docstring
-A panel widget for customising text formatting settings.
+A panel widget for customizing text formatting settings.
 
 QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
 using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within

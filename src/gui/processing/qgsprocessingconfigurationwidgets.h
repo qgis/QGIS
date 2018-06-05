@@ -50,8 +50,8 @@ class QgsFilterAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfi
 class QgsFilterAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorithmConfigurationWidgetFactory
 {
   public:
-    virtual QgsProcessingAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const override;
-    virtual bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const override;
+    QgsProcessingAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const override;
+    bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const override;
 };
 
 ///@endcond

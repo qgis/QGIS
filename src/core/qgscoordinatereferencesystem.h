@@ -230,7 +230,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param id The ID valid for the chosen CRS ID type
      * \param type One of the types described in CrsType
      */ // TODO QGIS 3: remove type and always use EPSG code
-    explicit QgsCoordinateReferenceSystem( const long id, CrsType type = PostgisCrsId );
+    explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId );
 
     //! Copy constructor
     QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs );
@@ -259,8 +259,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
      * \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromOgcWmsCrs()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 
@@ -276,8 +276,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a proj4 style formatted string.
      * \param proj4 proj4 format string
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromProj4()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 
@@ -285,8 +285,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a WKT spatial ref sys definition string.
      * \param wkt WKT for the desired spatial reference system.
      * \returns matching CRS, or an invalid CRS if string could not be matched
-     * \since QGIS 3.0
      * \see createFromWkt()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 
@@ -294,9 +294,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Creates a CRS from a specified QGIS SRS ID.
      * \param srsId internal QGIS SRS ID
      * \returns matching CRS, or an invalid CRS if ID could not be found
-     * \since QGIS 3.0
      * \see createFromSrsId()
      * \see validSrsIds()
+     * \since QGIS 3.0
     */
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
      */     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
-    bool createFromId( const long id, CrsType type = PostgisCrsId );
+    bool createFromId( long id, CrsType type = PostgisCrsId );
 
     /**
      * Sets this CRS to the given OGC WMS-format Coordinate Reference Systems.
@@ -327,7 +327,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srid The PostGIS SRID for the desired spatial reference system.
      * \returns True on success else false
      */     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
-    bool createFromSrid( const long srid );
+    bool createFromSrid( long srid );
 
     /**
      * Sets this CRS using a WKT definition.
@@ -354,7 +354,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
      */
-    bool createFromSrsId( const long srsId );
+    bool createFromSrsId( long srsId );
 
     /**
      * Sets this CRS by passing it a PROJ style formatted string.
@@ -601,7 +601,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     void setValidationHint( const QString &html );
 
     /**
-     * Get user hint for validation
+     * Gets user hint for validation
      */
     QString validationHint();
 
@@ -649,7 +649,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * \param srsId The srsid used for the lookup
      * \returns QString The proj4 string
      */
-    static QString proj4FromSrsId( const int srsId );
+    static QString proj4FromSrsId( int srsId );
 
     /**
      * Set the QGIS SrsId
@@ -721,7 +721,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     typedef QMap<QString, QString> RecordMap;
 
     /**
-     * Get a record from the srs.db or qgis.db backends, given an sql statement.
+     * Gets a record from the srs.db or qgis.db backends, given an sql statement.
      * \param sql The sql query to execute
      * \returns An associative array of field name <-> value pairs
      * \note only handles queries that return a single record.

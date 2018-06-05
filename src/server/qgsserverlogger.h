@@ -35,12 +35,12 @@ class QgsServerLogger: public QObject
   public:
 
     /**
-     * Get the singleton instance
+     * Gets the singleton instance
      */
     static QgsServerLogger *instance();
 
     /**
-     * Get the current log level
+     * Gets the current log level
      * \returns the log level
      * \since QGIS 3.0
      */

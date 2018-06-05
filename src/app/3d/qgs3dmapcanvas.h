@@ -56,11 +56,11 @@ class Qgs3DMapCanvas : public QWidget
     void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
 
     //! Saves the current scene as an image
-    void saveAsImage( const QString fileName, const QString fileFormat );
+    void saveAsImage( QString fileName, QString fileFormat );
 
   signals:
     //! Emitted when the 3D map canvas was successfully saved as image
-    void savedAsImage( const QString fileName );
+    void savedAsImage( QString fileName );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;

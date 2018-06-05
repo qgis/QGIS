@@ -1084,6 +1084,11 @@ void QgsApplication::exitQgis()
 
   delete QgsProviderRegistry::instance();
 
+  // invalidate coordinate cache while the PROJ context held by the thread-locale
+  // QgsProjContextStore object is still alive. Otherwise if this later object
+  // is destroyed before the static variables of the cache, we might use freed memory.
+  QgsCoordinateTransform::invalidateCache();
+
   // tear-down GDAL/OGR
   OGRCleanupAll();
   GDALDestroyDriverManager();

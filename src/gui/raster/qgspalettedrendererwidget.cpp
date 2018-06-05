@@ -45,7 +45,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mContextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeOpacity() ) );
   mContextMenu->addAction( tr( "Change Label…" ), this, SLOT( changeLabel() ) );
 
-  mAdvancedMenu = new QMenu( tr( "Advanced options" ), this );
+  mAdvancedMenu = new QMenu( tr( "Advanced Options" ), this );
   QAction *mLoadFromLayerAction = mAdvancedMenu->addAction( tr( "Load Classes from Layer" ) );
   connect( mLoadFromLayerAction, &QAction::triggered, this, &QgsPalettedRendererWidget::loadFromLayer );
   QAction *loadFromFile = mAdvancedMenu->addAction( tr( "Load Color Map from File…" ) );

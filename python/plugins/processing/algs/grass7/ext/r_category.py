@@ -36,11 +36,11 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     raster = alg.parameterAsString(parameters, 'raster', context)
 
     if rules and txtrules:
-        return alg.tr("You need to set either a rules file or write directly the rules!")
+        return False, alg.tr("You need to set either a rules file or write directly the rules!")
     elif (rules and raster) or (txtrules and raster):
-        return alg.tr("You need to set either rules or a raster from which to copy categories!")
+        return False, alg.tr("You need to set either rules or a raster from which to copy categories!")
 
-    return None
+    return True, None
 
 
 def processInputs(alg, parameters, context, feedback):

@@ -154,25 +154,25 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual bool usedCachedLabels() const = 0;
 
     /**
-     * Get pointer to internal labeling engine (in order to get access to the results).
+     * Gets pointer to internal labeling engine (in order to get access to the results).
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * \see usedCachedLabels()
      */
     virtual QgsLabelingResults *takeLabelingResults() = 0 SIP_TRANSFER;
 
     /**
-     * \since QGIS 3.0
      * Set the feature filter provider used by the QgsRenderContext of
      * each LayerRenderJob.
      * Ownership is not transferred and the provider must not be deleted
      * before the render job.
+     * \since QGIS 3.0
      */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
     /**
-     * \since QGIS 3.0
      * Returns the feature filter provider used by the QgsRenderContext of
      * each LayerRenderJob.
+     * \since QGIS 3.0
      */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
@@ -213,7 +213,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
     /**
-     * Return map settings with which this job was started.
+     * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
      */
@@ -281,8 +281,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 
@@ -320,7 +320,7 @@ class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
   public:
     QgsMapRendererQImageJob( const QgsMapSettings &settings );
 
-    //! Get a preview/resulting image
+    //! Gets a preview/resulting image
     virtual QImage renderedImage() = 0;
 
 };

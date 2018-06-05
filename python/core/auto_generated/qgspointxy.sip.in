@@ -28,6 +28,9 @@ supports Z and M values.
 #include "qgspointxy.h"
 %End
   public:
+    static const QMetaObject staticMetaObject;
+
+  public:
     QgsPointXY();
 
     QgsPointXY( const QgsPointXY &p );
@@ -92,14 +95,14 @@ Sets the x and y value of the point
 
     double x() const;
 %Docstring
-Get the x value of the point
+Gets the x value of the point
 
 :return: x coordinate
 %End
 
     double y() const;
 %Docstring
-Get the y value of the point
+Gets the y value of the point
 
 :return: y coordinate
 %End
@@ -121,7 +124,7 @@ If  ``precision`` is -1, then a default precision will be used.
 
     QString asWkt() const;
 %Docstring
-Return the well known text representation for the point (e.g. "POINT(x y)").
+Returns the well known text representation for the point (e.g. "POINT(x y)").
 The wkt is created without an SRID.
 %End
 

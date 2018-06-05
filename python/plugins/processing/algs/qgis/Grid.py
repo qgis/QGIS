@@ -65,7 +65,10 @@ class Grid(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QgsApplication.getThemeIcon("/vector_grid.svg")
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCreateGrid.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmCreateGrid.svg")
 
     def tags(self):
         return self.tr('grid,lines,polygons,vector,create,fishnet,diamond,hexagon').split(',')

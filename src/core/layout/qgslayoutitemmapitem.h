@@ -141,8 +141,8 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
  * \brief A collection of map items which are drawn above the map content in a
  * QgsLayoutItemMap. The item stack controls which items are drawn and the
  * order they are drawn in.
- * \since QGIS 3.0
  * \see QgsLayoutItemMapItem
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutItemMapItemStack
 {
@@ -234,19 +234,16 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
 
     /**
      * Returns a reference to an item which matching \a itemId within the stack.
-     * \see constItem()
      */
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 
     /**
      * Returns a reference to the item at the specified \a index within the stack.
-     * \see constItem
      */
     QgsLayoutItemMapItem *item( int index ) const;
 
     /**
      * Returns a reference to an item at the specified \a index within the stack.
-     * \see constItem()
      * \see item()
      * \note not available in Python bindings
      */

@@ -27,7 +27,7 @@
 #include "qgsrasterlayer.h"
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
-  : QObject()
+  : QObject( nullptr )
   , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )

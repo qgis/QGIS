@@ -390,14 +390,14 @@ Register a feature for labeling.
 
 :param f: feature to label
 :param context: render context. The QgsExpressionContext contained within the render context
-must have already had the feature and fields sets prior to calling this method.
+                must have already had the feature and fields sets prior to calling this method.
 :param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
-in Python bindings.
+                     in Python bindings.
 :param obstacleGeometry: optional obstacle geometry, if a different geometry to the feature's geometry
-should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
-symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
-the feature's original geometry will be used as an obstacle for labels. Not available
-in Python bindings.
+                         should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point
+                         symbol, the obstacle geometry should represent the bounds of the offset symbol). If not set,
+                         the feature's original geometry will be used as an obstacle for labels. Not available
+                         in Python bindings.
 %End
 
     void readXml( QDomElement &elem, const QgsReadWriteContext &context );
@@ -418,9 +418,9 @@ Write settings into a DOM element
 %Docstring
 Returns a reference to the label's property collection, used for data defined overrides.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
 
@@ -430,9 +430,9 @@ Sets the label's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 3.0
 %End
 
     const QgsTextFormat &format() const;
@@ -504,11 +504,11 @@ Class that stores computed placement from labeling engine.
 
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 %Docstring
-return infos about labels at a given (map) position
+Returns infos about labels at a given (map) position
 %End
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 %Docstring
-return infos about labels within a given (map) rectangle
+Returns infos about labels within a given (map) rectangle
 %End
 
   private:

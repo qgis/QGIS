@@ -26,7 +26,7 @@ class QCheckBox;
 class QgsColorButton;
 
 /**
- * A dialog for customisation of the cell background colors for a QgsLayoutTable
+ * A dialog for customization of the cell background colors for a QgsLayoutTable
  * \since QGIS 3.0
 */
 class QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayoutTableBackgroundDialog

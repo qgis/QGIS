@@ -11,7 +11,7 @@
 class QgsLayoutItemComboBox : QComboBox
 {
 %Docstring
- The QgsLayoutItemComboBox class is a combo box which displays items of
+The QgsLayoutItemComboBox class is a combo box which displays items of
 a matching type from a layout.
 
 .. versionadded:: 3.0
@@ -40,7 +40,7 @@ Sets the ``layout`` containing the items to list in the combo box.
 Sets a filter for the item type to show in the combo box.
 
 :param itemType: type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
-show all items.
+                 show all items.
 
 .. seealso:: :py:func:`itemType`
 %End
@@ -68,7 +68,7 @@ Returns the list of specific items excluded from the combo box.
 
     QgsLayoutItem *item( int index ) const;
 %Docstring
-Return the item currently shown at the specified ``index`` within the combo box.
+Returns the item currently shown at the specified ``index`` within the combo box.
 
 .. seealso:: :py:func:`currentItem`
 %End

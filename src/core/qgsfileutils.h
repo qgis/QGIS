@@ -31,7 +31,7 @@ class CORE_EXPORT QgsFileUtils
   public:
 
     /**
-     * Return the human size from bytes
+     * Returns the human size from bytes
      */
     static QString representFileSize( qint64 bytes );
 

@@ -13,7 +13,7 @@
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
 %Docstring
- The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
+The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
 Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
 Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
 An event filter can be set on the map tool to filter and modify the events in map coordinates (:py:class:`QgsMapToolMapEventFilter`).
@@ -36,8 +36,8 @@ An event filter can be set on the map tool to filter and modify the events in ma
 %Docstring
 Creates an advanced digitizing maptool
 
-:param canvas:         The map canvas on which the tool works
-:param cadDockWidget:  The cad dock widget which will be used to adjust mouse events
+:param canvas: The map canvas on which the tool works
+:param cadDockWidget: The cad dock widget which will be used to adjust mouse events
 %End
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );

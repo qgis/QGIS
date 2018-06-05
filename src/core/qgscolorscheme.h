@@ -248,15 +248,15 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     /**
      * Adds a color to the list of recent colors.
      * \param color color to add
-     * \since QGIS 2.14
      * \see lastUsedColor()
+     * \since QGIS 2.14
      */
     static void addRecentColor( const QColor &color );
 
     /**
      * Returns the most recently used color.
-     * \since QGIS 3.0
      * \see addRecentColor()
+     * \since QGIS 3.0
      */
     static QColor lastUsedColor();
 };

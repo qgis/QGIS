@@ -138,7 +138,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
 
     /**
      * Returns a list of both actions and shortcuts in the manager.
-     * \see listAction()
+     * \see listActions()
      * \see listShortcuts()
      */
     QList<QObject *> listAll() const;
@@ -239,7 +239,7 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      */
     QShortcut *shortcutByName( const QString &name ) const;
 
-    //! Returns the root settings path used to store shortcut customisation.
+    //! Returns the root settings path used to store shortcut customization.
     QString settingsPath() const { return mSettingsPath; }
 
   private slots:

@@ -71,8 +71,8 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
 
     /**
      * Returns true if the cache contains an image with the specified \a cacheKey.
-     * \since QGIS 3.0
      * \see cacheImage()
+     * \since QGIS 3.0
      */
     bool hasCacheImage( const QString &cacheKey ) const;
 

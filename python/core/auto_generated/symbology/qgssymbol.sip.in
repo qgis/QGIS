@@ -56,7 +56,7 @@ class QgsSymbol
 
     static QgsSymbol *defaultSymbol( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
-return new default symbol for specified geometry type
+Returns new default symbol for specified geometry type
 %End
 
     SymbolType type() const;
@@ -68,11 +68,11 @@ Returns list of symbol layers contained in the symbol.
 
 :return: symbol layers list
 
-.. versionadded:: 2.7
-
 .. seealso:: :py:func:`symbolLayer`
 
 .. seealso:: :py:func:`symbolLayerCount`
+
+.. versionadded:: 2.7
 %End
 
     QgsSymbolLayer *symbolLayer( int layer );
@@ -83,11 +83,11 @@ Returns a specific symbol layers contained in the symbol.
 
 :return: corresponding symbol layer
 
-.. versionadded:: 2.7
-
 .. seealso:: :py:func:`symbolLayers`
 
 .. seealso:: :py:func:`symbolLayerCount`
+
+.. versionadded:: 2.7
 %End
 
     int symbolLayerCount() const;
@@ -96,11 +96,11 @@ Returns total number of symbol layers contained in the symbol.
 
 :return: count of symbol layers
 
-.. versionadded:: 2.7
-
 .. seealso:: :py:func:`symbolLayers`
 
 .. seealso:: :py:func:`symbolLayer`
+
+.. versionadded:: 2.7
 %End
 
     bool insertSymbolLayer( int index, QgsSymbolLayer *layer /Transfer/ );
@@ -151,8 +151,8 @@ and should be followed by a call to stopRender().
 
 :param context: render context which symbol will be drawn using
 :param fields: fields for features to be rendered (usually the associated
-vector layer's fields). Required for correct calculation of data defined
-overrides.
+               vector layer's fields). Required for correct calculation of data defined
+               overrides.
 
 .. seealso:: :py:func:`stopRender`
 %End
@@ -162,7 +162,7 @@ overrides.
 Ends the rendering process. This should be called after rendering all desired features.
 
 :param context: render context, must match the context specified when startRender()
-was called.
+                was called.
 
 .. seealso:: :py:func:`startRender`
 %End
@@ -193,14 +193,14 @@ Generate symbol as image
 Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 :param expressionContext: optional expression context, for evaluation of
-data defined symbol properties
+                          data defined symbol properties
 %End
 
     QString dump() const;
 
     virtual QgsSymbol *clone() const = 0 /Factory/;
 %Docstring
-Get a deep copy of this symbol.
+Gets a deep copy of this symbol.
 Needs to be reimplemented by subclasses.
 Ownership is transferred to the caller.
 %End
@@ -275,9 +275,9 @@ side effects for certain symbol types.
 
 :param clipFeaturesToExtent: set to true to enable clipping (defaults to true)
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`clipFeaturesToExtent`
+
+.. versionadded:: 2.9
 %End
 
     bool clipFeaturesToExtent() const;
@@ -289,14 +289,14 @@ side effects for certain symbol types.
 
 :return: true if features will be clipped
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`setClipFeaturesToExtent`
+
+.. versionadded:: 2.9
 %End
 
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
-Return a list of attributes required to render this feature.
+Returns a list of attributes required to render this feature.
 This should include any attributes required by the symbology including
 the ones required by expressions.
 %End
@@ -423,7 +423,7 @@ Returns a reference to the context's render context.
 Sets the original value variable value for data defined symbology
 
 :param value: value for original value variable. This usually represents the symbol property value
-before any data defined overrides have been applied.
+              before any data defined overrides have been applied.
 
 .. versionadded:: 2.12
 %End
@@ -600,18 +600,18 @@ Returns the marker angle for the whole symbol. Note that for symbols with
 multiple symbol layers, this will correspond just to the angle of
 the first symbol layer.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setAngle`
+
+.. versionadded:: 2.16
 %End
 
     void setDataDefinedAngle( const QgsProperty &property );
 %Docstring
 Set data defined angle for whole symbol (including all symbol layers).
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedAngle`
+
+.. versionadded:: 3.0
 %End
 
     QgsProperty dataDefinedAngle() const;
@@ -619,11 +619,11 @@ Set data defined angle for whole symbol (including all symbol layers).
 Returns data defined angle for whole symbol (including all symbol layers).
 
 :return: data defined angle, or invalid property if angle is not set
-at the marker level.
-
-.. versionadded:: 3.0
+         at the marker level.
 
 .. seealso:: :py:func:`setDataDefinedAngle`
+
+.. versionadded:: 3.0
 %End
 
     void setLineAngle( double lineAngle );
@@ -669,13 +669,13 @@ Sets the size units for the whole symbol (including all symbol layers).
 
 :param unit: size units
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`sizeUnit`
 
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
 .. seealso:: :py:func:`setSize`
+
+.. versionadded:: 2.16
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
@@ -684,13 +684,13 @@ Returns the size units for the whole symbol (including all symbol layers).
 
 :return: size units, or mixed units if symbol layers have different units
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setSizeUnit`
 
 .. seealso:: :py:func:`sizeMapUnitScale`
 
 .. seealso:: :py:func:`size`
+
+.. versionadded:: 2.16
 %End
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
@@ -699,13 +699,13 @@ Sets the size map unit scale for the whole symbol (including all symbol layers).
 
 :param scale: map unit scale
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`sizeMapUnitScale`
 
 .. seealso:: :py:func:`setSizeUnit`
 
 .. seealso:: :py:func:`setSize`
+
+.. versionadded:: 2.16
 %End
 
     QgsMapUnitScale sizeMapUnitScale() const;
@@ -714,22 +714,22 @@ Returns the size map unit scale for the whole symbol. Note that for symbols with
 multiple symbol layers, this will correspond just to the map unit scale
 for the first symbol layer.
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setSizeMapUnitScale`
 
 .. seealso:: :py:func:`sizeUnit`
 
 .. seealso:: :py:func:`size`
+
+.. versionadded:: 2.16
 %End
 
     void setDataDefinedSize( const QgsProperty &property );
 %Docstring
 Set data defined size for whole symbol (including all symbol layers).
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`dataDefinedSize`
+
+.. versionadded:: 3.0
 %End
 
     QgsProperty dataDefinedSize() const;
@@ -737,11 +737,11 @@ Set data defined size for whole symbol (including all symbol layers).
 Returns data defined size for whole symbol (including all symbol layers).
 
 :return: data defined size, or invalid property if size is not set
-at the marker level.
-
-.. versionadded:: 3.0
+         at the marker level.
 
 .. seealso:: :py:func:`setDataDefinedSize`
+
+.. versionadded:: 3.0
 %End
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
@@ -758,7 +758,7 @@ and stopRender() calls, or data defined rotation and offset will not be correctl
 :param point: location of rendered point in painter units
 :param context: render context
 :param feature: feature being rendered at point (optional). If not specified, the bounds calculation will not
-include data defined parameters such as offset and rotation
+                include data defined parameters such as offset and rotation
 
 :return: approximate symbol bounds, in painter units
 
@@ -804,11 +804,11 @@ Set data defined width for whole symbol (including all symbol layers).
 Returns data defined width for whole symbol (including all symbol layers).
 
 :return: data defined width, or invalid property if size is not set
-at the line level. Caller takes responsibility for deleting the returned object.
-
-.. versionadded:: 3.0
+         at the line level. Caller takes responsibility for deleting the returned object.
 
 .. seealso:: :py:func:`setDataDefinedWidth`
+
+.. versionadded:: 3.0
 %End
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );

@@ -58,6 +58,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgscurvepolygon.h"
 #include <QMessageBox>
 
 
@@ -2899,6 +2900,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
       return QgsGeometry();
     }
+    // geometry transforms may result in nan points, remove these
+    geom.filterVertices( []( const QgsPoint & point )->bool
+    {
+      return std::isfinite( point.x() ) && std::isfinite( point.y() );
+    } );
+    if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( geom.get() ) )
+      cp->removeInvalidRings();
   }
 
   // Rotate the geometry if needed, before clipping

@@ -11,7 +11,7 @@
 class QgsLayoutRenderContext : QObject
 {
 %Docstring
- Stores information relating to the current rendering settings for a layout.
+Stores information relating to the current rendering settings for a layout.
 
 .. versionadded:: 3.0
 %End
@@ -38,7 +38,7 @@ class QgsLayoutRenderContext : QObject
 Constructor for QgsLayoutRenderContext.
 %End
 
-    void setFlags( const QgsLayoutRenderContext::Flags flags );
+    void setFlags( QgsLayoutRenderContext::Flags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for rendering the layout.
 
@@ -49,7 +49,7 @@ Sets the combination of ``flags`` that will be used for rendering the layout.
 .. seealso:: :py:func:`testFlag`
 %End
 
-    void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
+    void setFlag( QgsLayoutRenderContext::Flag flag, bool on = true );
 %Docstring
 Enables or disables a particular rendering ``flag`` for the layout. Other existing
 flags are not affected.
@@ -72,7 +72,7 @@ Returns the current combination of flags used for rendering the layout.
 .. seealso:: :py:func:`testFlag`
 %End
 
-    bool testFlag( const Flag flag ) const;
+    bool testFlag( Flag flag ) const;
 %Docstring
 Check whether a particular rendering ``flag`` is enabled for the layout.
 
@@ -167,7 +167,7 @@ whether they will be rendered in layout exports.
 %Docstring
 Sets the current item ``layer`` to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check the currentExportLayer()
-and customise their rendering based on the layer.
+and customize their rendering based on the layer.
 
 If ``layer`` is -1, all item layers will be rendered.
 
@@ -178,7 +178,7 @@ If ``layer`` is -1, all item layers will be rendered.
 %Docstring
 Returns the current item layer to draw while exporting. QgsLayoutItem subclasses
 which support multi-layer SVG exports must check this
-and customise their rendering based on the layer.
+and customize their rendering based on the layer.
 
 If ``layer`` is -1, all item layers should be rendered.
 

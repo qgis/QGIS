@@ -57,7 +57,7 @@ Constructor for QgsAttributeTableConfig.
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring
-Get the list with all columns and their configuration.
+Gets the list with all columns and their configuration.
 The list order defines the order of appearance.
 %End
 
@@ -101,7 +101,7 @@ Set if the action widget is visible
 
     ActionWidgetStyle actionWidgetStyle() const;
 %Docstring
-Get the style of the action widget
+Gets the style of the action widget
 %End
 
     void setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle );
@@ -121,7 +121,7 @@ Deserialize to XML on layer load
 
     QString sortExpression() const;
 %Docstring
-Get the expression used for sorting.
+Gets the expression used for sorting.
 %End
 
     void setSortExpression( const QString &sortExpression );
@@ -169,7 +169,7 @@ Sets whether the specified column should be hidden.
 
     Qt::SortOrder sortOrder() const;
 %Docstring
-Get the sort order
+Gets the sort order
 
 .. versionadded:: 2.16
 %End

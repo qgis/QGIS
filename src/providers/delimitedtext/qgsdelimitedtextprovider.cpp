@@ -63,8 +63,8 @@ static const int SUBSET_ID_THRESHOLD_FACTOR = 10;
 QRegExp QgsDelimitedTextProvider::sWktPrefixRegexp( "^\\s*(?:\\d+\\s+|SRID\\=\\d+\\;)", Qt::CaseInsensitive );
 QRegExp QgsDelimitedTextProvider::sCrdDmsRegexp( "^\\s*(?:([-+nsew])\\s*)?(\\d{1,3})(?:[^0-9.]+([0-5]?\\d))?[^0-9.]+([0-5]?\\d(?:\\.\\d+)?)[^0-9.]*([-+nsew])?\\s*$", Qt::CaseInsensitive );
 
-QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
-  : QgsVectorDataProvider( uri )
+QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
 
   // Add supported types to enable creating expression fields in field calculator
@@ -158,9 +158,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri )
   }
 }
 
-QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
-{
-}
+QgsDelimitedTextProvider::~QgsDelimitedTextProvider() = default;
 
 QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
 {
@@ -1135,9 +1133,9 @@ QString  QgsDelimitedTextProvider::description() const
  * Class factory to return a pointer to a newly created
  * QgsDelimitedTextProvider object
  */
-QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri )
+QGISEXTERN QgsDelimitedTextProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsDelimitedTextProvider( *uri );
+  return new QgsDelimitedTextProvider( *uri, options );
 }
 
 /**

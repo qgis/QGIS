@@ -42,7 +42,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class AddModelFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model from File…')
+        self.name = QCoreApplication.translate('AddModelFromFileAction', 'Add Model to Toolbox…')
         self.group = self.tr('Tools')
 
     def getIcon(self):

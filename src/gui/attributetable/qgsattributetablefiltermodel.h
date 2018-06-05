@@ -115,7 +115,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
 
     /**
-     * Get a list of currently filtered feature ids
+     * Gets a list of currently filtered feature ids
      *
      * \returns A list of feature ids
      */
@@ -208,7 +208,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
     /**
-     * Get the index of the first column that contains an action widget.
+     * Gets the index of the first column that contains an action widget.
      * Returns -1 if none is defined.
      */
     int actionColumnIndex() const;
@@ -268,8 +268,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   private:
     QgsFeatureIds mFilteredFeatures;
     QgsMapCanvas *mCanvas = nullptr;
-    FilterMode mFilterMode;
-    bool mSelectedOnTop;
+    FilterMode mFilterMode = FilterMode::ShowAll;
+    bool mSelectedOnTop = false;
     QgsAttributeTableModel *mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;

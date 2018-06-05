@@ -14,7 +14,7 @@ typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
 class QgsAbstractPropertyCollection
 {
 %Docstring
- Abstract base class for QgsPropertyCollection like objects.
+Abstract base class for QgsPropertyCollection like objects.
 
 .. versionadded:: 3.0
 %End
@@ -69,7 +69,7 @@ Removes all properties from the collection.
 Returns true if the collection contains a property with the specified key.
 
 :param key: integer key for property. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 
 .. seealso:: :py:func:`property`
 %End
@@ -79,7 +79,7 @@ int and used for the key value.
 Returns a matching property from the collection, if one exists.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
 
@@ -91,10 +91,10 @@ int and used for the key value.
 Returns the calculated value of the property with the specified key from within the collection.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: expression context to evaluate property against
 :param defaultValue: default value to return if no matching, active property found or if the property value
-cannot be calculated
+                     cannot be calculated
 
 :return: calculated property value, or default value if property could not be evaluated
 
@@ -114,7 +114,7 @@ cannot be calculated
 Calculates the current value of the property with the specified key and interprets it as a string.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultString: default string to return if the property cannot be calculated as a string
 :param ok: if specified, will be set to true if conversion was successful
@@ -137,7 +137,7 @@ int and used for the key value.
 Calculates the current value of the property with the specified key and interprets it as a color.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultColor: default color to return if the property cannot be calculated as a color
 :param ok: if specified, will be set to true if conversion was successful
@@ -160,7 +160,7 @@ int and used for the key value.
 Calculates the current value of the property with the specified key and interprets it as a double.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default double to return if the property cannot be calculated as a double
 :param ok: if specified, will be set to true if conversion was successful
@@ -183,7 +183,7 @@ int and used for the key value.
 Calculates the current value of the property with the specified key and interprets it as an integer.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default integer to return if the property cannot be calculated as a integer
 :param ok: if specified, will be set to true if conversion was successful
@@ -206,7 +206,7 @@ int and used for the key value.
 Calculates the current value of the property with the specified key and interprets it as an boolean.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default boolean to return if the property cannot be calculated as a boolean
 :param ok: if specified, will be set to true if conversion was successful
@@ -243,7 +243,7 @@ Returns the set of any fields referenced by the active properties from the colle
 Returns true if the collection contains an active property with the specified key.
 
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 %End
 
     virtual bool hasActiveProperties() const = 0;
@@ -304,7 +304,7 @@ You can use QgsXmlUtils.readVariant to save it to an XML document.
 class QgsPropertyCollection : QgsAbstractPropertyCollection
 {
 %Docstring
- A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
+A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
 
 Properties within a collection are referenced by an integer key. This is done to avoid the cost of
 string creation and comparisons which would be required by a string key. The intended use case is that
@@ -348,7 +348,7 @@ Returns the number of properties contained within the collection.
 Returns a reference to a matching property from the collection, if one exists.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
 
@@ -378,10 +378,10 @@ int and used for the key value.
 Adds a property to the collection and takes ownership of it.
 
 :param key: integer key for property. Any existing property with the same key will be removed
-and replaced by this property. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            and replaced by this property. The intended use case is that a context specific enum is cast to
+            int and used for the key value.
 :param property: property to add. Ownership is transferred to the collection. Setting an invalid property
-will remove the property from the collection.
+                 will remove the property from the collection.
 %End
 
     void setProperty( int key, const QVariant &value );
@@ -389,8 +389,8 @@ will remove the property from the collection.
 Convenience method, creates a QgsStaticProperty and stores it within the collection.
 
 :param key: integer key for property. Any existing property with the same key will be deleted
-and replaced by this property. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            and replaced by this property. The intended use case is that a context specific enum is cast to
+            int and used for the key value.
 :param value: static value for property
 %End
 
@@ -401,7 +401,7 @@ int and used for the key value.
 class QgsPropertyCollectionStack : QgsAbstractPropertyCollection
 {
 %Docstring
- An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
+An ordered stack of QgsPropertyCollection containers, where collections added later to the stack will take
 priority over earlier collections.
 
 .. versionadded:: 3.0
@@ -489,7 +489,7 @@ within the collection are deactivated or if the collection only contains static 
 Returns true if the stack contains an active property with the specified key.
 
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 
 .. seealso:: :py:func:`hasActiveProperties`
 %End
@@ -500,7 +500,7 @@ int and used for the key value.
 Returns the highest priority property with a matching key from within the stack.
 
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
 
@@ -513,10 +513,10 @@ int and used for the key value.
 Returns the calculated value of the highest priority property with the specified key from within the stack.
 
 :param key: integer key for property to calculate. The intended use case is that a context specific enum is cast to
-int and used for the key value.
+            int and used for the key value.
 :param context: expression context to evaluate property against
 :param defaultValue: default value to return if no matching, active property found or if the property value
-cannot be calculated
+                     cannot be calculated
 
 :return: calculated property value, or default value if property could not be evaluated
 %End

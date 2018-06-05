@@ -201,11 +201,11 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRenderer
 
     int mFeaturesRendered = 0;
 
-    double uniformKernel( const double distance, const int bandwidth ) const;
-    double quarticKernel( const double distance, const int bandwidth ) const;
-    double triweightKernel( const double distance, const int bandwidth ) const;
-    double epanechnikovKernel( const double distance, const int bandwidth ) const;
-    double triangularKernel( const double distance, const int bandwidth ) const;
+    double uniformKernel( double distance, int bandwidth ) const;
+    double quarticKernel( double distance, int bandwidth ) const;
+    double triweightKernel( double distance, int bandwidth ) const;
+    double epanechnikovKernel( double distance, int bandwidth ) const;
+    double triangularKernel( double distance, int bandwidth ) const;
 
     QgsMultiPointXY convertToMultipoint( const QgsGeometry *geom );
     void initializeValues( QgsRenderContext &context );

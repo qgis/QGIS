@@ -130,7 +130,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
 
     /**
-     * return a pointer to the identify menu which will be used in layer selection mode
+     * Returns a pointer to the identify menu which will be used in layer selection mode
      * this menu can also be customized
      */
     QgsIdentifyMenu *identifyMenu() {return mIdentifyMenu;}
@@ -173,29 +173,29 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     /**
      * Desired units for distance display.
-     * \since QGIS 2.14
      * \see displayAreaUnits()
+     * \since QGIS 2.14
      */
     virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const;
 
     /**
      * Desired units for area display.
-     * \since QGIS 2.14
      * \see displayDistanceUnits()
+     * \since QGIS 2.14
      */
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const;
 
     /**
      * Format a distance into a suitable string for display to the user
-     * \since QGIS 2.14
      * \see formatArea()
+     * \since QGIS 2.14
      */
     QString formatDistance( double distance ) const;
 
     /**
      * Format a distance into a suitable string for display to the user
-     * \since QGIS 2.14
      * \see formatDistance()
+     * \since QGIS 2.14
      */
     QString formatArea( double area ) const;
 

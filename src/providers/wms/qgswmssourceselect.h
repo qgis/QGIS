@@ -86,7 +86,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Signaled when a layer selection is changed.
     void lstLayers_itemSelectionChanged();
 
-    //! Set status message to theMessage
+    //! Sets status message to theMessage
     void showStatusMessage( QString const &message );
 
     //! show whatever error is exposed by the QgsWmsProvider.
@@ -105,7 +105,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Connection name
     QString connName();
 
-    //! Set the server connection combo box to that stored in the config file.
+    //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
 
     //! Add a few example servers to the list.

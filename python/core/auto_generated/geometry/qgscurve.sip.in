@@ -13,7 +13,7 @@
 class QgsCurve: QgsAbstractGeometry
 {
 %Docstring
- Abstract base class for curved geometry type
+Abstract base class for curved geometry type
 
 .. versionadded:: 2.10
 %End
@@ -166,8 +166,6 @@ Returns the x-coordinate of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: x-coordinate of node, or 0.0 if index is out of bounds
-
-.. seealso:: :py:func:`setXAt`
 %End
 
     virtual double yAt( int index ) const = 0;
@@ -177,11 +175,9 @@ Returns the y-coordinate of the specified node in the line string.
 :param index: index of node, where the first node in the line is 0
 
 :return: y-coordinate of node, or 0.0 if index is out of bounds
-
-.. seealso:: :py:func:`setYAt`
 %End
 
-    QPolygonF asQPolygonF() const;
+    virtual QPolygonF asQPolygonF() const;
 %Docstring
 Returns a QPolygonF representing the points.
 %End

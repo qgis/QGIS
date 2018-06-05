@@ -149,22 +149,22 @@ Returns the height of the rectangle.
 %Docstring
 Returns the area of the rectangle.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`width`
 
 .. seealso:: :py:func:`height`
 
 .. seealso:: :py:func:`perimeter`
+
+.. versionadded:: 3.0
 %End
 
     double perimeter() const;
 %Docstring
 Returns the perimeter of the rectangle.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`area`
+
+.. versionadded:: 3.0
 %End
 
     QgsPointXY center() const;
@@ -196,20 +196,20 @@ Updates the rectangle to include the specified point.
 
     QgsRectangle buffered( double width ) const;
 %Docstring
-Get rectangle enlarged by buffer.
+Gets rectangle enlarged by buffer.
 
 .. note::
 
    In earlier QGIS releases this method was named buffer().
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`grow`
+
+.. versionadded:: 3.0
 %End
 
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 %Docstring
-Return the intersection with the given rectangle.
+Returns the intersection with the given rectangle.
 %End
 
     bool intersects( const QgsRectangle &rect ) const;
@@ -219,12 +219,12 @@ Returns true when rectangle intersects with other rectangle.
 
     bool contains( const QgsRectangle &rect ) const;
 %Docstring
-Return true when rectangle contains other rectangle.
+Returns true when rectangle contains other rectangle.
 %End
 
     bool contains( const QgsPointXY &p ) const;
 %Docstring
-Return true when rectangle contains a point.
+Returns true when rectangle contains a point.
 %End
 
     void combineExtentWith( const QgsRectangle &rect );
@@ -237,13 +237,13 @@ Expand the rectangle so that covers both the original rectangle and the given re
 Expand the rectangle so that covers both the original rectangle and the given point.
 %End
 
-    QgsRectangle operator-( const QgsVector v ) const;
+    QgsRectangle operator-( QgsVector v ) const;
 
-    QgsRectangle operator+( const QgsVector v ) const;
+    QgsRectangle operator+( QgsVector v ) const;
 
-    QgsRectangle &operator-=( const QgsVector v );
+    QgsRectangle &operator-=( QgsVector v );
 
-    QgsRectangle &operator+=( const QgsVector v );
+    QgsRectangle &operator+=( QgsVector v );
 
     bool isEmpty() const;
 %Docstring

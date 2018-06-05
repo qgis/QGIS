@@ -42,17 +42,17 @@ Undo a previous 'setHeader' call
 
     virtual QString header( const QString &key ) const = 0;
 %Docstring
-Return the header value
+Returns the header value
 %End
 
     virtual QMap<QString, QString> headers() const = 0;
 %Docstring
-Return the header value
+Returns the header value
 %End
 
     virtual bool headersSent() const = 0;
 %Docstring
-Return true if the headers have alredy been sent
+Returns true if the headers have alredy been sent
 %End
 
 
@@ -65,7 +65,7 @@ Set the http status code
 
     virtual int statusCode() const = 0;
 %Docstring
-Return the http status code
+Returns the http status code
 %End
 
     virtual void sendError( int code,  const QString &message ) = 0;
@@ -105,7 +105,7 @@ Write server exception
 
     virtual QIODevice *io() = 0;
 %Docstring
-Return the underlying QIODevice
+Returns the underlying QIODevice
 %End
 
     virtual void finish() = 0;
@@ -128,7 +128,7 @@ Reset all headers and content for this response
 
     virtual QByteArray data() const = 0;
 %Docstring
-Get the data written so far
+Gets the data written so far
 
 This is implementation dependent: some implementations may not
 give access to the underlying and return an empty array.

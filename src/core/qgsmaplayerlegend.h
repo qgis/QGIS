@@ -62,7 +62,7 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
     /**
-     * Return list of legend nodes to be used for a particular layer tree layer node.
+     * Returns list of legend nodes to be used for a particular layer tree layer node.
      * Ownership is transferred to the caller.
      */
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 SIP_FACTORY;
@@ -162,8 +162,8 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
     void setTextOnSymbolContent( const QHash<QString, QString> &content ) { mTextOnSymbolContent = content; }
 
     QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
-    virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
-    virtual QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+    QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;

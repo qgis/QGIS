@@ -15,7 +15,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 class QgsColorScheme
 {
 %Docstring
- Abstract base class for color schemes
+Abstract base class for color schemes
 
 A color scheme for display in QgsColorButton. Color schemes return lists
 of colors with an optional associated color name. The colors returned
@@ -80,11 +80,11 @@ Gets a list of colors from the scheme. The colors can optionally
 be generated using the supplied context and base color.
 
 :param context: string specifying an optional context for the returned
-colors. For instance, a "recent colors" scheme may filter returned colors
-by context so that colors used only in a "composer" context are returned.
+                colors. For instance, a "recent colors" scheme may filter returned colors
+                by context so that colors used only in a "composer" context are returned.
 :param baseColor: base color for the scheme's colors. Some color schemes
-may take advantage of this to filter or modify their returned colors
-to colors related to the base color.
+                  may take advantage of this to filter or modify their returned colors
+                  to colors related to the base color.
 
 :return: a list of QPairs of color and color name
 %End
@@ -125,7 +125,7 @@ QFlags<QgsColorScheme::SchemeFlag> operator|(QgsColorScheme::SchemeFlag f1, QFla
 class QgsGplColorScheme : QgsColorScheme
 {
 %Docstring
- A color scheme which stores its colors in a gpl palette file.
+A color scheme which stores its colors in a gpl palette file.
 
 .. versionadded:: 2.5
 %End
@@ -160,7 +160,7 @@ Returns the file path for the associated gpl palette file
 class QgsUserColorScheme : QgsGplColorScheme
 {
 %Docstring
- A color scheme which stores its colors in a gpl palette file within the "palettes"
+A color scheme which stores its colors in a gpl palette file within the "palettes"
 subfolder off the user's QGIS settings folder.
 
 .. versionadded:: 2.5
@@ -225,7 +225,7 @@ Sets whether a this scheme should be shown in color button menus.
 class QgsRecentColorScheme : QgsColorScheme
 {
 %Docstring
- A color scheme which contains the most recently used colors.
+A color scheme which contains the most recently used colors.
 
 .. versionadded:: 2.5
 %End
@@ -256,25 +256,25 @@ Adds a color to the list of recent colors.
 
 :param color: color to add
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`lastUsedColor`
+
+.. versionadded:: 2.14
 %End
 
     static QColor lastUsedColor();
 %Docstring
 Returns the most recently used color.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`addRecentColor`
+
+.. versionadded:: 3.0
 %End
 };
 
 class QgsCustomColorScheme : QgsColorScheme
 {
 %Docstring
- A color scheme which contains custom colors set through QGIS app options dialog.
+A color scheme which contains custom colors set through QGIS app options dialog.
 
 .. versionadded:: 2.5
 %End
@@ -308,7 +308,7 @@ Constructor for QgsCustomColorScheme.
 class QgsProjectColorScheme : QgsColorScheme
 {
 %Docstring
- A color scheme which contains project specific colors set through project properties dialog.
+A color scheme which contains project specific colors set through project properties dialog.
 
 .. versionadded:: 2.5
 %End

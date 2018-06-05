@@ -221,7 +221,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      *
      * \since QGIS 3.0.1
      */
-    virtual bool event( QEvent *event ) override;
+    bool event( QEvent *event ) override;
 
   public slots:
 

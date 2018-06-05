@@ -82,12 +82,24 @@ class CORE_EXPORT QgsLocatorResult
      */
     double score = 0.5;
 
+    /**
+      * Group the results by categories
+      * If left as empty string, this means that results are all shown without being grouped.
+      * If a group is given, the results will be grouped by \a group under a header.
+      * \note This should be translated.
+      * \since 3.2
+      */
+    QString group = QString();
+
 };
 
 /**
  * \class QgsLocatorFilter
  * \ingroup core
  * Abstract base class for filters which collect locator results.
+ *
+ * \note If the configuration of the filter is changed outside of the main application settings,
+ * one needs to invalidate current results of the locator widget: \see QgisInterface::invalidateLocatorResults
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLocatorFilter : public QObject
@@ -247,7 +259,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     /**
      * Should return true if the filter has a configuration widget.
-     * \see createConfigWidget()
+     * \see openConfigWidget()
      */
     virtual bool hasConfigWidget() const;
 

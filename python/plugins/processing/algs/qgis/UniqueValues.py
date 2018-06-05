@@ -30,7 +30,8 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsCoordinateReferenceSystem,
+from qgis.core import (QgsApplication,
+                       QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
@@ -61,7 +62,10 @@ class UniqueValues(QgisAlgorithm):
     OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'unique.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmUniqueValues.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmUniqueValues.svg")
 
     def group(self):
         return self.tr('Vector analysis')

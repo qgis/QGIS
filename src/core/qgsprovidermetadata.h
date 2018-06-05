@@ -22,10 +22,9 @@
 
 #include <QString>
 #include "qgis.h"
+#include "qgsdataprovider.h"
 #include "qgis_core.h"
 #include <functional>
-
-class QgsDataProvider;
 
 /**
  * \ingroup core
@@ -52,7 +51,7 @@ class CORE_EXPORT QgsProviderMetadata
      * Typedef for data provider creation function.
      * \since QGIS 3.0
      */
-    SIP_SKIP typedef std::function < QgsDataProvider*( const QString & ) > CreateDataProviderFunction;
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString &, const QgsDataProvider::ProviderOptions & ) > CreateDataProviderFunction;
 
     QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
 
@@ -60,9 +59,50 @@ class CORE_EXPORT QgsProviderMetadata
      * Metadata for provider with direct provider creation function pointer, where
      * no library is involved.
      * \since QGIS 3.0
-     * \note not available in Python bindings
      */
-    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
+#ifndef SIP_RUN
+    QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
+#else
+    QgsProviderMetadata( const QString &key, const QString &description, SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+
+    // Make sure the callable doesn't get garbage collected, this is needed because refcount for a2 is 0
+    // and the creation function pointer is passed to the metadata and it needs to be kept in memory.
+    Py_INCREF( a2 );
+
+    Py_BEGIN_ALLOW_THREADS
+
+    sipCpp = new QgsProviderMetadata( *a0, *a1, [a2]( const QString &dataSource, const QgsDataProvider::ProviderOptions &providerOptions ) -> QgsDataProvider*
+    {
+      QgsDataProvider *provider;
+      provider = nullptr;
+      PyObject *sipResObj;
+      SIP_BLOCK_THREADS
+
+      sipResObj = sipCallMethod( nullptr, a2, "DD", new QString( dataSource ), sipType_QString, nullptr, new QgsDataProvider::ProviderOptions( providerOptions ), sipType_QgsDataProvider_ProviderOptions, NULL );
+
+      if ( sipResObj )
+      {
+        if ( sipCanConvertToType( sipResObj, sipType_QgsDataProvider, SIP_NOT_NONE ) )
+        {
+          int state0;
+          int sipIsErr = 0;
+          provider = reinterpret_cast<QgsDataProvider *>( sipConvertToType( sipResObj, sipType_QgsDataProvider, nullptr, SIP_NOT_NONE, &state0, &sipIsErr ) );
+          if ( sipIsErr != 0 )
+          {
+            sipReleaseType( provider, sipType_QgsDataProvider, state0 );
+            provider = nullptr;
+          }
+        }
+      }
+      SIP_UNBLOCK_THREADS
+      return provider;
+    } );
+
+    Py_END_ALLOW_THREADS
+
+    % End
+#endif
 
     /**
      * This returns the unique key associated with the provider
@@ -88,8 +128,8 @@ class CORE_EXPORT QgsProviderMetadata
     /**
      * Returns a pointer to the direct provider creation function, if supported
      * by the provider.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     SIP_SKIP CreateDataProviderFunction createFunction() const;
 

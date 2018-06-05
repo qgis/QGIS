@@ -27,7 +27,7 @@ Constructor for QgsRasterIdentifyResult.
 
     QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
 %Docstring
- Constructor. Creates valid result.
+Constructor. Creates valid result.
 
 :param format: the result format
 :param results: the results
@@ -35,7 +35,7 @@ Constructor for QgsRasterIdentifyResult.
 
     QgsRasterIdentifyResult( const QgsError &error );
 %Docstring
- Constructor. Creates invalid result with error.
+Constructor. Creates invalid result with error.
 
 :param error: the error
 %End
@@ -44,17 +44,17 @@ Constructor for QgsRasterIdentifyResult.
 
     bool isValid() const;
 %Docstring
- Returns true if valid
+Returns true if valid
 %End
 
     QgsRaster::IdentifyFormat format() const;
 %Docstring
- Get results format
+Returns the results format.
 %End
 
     QMap<int, QVariant> results() const;
 %Docstring
- Get results. Results are different for each format:
+Returns the identify results. Results are different for each format:
 QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
 QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
 QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
@@ -62,22 +62,22 @@ QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
 
     void setParams( const QMap<QString, QVariant> &params );
 %Docstring
-Set map of optional parameters
+Sets map of optional parameters
 %End
 
     QMap<QString, QVariant> params() const;
 %Docstring
-Get map of optional parameters
+Gets map of optional parameters
 %End
 
     QgsError error() const;
 %Docstring
- Get error
+Returns the last error
 %End
 
     void setError( const QgsError &error );
 %Docstring
- Set error
+Sets the last error
 %End
 
 };

@@ -12,7 +12,7 @@
 class QgsColorEffect : QgsPaintEffect
 {
 %Docstring
- A paint effect which alters the colors (e.g., brightness, contrast) in a
+A paint effect which alters the colors (e.g., brightness, contrast) in a
 source picture.
 
 .. versionadded:: 2.9
@@ -47,8 +47,8 @@ Creates a new QgsColorEffect effect from a properties string map.
 Sets the brightness modification for the effect.
 
 :param brightness: Valid values are between -255 and 255, where 0 represents
-no change, negative values indicate darkening and positive values indicate
-lightening
+                   no change, negative values indicate darkening and positive values indicate
+                   lightening
 
 .. seealso:: :py:func:`setBrightness`
 %End
@@ -58,8 +58,8 @@ lightening
 Returns the brightness modification for the effect.
 
 :return: brightness value. Values are between -255 and 255, where 0 represents
-no change, negative values indicate darkening and positive values indicate
-lightening
+         no change, negative values indicate darkening and positive values indicate
+         lightening
 
 .. seealso:: :py:func:`setBrightness`
 %End
@@ -69,8 +69,8 @@ lightening
 Sets the contrast modification for the effect.
 
 :param contrast: Valid values are between -100 and 100, where 0 represents
-no change, negative values indicate less contrast and positive values indicate
-greater contrast
+                 no change, negative values indicate less contrast and positive values indicate
+                 greater contrast
 
 .. seealso:: :py:func:`setContrast`
 %End
@@ -80,8 +80,8 @@ greater contrast
 Returns the contrast modification for the effect.
 
 :return: contrast value. Values are between -100 and 100, where 0 represents
-no change, negative values indicate less contrast and positive values indicate
-greater contrast
+         no change, negative values indicate less contrast and positive values indicate
+         greater contrast
 
 .. seealso:: :py:func:`setContrast`
 %End
@@ -91,8 +91,8 @@ greater contrast
 Sets the saturation modification for the effect.
 
 :param saturation: Valid values are between 0 and 2.0, where 1.0 represents
-no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
-greater saturation
+                   no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
+                   greater saturation
 
 .. seealso:: :py:func:`saturation`
 %End
@@ -102,8 +102,8 @@ greater saturation
 Returns the saturation modification for the effect.
 
 :return: saturation value. Values are between 0 and 2.0, where 1.0 represents
-no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
-greater saturation
+         no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
+         greater saturation
 
 .. seealso:: :py:func:`setSaturation`
 %End
@@ -201,7 +201,7 @@ setColorizeOn() is set to true.
 
 :return: colorization strength, between 0 and 100
 
-.. seealso:: :py:func:`setColorizeStrengths`
+.. seealso:: :py:func:`setColorizeStrength`
 
 .. seealso:: :py:func:`colorizeOn`
 
@@ -213,7 +213,7 @@ setColorizeOn() is set to true.
 Sets the ``opacity`` for the effect.
 
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque
+                and 1 is fully opaque
 
 .. seealso:: :py:func:`opacity`
 %End
@@ -223,7 +223,7 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-and 1 is fully opaque.
+         and 1 is fully opaque.
 
 .. seealso:: :py:func:`setOpacity`
 %End
@@ -233,7 +233,7 @@ and 1 is fully opaque.
 Sets the blend mode for the effect
 
 :param mode: blend mode used for drawing the effect on to a destination
-paint device
+             paint device
 
 .. seealso:: :py:func:`blendMode`
 %End
@@ -243,7 +243,7 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-paint device
+         paint device
 
 .. seealso:: :py:func:`setBlendMode`
 %End

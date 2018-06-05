@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLineSegment2D
 {
 %Docstring

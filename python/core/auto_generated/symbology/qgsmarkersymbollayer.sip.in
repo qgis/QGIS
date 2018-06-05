@@ -13,7 +13,7 @@
 class QgsSimpleMarkerSymbolLayerBase : QgsMarkerSymbolLayer
 {
 %Docstring
- Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
+Abstract base class for simple marker symbol layers. Handles creation of the symbol shapes but
 leaves the actual drawing of the symbols to subclasses.
 
 .. versionadded:: 2.16
@@ -132,19 +132,11 @@ Encodes a shape to its string representation.
     bool prepareMarkerShape( Shape shape );
 %Docstring
 Prepares the layer for drawing the specified shape (QPolygonF version)
-
-.. note::
-
-   not available in Python bindings
 %End
 
     bool prepareMarkerPath( Shape symbol );
 %Docstring
 Prepares the layer for drawing the specified shape (QPainterPath version)
-
-.. note::
-
-   not available in Python bindings
 %End
 
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
@@ -155,10 +147,6 @@ Creates a polygon representing the specified shape.
 :param polygon: destination polygon for shape
 
 :return: true if shape was successfully stored in polygon
-
-.. note::
-
-   not available in Python bindings
 %End
 
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
@@ -169,10 +157,6 @@ Calculates the desired size of the marker, considering data defined size overrid
 :param hasDataDefinedSize: will be set to true if marker uses data defined sizes
 
 :return: marker size, in original size units
-
-.. note::
-
-   not available in Python bindings
 %End
 
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
@@ -184,10 +168,6 @@ Calculates the marker offset and rotation.
 :param hasDataDefinedRotation: will be set to true if marker has data defined rotation
 :param offset: will be set to calculated marker offset (in painter units)
 :param angle: will be set to calculated marker angle
-
-.. note::
-
-   not available in Python bindings
 %End
 
 
@@ -201,7 +181,7 @@ Derived classes must implement draw() to handle drawing the generated shape onto
 :param context: symbol render context
 :param shape: shape to draw
 :param polygon: polygon representing transformed marker shape. May be empty, in which case the shape will be specified
-in the path argument.
+                in the path argument.
 :param path: transformed painter path representing shape to draw
 %End
 };
@@ -209,7 +189,7 @@ in the path argument.
 class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
+Simple marker symbol layer, consisting of a rendered shape with solid fill color and an stroke.
 %End
 
 %TypeHeaderCode
@@ -318,13 +298,13 @@ Sets the marker's stroke color.
 %Docstring
 Returns the marker's stroke style (e.g., solid, dashed, etc)
 
-.. versionadded:: 2.4
-
 .. seealso:: :py:func:`setStrokeStyle`
 
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`penJoinStyle`
+
+.. versionadded:: 2.4
 %End
 
     void setStrokeStyle( Qt::PenStyle strokeStyle );
@@ -333,26 +313,26 @@ Sets the marker's stroke style (e.g., solid, dashed, etc)
 
 :param strokeStyle: style
 
-.. versionadded:: 2.4
-
 .. seealso:: :py:func:`strokeStyle`
 
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setPenJoinStyle`
+
+.. versionadded:: 2.4
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
 Returns the marker's stroke join style (e.g., miter, bevel, etc).
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`setPenJoinStyle`
 
 .. seealso:: :py:func:`strokeColor`
 
 .. seealso:: :py:func:`strokeStyle`
+
+.. versionadded:: 2.16
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -361,13 +341,13 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 
 :param style: join style
 
-.. versionadded:: 2.16
-
 .. seealso:: :py:func:`penJoinStyle`
 
 .. seealso:: :py:func:`setStrokeColor`
 
 .. seealso:: :py:func:`setStrokeStyle`
+
+.. versionadded:: 2.16
 %End
 
     double strokeWidth() const;
@@ -474,7 +454,7 @@ Prepares cache image
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
+Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
 
 .. versionadded:: 2.16
@@ -708,10 +688,6 @@ Calculates the marker aspect ratio between width and height.
 :param context: symbol render context
 :param scaledSize: size of symbol to render
 :param hasDataDefinedAspectRatio: will be set to true if marker has data defined aspectRatio
-
-.. note::
-
-   not available in Python bindings
 %End
 
 
@@ -775,7 +751,7 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
     double strokeWidth() const;
 %Docstring
-Get stroke width.
+Gets stroke width.
 
 .. versionadded:: 2.16
 %End
@@ -789,7 +765,7 @@ Set stroke width.
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
-Get stroke width unit.
+Gets stroke width unit.
 
 .. versionadded:: 2.16
 %End
@@ -803,7 +779,7 @@ Set stroke width unit.
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
-Get stroke width map unit scale.
+Gets stroke width map unit scale.
 
 .. versionadded:: 2.16
 %End
@@ -817,7 +793,7 @@ Set stroke width map unit scale.
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
-Get stroke join style.
+Gets stroke join style.
 
 .. versionadded:: 2.16
 %End

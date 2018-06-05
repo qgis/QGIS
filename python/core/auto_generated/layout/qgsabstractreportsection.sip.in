@@ -13,7 +13,7 @@
 class QgsReportSectionContext
 {
 %Docstring
- Current context for a report section.
+Current context for a report section.
 
 .. warning::
 
@@ -38,7 +38,7 @@ class QgsReportSectionContext
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
 {
 %Docstring
- An abstract base class for QgsReport subsections.
+An abstract base class for QgsReport subsections.
 
 .. warning::
 
@@ -245,7 +245,7 @@ is transferred to the report section.
 
     int childCount() const;
 %Docstring
-Return the number of child sections for this report section. The child
+Returns the number of child sections for this report section. The child
 sections form the body of the report section.
 
 .. seealso:: :py:func:`children`
@@ -258,7 +258,7 @@ Returns the row number of the section within it's parent section.
 
     QList< QgsAbstractReportSection * > childSections() const;
 %Docstring
-Return all child sections for this report section. The child
+Returns all child sections for this report section. The child
 sections form the body of the report section.
 
 .. seealso:: :py:func:`childCount`

@@ -28,7 +28,7 @@ Uses a QgsFeatureListModel as source model.
 %Docstring
 Creates a feature list view
 
-:param parent:   owner
+:param parent: owner
 %End
 
     QgsVectorLayerCache *layerCache();
@@ -42,12 +42,12 @@ Returns the layer cache
 %Docstring
 Set the QgsFeatureListModel which is used to retrieve information
 
-:param featureListModel:  The model to use
+:param featureListModel: The model to use
 %End
 
     QgsFeatureListModel *featureListModel();
 %Docstring
-Get the featureListModel used by this view
+Gets the featureListModel used by this view
 
 :return: The model in use
 %End
@@ -57,7 +57,7 @@ Get the featureListModel used by this view
 The display expression is an expression used to render the fields into a single string
 which is displaied.
 
-:param displayExpression:  The expression used to render the feature
+:param displayExpression: The expression used to render the feature
 
 .. seealso:: :py:class:`QgsExpression`
 %End
@@ -80,7 +80,7 @@ Returns a detailed message about errors while parsing a :py:class:`QgsExpression
 
     QgsFeatureIds currentEditSelection();
 %Docstring
-Get the currentEditSelection
+Gets the currentEditSelection
 
 :return: A list of edited feature ids
 %End
@@ -94,7 +94,7 @@ Sets if the currently shown form has received any edit events so far.
 
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 %Docstring
- setFeatureSelectionManager
+setFeatureSelectionManager
 
 :param featureSelectionManager: We will take ownership
 %End
@@ -142,7 +142,7 @@ Is emitted, when the context menu is created to add the specific actions to it
 %Docstring
 Set the feature(s) to be edited
 
-:param fids:  A list of features to be edited
+:param fids: A list of features to be edited
 %End
 
     void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );

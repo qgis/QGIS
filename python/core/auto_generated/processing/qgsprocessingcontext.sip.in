@@ -144,9 +144,9 @@ Default constructor
 %Docstring
 Layer post-processor. May be None if no post-processing is required.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`setPostProcessor`
+
+.. versionadded:: 3.2
 %End
 
         void setPostProcessor( QgsProcessingLayerPostProcessorInterface *processor /Transfer/ );
@@ -155,9 +155,9 @@ Sets the layer post-processor. May be None if no post-processing is required.
 
 Ownership of ``processor`` is transferred.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`postProcessor`
+
+.. versionadded:: 3.2
 %End
 
         QgsProject *project;
@@ -182,8 +182,6 @@ Returns a map of layers (by ID or datasource) to LayerDetails, to load into the 
 Returns true if the given ``layer`` (by ID or datasource) will be loaded into the current project
 upon completion of the algorithm or model.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`layersToLoadOnCompletion`
 
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
@@ -191,6 +189,8 @@ upon completion of the algorithm or model.
 .. seealso:: :py:func:`addLayerToLoadOnCompletion`
 
 .. seealso:: :py:func:`layerToLoadOnCompletionDetails`
+
+.. versionadded:: 3.2
 %End
 
     void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers );
@@ -230,8 +230,6 @@ algorithm or model.
    First check willLoadLayerOnCompletion(), or calling this method will incorrectly
    add ``layer`` as a layer to load on completion.
 
-.. versionadded:: 3.2
-
 .. seealso:: :py:func:`willLoadLayerOnCompletion`
 
 .. seealso:: :py:func:`addLayerToLoadOnCompletion`
@@ -239,6 +237,8 @@ algorithm or model.
 .. seealso:: :py:func:`setLayersToLoadOnCompletion`
 
 .. seealso:: :py:func:`layersToLoadOnCompletion`
+
+.. versionadded:: 3.2
 %End
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
@@ -263,9 +263,9 @@ Sets a callback function to use when encountering an invalid geometry and
 invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`invalidGeometryCallback`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -287,9 +287,9 @@ Sets a callback function to use when encountering a transform error when iterati
 features. This function will be
 called using the feature which encountered the transform error as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformErrorCallback`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS

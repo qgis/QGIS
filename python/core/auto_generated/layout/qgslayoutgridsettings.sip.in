@@ -11,7 +11,7 @@
 class QgsLayoutGridSettings : QgsLayoutSerializableObject
 {
 %Docstring
- Contains settings relating to the appearance, spacing and offset for layout grids.
+Contains settings relating to the appearance, spacing and offset for layout grids.
 
 .. versionadded:: 3.0
 %End
@@ -55,7 +55,7 @@ Returns the page/snap grid resolution.
 .. seealso:: :py:func:`offset`
 %End
 
-    void setOffset( const QgsLayoutPoint offset );
+    void setOffset( QgsLayoutPoint offset );
 %Docstring
 Sets the ``offset`` of the page/snap grid.
 

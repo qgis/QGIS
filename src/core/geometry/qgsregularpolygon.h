@@ -65,7 +65,7 @@ class CORE_EXPORT QgsRegularPolygon
      * \param numberSides Number of sides of the regular polygon.
      * \param circle Option to create the polygon. \see ConstructionOption
      */
-    QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, double radius, double azimuth, unsigned int numberSides, ConstructionOption circle );
 
     /**
      * Constructs a regular polygon by \a center and another point.
@@ -74,7 +74,7 @@ class CORE_EXPORT QgsRegularPolygon
      * \param numberSides Number of sides of the regular polygon.
      * \param circle Option to create the polygon inscribed in circle (the radius is the distance between the center and vertices) or circumscribed about circle (the radius is the distance from the center to the midpoints of the sides).
      */
-    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
+    QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, unsigned int numberSides, ConstructionOption circle );
 
     /**
      * Constructs a regular polygon by two points of the first side.
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsRegularPolygon
      * \param pt2 The second vertex of the first side.
      * \param numberSides Number of sides of the regular polygon.
      */
-    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numberSides );
+    QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, unsigned int numberSides );
 
     bool operator ==( const QgsRegularPolygon &rp ) const;
     bool operator !=( const QgsRegularPolygon &rp ) const;
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsRegularPolygon
      * Center is unchanged. The first vertex is reprojected from the center with the new radius.
      * \see radius()
      */
-    void setRadius( const double radius );
+    void setRadius( double radius );
 
     /**
      * Sets the first vertex.
@@ -149,7 +149,7 @@ class CORE_EXPORT QgsRegularPolygon
      * If numberSides < 3, the number of sides is unchanged.
      * \see numberSides()
      */
-    void setNumberSides( const unsigned int numberSides );
+    void setNumberSides( unsigned int numberSides );
 
     /**
      * Returns a list including the vertices of the regular polygon.
@@ -231,17 +231,17 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Convenient method to convert an apothem to a radius.
      */
-    double apothemToRadius( const double apothem, const unsigned int numberSides ) const;
+    double apothemToRadius( double apothem, unsigned int numberSides ) const;
 
     /**
      * Convenient method for interiorAngle used by constructors.
      */
-    double interiorAngle( const unsigned int nbSides ) const;
+    double interiorAngle( unsigned int nbSides ) const;
 
     /**
      * Convenient method for centralAngle used by constructors.
      */
-    double centralAngle( const unsigned int nbSides ) const;
+    double centralAngle( unsigned int nbSides ) const;
 
 };
 

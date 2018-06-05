@@ -1631,6 +1631,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
   }
   qgisNode.appendChild( layerOrderNode );
 
+  mLabelingEngineSettings->writeSettingsToProject( this );
 
   // now add the optional extra properties
 
@@ -1645,8 +1646,6 @@ bool QgsProject::writeProjectFile( const QString &filename )
   }
 
   mMapThemeCollection->writeXml( *doc );
-
-  mLabelingEngineSettings->writeSettingsToProject( this );
 
   mTransformContext.writeXml( qgisNode, context );
 

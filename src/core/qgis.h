@@ -175,8 +175,8 @@ class CORE_EXPORT Qgis
  * RAII signal blocking class. Used for temporarily blocking signals from a QObject
  * for the lifetime of QgsSignalBlocker object.
  * \see whileBlocking()
- * \since QGIS 2.16
  * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude=rule-of-three
@@ -216,9 +216,9 @@ template<class Object> class QgsSignalBlocker SIP_SKIP SIP_SKIP // clazy:exclude
  *
  * No signals will be emitted when calling these methods.
  *
- * \since QGIS 2.16
  * \see QgsSignalBlocker
  * \note not available in Python bindings
+ * \since QGIS 2.16
  */
 // based on Boojum's code from http://stackoverflow.com/questions/3556687/prevent-firing-signals-in-qt
 template<class Object> inline QgsSignalBlocker<Object> whileBlocking( Object *object ) SIP_SKIP SIP_SKIP
@@ -316,8 +316,8 @@ namespace qgis
    *
    * To be used as a proxy for std::as_const until we target c++17 minimum.
    *
-   * \since QGIS 3.0
    * \note not available in Python bindings
+   * \since QGIS 3.0
    */
   template <typename T> struct QgsAddConst { typedef const T Type; };
 
@@ -393,8 +393,8 @@ namespace qgis
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
  * \returns string converted to double if possible
- * \since QGIS 2.9
  * \see permissiveToInt
+ * \since QGIS 2.9
  */
 CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
 
@@ -404,8 +404,8 @@ CORE_EXPORT double qgsPermissiveToDouble( QString string, bool &ok );
  * \param string string to convert
  * \param ok will be set to true if conversion was successful
  * \returns string converted to int if possible
- * \since QGIS 2.9
  * \see permissiveToDouble
+ * \since QGIS 2.9
  */
 CORE_EXPORT int qgsPermissiveToInt( QString string, bool &ok );
 

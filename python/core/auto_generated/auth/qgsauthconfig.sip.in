@@ -14,7 +14,7 @@
 class QgsAuthMethodConfig
 {
 %Docstring
- Configuration storage class for authentication method configurations
+Configuration storage class for authentication method configurations
 %End
 
 %TypeHeaderCode
@@ -36,7 +36,7 @@ Construct a configuration for an authentication method
 
     const QString id() const;
 %Docstring
-Get 'authcfg' 7-character alphanumeric ID of the config
+Gets 'authcfg' 7-character alphanumeric ID of the config
 
 .. note::
 
@@ -44,16 +44,16 @@ Get 'authcfg' 7-character alphanumeric ID of the config
 %End
     void setId( const QString &id );
 %Docstring
-Set auth config ID
+Sets auth config ID
 %End
 
     const QString name() const;
 %Docstring
-Get name of configuration
+Gets name of configuration
 %End
     void setName( const QString &name );
 %Docstring
-Set name of configuration
+Sets name of configuration
 %End
 
     const QString uri() const;
@@ -70,11 +70,11 @@ Textual key of the associated authentication method
 
     int version() const;
 %Docstring
-Get version of the configuration
+Gets version of the configuration
 %End
     void setVersion( int version );
 %Docstring
-Set version of the configuration
+Sets version of the configuration
 %End
 
     bool isValid( bool validateid = false ) const;
@@ -102,7 +102,7 @@ Load existing extended configuration
 
     QgsStringMap configMap() const;
 %Docstring
-Get extended configuration, mapped to key/value pairs of QStrings
+Gets extended configuration, mapped to key/value pairs of QStrings
 %End
 
     void setConfigMap( const QgsStringMap &map );
@@ -147,7 +147,7 @@ Remove a config from map
 
     QString config( const QString &key, const QString &defaultvalue = QString() ) const;
 %Docstring
-Return a config's value
+Returns a config's value
 
 :param key: Config key
 :param defaultvalue: Default value, if key not found
@@ -155,7 +155,7 @@ Return a config's value
 
     QStringList configList( const QString &key ) const;
 %Docstring
-Return a config's list of values
+Returns a config's list of values
 
 :param key:
 %End
@@ -195,7 +195,7 @@ typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 class QgsPkiBundle
 {
 %Docstring
- Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
+Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
 
 .. note::
 
@@ -261,7 +261,7 @@ Client certificate object
 %End
     void setClientCert( const QSslCertificate &cert );
 %Docstring
-Set client certificate object
+Sets client certificate object
 %End
 
     const QSslKey clientKey() const;
@@ -270,7 +270,7 @@ Private key object
 %End
     void setClientKey( const QSslKey &certkey );
 %Docstring
-Set private key object
+Sets private key object
 %End
 
     const QList<QSslCertificate> caChain() const;
@@ -279,7 +279,7 @@ Chain of Certificate Authorities for client certificate
 %End
     void setCaChain( const QList<QSslCertificate> &cachain );
 %Docstring
-Set chain of Certificate Authorities for client certificate
+Sets chain of Certificate Authorities for client certificate
 %End
 
 };
@@ -288,7 +288,7 @@ Set chain of Certificate Authorities for client certificate
 class QgsPkiConfigBundle
 {
 %Docstring
- Storage set for constructed SSL certificate, key, associated with an authentication config
+Storage set for constructed SSL certificate, key, associated with an authentication config
 %End
 
 %TypeHeaderCode
@@ -321,7 +321,7 @@ Authentication method configuration
 
     void setConfig( const QgsAuthMethodConfig &config );
 %Docstring
-Set authentication method configuration
+Sets authentication method configuration
 %End
 
     const QSslCertificate clientCert() const;
@@ -331,7 +331,7 @@ Client certificate object
 
     void setClientCert( const QSslCertificate &cert );
 %Docstring
-Set client certificate object
+Sets client certificate object
 %End
 
     const QSslKey clientCertKey() const;
@@ -341,19 +341,19 @@ Private key object
 
     void setClientCertKey( const QSslKey &certkey );
 %Docstring
-Set private key object
+Sets private key object
 %End
 
     QList<QSslCertificate> caChain() const;
 %Docstring
- caChain return the CA chain
+caChain return the CA chain
 
 :return: list of CA certificates
 %End
 
     void setCaChain( const QList<QSslCertificate> &caChain );
 %Docstring
- setCaChain set the CA chain
+setCaChain set the CA chain
 
 :param caChain:
 %End
@@ -414,7 +414,7 @@ Set private key object
 class QgsAuthConfigSslServer
 {
 %Docstring
- Configuration container for SSL server connection exceptions or overrides
+Configuration container for SSL server connection exceptions or overrides
 %End
 
 %TypeHeaderCode
@@ -432,7 +432,7 @@ Server certificate object
 %End
     void setSslCertificate( const QSslCertificate &cert );
 %Docstring
-Set server certificate object
+Sets server certificate object
 %End
 
     const QString sslHostPort() const;
@@ -441,7 +441,7 @@ Server host:port string
 %End
     void setSslHostPort( const QString &hostport );
 %Docstring
-Set server host:port string
+Sets server host:port string
 %End
 
     QSsl::SslProtocol sslProtocol() const;
@@ -450,7 +450,7 @@ SSL server protocol to use in connections
 %End
     void setSslProtocol( QSsl::SslProtocol protocol );
 %Docstring
-Set SSL server protocol to use in connections
+Sets SSL server protocol to use in connections
 %End
 
     const QList<QSslError> sslIgnoredErrors() const;
@@ -463,7 +463,7 @@ SSL server errors (as enum list) to ignore in connections
 %End
     void setSslIgnoredErrorEnums( const QList<QSslError::SslError> &errors );
 %Docstring
-Set SSL server errors (as enum list) to ignore in connections
+Sets SSL server errors (as enum list) to ignore in connections
 %End
 
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const;
@@ -472,7 +472,7 @@ SSL client's peer verify mode to use in connections
 %End
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode );
 %Docstring
-Set SSL client's peer verify mode to use in connections
+Sets SSL client's peer verify mode to use in connections
 %End
 
     int sslPeerVerifyDepth() const;
@@ -499,7 +499,7 @@ Version of the configuration (used for future upgrading)
 %End
     void setVersion( int version );
 %Docstring
-Set version of the configuration (used for future upgrading)
+Sets version of the configuration (used for future upgrading)
 %End
 
     int qtVersion() const;
@@ -508,7 +508,7 @@ Qt version when the configuration was made (SSL protocols may differ)
 %End
     void setQtVersion( int version );
 %Docstring
-Set Qt version when the configuration was made (SSL protocols may differ)
+Sets Qt version when the configuration was made (SSL protocols may differ)
 %End
 
     const QString configString() const;

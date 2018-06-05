@@ -142,9 +142,9 @@ numbers of digits between thousand separators
 
 :return: string converted to double if possible
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`permissiveToInt`
+
+.. versionadded:: 2.9
 %End
 
 int qgsPermissiveToInt( QString string, bool &ok );
@@ -157,9 +157,9 @@ numbers of digits between thousand separators
 
 :return: string converted to int if possible
 
-.. versionadded:: 2.9
-
 .. seealso:: :py:func:`permissiveToDouble`
+
+.. versionadded:: 2.9
 %End
 
 bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );

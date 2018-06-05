@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -53,8 +54,10 @@ from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.dirname(__file__)
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
 
 
 class FieldCalculatorFeedback(QgsProcessingFeedback):

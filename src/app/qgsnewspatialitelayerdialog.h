@@ -37,7 +37,6 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
 
   public:
     QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
-    ~QgsNewSpatialiteLayerDialog() override;
 
   protected slots:
     void mAddAttributeButton_clicked();

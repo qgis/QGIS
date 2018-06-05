@@ -150,17 +150,17 @@ class CORE_EXPORT QgsRectangle
 
     /**
      * Returns the area of the rectangle.
-     * \since QGIS 3.0
      * \see width()
      * \see height()
      * \see perimeter()
+     * \since QGIS 3.0
      */
     double area() const { return ( mXmax - mXmin ) * ( mYmax - mYmin ); }
 
     /**
      * Returns the perimeter of the rectangle.
-     * \since QGIS 3.0
      * \see area()
+     * \since QGIS 3.0
      */
     double perimeter() const { return 2 * ( mXmax - mXmin ) + 2 * ( mYmax - mYmin ); }
 
@@ -191,15 +191,15 @@ class CORE_EXPORT QgsRectangle
     void include( const QgsPointXY &p );
 
     /**
-     * Get rectangle enlarged by buffer.
+     * Gets rectangle enlarged by buffer.
      * \note In earlier QGIS releases this method was named buffer().
-     * \since QGIS 3.0
      * \see grow()
+     * \since QGIS 3.0
     */
     QgsRectangle buffered( double width ) const;
 
     /**
-     * Return the intersection with the given rectangle.
+     * Returns the intersection with the given rectangle.
      */
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 
@@ -209,12 +209,12 @@ class CORE_EXPORT QgsRectangle
     bool intersects( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains other rectangle.
+     * Returns true when rectangle contains other rectangle.
      */
     bool contains( const QgsRectangle &rect ) const;
 
     /**
-     * Return true when rectangle contains a point.
+     * Returns true when rectangle contains a point.
      */
     bool contains( const QgsPointXY &p ) const;
 
@@ -232,25 +232,25 @@ class CORE_EXPORT QgsRectangle
      * Returns a rectangle offset from this one in the direction of the reversed vector.
      * \since QGIS 3.0
      */
-    QgsRectangle operator-( const QgsVector v ) const;
+    QgsRectangle operator-( QgsVector v ) const;
 
     /**
      * Returns a rectangle offset from this one in the direction of the vector.
      * \since QGIS 3.0
      */
-    QgsRectangle operator+( const QgsVector v ) const;
+    QgsRectangle operator+( QgsVector v ) const;
 
     /**
      * Moves this rectangle in the direction of the reversed vector.
      * \since QGIS 3.0
      */
-    QgsRectangle &operator-=( const QgsVector v );
+    QgsRectangle &operator-=( QgsVector v );
 
     /**
      * Moves this rectangle in the direction of the vector.
      * \since QGIS 3.0
      */
-    QgsRectangle &operator+=( const QgsVector v );
+    QgsRectangle &operator+=( QgsVector v );
 
     /**
      * Returns true if the rectangle is empty.

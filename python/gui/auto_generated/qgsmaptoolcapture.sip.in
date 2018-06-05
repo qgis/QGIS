@@ -60,14 +60,14 @@ Clear capture curve.
 
     const QgsCompoundCurve *captureCurve() const;
 %Docstring
-Get the capture curve
+Gets the capture curve
 
 :return: Capture curve
 %End
 
     QList<QgsPointLocator::Match> snappingMatches() const;
 %Docstring
-Return a list of matches for each point on the captureCurve.
+Returns a list of matches for each point on the captureCurve.
 
 .. versionadded:: 3.0
 %End

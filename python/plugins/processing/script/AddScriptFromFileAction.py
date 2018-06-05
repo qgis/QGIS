@@ -41,7 +41,7 @@ from processing.script import ScriptUtils
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate("AddScriptFromFileAction", "Add Script from File…")
+        self.name = QCoreApplication.translate("AddScriptFromFileAction", "Add Script to Toolbox…")
         self.group = self.tr("Tools")
 
     def execute(self):

@@ -59,26 +59,26 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Access to the SSL configuration's group box widget
     QGroupBox *sslConfigGroupBox();
 
-    //! Get the SSL configuration
+    //! Gets the SSL configuration
     const QgsAuthConfigSslServer sslCustomConfig();
 
-    //! Get the SSL server certificate
+    //! Gets the SSL server certificate
     const QSslCertificate sslCertificate();
 
-    //! Get the host:port to associate with the server certificate
+    //! Gets the host:port to associate with the server certificate
     const QString sslHost();
 
-    //! Get the SSL protocl used for connections
+    //! Gets the SSL protocl used for connections
     QSsl::SslProtocol sslProtocol();
 
-    //! Get list of the SSL errors (as enums) to be ignored for connections
+    //! Gets list of the SSL errors (as enums) to be ignored for connections
     const QList<QSslError::SslError> sslIgnoreErrorEnums();
 
-    //! Get the client's peer verify mode for connections
+    //! Gets the client's peer verify mode for connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
     /**
-     * Get the client's peer verify depth for connections
+     * Gets the client's peer verify depth for connections
      * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
@@ -88,7 +88,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void enableSslCustomOptions( bool enable );
 
     // may also load existing config, if found
-    //! Set SSl certificate and any associated host:port
+    //! Sets SSl certificate and any associated host:port
     void setSslCertificate( const QSslCertificate &cert, const QString &hostport = QString() );
 
     //! Load an existing SSL server configuration
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Clear the current SSL server configuration and disabled it
     void resetSslCertConfig();
 
-    //! Set the SSL protocol to use in connections
+    //! Sets the SSL protocol to use in connections
     void setSslProtocol( QSsl::SslProtocol protocol );
 
     //! Reset the SSL protocol to use in connections to the default
@@ -109,25 +109,25 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Add to SSL errors to ignore for the connection
     void appendSslIgnoreErrors( const QList<QSslError> &errors );
 
-    //! Set the SSL errors (as enums) to ignore for the connection
+    //! Sets the SSL errors (as enums) to ignore for the connection
     void setSslIgnoreErrorEnums( const QList<QSslError::SslError> &errorenums );
 
-    //! Set the SSL errors to ignore for the connection
+    //! Sets the SSL errors to ignore for the connection
     void setSslIgnoreErrors( const QList<QSslError> &errors );
 
     //! Clear the SSL errors to ignore for the connection
     void resetSslIgnoreErrors();
 
-    //! Set the client's peer verify mode for connections
+    //! Sets the client's peer verify mode for connections
     void setSslPeerVerify( QSslSocket::PeerVerifyMode mode, int modedepth );
 
     //! Reset the client's peer verify mode for connections to default
     void resetSslPeerVerify();
 
-    //! Set the host of the server
+    //! Sets the host of the server
     void setSslHost( const QString &host );
 
-    //! Set whether the config group box is checkable
+    //! Sets whether the config group box is checkable
     void setConfigCheckable( bool checkable );
 
     //! Parse string for host:port

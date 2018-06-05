@@ -118,12 +118,12 @@ Returns true if list contains any named nodes
 
         QList<QgsExpressionNode *> list();
 %Docstring
-Get a list of all the nodes.
+Gets a list of all the nodes.
 %End
 
         QgsExpressionNode *at( int i );
 %Docstring
-Get the node at position i in the list.
+Gets the node at position i in the list.
 
 .. versionadded:: 3.0
 %End
@@ -152,7 +152,7 @@ Returns a string dump of the expression node.
 
     virtual QgsExpressionNode::NodeType nodeType() const = 0;
 %Docstring
-Get the type of this node.
+Gets the type of this node.
 
 :return: The type of this node
 %End
@@ -195,7 +195,12 @@ to evaluate child nodes.
 
     virtual QSet<QString> referencedVariables() const = 0;
 %Docstring
-Return a set of all variables which are used in this expression.
+Returns a set of all variables which are used in this expression.
+%End
+
+    virtual QSet<QString> referencedFunctions() const = 0;
+%Docstring
+Returns a set of all functions which are used in this expression.
 %End
 
     virtual bool needsGeometry() const = 0;

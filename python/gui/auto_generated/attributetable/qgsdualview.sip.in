@@ -37,9 +37,9 @@ and the attributes for the currently selected feature are shown in a form.
 
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
+Constructor
 
-:param parent:  The parent widget
+:param parent: The parent widget
 %End
 
     void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
@@ -47,13 +47,13 @@ and the attributes for the currently selected feature are shown in a form.
 %Docstring
 Has to be called to initialize the dual view.
 
-:param layer:      The layer which should be used to fetch features
-:param mapCanvas:  The mapCanvas (used for the FilterMode
-QgsAttributeTableFilterModel.ShowVisible)
-:param request:    Use a modified request to limit the shown features
-:param context:    The context in which this view is shown
+:param layer: The layer which should be used to fetch features
+:param mapCanvas: The mapCanvas (used for the FilterMode
+                  QgsAttributeTableFilterModel.ShowVisible)
+:param request: Use a modified request to limit the shown features
+:param context: The context in which this view is shown
 :param loadFeatures: whether to initially load all features into the view. If set to
-false, limited features can later be loaded using setFilterMode()
+                     false, limited features can later be loaded using setFilterMode()
 %End
 
     void setView( ViewMode view );
@@ -83,7 +83,7 @@ Set the filter mode
 
     QgsAttributeTableFilterModel::FilterMode filterMode();
 %Docstring
-Get the filter mode
+Gets the filter mode
 
 :return: the filter mode
 %End
@@ -93,7 +93,7 @@ Get the filter mode
 Toggle the selectedOnTop flag. If enabled, selected features will be moved to top.
 
 :param selectedOnTop: True: Show selected features on top.
-False: Use defined sorting column.
+                      False: Use defined sorting column.
 %End
 
     int featureCount();
@@ -115,12 +115,12 @@ filter restrictions
 %Docstring
 Set a list of currently visible features
 
-:param filteredFeatures:  A list of feature ids
+:param filteredFeatures: A list of feature ids
 %End
 
     QgsFeatureIds filteredFeatures();
 %Docstring
-Get a list of currently visible feature ids.
+Gets a list of currently visible feature ids.
 %End
 
     QgsAttributeTableModel *masterModel() const;
@@ -164,24 +164,24 @@ Set the expression used for sorting the table and feature list.
 
     QString sortExpression() const;
 %Docstring
-Get the expression used for sorting the table and feature list.
+Gets the expression used for sorting the table and feature list.
 %End
 
   public slots:
 
     void setCurrentEditSelection( const QgsFeatureIds &fids );
 %Docstring
- Set the current edit selection in the AttributeEditor mode.
+Set the current edit selection in the AttributeEditor mode.
 
-:param fids:   A list of edited features (Currently only one at a time is supported)
+:param fids: A list of edited features (Currently only one at a time is supported)
 %End
 
     bool saveEditChanges();
 %Docstring
- saveEditChanges
+saveEditChanges
 
 :return: true if the saving was OK. false is possible due to connected
-validation logic.
+         validation logic.
 %End
 
     void openConditionalStyles();
@@ -247,7 +247,7 @@ Emitted when the form changes mode.
 :param mode: new mode
 %End
 
-    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+    void showContextMenuExternally( QgsActionMenu *menu, QgsFeatureId fid );
 %Docstring
 Emitted when selecting context menu on the feature list to create the context menu individually
 

@@ -70,10 +70,6 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
   return projectionSelector->showNoProjection();
 }
 
-QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
-{
-}
-
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
 {
   return projectionSelector->crs();

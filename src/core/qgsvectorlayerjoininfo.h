@@ -187,7 +187,7 @@ class CORE_EXPORT QgsVectorLayerJoinInfo
     void setJoinFieldNamesSubset( QStringList *fieldNamesSubset SIP_TRANSFER ) { mJoinFieldsSubset = std::shared_ptr<QStringList>( fieldNamesSubset ); }
 
     /**
-     * Get subset of fields to be used from joined layer. All fields will be used if null is returned.
+     * Gets subset of fields to be used from joined layer. All fields will be used if null is returned.
       \since QGIS 2.6 */
     QStringList *joinFieldNamesSubset() const { return mJoinFieldsSubset.get(); }
 

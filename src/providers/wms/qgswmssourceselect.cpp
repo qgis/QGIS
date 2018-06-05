@@ -284,6 +284,7 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
   QVector<QgsWmsLayerProperty> layers = capabilities.supportedLayers();
 
   bool first = true;
+  QSet<QString> alreadyAddedLabels;
   Q_FOREACH ( const QString &encoding, capabilities.supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
@@ -292,6 +293,13 @@ bool QgsWMSSourceSelect::populateLayerList( const QgsWmsCapabilities &capabiliti
       QgsDebugMsg( QString( "encoding %1 not supported." ).arg( encoding ) );
       continue;
     }
+    // Different mime-types can map to the same label. Just add the first
+    // match to avoid duplicates in the UI
+    if ( alreadyAddedLabels.contains( mFormats[id].label ) )
+    {
+      continue;
+    }
+    alreadyAddedLabels.insert( mFormats[id].label );
 
     mImageFormatGroup->button( id )->setVisible( true );
     if ( first )

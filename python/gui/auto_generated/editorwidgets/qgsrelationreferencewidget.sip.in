@@ -82,11 +82,11 @@ If the widget will order the combobox entries by value
 %End
     void setOrderByValue( bool orderByValue );
 %Docstring
-Set if the widget will order the combobox entries by value
+Sets if the widget will order the combobox entries by value
 %End
     void setFilterFields( const QStringList &filterFields );
 %Docstring
-Set the fields for which filter comboboxes will be created
+Sets the fields for which filter comboboxes will be created
 %End
 
     bool openFormButtonVisible();
@@ -112,7 +112,7 @@ Chained filters restrict the option of subsequent filters based on the selection
 
     QgsFeature referencedFeature() const;
 %Docstring
-return the related feature (from the referenced layer)
+Returns the related feature (from the referenced layer)
 if no feature is related, it returns an invalid feature
 %End
 

@@ -65,7 +65,7 @@ Returns a map of value to classes (colors) used by the renderer.
 
     QString label( int idx ) const;
 %Docstring
-Return optional category label
+Returns optional category label
 
 .. versionadded:: 2.1
 %End
@@ -97,18 +97,18 @@ Returns the raster band used for rendering the raster.
 %Docstring
 Set the source color ``ramp``. Ownership is transferred to the renderer.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`sourceColorRamp`
+
+.. versionadded:: 3.0
 %End
 
     QgsColorRamp *sourceColorRamp() const;
 %Docstring
-Get the source color ramp
-
-.. versionadded:: 3.0
+Gets the source color ramp
 
 .. seealso:: :py:func:`setSourceColorRamp`
+
+.. versionadded:: 3.0
 %End
 
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
@@ -122,29 +122,29 @@ Converts a raster color ``table`` to paletted renderer class data.
 %Docstring
 Converts a ``string`` containing a color table or class data to to paletted renderer class data.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`classDataFromFile`
 
 .. seealso:: :py:func:`classDataToString`
+
+.. versionadded:: 3.0
 %End
 
     static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
 %Docstring
 Opens a color table file and returns corresponding paletted renderer class data.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`classDataFromString`
+
+.. versionadded:: 3.0
 %End
 
     static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
 %Docstring
 Converts classes to a string representation, using the .clr/gdal color table file format.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`classDataFromString`
+
+.. versionadded:: 3.0
 %End
 
     static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0,

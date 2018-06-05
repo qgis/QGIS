@@ -66,7 +66,7 @@ scaled by 50% in order to have a constant visible size.
 class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInterface
 {
 %Docstring
- Base class for graphical items within a :py:class:`QgsLayout`.
+Base class for graphical items within a :py:class:`QgsLayout`.
 
 .. versionadded:: 3.0
 %End
@@ -295,7 +295,7 @@ for a layout.
 
     virtual QString displayName() const;
 %Docstring
-Get item display name. This is the item's id if set, and if
+Gets item display name. This is the item's id if set, and if
 not, a user-friendly string identifying item type.
 
 .. seealso:: :py:func:`id`
@@ -308,7 +308,7 @@ not, a user-friendly string identifying item type.
 Sets whether the item should be selected.
 %End
 
-    virtual void setVisibility( const bool visible );
+    virtual void setVisibility( bool visible );
 %Docstring
 Sets whether the item is ``visible``.
 
@@ -319,7 +319,7 @@ Sets whether the item is ``visible``.
    the visibility toggle.
 %End
 
-    void setLocked( const bool locked );
+    void setLocked( bool locked );
 %Docstring
 Sets whether the item is ``locked``, preventing mouse interactions with the item.
 
@@ -700,7 +700,7 @@ Returns the join style used for drawing the item's frame.
 .. seealso:: :py:func:`frameStrokeColor`
 %End
 
-    void setFrameJoinStyle( const Qt::PenJoinStyle style );
+    void setFrameJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Sets the join ``style`` used when drawing the item's frame.
 
@@ -757,7 +757,7 @@ Returns the item's composition blending mode.
 .. seealso:: :py:func:`setBlendMode`
 %End
 
-    void setBlendMode( const QPainter::CompositionMode mode );
+    void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the item's composition blending ``mode``.
 
@@ -928,7 +928,7 @@ Forces a deferred update of any cached image the item uses.
 Triggers a redraw (update) of the item.
 %End
 
-    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 %Docstring
 Refreshes a data defined ``property`` for the item by reevaluating the property's value
 and redrawing the item with this new value. If ``property`` is set to
@@ -948,7 +948,7 @@ If ``adjustPosition`` is false, rotation occurs around the item origin.
 .. seealso:: :py:func:`rotateItem`
 %End
 
-    virtual void rotateItem( const double angle, const QPointF &transformOrigin );
+    virtual void rotateItem( double angle, const QPointF &transformOrigin );
 %Docstring
 Rotates the item by a specified ``angle`` in degrees clockwise around a specified reference point.
 

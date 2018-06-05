@@ -117,16 +117,16 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     /**
      * Returns the current mode of the form.
-     * \since QGIS 2.16
      * \see setMode()
+     * \since QGIS 2.16
      */
     Mode mode() const { return mMode; }
 
     /**
      * Sets the current mode of the form.
      * \param mode form mode
-     * \since QGIS 2.16
      * \see mode()
+     * \since QGIS 2.16
      */
     void setMode( Mode mode );
 
@@ -174,7 +174,8 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
   signals:
 
     /**
-     * Notifies about changes of attributes
+     * Notifies about changes of attributes, this signal is not emitted when the value is set
+     * back to the original one.
      *
      * \param attribute The name of the attribute that changed.
      * \param value     The new value of the attribute.
@@ -418,7 +419,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     int mFormNr;
     QString mPyFormVarName;
 
-    //! Set to true while saving to prevent recursive saves
+    //! Sets to true while saving to prevent recursive saves
     bool mIsSaving;
 
     //! Flag to prevent refreshFeature() to change mFeature

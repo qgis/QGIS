@@ -1125,7 +1125,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
 
   if ( QgsLayerTree::isLayer( mView->currentNode() ) )
   {
-    menu->addAction( QObject::tr( "Reset to defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
+    menu->addAction( QObject::tr( "Reset to Defaults" ), mWidget, SLOT( resetLayerNodeToDefaults() ) );
     menu->addSeparator();
   }
 

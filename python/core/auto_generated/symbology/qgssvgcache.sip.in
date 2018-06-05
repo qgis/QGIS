@@ -38,7 +38,7 @@ Constructor for QgsSvgCache.
     QImage svgAsImage( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 %Docstring
-Get SVG as QImage.
+Gets SVG as QImage.
 
 :param path: Absolute path to SVG file.
 :param size: size of cached image
@@ -53,7 +53,7 @@ Get SVG as QImage.
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
 %Docstring
-Get SVG  as QPicture&.
+Gets SVG  as QPicture&.
 
 :param path: Absolute path to SVG file.
 :param size: size of cached image
@@ -125,13 +125,13 @@ default values in the svg file, only the first one is considered.
 
     QByteArray getImageData( const QString &path ) const;
 %Docstring
-Get image data
+Gets image data
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
-Get SVG content
+Gets SVG content
 %End
 
   signals:

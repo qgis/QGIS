@@ -47,9 +47,9 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
     //! constructs a highlight widget for a label
     QgsOptionsDialogHighlightLabel( QLabel *label );
   protected:
-    virtual bool searchText( const QString &text ) override;
-    virtual bool highlightText( const QString &text ) override;
-    virtual void reset() override;
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
     QPointer<QLabel> mLabel;
     QString mStyleSheet;
 };
@@ -68,9 +68,9 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
     //! constructs a highlight widget for a checkbox
     QgsOptionsDialogHighlightCheckBox( QCheckBox *checkBox );
   protected:
-    virtual bool searchText( const QString &text ) override;
-    virtual bool highlightText( const QString &text ) override;
-    virtual void reset() override;
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
     QPointer<QCheckBox> mCheckBox;
     QString mStyleSheet;
 };
@@ -89,9 +89,9 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
     //! constructs a highlight widget for a button.
     QgsOptionsDialogHighlightButton( QAbstractButton *button );
   protected:
-    virtual bool searchText( const QString &text ) override;
-    virtual bool highlightText( const QString &text ) override;
-    virtual void reset() override;
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
     QPointer<QAbstractButton> mButton;
     QString mStyleSheet;
 };
@@ -110,9 +110,9 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
     //! constructs a highlight widget for a group box.
     QgsOptionsDialogHighlightGroupBox( QGroupBox *groupBox );
   protected:
-    virtual bool searchText( const QString &text ) override;
-    virtual bool highlightText( const QString &text ) override;
-    virtual void reset() override;
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
     QPointer<QGroupBox> mGroupBox;
     QString mStyleSheet;
 };
@@ -133,9 +133,9 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
     //! constructs a highlight widget for a tree view or widget.
     QgsOptionsDialogHighlightTree( QTreeView *treeView );
   protected:
-    virtual bool searchText( const QString &text ) override;
-    virtual bool highlightText( const QString &text ) override;
-    virtual void reset() override;
+    bool searchText( const QString &text ) override;
+    bool highlightText( const QString &text ) override;
+    void reset() override;
     QPointer<QTreeView> mTreeView;
     // a map to save the tree state (backouground, font, expanded) before highlighting items
     QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>> mTreeInitialStyle = QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>>();

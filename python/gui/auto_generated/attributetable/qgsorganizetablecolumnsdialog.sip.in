@@ -37,7 +37,7 @@ Constructor
 
     QgsAttributeTableConfig config() const;
 %Docstring
-Get the updated configuration
+Gets the updated configuration
 %End
 
   public slots:

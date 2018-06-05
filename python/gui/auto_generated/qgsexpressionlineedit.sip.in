@@ -12,7 +12,7 @@
 class QgsExpressionLineEdit : QWidget
 {
 %Docstring
- The QgsExpressionLineEdit widget includes a line edit for entering expressions
+The QgsExpressionLineEdit widget includes a line edit for entering expressions
 together with a button to open the expression creation dialog.
 
 This widget is designed for use in contexts where no layer fields are available for
@@ -60,7 +60,7 @@ Returns the title used for the expression dialog.
 Sets whether the widget should show a multiline text editor.
 
 :param multiLine: set to true to show multiline editor, or false
-to show single line editor (the default).
+                  to show single line editor (the default).
 %End
 
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
@@ -100,7 +100,7 @@ Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
 
 :param generator: A QgsExpressionContextGenerator class that will be used to
-create an expression context when required.
+                  create an expression context when required.
 %End
 
   signals:

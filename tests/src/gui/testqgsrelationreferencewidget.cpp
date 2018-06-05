@@ -185,12 +185,36 @@ void TestQgsRelationReferenceWidget::testChainFilter()
 
   // set the filter for "raccord" and then reset filter for "diameter". As
   // chain filter is activated, the filter on "raccord" field should be reset
-  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
-  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
-
   QEventLoop loop;
   connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+
+  cbs[0]->setCurrentIndex( 0 );
   loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "steel" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "12" ) );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
+  loop.exec();
+  QCOMPARE( w.mComboBox->currentText(), QString( "10" ) );
 
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
@@ -200,6 +224,7 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
   loop.exec();
   QCOMPARE( w.mComboBox->count(), 4 );
+  QCOMPARE( w.mComboBox->currentText(), QString( "NULL" ) );
 }
 
 void TestQgsRelationReferenceWidget::testChainFilterRefreshed()

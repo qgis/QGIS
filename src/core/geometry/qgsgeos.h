@@ -35,8 +35,8 @@ class QgsGeometryCollection;
 
 /**
  * Contains geos related utilities and functions.
- * \since QGIS 3.0
  * \note not available in Python bindings.
+ * \since QGIS 3.0
  */
 namespace geos
 {
@@ -184,8 +184,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      *
      * If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
      *
-     * \since QGIS 3.0
      * \see hausdorffDistanceDensify()
+     * \since QGIS 3.0
      */
     double hausdorffDistance( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const;
 
@@ -202,8 +202,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * is not sufficient. Decreasing the \a densifyFraction parameter will make the
      * distance returned approach the true Hausdorff distance for the geometries.
      *
-     * \since QGIS 3.0
      * \see hausdorffDistance()
+     * \since QGIS 3.0
      */
     double hausdorffDistanceDensify( const QgsAbstractGeometry *geom, double densifyFraction, QString *errorMsg = nullptr ) const;
 
@@ -270,15 +270,15 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /**
      * Returns the closest point on the geometry to the other geometry.
-     * \since QGIS 2.14
      * \see shortestLine()
+     * \since QGIS 2.14
      */
     QgsGeometry closestPoint( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 
     /**
      * Returns the shortest line joining this geometry to the other geometry.
-     * \since QGIS 2.14
      * \see closestPoint()
+     * \since QGIS 2.14
      */
     QgsGeometry shortestLine( const QgsGeometry &other, QString *errorMsg = nullptr ) const;
 

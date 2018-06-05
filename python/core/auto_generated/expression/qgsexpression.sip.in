@@ -149,7 +149,7 @@ Returns root node of the expression. Root node is null is parsing has failed
 
     bool prepare( const QgsExpressionContext *context );
 %Docstring
-Get the expression ready for evaluation - find out column indexes.
+Gets the expression ready for evaluation - find out column indexes.
 
 :param context: context for preparing expression
 
@@ -158,7 +158,7 @@ Get the expression ready for evaluation - find out column indexes.
 
     QSet<QString> referencedColumns() const;
 %Docstring
-Get list of columns referenced by the expression.
+Gets list of columns referenced by the expression.
 
 .. note::
 
@@ -171,16 +171,24 @@ Get list of columns referenced by the expression.
 
     QSet<QString> referencedVariables() const;
 %Docstring
-Return a list of all variables which are used in this expression.
+Returns a list of all variables which are used in this expression.
 If the list contains a NULL QString, there is a variable name used
 which is determined at runtime.
 
 .. versionadded:: 3.0
 %End
 
+    QSet<QString> referencedFunctions() const;
+%Docstring
+Returns a list of the names of all functions which are used in this expression.
+
+.. versionadded:: 3.2
+%End
+
+
     QSet<int> referencedAttributeIndexes( const QgsFields &fields ) const;
 %Docstring
-Return a list of field name indexes obtained from the provided fields.
+Returns a list of field name indexes obtained from the provided fields.
 
 .. versionadded:: 3.0
 %End
@@ -225,7 +233,7 @@ Returns evaluation error
 %End
     void setEvalErrorString( const QString &str );
 %Docstring
-Set evaluation error (used internally by evaluation functions)
+Sets evaluation error (used internally by evaluation functions)
 %End
 
     bool isField() const;
@@ -257,14 +265,14 @@ Set the expression string, will reset the whole internal structure.
 
     QString expression() const;
 %Docstring
-Return the original, unmodified expression string.
+Returns the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
 API calls, dump() will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
-Return an expression string, constructed from the internal
+Returns an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 expression() instead.
@@ -272,7 +280,7 @@ expression() instead.
 
     QgsDistanceArea *geomCalculator();
 %Docstring
-Return calculator used for distance and area calculations
+Returns calculator used for distance and area calculations
 (used by $length, $area and $perimeter functions only)
 
 .. seealso:: :py:func:`setGeomCalculator`
@@ -290,7 +298,7 @@ calculator is set and all distance and area calculations are performed using sim
 Cartesian methods (ie no ellipsoidal calculations).
 
 :param calc: geometry calculator. Ownership is not transferred. Set to a None to force
-Cartesian calculations.
+             Cartesian calculations.
 
 .. seealso:: :py:func:`geomCalculator`
 %End
@@ -303,11 +311,11 @@ Returns the desired distance units for calculations involving geomCalculator(), 
 
    distances are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setDistanceUnits`
 
 .. seealso:: :py:func:`areaUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
@@ -318,11 +326,11 @@ Sets the desired distance units for calculations involving geomCalculator(), e.g
 
    distances are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`distanceUnits`
 
 .. seealso:: :py:func:`setAreaUnits`
+
+.. versionadded:: 2.14
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -333,11 +341,11 @@ Returns the desired areal units for calculations involving geomCalculator(), e.g
 
    areas are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`setAreaUnits`
 
 .. seealso:: :py:func:`distanceUnits`
+
+.. versionadded:: 2.14
 %End
 
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
@@ -348,11 +356,11 @@ Sets the desired areal units for calculations involving geomCalculator(), e.g., 
 
    areas are only converted when a geomCalculator() has been set
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`areaUnits`
 
 .. seealso:: :py:func:`setDistanceUnits`
+
+.. versionadded:: 2.14
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -366,7 +374,7 @@ Additional substitutions can be passed through the substitutionMap parameter
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
 :param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the QgsDistanceArea is used for distance
-and area conversion
+                     and area conversion
 
 .. versionadded:: 2.12
 %End
@@ -380,7 +388,7 @@ This function returns variables in each expression between [% and %].
 .. versionadded:: 3.2
 %End
 
-    static double evaluateToDouble( const QString &text, const double fallbackValue );
+    static double evaluateToDouble( const QString &text, double fallbackValue );
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant double
 value.
@@ -390,12 +398,12 @@ value.
 
 :return: evaluated double value, or fallback value
 
-.. versionadded:: 2.7
-
 .. note::
 
    this method is inefficient for bulk evaluation of expressions, it is intended
    for one-off evaluations only.
+
+.. versionadded:: 2.7
 %End
 
     enum SpatialOperator
@@ -451,7 +459,7 @@ tells whether the identifier is a name of existing function
 
     static int functionIndex( const QString &name );
 %Docstring
-return index of the function in Functions array
+Returns index of the function in Functions array
 %End
 
     static int functionCount();
@@ -486,11 +494,11 @@ quotations where required.
 
 :param value: value to convert to a string representation
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
+
+.. versionadded:: 2.14
 %End
 
     static QString quotedValue( const QVariant &value, QVariant::Type type );
@@ -501,11 +509,11 @@ quotations where required.
 :param value: value to convert to a string representation
 :param type: value type
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`quotedString`
 
 .. seealso:: :py:func:`quotedColumnRef`
+
+.. versionadded:: 2.14
 %End
 
 

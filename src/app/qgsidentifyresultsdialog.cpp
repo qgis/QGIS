@@ -125,7 +125,7 @@ void QgsIdentifyResultsWebView::handleDownload( QUrl url )
       savePath = QDir::cleanPath( savePath + QDir::separator() + fileName );
     }
     QString targetFile = QFileDialog::getSaveFileName( this,
-                         tr( "Save as" ),
+                         tr( "Save As" ),
                          savePath,
                          info.suffix().isEmpty() ? QString() : "*." +  info.suffix()
                                                      );
@@ -370,12 +370,12 @@ QgsIdentifyResultsDialog::QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidge
   }
 
   // retrieve mode before on_cmbIdentifyMode_currentIndexChanged resets it on addItem
-  int identifyMode = mySettings.value( QStringLiteral( "Map/identifyMode" ), 0 ).toInt();
+  QgsMapToolIdentify::IdentifyMode identifyMode = mySettings.enumValue( QStringLiteral( "Map/identifyMode" ), QgsMapToolIdentify::ActiveLayer );
 
-  cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
-  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
-  cmbIdentifyMode->addItem( tr( "Top down" ), 2 );
-  cmbIdentifyMode->addItem( tr( "Layer selection" ), 3 );
+  cmbIdentifyMode->addItem( tr( "Current layer" ), QgsMapToolIdentify::ActiveLayer );
+  cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), QgsMapToolIdentify::TopDownStopAtFirst );
+  cmbIdentifyMode->addItem( tr( "Top down" ), QgsMapToolIdentify::TopDownAll );
+  cmbIdentifyMode->addItem( tr( "Layer selection" ), QgsMapToolIdentify::LayerSelection );
   cmbIdentifyMode->setCurrentIndex( cmbIdentifyMode->findData( identifyMode ) );
   cbxAutoFeatureForm->setChecked( mySettings.value( QStringLiteral( "Map/identifyAutoFeatureForm" ), false ).toBool() );
 
@@ -1065,19 +1065,19 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     {
       mActionPopup->addAction(
         QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ),
-        vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
+        vlayer->isEditable() ? tr( "Edit Feature Form…" ) : tr( "View Feature Form…" ),
         this, SLOT( featureForm() ) );
     }
 
     if ( featItem->feature().isValid() )
     {
-      mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
-      mActionPopup->addAction( tr( "Copy feature" ), this, SLOT( copyFeature() ) );
-      mActionPopup->addAction( tr( "Toggle feature selection" ), this, SLOT( toggleFeatureSelection() ) );
+      mActionPopup->addAction( tr( "Zoom to Feature" ), this, SLOT( zoomToFeature() ) );
+      mActionPopup->addAction( tr( "Copy Feature" ), this, SLOT( copyFeature() ) );
+      mActionPopup->addAction( tr( "Toggle Feature Selection" ), this, SLOT( toggleFeatureSelection() ) );
     }
 
-    mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
-    mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
+    mActionPopup->addAction( tr( "Copy Attribute Value" ), this, SLOT( copyAttributeValue() ) );
+    mActionPopup->addAction( tr( "Copy Feature Attributes" ), this, SLOT( copyFeatureAttributes() ) );
 
     if ( item->parent() == featItem && item->childCount() == 0 )
     {
@@ -1098,18 +1098,18 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     mActionPopup->addSeparator();
   }
 
-  mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
-  mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearHighlights() ) );
-  mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
-  mActionPopup->addAction( tr( "Highlight layer" ), this, SLOT( highlightLayer() ) );
+  mActionPopup->addAction( tr( "Clear Results" ), this, SLOT( clear() ) );
+  mActionPopup->addAction( tr( "Clear Highlights" ), this, SLOT( clearHighlights() ) );
+  mActionPopup->addAction( tr( "Highlight All" ), this, SLOT( highlightAll() ) );
+  mActionPopup->addAction( tr( "Highlight Layer" ), this, SLOT( highlightLayer() ) );
   if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
   {
-    mActionPopup->addAction( tr( "Activate layer" ), this, SLOT( activateLayer() ) );
-    mActionPopup->addAction( tr( "Layer properties…" ), this, SLOT( layerProperties() ) );
+    mActionPopup->addAction( tr( "Activate Layer" ), this, SLOT( activateLayer() ) );
+    mActionPopup->addAction( tr( "Layer Properties…" ), this, SLOT( layerProperties() ) );
   }
   mActionPopup->addSeparator();
-  mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
-  mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
+  mActionPopup->addAction( tr( "Expand All" ), this, SLOT( expandAll() ) );
+  mActionPopup->addAction( tr( "Collapse All" ), this, SLOT( collapseAll() ) );
   mActionPopup->addSeparator();
 
   if ( featItem && vlayer )

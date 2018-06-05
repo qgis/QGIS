@@ -17,6 +17,7 @@
 #define QGSMDALPROVIDER_H
 
 #include <QString>
+#include <QVector>
 
 #include <mdal.h>
 
@@ -38,12 +39,11 @@ class QgsMdalProvider : public QgsMeshDataProvider
     /**
      * Constructor for the provider.
      *
-     * \param   uri         file name
-     * \param   newDataset  handle of newly created dataset.
-     *
+     * \param uri file name
+     * \param options generic provider options
      */
-    QgsMdalProvider( const QString &uri = QString() );
-    ~QgsMdalProvider();
+    QgsMdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
+    ~QgsMdalProvider() override;
 
     bool isValid() const override;
     QString name() const override;
@@ -55,8 +55,16 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QgsMeshVertex vertex( int index ) const override;
     QgsMeshFace face( int index ) const override;
 
+
+    bool addDataset( const QString &uri ) override;
+    int datasetCount() const override;
+    QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
+    QgsMeshDatasetValue datasetValue( int datasetIndex, int valueIndex ) const override;
   private:
+    void refreshDatasets();
+
     MeshH mMeshH;
+    QVector<DatasetH> mDatasets;
 };
 
 #endif //QGSMDALPROVIDER_H

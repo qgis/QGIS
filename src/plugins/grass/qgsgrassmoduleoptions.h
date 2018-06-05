@@ -58,7 +58,7 @@ class QgsGrassModuleOptions
 
     virtual ~QgsGrassModuleOptions() = default;
 
-    //! Get module options as list of arguments for QProcess
+    //! Gets module options as list of arguments for QProcess
     virtual QStringList arguments();
 
     //! Check if output exists
@@ -74,7 +74,7 @@ class QgsGrassModuleOptions
     //  Returns empty string or error message
     virtual QStringList ready() { return QStringList() ; }
 
-    //! Get list of current output maps
+    //! Gets list of current output maps
     virtual QStringList output( int type )
     { Q_UNUSED( type ); return QStringList(); }
 
@@ -93,7 +93,7 @@ class QgsGrassModuleOptions
     // return list of input maps (both raster and vector) outside region
     virtual QStringList checkRegion() { return QStringList() ; }
 
-    //! Get region covering all input maps
+    //! Gets region covering all input maps
     // \param all true all input maps
     // \param all false only the mas which were switched on
     virtual bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all )
@@ -150,7 +150,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QString xname, QDomElement confDocElem,
       bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    //! Get module options as list of arguments for QProcess
+    //! Gets module options as list of arguments for QProcess
     QStringList arguments() override;
 
     // ! Get item by ID
@@ -185,7 +185,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
     QDomDocument readInterfaceDescription( const QString &xname, QStringList &errors );
 
     /**
-     * Get region for currently selected map. It will show warning dialog if region could not be read.
+     * Gets region for currently selected map. It will show warning dialog if region could not be read.
      * \returns true if region was successfully read
      */
     bool getCurrentMapRegion( QgsGrassModuleInput *param, struct Cell_head *window );

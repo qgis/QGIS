@@ -72,10 +72,6 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 
 }
 
-QgsCustomizationDialog::~QgsCustomizationDialog()
-{
-}
-
 QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetItem *widgetItem )
 {
   QString pathCopy = path;

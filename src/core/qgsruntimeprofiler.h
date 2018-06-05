@@ -60,7 +60,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     void end();
 
     /**
-     * \brief Return all the current profile times.
+     * Returns all the current profile times.
      * \returns A list of profile event names and times.
      * \note not available in Python bindings
      */

@@ -97,6 +97,42 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     double yAt( int index ) const override;
 
     /**
+     * Returns a const pointer to the x vertex data.
+     * \note Not available in Python bindings
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *xData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the y vertex data.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \since QGIS 3.2
+     */
+    const double *yData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
+     * not have z values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *zData() const SIP_SKIP;
+
+    /**
+     * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
+     * not have m values.
+     * \note Not available in Python bindings
+     * \see xData()
+     * \see yData()
+     * \since QGIS 3.2
+     */
+    const double *mData() const SIP_SKIP;
+
+    /**
      * Returns the z-coordinate of the specified node in the line string.
      * \param index index of node, where the first node in the line is 0
      * \returns z-coordinate of node, or ``nan`` if index is out of bounds or the line
@@ -194,6 +230,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool isEmpty() const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
+    QPolygonF asQPolygonF() const override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
@@ -222,8 +259,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void draw( QPainter &p ) const override;
 
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override  SIP_THROW( QgsCsException );
     void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
@@ -253,6 +289,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsLineString.

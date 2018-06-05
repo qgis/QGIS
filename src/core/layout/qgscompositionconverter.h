@@ -48,9 +48,9 @@ class QgsLayoutItemAttributeTable;
 
 /**
  * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
- * \since QGIS 3.0
  * \note Not available in Python bindings.
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsCompositionConverter
 {
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsCompositionConverter
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
         QgsPropertyCollection &dataDefinedProperties );
 
-    static QgsProperty readOldDataDefinedProperty( const DataDefinedProperty property, const QDomElement &ddElem );
+    static QgsProperty readOldDataDefinedProperty( DataDefinedProperty property, const QDomElement &ddElem );
 
     static void initPropertyDefinitions();
 
@@ -238,7 +238,7 @@ class CORE_EXPORT QgsCompositionConverter
     //! Restore general composer item properties
     static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
-    //! Get item position
+    //! Gets item position
     static QRectF itemPosition( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
     //! Calculates the item minimum position from an xml string

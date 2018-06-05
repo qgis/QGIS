@@ -44,13 +44,11 @@ struct QgsOracleLayerProperty
   QString              ownerName;
   QString              tableName;
   QString              geometryColName;
-  bool                 isView;
+  bool                 isView = false;
   QStringList          pkCols;
   QString              sql;
 
-  QgsOracleLayerProperty()
-    : isView( false )
-  {}
+  QgsOracleLayerProperty() = default;
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
@@ -128,7 +126,7 @@ class QgsOracleConn : public QObject
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
     /**
-     * Get the list of supported layers.
+     * Gets the list of supported layers.
      *
      * If \a limitToSchema is specified, than only layers from the matching schema will be
      * returned.
@@ -149,7 +147,7 @@ class QgsOracleConn : public QObject
      */
     bool tableInfo( const QString &schema, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    //! Get primary key candidates (all int4 columns)
+    //! Gets primary key candidates (all int4 columns)
     QStringList pkCandidates( const QString &ownerName, const QString &viewName );
 
     static QString fieldExpression( const QgsField &fld );
@@ -187,7 +185,7 @@ class QgsOracleConn : public QObject
 
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri );
-    ~QgsOracleConn();
+    ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
 

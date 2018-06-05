@@ -30,12 +30,12 @@
  * for use in QGIS layouts. Measurement units are stored alongside the size.
  *
  * \see QgsLayoutMeasurementConverter
- * \since QGIS 3.0
  * \note This class does not inherit from QSizeF since QSizeF includes methods which should not apply to sizes
  * with units. For instance, the + and - operators would mislead users of this class to believe that
  * addition of two QgsLayoutSize with different unit types would automatically convert units. Instead,
  * all unit conversion must be handled by a QgsLayoutMeasurementConverter so that conversion between
  * paper and screen units can be correctly performed.
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayoutSize
 {
@@ -47,18 +47,18 @@ class CORE_EXPORT QgsLayoutSize
      * \param height height
      * \param units units for width and height
     */
-    QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    QgsLayoutSize( double width, double height, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for QgsLayoutSize.
     */
-    explicit QgsLayoutSize( const QSizeF size, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QSizeF size, QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Constructor for an empty layout size
      * \param units units for measurement
     */
-    explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
+    explicit QgsLayoutSize( QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 
     /**
      * Sets new \a width and \a height for the size.
@@ -141,22 +141,22 @@ class CORE_EXPORT QgsLayoutSize
     /**
      * Multiplies the width and height by a scalar value.
      */
-    QgsLayoutSize operator*( const double v ) const;
+    QgsLayoutSize operator*( double v ) const;
 
     /**
      * Multiplies the width and height by a scalar value.
      */
-    QgsLayoutSize operator*=( const double v );
+    QgsLayoutSize operator*=( double v );
 
     /**
      * Divides the width and height by a scalar value.
      */
-    QgsLayoutSize operator/( const double v ) const;
+    QgsLayoutSize operator/( double v ) const;
 
     /**
      * Divides the width and height by a scalar value.
      */
-    QgsLayoutSize operator/=( const double v );
+    QgsLayoutSize operator/=( double v );
 
   private:
 

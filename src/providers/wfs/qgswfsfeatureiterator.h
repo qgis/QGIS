@@ -45,7 +45,7 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
 
     void launch( const QUrl &url );
 
-    //! Return result of request, or -1 if not known/error
+    //! Returns result of request, or -1 if not known/error
     int numberMatched() const { return mNumberMatched; }
 
   signals:
@@ -167,7 +167,7 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     explicit QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared );
     ~QgsWFSThreadedFeatureDownloader() override;
 
-    //! Return downloader object
+    //! Returns downloader object
     QgsWFSFeatureDownloader *downloader() { return mDownloader; }
 
     //! Starts thread and wait for it to be started
@@ -218,6 +218,9 @@ class QgsWFSFeatureIterator : public QObject,
     void checkInterruption();
 
   private:
+
+    //! Translate mRequest to a request compatible of the Spatialite cache
+    QgsFeatureRequest buildRequestCache( int gencounter );
 
     bool fetchFeature( QgsFeature &f ) override;
 

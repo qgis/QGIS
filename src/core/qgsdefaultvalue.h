@@ -17,6 +17,7 @@
 #define QGSDEFAULTVALUE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 #include <QString>
 #include <QObject>
@@ -46,7 +47,7 @@
  */
 class CORE_EXPORT QgsDefaultValue
 {
-    Q_GADGET
+    Q_GADGET SIP_SKIP
 
     Q_PROPERTY( QString expression READ expression WRITE setExpression )
     Q_PROPERTY( bool applyOnUpdate READ applyOnUpdate WRITE setApplyOnUpdate )
@@ -94,7 +95,7 @@ class CORE_EXPORT QgsDefaultValue
      * Checks if a default value is set. Alias for isValid().
      * \returns false if the expression is a null string.
      */
-    operator bool() const;
+    operator bool() const SIP_PYTHON_OPERATOR_BOOL( isValid );
 
   private:
     QString mExpression;

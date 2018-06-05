@@ -31,7 +31,8 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsField,
+from qgis.core import (QgsApplication,
+                       QgsField,
                        QgsFeatureSink,
                        QgsGeometry,
                        QgsWkbTypes,
@@ -60,7 +61,10 @@ class MinimumBoundingGeometry(QgisAlgorithm):
     FIELD = 'FIELD'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'convex_hull.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConvexHull.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmConvexHull.svg")
 
     def group(self):
         return self.tr('Vector geometry')

@@ -206,7 +206,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a 'pre-made' map layer to the project
     void addMapLayer( QgsMapLayer *mapLayer );
 
-    //! Set the extents of the map canvas
+    //! Sets the extents of the map canvas
     void setExtent( const QgsRectangle &rect );
 
     /**
@@ -247,7 +247,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( const QString &, QPixmap * );
 
-    //! Get the mapcanvas object from the app
+    //! Gets the mapcanvas object from the app
     QgsMapCanvas *mapCanvas();
 
     /**
@@ -284,7 +284,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void freezeCanvases( bool frozen = true );
 
-    //! Return the messageBar object which allows displaying unobtrusive messages to the user.
+    //! Returns the messageBar object which allows displaying unobtrusive messages to the user.
     QgsMessageBar *messageBar();
 
     //! Open the message log dock widget *
@@ -293,12 +293,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget );
 
-    //! Set theme (icons)
+    //! Sets theme (icons)
     void setTheme( const QString &themeName = "default" );
 
     void setIconSizes( int size );
 
-    //! Get stylesheet builder object for app and layout designers
+    //! Gets stylesheet builder object for app and layout designers
     QgisAppStyleSheet *styleSheetBuilder();
 
     //! Populates a menu with actions for opening layout designers
@@ -317,7 +317,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! update proxy settings
     void namUpdate();
 
-    //! set up master password
+    //! Sets up master password
     void masterPasswordSetup();
 
     /**
@@ -575,7 +575,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toolbars
 
     /**
-     * Get a reference to a toolbar. Mainly intended
+     * Gets a reference to a toolbar. Mainly intended
      *   to be used by plugins that want to specifically add
      *   an icon into the file toolbar for consistency e.g.
      *   addWFS and GPS plugins.
@@ -597,7 +597,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsStatusBar *statusBarIface() { return mStatusBar; }
 
-    //! return CAD dock widget
+    //! Returns the CAD dock widget
     QgsAdvancedDigitizingDockWidget *cadDockWidget() { return mAdvancedDigitizingDockWidget; }
 
     //! Returns map overview canvas
@@ -622,12 +622,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsUserProfileManager *userProfileManager();
 
     /**
-     * Return vector layers in edit mode
+     * Returns the vector layers in edit mode
      * \param modified whether to return only layers that have been modified
      * \returns list of layers in legend order, or empty list */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
-    //! Get timeout for timed messages: default of 5 seconds
+    //! Gets timeout for timed messages: default of 5 seconds
     int messageTimeout();
 
     //! emit initializationCompleted signal
@@ -687,7 +687,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
-    //! Get map of bookmarks
+    //! Gets map of bookmarks
     QMap<QString, QModelIndex> getBookmarkIndexMap();
     //! Zoom to a bookmark
     void zoomToBookmarkIndex( const QModelIndex & );
@@ -833,7 +833,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! pastes group or layer from the clipboard to layer tree
     void pasteLayer();
 
-    //! Set CRS of a layer
+    //! Sets CRS of a layer
     void setLayerCrs();
     //! Assign layer CRS to project
     void setProjectCrsFromLayer();
@@ -851,7 +851,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! project was read
     void readProject( const QDomDocument & );
 
-    //! Set app stylesheet from settings
+    //! Sets app stylesheet from settings
     void setAppStyleSheet( const QString &stylesheet );
 
     //! request credentials for network manager
@@ -935,11 +935,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Settings pages section
      */
-    //! Get map of option pages
+    //! Gets map of option pages
     QMap< QString, QString > optionsPagesMap();
-    //! Get map of project property pages
+    //! Gets map of project property pages
     QMap< QString, QString > projectPropertiesPagesMap();
-    //! Get map of setting pages
+    //! Gets map of setting pages
     QMap< QString, QString > settingPagesMap();
 
     void showProjectProperties( const QString  &page = QString() );
@@ -963,7 +963,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages );
 
-    //! set the active layer
+    //! Sets the active layer
     bool setActiveLayer( QgsMapLayer * );
 
     /**
@@ -1061,7 +1061,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void removeLayer();
     //! Duplicate map layer(s) in legend
     void duplicateLayers( const QList<QgsMapLayer *> &lyrList = QList<QgsMapLayer *>() );
-    //! Set scale visibility of selected layers
+    //! Sets scale visibility of selected layers
     void setLayerScaleVisibility();
     //! Zoom to nearest scale such that current layer is visible
     void zoomToLayerScale();
@@ -1079,9 +1079,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Apply the same style to selected layers or to current legend group
     void applyStyleToGroup();
 
-    //! Set the CRS of the current legend group
+    //! Sets the CRS of the current legend group
     void legendGroupSetCrs();
-    //! Set the WMS data of the current legend group
+    //! Sets the WMS data of the current legend group
     void legendGroupSetWmsData();
 
     //! zoom to extent of layer
@@ -1480,11 +1480,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addLayerDefinition();
     //! Exit Qgis
     void fileExit();
-    //! Set map tool to Zoom out
+    //! Sets map tool to Zoom out
     void zoomOut();
-    //! Set map tool to Zoom in
+    //! Sets map tool to Zoom in
     void zoomIn();
-    //! Set map tool to pan
+    //! Sets map tool to pan
     void pan();
     //! Identify feature(s) on the currently selected layer
     void identify();
@@ -1497,7 +1497,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Run the default feature action on the current layer
     void doFeatureAction();
-    //! Set the default feature action for the current layer
+    //! Sets the default feature action for the current layer
     void updateDefaultFeatureAction( QAction *action );
     //! Refresh the list of feature actions of the current layer
     void refreshFeatureActions();
@@ -1528,7 +1528,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! diagrams properties
     void diagramProperties();
 
-    //! set the CAD dock widget visible
+    //! Sets the CAD dock widget visible
     void setCadDockVisible( bool visible );
 
     //! show Python console
@@ -1555,7 +1555,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Toggle between full QGIS view and reduced view (being either Map only or only hiding panels)
     void toggleReducedView( bool viewMapOnly );
 
-    //! Set minimized mode of active window
+    //! Sets minimized mode of active window
     void showActiveWindowMinimized();
 
     //! Toggle maximized mode of active window
@@ -1637,7 +1637,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Pushes a layer error to the message bar
     void onLayerError( const QString &msg );
 
-    //! Set the layer for the map style dock. Doesn't show the style dock
+    //! Sets the layer for the map style dock. Doesn't show the style dock
     void setMapStyleDockLayer( QgsMapLayer *layer );
 
     void annotationCreated( QgsAnnotation *annotation );
@@ -1687,25 +1687,25 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /**
      * This signal is emitted when a new layout \a designer has been opened.
-     * \since QGIS 3.0
      * \see layoutDesignerWillBeClosed()
+     * \since QGIS 3.0
      */
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 
     /**
      * This signal is emitted before a layout \a designer is going to be closed
      * and deleted.
-     * \since QGIS 3.0
      * \see layoutDesignerClosed()
      * \see layoutDesignerOpened()
+     * \since QGIS 3.0
      */
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
 
     /**
      * This signal is emitted after a layout designer window is closed.
-     * \since QGIS 3.0
      * \see layoutDesignerWillBeClosed()
      * \see layoutDesignerOpened()
+     * \since QGIS 3.0
      */
     void layoutDesignerClosed();
 
@@ -1798,7 +1798,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
 
-    //! Set project properties, including map untis
+    //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
 
     /**

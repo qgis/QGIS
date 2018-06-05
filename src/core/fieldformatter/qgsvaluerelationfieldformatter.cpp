@@ -18,6 +18,7 @@
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionnodeimpl.h"
 
 #include <QSettings>
 
@@ -99,7 +100,7 @@ QVariant QgsValueRelationFieldFormatter::createCache( QgsVectorLayer *layer, int
 
 }
 
-QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config )
+QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatter::createCache( const QVariantMap &config, const QgsFeature &formFeature )
 {
   ValueRelationCache cache;
 
@@ -116,11 +117,19 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 
   request.setFlags( QgsFeatureRequest::NoGeometry );
   request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
-  if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
+
+  const QString expression = config.value( QStringLiteral( "FilterExpression" ) ).toString();
+
+  // Skip the filter and build a full cache if the form scope is required and the feature
+  // is not valid or the attributes required for the filter have no valid value
+  if ( ! expression.isEmpty() && ( ! expressionRequiresFormScope( expression )
+                                   || expressionIsUsable( expression, formFeature ) ) )
   {
     QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    if ( formFeature.isValid( ) )
+      context.appendScope( QgsExpressionContextUtils::formScope( formFeature ) );
     request.setExpressionContext( context );
-    request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
+    request.setFilterExpression( expression );
   }
 
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -161,4 +170,57 @@ QStringList QgsValueRelationFieldFormatter::valueToStringList( const QVariant &v
     }
   }
   return checkList;
+}
+
+
+QSet<QString> QgsValueRelationFieldFormatter::expressionFormVariables( const QString &expression )
+{
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
+  QSet< QString > formVariables = scope->variableNames().toSet();
+  const QSet< QString > usedVariables = QgsExpression( expression ).referencedVariables();
+  formVariables.intersect( usedVariables );
+  return formVariables;
+}
+
+bool QgsValueRelationFieldFormatter::expressionRequiresFormScope( const QString &expression )
+{
+  return !( expressionFormAttributes( expression ).isEmpty() && expressionFormVariables( expression ).isEmpty() );
+}
+
+QSet<QString> QgsValueRelationFieldFormatter::expressionFormAttributes( const QString &expression )
+{
+  QSet<QString> attributes;
+  QgsExpression exp( expression );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::formScope() );
+  // List of form function names used in the expression
+  const QSet<QString> formFunctions( scope->functionNames()
+                                     .toSet()
+                                     .intersect( exp.referencedFunctions( ) ) );
+  const QList<const QgsExpressionNodeFunction *> expFunctions( exp.findNodes<QgsExpressionNodeFunction>() );
+  QgsExpressionContext context;
+  for ( const auto &f : expFunctions )
+  {
+    QgsExpressionFunction *fd = QgsExpression::QgsExpression::Functions()[f->fnIndex()];
+    if ( formFunctions.contains( fd->name( ) ) )
+    {
+      for ( const auto &param : f->args( )->list() )
+      {
+        attributes.insert( param->eval( &exp, &context ).toString() );
+      }
+    }
+  }
+  return attributes;
+}
+
+bool QgsValueRelationFieldFormatter::expressionIsUsable( const QString &expression, const QgsFeature &feature )
+{
+  const QSet<QString> attrs = expressionFormAttributes( expression );
+  for ( auto it = attrs.constBegin() ; it != attrs.constEnd(); it++ )
+  {
+    if ( ! feature.attribute( *it ).isValid() )
+      return false;
+  }
+  if ( ! expressionFormVariables( expression ).isEmpty() && feature.geometry().isEmpty( ) )
+    return false;
+  return true;
 }

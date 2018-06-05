@@ -29,8 +29,8 @@
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.
  *
- * \since QGIS 3.0
  * \see QgsRectangle
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsBox3d
 {

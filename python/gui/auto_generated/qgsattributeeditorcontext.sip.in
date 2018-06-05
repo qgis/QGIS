@@ -171,7 +171,7 @@ Returns true if the attribute editor should permit use of custom UI forms.
 Sets whether the attribute editor should permit use of custom UI forms.
 
 :param allow: set to true to allow custom UI forms, or false to disable them and use default generated
-QGIS forms
+              QGIS forms
 
 .. seealso:: :py:func:`allowCustomUi`
 
@@ -179,6 +179,25 @@ QGIS forms
 %End
 
     const QgsAttributeEditorContext *parentContext() const;
+
+    QgsFeature formFeature() const;
+%Docstring
+Returns current feature from the currently edited form or table row
+
+.. seealso:: :py:func:`setFormFeature`
+
+.. versionadded:: 3.2
+%End
+
+    void setFormFeature( const QgsFeature &feature );
+%Docstring
+Set current ``feature`` for the currently edited form or table row
+
+.. seealso:: :py:func:`formFeature`
+
+.. versionadded:: 3.2
+%End
+
 
 };
 

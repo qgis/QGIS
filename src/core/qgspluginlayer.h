@@ -43,10 +43,10 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      */
     QgsPluginLayer *clone() const override = 0;
 
-    //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
+    //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
 
-    //! Set extent of the layer
+    //! Sets extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
     /**
@@ -74,13 +74,13 @@ class QgsPluginLayerDataProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
-    QgsPluginLayerDataProvider( const QString &layerType );
+    QgsPluginLayerDataProvider( const QString &layerType, const QgsDataProvider::ProviderOptions &options );
     void setExtent( const QgsRectangle &extent ) { mExtent = extent; }
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QString name() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QString name() const override;
     QString description() const override;
-    virtual QgsRectangle extent() const override;
-    virtual bool isValid() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
 
   private:
     QString mName;

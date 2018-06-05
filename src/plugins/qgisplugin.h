@@ -94,7 +94,7 @@ class QgisPlugin
 
     virtual ~QgisPlugin() = default;
 
-    //! Get the name of the plugin
+    //! Gets the name of the plugin
     QString const &name() const
     {
       return mName;

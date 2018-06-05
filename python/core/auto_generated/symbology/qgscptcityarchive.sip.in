@@ -320,7 +320,7 @@ virtual bool dropMimeData( const QMimeData * data, Qt.DropAction action, int row
 
     QModelIndex findPath( const QString &path );
 %Docstring
-return index of a path
+Returns index of a path
 %End
 
     void connectItem( QgsCptCityDataItem *item );

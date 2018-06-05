@@ -32,17 +32,17 @@ from existing configs, or creating/removing them from auth database
 
     void setConfigId( const QString &authcfg );
 %Docstring
-Set the authentication config id for the resource
+Sets the authentication config id for the resource
 %End
 
     const QString configId() const;
 %Docstring
-Get the authentication config id for the resource
+Gets the authentication config id for the resource
 %End
 
     void setDataProviderKey( const QString &key );
 %Docstring
-Set key of layer provider, if applicable
+Sets key of layer provider, if applicable
 %End
 
   signals:
@@ -97,7 +97,7 @@ Construct wrapper dialog for select widget to edit an authcfg in a data source U
 
     void setDataSourceUri( const QString &datauri );
 %Docstring
-Set the data source URI to parse
+Sets the data source URI to parse
 %End
 
     QString dataSourceUri();

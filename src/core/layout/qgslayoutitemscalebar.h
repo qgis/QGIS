@@ -97,8 +97,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     /**
      * Returns the size mode for the scale bar segments.
      * \see setSegmentSizeMode()
-     * \see minBarWidth()
-     * \see maxBarWidth()
+     * \see minimumBarWidth()
+     * \see maximumBarWidth()
      */
     QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const { return mSettings.segmentSizeMode(); }
 
@@ -272,7 +272,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Returns the pen used for drawing outlines in the scalebar.
-     * \see setPen()
      * \see brush()
      */
     QPen pen() const { return mSettings.pen(); }
@@ -280,7 +279,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     /**
      * Returns the primary brush for the scalebar.
      * \returns QBrush used for filling the scalebar
-     * \see setBrush
      * \see brush2
      * \see pen
      */
@@ -290,7 +288,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
      * as single and double box styles.
      * \returns QBrush used for secondary color areas
-     * \see setBrush2
      * \see brush
      */
     QBrush brush2() const {return mSettings.brush2(); }
@@ -439,7 +436,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      */
     void update();
 
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    void refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
     void finalizeRestoreFromXml() override;
   protected:
 

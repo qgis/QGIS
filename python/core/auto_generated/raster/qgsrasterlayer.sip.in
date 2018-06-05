@@ -98,7 +98,7 @@ methods.
 
     QgsRasterLayer();
 %Docstring
- Constructor. Provider is not set.
+Constructor. Provider is not set.
 %End
 
     struct LayerOptions
@@ -117,7 +117,7 @@ Constructor for LayerOptions.
                              const QString &providerKey = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 %Docstring
- This is the constructor for the RasterLayer class.
+This is the constructor for the RasterLayer class.
 
 The main tasks carried out by the constructor are:
 
@@ -132,7 +132,6 @@ The main tasks carried out by the constructor are:
 -Assign sensible defaults for the red, green, blue and gray bands.
 
 -
-*
 %End
 
     ~QgsRasterLayer();
@@ -177,28 +176,40 @@ returned in ``retError``.
 
     static QDateTime lastModified( const QString   &name );
 %Docstring
-Return time stamp for given file name
+Returns time stamp for given file name
 %End
 
-    void setDataProvider( const QString &provider );
+ void setDataProvider( const QString &provider ) /Deprecated/;
 %Docstring
-[ data provider interface ] Set the data provider
+Set the data provider.
+
+.. deprecated:: Use the version with ProviderOptions instead.
+%End
+
+    void setDataProvider( const QString &provider, const QgsDataProvider::ProviderOptions &options );
+%Docstring
+Set the data provider.
+
+:param provider: provider key string, must match a valid QgsRasterDataProvider key. E.g. "gdal", "wms", etc.
+:param options: provider options
+
+.. versionadded:: 3.2
 %End
 
     LayerType rasterType();
 %Docstring
-  Accessor for raster layer type (which is a read only property)
+Returns the raster layer type (which is a read only property).
 %End
 
     void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
 %Docstring
-Set raster renderer. Takes ownership of the renderer object
+Sets raster renderer. Takes ownership of the renderer object
 %End
     QgsRasterRenderer *renderer() const;
 
     QgsRasterResampleFilter *resampleFilter() const;
 %Docstring
-Set raster resample filter. Takes ownership of the resample filter object
+Sets raster resample filter. Takes ownership of the resample filter object
 %End
 
     QgsBrightnessContrastFilter *brightnessFilter() const;
@@ -206,27 +217,31 @@ Set raster resample filter. Takes ownership of the resample filter object
 
     QgsRasterPipe *pipe();
 %Docstring
-Get raster pipe
+Returns the raster pipe.
 %End
 
     int width() const;
 %Docstring
- Accessor that returns the width of the (unclipped) raster
+Returns the width of the (unclipped) raster.
+
+.. seealso:: :py:func:`height`
 %End
 
     int height() const;
 %Docstring
- Accessor that returns the height of the (unclipped) raster
+Returns the height of the (unclipped) raster.
+
+.. seealso:: :py:func:`width`
 %End
 
     int bandCount() const;
 %Docstring
- Get the number of bands in this layer
+Returns the number of bands in this layer.
 %End
 
     QString bandName( int bandNoInt ) const;
 %Docstring
- Get the name of a band given its number
+Returns the name of a band given its number.
 %End
 
     virtual QgsRasterDataProvider *dataProvider();
@@ -244,7 +259,7 @@ Get raster pipe
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
- This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
+This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
 %End
 
     QgsLegendColorList legendSymbologyItems() const;
@@ -266,7 +281,7 @@ Returns a 100x100 pixmap of the color palette. If the layer has no palette a whi
 
     QString providerType() const;
 %Docstring
- [ data provider interface ] Which provider is being used for this Raster Layer?
+[ data provider interface ] Which provider is being used for this Raster Layer?
 %End
 
     double rasterUnitsPerPixelX() const;
@@ -296,7 +311,7 @@ In a world file, this is normally the first row (without the sign).
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 %Docstring
- Set contrast enhancement algorithm
+Set contrast enhancement algorithm
 
 :param algorithm: Contrast enhancement algorithm
 :param limits: Limits
@@ -310,7 +325,7 @@ In a world file, this is normally the first row (without the sign).
 
     void setDefaultContrastEnhancement();
 %Docstring
- Set default contrast enhancement
+Sets the default contrast enhancement
 %End
 
     virtual QStringList subLayers() const;
@@ -319,7 +334,7 @@ In a world file, this is normally the first row (without the sign).
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 %Docstring
- Draws a preview of the rasterlayer into a QImage
+Draws a preview of the rasterlayer into a QImage
 
 .. versionadded:: 2.4
 %End

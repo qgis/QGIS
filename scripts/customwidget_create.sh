@@ -11,11 +11,11 @@ set -e
 
 CLASSNAME=$1
 
-TODAY=`date '+%d.%m.%Y'`
-YEAR=`date '+%Y'`
+TODAY=$(date '+%d.%m.%Y')
+YEAR=$(date '+%Y')
 
-AUTHOR=`git config user.name`
-EMAIL=`git config user.email`
+AUTHOR=$(git config user.name)
+EMAIL=$(git config user.email)
 
 CLASSUPPER="${CLASSNAME^^}"
 CLASSLOWER="${CLASSNAME,,}"

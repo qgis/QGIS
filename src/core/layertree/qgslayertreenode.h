@@ -104,15 +104,15 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }
-    //! Get pointer to the parent. If parent is a null pointer, the node is a root node
+    //! Gets pointer to the parent. If parent is a null pointer, the node is a root node
     QgsLayerTreeNode *parent() { return mParent; }
-    //! Get list of children of the node. Children are owned by the parent
+    //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
-    //! Get list of children of the node. Children are owned by the parent
+    //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
 
     /**
-     * Return name of the node
+     * Returns name of the node
      * \since QGIS 3.0
      */
     virtual QString name() const = 0;
@@ -139,7 +139,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Write layer tree to XML
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) = 0;
 
-    //! Return string with layer tree structure. For debug purposes only
+    //! Returns string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;
 
     //! Create a copy of the node. Returns new instance
@@ -150,7 +150,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * This method should be called after readXml()
      * If \a looseMatching is true then a looser match will be used, where a layer
      * will match if the name, public source, and data provider match. This can be
-     * used to match legend customisation from different projects where layers
+     * used to match legend customization from different projects where layers
      * will have different layer IDs.
      * \since QGIS 3.0
      */
@@ -187,13 +187,13 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     void setItemVisibilityCheckedParentRecursive( bool checked );
 
     /**
-     * Return whether this node is checked and all its children.
+     * Returns whether this node is checked and all its children.
      * \since QGIS 3.0
      */
     bool isItemVisibilityCheckedRecursive() const;
 
     /**
-     * Return whether this node is unchecked and all its children.
+     * Returns whether this node is unchecked and all its children.
      * \since QGIS 3.0
      */
     bool isItemVisibilityUncheckedRecursive() const;
@@ -205,18 +205,18 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      */
     QList< QgsMapLayer * > checkedLayers() const;
 
-    //! Return whether the node should be shown as expanded or collapsed in GUI
+    //! Returns whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
-    //! Set whether the node should be shown as expanded or collapsed in GUI
+    //! Sets whether the node should be shown as expanded or collapsed in GUI
     void setExpanded( bool expanded );
 
-    //! Set a custom property for the node. Properties are stored in a map and saved in project file.
+    //! Sets a custom property for the node. Properties are stored in a map and saved in project file.
     void setCustomProperty( const QString &key, const QVariant &value );
     //! Read a custom property from layer. Properties are stored in a map and saved in project file.
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
     //! Remove a custom property from layer. Properties are stored in a map and saved in project file.
     void removeCustomProperty( const QString &key );
-    //! Return list of keys stored in custom properties
+    //! Returns list of keys stored in custom properties
     QStringList customProperties() const;
     //! Remove a child from a node
     bool takeChild( QgsLayerTreeNode *node );

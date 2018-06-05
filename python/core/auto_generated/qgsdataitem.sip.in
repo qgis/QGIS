@@ -186,7 +186,7 @@ A draggable item has to implement mimeUri() that will be used to pass data.
 
     virtual QgsMimeDataUtils::Uri mimeUri() const;
 %Docstring
-Return mime URI for the data item.
+Returns mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
 
 .. seealso:: :py:func:`hasDragEnabled`
@@ -226,7 +226,7 @@ Sets the capabilities for the data item.
 
     QgsDataItem *parent() const;
 %Docstring
-Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
+Gets item parent. QgsDataItem maintains its own items hierarchy, it does not use
 QObject hierarchy. *
 %End
 
@@ -473,7 +473,7 @@ Returns the icon name of the given ``layerType``
     static QIcon iconDefault();
     static QIcon iconMesh();
 %Docstring
-Return icon for mesh layer type
+Returns icon for mesh layer type
 %End
 
     virtual QString layerName() const;
@@ -582,7 +582,7 @@ Data item that can be used to represent QGIS projects.
 
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 %Docstring
- A data item holding a reference to a QGIS project file.
+A data item holding a reference to a QGIS project file.
 
 :param parent: The parent data item.
 :param name: The name of the of the project. Displayed to the user.

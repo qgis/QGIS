@@ -1844,7 +1844,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgisApp::instance()->activateWindow();
   this->raise();
 #endif
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Layout as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Layout As" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )
@@ -2755,6 +2755,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
   QString outputFileName;
   QgsSettings settings;
+  QString dir;
   if ( singleFile )
   {
     QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
@@ -2820,7 +2821,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     {
       return;
     }
-    QString dir = files.at( 0 );
+    dir = files.at( 0 );
     if ( dir.isEmpty() )
     {
       return;
@@ -2900,7 +2901,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       else
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
-                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
                                   Qgis::Success, 0 );
       }
       break;
@@ -2952,7 +2953,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
-  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report as" ), outputFileName );
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report As" ), outputFileName );
   this->activateWindow();
 
   if ( fileNExt.first.isEmpty() )

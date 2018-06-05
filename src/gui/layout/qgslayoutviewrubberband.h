@@ -57,7 +57,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
      */
     QgsLayoutViewRubberBand( QgsLayoutView *view = nullptr );
 
-    virtual ~QgsLayoutViewRubberBand() = default;
+    ~QgsLayoutViewRubberBand() override = default;
 
     /**
      * Creates a new instance of the QgsLayoutViewRubberBand subclass.

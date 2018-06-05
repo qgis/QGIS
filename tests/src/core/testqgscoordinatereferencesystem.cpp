@@ -80,6 +80,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void saveAsUserCrs();
     void projectWithCustomCrs();
     void projectEPSG25833();
+    void geoCcsDescription();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -892,6 +893,26 @@ void TestQgsCoordinateReferenceSystem::projectEPSG25833()
   QVERIFY( p.crs().isValid() );
   QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
   QCOMPARE( spyCrsChanged.count(), 1 );
+}
+
+void TestQgsCoordinateReferenceSystem::geoCcsDescription()
+{
+  // test that geoccs crs descriptions are correctly imported from GDAL
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:3822" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3822" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "TWD97" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4340" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4340" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "Australian Antarctic (geocentric)" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4348" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4348" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "GDA94 (geocentric)" ) );
 }
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

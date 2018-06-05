@@ -35,9 +35,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     txtRules = alg.parameterAsString(parameters, 'rules_txt', context)
     rules = alg.parameterAsString(parameters, 'rules', context)
     if txtRules and rules:
-        return alg.tr("You need to set either inline rules or a rules file!")
+        return False, alg.tr("You need to set either inline rules or a rules file!")
 
-    return None
+    return True, None
 
 
 def processInputs(alg, parameters, context, feedback):

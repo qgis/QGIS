@@ -221,7 +221,7 @@ class CORE_EXPORT QgsFeature
     virtual ~QgsFeature();
 
     /**
-     * Get the feature ID for this feature.
+     * Gets the feature ID for this feature.
      * \returns feature ID
      * \see setId()
      */
@@ -238,8 +238,8 @@ class CORE_EXPORT QgsFeature
      * Returns the feature's attributes.
      * \returns list of feature's attributes
      * \see setAttributes
-     * \since QGIS 2.9
      * \note Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+     * \since QGIS 2.9
      */
     QgsAttributes attributes() const;
 
@@ -366,8 +366,8 @@ class CORE_EXPORT QgsFeature
      *  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
-     * \since QGIS 2.9
      * \see fields
+     * \since QGIS 2.9
      */
     void setFields( const QgsFields &fields, bool initAttributes = false SIP_PYARGDEFAULT( true ) );
 

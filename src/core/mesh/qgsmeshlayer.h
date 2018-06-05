@@ -24,6 +24,9 @@
 #include "qgsmaplayer.h"
 #include "qgsrendercontext.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshrenderersettings.h"
+
+const int NO_ACTIVE_MESH_DATASET = -1;
 
 class QgsMapLayerRenderer;
 class QgsSymbol;
@@ -80,12 +83,22 @@ struct QgsMesh;
  *     QgsMeshLayer *scratchLayer = new QgsMeshLayer(uri, "My Scratch Layer",  "mdal");
  * \endcode
  *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
  * \since QGIS 3.2
  */
 class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 {
     Q_OBJECT
   public:
+
+    /**
+     * Setting options for loading mesh layers.
+     */
+    struct LayerOptions
+    {
+      int unused;  //! @todo remove me once there are actual members here (breaks SIP <4.19)
+    };
 
     /**
      * Constructor - creates a mesh layer
@@ -98,8 +111,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *               parameters used by the data provider as url query items.
      * \param baseName The name used to represent the layer in the legend
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
+     * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory" );
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = "mesh_memory",
+                           const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
     ~QgsMeshLayer() override;
 
     //! QgsMeshLayer cannot be copied.
@@ -111,7 +126,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     const QgsMeshDataProvider *dataProvider() const override SIP_SKIP;
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
@@ -119,26 +134,56 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
     bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
-    //! Return the provider type for this layer
+    //! Returns the provider type for this layer
     QString providerType() const;
 
-    //! return native mesh (nullprt before rendering)
+    //! Returns native mesh (nullptr before rendering)
     QgsMesh *nativeMesh() SIP_SKIP;
 
-    //! return triangular mesh (nullprt before rendering)
+    //! Returns triangular mesh (nullptr before rendering)
     QgsTriangularMesh *triangularMesh() SIP_SKIP;
 
-    //! Returns a line symbol used for rendering native mesh.
-    QgsSymbol *nativeMeshSymbol();
+    //! Returns renderer settings
+    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
+
+    //! Sets new renderer settings, triggers repaint
+    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+
+    //! Returns renderer settings
+    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
+
+    //! Sets new renderer settings, triggers repaint
+    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
+
+    //! Returns renderer settings
+    QgsMeshRendererScalarSettings rendererScalarSettings() const;
+
+    //! Sets new renderer settings, triggers repaint
+    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
+
+    //! Returns renderer settings
+    QgsMeshRendererVectorSettings rendererVectorSettings() const;
+
+    //! Sets new renderer settings, triggers repaint
+    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
 
     /**
-     * Returns a line symbol used for rendering of triangular (derived) mesh.
-     * \see toggleTriangularMeshRendering
+     * Sets active scalar dataset for rendering
+     *
+     * Triggers repaint
      */
-    QgsSymbol *triangularMeshSymbol();
+    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
+    //! Returns active scalar dataset
+    int activeScalarDataset() const { return mActiveScalarDataset; }
 
-    //! Toggle rendering of triangular (derived) mesh. Off by default
-    void toggleTriangularMeshRendering( bool toggle );
+    /**
+     * Sets active vector dataset for rendering.
+     *
+     * If dataset is not vector based, do nothing. Triggers repaint
+     */
+    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
+    //! Returns active vector dataset
+    int activeVectorDataset() const { return mActiveVectorDataset; }
 
   private: // Private methods
 
@@ -148,10 +193,11 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     bool isReadOnly() const override {return true;}
 
     /**
-     * Bind layer to a specific data provider
+     * Binds layer to a specific data provider
      * \param provider provider key string, must match a valid QgsMeshDataProvider key. E.g. "mesh_memory", etc.
+     * \param options generic provider options
      */
-    bool setDataProvider( QString const &provider );
+    bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options );
 
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );
@@ -173,11 +219,16 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Pointer to derived mesh structure
     std::unique_ptr<QgsTriangularMesh> mTriangularMesh;
 
-    //! rendering native mesh
-    std::unique_ptr<QgsSymbol> mNativeMeshSymbol;
+    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
+    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
+    QgsMeshRendererScalarSettings mRendererScalarSettings;
+    QgsMeshRendererVectorSettings mRendererVectorSettings;
 
-    //! rendering triangular mesh
-    std::unique_ptr<QgsSymbol> mTriangularMeshSymbol;
+    //! index of active scalar dataset; -1 if none
+    int mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
+
+    //! index of active vector dataset; -1 if none
+    int mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
 };
 
 #endif //QGSMESHLAYER_H

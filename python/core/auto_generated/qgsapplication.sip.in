@@ -125,7 +125,7 @@ Catch exceptions when sending event to receiver.
 
     static void setFileOpenEventReceiver( QObject *receiver );
 %Docstring
-Set the FileOpen event receiver
+Sets the FileOpen event receiver
 %End
 
     static void setThemeName( const QString &themeName );
@@ -161,7 +161,7 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
 
     static void setUITheme( const QString &themeName );
 %Docstring
- Set the current UI theme used to style the interface.  Use uiThemes() to
+Set the current UI theme used to style the interface.  Use uiThemes() to
 find valid themes to use. Variables found in variables.qss will be added to the stylesheet
 on load.
 
@@ -174,7 +174,7 @@ on load.
 
     static QHash<QString, QString> uiThemes();
 %Docstring
- All themes found in ~/.qgis3/themes folder.
+All themes found in ~/.qgis3/themes folder.
 The path is to the root folder for the theme
 
 :return: A hash of theme name and theme path. Valid theme folders contain style.qss
@@ -370,36 +370,36 @@ Returns the short name regular expression for line edit validator
 %Docstring
 Returns the user's operating system login account name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userFullName`
+
+.. versionadded:: 2.14
 %End
 
     static QString userFullName();
 %Docstring
 Returns the user's operating system login account full display name.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`userLoginName`
+
+.. versionadded:: 2.14
 %End
 
     static QString osName();
 %Docstring
 Returns a string name of the operating system QGIS is running on.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`platform`
+
+.. versionadded:: 2.14
 %End
 
     static QString platform();
 %Docstring
 Returns the QGIS platform name, e.g., "desktop" or "server".
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`osName`
+
+.. versionadded:: 2.14
 %End
 
     static QString locale();
@@ -489,7 +489,7 @@ deletes provider registry and map layer registry
 
     static QString appIconPath();
 %Docstring
-get application icon
+Gets application icon
 %End
 
     enum endian_t
@@ -506,7 +506,8 @@ Returns whether this machine uses big or little endian
 
     static QString reportStyleSheet();
 %Docstring
- get a standard css style sheet for reports.
+Returns a standard css style sheet for reports.
+
 Typically you will use this method by doing:
 QString myStyle = QgsApplication.reportStyleSheet();
 textBrowserReport->document()->setDefaultStyleSheet(myStyle);
@@ -589,7 +590,7 @@ Apply the skipped drivers list to gdal
 
     static int maxThreads();
 %Docstring
-Get maximum concurrent thread count
+Gets maximum concurrent thread count
 
 .. versionadded:: 2.4
 %End
@@ -738,16 +739,12 @@ Returns the application runtime profiler.
 
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 %Docstring
-Get the registry of available field formatters.
+Gets the registry of available field formatters.
 %End
 
     static Qgs3DRendererRegistry *renderer3DRegistry();
 %Docstring
 Returns registry of available 3D renderers.
-
-.. note::
-
-   not available in Python bindings
 
 .. versionadded:: 3.0
 %End
@@ -779,7 +776,7 @@ in a widget or sending it to a web browser.
 Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 
 .. versionadded:: 3.0
 %End
@@ -789,7 +786,7 @@ This does not include generated variables (like system name, user name etc.)
 Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalScope`
 
 .. versionadded:: 3.0
 %End

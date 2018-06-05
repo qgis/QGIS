@@ -22,6 +22,7 @@
 #include "processing/qgsprocessingprovider.h"
 #include "qgstaskmanager.h"
 #include "processing/qgsprocessingalgrunnertask.h"
+#include "qgsstringutils.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -33,7 +34,6 @@
 ///@cond NOT_STABLE
 
 QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
-  : QgsProcessingFeedback()
 {
 }
 
@@ -126,7 +126,12 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
 {
   mAlgorithm = algorithm;
-  setWindowTitle( mAlgorithm->displayName() );
+  QString title;
+  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagDisplayNameIsLiteral )
+    title = mAlgorithm->displayName();
+  else
+    title = QgsStringUtils::capitalize( mAlgorithm->displayName(), QgsStringUtils::TitleCase );
+  setWindowTitle( title );
 
   QString algHelp = formatHelp( algorithm );
   if ( algHelp.isEmpty() )
@@ -483,6 +488,10 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
       help += QStringLiteral( "<p>%1</p>" ).arg( paragraph );
     }
     return QStringLiteral( "<h2>%1</h2>%2" ).arg( algorithm->displayName(), help );
+  }
+  else if ( !algorithm->shortDescription().isEmpty() )
+  {
+    return QStringLiteral( "<h2>%1</h2><p>%2</p>" ).arg( algorithm->displayName(), algorithm->shortDescription() );
   }
   else
     return QString();

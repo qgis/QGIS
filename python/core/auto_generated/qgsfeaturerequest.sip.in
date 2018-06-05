@@ -116,9 +116,9 @@ from the provider.
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 %End
 
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
@@ -126,7 +126,7 @@ If the order is descending, by default nulls are first
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 %End
 
@@ -135,9 +135,9 @@ Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 %End
 
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
@@ -145,7 +145,7 @@ If the order is descending, by default nulls are first
 Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 %End
 
@@ -224,7 +224,7 @@ Create a new order by from a list of clauses
 
         QList<QgsFeatureRequest::OrderByClause> list() const;
 %Docstring
-Get a copy as a list of OrderByClauses
+Gets a copy as a list of OrderByClauses
 
 This is only required in Python where the inheritance
 is not properly propagated and this makes it usable.
@@ -286,7 +286,7 @@ copy constructor
 
     FilterType filterType() const;
 %Docstring
-Return the filter type which is currently set on this request
+Returns the filter type which is currently set on this request
 
 :return: Filter type
 %End
@@ -316,20 +316,20 @@ will use the same CRS as the source layer/provider.
 
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
 %Docstring
-Set feature ID that should be fetched.
+Sets feature ID that should be fetched.
 %End
     QgsFeatureId filterFid() const;
 %Docstring
-Get the feature ID that should be fetched.
+Gets the feature ID that should be fetched.
 %End
 
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
 %Docstring
-Set feature IDs that should be fetched.
+Sets feature IDs that should be fetched.
 %End
     const QgsFeatureIds &filterFids() const;
 %Docstring
-Get feature IDs that should be fetched.
+Gets feature IDs that should be fetched.
 %End
 
     QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
@@ -361,9 +361,9 @@ Sets a callback function to use when encountering an invalid geometry and
 invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`invalidGeometryCallback`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -414,22 +414,22 @@ the existing expression and the additional expression will be returned.
 %Docstring
 Returns the expression context used to evaluate filter expressions.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`setExpressionContext`
 
 .. seealso:: :py:func:`filterExpression`
+
+.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression context used to evaluate filter expressions.
 
-.. versionadded:: 2.12
-
 .. seealso:: :py:func:`expressionContext`
 
 .. seealso:: :py:func:`setFilterExpression`
+
+.. versionadded:: 2.12
 %End
 
     QgsFeatureRequest &disableFilter();
@@ -448,9 +448,9 @@ The spatial filter (filterRect) will be kept in place.
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
-If the order is ascending, by default nulls are last
-If the order is descending, by default nulls are first
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
+                  If the order is ascending, by default nulls are last
+                  If the order is descending, by default nulls are first
 
 .. versionadded:: 2.14
 %End
@@ -460,7 +460,7 @@ If the order is descending, by default nulls are first
 Adds a new OrderByClause, appending it as the least important one.
 
 :param expression: The expression to use for ordering
-:param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
+:param ascending: If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 
 .. versionadded:: 2.14
@@ -468,7 +468,7 @@ Adds a new OrderByClause, appending it as the least important one.
 
     OrderBy orderBy() const;
 %Docstring
-Return a list of order by clauses specified for this feature request.
+Returns a list of order by clauses specified for this feature request.
 
 .. versionadded:: 2.14
 %End
@@ -502,7 +502,7 @@ Returns the maximum number of features to request, or -1 if no limit set.
 
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
 %Docstring
-Set flags that affect how features will be fetched
+Sets flags that affect how features will be fetched
 %End
     const Flags &flags() const;
 
@@ -514,19 +514,19 @@ To disable fetching attributes, reset the FetchAttributes flag (which is set by 
 
     QgsAttributeList subsetOfAttributes() const;
 %Docstring
-Return the subset of attributes which at least need to be fetched
+Returns the subset of attributes which at least need to be fetched
 
 :return: A list of attributes to be fetched
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 %Docstring
-Set a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 %Docstring
-Set a subset of attributes by names that will be fetched
+Sets a subset of attributes by names that will be fetched
 %End
 
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
@@ -538,7 +538,7 @@ Set a simplification method for geometries that will be fetched
 
     const QgsSimplifyMethod &simplifyMethod() const;
 %Docstring
-Get simplification method for geometries that will be fetched
+Gets simplification method for geometries that will be fetched
 
 .. versionadded:: 2.2
 %End
@@ -600,11 +600,11 @@ Sets a callback function to use when encountering a transform error when iterati
 features and a destinationCrs() is set. This function will be
 called using the feature which encountered the transform error as a parameter.
 
-.. versionadded:: 3.0
-
 .. seealso:: :py:func:`transformErrorCallback`
 
 .. seealso:: :py:func:`setDestinationCrs`
+
+.. versionadded:: 3.0
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -627,7 +627,7 @@ called using the feature which encountered the transform error as a parameter.
 %Docstring
 Check if a feature is accepted by this requests filter
 
-:param feature:  The feature which will be tested
+:param feature: The feature which will be tested
 
 :return: true, if the filter accepts the feature
 
@@ -683,7 +683,7 @@ Base class that can be used for any class that is capable of returning features
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 %Docstring
-Get an iterator for features matching the specified request
+Gets an iterator for features matching the specified request
 
 :param request: The request
 

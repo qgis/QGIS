@@ -35,7 +35,7 @@ as well as it knows the concept of snapping.
 Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
 
 :param mapCanvas: The map canvas on which the event occurred
-:param event:     The original mouse event
+:param event: The original mouse event
 %End
 
     QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
@@ -44,16 +44,16 @@ Creates a new QgsMapMouseEvent. Should only be required to be called from the Qg
 Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
 
 :param mapCanvas: The map canvas on which the event occurred
-:param type:      The type of the event
-:param pos:       The pixel position of the mouse
-:param button:    The pressed button
-:param buttons:   Further buttons that are pressed
+:param type: The type of the event
+:param pos: The pixel position of the mouse
+:param button: The pressed button
+:param buttons: Further buttons that are pressed
 :param modifiers: Keyboard modifiers
 %End
 
     QgsPointXY snapPoint();
 %Docstring
- snapPoint will snap the points using the map canvas snapping utils configuration
+snapPoint will snap the points using the map canvas snapping utils configuration
 
 .. note::
 
@@ -70,7 +70,7 @@ Will only be useful after snapPoint has previously been called.
 
     QgsPointXY mapPoint() const;
 %Docstring
- mapPoint returns the point in coordinates
+mapPoint returns the point in coordinates
 
 :return: the point in map coordinates, after snapping if requested in the event.
 %End
@@ -81,12 +81,12 @@ Returns the matching data from the most recently snapped point.
 
 :return: the snapping data structure
 
-.. versionadded:: 2.14
-
 .. note::
 
    This method returns the most recent snap match. It must
    follow a call to snapPoint() in order to have a recent snap result available.
+
+.. versionadded:: 2.14
 %End
 
     void setMapPoint( const QgsPointXY &point );

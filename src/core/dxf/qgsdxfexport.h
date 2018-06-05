@@ -63,11 +63,11 @@ class CORE_EXPORT QgsDxfExport
           , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
         {}
 
-        //! Return the layer
+        //! Returns the layer
         QgsVectorLayer *layer() const {return mLayer;}
 
         /**
-         * Return the attribute index used to split into multiple layers.
+         * Returns the attribute index used to split into multiple layers.
          * The attribute value is used for layer names.
          */
         int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
@@ -106,15 +106,15 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Sets the export flags.
-     * \since QGIS 3.0
      * \see flags()
+     * \since QGIS 3.0
      */
     void setFlags( QgsDxfExport::Flags flags );
 
     /**
      * Returns the export flags.
-     * \since QGIS 3.0
      * \see setFlags()
+     * \since QGIS 3.0
      */
     QgsDxfExport::Flags flags() const;
 
@@ -136,16 +136,16 @@ class CORE_EXPORT QgsDxfExport
     /**
      * Set reference \a scale for output.
      * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see symbologyScale()
+     * \since QGIS 3.0
      */
     void setSymbologyScale( double scale ) { mSymbologyScale = scale; }
 
     /**
      * Returns the reference scale for output.
      * The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-     * \since QGIS 3.0
      * \see setSymbologyScale()
+     * \since QGIS 3.0
      */
     double symbologyScale() const { return mSymbologyScale; }
 
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsDxfExport
     void setSymbologyExport( QgsDxfExport::SymbologyExport e ) { mSymbologyExport = e; }
 
     /**
-     * Get symbology export mode
+     * Gets symbology export mode
      * \returns mode
      * \see setSymbologyExport
      */
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsDxfExport
     void setExtent( const QgsRectangle &r ) { mExtent = r; }
 
     /**
-     * Get extent of area to export
+     * Gets extent of area to export
      * \returns area to export
      * \see setExtent
      */
@@ -225,13 +225,13 @@ class CORE_EXPORT QgsDxfExport
     bool force2d() { return mForce2d; }
 
     /**
-     * Get DXF palette index of nearest entry for given color
+     * Gets DXF palette index of nearest entry for given color
      * \param color
      */
     static int closestColorMatch( QRgb color );
 
     /**
-     * Get layer name for feature
+     * Gets layer name for feature
      * \param id layer id of layer
      * \param f feature of layer
      * \returns layer name for feature
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsDxfExport
     QString layerName( const QString &id, const QgsFeature &f ) const;
 
     /**
-     * Get name for layer respecting the use layer title as layer name mode
+     * Gets name for layer respecting the use layer title as layer name mode
      * \param vl the vector layer
      * \returns name of layer
      * \see setLayerTitleAsName
@@ -390,13 +390,13 @@ class CORE_EXPORT QgsDxfExport
      */
     static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
-    //! Return cleaned layer name for use in DXF
+    //! Returns cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
 
-    //! return DXF encoding for Qt encoding
+    //! Returns DXF encoding for Qt encoding
     static QString dxfEncoding( const QString &name );
 
-    //! return list of available DXF encodings
+    //! Returns list of available DXF encodings
     static QStringList encodings();
 
     /**
