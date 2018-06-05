@@ -22,6 +22,7 @@
 #include "qgsrasterlayer.h"
 #include "qgszonalstatistics.h"
 #include "qgsproject.h"
+#include "qgsvectorlayerutils.h"
 
 /**
  * \ingroup UnitTests
@@ -38,6 +39,7 @@ class TestQgsZonalStatistics : public QObject
     void cleanup() {}
 
     void testStatistics();
+    void testReprojection();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -180,6 +182,68 @@ void TestQgsZonalStatistics::testStatistics()
   QCOMPARE( f.attribute( "myqgis2__3" ).toDouble(), 1.0 );
   QCOMPARE( f.attribute( "myqgis2_va" ).toDouble(), 2.0 );
   QCOMPARE( f.attribute( "myqgis2__4" ).toDouble(), 0.13888888888889 );
+}
+
+void TestQgsZonalStatistics::testReprojection()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // create a reprojected version of the layer
+  std::unique_ptr< QgsVectorLayer > vectorLayer( new QgsVectorLayer( myTestDataPath + "polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) ) );
+  std::unique_ptr< QgsVectorLayer > reprojected( vectorLayer->materialize( QgsFeatureRequest().setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3785" ) ), QgsProject::instance()->transformContext() ) ) );
+
+  QCOMPARE( reprojected->featureCount(), vectorLayer->featureCount() );
+  QgsZonalStatistics zs( reprojected.get(), mRasterLayer, QString(), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = reprojected->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 12.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 8.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.666666666666667 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.47140452079103201 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.222222222222222 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 9.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.555555555555556 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.49690399499995302 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.24691358024691 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QCOMPARE( f.attribute( "count" ).toDouble(), 6.0 );
+  QCOMPARE( f.attribute( "sum" ).toDouble(), 5.0 );
+  QCOMPARE( f.attribute( "mean" ).toDouble(), 0.833333333333333 );
+  QCOMPARE( f.attribute( "median" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "stdev" ).toDouble(), 0.372677996249965 );
+  QCOMPARE( f.attribute( "min" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "max" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "range" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "minority" ).toDouble(), 0.0 );
+  QCOMPARE( f.attribute( "majority" ).toDouble(), 1.0 );
+  QCOMPARE( f.attribute( "variety" ).toDouble(), 2.0 );
+  QCOMPARE( f.attribute( "variance" ).toDouble(), 0.13888888888889 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )

@@ -26,6 +26,7 @@
 #include "qgsrasterblock.h"
 #include "qgslogger.h"
 #include "qgsgeos.h"
+#include "qgsproject.h"
 
 #include <QFile>
 
@@ -204,6 +205,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
   //iterate over each polygon
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setDestinationCrs( mRasterLayer->crs(), QgsProject::instance()->transformContext() );
   QgsFeatureIterator fi = vectorProvider->getFeatures( request );
   QgsFeature f;
 
