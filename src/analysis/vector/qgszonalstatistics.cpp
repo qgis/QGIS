@@ -444,6 +444,13 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
   QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
   QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
 
+  std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
+  if ( !polyEngine )
+  {
+    return;
+  }
+  polyEngine->prepareGeometry();
+
   std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
@@ -457,11 +464,13 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
       }
 
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( !pixelRectGeometry.isNull() )
+      // GEOS intersects tests on prepared geometry is MAGNITUDES faster than calculating the intersection itself,
+      // so we first test to see if there IS an intersection before doing the actual calculation
+      if ( !pixelRectGeometry.isNull() && polyEngine->intersects( pixelRectGeometry.constGet() ) )
       {
         //intersection
         QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-        if ( !intersectGeometry.isNull() )
+        if ( !intersectGeometry.isEmpty() )
         {
           double intersectionArea = intersectGeometry.area();
           if ( intersectionArea >= 0.0 )
@@ -470,7 +479,6 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
             stats.addValue( pixelValue, weight );
           }
         }
-        pixelRectGeometry = QgsGeometry();
       }
       currentX += cellSizeX;
     }
