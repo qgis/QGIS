@@ -346,7 +346,6 @@ void TestQgsField::displayString()
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5,005005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599.999.898.999" ) );
 
-
 }
 
 void TestQgsField::convertCompatible()
@@ -475,6 +474,12 @@ void TestQgsField::convertCompatible()
   QVERIFY( !stringWithLen.convertCompatible( stringVar ) );
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
+
+  //double with ',' as decimal separator
+  QVariant doubleCommaVar( "1,2345" );
+  QVERIFY( doubleField.convertCompatible( doubleCommaVar ) );
+  QCOMPARE( doubleCommaVar.type(), QVariant::Double );
+  QCOMPARE( doubleCommaVar.toString(), QString( "1.2345" ) );
 }
 
 void TestQgsField::dataStream()

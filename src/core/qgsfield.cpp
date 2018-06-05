@@ -281,6 +281,13 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return true;
   }
 
+  // Give it a chance to convert to double since we accept both comma and dot as decimal point
+  QVariant tmp( v );
+  if ( d->type == QVariant::Double && !tmp.convert( d->type ) )
+  {
+    v = v.toString().replace( ',', '.' );
+  }
+
   if ( !v.convert( d->type ) )
   {
     v = QVariant( d->type );
