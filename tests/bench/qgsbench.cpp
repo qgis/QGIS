@@ -19,12 +19,12 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
-#include <time.h>
-#include <math.h>
+#include <ctime>
+#include <cmath>
 
 #include <QFile>
 #include <QFileInfo>

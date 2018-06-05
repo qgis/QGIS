@@ -47,7 +47,7 @@
 
 // TODO: remove, it's only needed by a single debug message
 #include <fcgi_stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 
 

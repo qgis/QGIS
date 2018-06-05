@@ -337,7 +337,7 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( rc.painter() );
 
   // check render context flags are correctly set
-  l.renderContext().setFlags( 0 );
+  l.renderContext().setFlags( nullptr );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );

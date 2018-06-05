@@ -426,8 +426,8 @@ void TestQgsLayoutModel::reorderBottom()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   //try reordering some bad items
-  QVERIFY( ! layout.itemsModel()->reorderItemToBottom( 0 ) );
-  QgsLayoutItemMap *label = new QgsLayoutItemMap( 0 );
+  QVERIFY( ! layout.itemsModel()->reorderItemToBottom( nullptr ) );
+  QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
   QVERIFY( ! layout.itemsModel()->reorderItemToBottom( label ) );
 
   //trying to reorder down the bottommost item should fail
@@ -473,8 +473,8 @@ void TestQgsLayoutModel::findItemAbove()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   //try getting item above some bad items
-  QVERIFY( ! layout.itemsModel()->findItemAbove( 0 ) );
-  QgsLayoutItemMap *label = new QgsLayoutItemMap( 0 );
+  QVERIFY( ! layout.itemsModel()->findItemAbove( nullptr ) );
+  QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
   QVERIFY( ! layout.itemsModel()->findItemAbove( label ) );
 
   //trying to get item above topmost item should fail
@@ -511,8 +511,8 @@ void TestQgsLayoutModel::findItemBelow()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   //try getting item below some bad items
-  QVERIFY( ! layout.itemsModel()->findItemBelow( 0 ) );
-  QgsLayoutItemMap *label = new QgsLayoutItemMap( 0 );
+  QVERIFY( ! layout.itemsModel()->findItemBelow( nullptr ) );
+  QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
   QVERIFY( ! layout.itemsModel()->findItemBelow( label ) );
 
   //trying to get item below bottom most item should fail

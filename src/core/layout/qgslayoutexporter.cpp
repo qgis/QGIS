@@ -289,7 +289,7 @@ class LayoutContextSettingsRestorer
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
-    QgsLayoutRenderContext::Flags mPreviousFlags = 0;
+    QgsLayoutRenderContext::Flags mPreviousFlags = nullptr;
     int mPreviousExportLayer = 0;
 };
 ///@endcond PRIVATE

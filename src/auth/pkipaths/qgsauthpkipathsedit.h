@@ -67,7 +67,7 @@ class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPath
     bool validityChange( bool curvalid );
     bool populateCas();
     QgsStringMap mConfigMap;
-    bool mValid = 0;
+    bool mValid = false;
 };
 
 #endif // QGSAUTHPKIPATHSEDIT_H

@@ -47,10 +47,6 @@ QgsMeshMemoryDataProvider::QgsMeshMemoryDataProvider( const QString &uri, const 
   mIsValid = splitMeshSections( uri );
 }
 
-QgsMeshMemoryDataProvider::~QgsMeshMemoryDataProvider()
-{
-}
-
 QString QgsMeshMemoryDataProvider::providerKey()
 {
   return TEXT_PROVIDER_KEY;

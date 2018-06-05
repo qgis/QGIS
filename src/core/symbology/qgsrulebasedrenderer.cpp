@@ -44,8 +44,6 @@ QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scal
   , mLabel( label )
   , mDescription( description )
   , mElseRule( elseRule )
-  , mIsActive( true )
-
 {
   if ( mElseRule )
     mFilterExp = QStringLiteral( "ELSE" );

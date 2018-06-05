@@ -21,12 +21,12 @@
 #include "qgsmaptopixel.h"
 #include "qgsunittypes.h"
 
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
 #include <algorithm>
 #include <QPen>
 #include <QPainter>
-#include <math.h>
+#include <cmath>
 
 ///@cond PRIVATE
 

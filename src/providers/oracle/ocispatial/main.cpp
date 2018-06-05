@@ -46,7 +46,6 @@
 #include "qsql_ocispatial.h"
 
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-  : QSqlDriverPlugin()
 {
 }
 
@@ -57,5 +56,5 @@ QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
     QOCISpatialDriver *driver = new QOCISpatialDriver();
     return driver;
   }
-  return 0;
+  return nullptr;
 }

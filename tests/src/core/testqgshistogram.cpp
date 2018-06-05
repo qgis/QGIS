@@ -128,7 +128,7 @@ void TestQgsHistogram::fromLayer()
 {
   QgsHistogram h;
 
-  QVERIFY( !h.setValues( 0, QString() ) );
+  QVERIFY( !h.setValues( nullptr, QString() ) );
 
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
   QVERIFY( layer->isValid() );

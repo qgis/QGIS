@@ -69,8 +69,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem *srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
@@ -83,7 +83,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     explicit QgsOracleProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options );
 
     //! Destructor
-    virtual ~QgsOracleProvider();
+    ~QgsOracleProvider() override;
 
     QgsAbstractFeatureSource *featureSource() const override;
     QString storageType() const override;
@@ -137,7 +137,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
@@ -279,7 +279,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
         {}
 
         ~OracleException()
-        {}
+          = default;
 
         QString errorMessage() const
         {
@@ -342,7 +342,7 @@ class QgsOracleUtils
 class QgsOracleSharedData
 {
   public:
-    QgsOracleSharedData();
+    QgsOracleSharedData() = default;
 
     // FID lookups
     QgsFeatureId lookupFid( const QVariantList &v ); // lookup existing mapping or add a new one
@@ -353,7 +353,7 @@ class QgsOracleSharedData
   protected:
     QMutex mMutex; //!< Access to all data members is guarded by the mutex
 
-    QgsFeatureId mFidCounter;                    // next feature id if map is used
+    QgsFeatureId mFidCounter = 0;                    // next feature id if map is used
     QMap<QVariantList, QgsFeatureId> mKeyToFid;      // map key values to feature id
     QMap<QgsFeatureId, QVariantList> mFidToKey;      // map feature back to fea
 };

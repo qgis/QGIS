@@ -98,8 +98,7 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
 
 
 QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode )
-  : QObject()
-  , mCanvas( canvas )
+  : mCanvas( canvas )
   , mSelectionMode( selectionMode )
   , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
 {

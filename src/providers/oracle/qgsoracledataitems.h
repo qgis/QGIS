@@ -37,7 +37,6 @@ class QgsOracleRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOracleRootItem( QgsDataItem *parent, const QString &name, const QString &path );
-    ~QgsOracleRootItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -95,9 +94,8 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOracleOwnerItem( QgsDataItem *parent, const QString &name, const QString &path );
-    ~QgsOracleOwnerItem();
 
-    QVector<QgsDataItem *> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
     void addLayer( const QgsOracleLayerProperty &layerProperty );
 };

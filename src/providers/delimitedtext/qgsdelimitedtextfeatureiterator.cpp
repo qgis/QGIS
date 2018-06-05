@@ -534,10 +534,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mExpressionContext.setFields( mFields );
 }
 
-QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
-{
-}
-
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )
 {
   return QgsFeatureIterator( new QgsDelimitedTextFeatureIterator( this, false, request ) );

@@ -67,7 +67,7 @@ class QgsAuthPkcs12Edit : public QgsAuthMethodEdit, private Ui::QgsAuthPkcs12Edi
     bool populateCas( );
 
     QgsStringMap mConfigMap;
-    bool mValid = 0;
+    bool mValid = false;
 };
 
 #endif // QGSAUTHPKCS12EDIT_H

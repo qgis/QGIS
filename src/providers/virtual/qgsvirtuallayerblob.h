@@ -17,7 +17,7 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_BLOB_H
 #define QGSVIRTUALLAYER_BLOB_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "qgsgeometry.h"
 

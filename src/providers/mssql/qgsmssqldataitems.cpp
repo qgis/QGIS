@@ -535,7 +535,7 @@ bool QgsMssqlSchemaItem::handleDrop( const QMimeData *data, Qt::DropAction )
 {
   QgsMssqlConnectionItem *conn = qobject_cast<QgsMssqlConnectionItem *>( parent() );
   if ( !conn )
-    return 0;
+    return false;
 
   return conn->handleDrop( data, mName );
 }

@@ -31,7 +31,6 @@ Dialog to set up parameters to create a new GeoPackage layer, and on accept() to
 %Docstring
 Constructor
 %End
-    ~QgsNewGeoPackageLayerDialog();
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring

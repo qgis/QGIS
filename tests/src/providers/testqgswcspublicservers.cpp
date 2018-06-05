@@ -877,16 +877,16 @@ int main( int argc, char *argv[] )
   int optionChar;
   static struct option long_options[] =
   {
-    {"help",     no_argument,       0, 'h'},
-    {"server",   required_argument, 0, 's'},
-    {"coverage", required_argument, 0, 'c'},
-    {"num",      required_argument, 0, 'n'},
-    {"version",  required_argument, 0, 'v'},
-    {"force",    no_argument,       0, 'f'},
-    {0, 0, 0, 0}
+    {"help",     no_argument,       nullptr, 'h'},
+    {"server",   required_argument, nullptr, 's'},
+    {"coverage", required_argument, nullptr, 'c'},
+    {"num",      required_argument, nullptr, 'n'},
+    {"version",  required_argument, nullptr, 'v'},
+    {"force",    no_argument,       nullptr, 'f'},
+    {nullptr, 0, nullptr, 0}
   };
 
-  while ( 1 )
+  while ( true )
   {
     /* getopt_long stores the option index here. */
     int option_index = 0;
@@ -902,7 +902,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )

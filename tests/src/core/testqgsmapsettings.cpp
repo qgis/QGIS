@@ -15,7 +15,7 @@
 #include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <math.h>
+#include <cmath>
 
 //header for class being tested
 #include "qgsexpression.h"

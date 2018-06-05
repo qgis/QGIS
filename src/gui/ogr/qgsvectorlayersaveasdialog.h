@@ -47,7 +47,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
     QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, int options = AllOptions, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
-    ~QgsVectorLayerSaveAsDialog() override;
 
     QString format() const;
     QString encoding() const;

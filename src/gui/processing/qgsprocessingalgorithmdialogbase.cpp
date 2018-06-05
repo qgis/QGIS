@@ -34,7 +34,6 @@
 ///@cond NOT_STABLE
 
 QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
-  : QgsProcessingFeedback()
 {
 }
 

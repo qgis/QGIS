@@ -33,7 +33,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
   public:
     explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsDataSourceUri mUri;
@@ -62,7 +62,7 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
   public:
     QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsOracleFeatureIterator();
+    ~QgsOracleFeatureIterator() override;
 
     bool rewind() override;
     bool close() override;

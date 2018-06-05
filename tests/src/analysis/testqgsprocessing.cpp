@@ -226,7 +226,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       context.setProject( &p );
 
       // flag not set
-      mFlags = 0;
+      mFlags = nullptr;
       parameters.insert( "p1", QVariant::fromValue( layer3111 ) );
       QVERIFY( validateInputCrs( parameters, context ) );
       mFlags = FlagRequiresMatchingCrs;
@@ -235,7 +235,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // two layers, different crs
       parameters.insert( "p2", QVariant::fromValue( layer4326 ) );
       // flag not set
-      mFlags = 0;
+      mFlags = nullptr;
       QVERIFY( validateInputCrs( parameters, context ) );
       mFlags = FlagRequiresMatchingCrs;
       QVERIFY( !validateInputCrs( parameters, context ) );
@@ -842,8 +842,8 @@ void TestQgsProcessing::context()
   context.setDefaultEncoding( "my_enc" );
   QCOMPARE( context.defaultEncoding(), QStringLiteral( "my_enc" ) );
 
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
-  QCOMPARE( context.flags(), QgsProcessingContext::Flags( 0 ) );
+  context.setFlags( QgsProcessingContext::Flags( nullptr ) );
+  QCOMPARE( context.flags(), QgsProcessingContext::Flags( nullptr ) );
 
   QgsProject p;
   context.setProject( &p );
@@ -1243,7 +1243,7 @@ void TestQgsProcessing::features()
   QgsProcessingContext context;
   context.setProject( &p );
   // disable check for geometry validity
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  context.setFlags( QgsProcessingContext::Flags( nullptr ) );
 
   std::function< QgsFeatureIds( QgsFeatureIterator it ) > getIds = []( QgsFeatureIterator it )
   {
@@ -1351,7 +1351,7 @@ void TestQgsProcessing::uniqueValues()
   }
 
   QgsProcessingContext context;
-  context.setFlags( QgsProcessingContext::Flags( 0 ) );
+  context.setFlags( QgsProcessingContext::Flags( nullptr ) );
 
   QgsProject p;
   p.addMapLayer( layer );

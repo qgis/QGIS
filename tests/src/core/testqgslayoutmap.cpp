@@ -179,7 +179,7 @@ void TestQgsLayoutMap::uniqueId()
   l.addItemsFromXml( documentElement, doc, QgsReadWriteContext() );
 
   //test if both composer maps have different ids
-  QgsLayoutItemMap *newMap = 0;
+  QgsLayoutItemMap *newMap = nullptr;
   QList<QgsLayoutItemMap *> mapList;
   l.layoutItems( mapList );
   for ( auto mapIt = mapList.constBegin() ; mapIt != mapList.constEnd(); ++mapIt )

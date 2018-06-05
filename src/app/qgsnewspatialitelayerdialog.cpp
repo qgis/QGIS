@@ -112,11 +112,6 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
 }
 
-QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
-{
-
-}
-
 void QgsNewSpatialiteLayerDialog::mGeometryTypeBox_currentIndexChanged( int index )
 {
   pbnFindSRID->setEnabled( index != 0 );

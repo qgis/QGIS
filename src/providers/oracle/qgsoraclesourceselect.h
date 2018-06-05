@@ -44,17 +44,16 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
   public:
     explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent )
-      , mConn( nullptr )
     {}
 
-    ~QgsOracleSourceSelectDelegate()
+    ~QgsOracleSourceSelectDelegate() override
     {
       setConn( nullptr );
     }
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 
     void setConnectionInfo( const QgsDataSourceUri &connInfo ) { mConnInfo = connInfo; }
 
@@ -71,7 +70,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
   private:
     QgsDataSourceUri mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
-    mutable QgsOracleConn *mConn;
+    mutable QgsOracleConn *mConn = nullptr;
 };
 
 

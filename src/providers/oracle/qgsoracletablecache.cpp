@@ -51,13 +51,13 @@ static bool _removeFromCache( sqlite3 *db, const QString &connName )
 static sqlite3 *_openCacheDatabase()
 {
   sqlite3 *database = nullptr;
-  if ( sqlite3_open_v2( QgsOracleTableCache::cacheDatabaseFilename().toUtf8().data(), &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0 ) != SQLITE_OK )
-    return 0;
+  if ( sqlite3_open_v2( QgsOracleTableCache::cacheDatabaseFilename().toUtf8().data(), &database, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr ) != SQLITE_OK )
+    return nullptr;
 
   if ( !_executeSqliteStatement( database, "CREATE TABLE IF NOT EXISTS meta_oracle(conn text primary_key, flags int)" ) )
   {
     sqlite3_close( database );
-    return 0;
+    return nullptr;
   }
 
   return database;
@@ -149,7 +149,7 @@ bool QgsOracleTableCache::saveToCache( const QString &connName, CacheFlags flags
 
   QString sqlInsert = QString( "INSERT INTO %1 VALUES(?,?,?,?,?,?,?,?)" ).arg( tblName );
   sqlite3_stmt *stmtInsert = nullptr;
-  if ( sqlite3_prepare_v2( db, sqlInsert.toUtf8().data(), -1, &stmtInsert, 0 ) != SQLITE_OK )
+  if ( sqlite3_prepare_v2( db, sqlInsert.toUtf8().data(), -1, &stmtInsert, nullptr ) != SQLITE_OK )
   {
     sqlite3_close( db );
     return false;

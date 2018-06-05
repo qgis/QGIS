@@ -24,8 +24,7 @@
 #include <QtTest/QTest>
 
 #include <cstdio>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef Q_OS_WIN
 // Open files in binary mode
@@ -159,28 +158,28 @@ int main( int argc, char *argv[] )
   // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
   ///////////////////////////////////////////////////////////////
   int optionChar;
-  while ( 1 )
+  while ( true )
   {
     static struct option long_options[] =
     {
       /* These options set a flag. */
-      {"help", no_argument, 0, '?'},
+      {"help", no_argument, nullptr, '?'},
       /* These options don't set a flag.
        *  We distinguish them by their indices. */
-      {"iterations",    required_argument, 0, 'i'},
-      {"snapshot", required_argument, 0, 's'},
-      {"log", required_argument, 0, 'l'},
-      {"width",    required_argument, 0, 'w'},
-      {"height",   required_argument, 0, 'h'},
-      {"project",  required_argument, 0, 'p'},
-      {"extent",   required_argument, 0, 'e'},
-      {"optionspath", required_argument, 0, 'o'},
-      {"configpath", required_argument, 0, 'c'},
-      {"prefix", required_argument, 0, 'r'},
-      {"quality", required_argument, 0, 'q'},
-      {"parallel", no_argument, 0, 'P'},
-      {"print", required_argument, 0, 'R'},
-      {0, 0, 0, 0}
+      {"iterations",    required_argument, nullptr, 'i'},
+      {"snapshot", required_argument, nullptr, 's'},
+      {"log", required_argument, nullptr, 'l'},
+      {"width",    required_argument, nullptr, 'w'},
+      {"height",   required_argument, nullptr, 'h'},
+      {"project",  required_argument, nullptr, 'p'},
+      {"extent",   required_argument, nullptr, 'e'},
+      {"optionspath", required_argument, nullptr, 'o'},
+      {"configpath", required_argument, nullptr, 'c'},
+      {"prefix", required_argument, nullptr, 'r'},
+      {"quality", required_argument, nullptr, 'q'},
+      {"parallel", no_argument, nullptr, 'P'},
+      {"print", required_argument, nullptr, 'R'},
+      {nullptr, 0, nullptr, 0}
     };
 
     /* getopt_long stores the option index here. */
@@ -197,7 +196,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )

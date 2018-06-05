@@ -2180,7 +2180,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findOtherResolution( double tres,
   QMap<double, QgsWmtsTileMatrix>::const_iterator it = tileMatrices.constFind( tres );
   if ( it == tileMatrices.constEnd() )
     return nullptr;
-  while ( 1 )
+  while ( true )
   {
     if ( offset > 0 )
     {

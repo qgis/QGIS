@@ -31,7 +31,6 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause );
 // ---------------------------------------------------------------------------
 QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )
   : QgsDataCollectionItem( parent, name, path )
-  , mColumnTypeThread( nullptr )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -384,10 +383,6 @@ QVector<QgsDataItem *> QgsOracleOwnerItem::createChildren()
   return QVector<QgsDataItem *>();
 }
 
-QgsOracleOwnerItem::~QgsOracleOwnerItem()
-{
-}
-
 void QgsOracleOwnerItem::addLayer( const QgsOracleLayerProperty &layerProperty )
 {
   QgsDebugMsgLevel( layerProperty.toString(), 3 );
@@ -440,10 +435,6 @@ QgsOracleRootItem::QgsOracleRootItem( QgsDataItem *parent, const QString &name, 
 {
   mIconName = QStringLiteral( "mIconOracle.svg" );
   populate();
-}
-
-QgsOracleRootItem::~QgsOracleRootItem()
-{
 }
 
 QVector<QgsDataItem *> QgsOracleRootItem::createChildren()

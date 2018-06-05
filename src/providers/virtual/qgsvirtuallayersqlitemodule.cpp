@@ -14,7 +14,7 @@ email                : hugo dot mercier at oslandia dot com
  *                                                                         *
  ***************************************************************************/
 
-#include <string.h>
+#include <cstring>
 #include <iostream>
 #include <cstdint>
 #include <stdexcept>

@@ -747,9 +747,7 @@ QgsAttributesFormProperties::FieldConfig::operator QVariant()
 /*
  * RelationConfig implementation
  */
-QgsAttributesFormProperties::RelationConfig::RelationConfig()
-{
-}
+QgsAttributesFormProperties::RelationConfig::RelationConfig() = default;
 
 QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *layer, const QString &relationId )
 {

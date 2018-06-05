@@ -1820,7 +1820,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
   QByteArray wkb = geom.asWkb();
 
   wkbPtr ptr;
-  ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : 0;
+  ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : nullptr;
   g.isNull = !ptr.ucPtr;
   g.gtype = -1;
   g.srid  = mSrid < 1 ? -1 : mSrid;
@@ -3041,7 +3041,7 @@ QGISEXTERN QgsOracleProvider *classFactory( const QString *uri, const QgsDataPro
 */
 QGISEXTERN QString providerKey()
 {
-  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_KEY : 0;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_KEY : nullptr;
 }
 
 /**
@@ -3049,7 +3049,7 @@ QGISEXTERN QString providerKey()
  */
 QGISEXTERN QString description()
 {
-  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_DESCRIPTION : 0;
+  return QSqlDatabase::isDriverAvailable( "QOCISPATIAL" ) ? ORACLE_DESCRIPTION : nullptr;
 }
 
 /**
@@ -3192,12 +3192,6 @@ QGISEXTERN void cleanupProvider()
 }
 
 // ----------
-
-
-QgsOracleSharedData::QgsOracleSharedData()
-  : mFidCounter( 0 )
-{
-}
 
 QgsFeatureId QgsOracleSharedData::lookupFid( const QVariantList &v )
 {
