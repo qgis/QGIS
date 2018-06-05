@@ -328,12 +328,12 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
         std::sort( vals.begin(), vals.end() );
         if ( mStatistics & QgsZonalStatistics::Minority )
         {
-          float minorityKey = featureStats.valueCount.key( vals.first() );
+          double minorityKey = featureStats.valueCount.key( vals.first() );
           changeAttributeMap.insert( minorityIndex, QVariant( minorityKey ) );
         }
         if ( mStatistics & QgsZonalStatistics::Majority )
         {
-          float majKey = featureStats.valueCount.key( vals.last() );
+          double majKey = featureStats.valueCount.key( vals.last() );
           changeAttributeMap.insert( majorityIndex, QVariant( majKey ) );
         }
       }
@@ -422,7 +422,8 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( validPixel( block->value( i, j ) ) )
+      double pixelValue = block->value( i, j );
+      if ( validPixel( pixelValue ) )
       {
         cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
         GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
@@ -430,7 +431,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
         currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
         if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
         {
-          stats.addValue( block->value( i, j ) );
+          stats.addValue( pixelValue );
         }
       }
       cellCenterX += cellSizeX;
@@ -461,7 +462,8 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
     double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( !validPixel( block->value( i, j ) ) )
+      double pixelValue = block->value( i, j );
+      if ( !validPixel( pixelValue ) )
       {
         continue;
       }
@@ -477,7 +479,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
           if ( intersectionArea >= 0.0 )
           {
             weight = intersectionArea / pixelArea;
-            stats.addValue( block->value( i, j ), weight );
+            stats.addValue( pixelValue, weight );
           }
         }
         pixelRectGeometry = QgsGeometry();
