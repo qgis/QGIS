@@ -128,10 +128,11 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     };
 
     /**
-     * Analysis what cells need to be considered to cover the bounding box of a feature
-      \returns 0 in case of success*/
-    int cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
-                         int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const;
+     * Analyzes which cells need to be considered to completely cover the bounding box of a feature.
+    */
+    void cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
+                          int &offsetX, int &offsetY, int &nCellsX, int &nCellsY,
+                          int rasterWidth, int rasterHeight ) const;
 
     //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
     void statisticsFromMiddlePointTest( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
