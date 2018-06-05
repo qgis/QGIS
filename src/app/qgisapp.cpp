@@ -6324,7 +6324,7 @@ void QgisApp::toggleReducedView( bool viewMapOnly )
       // hide also statusbar and menubar and all toolbars
       for ( QToolBar *toolBar : toolBars )
       {
-        if ( toolBar->isVisible() && !toolBar->isFloating() )
+        if ( toolBar->isVisible() && !toolBar->isFloating() && toolBar->parent()->inherits( "QMainWindow" ) )
         {
           // remember the active toolbars
           toolBarsActive << toolBar->windowTitle();
