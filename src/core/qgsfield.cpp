@@ -22,6 +22,7 @@
 
 #include <QDataStream>
 #include <QIcon>
+#include <QLocale>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -208,8 +209,30 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
-  if ( d->type == QVariant::Double && d->precision > 0 )
-    return QString::number( v.toDouble(), 'f', d->precision );
+  if ( d->type == QVariant::Double )
+  {
+    if ( d->precision > 0 )
+    {
+      return QLocale().toString( v.toDouble(), 'f', d->precision );
+    }
+    else
+    {
+      // Precision is not set, let's guess it from the
+      // standard conversion to string
+      QString s( v.toString() );
+      int dotPosition( s.indexOf( '.' ) );
+      int precision;
+      if ( dotPosition < 0 )
+      {
+        precision = 0;
+      }
+      else
+      {
+        precision = s.length() - dotPosition - 1;
+      }
+      return QLocale().toString( v.toDouble(), 'f', precision );
+    }
+  }
 
   return v.toString();
 }
