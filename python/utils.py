@@ -77,10 +77,6 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
-    warnings.showwarning = showWarning
-
-
 def showException(type, value, tb, msg, messagebar=False):
     if msg is None:
         msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
@@ -198,16 +194,17 @@ def qgis_excepthook(type, value, tb):
 
 
 def installErrorHook():
+    """
+    Installs the QGIS application error/warning hook
+    :return:
+    """
     sys.excepthook = qgis_excepthook
+    warnings.showwarning = showWarning
 
 
 def uninstallErrorHook():
     sys.excepthook = sys.__excepthook__
 
-
-# install error hook() on module load
-if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
-    installErrorHook()
 
 # initialize 'iface' object
 iface = None

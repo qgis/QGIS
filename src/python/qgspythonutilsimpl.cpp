@@ -224,6 +224,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface *interface )
     return;
   }
   doCustomImports();
+  installErrorHook();
   finish();
 }
 
@@ -264,6 +265,7 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 
 void QgsPythonUtilsImpl::exitPython()
 {
+  uninstallErrorHook();
   Py_Finalize();
   mMainModule = nullptr;
   mMainDict = nullptr;
@@ -285,8 +287,6 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
 {
   runString( QStringLiteral( "qgis.utils.uninstallErrorHook()" ) );
 }
-
-
 
 bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
 {
