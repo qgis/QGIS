@@ -21,8 +21,6 @@
 #include "qgsapplication.h"
 
 QgsOracleTableModel::QgsOracleTableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Owner" );
@@ -36,10 +34,6 @@ QgsOracleTableModel::QgsOracleTableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsOracleTableModel::~QgsOracleTableModel()
-{
-}
-
 void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProperty )
 {
   QgsDebugMsg( layerProperty.toString() );
@@ -51,7 +45,7 @@ void QgsOracleTableModel::addTableEntry( const QgsOracleLayerProperty &layerProp
   }
 
   // is there already a root item with the given scheme Name?
-  QStandardItem *ownerItem = 0;
+  QStandardItem *ownerItem = nullptr;
 
   for ( int i = 0; i < layerProperty.size(); i++ )
   {

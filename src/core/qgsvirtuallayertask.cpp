@@ -19,8 +19,7 @@
 #include "qgslogger.h"
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
-  : QgsTask()
-  , mDefinition( definition )
+  : mDefinition( definition )
 {
   mDefinition.setLazy( true );
   mLayer = qgis::make_unique<QgsVectorLayer>( mDefinition.toString(), "layer", "virtual" );

@@ -203,7 +203,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = nullptr;
 
     };
 
@@ -273,7 +273,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = nullptr;
 
     };
 
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = nullptr;
 
     };
 
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = nullptr;
 
     };
 

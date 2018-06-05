@@ -86,8 +86,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
 #ifndef SIP_RUN
 
 inline NormVecDecorator::NormVecDecorator()
-  : TriDecorator()
-  , mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) )
+  : mNormVec( new QVector<Vector3D*>( DEFAULT_STORAGE_FOR_NORMALS ) )
   , mPointState( new QVector<PointState>( DEFAULT_STORAGE_FOR_NORMALS ) )
 {
   alreadyestimated = false;

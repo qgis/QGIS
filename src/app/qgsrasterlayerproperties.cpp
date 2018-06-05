@@ -450,11 +450,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
     title += QStringLiteral( " (%1)" ).arg( mRasterLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
   optionsStackedWidget_CurrentChanged( mOptionsStackedWidget->currentIndex() );
-} // QgsRasterLayerProperties ctor
-
-
-QgsRasterLayerProperties::~QgsRasterLayerProperties()
-{
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )

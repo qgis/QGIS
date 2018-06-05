@@ -31,11 +31,6 @@ QgsLayoutReportSectionLabel::QgsLayoutReportSectionLabel( QgsLayout *layout, Qgs
   setCacheMode( QGraphicsItem::DeviceCoordinateCache );
 }
 
-QgsLayoutReportSectionLabel::~QgsLayoutReportSectionLabel()
-{
-
-}
-
 void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
   if ( !mLayout || !mLayout->renderContext().isPreviewRender() )

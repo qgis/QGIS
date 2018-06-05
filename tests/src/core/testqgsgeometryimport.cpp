@@ -62,7 +62,7 @@ class TestQgsGeometryImport: public QObject
 
 void TestQgsGeometryImport::initTestCase()
 {
-  geos = initGEOS_r( 0, 0 );
+  geos = initGEOS_r( nullptr, nullptr );
 }
 
 void TestQgsGeometryImport::pointWkt_data()

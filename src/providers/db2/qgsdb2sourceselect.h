@@ -42,7 +42,7 @@ class QgsDb2SourceSelectDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsDb2SourceSelectDelegate( QObject *parent = NULL )
+    explicit QgsDb2SourceSelectDelegate( QObject *parent = nullptr )
       : QItemDelegate( parent )
     {}
 

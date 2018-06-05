@@ -33,7 +33,7 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
 {
   public:
     //! Constructor
-    QgsFeatureFilterProviderGroup() {}
+    QgsFeatureFilterProviderGroup() = default;
 
     /**
      * Filter the features of the layer

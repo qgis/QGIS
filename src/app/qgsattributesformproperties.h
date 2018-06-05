@@ -87,9 +87,6 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
           : mType( type )
           , mName( name )
           , mDisplayName( displayName )
-          , mColumnCount( 1 )
-          , mShowAsGroupBox( false )
-          , mShowLabel( true )
         {}
 
         QString name() const { return mName; }

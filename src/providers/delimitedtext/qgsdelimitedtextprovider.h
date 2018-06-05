@@ -76,7 +76,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     };
 
     explicit QgsDelimitedTextProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
-
     ~QgsDelimitedTextProvider() override;
 
     /* Implementation of functions from QgsVectorDataProvider */

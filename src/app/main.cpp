@@ -36,9 +36,8 @@
 #include <QMessageBox>
 
 #include <cstdio>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include <cstdlib>
+#include <cstdarg>
 
 #ifdef WIN32
 // Open files in binary mode
@@ -72,9 +71,9 @@ typedef SInt32 SRefCon;
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
-#include <signal.h>
+#include <csignal>
 #include <sys/wait.h>
-#include <errno.h>
+#include <cerrno>
 #endif
 
 #include "qgscustomization.h"

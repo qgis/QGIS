@@ -37,7 +37,6 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     Q_OBJECT
   public:
     QgsCustomizationDialog( QWidget *parent, QSettings *settings );
-    ~QgsCustomizationDialog() override;
 
     // get item by path
     QTreeWidgetItem *item( const QString &path, QTreeWidgetItem *widgetItem = nullptr );

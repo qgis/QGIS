@@ -105,7 +105,7 @@ class QgsCoordinateReferenceSystemPrivate : public QSharedData
     QString mAuthId;
 
     //! Whether this CRS is properly defined and valid
-    bool mIsValid = 0;
+    bool mIsValid = false;
 
     OGRSpatialReferenceH mCRS;
 

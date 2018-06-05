@@ -26,7 +26,7 @@ class APP_EXPORT QgsFirstRunDialog : public QDialog, private Ui::QgsFirstRunDial
 {
     Q_OBJECT
   public:
-    QgsFirstRunDialog( QWidget *parent = 0 );
+    QgsFirstRunDialog( QWidget *parent = nullptr );
 
     bool migrateSettings();
 

@@ -417,7 +417,7 @@ void TestQgsGeometry::isEmpty()
   geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( !geom.isNull() );
 
-  geom.set( 0 );
+  geom.set( nullptr );
   QVERIFY( geom.isNull() );
 
   QgsGeometryCollection collection;
@@ -432,7 +432,7 @@ void TestQgsGeometry::operatorBool()
   geom.set( new QgsPoint( 1.0, 2.0 ) );
   QVERIFY( geom );
 
-  geom.set( 0 );
+  geom.set( nullptr );
   QVERIFY( !geom );
 }
 
@@ -3160,7 +3160,7 @@ void TestQgsGeometry::lineString()
 
   //append to empty
   QgsLineString l10;
-  l10.append( 0 );
+  l10.append( nullptr );
   QVERIFY( l10.isEmpty() );
   QCOMPARE( l10.numPoints(), 0 );
 
@@ -4578,7 +4578,7 @@ void TestQgsGeometry::polygon()
   //set exterior ring
 
   //try with no ring
-  QgsLineString *ext = 0;
+  QgsLineString *ext = nullptr;
   p1.setExteriorRing( ext );
   QVERIFY( p1.isEmpty() );
   QCOMPARE( p1.numInteriorRings(), 0 );
@@ -4702,7 +4702,7 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p6.numInteriorRings(), 0 );
   QVERIFY( !p6.interiorRing( -1 ) );
   QVERIFY( !p6.interiorRing( 0 ) );
-  p6.addInteriorRing( 0 );
+  p6.addInteriorRing( nullptr );
   QCOMPARE( p6.numInteriorRings(), 0 );
   QgsLineString *ring = new QgsLineString();
   ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )
@@ -7831,7 +7831,7 @@ void TestQgsGeometry::curvePolygon()
   QCOMPARE( p6.numInteriorRings(), 0 );
   QVERIFY( !p6.interiorRing( -1 ) );
   QVERIFY( !p6.interiorRing( 0 ) );
-  p6.addInteriorRing( 0 );
+  p6.addInteriorRing( nullptr );
   QCOMPARE( p6.numInteriorRings(), 0 );
   QgsCircularString *ring = new QgsCircularString();
   ring->setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 1, 9 ) << QgsPoint( 9, 9 )

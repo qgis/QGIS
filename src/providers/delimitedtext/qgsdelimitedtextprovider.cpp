@@ -158,9 +158,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
   }
 }
 
-QgsDelimitedTextProvider::~QgsDelimitedTextProvider()
-{
-}
+QgsDelimitedTextProvider::~QgsDelimitedTextProvider() = default;
 
 QgsAbstractFeatureSource *QgsDelimitedTextProvider::featureSource() const
 {

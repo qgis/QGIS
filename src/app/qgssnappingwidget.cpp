@@ -47,11 +47,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   , mProject( project )
   , mConfig( project )
   , mCanvas( canvas )
-  , mModeAction( nullptr )
-  , mTypeAction( nullptr )
-  , mToleranceAction( nullptr )
-  , mUnitAction( nullptr )
-
 {
   // detect the type of display
   QToolBar *tb = qobject_cast<QToolBar *>( parent );

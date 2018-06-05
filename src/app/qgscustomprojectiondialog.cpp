@@ -82,11 +82,6 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   connect( teParameters, &QPlainTextEdit::textChanged, this, &QgsCustomProjectionDialog::updateListFromCurrentItem );
 }
 
-QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
-{
-}
-
-
 void QgsCustomProjectionDialog::populateList()
 {
   //Setup connection to the existing custom CRS database:

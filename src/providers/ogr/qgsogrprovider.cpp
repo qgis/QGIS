@@ -4309,7 +4309,7 @@ static GDALDatasetH OpenHelper( const QString &dsName,
                                 bool updateMode,
                                 const QStringList &options )
 {
-  char **papszOpenOptions = NULL;
+  char **papszOpenOptions = nullptr;
   Q_FOREACH ( QString option, options )
   {
     papszOpenOptions = CSLAddString( papszOpenOptions,

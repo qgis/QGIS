@@ -19,9 +19,6 @@
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
   : QAction( icon, name, parent )
-  , mSingleLayer( false )
-  , mSpecificLayerType( false )
-  , mLayerType( QgsMapLayer::VectorLayer )
   , mTargets( targets )
   , mFlags( flags )
 {
@@ -31,8 +28,6 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
   : QAction( icon, name, parent )
   , mSingleLayer( true )
   , mActionLayer( layer )
-  , mSpecificLayerType( false )
-  , mLayerType( QgsMapLayer::VectorLayer )
   , mTargets( targets )
   , mFlags( flags )
 {
@@ -40,7 +35,6 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets, const QIcon &icon, QgsMapLayerAction::Flags flags )
   : QAction( icon, name, parent )
-  , mSingleLayer( false )
   , mSpecificLayerType( true )
   , mLayerType( layerType )
   , mTargets( targets )

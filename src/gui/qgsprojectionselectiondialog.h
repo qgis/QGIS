@@ -59,9 +59,6 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                   Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-
-    ~QgsProjectionSelectionDialog() override;
-
     /**
      * Returns the CRS currently selected in the widget.
      * \see setCrs()

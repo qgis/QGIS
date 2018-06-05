@@ -202,7 +202,7 @@ void TestQgsMapToolIdentifyAction::clickxy()
   QPoint point = QPoint( mapPoint.x(), mapPoint.y() );
   QMouseEvent releases( QEvent::MouseButtonRelease, point,
                         Qt::RightButton, Qt::LeftButton, Qt::NoModifier );
-  QgsMapMouseEvent mapReleases( 0, &releases );
+  QgsMapMouseEvent mapReleases( nullptr, &releases );
 
   // simulate a click on the corresponding action
   QTimer::singleShot( 2000, this, &TestQgsMapToolIdentifyAction::doAction );

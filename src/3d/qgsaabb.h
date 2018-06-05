@@ -18,7 +18,7 @@
 
 #include "qgis_3d.h"
 
-#include <math.h>
+#include <cmath>
 #include <QList>
 #include <QVector3D>
 
