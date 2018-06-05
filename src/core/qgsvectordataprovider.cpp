@@ -408,6 +408,12 @@ QVariant QgsVectorDataProvider::maximumValue( int index ) const
 
 QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QString &substring, int limit, QgsFeedback *feedback ) const
 {
+  QStringList results;
+
+  // Safety belt
+  if ( index < 0 || index >= fields().count() )
+    return results;
+
   QgsFeature f;
   QgsAttributeList keys;
   keys.append( index );
@@ -420,7 +426,6 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   QgsFeatureIterator fi = getFeatures( request );
 
   QSet<QString> set;
-  QStringList results;
 
   while ( fi.nextFeature( f ) )
   {

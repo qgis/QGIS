@@ -525,6 +525,27 @@ void QgsProviderRegistry::registerGuis( QWidget *parent )
   }
 }
 
+bool QgsProviderRegistry::registerProvider( QgsProviderMetadata *providerMetadata )
+{
+  if ( providerMetadata )
+  {
+    if ( mProviders.find( providerMetadata->key() ) == mProviders.end() )
+    {
+      mProviders[ providerMetadata->key() ] = providerMetadata;
+      return true;
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Cannot register provider metadata: a provider with the same key (%1) was already registered!" ).arg( providerMetadata->key() ), 2 );
+    }
+  }
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Trying to register a null metadata provider!" ), 2 );
+  }
+  return false;
+}
+
 QString QgsProviderRegistry::fileVectorFilters() const
 {
   return mVectorFileFilters;

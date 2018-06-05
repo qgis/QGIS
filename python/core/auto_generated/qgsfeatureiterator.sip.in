@@ -223,11 +223,15 @@ Wrapper for iterator of features from vector data provider or vector layer
 
     QgsFeatureIterator();
 %Docstring
-construct invalid iterator
+Construct invalid iterator
+%End
+    QgsFeatureIterator( QgsAbstractFeatureIterator *iter /Transfer/ );
+%Docstring
+Construct a valid iterator
 %End
     QgsFeatureIterator( const QgsFeatureIterator &fi );
 %Docstring
-copy constructor copies the iterator, increases ref.count
+Copy constructor copies the iterator, increases ref.count
 %End
     ~QgsFeatureIterator();
 
