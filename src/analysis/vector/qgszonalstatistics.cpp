@@ -397,21 +397,12 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  geos::unique_ptr polyGeos( QgsGeos::asGeos( poly ) );
-  if ( !polyGeos )
+  std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
+  if ( !polyEngine )
   {
     return;
   }
-
-  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
-  geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
-  if ( !polyGeosPrepared )
-  {
-    return;
-  }
-
-  GEOSCoordSequence *cellCenterCoords = nullptr;
-  geos::unique_ptr currentCellCenter;
+  polyEngine->prepareGeometry();
 
   QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
   QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
@@ -425,11 +416,8 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
       double pixelValue = block->value( i, j );
       if ( validPixel( pixelValue ) )
       {
-        cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-        GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
-        GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-        currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
-        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
+        QgsPoint cellCenter( cellCenterX, cellCenterY );
+        if ( polyEngine->contains( &cellCenter ) )
         {
           stats.addValue( pixelValue );
         }
