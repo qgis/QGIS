@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 DIR=$(git rev-parse --show-toplevel)
 cd $1
 FOLDER=linux
