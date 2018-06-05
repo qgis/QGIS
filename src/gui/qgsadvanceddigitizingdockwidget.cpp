@@ -111,6 +111,11 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mCommonAngleActions = QMap<QAction *, int>();
   QList< QPair< int, QString > > commonAngles;
   commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
+  commonAngles << QPair<int, QString>( 5, tr( "Snap to 5° angles" ) );
+  commonAngles << QPair<int, QString>( 10, tr( "Snap to 10° angles" ) );
+  commonAngles << QPair<int, QString>( 15, tr( "Snap to 15° angles" ) );
+  commonAngles << QPair<int, QString>( 18, tr( "Snap to 18° angles" ) );
+  commonAngles << QPair<int, QString>( 23, tr( "Snap to 23° angles" ) );
   commonAngles << QPair<int, QString>( 30, tr( "Snap to 30° angles" ) );
   commonAngles << QPair<int, QString>( 45, tr( "Snap to 45° angles" ) );
   commonAngles << QPair<int, QString>( 90, tr( "Snap to 90° angles" ) );
