@@ -1584,7 +1584,7 @@
     <string>Remove Layer/Group</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+D</string>
+    <string>Ctrl+Del</string>
    </property>
   </action>
   <action name="mActionSetLayerCRS">
