@@ -270,8 +270,8 @@ void TestQgsZonalStatistics::testNoData()
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
-  QCOMPARE( f.attribute( "ncount" ).toDouble(), 103.0 );
-  QCOMPARE( f.attribute( "nsum" ).toDouble(), 90536.0 );
+  QCOMPARE( f.attribute( "ncount" ).toDouble(), 50.0 );
+  QCOMPARE( f.attribute( "nsum" ).toDouble(), 43868.0 );
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
@@ -293,8 +293,8 @@ void TestQgsZonalStatistics::testNoData()
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
-  QCOMPARE( f.attribute( "uncount" ).toDouble(), 52.0 );
-  QCOMPARE( f.attribute( "unsum" ).toDouble(), 45374.0 );
+  QCOMPARE( f.attribute( "uncount" ).toDouble(), 25.0 );
+  QCOMPARE( f.attribute( "unsum" ).toDouble(), 21750.0 );
 
   fetched = it.nextFeature( f );
   QVERIFY( fetched );
