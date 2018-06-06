@@ -266,7 +266,13 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
         QgsSettings().clear()
+        QLocale.setDefault(QLocale.c())
         start_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset locale"""
+        QLocale.setDefault(QLocale.c())
 
     def test_representValue(self):
 
@@ -276,8 +282,6 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         QgsProject.instance().addMapLayers([layer])
 
         fieldFormatter = QgsRangeFieldFormatter()
-
-        QLocale.setDefault(QLocale.c())
 
         # Precision is ignored for integers and longlongs
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
