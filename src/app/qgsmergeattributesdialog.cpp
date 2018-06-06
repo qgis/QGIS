@@ -361,10 +361,8 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   mUpdating = false;
 }
 
-QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int col )
+QVariant QgsMergeAttributesDialog::featureAttribute( QgsFeatureId featureId, int fieldIdx )
 {
-  int fieldIdx = mTableWidget->horizontalHeaderItem( col )->data( FieldIndex ).toInt();
-
   int i;
   for ( i = 0; i < mFeatureList.size() && mFeatureList.at( i ).id() != featureId; i++ )
     ;
