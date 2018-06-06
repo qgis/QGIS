@@ -5586,6 +5586,18 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:snap
+    name: Test Snap Geometries (to each other)
+    params:
+      INPUT:
+        name: custom/snap_geometries.geojson
+        type: vector
+      THRESHOLD: 0.5
+    results:
+      OUTPUT:
+        name: expected/snap_geometries.gml
+        type: vector
+
   - algorithm: native:taperedbuffer
     name: Tapered buffers (lines)
     params:
