@@ -258,17 +258,18 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
       continue;
     }
 
-    int offsetX, offsetY, nCellsX, nCellsY;
-    cellInfoForBBox( rasterBBox, featureRect, mCellSizeX, mCellSizeY, offsetX, offsetY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider );
+    int nCellsX, nCellsY;
+    QgsRectangle rasterBlockExtent;
+    cellInfoForBBox( rasterBBox, featureRect, mCellSizeX, mCellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
-    statisticsFromMiddlePointTest( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-                                   rasterBBox, featureStats );
+    statisticsFromMiddlePointTest( featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+                                   rasterBlockExtent, featureStats );
 
     if ( featureStats.count <= 1 )
     {
       //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
-      statisticsFromPreciseIntersection( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-                                         rasterBBox, featureStats );
+      statisticsFromPreciseIntersection( featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
+                                         rasterBlockExtent, featureStats );
     }
 
     //write the statistics value to the vector data provider
@@ -362,7 +363,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 }
 
 void QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
-    int &offsetX, int &offsetY, int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight ) const
+    int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent ) const
 {
   //get intersecting bbox
   QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
@@ -370,14 +371,13 @@ void QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const 
   {
     nCellsX = 0;
     nCellsY = 0;
-    offsetX = 0;
-    offsetY = 0;
+    rasterBlockExtent = QgsRectangle();
     return;
   }
 
   //get offset in pixels in x- and y- direction
-  offsetX = static_cast< int >( std::floor( ( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX ) );
-  offsetY = static_cast< int >( std::floor( ( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY ) );
+  int offsetX = static_cast< int >( std::floor( ( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX ) );
+  int offsetY = static_cast< int >( std::floor( ( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY ) );
 
   int maxColumn = static_cast< int >( std::floor( ( intersectBox.xMaximum() - rasterBBox.xMinimum() ) / cellSizeX ) ) + 1;
   int maxRow = static_cast< int >( std::floor( ( rasterBBox.yMaximum() - intersectBox.yMinimum() ) / cellSizeY ) ) + 1;
@@ -388,14 +388,18 @@ void QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const 
   //avoid access to cells outside of the raster (may occur because of rounding)
   nCellsX = std::min( offsetX + nCellsX, rasterWidth ) - offsetX;
   nCellsY = std::min( offsetY + nCellsY, rasterHeight ) - offsetY;
+
+  rasterBlockExtent = QgsRectangle( rasterBBox.xMinimum() + offsetX * cellSizeX,
+                                    rasterBBox.yMaximum() - offsetY * cellSizeY,
+                                    rasterBBox.xMinimum() + ( nCellsX + offsetX ) * cellSizeX,
+                                    rasterBBox.yMaximum() - ( nCellsY + offsetY ) * cellSizeY );
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
+void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
 {
   double cellCenterX, cellCenterY;
 
-  cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
+  cellCenterY = rasterBBox.yMaximum() - cellSizeY / 2;
   stats.reset();
 
   std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
@@ -405,13 +409,10 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   }
   polyEngine->prepareGeometry();
 
-  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
-  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
-
-  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
+  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, rasterBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
-    cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
+    cellCenterX = rasterBBox.xMinimum() + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
       double pixelValue = block->value( i, j );
@@ -429,21 +430,17 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   }
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
+void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
 {
   stats.reset();
 
-  double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
+  double currentY = rasterBBox.yMaximum() - cellSizeY / 2;
   QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
   double pixelArea = cellSizeX * cellSizeY;
   double weight = 0;
-
-  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
-  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
 
   std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
   if ( !polyEngine )
@@ -452,10 +449,10 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
   }
   polyEngine->prepareGeometry();
 
-  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
+  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, rasterBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
-    double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
+    double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0;
     for ( int j = 0; j < nCellsX; ++j )
     {
       double pixelValue = block->value( i, j );
