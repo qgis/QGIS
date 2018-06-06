@@ -16,6 +16,8 @@
 #ifndef QGSALGORITHMSNAPGEOMETRIES_H
 #define QGSALGORITHMSNAPGEOMETRIES_H
 
+#define SIP_NO_FILE
+
 #include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
