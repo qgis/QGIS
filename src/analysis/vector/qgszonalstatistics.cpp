@@ -456,25 +456,23 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
     for ( int j = 0; j < nCellsX; ++j )
     {
       double pixelValue = block->value( i, j );
-      if ( !validPixel( pixelValue ) || block->isNoData( i, j ) )
+      if ( validPixel( pixelValue ) && !block->isNoData( i, j ) )
       {
-        continue;
-      }
-
-      pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      // GEOS intersects tests on prepared geometry is MAGNITUDES faster than calculating the intersection itself,
-      // so we first test to see if there IS an intersection before doing the actual calculation
-      if ( !pixelRectGeometry.isNull() && polyEngine->intersects( pixelRectGeometry.constGet() ) )
-      {
-        //intersection
-        QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-        if ( !intersectGeometry.isEmpty() )
+        pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
+        // GEOS intersects tests on prepared geometry is MAGNITUDES faster than calculating the intersection itself,
+        // so we first test to see if there IS an intersection before doing the actual calculation
+        if ( !pixelRectGeometry.isNull() && polyEngine->intersects( pixelRectGeometry.constGet() ) )
         {
-          double intersectionArea = intersectGeometry.area();
-          if ( intersectionArea >= 0.0 )
+          //intersection
+          QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
+          if ( !intersectGeometry.isEmpty() )
           {
-            weight = intersectionArea / pixelArea;
-            stats.addValue( pixelValue, weight );
+            double intersectionArea = intersectGeometry.area();
+            if ( intersectionArea >= 0.0 )
+            {
+              weight = intersectionArea / pixelArea;
+              stats.addValue( pixelValue, weight );
+            }
           }
         }
       }

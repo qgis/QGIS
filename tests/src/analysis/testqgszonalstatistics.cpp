@@ -41,6 +41,7 @@ class TestQgsZonalStatistics : public QObject
     void testStatistics();
     void testReprojection();
     void testNoData();
+    void testSmallPolygons();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -300,6 +301,46 @@ void TestQgsZonalStatistics::testNoData()
   QVERIFY( fetched );
   QCOMPARE( f.attribute( "uncount" ).toDouble(), 0.0 );
   QCOMPARE( f.attribute( "unsum" ).toDouble(), 0.0 );
+}
+
+void TestQgsZonalStatistics::testSmallPolygons()
+{
+  QString myDataPath( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString myTestDataPath = myDataPath + "/zonalstatistics/";
+
+  // test that zonal stats works ok with polygons much smaller than pixel size
+  std::unique_ptr< QgsRasterLayer > rasterLayer = qgis::make_unique< QgsRasterLayer >( myTestDataPath + "raster.tif", QStringLiteral( "raster" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsVectorLayer > vectorLayer = qgis::make_unique< QgsVectorLayer >( mTempPath + "small_polys.shp", QStringLiteral( "poly" ), QStringLiteral( "ogr" ) );
+
+  QgsZonalStatistics zs( vectorLayer.get(), rasterLayer.get(), QStringLiteral( "n" ), 1, QgsZonalStatistics::All );
+  zs.calculateStatistics( nullptr );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  QgsFeatureIterator it = vectorLayer->getFeatures( request );
+  bool fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.698248, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 588.711, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 826.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 851.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 843.125292, 0.001 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.240808, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 208.030921, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 859.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 868.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 863.887500, 0.001 );
+
+  fetched = it.nextFeature( f );
+  QVERIFY( fetched );
+  QGSCOMPARENEAR( f.attribute( "ncount" ).toDouble(), 0.259522, 0.001 );
+  QGSCOMPARENEAR( f.attribute( "nsum" ).toDouble(), 224.300747, 0.001 );
+  QCOMPARE( f.attribute( "nmin" ).toDouble(), 851.0 );
+  QCOMPARE( f.attribute( "nmax" ).toDouble(), 872.0 );
+  QGSCOMPARENEAR( f.attribute( "nmean" ).toDouble(), 864.285638, 0.001 );
 }
 
 QGSTEST_MAIN( TestQgsZonalStatistics )
