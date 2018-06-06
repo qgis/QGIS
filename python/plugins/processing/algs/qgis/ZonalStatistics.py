@@ -63,6 +63,14 @@ class ZonalStatistics(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+        self.bandNumber = None
+        self.columnPrefix = None
+        self.selectedStats = None
+        self.vectorLayer = None
+        self.raster_interface = None
+        self.raster_crs = None
+        self.raster_units_per_pixel_x = None
+        self.raster_units_per_pixel_y = None
 
     def initAlgorithm(self, config=None):
         self.STATS = OrderedDict([(self.tr('Count'), QgsZonalStatistics.Count),
@@ -99,12 +107,6 @@ class ZonalStatistics(QgisAlgorithm):
                                                       self.tr('Zonal statistics'),
                                                       QgsProcessing.TypeVectorPolygon))
 
-        self.bandNumber = None
-        self.columnPrefix = None
-        self.selectedStats = None
-        self.vectorLayer = None
-        self.rasterLayer = None
-
     def name(self):
         return 'zonalstatistics'
 
@@ -122,12 +124,19 @@ class ZonalStatistics(QgisAlgorithm):
             self.selectedStats |= self.STATS[keys[i]]
 
         self.vectorLayer = self.parameterAsVectorLayer(parameters, self.INPUT_VECTOR, context)
-        self.rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        rasterLayer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
+        self.raster_interface = rasterLayer.dataProvider().clone()
+        self.raster_crs = rasterLayer.crs()
+        self.raster_units_per_pixel_x = rasterLayer.rasterUnitsPerPixelX()
+        self.raster_units_per_pixel_y = rasterLayer.rasterUnitsPerPixelY()
         return True
 
     def processAlgorithm(self, parameters, context, feedback):
         zs = QgsZonalStatistics(self.vectorLayer,
-                                self.rasterLayer,
+                                self.raster_interface,
+                                self.raster_crs,
+                                self.raster_units_per_pixel_x,
+                                self.raster_units_per_pixel_y,
                                 self.columnPrefix,
                                 self.bandNumber,
                                 QgsZonalStatistics.Statistics(self.selectedStats))
