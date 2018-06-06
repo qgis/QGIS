@@ -102,13 +102,18 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QMenu *menu = new QMenu( this );
   // common angles
   QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
-  mCommonAngleActions = QMap<QAction *, int>();
-  QList< QPair< int, QString > > commonAngles;
-  commonAngles << QPair<int, QString>( 0, tr( "Do Not Snap to Common Angles" ) );
-  commonAngles << QPair<int, QString>( 30, tr( "Snap to 30° Angles" ) );
-  commonAngles << QPair<int, QString>( 45, tr( "Snap to 45° Angles" ) );
-  commonAngles << QPair<int, QString>( 90, tr( "Snap to 90° Angles" ) );
-  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
+  mCommonAngleActions = QMap<QAction *, double>();
+  QList< QPair< double, QString > > commonAngles;
+  commonAngles << QPair<double, QString>( 0, tr( "Do not snap to common angles" ) );
+  commonAngles << QPair<double, QString>( 5, tr( "Snap to 5° angles" ) );
+  commonAngles << QPair<double, QString>( 10, tr( "Snap to 10° angles" ) );
+  commonAngles << QPair<double, QString>( 15, tr( "Snap to 15° angles" ) );
+  commonAngles << QPair<double, QString>( 18, tr( "Snap to 18° angles" ) );
+  commonAngles << QPair<double, QString>( 22.5, tr( "Snap to 22.5° angles" ) );
+  commonAngles << QPair<double, QString>( 30, tr( "Snap to 30° angles" ) );
+  commonAngles << QPair<double, QString>( 45, tr( "Snap to 45° angles" ) );
+  commonAngles << QPair<double, QString>( 90, tr( "Snap to 90° angles" ) );
+  for ( QList< QPair<double , QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );
@@ -242,7 +247,7 @@ void QgsAdvancedDigitizingDockWidget::setConstructionMode( bool enabled )
 void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 {
   // common angles
-  QMap<QAction *, int>::const_iterator ica = mCommonAngleActions.constFind( action );
+  QMap<QAction *, double>::const_iterator ica = mCommonAngleActions.constFind( action );
   if ( ica != mCommonAngleActions.constEnd() )
   {
     ica.key()->setChecked( true );
