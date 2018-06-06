@@ -55,7 +55,7 @@ The QgsCadUtils class provides routines for CAD editing.
 
       QgsPointLocator::Match edgeMatch;
 
-      int softLockCommonAngle;
+      double softLockCommonAngle;
     };
 
     static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
