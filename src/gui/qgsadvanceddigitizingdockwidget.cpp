@@ -38,7 +38,13 @@
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
-  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
+  , mCurrentMapToolSupportsCad( false )
+  , mCadEnabled( false )
+  , mConstructionMode( false )
+  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toDouble() )
+  , mSnappedToVertex( false )
+  , mSessionActive( false )
+  , mErrorMessage( nullptr )
 {
   setupUi( this );
 
@@ -113,7 +119,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   commonAngles << QPair<double, QString>( 30, tr( "Snap to 30° angles" ) );
   commonAngles << QPair<double, QString>( 45, tr( "Snap to 45° angles" ) );
   commonAngles << QPair<double, QString>( 90, tr( "Snap to 90° angles" ) );
-  for ( QList< QPair<double , QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
+  for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
     action->setCheckable( true );

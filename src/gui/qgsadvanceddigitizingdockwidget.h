@@ -252,7 +252,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Constraint on the Y coordinate
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
-    bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+    bool commonAngleConstraint() const { return !qgsDoubleNear( mCommonAngleConstraint, 0.0 ); }
 
     /**
      * Removes all points from the CAD point list
@@ -467,7 +467,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mXConstraint;
     std::unique_ptr< CadConstraint > mYConstraint;
     AdditionalConstraint mAdditionalConstraint;
-    int mCommonAngleConstraint = 90; // if 0: do not snap to common angles
+    double mCommonAngleConstraint; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
     QList<QgsPointXY> mCadPointList;
@@ -481,7 +481,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
 
     // UI
     QAction *mEnableAction = nullptr;
-    QMap< QAction *, int > mCommonAngleActions; // map the common angle actions with their angle values
+    QMap< QAction *, double > mCommonAngleActions; // map the common angle actions with their angle values
 
   private:
 #ifdef SIP_RUN
