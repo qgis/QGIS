@@ -468,7 +468,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
           if ( !intersectGeometry.isEmpty() )
           {
             double intersectionArea = intersectGeometry.area();
-            if ( intersectionArea >= 0.0 )
+            if ( intersectionArea > 0.0 )
             {
               weight = intersectionArea / pixelArea;
               stats.addValue( pixelValue, weight );
