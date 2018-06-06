@@ -883,10 +883,6 @@
    <property name="text">
     <string>Move Feature(s)</string>
    </property>
-   <property name="toolTip">
-    <string>Move Feature(s)
-&lt;p&gt;Try the Vertex Tool if snapping is needed&lt;/p&gt;</string>
-   </property>
   </action>
   <action name="mActionReshapeFeatures">
    <property name="checkable">
