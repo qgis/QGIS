@@ -107,11 +107,21 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
   {
     double r = 0;
     double minRadius = 0;
+    QFont font = mWidgetFont;
+    bool fontChanged = false;
+    if ( vertex->isSelected() )
+    {
+      font.setBold( true );
+      fontChanged = true;
+    }
     if ( calcR( index.row(), r, minRadius ) )
     {
-      QFont curvePointFont = mWidgetFont;
-      curvePointFont.setItalic( true );
-      return curvePointFont;
+      font.setItalic( true );
+      fontChanged = true;;
+    }
+    if ( fontChanged )
+    {
+      return font;
     }
     else
     {
