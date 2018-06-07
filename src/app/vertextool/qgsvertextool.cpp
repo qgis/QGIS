@@ -1036,6 +1036,13 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     return;
 
   mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
+  for ( int i = 0; i < mSelectedVertices.length(); ++i )
+  {
+    if ( mSelectedVertices.at( i ).layer == m.layer() && mSelectedVertices.at( i ).fid == m.featureId() )
+    {
+      mSelectedFeature->selectVertex( mSelectedVertices.at( i ).vertexId );
+    }
+  }
   if ( !mVertexEditor )
   {
     mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
