@@ -753,23 +753,26 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
     deleteSegmentizedGeometry = true;
   }
 
-  mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry->geometry()->partCount() );
-  mSymbolRenderContext->setGeometryPartNum( 1 );
-
   ExpressionContextScopePopper scopePopper;
-  if ( mSymbolRenderContext->expressionContextScope() )
+  if ( mSymbolRenderContext )
   {
-    // this is somewhat nasty - by appending this scope here it's now owned
-    // by both mSymbolRenderContext AND context.expressionContext()
-    // the RAII scopePopper is required to make sure it always has ownership transferred back
-    // from context.expressionContext(), even if exceptions of other early exits occur in this
-    // function
-    context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
-    scopePopper.context = &context.expressionContext();
+    mSymbolRenderContext->setGeometryPartCount( segmentizedGeometry->geometry()->partCount() );
+    mSymbolRenderContext->setGeometryPartNum( 1 );
 
-    QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
-    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+    if ( mSymbolRenderContext->expressionContextScope() )
+    {
+      // this is somewhat nasty - by appending this scope here it's now owned
+      // by both mSymbolRenderContext AND context.expressionContext()
+      // the RAII scopePopper is required to make sure it always has ownership transferred back
+      // from context.expressionContext(), even if exceptions of other early exits occur in this
+      // function
+      context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+      scopePopper.context = &context.expressionContext();
+
+      QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
+      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
+      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+    }
   }
 
   // Collection of markers to paint, only used for no curve types.
@@ -866,8 +869,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
-        mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        if ( mSymbolRenderContext )
+        {
+          mSymbolRenderContext->setGeometryPartNum( i + 1 );
+          mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        }
 
         const QgsPointV2* point = static_cast< const QgsPointV2* >( mp->geometryN( i ) );
         _getPoint( pt, context, point );
@@ -902,8 +908,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
-        mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        if ( mSymbolRenderContext )
+        {
+          mSymbolRenderContext->setGeometryPartNum( i + 1 );
+          mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        }
 
         if ( geomCollection )
         {
@@ -952,8 +961,11 @@ void QgsSymbolV2::renderFeature( const QgsFeature& feature, QgsRenderContext& co
 
       for ( unsigned int i = 0; i < num && wkbPtr; ++i )
       {
-        mSymbolRenderContext->setGeometryPartNum( i + 1 );
-        mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        if ( mSymbolRenderContext )
+        {
+          mSymbolRenderContext->setGeometryPartNum( i + 1 );
+          mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, i + 1, true ) );
+        }
 
         if ( geomCollection )
         {
