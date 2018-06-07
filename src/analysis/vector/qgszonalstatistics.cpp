@@ -46,21 +46,13 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterI
                                         const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
-  , mCellSizeX( rasterUnitsPerPixelX )
-  , mCellSizeY( rasterUnitsPerPixelY )
+  , mCellSizeX( std::fabs( rasterUnitsPerPixelX ) )
+  , mCellSizeY( std::fabs( rasterUnitsPerPixelY ) )
   , mRasterBand( rasterBand )
   , mPolygonLayer( polygonLayer )
   , mAttributePrefix( attributePrefix )
   , mStatistics( stats )
 {
-  if ( mCellSizeX < 0 )
-  {
-    mCellSizeX = -mCellSizeX;
-  }
-  if ( mCellSizeY < 0 )
-  {
-    mCellSizeY = -mCellSizeY;
-  }
 }
 
 int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
