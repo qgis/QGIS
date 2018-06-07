@@ -342,6 +342,7 @@
     <addaction name="mMenuRegularPolygon"/>
     <addaction name="mMenuEllipse"/>
     <addaction name="mActionMoveFeature"/>
+    <addaction name="mActionMoveFeatureCopy"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="mActionMultiEditAttributes"/>
     <addaction name="separator"/>
