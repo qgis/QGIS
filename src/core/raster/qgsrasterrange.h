@@ -80,9 +80,8 @@ class CORE_EXPORT QgsRasterRange
      *  \param value value
      *  \param rangeList list of ranges
      *  \returns true if value is in at least one of ranges
-     *  \note not available in Python bindings
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList ) SIP_SKIP;
+    static bool contains( double value, const QgsRasterRangeList &rangeList );
 
   private:
     double mMin = std::numeric_limits<double>::quiet_NaN();
