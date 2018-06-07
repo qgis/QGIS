@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDomNode>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
