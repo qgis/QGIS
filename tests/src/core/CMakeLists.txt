@@ -191,6 +191,7 @@ SET(TESTS
  testziplayer.cpp
  testqgsmeshlayer.cpp
  testqgsmeshlayerrenderer.cpp
+ testqgslayerdefinition.cpp
    )
 
 IF(WITH_QTWEBKIT)

@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDomNode>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
@@ -214,6 +213,11 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
   QList<QgsLayerTreeLayer *> layers = root->findLayers();
   Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
   {
+    if ( ! layer->layer() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Not a valid map layer: skipping %1" ).arg( layer->name( ) ), 4 );
+      continue;
+    }
     QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
     layer->layer()->writeLayerXml( layerelm, doc, context );
     layerselm.appendChild( layerelm );
