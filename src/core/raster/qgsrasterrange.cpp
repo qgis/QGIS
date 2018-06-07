@@ -17,9 +17,10 @@
 
 #include "qgsrasterrange.h"
 
-QgsRasterRange::QgsRasterRange( double min, double max )
+QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
   : mMin( min )
   , mMax( max )
+  , mType( bounds )
 {
 }
 
