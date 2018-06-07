@@ -60,6 +60,11 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap &configuration
   boundsHandling->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( boundsHandling.release() );
 
+  std::unique_ptr< QgsProcessingParameterBoolean > missingValuesParam = qgis::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "NODATA_FOR_MISSING" ),
+      QObject::tr( "Use no data when no range matches value" ), false, false );
+  missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( missingValuesParam.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reclassified raster" ) ) );
 }
 
@@ -80,7 +85,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mNbCellsYProvider = mInterface->ySize();
 
   mNoDataValue = parameterAsDouble( parameters, QStringLiteral( "NO_DATA" ), context );
-
+  mUseNoDataForMissingValues = parameterAsBool( parameters, QStringLiteral( "NODATA_FOR_MISSING" ), context );
 
   int boundsType = parameterAsEnum( parameters, QStringLiteral( "RANGE_BOUNDARIES" ), context );
   switch ( boundsType )
@@ -107,7 +112,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( parameters, context, feedback );
+  QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
 
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
@@ -122,7 +127,8 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
 
   provider->setNoDataValue( 1, mNoDataValue );
 
-  QgsReclassifyUtils::reclassify( classes, mInterface.get(), mBand, mExtent, mNbCellsXProvider, mNbCellsYProvider, provider.get(), mNoDataValue, feedback );
+  QgsReclassifyUtils::reclassify( classes, mInterface.get(), mBand, mExtent, mNbCellsXProvider, mNbCellsYProvider, provider.get(), mNoDataValue, mUseNoDataForMissingValues,
+                                  feedback );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );

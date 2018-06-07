@@ -73,6 +73,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
     QgsReclassifyUtils::RasterClass::BoundsType mBoundsType = QgsReclassifyUtils::RasterClass::IncludeMax;
+    bool mUseNoDataForMissingValues = false;
 };
 
 /**
@@ -124,7 +125,8 @@ class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
 
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVector< QgsReclassifyUtils::RasterClass > createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType,
+        const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
