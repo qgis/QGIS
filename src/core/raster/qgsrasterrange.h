@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgis.h"
 #include <QList>
 
 class QgsRasterRange;
@@ -36,21 +37,37 @@ class CORE_EXPORT QgsRasterRange
   public:
 
     /**
-     * \brief Constructor.
+     * Default constructor, both min and max value for the range will be set to NaN.
      */
-    QgsRasterRange();
+    QgsRasterRange() = default;
 
     /**
-     * \brief Constructor
-     *  \param min minimum value
-     *  \param max max value
+     * Constructor for a range with the given \a min and \a max values.
      */
     QgsRasterRange( double min, double max );
 
+    /**
+     * Returns the minimum value for the range.
+     * \see setMin()
+     */
     double min() const { return mMin; }
+
+    /**
+     * Returns the maximum value for the range.
+     * \see setMax()
+     */
     double max() const { return mMax; }
 
+    /**
+     * Sets the minimum value for the range.
+     * \see min()
+     */
     double setMin( double min ) { return mMin = min; }
+
+    /**
+     * Sets the maximum value for the range.
+     * \see max()
+     */
     double setMax( double max ) { return mMax = max; }
 
     inline bool operator==( QgsRasterRange o ) const
@@ -59,7 +76,7 @@ class CORE_EXPORT QgsRasterRange
     }
 
     /**
-     * \brief Test if value is within the list of ranges
+     * \brief Tests if a \a value is within the list of ranges
      *  \param value value
      *  \param rangeList list of ranges
      *  \returns true if value is in at least one of ranges
@@ -68,8 +85,8 @@ class CORE_EXPORT QgsRasterRange
     static bool contains( double value, const QgsRasterRangeList &rangeList ) SIP_SKIP;
 
   private:
-    double mMin;
-    double mMax;
+    double mMin = std::numeric_limits<double>::quiet_NaN();
+    double mMax = std::numeric_limits<double>::quiet_NaN();
 };
 
 #endif

@@ -26,22 +26,41 @@ including min and max value.
 
     QgsRasterRange();
 %Docstring
-Constructor.
+Default constructor, both min and max value for the range will be set to NaN.
 %End
 
     QgsRasterRange( double min, double max );
 %Docstring
-Constructor
-
-:param min: minimum value
-:param max: max value
+Constructor for a range with the given ``min`` and ``max`` values.
 %End
 
     double min() const;
+%Docstring
+Returns the minimum value for the range.
+
+.. seealso:: :py:func:`setMin`
+%End
+
     double max() const;
+%Docstring
+Returns the maximum value for the range.
+
+.. seealso:: :py:func:`setMax`
+%End
 
     double setMin( double min );
+%Docstring
+Sets the minimum value for the range.
+
+.. seealso:: :py:func:`min`
+%End
+
     double setMax( double max );
+%Docstring
+Sets the maximum value for the range.
+
+.. seealso:: :py:func:`max`
+%End
 
     bool operator==( QgsRasterRange o ) const;
 
