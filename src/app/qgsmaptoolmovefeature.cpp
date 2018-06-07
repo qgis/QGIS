@@ -78,9 +78,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( !mRubberBand )
   {
-    // ideally we would snap preferably on the moved feature
-    e->snapPoint();
-
     //find first geometry under mouse cursor and store iterator to it
     QgsPointXY layerCoords = toLayerCoordinates( vlayer, e->mapPoint() );
     double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
