@@ -293,8 +293,6 @@ QgsVertexEditor::QgsVertexEditor(
 
   setWidget( mTableView );
 
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
-
   updateEditor( layer, selectedFeature );
 }
 
@@ -311,6 +309,7 @@ void QgsVertexEditor::updateEditor( QgsVectorLayer *layer, QgsSelectedFeature *s
   // TODO We really should just update the model itself.
   mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
   mTableView->setModel( mVertexModel );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 
   connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
 }
