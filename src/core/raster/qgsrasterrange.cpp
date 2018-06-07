@@ -15,15 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <limits>
-#include "qgis.h"
 #include "qgsrasterrange.h"
-
-QgsRasterRange::QgsRasterRange()
-  : mMin( std::numeric_limits<double>::quiet_NaN() )
-  , mMax( std::numeric_limits<double>::quiet_NaN() )
-{
-}
 
 QgsRasterRange::QgsRasterRange( double min, double max )
   : mMin( min )
