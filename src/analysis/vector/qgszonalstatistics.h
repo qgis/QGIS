@@ -38,7 +38,8 @@ class QgsField;
 
 /**
  * \ingroup analysis
- *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
+ * A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes.
+*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
@@ -79,6 +80,24 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     /**
      * Constructor for QgsZonalStatistics, using a QgsRasterInterface.
      *
+     * The \a polygonLayer gives the vector layer containing the (multi)polygon features corresponding to the
+     * different zones. This layer will be modified, adding extra attributes for each of the zonal statistics
+     * calculated.
+     *
+     * Pixel values for each zone are taken from the raster \a rasterInterface. The constructor must also
+     * be given various properties relating to the input raster, such as the raster CRS (\a rasterCrs),
+     * and the size (X and Y) in map units for each raster pixel. The source raster band is specified
+     * via \a rasterBand, where a value of 1 corresponds to the first band.
+     *
+     * If the CRS of the \a polygonLayer and \a rasterCrs differ, the calculation will automatically
+     * reproject the zones to ensure valid results are calculated.
+     *
+     * The \a attributePrefix argument specifies an optional prefix to use when creating the
+     * new fields for each calculated statistic.
+     *
+     * Finally, the calculated statistics can be set via the \a stats argument. A new field will be
+     * added to \a polygonLayer for each statistic calculated.
+     *
      * \warning The raster interface must exist for the lifetime of the zonal statistics calculation. For thread
      * safe use, always use a cloned raster interface.
      *
@@ -93,10 +112,10 @@ class ANALYSIS_EXPORT QgsZonalStatistics
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 
-
     /**
      * Starts the calculation
-      \returns 0 in case of success*/
+     * \returns 0 in case of success
+    */
     int calculateStatistics( QgsFeedback *feedback );
 
   private:
