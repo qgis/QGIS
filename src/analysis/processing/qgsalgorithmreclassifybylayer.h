@@ -22,59 +22,47 @@
 
 #include "qgis.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgsreclassifyutils.h"
 
 ///@cond PRIVATE
 
 /**
- * Native zonal histogram algorithm.
+ * Base class for reclassify algorithms.
  */
-class QgsReclassifyByLayerAlgorithm : public QgsProcessingAlgorithm
+class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
 {
-
   public:
 
-    QgsReclassifyByLayerAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
-    QString shortHelpString() const override;
-    QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
+    QString group() const override final;
+    QString groupId() const override final;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override final;
 
   protected:
 
-    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    /**
+     * Adds specific subclass algorithm parameters. The common parameters, such as raster destination, are automatically
+     * added by the base class.
+     */
+    virtual void addAlgorithmParams() = 0;
+
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override final;
+
+    /**
+     * Prepares the reclassify algorithm subclass for execution.
+     */
+    virtual bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+
+    /**
+     * Returns a list of classes to use during the reclassification.
+     */
+    virtual QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+
     QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
-
-    struct Class
-    {
-      Class() = default;
-      Class( double minValue, double maxValue, double value )
-        : range( minValue, maxValue )
-        , value( value )
-      {}
-      QgsRasterRange range;
-      double value = 0;
-    };
-
-
-    void reclassify( const QVector< Class > &classes, QgsRasterDataProvider *destinationRaster, QgsProcessingFeedback *feedback );
-    double reclassifyValue( const QVector< Class > &classes, double input ) const;
-
-  private:
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override final;
 
     std::unique_ptr< QgsRasterInterface > mInterface;
 
-    int mMinFieldIdx = -1;
-    int mMaxFieldIdx = -1;
-    int mValueFieldIdx = -1;
     double mNoDataValue = -9999;
-
-    QgsFeatureIterator mTableIterator;
     int mBand = 1;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
@@ -82,6 +70,56 @@ class QgsReclassifyByLayerAlgorithm : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelY = 0;
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
+};
+
+/**
+ * Native reclassify by layer algorithm.
+ */
+class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
+{
+
+  public:
+
+    QgsReclassifyByLayerAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    void addAlgorithmParams() override;
+    bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    int mMinFieldIdx = -1;
+    int mMaxFieldIdx = -1;
+    int mValueFieldIdx = -1;
+    QgsFeatureIterator mTableIterator;
+
+};
+
+/**
+ * Native reclassify by table algorithm.
+ */
+class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
+{
+
+  public:
+
+    QgsReclassifyByTableAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QgsReclassifyByTableAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+
+    void addAlgorithmParams() override;
+    bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 
