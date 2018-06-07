@@ -62,6 +62,53 @@ class TestQgsRasterRange(unittest.TestCase):
         range2.setMax(5)
         self.assertEqual(range, range2)
 
+    def testContains(self):
+        range = QgsRasterRange(1, 5)
+        self.assertTrue(range.contains(1))
+        self.assertTrue(range.contains(5))
+        self.assertTrue(range.contains(4))
+        self.assertTrue(range.contains(1.00001))
+        self.assertTrue(range.contains(4.99999))
+        self.assertFalse(range.contains(0.99999))
+        self.assertFalse(range.contains(5.00001))
+
+        # with nan min/maxs
+        range = QgsRasterRange()
+        self.assertTrue(range.contains(1))
+        self.assertTrue(range.contains(-909999999))
+        self.assertTrue(range.contains(999999999))
+        range.setMin(5)
+        self.assertFalse(range.contains(0))
+        self.assertTrue(range.contains(5))
+        self.assertTrue(range.contains(10000000))
+
+        range = QgsRasterRange()
+        range.setMax(5)
+        self.assertFalse(range.contains(6))
+        self.assertTrue(range.contains(5))
+        self.assertTrue(range.contains(-99999))
+
+        range = QgsRasterRange(1, 5, QgsRasterRange.IncludeMax)
+        self.assertFalse(range.contains(0))
+        self.assertFalse(range.contains(1))
+        self.assertTrue(range.contains(2))
+        self.assertTrue(range.contains(5))
+        self.assertFalse(range.contains(6))
+
+        range = QgsRasterRange(1, 5, QgsRasterRange.IncludeMin)
+        self.assertFalse(range.contains(0))
+        self.assertTrue(range.contains(1))
+        self.assertTrue(range.contains(2))
+        self.assertFalse(range.contains(5))
+        self.assertFalse(range.contains(6))
+
+        range = QgsRasterRange(1, 5, QgsRasterRange.Exclusive)
+        self.assertFalse(range.contains(0))
+        self.assertFalse(range.contains(1))
+        self.assertTrue(range.contains(2))
+        self.assertFalse(range.contains(5))
+        self.assertFalse(range.contains(6))
+
 
 if __name__ == '__main__':
     unittest.main()
