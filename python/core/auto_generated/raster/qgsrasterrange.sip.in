@@ -64,6 +64,15 @@ Sets the maximum value for the range.
 
     bool operator==( QgsRasterRange o ) const;
 
+    static bool contains( double value, const QgsRasterRangeList &rangeList );
+%Docstring
+Tests if a ``value`` is within the list of ranges
+
+:param value: value
+:param rangeList: list of ranges
+
+:return: true if value is in at least one of ranges
+%End
 
 };
 
