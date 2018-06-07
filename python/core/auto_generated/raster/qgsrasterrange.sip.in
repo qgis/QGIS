@@ -97,6 +97,13 @@ in the range.
 
     bool operator==( QgsRasterRange o ) const;
 
+    bool contains( double value ) const;
+%Docstring
+Returns true if this range contains the specified ``value``.
+
+.. versionadded:: 3.2
+%End
+
     static bool contains( double value, const QgsRasterRangeList &rangeList );
 %Docstring
 Tests if a ``value`` is within the list of ranges

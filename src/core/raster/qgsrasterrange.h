@@ -108,6 +108,12 @@ class CORE_EXPORT QgsRasterRange
     }
 
     /**
+     * Returns true if this range contains the specified \a value.
+     * \since QGIS 3.2
+     */
+    bool contains( double value ) const;
+
+    /**
      * \brief Tests if a \a value is within the list of ranges
      *  \param value value
      *  \param rangeList list of ranges
