@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
 #include "qgsproject.h"
+#include "qgscoordinatetransform.h"
 
 #include <QTableWidget>
 #include <QHeaderView>
@@ -359,49 +360,40 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
   mUpdatingVertexSelection = true;
 
   mSelectedFeature->deselectAllVertices();
-  Q_FOREACH ( const QModelIndex &index, mTableView->selectionModel()->selectedRows() )
+
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsRectangle *bbox = nullptr;
+  QModelIndexList indexList = selected.indexes();
+  for ( int i = 0; i < indexList.length(); ++i )
   {
-    int vertexIdx = index.row();
+    int vertexIdx = indexList.at( i ).row();
     mSelectedFeature->selectVertex( vertexIdx );
+
+    // create a bounding box of selected vertices
+    QgsPointXY point( mSelectedFeature->vertexMap().at( vertexIdx )->point() );
+    if ( !bbox )
+      bbox = new QgsRectangle( point, point );
+    else
+      bbox->combineExtentWith( point );
   }
 
-  //ensure that newly selected vertex is visible in canvas
-  if ( !selected.indexes().isEmpty() )
+  //ensure that newly selected vertices are visible in canvas
+  if ( bbox )
   {
-    int newRow = selected.indexes().first().row();
-    zoomToVertex( newRow );
+    try
+    {
+      QgsRectangle transformedBbox = t.transform( *bbox );
+      QgsRectangle canvasExtent = mCanvas->mapSettings().extent();
+      transformedBbox.combineExtentWith( canvasExtent );
+      mCanvas->setExtent( transformedBbox );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+    delete bbox;
   }
 
   mUpdatingVertexSelection = false;
-}
-
-void QgsVertexEditor::zoomToVertex( int idx )
-{
-  double x = mSelectedFeature->vertexMap().at( idx )->point().x();
-  double y = mSelectedFeature->vertexMap().at( idx )->point().y();
-  QgsPointXY newCenter( x, y );
-
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QgsPointXY tCenter;
-  try
-  {
-    tCenter = t.transform( newCenter );
-  }
-  catch ( QgsCsException & )
-  {
-    return;
-  }
-
-  QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
-  //close polygon
-  ext.append( ext.first() );
-  QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry vertexGeom( QgsGeometry::fromPointXY( tCenter ) );
-  if ( !vertexGeom.within( extGeom ) )
-  {
-    mCanvas->setCenter( tCenter );
-    mCanvas->refresh();
-  }
 }
 
 void QgsVertexEditor::keyPressEvent( QKeyEvent *e )

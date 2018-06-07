@@ -237,6 +237,13 @@ Expand the rectangle so that covers both the original rectangle and the given re
 Expand the rectangle so that covers both the original rectangle and the given point.
 %End
 
+    void combineExtentWith( const QgsPointXY &point );
+%Docstring
+Expand the rectangle so that covers both the original rectangle and the given point.
+
+.. versionadded:: 3.2
+%End
+
     QgsRectangle operator-( QgsVector v ) const;
 
     QgsRectangle operator+( QgsVector v ) const;

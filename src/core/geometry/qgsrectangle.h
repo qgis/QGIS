@@ -229,6 +229,12 @@ class CORE_EXPORT QgsRectangle
     void combineExtentWith( double x, double y );
 
     /**
+     * Expand the rectangle so that covers both the original rectangle and the given point.
+     * \since QGIS 3.2
+     */
+    void combineExtentWith( const QgsPointXY &point );
+
+    /**
      * Returns a rectangle offset from this one in the direction of the reversed vector.
      * \since QGIS 3.0
      */
