@@ -44,6 +44,16 @@ class TestQgsRasterRange(unittest.TestCase):
         range = QgsRasterRange()
         range2 = QgsRasterRange()
         self.assertEqual(range, range2)
+        range.setMin(1)
+        self.assertNotEqual(range, range2)
+        range2.setMin(1)
+        self.assertEqual(range, range2)
+        range = QgsRasterRange()
+        range2 = QgsRasterRange()
+        range.setMax(5)
+        self.assertNotEqual(range, range2)
+        range2.setMax(5)
+        self.assertEqual(range, range2)
 
 
 if __name__ == '__main__':
