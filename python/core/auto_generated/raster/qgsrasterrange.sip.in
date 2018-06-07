@@ -24,14 +24,25 @@ including min and max value.
 %End
   public:
 
+    enum BoundsType
+    {
+      IncludeMinAndMax,
+      IncludeMax,
+      IncludeMin,
+      Exclusive,
+    };
+
     QgsRasterRange();
 %Docstring
 Default constructor, both min and max value for the range will be set to NaN.
 %End
 
-    QgsRasterRange( double min, double max );
+    QgsRasterRange( double min, double max, BoundsType bounds = IncludeMinAndMax );
 %Docstring
 Constructor for a range with the given ``min`` and ``max`` values.
+
+The ``bounds`` argument dictates how the min and max value themselves
+will be handled by the range.
 %End
 
     double min() const;
@@ -48,6 +59,17 @@ Returns the maximum value for the range.
 .. seealso:: :py:func:`setMax`
 %End
 
+    BoundsType bounds() const;
+%Docstring
+Returns the bounds type for the range, which specifies
+whether or not the min and max values themselves are included
+in the range.
+
+.. seealso:: :py:func:`setBounds`
+
+.. versionadded:: 3.4
+%End
+
     double setMin( double min );
 %Docstring
 Sets the minimum value for the range.
@@ -60,6 +82,17 @@ Sets the minimum value for the range.
 Sets the maximum value for the range.
 
 .. seealso:: :py:func:`max`
+%End
+
+    void setBounds( BoundsType type );
+%Docstring
+Setss the bounds ``type`` for the range, which specifies
+whether or not the min and max values themselves are included
+in the range.
+
+.. seealso:: :py:func:`bounds`
+
+.. versionadded:: 3.4
 %End
 
     bool operator==( QgsRasterRange o ) const;

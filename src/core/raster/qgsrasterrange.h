@@ -36,6 +36,15 @@ class CORE_EXPORT QgsRasterRange
 {
   public:
 
+    //! Handling for min and max bounds
+    enum BoundsType
+    {
+      IncludeMinAndMax = 0, //!< Min and max values are inclusive
+      IncludeMax, //!< Include the max value, but not the min value, e.g. min < value <= max
+      IncludeMin, //!< Include the min value, but not the max value, e.g. min <= value < max
+      Exclusive, //!< Don't include either the min or max value, e.g. min < value < max
+    };
+
     /**
      * Default constructor, both min and max value for the range will be set to NaN.
      */
@@ -43,8 +52,11 @@ class CORE_EXPORT QgsRasterRange
 
     /**
      * Constructor for a range with the given \a min and \a max values.
+     *
+     * The \a bounds argument dictates how the min and max value themselves
+     * will be handled by the range.
      */
-    QgsRasterRange( double min, double max );
+    QgsRasterRange( double min, double max, BoundsType bounds = IncludeMinAndMax );
 
     /**
      * Returns the minimum value for the range.
@@ -59,6 +71,15 @@ class CORE_EXPORT QgsRasterRange
     double max() const { return mMax; }
 
     /**
+     * Returns the bounds type for the range, which specifies
+     * whether or not the min and max values themselves are included
+     * in the range.
+     * \see setBounds()
+     * \since QGIS 3.4
+     */
+    BoundsType bounds() const { return mType; }
+
+    /**
      * Sets the minimum value for the range.
      * \see min()
      */
@@ -70,10 +91,20 @@ class CORE_EXPORT QgsRasterRange
      */
     double setMax( double max ) { return mMax = max; }
 
+    /**
+     * Setss the bounds \a type for the range, which specifies
+     * whether or not the min and max values themselves are included
+     * in the range.
+     * \see bounds()
+     * \since QGIS 3.4
+     */
+    void setBounds( BoundsType type ) { mType = type; }
+
     inline bool operator==( QgsRasterRange o ) const
     {
       return ( ( std::isnan( mMin ) && std::isnan( o.mMin ) ) || qgsDoubleNear( mMin, o.mMin ) )
-             && ( ( std::isnan( mMax ) && std::isnan( o.mMax ) ) || qgsDoubleNear( mMax, o.mMax ) );
+             && ( ( std::isnan( mMax ) && std::isnan( o.mMax ) ) || qgsDoubleNear( mMax, o.mMax ) )
+             && mType == o.mType;
     }
 
     /**
@@ -87,6 +118,7 @@ class CORE_EXPORT QgsRasterRange
   private:
     double mMin = std::numeric_limits<double>::quiet_NaN();
     double mMax = std::numeric_limits<double>::quiet_NaN();
+    BoundsType mType = IncludeMinAndMax;
 };
 
 #endif

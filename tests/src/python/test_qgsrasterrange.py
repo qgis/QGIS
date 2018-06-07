@@ -29,6 +29,9 @@ class TestQgsRasterRange(unittest.TestCase):
         range.setMax(10.4)
         self.assertEqual(range.min(), 2.2)
         self.assertEqual(range.max(), 10.4)
+        self.assertEqual(range.bounds(), QgsRasterRange.IncludeMinAndMax)
+        range.setBounds(QgsRasterRange.IncludeMin)
+        self.assertEqual(range.bounds(), QgsRasterRange.IncludeMin)
 
     def testEquality(self):
         range = QgsRasterRange(1, 5)
@@ -40,6 +43,10 @@ class TestQgsRasterRange(unittest.TestCase):
         range2.setMax(4)
         self.assertNotEqual(range, range2)
         range2.setMax(5)
+        self.assertEqual(range, range2)
+        range.setBounds(QgsRasterRange.IncludeMax)
+        self.assertNotEqual(range, range2)
+        range2.setBounds(QgsRasterRange.IncludeMax)
         self.assertEqual(range, range2)
         range = QgsRasterRange()
         range2 = QgsRasterRange()
