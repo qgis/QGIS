@@ -72,7 +72,8 @@ class CORE_EXPORT QgsRasterRange
 
     inline bool operator==( QgsRasterRange o ) const
     {
-      return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
+      return ( ( std::isnan( mMin ) && std::isnan( o.mMin ) ) || qgsDoubleNear( mMin, o.mMin ) )
+             && ( ( std::isnan( mMax ) && std::isnan( o.mMax ) ) || qgsDoubleNear( mMax, o.mMax ) );
     }
 
     /**
