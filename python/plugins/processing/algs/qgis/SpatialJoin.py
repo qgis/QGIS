@@ -40,7 +40,8 @@ from qgis.core import (QgsFields,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterString)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
@@ -55,6 +56,7 @@ class SpatialJoin(QgisAlgorithm):
     JOIN_FIELDS = "JOIN_FIELDS"
     METHOD = "METHOD"
     DISCARD_NONMATCHING = "DISCARD_NONMATCHING"
+    PREFIX = "PREFIX"
     OUTPUT = "OUTPUT"
 
     def group(self):
@@ -115,6 +117,8 @@ class SpatialJoin(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.DISCARD_NONMATCHING,
                                                         self.tr('Discard records which could not be joined'),
                                                         defaultValue=False))
+        self.addParameter(QgsProcessingParameterString(self.PREFIX,
+                                                       self.tr('Joined field prefix'), optional=True))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Joined layer')))
 
@@ -139,6 +143,7 @@ class SpatialJoin(QgisAlgorithm):
         join_fields = self.parameterAsFields(parameters, self.JOIN_FIELDS, context)
         method = self.parameterAsEnum(parameters, self.METHOD, context)
         discard_nomatch = self.parameterAsBool(parameters, self.DISCARD_NONMATCHING, context)
+        prefix = self.parameterAsString(parameters, self.PREFIX, context)
 
         source_fields = source.fields()
         fields_to_join = QgsFields()
@@ -152,6 +157,14 @@ class SpatialJoin(QgisAlgorithm):
                 join_field_indexes.append(idx)
                 if idx >= 0:
                     fields_to_join.append(join_source.fields().at(idx))
+
+        if prefix:
+            prefixed_fields = QgsFields()
+            for i in range(len(fields_to_join)):
+                field = fields_to_join[i]
+                field.setName(prefix + field.name())
+                prefixed_fields.append(field)
+            fields_to_join = prefixed_fields
 
         out_fields = QgsProcessingUtils.combineFields(source_fields, fields_to_join)
 

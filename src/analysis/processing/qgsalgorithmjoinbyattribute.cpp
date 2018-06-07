@@ -72,6 +72,9 @@ void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
                 QObject::tr( "Discard records which could not be joined" ),
                 false ) );
 
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ),
+                QObject::tr( "Joined field prefix" ), QVariant(), false, true ) );
+
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Joined layer" ) ) );
 }
 
@@ -100,6 +103,8 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
   std::unique_ptr< QgsProcessingFeatureSource > input2( parameterAsSource( parameters, QStringLiteral( "INPUT_2" ), context ) );
   if ( !input2 )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_2" ) ) );
+
+  QString prefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
 
   QString field1Name = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
   QString field2Name = parameterAsString( parameters, QStringLiteral( "FIELD_2" ), context );
@@ -130,6 +135,14 @@ QVariantMap QgsJoinByAttributeAlgorithm::processAlgorithm( const QVariantMap &pa
         fields2Indices << index;
         outFields2.append( input2->fields().at( index ) );
       }
+    }
+  }
+
+  if ( !prefix.isEmpty() )
+  {
+    for ( int i = 0; i < outFields2.count(); ++i )
+    {
+      outFields2[ i ].setName( prefix + outFields2[ i ].name() );
     }
   }
 
