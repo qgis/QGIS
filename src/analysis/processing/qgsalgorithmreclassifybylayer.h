@@ -55,7 +55,9 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Returns a list of classes to use during the reclassification.
      */
-    virtual QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+    virtual QVector< QgsReclassifyUtils::RasterClass > createClasses(
+      QgsReclassifyUtils::RasterClass::BoundsType boundsType,
+      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override final;
@@ -70,6 +72,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelY = 0;
     int mNbCellsXProvider = 0;
     int mNbCellsYProvider = 0;
+    QgsReclassifyUtils::RasterClass::BoundsType mBoundsType = QgsReclassifyUtils::RasterClass::IncludeMax;
 };
 
 /**
@@ -90,7 +93,9 @@ class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
   protected:
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVector< QgsReclassifyUtils::RasterClass > createClasses( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVector< QgsReclassifyUtils::RasterClass > createClasses(
+      QgsReclassifyUtils::RasterClass::BoundsType boundsType,
+      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mMinFieldIdx = -1;
