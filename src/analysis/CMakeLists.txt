@@ -88,6 +88,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsnativealgorithms.cpp
   processing/qgsoverlayutils.cpp
   processing/qgsrasteranalysisutils.cpp
+  processing/qgsreclassifyutils.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -217,6 +218,7 @@ QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
 SET(QGIS_ANALYSIS_HDRS
   processing/qgsalgorithmimportphotos.h
+  processing/qgsreclassifyutils.h
 
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
