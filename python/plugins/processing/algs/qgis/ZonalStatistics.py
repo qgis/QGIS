@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 
 from qgis.analysis import QgsZonalStatistics
 from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,
@@ -60,6 +61,9 @@ class ZonalStatistics(QgisAlgorithm):
 
     def groupId(self):
         return 'rasteranalysis'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def __init__(self):
         super().__init__()
