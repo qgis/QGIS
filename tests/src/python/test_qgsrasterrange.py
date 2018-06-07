@@ -109,6 +109,16 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertFalse(range.contains(5))
         self.assertFalse(range.contains(6))
 
+    def testContainsList(self):
+        self.assertFalse(QgsRasterRange.contains(1, []))
+        ranges = [QgsRasterRange(1, 5)]
+        self.assertTrue(QgsRasterRange.contains(3, ranges))
+        self.assertFalse(QgsRasterRange.contains(13, ranges))
+        ranges.append(QgsRasterRange(11, 15))
+        self.assertTrue(QgsRasterRange.contains(3, ranges))
+        self.assertTrue(QgsRasterRange.contains(13, ranges))
+        self.assertFalse(QgsRasterRange.contains(16, ranges))
+
 
 if __name__ == '__main__':
     unittest.main()
