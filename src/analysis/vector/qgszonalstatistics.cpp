@@ -389,9 +389,6 @@ void QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const 
 
 void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
 {
-  double cellCenterX, cellCenterY;
-
-  cellCenterY = rasterBBox.yMaximum() - cellSizeY / 2;
   stats.reset();
 
   std::unique_ptr< QgsGeometryEngine > polyEngine( QgsGeometry::createGeometryEngine( poly.constGet( ) ) );
@@ -401,24 +398,41 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly,
   }
   polyEngine->prepareGeometry();
 
-  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, rasterBBox, nCellsX, nCellsY ) );
-  for ( int i = 0; i < nCellsY; ++i )
+  const int maxWidth = 4000;
+  const int maxHeight = 4000;
+
+  QgsRasterIterator iter( mRasterInterface );
+  iter.setMaximumTileWidth( maxWidth );
+  iter.setMaximumTileHeight( maxHeight );
+  iter.startRasterRead( mRasterBand, nCellsX, nCellsY, rasterBBox );
+
+  QgsRasterBlock *block = nullptr;
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  while ( iter.readNextRasterPart( mRasterBand, iterCols, iterRows, &block, iterLeft, iterTop ) )
   {
-    cellCenterX = rasterBBox.xMinimum() + cellSizeX / 2;
-    for ( int j = 0; j < nCellsX; ++j )
+    double cellCenterY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
+    for ( int row = 0; row < iterRows; ++row )
     {
-      double pixelValue = block->value( i, j );
-      if ( validPixel( pixelValue ) && !block->isNoData( i, j ) )
+      double cellCenterX = rasterBBox.xMinimum() + ( iterLeft + 0.5 ) * cellSizeX;
+      for ( int col = 0; col < iterCols; ++col )
       {
-        QgsPoint cellCenter( cellCenterX, cellCenterY );
-        if ( polyEngine->contains( &cellCenter ) )
+        double pixelValue = block->value( row, col );
+        if ( validPixel( pixelValue ) && !block->isNoData( row, col ) )
         {
-          stats.addValue( pixelValue );
+          QgsPoint cellCenter( cellCenterX, cellCenterY );
+          if ( polyEngine->contains( &cellCenter ) )
+          {
+            stats.addValue( pixelValue );
+          }
         }
+        cellCenterX += cellSizeX;
       }
-      cellCenterX += cellSizeX;
+      cellCenterY -= cellSizeY;
     }
-    cellCenterY -= cellSizeY;
+    delete block;
   }
 }
 
@@ -426,7 +440,6 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
 {
   stats.reset();
 
-  double currentY = rasterBBox.yMaximum() - cellSizeY / 2;
   QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
@@ -441,36 +454,52 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &p
   }
   polyEngine->prepareGeometry();
 
-  std::unique_ptr< QgsRasterBlock > block( mRasterInterface->block( mRasterBand, rasterBBox, nCellsX, nCellsY ) );
-  for ( int i = 0; i < nCellsY; ++i )
+  const int maxWidth = 4000;
+  const int maxHeight = 4000;
+
+  QgsRasterIterator iter( mRasterInterface );
+  iter.setMaximumTileWidth( maxWidth );
+  iter.setMaximumTileHeight( maxHeight );
+  iter.startRasterRead( mRasterBand, nCellsX, nCellsY, rasterBBox );
+
+  QgsRasterBlock *block = nullptr;
+  int iterLeft = 0;
+  int iterTop = 0;
+  int iterCols = 0;
+  int iterRows = 0;
+  while ( iter.readNextRasterPart( mRasterBand, iterCols, iterRows, &block, iterLeft, iterTop ) )
   {
-    double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0;
-    for ( int j = 0; j < nCellsX; ++j )
+    double currentY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
+    for ( int row = 0; row < iterRows; ++row )
     {
-      double pixelValue = block->value( i, j );
-      if ( validPixel( pixelValue ) && !block->isNoData( i, j ) )
+      double currentX = rasterBBox.xMinimum() + ( iterLeft + 0.5 ) * cellSizeX;
+      for ( int col = 0; col < iterCols; ++col )
       {
-        pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-        // GEOS intersects tests on prepared geometry is MAGNITUDES faster than calculating the intersection itself,
-        // so we first test to see if there IS an intersection before doing the actual calculation
-        if ( !pixelRectGeometry.isNull() && polyEngine->intersects( pixelRectGeometry.constGet() ) )
+        double pixelValue = block->value( row, col );
+        if ( validPixel( pixelValue ) && !block->isNoData( row, col ) )
         {
-          //intersection
-          QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
-          if ( !intersectGeometry.isEmpty() )
+          pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
+          // GEOS intersects tests on prepared geometry is MAGNITUDES faster than calculating the intersection itself,
+          // so we first test to see if there IS an intersection before doing the actual calculation
+          if ( !pixelRectGeometry.isNull() && polyEngine->intersects( pixelRectGeometry.constGet() ) )
           {
-            double intersectionArea = intersectGeometry.area();
-            if ( intersectionArea > 0.0 )
+            //intersection
+            QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
+            if ( !intersectGeometry.isEmpty() )
             {
-              weight = intersectionArea / pixelArea;
-              stats.addValue( pixelValue, weight );
+              double intersectionArea = intersectGeometry.area();
+              if ( intersectionArea > 0.0 )
+              {
+                weight = intersectionArea / pixelArea;
+                stats.addValue( pixelValue, weight );
+              }
             }
           }
         }
+        currentX += cellSizeX;
       }
-      currentX += cellSizeX;
+      currentY -= cellSizeY;
     }
-    currentY -= cellSizeY;
   }
 }
 
