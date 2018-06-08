@@ -37,7 +37,7 @@ QString QgsReclassifyAlgorithmBase::groupId() const
   return QStringLiteral( "rasteranalysis" );
 }
 
-void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap &configuration )
+void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ),
                 QObject::tr( "Raster layer" ) ) );

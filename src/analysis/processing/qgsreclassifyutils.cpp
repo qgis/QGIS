@@ -26,10 +26,10 @@
 
 ///@cond PRIVATE
 
-void QgsReclassifyUtils::reclassify(const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band,
-                                    const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels,
+void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band,
+                                     const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels,
                                      QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues,
-                                    QgsProcessingFeedback *feedback )
+                                     QgsProcessingFeedback *feedback )
 {
   int maxWidth = 4000;
   int maxHeight = 4000;
@@ -52,8 +52,8 @@ void QgsReclassifyUtils::reclassify(const QVector<QgsReclassifyUtils::RasterClas
   bool reclassed = false;
   while ( iter.readNextRasterPart( band, iterCols, iterRows, &rasterBlock, iterLeft, iterTop ) )
   {
-      if ( feedback )
-    feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    if ( feedback )
+      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     std::unique_ptr< QgsRasterBlock > reclassifiedBlock = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
@@ -82,14 +82,14 @@ void QgsReclassifyUtils::reclassify(const QVector<QgsReclassifyUtils::RasterClas
   destinationRaster->setEditable( false );
 }
 
-double QgsReclassifyUtils::reclassifyValue(const QVector<QgsReclassifyUtils::RasterClass> &classes, double input, bool &reclassified)
+double QgsReclassifyUtils::reclassifyValue( const QVector<QgsReclassifyUtils::RasterClass> &classes, double input, bool &reclassified )
 {
   reclassified = false;
   for ( const QgsReclassifyUtils::RasterClass &c : classes )
   {
     if ( c.contains( input ) )
     {
-        reclassified = true;
+      reclassified = true;
       return c.value;
     }
   }
