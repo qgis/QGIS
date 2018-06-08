@@ -5499,5 +5499,108 @@ tests:
         name: expected/variable_width_buffer_by_m.gml
         type: vector
 
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 850
+      - 3
+      - 850
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table min <=
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 1
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+      - 843
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: f055b582e4e5abcfa9cce6a69ceb7fac54791ad0d980003f1a23f4b1
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use original
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: 4398ddc5d24b3bf968d9a6e0fbd800344b20880a57915bd50a90e1ba
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use nodata
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: true
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: cea558f7e99a0564fef92a96cd8d6b59707d019f1751cb600ab00850
+        type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
 
 # See ../README.md for a description of the file format
