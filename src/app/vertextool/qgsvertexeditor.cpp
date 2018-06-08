@@ -18,6 +18,7 @@
 
 #include "qgsvertexeditor.h"
 #include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
 #include "qgsselectedfeature.h"
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
@@ -362,7 +363,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
   mSelectedFeature->deselectAllVertices();
 
   QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
-  QgsRectangle *bbox = nullptr;
+  std::unique_ptr<QgsRectangle> bbox;
   QModelIndexList indexList = selected.indexes();
   for ( int i = 0; i < indexList.length(); ++i )
   {
@@ -372,7 +373,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
     // create a bounding box of selected vertices
     QgsPointXY point( mSelectedFeature->vertexMap().at( vertexIdx )->point() );
     if ( !bbox )
-      bbox = new QgsRectangle( point, point );
+      bbox.reset( new QgsRectangle( point, point ) );
     else
       bbox->combineExtentWith( point );
   }
@@ -387,10 +388,10 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
       transformedBbox.combineExtentWith( canvasExtent );
       mCanvas->setExtent( transformedBbox );
     }
-    catch ( QgsCsException & )
+    catch ( QgsCsException &cse )
     {
+      QgsMessageLog::logMessage( QObject::tr( "Simplify transform error caught: %1" ).arg( cse.what() ), QObject::tr( "CRS" ) );
     }
-    delete bbox;
   }
 
   mUpdatingVertexSelection = false;
