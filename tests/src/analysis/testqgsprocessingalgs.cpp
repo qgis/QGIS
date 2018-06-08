@@ -25,7 +25,6 @@
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmtransform.h"
-#include "qgsreclassifyutils.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -42,7 +41,6 @@ class TestQgsProcessingAlgs: public QObject
     void parseGeoTags();
     void featureFilterAlg();
     void transformAlg();
-    void reclassifyValue();
 
   private:
 
@@ -435,45 +433,6 @@ void TestQgsProcessingAlgs::transformAlg()
   QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
   Q_UNUSED( results );
   QVERIFY( ok );
-}
-
-void TestQgsProcessingAlgs::reclassifyValue()
-{
-  // no classes
-  bool ok = false;
-  QVector< QgsReclassifyUtils::RasterClass > classes;
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 5.9, ok ), 5.9 );
-  QVERIFY( !ok );
-
-  // one class
-  classes << QgsReclassifyUtils::RasterClass( 5, 11, QgsRasterRange::IncludeMin, -99.5 );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 5.9, ok ), -99.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 15.9, ok ), 15.9 );
-  QVERIFY( !ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, -15.9, ok ), -15.9 );
-  QVERIFY( !ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 5, ok ), -99.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 11, ok ), 11.0 );
-  QVERIFY( !ok );
-
-  // second class
-  classes << QgsReclassifyUtils::RasterClass( 11, 15, QgsRasterRange::IncludeMin, -59.5 );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 5.9, ok ), -99.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 11.9, ok ), -59.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 15.9, ok ), 15.9 );
-  QVERIFY( !ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, -15.9, ok ), -15.9 );
-  QVERIFY( !ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 5, ok ), -99.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 11, ok ), -59.5 );
-  QVERIFY( ok );
-  QCOMPARE( QgsReclassifyUtils::reclassifyValue( classes, 15, ok ), 15.0 );
-  QVERIFY( !ok );
 }
 
 

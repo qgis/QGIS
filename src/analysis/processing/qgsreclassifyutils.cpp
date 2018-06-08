@@ -39,8 +39,8 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );
 
-  int nbBlocksWidth = std::ceil( 1.0 * sourceWidthPixels / maxWidth );
-  int nbBlocksHeight = std::ceil( 1.0 * sourceHeightPixels / maxHeight );
+  int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
+  int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   int iterLeft = 0;
