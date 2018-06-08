@@ -2,8 +2,8 @@
                          qgsalgorithmrasterlayeruniquevalues.h
                          ---------------------
     begin                : April 2017
-    copyright            : (C) 2017 by Nyall Dawson
-    email                : nyall dot dawson at gmail dot com
+    copyright            : (C) 2017 by Mathieu Pellerin
+    email                : nirvn dot asia at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
