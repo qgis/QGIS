@@ -190,9 +190,10 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( QStringLiteral( "GTiff" ) );
   std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::Float32, nCols, nRows, extent, crs ) );
+  Q_ASSERT( dp->isValid() );
   dp->setNoDataValue( 1, -9999 );
   std::unique_ptr< QgsRasterBlock > block( dp->block( 1, extent, nCols, nRows ) );
-  dp->setEditable( true );
+  Q_ASSERT( dp->setEditable( true ) );
   int i = 0;
   for ( int row = 0; row < nRows; row++ )
   {
@@ -212,9 +213,10 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
   // create a GeoTIFF - this will create data provider in editable mode
   filename = tmpFile2.fileName();
   std::unique_ptr< QgsRasterDataProvider > dp2( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::Float32, 10, 10, tform, crs ) );
+  Q_ASSERT( dp2->isValid() );
 
   // reclassify
-  dp2->setEditable( true );
+  Q_ASSERT( dp2->setEditable( true ) );
   QgsReclassifyUtils::reclassify( classes, dp.get(), 1, extent, nCols, nRows, dp2.get(), destNoDataValue, useNoDataForMissing );
   dp2->setEditable( false );
 
