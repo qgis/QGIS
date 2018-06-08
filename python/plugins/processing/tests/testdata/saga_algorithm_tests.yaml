@@ -46,6 +46,23 @@ tests:
         name: expected/saga/add_grid_to_points.shp
         type: vector
 
+  - algorithm: saga:addrastervaluestofeatures
+    name: Add raster values to shapes
+    params:
+      GRIDS:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+      RESAMPLING: 0
+      SHAPES:
+        name: custom/lines_over.shp
+        type: vector
+    results:
+      RESULT:
+        name: expected/saga/add_grid_to_shapes.shp
+        type: vector
+
   - algorithm: saga:mergevectorlayers
     name: Merge vector layers
     params:
@@ -237,4 +254,4 @@ tests:
       VARIANCE:
         hash: ec7b708609178533ac2b89cd575140415ef93c70396fa630d1c15b67
         type: rasterhash
-  
+
