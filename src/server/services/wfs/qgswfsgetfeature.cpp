@@ -355,10 +355,10 @@ namespace QgsWfs
         outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( query.srsName );
       }
 
-      if ( onlyOneLayer && !featureRequest.filterRect().isEmpty() )
+      if ( !featureRequest.filterRect().isEmpty() )
       {
         Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform transform( outputCrs, requestCrs );
+        QgsCoordinateTransform transform( outputCrs, vlayer->crs() );
         Q_NOWARN_DEPRECATED_POP
         try
         {
@@ -368,8 +368,10 @@ namespace QgsWfs
         {
           Q_UNUSED( cse );
         }
-
-        requestRect = featureRequest.filterRect();
+        if ( onlyOneLayer )
+        {
+          requestRect = featureRequest.filterRect();
+        }
       }
 
       // Iterate through features
