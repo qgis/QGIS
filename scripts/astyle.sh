@@ -49,7 +49,7 @@ fi
 if ! type -p flip >/dev/null; then
 	if type -p dos2unix >/dev/null; then
 		flip() {
-			dos2unix -k "$2"
+			dos2unix -q -k "$2"
 		}
 	else
 		echo "flip not found" >&2
