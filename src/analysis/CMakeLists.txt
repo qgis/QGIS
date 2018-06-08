@@ -86,6 +86,7 @@ SET(QGIS_ANALYSIS_SRCS
 
   processing/qgsnativealgorithms.cpp
   processing/qgsoverlayutils.cpp
+  processing/qgsrasteranalysisutils.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
