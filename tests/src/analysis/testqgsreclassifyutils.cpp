@@ -96,8 +96,8 @@ Q_DECLARE_METATYPE( QgsReclassifyUtils::RasterClass );
 void TestQgsReclassifyUtils::testReclassify_data()
 {
   QTest::addColumn<QVector< double >>( "input" );
-  QTest::addColumn<int>( "rows" );
-  QTest::addColumn<int>( "cols" );
+  QTest::addColumn<int>( "nRows" );
+  QTest::addColumn<int>( "nCols" );
   QTest::addColumn<QVector< QgsReclassifyUtils::RasterClass  >>( "classes" );
   QTest::addColumn<double>( "destNoDataValue" );
   QTest::addColumn<bool>( "useNoDataForMissing" );
@@ -149,27 +149,13 @@ void TestQgsReclassifyUtils::testReclassify_data()
 void TestQgsReclassifyUtils::testReclassify()
 {
   QFETCH( QVector< double >, input );
-  QFETCH( int, rows );
-  QFETCH( int, cols );
+  QFETCH( int, nRows );
+  QFETCH( int, nCols );
   QFETCH( QVector< QgsReclassifyUtils::RasterClass  >, classes );
   QFETCH( double, destNoDataValue );
   QFETCH( bool, useNoDataForMissing );
   QFETCH( QVector< double >, expected );
 
-  QVector< double > res = reclassifyBlock( input, 2, 3, classes, destNoDataValue, useNoDataForMissing );
-  for ( int row = 0; row < rows; row++ )
-  {
-    for ( int col = 0; col < cols; col++ )
-    {
-      QCOMPARE( res[row * cols + col], expected[row * cols + col] );
-    }
-  }
-}
-
-QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double > &input, int nRows, int nCols,
-    const QVector< QgsReclassifyUtils::RasterClass > &classes,
-    double destNoDataValue, bool useNoDataForMissing )
-{
   QgsRectangle extent = QgsRectangle( 0, 0, nRows, nCols );
   QgsCoordinateReferenceSystem crs( 3857 );
   double tform[] =
@@ -190,10 +176,13 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( QStringLiteral( "GTiff" ) );
   std::unique_ptr<QgsRasterDataProvider > dp( writer->createOneBandRaster( Qgis::Float32, nCols, nRows, extent, crs ) );
-  Q_ASSERT( dp->isValid() );
+  QVERIFY( dp->isValid() );
   dp->setNoDataValue( 1, -9999 );
   std::unique_ptr< QgsRasterBlock > block( dp->block( 1, extent, nCols, nRows ) );
-  Q_ASSERT( dp->setEditable( true ) );
+  if ( !dp->isEditable() )
+  {
+    QVERIFY( dp->setEditable( true ) );
+  }
   int i = 0;
   for ( int row = 0; row < nRows; row++ )
   {
@@ -202,8 +191,8 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
       block->setValue( row, col, input[i++] );
     }
   }
-  Q_ASSERT( dp->writeBlock( block.get(), 1 ) );
-  dp->setEditable( false );
+  QVERIFY( dp->writeBlock( block.get(), 1 ) );
+  QVERIFY( dp->setEditable( false ) );
 
   // make destination raster
   QTemporaryFile tmpFile2;
@@ -213,12 +202,10 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
   // create a GeoTIFF - this will create data provider in editable mode
   filename = tmpFile2.fileName();
   std::unique_ptr< QgsRasterDataProvider > dp2( QgsRasterDataProvider::create( QStringLiteral( "gdal" ), filename, QStringLiteral( "GTiff" ), 1, Qgis::Float32, 10, 10, tform, crs ) );
-  Q_ASSERT( dp2->isValid() );
+  QVERIFY( dp2->isValid() );
 
   // reclassify
-  Q_ASSERT( dp2->setEditable( true ) );
   QgsReclassifyUtils::reclassify( classes, dp.get(), 1, extent, nCols, nRows, dp2.get(), destNoDataValue, useNoDataForMissing );
-  dp2->setEditable( false );
 
   // read back in values
   block.reset( dp2->block( 1, extent, nCols, nRows ) );
@@ -232,7 +219,13 @@ QVector< double > TestQgsReclassifyUtils::reclassifyBlock( const QVector< double
     }
   }
 
-  return res;
+  for ( int row = 0; row < nRows; row++ )
+  {
+    for ( int col = 0; col < nCols; col++ )
+    {
+      QCOMPARE( res[row * nCols + col], expected[row * nCols + col] );
+    }
+  }
 }
 
 
