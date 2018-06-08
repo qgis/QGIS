@@ -49,22 +49,16 @@ class QgsZonalHistogramAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters,
                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    //! Fetch unique values by considering the pixels where the center point is within the polygon (fast)
-    void middlePoints( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, QHash< double, qgssize > &uniqueValues );
-
-    //! Fetch unique values with precise pixel - polygon intersection test (slow)
-    void preciseIntersection( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, QHash< double, qgssize > &uniqueValues );
-
   private:
 
-    std::unique_ptr< QgsRasterInterface > mInterface;
-    int mBand;
+    std::unique_ptr< QgsRasterInterface > mRasterInterface;
+    int mRasterBand;
     bool mHasNoDataValue = false;
     float mNodataValue = -1;
-    QgsRectangle mExtent;
+    QgsRectangle mRasterExtent;
     QgsCoordinateReferenceSystem mCrs;
-    double mRasterUnitsPerPixelX;
-    double mRasterUnitsPerPixelY;
+    double mCellSizeX;
+    double mCellSizeY;
     double mNbCellsXProvider;
     double mNbCellsYProvider;
 

@@ -171,24 +171,6 @@ class ANALYSIS_EXPORT QgsZonalStatistics
         bool mStoreValueCounts = false;
     };
 
-    /**
-     * Analyzes which cells need to be considered to completely cover the bounding box of a feature.
-    */
-    void cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY, int &nCellsX, int &nCellsY,
-                          int rasterWidth, int rasterHeight,
-                          QgsRectangle &rasterBlockExtent ) const;
-
-    //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
-    void statisticsFromMiddlePointTest( const QgsGeometry &poly, int nCellsX, int nCellsY,
-                                        double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats );
-
-    //! Returns statistics with precise pixel - polygon intersection test (slow)
-    void statisticsFromPreciseIntersection( const QgsGeometry &poly, int nCellsX, int nCellsY,
-                                            double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats );
-
-    //! Tests whether a pixel's value should be included in the result
-    bool validPixel( double value ) const;
-
     QString getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields );
 
     QgsRasterInterface *mRasterInterface = nullptr;
