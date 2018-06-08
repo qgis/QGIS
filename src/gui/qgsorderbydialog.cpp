@@ -149,7 +149,7 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
     }
   }
 
-  return false;
+  return QDialog::eventFilter( obj, e );
 }
 
 void QgsOrderByDialog::showHelp()

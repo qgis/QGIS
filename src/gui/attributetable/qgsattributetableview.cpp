@@ -83,7 +83,7 @@ bool QgsAttributeTableView::eventFilter( QObject *object, QEvent *event )
         break;
     }
   }
-  return false;
+  return QTableView::eventFilter( object, event );
 }
 
 void QgsAttributeTableView::setAttributeTableConfig( const QgsAttributeTableConfig &config )

@@ -785,12 +785,12 @@ bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
   Q_UNUSED( obj );
   if ( event->type() != QEvent::KeyPress )
   {
-    return false;
+    return QgsDockWidget::eventFilter( obj, event );
   }
   QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event );
   if ( !keyEvent )
   {
-    return false;
+    return QgsDockWidget::eventFilter( obj, event );
   }
   return filterKeyPress( keyEvent );
 }
