@@ -84,6 +84,7 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
+    context.expressionContext().setFeature( fet );
     registerFeature( fet, context );
   }
 
