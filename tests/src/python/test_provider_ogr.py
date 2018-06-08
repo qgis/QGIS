@@ -369,6 +369,41 @@ class PyQgsOGRProvider(unittest.TestCase):
         # all in the GeoJSON file, so it has disappeared
         self.assertEqual(len(vl.fields()), 1)
 
+    def testEditGeoJsonAddFieldAndThenAddFeatures(self):
+        """ Test bugfix of https://issues.qgis.org/issues/18596 (adding a new field)"""
+
+        datasource = os.path.join(self.basetestpath, 'testEditGeoJsonAddField.json')
+        with open(datasource, 'wt') as f:
+            f.write("""{
+"type": "FeatureCollection",
+"features": [
+{ "type": "Feature", "properties": { "x": 1 }, "geometry": { "type": "Point", "coordinates": [ 0, 0 ] } } ] }""")
+
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addAttribute(QgsField('strfield', QVariant.String)))
+        self.assertTrue(vl.commitChanges())
+        self.assertEqual(len(vl.dataProvider().fields()), 1 + 1)
+        self.assertEqual([f.name() for f in vl.dataProvider().fields()], ['x', 'strfield'])
+
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertIsNone(f['strfield'])
+        self.assertEqual([field.name() for field in f.fields()], ['x', 'strfield'])
+
+        self.assertTrue(vl.startEditing())
+        vl.changeAttributeValue(f.id(), 1, 'x')
+        self.assertTrue(vl.commitChanges())
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures(QgsFeatureRequest()).nextFeature(f))
+        self.assertEqual(f['strfield'], 'x')
+        self.assertEqual([field.name() for field in f.fields()], ['x', 'strfield'])
+
+        # Completely reload file
+        vl = QgsVectorLayer(datasource, 'test', 'ogr')
+        self.assertEqual(len(vl.fields()), 2)
+
 
 if __name__ == '__main__':
     unittest.main()
