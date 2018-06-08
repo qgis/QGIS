@@ -690,6 +690,10 @@ void QgsPropertyOverrideButton::updateGui()
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineExpressionError.svg" ) );
       deftip = tr( "Parse error: %1" ).arg( exp.parserErrorString() );
     }
+    else
+    {
+      deftip = mExpressionString;
+    }
   }
   else if ( mProperty.propertyType() != QgsProperty::ExpressionBasedProperty && hasField )
   {
@@ -699,6 +703,10 @@ void QgsPropertyOverrideButton::updateGui()
     {
       icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconDataDefineError.svg" ) );
       deftip = tr( "'%1' field missing" ).arg( mFieldName );
+    }
+    else
+    {
+      deftip = mFieldName;
     }
   }
 
@@ -724,7 +732,7 @@ void QgsPropertyOverrideButton::updateGui()
     mFullDescription += tr( "<b>Valid input types:</b><br>%1<br>" ).arg( mDataTypesString );
   }
 
-  QString deftype( QLatin1String( "" ) );
+  QString deftype;
   if ( deftip != tr( "undefined" ) )
   {
     deftype = QStringLiteral( " (%1)" ).arg( mProperty.propertyType() == QgsProperty::ExpressionBasedProperty ? tr( "expression" ) : tr( "field" ) );
