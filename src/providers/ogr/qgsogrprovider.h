@@ -313,6 +313,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     bool doInitialActionsForEdition();
 
+    bool addAttributeOGRLevel( const QgsField &field, bool &ignoreErrorOut );
+
 #ifndef QT_NO_NETWORKPROXY
     void setupProxy();
 #endif
