@@ -1055,7 +1055,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
   }
 
-  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  connect( mSelectedFeature.get()->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 
 void QgsVertexTool::cleanupVertexEditor()
@@ -1095,7 +1095,7 @@ void QgsVertexTool::deleteVertexEditorSelection()
   // make a list of selected vertices
   QList<Vertex> vertices;
   QList<QgsVertexEntry *> &selFeatureVertices = mSelectedFeature->vertexMap();
-  QgsVectorLayer *layer = mSelectedFeature->vlayer();
+  QgsVectorLayer *layer = mSelectedFeature->layer();
   QgsFeatureId fid = mSelectedFeature->featureId();
   QgsGeometry geometry = cachedGeometry( layer, fid );
   for ( QgsVertexEntry *vertex : qgis::as_const( selFeatureVertices ) )
@@ -1123,7 +1123,7 @@ void QgsVertexTool::deleteVertexEditorSelection()
 
     _safeSelectVertex( *mSelectedFeature, nextVertexToSelect );
   }
-  mSelectedFeature->vlayer()->triggerRepaint();
+  mSelectedFeature->layer()->triggerRepaint();
 }
 
 

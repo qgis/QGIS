@@ -219,17 +219,17 @@ class CORE_EXPORT QgsRectangle
     bool contains( const QgsPointXY &p ) const;
 
     /**
-     * Expands the rectangle so that its covers both the original rectangle and the given rectangle.
+     * Expands the rectangle so that it covers both the original rectangle and the given rectangle.
      */
     void combineExtentWith( const QgsRectangle &rect );
 
     /**
-     * Expands the rectangle so that its covers both the original rectangle and the given point.
+     * Expands the rectangle so that it covers both the original rectangle and the given point.
      */
     void combineExtentWith( double x, double y );
 
     /**
-     * Expands the rectangle so that its covers both the original rectangle and the given point.
+     * Expands the rectangle so that it covers both the original rectangle and the given point.
      * \since QGIS 3.2
      */
     void combineExtentWith( const QgsPointXY &point );
