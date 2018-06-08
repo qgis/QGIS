@@ -1548,6 +1548,73 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   return returnvalue;
 }
 
+bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreErrorOut )
+{
+  ignoreErrorOut = false;
+
+  OGRFieldType type;
+
+  switch ( field.type() )
+  {
+    case QVariant::Int:
+    case QVariant::Bool:
+      type = OFTInteger;
+      break;
+    case QVariant::LongLong:
+    {
+      const char *pszDataTypes = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
+      if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
+        type = OFTInteger64;
+      else
+      {
+        type = OFTReal;
+      }
+      break;
+    }
+    case QVariant::Double:
+      type = OFTReal;
+      break;
+    case QVariant::Date:
+      type = OFTDate;
+      break;
+    case QVariant::Time:
+      type = OFTTime;
+      break;
+    case QVariant::DateTime:
+      type = OFTDateTime;
+      break;
+    case QVariant::String:
+      type = OFTString;
+      break;
+    default:
+      pushError( tr( "type %1 for field %2 not found" ).arg( field.typeName(), field.name() ) );
+      ignoreErrorOut = true;
+      return false;
+  }
+
+  gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( field.name() ).constData(), type ) );
+  int width = field.length();
+  if ( field.precision() )
+    width += 1;
+  OGR_Fld_SetWidth( fielddefn.get(), width );
+  OGR_Fld_SetPrecision( fielddefn.get(), field.precision() );
+
+  switch ( field.type() )
+  {
+    case QVariant::Bool:
+      OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
+    default:
+      break;
+  }
+
+  if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error creating field %1: %2" ).arg( field.name(), CPLGetLastErrorMsg() ) );
+    return false;
+  }
+  return true;
+}
+
 bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 {
   if ( !doInitialActionsForEdition() )
@@ -1564,69 +1631,18 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
   QMap< QString, QgsField > mapFieldNameToOriginalField;
 
-  for ( QList<QgsField>::const_iterator iter = attributes.constBegin(); iter != attributes.constEnd(); ++iter )
+  for ( const auto &field : attributes )
   {
-    mapFieldNameToOriginalField[ iter->name()] = *iter;
+    mapFieldNameToOriginalField[ field.name()] = field;
 
-    OGRFieldType type;
-
-    switch ( iter->type() )
+    bool ignoreErrorOut = false;
+    if ( !addAttributeOGRLevel( field, ignoreErrorOut ) )
     {
-      case QVariant::Int:
-      case QVariant::Bool:
-        type = OFTInteger;
-        break;
-      case QVariant::LongLong:
+      returnvalue = false;
+      if ( !ignoreErrorOut )
       {
-        const char *pszDataTypes = GDALGetMetadataItem( mOgrLayer->driver(), GDAL_DMD_CREATIONFIELDDATATYPES, nullptr );
-        if ( pszDataTypes && strstr( pszDataTypes, "Integer64" ) )
-          type = OFTInteger64;
-        else
-        {
-          type = OFTReal;
-        }
         break;
       }
-      case QVariant::Double:
-        type = OFTReal;
-        break;
-      case QVariant::Date:
-        type = OFTDate;
-        break;
-      case QVariant::Time:
-        type = OFTTime;
-        break;
-      case QVariant::DateTime:
-        type = OFTDateTime;
-        break;
-      case QVariant::String:
-        type = OFTString;
-        break;
-      default:
-        pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName(), iter->name() ) );
-        returnvalue = false;
-        continue;
-    }
-
-    gdal::ogr_field_def_unique_ptr fielddefn( OGR_Fld_Create( textEncoding()->fromUnicode( iter->name() ).constData(), type ) );
-    int width = iter->length();
-    if ( iter->precision() )
-      width += 1;
-    OGR_Fld_SetWidth( fielddefn.get(), width );
-    OGR_Fld_SetPrecision( fielddefn.get(), iter->precision() );
-
-    switch ( iter->type() )
-    {
-      case QVariant::Bool:
-        OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
-      default:
-        break;
-    }
-
-    if ( mOgrLayer->CreateField( fielddefn.get(), true ) != OGRERR_NONE )
-    {
-      pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name(), CPLGetLastErrorMsg() ) );
-      returnvalue = false;
     }
   }
 
@@ -4270,6 +4286,18 @@ bool QgsOgrProvider::leaveUpdateMode()
       reloadData();
       if ( mValid )
       {
+        // Make sure that new fields we added, but didn't populate yet, are
+        // recreated at the OGR level, otherwise we won't be able to populate
+        // them.
+        for ( const auto &field : oldFields )
+        {
+          int idx = mAttributeFields.lookupField( field.name() );
+          if ( idx < 0 )
+          {
+            bool ignoreErrorOut = false;
+            addAttributeOGRLevel( field, ignoreErrorOut );
+          }
+        }
         mAttributeFields = oldFields;
       }
     }
