@@ -108,6 +108,8 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
 
 };
 
+Q_DECLARE_TYPEINFO( QgsReclassifyUtils::RasterClass, Q_MOVABLE_TYPE );
+
 ///@endcond PRIVATE
 
 #endif // QGSRECLASSIFYUTILS
