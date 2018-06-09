@@ -570,6 +570,22 @@ void TestQgsLayerTree::testEmbeddedGroup()
   {
     QVERIFY( QgsLayerTree::toLayer( child )->layer() );
   }
+  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
+
+  QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
+  projectMaster.write( projectMasterFilename );
+  projectMaster.clear();
+
+  QgsProject projectMasterCopy;
+  projectMasterCopy.read( projectMasterFilename );
+  QgsLayerTreeGroup *masterEmbeddedGroup = projectMasterCopy.layerTreeRoot()->findGroup( QStringLiteral( "Embed" ) );
+  QVERIFY( masterEmbeddedGroup );
+  QCOMPARE( masterEmbeddedGroup->children().size(), 3 );
+
+  for ( QgsLayerTreeNode *child : masterEmbeddedGroup->children() )
+  {
+    QVERIFY( QgsLayerTree::toLayer( child )->layer() );
+  }
 }
 
 
