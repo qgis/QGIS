@@ -151,19 +151,19 @@ void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIn
     vlayer->setSubsetString( qb.sql() );
 }
 
-QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorProvider::newIndicator( const QString &filter )
+std::unique_ptr<QgsLayerTreeViewIndicator> QgsLayerTreeViewFilterIndicatorProvider::newIndicator( const QString &filter )
 {
-  QgsLayerTreeViewIndicator *indicator = new QgsLayerTreeViewIndicator( this );
+  std::unique_ptr< QgsLayerTreeViewIndicator > indicator = qgis::make_unique< QgsLayerTreeViewIndicator >( this );
   indicator->setIcon( mIcon );
-  updateIndicator( indicator, filter );
-  connect( indicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked );
-  mIndicators.insert( indicator );
+  updateIndicator( indicator.get(), filter );
+  connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked );
+  mIndicators.insert( indicator.get() );
   return indicator;
 }
 
 void QgsLayerTreeViewFilterIndicatorProvider::updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter )
 {
-  indicator->setToolTip( QString( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ) ).arg( filter ) );
+  indicator->setToolTip( QStringLiteral( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ), filter ) );
 }
 
 
@@ -185,7 +185,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTree
     }
 
     // it does not exist: need to create a new one
-    mLayerTreeView->addIndicator( node, newIndicator( filter ) );
+    mLayerTreeView->addIndicator( node, newIndicator( filter ).release() );
   }
   else
   {
