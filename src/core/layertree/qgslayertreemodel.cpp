@@ -257,8 +257,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::FontRole )
   {
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
-    if ( node->customProperty( QStringLiteral( "embedded" ) ).toInt() )
-      f.setItalic( true );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
