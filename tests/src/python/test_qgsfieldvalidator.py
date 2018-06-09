@@ -59,21 +59,26 @@ class TestQgsFieldValidator(unittest.TestCase):
 
         # Valid
         _test('0.1234', QValidator.Acceptable)
-        _test('0,1234', QValidator.Acceptable)
+
+        # Apparently we accept comma only when locale say so
+        if DECIMAL_SEPARATOR != '.':
+            _test('0,1234', QValidator.Acceptable)
 
         # If precision is > 0, regexp validator is used (and it does not support sci notation)
         if field.precision() == 0:
             _test('12345.1234e+123', QValidator.Acceptable)
             _test('12345.1234e-123', QValidator.Acceptable)
-            _test('12345,1234e+123', QValidator.Acceptable)
-            _test('12345,1234e-123', QValidator.Acceptable)
+            if DECIMAL_SEPARATOR != '.':
+                _test('12345,1234e+123', QValidator.Acceptable)
+                _test('12345,1234e-123', QValidator.Acceptable)
             _test('', QValidator.Acceptable)
 
             # Out of range
             _test('12345.1234e+823', QValidator.Intermediate)
             _test('12345.1234e-823', QValidator.Intermediate)
-            _test('12345,1234e+823', QValidator.Intermediate)
-            _test('12345,1234e-823', QValidator.Intermediate)
+            if DECIMAL_SEPARATOR != '.':
+                _test('12345,1234e+823', QValidator.Intermediate)
+                _test('12345,1234e-823', QValidator.Intermediate)
 
         # Invalid
         _test('12345-1234', QValidator.Invalid)
