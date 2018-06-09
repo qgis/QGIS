@@ -244,11 +244,14 @@ QString QgsField::displayString( const QVariant &v ) const
       return QString::number( v.toDouble(), 'f', d->precision );
     }
   }
-  // Other numeric types out of doubles
+  // Other numeric types than doubles
   else if ( isNumeric() &&
             ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
   {
-    return QLocale().toString( v.toLongLong() );
+    bool ok;
+    qlonglong converted( v.toLongLong( &ok ) );
+    if ( ok )
+      return QLocale().toString( converted );
   }
   // Fallback if special rules do not apply
   return v.toString();
@@ -305,7 +308,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     QVariant tmp( v );
     if ( d->type == QVariant::Double && !tmp.convert( d->type ) )
     {
-      v = v.toString().replace( ',', '.' );
+      v = v.toString().replace( QLocale().decimalPoint(), '.' );
     }
   }
 
