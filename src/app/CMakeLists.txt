@@ -52,6 +52,7 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
+  qgslayertreeviewembeddedindicator.cpp
   qgslayertreeviewfilterindicator.cpp
   qgsloadstylefromdbdialog.cpp
   qgsmapcanvasdockwidget.cpp
@@ -263,6 +264,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelingwidget.h
   qgslabelpropertydialog.h
+  qgslayertreeviewembeddedindicator.h
   qgslayertreeviewfilterindicator.h
   qgsloadstylefromdbdialog.h
   qgsmapcanvasdockwidget.h
