@@ -19,6 +19,7 @@
 #include "qgslayertreeviewindicator.h"
 
 #include <QSet>
+#include <memory>
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
@@ -35,7 +36,7 @@ class QgsLayerTreeViewEmbeddedIndicatorProvider : public QObject
     void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
 
   private:
-    QgsLayerTreeViewIndicator *newIndicator( const QString &project );
+    std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator( const QString &project );
     void addIndicatorForEmbeddedLayer( QgsLayerTreeNode *node );
 
   private:
