@@ -50,7 +50,7 @@ class QgsLayerTreeViewFilterIndicatorProvider : public QObject
     void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
 
   private:
-    QgsLayerTreeView *mLayerTreeView;
+    QgsLayerTreeView *mLayerTreeView = nullptr;
     QIcon mIcon;
     QSet<QgsLayerTreeViewIndicator *> mIndicators;
 };
