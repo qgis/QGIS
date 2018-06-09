@@ -175,7 +175,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTree
     const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
 
     // maybe the indicator exists already
-    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
+    for ( QgsLayerTreeViewIndicator *indicator : nodeIndicators )
     {
       if ( mIndicators.contains( indicator ) )
       {
@@ -192,7 +192,7 @@ void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTree
     const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
 
     // there may be existing indicator we need to get rid of
-    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
+    for ( QgsLayerTreeViewIndicator *indicator : nodeIndicators )
     {
       if ( mIndicators.contains( indicator ) )
       {
