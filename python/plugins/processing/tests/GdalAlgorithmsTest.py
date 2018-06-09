@@ -41,6 +41,7 @@ from processing.algs.gdal.GridInverseDistance import GridInverseDistance
 from processing.algs.gdal.GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
 from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
+from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.proximity import proximity
 from processing.algs.gdal.rasterize import rasterize
@@ -925,6 +926,101 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
             ['ogr2ogr',
              '-f "LIBKML" "d:/temp/my out/check.kml" ' +
              source + ' polys2'])
+
+    def testHillshade(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = hillshade()
+        alg.initAlgorithm()
+
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             source + ' ' +
+             'd:/temp/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0'])
+
+        #paths with space
+        source_with_space = os.path.join(testDataPath, 'raster with spaces.tif')
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source_with_space,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'OUTPUT': 'd:/temp/check out.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             '"' + source_with_space + '" ' +
+             '"d:/temp/check out.tif" -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0'])
+
+        # compute edges
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'COMPUTE_EDGES': True,
+                                    'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             source + ' ' +
+             'd:/temp/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0 -compute_edges'])
+
+        # with ZEVENBERGEN
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'ZEVENBERGEN': True,
+                                    'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             source + ' ' +
+             'd:/temp/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0 -alg ZevenbergenThorne'])
+
+        # with COMBINED
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'COMBINED': True,
+                                    'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             source + ' ' +
+             'd:/temp/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -az 90.0 -alt 20.0 -combined'])
+
+        # with multidirectional - "az" argument is not allowed!
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'Z_FACTOR': 5,
+                                    'SCALE': 2,
+                                    'AZIMUTH': 90,
+                                    'ALTITUDE': 20,
+                                    'MULTIDIRECTIONAL': True,
+                                    'OUTPUT': 'd:/temp/check.tif'}, context, feedback),
+            ['gdaldem',
+             'hillshade ' +
+             source + ' ' +
+             'd:/temp/check.tif -of GTiff -b 1 -z 5.0 -s 2.0 -alt 20.0 -multidirectional'])
 
     def testProximity(self):
         context = QgsProcessingContext()
