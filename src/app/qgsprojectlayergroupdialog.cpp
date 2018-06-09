@@ -26,6 +26,24 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
+
+
+
+QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
+{
+}
+
+QVariant QgsEmbeddedLayerTreeModel::data( const QModelIndex &index, int role ) const
+{
+  if ( role == Qt::ForegroundRole || role == Qt::FontRole )
+    return QVariant();
+
+  return QgsLayerTreeModel::data( index, role );
+}
+
+
+
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mRootGroup( new QgsLayerTree )
@@ -180,7 +198,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( !mShowEmbeddedContent )
     removeEmbeddedNodes( mRootGroup );
 
-  QgsLayerTreeModel *model = new QgsLayerTreeModel( mRootGroup, this );
+  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
   connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
