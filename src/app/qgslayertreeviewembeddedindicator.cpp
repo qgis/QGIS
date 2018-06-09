@@ -41,11 +41,14 @@ void QgsLayerTreeViewEmbeddedIndicatorProvider::onAddedChildren( QgsLayerTreeNod
     if ( QgsLayerTree::isGroup( childNode ) )
     {
       onAddedChildren( childNode, 0, childNode->children().count() - 1 );
+      if ( childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+      {
+        addIndicatorForEmbeddedLayer( childNode );
+      }
     }
     else if ( QgsLayerTree::isLayer( childNode ) && childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
     {
-      QgsLayerTreeLayer *childLayerNode = QgsLayerTree::toLayer( childNode );
-      addIndicatorForEmbeddedLayer( childLayerNode );
+      addIndicatorForEmbeddedLayer( childNode );
     }
   }
 }
@@ -61,6 +64,15 @@ QgsLayerTreeViewIndicator *QgsLayerTreeViewEmbeddedIndicatorProvider::newIndicat
 
 void QgsLayerTreeViewEmbeddedIndicatorProvider::addIndicatorForEmbeddedLayer( QgsLayerTreeNode *node )
 {
+  QString project = node->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+  QgsLayerTreeNode *nextNode = node;
+  while ( project.isEmpty() && nextNode )
+  {
+    nextNode = nextNode->parent();
+    if ( nextNode )
+      project = nextNode->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+  }
+
   const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
 
   // maybe the indicator exists already
@@ -73,5 +85,5 @@ void QgsLayerTreeViewEmbeddedIndicatorProvider::addIndicatorForEmbeddedLayer( Qg
   }
 
   // it does not exist: need to create a new one
-  mLayerTreeView->addIndicator( node, newIndicator( node->customProperty( QStringLiteral( "embedded_project" ) ).toString() ) );
+  mLayerTreeView->addIndicator( node, newIndicator( project ) );
 }
