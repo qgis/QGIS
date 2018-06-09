@@ -607,25 +607,25 @@ void QgsLayoutMapWidget::updateGuiElements()
   if ( scale >= 10 )
   {
     //round scale to integer if it's greater than 10
-    mScaleLineEdit->setText( QString::number( mMapItem->scale(), 'f', 0 ) );
+    mScaleLineEdit->setText( QLocale().toString( mMapItem->scale(), 'f', 0 ) );
   }
   else if ( scale >= 1 )
   {
     //don't round scale if it's less than 10, instead use 4 decimal places
-    mScaleLineEdit->setText( QString::number( mMapItem->scale(), 'f', 4 ) );
+    mScaleLineEdit->setText( QLocale().toString( mMapItem->scale(), 'f', 4 ) );
   }
   else
   {
     //if scale < 1 then use 10 decimal places
-    mScaleLineEdit->setText( QString::number( mMapItem->scale(), 'f', 10 ) );
+    mScaleLineEdit->setText( QLocale().toString( mMapItem->scale(), 'f', 10 ) );
   }
 
   //composer map extent
   QgsRectangle composerMapExtent = mMapItem->extent();
-  mXMinLineEdit->setText( QString::number( composerMapExtent.xMinimum(), 'f', 3 ) );
-  mXMaxLineEdit->setText( QString::number( composerMapExtent.xMaximum(), 'f', 3 ) );
-  mYMinLineEdit->setText( QString::number( composerMapExtent.yMinimum(), 'f', 3 ) );
-  mYMaxLineEdit->setText( QString::number( composerMapExtent.yMaximum(), 'f', 3 ) );
+  mXMinLineEdit->setText( QLocale().toString( composerMapExtent.xMinimum(), 'f', 3 ) );
+  mXMaxLineEdit->setText( QLocale().toString( composerMapExtent.xMaximum(), 'f', 3 ) );
+  mYMinLineEdit->setText( QLocale().toString( composerMapExtent.yMinimum(), 'f', 3 ) );
+  mYMaxLineEdit->setText( QLocale().toString( composerMapExtent.yMaximum(), 'f', 3 ) );
 
   mMapRotationSpinBox->setValue( mMapItem->mapRotation( QgsLayoutObject::OriginalValue ) );
 
