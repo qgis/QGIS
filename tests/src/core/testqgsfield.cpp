@@ -333,7 +333,6 @@ void TestQgsField::displayString()
   QgsField doubleFieldNoPrec( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10 );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005 ), QString( "5.005005" ) );
   QCOMPARE( doubleFieldNoPrec.displayString( 5.005005005 ), QString( "5.005005005" ) );
-  QCOMPARE( QLocale().decimalPoint(), '.' );
   QCOMPARE( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator, QLocale::NumberOption::DefaultNumberOptions );
   QCOMPARE( doubleFieldNoPrec.displayString( 599999898999.0 ), QString( "599,999,898,999" ) );
 
@@ -514,7 +513,8 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 
-  //double with ',' as decimal separator
+  //double with ',' as decimal separator for German locale
+  QLocale::setDefault( QLocale::German );
   QVariant doubleCommaVar( "1,2345" );
   QVERIFY( doubleField.convertCompatible( doubleCommaVar ) );
   QCOMPARE( doubleCommaVar.type(), QVariant::Double );
