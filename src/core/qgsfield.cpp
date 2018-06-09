@@ -209,31 +209,48 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
+  // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
   if ( d->type == QVariant::Double )
   {
-    if ( d->precision > 0 )
+    // Locales with decimal point != '.' or that require group separator: use QLocale
+    if ( QLocale().decimalPoint() != '.' ||
+         !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
     {
-      return QLocale().toString( v.toDouble(), 'f', d->precision );
-    }
-    else
-    {
-      // Precision is not set, let's guess it from the
-      // standard conversion to string
-      QString s( v.toString() );
-      int dotPosition( s.indexOf( '.' ) );
-      int precision;
-      if ( dotPosition < 0 )
+      if ( d->precision > 0 )
       {
-        precision = 0;
+        return QLocale().toString( v.toDouble(), 'f', d->precision );
       }
       else
       {
-        precision = s.length() - dotPosition - 1;
+        // Precision is not set, let's guess it from the
+        // standard conversion to string
+        QString s( v.toString() );
+        int dotPosition( s.indexOf( '.' ) );
+        int precision;
+        if ( dotPosition < 0 )
+        {
+          precision = 0;
+        }
+        else
+        {
+          precision = s.length() - dotPosition - 1;
+        }
+        return QLocale().toString( v.toDouble(), 'f', precision );
       }
-      return QLocale().toString( v.toDouble(), 'f', precision );
+    }
+    // Default for doubles with precision
+    else if ( d->type == QVariant::Double && d->precision > 0 )
+    {
+      return QString::number( v.toDouble(), 'f', d->precision );
     }
   }
-
+  // Other numeric types out of doubles
+  else if ( isNumeric() &&
+            ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
+  {
+    return QLocale().toString( v.toLongLong() );
+  }
+  // Fallback if special rules do not apply
   return v.toString();
 }
 
@@ -281,11 +298,15 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return true;
   }
 
-  // Give it a chance to convert to double since we accept both comma and dot as decimal point
-  QVariant tmp( v );
-  if ( d->type == QVariant::Double && !tmp.convert( d->type ) )
+  // Give it a chance to convert to double since for not '.' locales
+  // we accept both comma and dot as decimal point
+  if ( d->type == QVariant::Double && QLocale().decimalPoint() != '.' )
   {
-    v = v.toString().replace( ',', '.' );
+    QVariant tmp( v );
+    if ( d->type == QVariant::Double && !tmp.convert( d->type ) )
+    {
+      v = v.toString().replace( ',', '.' );
+    }
   }
 
   if ( !v.convert( d->type ) )
