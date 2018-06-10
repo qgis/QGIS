@@ -75,7 +75,7 @@ class CORE_EXPORT QgsRasterRange
      * whether or not the min and max values themselves are included
      * in the range.
      * \see setBounds()
-     * \since QGIS 3.4
+     * \since QGIS 3.2
      */
     BoundsType bounds() const { return mType; }
 
@@ -96,7 +96,7 @@ class CORE_EXPORT QgsRasterRange
      * whether or not the min and max values themselves are included
      * in the range.
      * \see bounds()
-     * \since QGIS 3.4
+     * \since QGIS 3.2
      */
     void setBounds( BoundsType type ) { mType = type; }
 

@@ -67,7 +67,7 @@ in the range.
 
 .. seealso:: :py:func:`setBounds`
 
-.. versionadded:: 3.4
+.. versionadded:: 3.2
 %End
 
     double setMin( double min );
@@ -92,7 +92,7 @@ in the range.
 
 .. seealso:: :py:func:`bounds`
 
-.. versionadded:: 3.4
+.. versionadded:: 3.2
 %End
 
     bool operator==( QgsRasterRange o ) const;
