@@ -60,8 +60,6 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     bool isValid() const;
 
   private slots:
-    void mBrowseFileToolButton_clicked();
-    void mProjectFileLineEdit_editingFinished();
     void onTreeViewSelectionChanged();
     void mButtonBox_accepted();
     void showHelp();
@@ -72,6 +70,7 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     void deselectChildren( const QModelIndex &index );
     QString mProjectPath;
     bool mShowEmbeddedContent = false;
+    bool mPresetProjectMode = false;
 
     QgsLayerTree *mRootGroup = nullptr;
 };
