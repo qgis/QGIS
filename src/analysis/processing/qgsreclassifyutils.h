@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgis_analysis.h"
 #include "qgsrasterrange.h"
+#include <QVector>
 
 class QgsRasterInterface;
 class QgsProcessingFeedback;
@@ -104,11 +105,24 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
      * If no matching class was found then \a reclassified will be set to false, and the
      * original \a input value returned unchanged.
      */
-    static double reclassifyValue( const QVector< RasterClass > &classes, double input, bool &reclassified );
+    static double reclassifyValue( const QVector< RasterClass > &classes, double input, bool &reclassified )
+    {
+      reclassified = false;
+      for ( const QgsReclassifyUtils::RasterClass &c : classes )
+      {
+        if ( c.contains( input ) )
+        {
+          reclassified = true;
+          return c.value;
+        }
+      }
+      return input;
+    }
 
 };
 
 Q_DECLARE_TYPEINFO( QgsReclassifyUtils::RasterClass, Q_MOVABLE_TYPE );
+
 
 ///@endcond PRIVATE
 

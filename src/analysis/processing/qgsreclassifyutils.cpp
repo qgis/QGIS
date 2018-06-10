@@ -82,19 +82,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   destinationRaster->setEditable( false );
 }
 
-double QgsReclassifyUtils::reclassifyValue( const QVector<QgsReclassifyUtils::RasterClass> &classes, double input, bool &reclassified )
-{
-  reclassified = false;
-  for ( const QgsReclassifyUtils::RasterClass &c : classes )
-  {
-    if ( c.contains( input ) )
-    {
-      reclassified = true;
-      return c.value;
-    }
-  }
-  return input;
-}
+
 
 ///@endcond
 
