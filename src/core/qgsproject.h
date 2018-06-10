@@ -585,12 +585,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QMap< QPair< QString, QString>, QgsTransactionGroup *> transactionGroups() SIP_SKIP;
 
     /**
-     * Get a transaction group by getting provider & connection string.
-     * Returns null pointer if transaction group is not available.
+     * Get a transaction group from a provider key and connection string.
      *
-     * providerKey, connString -> transactionGroup
+     * Returns nullptr if a matching transaction group is not available.
      *
-     * \since QGIS 3.0
+     * \since QGIS 3.2
      */
     QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
 

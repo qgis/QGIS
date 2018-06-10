@@ -599,13 +599,21 @@ Make sure that this is only called when all layers are not in edit mode.
 %End
 
 
+    QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
+%Docstring
+Get a transaction group from a provider key and connection string.
+
+Returns None if a matching transaction group is not available.
+
+.. versionadded:: 3.2
+%End
+
     bool evaluateDefaultValues() const;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
 .. versionadded:: 2.16
 %End
-
 
     void setEvaluateDefaultValues( bool evaluateDefaultValues );
 %Docstring
