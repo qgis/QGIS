@@ -1400,6 +1400,12 @@ class CORE_EXPORT QgsProjectDirtyBlocker
       mProject->mDirtyBlockCount++;
     }
 
+    //! QgsProjectDirtyBlocker cannot be copied
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other ) = delete;
+
+    //! QgsProjectDirtyBlocker cannot be copied
+    QgsProjectDirtyBlocker &operator=( const QgsProjectDirtyBlocker &other ) = delete;
+
     ~QgsProjectDirtyBlocker()
     {
       mProject->mDirtyBlockCount--;
@@ -1407,6 +1413,10 @@ class CORE_EXPORT QgsProjectDirtyBlocker
 
   private:
     QgsProject *mProject = nullptr;
+
+#ifdef SIP_RUN
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
+#endif
 };
 
 /**

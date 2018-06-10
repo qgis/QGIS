@@ -1361,8 +1361,12 @@ Constructor for QgsProjectDirtyBlocker.
 This will block dirtying the specified ``project`` for the lifetime of this object.
 %End
 
+
+
     ~QgsProjectDirtyBlocker();
 
+  private:
+    QgsProjectDirtyBlocker( const QgsProjectDirtyBlocker &other );
 };
 
 
