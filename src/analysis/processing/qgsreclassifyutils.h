@@ -34,7 +34,7 @@ class QgsRectangle;
 /**
  * Utility functions for reclassifying raster layers.
  * \ingroup analysis
- * \since QGIS 3.4
+ * \since QGIS 3.2
  */
 class ANALYSIS_EXPORT QgsReclassifyUtils
 {
