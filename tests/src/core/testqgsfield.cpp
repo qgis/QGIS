@@ -498,6 +498,44 @@ void TestQgsField::convertCompatible()
   QCOMPARE( longlong.type(), QVariant::LongLong );
   QCOMPARE( longlong, QVariant( 99999999999999999LL ) );
 
+  //string representation of an int
+  QVariant stringInt( "123456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( 123456 ) );
+  // now with group separator for english locale
+  stringInt = QVariant( "123,456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( "123456" ) );
+
+  //string representation of a longlong
+  QVariant stringLong( "99999999999999999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+  // now with group separator for english locale
+  stringLong = QVariant( "99,999,999,999,999,999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+
+
+  //string representation of a double
+  QVariant stringDouble( "123456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // now with group separator for english locale
+  stringDouble = QVariant( "1,223,456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+  // This should not convert
+  stringDouble = QVariant( "1.223.456,012345" );
+  QVERIFY( ! doubleField.convertCompatible( stringDouble ) );
+
+
   //double with precision
   QgsField doubleWithPrecField( QStringLiteral( "double" ), QVariant::Double, QStringLiteral( "double" ), 10, 3 );
   doubleVar = QVariant( 10.12345678 );
@@ -513,12 +551,61 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringVar.type(), QVariant::String );
   QCOMPARE( stringVar.toString(), QString( "lon" ) );
 
+
+  /////////////////////////////////////////////////////////
+  // German locale tests
+
   //double with ',' as decimal separator for German locale
   QLocale::setDefault( QLocale::German );
   QVariant doubleCommaVar( "1,2345" );
   QVERIFY( doubleField.convertCompatible( doubleCommaVar ) );
   QCOMPARE( doubleCommaVar.type(), QVariant::Double );
   QCOMPARE( doubleCommaVar.toString(), QString( "1.2345" ) );
+
+  //string representation of an int
+  stringInt = QVariant( "123456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( 123456 ) );
+  // now with group separator for german locale
+  stringInt = QVariant( "123.456" );
+  QVERIFY( intField.convertCompatible( stringInt ) );
+  QCOMPARE( stringInt.type(), QVariant::Int );
+  QCOMPARE( stringInt, QVariant( "123456" ) );
+
+  //string representation of a longlong
+  stringLong = QVariant( "99999999999999999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+  // now with group separator for german locale
+  stringLong = QVariant( "99.999.999.999.999.999" );
+  QVERIFY( longlongField.convertCompatible( stringLong ) );
+  QCOMPARE( stringLong.type(), QVariant::LongLong );
+  QCOMPARE( stringLong, QVariant( 99999999999999999LL ) );
+
+  //string representation of a double
+  stringDouble = QVariant( "123456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // For doubles we also want to accept dot as a decimal point
+  stringDouble = QVariant( "123456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 123456.012345 ) );
+  // now with group separator for german locale
+  stringDouble = QVariant( "1.223.456,012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+  // Be are good citizens and we also accept english locale
+  stringDouble = QVariant( "1,223,456.012345" );
+  QVERIFY( doubleField.convertCompatible( stringDouble ) );
+  QCOMPARE( stringDouble.type(), QVariant::Double );
+  QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
+
+
 }
 
 void TestQgsField::dataStream()

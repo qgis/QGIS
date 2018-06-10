@@ -277,6 +277,68 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return false;
   }
 
+  // Give it a chance to convert to double since for not '.' locales
+  // we accept both comma and dot as decimal point
+  if ( d->type == QVariant::Double && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      double d = QLocale().toDouble( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( d );
+        return true;
+      }
+      // For not 'dot' locales, we also want to accept '.'
+      if ( QLocale().decimalPoint() != '.' )
+      {
+        d = QLocale( QLocale::English ).toDouble( v.toString(), &ok );
+        if ( ok )
+        {
+          v = QVariant( d );
+          return true;
+        }
+      }
+    }
+  }
+
+  // For string representation of an int we also might have thousand separator
+  if ( d->type == QVariant::Int && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      int i = QLocale().toInt( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( i );
+        return true;
+      }
+    }
+  }
+
+  // For string representation of a long we also might have thousand separator
+  if ( d->type == QVariant::LongLong && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      qlonglong l = QLocale().toLongLong( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( l );
+        return true;
+      }
+    }
+  }
+
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
   //work around this by first converting to double, and then checking whether the double is convertible to int
   if ( d->type == QVariant::Int && v.canConvert( QVariant::Double ) )
@@ -301,16 +363,6 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return true;
   }
 
-  // Give it a chance to convert to double since for not '.' locales
-  // we accept both comma and dot as decimal point
-  if ( d->type == QVariant::Double && QLocale().decimalPoint() != '.' )
-  {
-    QVariant tmp( v );
-    if ( d->type == QVariant::Double && !tmp.convert( d->type ) )
-    {
-      v = v.toString().replace( QLocale().decimalPoint(), '.' );
-    }
-  }
 
   if ( !v.convert( d->type ) )
   {
