@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
       <widget class="QLabel" name="mProjectFileLabel">
        <property name="text">
@@ -24,12 +24,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mProjectFileLineEdit"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBrowseFileToolButton">
-       <property name="text">
-        <string>…</string>
+      <widget class="QgsFileWidget" name="mProjectFileWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
@@ -63,12 +60,16 @@
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mProjectFileLineEdit</tabstop>
-  <tabstop>mBrowseFileToolButton</tabstop>
+  <tabstop>mProjectFileWidget</tabstop>
   <tabstop>mTreeView</tabstop>
-  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>
