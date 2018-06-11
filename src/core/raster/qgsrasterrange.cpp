@@ -24,26 +24,7 @@ QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
 {
 }
 
-bool QgsRasterRange::contains( double value ) const
-{
-  return ( value > mMin
-           || ( !std::isnan( mMin ) && qgsDoubleNear( value, mMin ) && ( mType == IncludeMinAndMax || mType == IncludeMin ) )
-           || std::isnan( mMin ) )
-         &&
-         ( value < mMax
-           || ( !std::isnan( mMax ) && qgsDoubleNear( value, mMax ) && ( mType == IncludeMinAndMax || mType == IncludeMax ) )
-           || std::isnan( mMax ) );
-}
 
-bool QgsRasterRange::contains( double value, const QgsRasterRangeList &rangeList )
-{
-  for ( QgsRasterRange range : rangeList )
-  {
-    if ( range.contains( value ) )
-    {
-      return true;
-    }
-  }
-  return false;
-}
+
+
 
