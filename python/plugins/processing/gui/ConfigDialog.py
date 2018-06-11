@@ -513,6 +513,8 @@ class MultipleDirectorySelector(QWidget):
         text = self.lineEdit.text()
         if text != '':
             items = text.split(';')
+        else:
+            items = []
 
         dlg = DirectorySelectorDialog(None, items)
         if dlg.exec_():
