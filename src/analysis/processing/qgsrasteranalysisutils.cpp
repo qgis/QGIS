@@ -72,12 +72,12 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
   iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( rasterBand, nCellsX, nCellsY, rasterBBox );
 
-  QgsRasterBlock *block = nullptr;
+  std::unique_ptr< QgsRasterBlock > block;
   int iterLeft = 0;
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, &block, iterLeft, iterTop ) )
+  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop ) )
   {
     double cellCenterY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
     for ( int row = 0; row < iterRows; ++row )
@@ -98,7 +98,6 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
       }
       cellCenterY -= cellSizeY;
     }
-    delete block;
   }
 }
 
@@ -126,12 +125,12 @@ void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( QgsRasterInterfa
   iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( rasterBand, nCellsX, nCellsY, rasterBBox );
 
-  QgsRasterBlock *block = nullptr;
+  std::unique_ptr< QgsRasterBlock > block;
   int iterLeft = 0;
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, &block, iterLeft, iterTop ) )
+  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop ) )
   {
     double currentY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
     for ( int row = 0; row < iterRows; ++row )

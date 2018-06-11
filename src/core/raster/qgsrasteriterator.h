@@ -48,18 +48,36 @@ class CORE_EXPORT QgsRasterIterator
 
     /**
      * Fetches next part of raster data, caller takes ownership of the block and
-       caller should delete the block.
-       \param bandNumber band to read
-       \param nCols number of columns on output device
-       \param nRows number of rows on output device
-       \param block address of block pointer
-       \param topLeftCol top left column
-       \param topLeftRow top left row
-       \returns false if the last part was already returned*/
+     * caller should delete the block.
+     * \param bandNumber band to read
+     * \param nCols number of columns on output device
+     * \param nRows number of rows on output device
+     * \param block address of block pointer
+     * \param topLeftCol top left column
+     * \param topLeftRow top left row
+     * \returns false if the last part was already returned
+    */
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
                              QgsRasterBlock **block,
                              int &topLeftCol, int &topLeftRow );
+
+    /**
+     * Fetches next part of raster data.
+     * \param bandNumber band to read
+     * \param nCols number of columns on output device
+     * \param nRows number of rows on output device
+     * \param block address of block pointer
+     * \param topLeftCol top left column
+     * \param topLeftRow top left row
+     * \returns false if the last part was already returned
+     * \note Not available in Python bindings
+     * \since QGIS 3.2
+    */
+    bool readNextRasterPart( int bandNumber,
+                             int &nCols, int &nRows,
+                             std::unique_ptr< QgsRasterBlock > &block,
+                             int &topLeftCol, int &topLeftRow ) SIP_SKIP;
 
     void stopRasterRead( int bandNumber );
 

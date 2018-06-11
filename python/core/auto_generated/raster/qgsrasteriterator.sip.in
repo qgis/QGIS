@@ -47,8 +47,9 @@ caller should delete the block.
 :param topLeftCol: top left column
 :param topLeftRow: top left row
 
-:return: false if the last part was already returned*
+:return: false if the last part was already returned
 %End
+
 
     void stopRasterRead( int bandNumber );
 
