@@ -484,7 +484,7 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 #elif ANDROID
   QString pluginExt = "*plugin.so";
 #else
-  QString pluginExt = QStringLiteral( "*.so*" );
+  QString pluginExt = QStringLiteral( "*.so" );
 #endif
 
   // check all libs in the current plugin directory and get name and descriptions
