@@ -100,7 +100,6 @@ class CORE_EXPORT QgsRasterIterator
       int currentRow;
       int nCols;
       int nRows;
-      QgsRasterProjector *prj; //raster projector (or 0 if no reprojection is done)
     };
 
     QgsRasterInterface *mInput = nullptr;
