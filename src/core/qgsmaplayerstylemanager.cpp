@@ -16,7 +16,6 @@
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 
 #include <QDomElement>
 #include <QTextStream>

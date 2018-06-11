@@ -11,7 +11,6 @@
 
 
 
-
 class QgsMapLayerStyle
 {
 %Docstring
@@ -224,6 +223,35 @@ Emitted when the current style has been changed
 
 };
 
+
+class QgsLayerStyleOverride
+{
+%Docstring
+Restore overridden layer style on destruction.
+
+.. versionadded:: 3.2
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerstylemanager.h"
+%End
+  public:
+
+    QgsLayerStyleOverride( QgsMapLayer *layer );
+%Docstring
+Construct a style override object associated with a map layer.
+The overridden style will be restored upon object destruction.
+%End
+
+    ~QgsLayerStyleOverride();
+
+    void setOverrideStyle( const QString &style );
+%Docstring
+Temporarily apply a different style to the layer. The argument
+can be either a style name or a full QML style definition.
+%End
+
+};
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
