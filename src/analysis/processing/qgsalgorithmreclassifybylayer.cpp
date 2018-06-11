@@ -273,6 +273,9 @@ bool QgsReclassifyByTableAlgorithm::_prepareAlgorithm( const QVariantMap &, QgsP
 QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   const QVariantList table = parameterAsMatrix( parameters, QStringLiteral( "TABLE" ), context );
+  if ( table.count() % 3 != 0 )
+    throw QgsProcessingException( QObject::tr( "Invalid value for TABLE: list must contain a multiple of 3 elements (found %1)" ).arg( table.count() ) );
+
   const int rows = table.count() / 3;
   QVector< QgsReclassifyUtils::RasterClass > classes;
   for ( int row = 0; row < rows; ++row )
