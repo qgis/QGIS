@@ -1188,9 +1188,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   if ( !layerLegend )
     return;
 
-  bool hasStyleOverride = mLayerStyleOverrides.contains( ml->id() );
-  if ( hasStyleOverride )
-    ml->styleManager()->setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
+  QgsLayerStyleOverride styleOverride( ml );
+  if ( mLayerStyleOverrides.contains( ml->id() ) )
+    styleOverride.setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 
   QList<QgsLayerTreeModelLegendNode *> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
@@ -1249,9 +1249,6 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   mLegend[nodeL] = data;
 
   if ( !filteredLstNew.isEmpty() ) endInsertRows();
-
-  if ( hasStyleOverride )
-    ml->styleManager()->restoreOverrideStyle();
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once
