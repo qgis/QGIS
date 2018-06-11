@@ -86,7 +86,7 @@ Sets the maximum value for the range.
 
     void setBounds( BoundsType type );
 %Docstring
-Setss the bounds ``type`` for the range, which specifies
+Sets the bounds ``type`` for the range, which specifies
 whether or not the min and max values themselves are included
 in the range.
 
@@ -95,7 +95,7 @@ in the range.
 .. versionadded:: 3.2
 %End
 
-    bool operator==( QgsRasterRange o ) const;
+    bool operator==( const QgsRasterRange &o ) const;
 
     bool contains( double value ) const;
 %Docstring

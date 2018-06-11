@@ -92,7 +92,7 @@ class CORE_EXPORT QgsRasterRange
     double setMax( double max ) { return mMax = max; }
 
     /**
-     * Setss the bounds \a type for the range, which specifies
+     * Sets the bounds \a type for the range, which specifies
      * whether or not the min and max values themselves are included
      * in the range.
      * \see bounds()
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsRasterRange
      */
     void setBounds( BoundsType type ) { mType = type; }
 
-    inline bool operator==( QgsRasterRange o ) const
+    inline bool operator==( const QgsRasterRange &o ) const
     {
       return ( ( std::isnan( mMin ) && std::isnan( o.mMin ) ) || qgsDoubleNear( mMin, o.mMin ) )
              && ( ( std::isnan( mMax ) && std::isnan( o.mMax ) ) || qgsDoubleNear( mMax, o.mMax ) )
