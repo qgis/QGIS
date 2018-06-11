@@ -31,6 +31,7 @@
 #include <QMouseEvent>
 #include <QRubberBand>
 #include <QSettings>
+#include <QDoubleValidator>
 
 
 //! Map tool which uses rubber band for changing grass region
