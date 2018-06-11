@@ -80,7 +80,7 @@ bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters
   mExtent = layer->extent();
   mCrs = layer->crs();
   mRasterUnitsPerPixelX = std::abs( layer->rasterUnitsPerPixelX() );
-  mRasterUnitsPerPixelY = std::abs( layer->rasterUnitsPerPixelX() );
+  mRasterUnitsPerPixelY = std::abs( layer->rasterUnitsPerPixelY() );
   mNbCellsXProvider = mInterface->xSize();
   mNbCellsYProvider = mInterface->ySize();
 
