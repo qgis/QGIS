@@ -53,6 +53,7 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 
     std::unique_ptr< QgsRasterInterface > mInterface;
     bool mHasNoDataValue = false;
+    int mBand = 1;
     int mLayerWidth;
     int mLayerHeight;
     QgsRectangle mExtent;
