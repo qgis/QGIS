@@ -71,10 +71,14 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
 bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
-  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
 
   if ( !layer )
     throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT_RASTER" ) ) );
+
+  mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
+  if ( mBand < 1 || mBand > layer->bandCount() )
+    throw QgsProcessingException( QObject::tr( "Invalid band number for RASTER_BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand )
+                                  .arg( layer->bandCount() ) );
 
   mInterface.reset( layer->dataProvider()->clone() );
   mExtent = layer->extent();
