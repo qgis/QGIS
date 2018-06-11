@@ -2879,18 +2879,17 @@ void QgisApp::createToolBars()
   mAdvancedDigitizeToolBar->insertWidget( mActionRotateFeature, moveFeatureButton );
 
   // vertex tool button
-  QToolButton *vertexToolButton = new QToolButton( mDigitizeToolBar );
+  QToolButton *vertexToolButton = qobject_cast<QToolButton *>( mDigitizeToolBar->widgetForAction( mActionVertexTool ) );
   vertexToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   vertexToolButton->addAction( mActionVertexTool );
   vertexToolButton->addAction( mActionVertexToolActiveLayer );
-  mAdvancedDigitizeToolBar->insertWidget( mActionDeleteSelected, vertexToolButton );
   QAction *defActionVertexTool = mActionVertexTool;
-  switch ( settings.value( QStringLiteral( "UI/defaultVertexTool" ), 0 ).toInt() )
+  switch ( settings.enumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::AllLayers ) )
   {
-    case 0:
+    case QgsVertexTool::AllLayers:
       defActionVertexTool = mActionVertexTool;
       break;
-    case 1:
+    case QgsVertexTool::ActiveLayer:
       defActionVertexTool = mActionVertexToolActiveLayer;
       break;
   };
@@ -3501,7 +3500,7 @@ void QgisApp::createCanvasTools()
   mMapTools.mDeletePart->setAction( mActionDeletePart );
   mMapTools.mVertexTool = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget );
   mMapTools.mVertexTool->setAction( mActionVertexTool );
-  mMapTools.mVertexToolActiveLayer = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget, true );
+  mMapTools.mVertexToolActiveLayer = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget, QgsVertexTool::ActiveLayer );
   mMapTools.mVertexToolActiveLayer->setAction( mActionVertexToolActiveLayer );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
@@ -13612,9 +13611,9 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
   else if ( action == mActionMoveFeatureCopy )
     settings.setValue( QStringLiteral( "UI/defaultMoveTool" ), 1 );
   else if ( action == mActionVertexTool )
-    settings.setValue( QStringLiteral( "UI/defaultVertexTool" ), 0 );
+    settings.setEnumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::AllLayers );
   else if ( action == mActionVertexToolActiveLayer )
-    settings.setValue( QStringLiteral( "UI/defaultVertexTool" ), 1 );
+    settings.setEnumValue( QStringLiteral( "UI/defaultVertexTool" ), QgsVertexTool::ActiveLayer );
 
   bt->setDefaultAction( action );
 }
