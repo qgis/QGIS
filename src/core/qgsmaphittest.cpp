@@ -101,7 +101,7 @@ bool QgsMapHitTest::legendKeyVisible( const QString &ruleKey, QgsVectorLayer *la
 
 void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context )
 {
-  QgsLayerStyleOverride styleOverride( vl );
+  QgsMapLayerStyleOverride styleOverride( vl );
   if ( mSettings.layerStyleOverrides().contains( vl->id() ) )
     styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
