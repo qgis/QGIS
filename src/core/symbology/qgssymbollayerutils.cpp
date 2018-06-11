@@ -653,7 +653,6 @@ QIcon QgsSymbolLayerUtils::symbolPreviewIcon( QgsSymbol *symbol, QSize size, int
 QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding, QgsRenderContext *customContext )
 {
   Q_ASSERT( symbol );
-
   QPixmap pixmap( size );
   pixmap.fill( Qt::transparent );
   QPainter painter;
@@ -672,7 +671,25 @@ QPixmap QgsSymbolLayerUtils::symbolPreviewPixmap( QgsSymbol *symbol, QSize size,
     painter.translate( padding, padding );
   }
 
-  symbol->drawPreviewIcon( &painter, size, customContext );
+  // If the context has no feature and there are DD properties,
+  // use a clone and clear all DDs: see issue #19096
+  // Applying a data defined size to a categorized layer hides its category symbol in the layers panel and legend
+  if ( symbol->hasDataDefinedProperties() &&
+       !( customContext
+          && customContext->expressionContext().hasFeature( ) ) )
+  {
+    std::unique_ptr<QgsSymbol> symbol_noDD( symbol->clone( ) );
+    const QgsSymbolLayerList layers( symbol_noDD->symbolLayers() );
+    for ( const auto &layer : layers )
+    {
+      layer->dataDefinedProperties().clear();
+    }
+    symbol_noDD->drawPreviewIcon( &painter, size, customContext );
+  }
+  else
+  {
+    symbol->drawPreviewIcon( &painter, size, customContext );
+  }
 
   painter.end();
   return pixmap;
