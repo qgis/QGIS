@@ -61,7 +61,15 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, bool activeLayerOnly = false );
+
+    enum VertexToolMode
+    {
+      ActiveLayer,
+      AllLayers
+    };
+    Q_ENUM( VertexToolMode );
+
+    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode = QgsVertexTool::AllLayers );
 
     //! Cleanup canvas items we have created
     ~QgsVertexTool() override;
@@ -405,7 +413,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Starting vertex when using range selection (null if not yet selected)
     std::unique_ptr<Vertex> mRangeSelectionFirstVertex;
 
-    bool mActiveLayerOnly = false;
+    VertexToolMode mMode = AllLayers;
 };
 
 

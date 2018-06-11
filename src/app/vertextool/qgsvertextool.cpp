@@ -227,9 +227,9 @@ class SelectedMatchFilter : public QgsPointLocator::MatchFilter
 //
 
 
-QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, bool activeLayerOnly )
+QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock, VertexToolMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
-  , mActiveLayerOnly( activeLayerOnly )
+  , mMode( mode )
 {
   setAdvancedDigitizingAllowed( false );
 
@@ -479,7 +479,7 @@ void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       if ( !vlayer || !vlayer->isEditable() || !vlayer->isSpatial() )
         continue;
 
-      if ( mActiveLayerOnly && vlayer != currentVectorLayer() )
+      if ( mMode == ActiveLayer && vlayer != currentVectorLayer() )
         continue;
 
       QgsRectangle layerRect = toLayerCoordinates( vlayer, map_rect );
@@ -695,7 +695,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   }
 
   // if there is no match from the current layer, try to use any editable vector layer
-  if ( !m.isValid() && !mActiveLayerOnly )
+  if ( !m.isValid() && mMode == AllLayers )
   {
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )
