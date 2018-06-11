@@ -86,7 +86,7 @@ void usage( std::string const &appName )
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
-            << "    vectors, and QGIS project files (.qgs): \n"
+            << "    vectors, and QGIS project files (.qgs or .qgz): \n"
             << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
             << "        and others supported by GDAL\n"
             << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
@@ -471,11 +471,11 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( myProjectFileName.isEmpty() )
   {
-    // check for a .qgs
+    // check for a .qgs or .qgz
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -525,8 +525,9 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
-    // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    // don't load anything with a .qgs or .qgz extension - these are project files
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+         !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;

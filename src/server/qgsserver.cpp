@@ -107,7 +107,8 @@ QFileInfo QgsServer::defaultProjectFile()
   QDir currentDir;
   fprintf( FCGI_stderr, "current directory: %s\n", currentDir.absolutePath().toUtf8().constData() );
   QStringList nameFilterList;
-  nameFilterList << QStringLiteral( "*.qgs" );
+  nameFilterList << QStringLiteral( "*.qgs" )
+                 << QStringLiteral( "*.qgz" );
   QFileInfoList projectFiles = currentDir.entryInfoList( nameFilterList, QDir::Files, QDir::Name );
   for ( int x = 0; x < projectFiles.size(); x++ )
   {
@@ -211,7 +212,7 @@ bool QgsServer::init()
   QgsApplication::authManager()->init( QgsApplication::pluginPath(), QgsApplication::qgisAuthDatabaseFilePath() );
 
   QString defaultConfigFilePath;
-  QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
+  QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs/.qgz file in the server directory
   if ( projectFileInfo.exists() )
   {
     defaultConfigFilePath = projectFileInfo.absoluteFilePath();
