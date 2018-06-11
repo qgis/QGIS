@@ -3450,6 +3450,9 @@ QString QgsSpatiaLiteProvider::subsetString() const
 
 bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  if ( theSQL == mSubsetString )
+    return true;
+
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
 
@@ -3461,6 +3464,7 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   // update feature count and extents
   if ( updateFeatureCount && getTableSummary() )
   {
+    emit dataChanged();
     return true;
   }
 
@@ -3472,8 +3476,6 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   setDataSourceUri( uri.uri() );
 
   getTableSummary();
-
-  emit dataChanged();
 
   return false;
 }
