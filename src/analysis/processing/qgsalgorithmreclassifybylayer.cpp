@@ -273,7 +273,7 @@ bool QgsReclassifyByTableAlgorithm::_prepareAlgorithm( const QVariantMap &, QgsP
 QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   const QVariantList table = parameterAsMatrix( parameters, QStringLiteral( "TABLE" ), context );
-  int rows = table.count() / 3;
+  const int rows = table.count() / 3;
   QVector< QgsReclassifyUtils::RasterClass > classes;
   for ( int row = 0; row < rows; ++row )
   {
