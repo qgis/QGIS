@@ -27,6 +27,7 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QVBoxLayout>
+#include <QHeaderView>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
