@@ -979,7 +979,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsLayerStyleOverride styleOverride( vl );
+    QgsMapLayerStyleOverride styleOverride( vl );
     if ( mMapSettings.layerStyleOverrides().contains( vl->id() ) )
     {
       QgsDebugMsg( QString( "%1: apply override style" ).arg( vl->id() ) );

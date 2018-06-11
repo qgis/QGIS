@@ -224,7 +224,7 @@ Emitted when the current style has been changed
 };
 
 
-class QgsLayerStyleOverride
+class QgsMapLayerStyleOverride
 {
 %Docstring
 Restore overridden layer style on destruction.
@@ -237,13 +237,13 @@ Restore overridden layer style on destruction.
 %End
   public:
 
-    QgsLayerStyleOverride( QgsMapLayer *layer );
+    QgsMapLayerStyleOverride( QgsMapLayer *layer );
 %Docstring
 Construct a style override object associated with a map layer.
 The overridden style will be restored upon object destruction.
 %End
 
-    ~QgsLayerStyleOverride();
+    ~QgsMapLayerStyleOverride();
 
     void setOverrideStyle( const QString &style );
 %Docstring

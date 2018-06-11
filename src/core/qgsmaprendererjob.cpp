@@ -296,7 +296,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mFeatureFilterProvider )
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
-    QgsLayerStyleOverride styleOverride( ml );
+    QgsMapLayerStyleOverride styleOverride( ml );
     if ( mSettings.layerStyleOverrides().contains( ml->id() ) )
       styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 

@@ -1186,7 +1186,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   if ( !layerLegend )
     return;
 
-  QgsLayerStyleOverride styleOverride( ml );
+  QgsMapLayerStyleOverride styleOverride( ml );
   if ( mLayerStyleOverrides.contains( ml->id() ) )
     styleOverride.setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 

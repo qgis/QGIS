@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsLayerStyleOverride
+class CORE_EXPORT QgsMapLayerStyleOverride
 {
   public:
 
@@ -209,12 +209,12 @@ class CORE_EXPORT QgsLayerStyleOverride
      * Construct a style override object associated with a map layer.
      * The overridden style will be restored upon object destruction.
      */
-    QgsLayerStyleOverride( QgsMapLayer *layer )
+    QgsMapLayerStyleOverride( QgsMapLayer *layer )
       : mLayer( layer )
     {
     }
 
-    ~QgsLayerStyleOverride()
+    ~QgsMapLayerStyleOverride()
     {
       if ( mLayer && mStyleOverridden )
         mLayer->styleManager()->restoreOverrideStyle();
@@ -226,10 +226,14 @@ class CORE_EXPORT QgsLayerStyleOverride
      */
     void setOverrideStyle( const QString &style )
     {
-      if ( mLayer && mStyleOverridden )
-        mLayer->styleManager()->restoreOverrideStyle();
-      mLayer->styleManager()->setOverrideStyle( style );
-      mStyleOverridden = true;
+      if ( mLayer )
+      {
+        if ( mStyleOverridden )
+          mLayer->styleManager()->restoreOverrideStyle();
+
+        mLayer->styleManager()->setOverrideStyle( style );
+        mStyleOverridden = true;
+      }
     }
 
   private:
