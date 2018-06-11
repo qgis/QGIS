@@ -40,16 +40,18 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
         # Create test layer
-        cls.vl_b = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books', 'postgres')
-        cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
+        cls.vl_b = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books" sql=', 'books',
+                                  'postgres')
+        cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=',
+                                  'authors', 'postgres')
 
         QgsProject.instance().addMapLayer(cls.vl_b)
         QgsProject.instance().addMapLayer(cls.vl_a)
 
         cls.relMgr = QgsProject.instance().relationManager()
 
-        assert(cls.vl_a.isValid())
-        assert(cls.vl_b.isValid())
+        assert (cls.vl_a.isValid())
+        assert (cls.vl_b.isValid())
 
     def startTransaction(self):
         """
@@ -103,6 +105,7 @@ class TestQgsPostgresTransaction(unittest.TestCase):
         noTg = QgsProject.instance().transactionGroup("xxxpostgres", conn_string)
         self.assertIsNone(noTg)
         self.rollbackTransaction()
+
 
 if __name__ == '__main__':
     unittest.main()

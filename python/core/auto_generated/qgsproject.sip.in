@@ -601,7 +601,7 @@ Make sure that this is only called when all layers are not in edit mode.
 
     QgsTransactionGroup *transactionGroup( const QString &providerKey, const QString &connString );
 %Docstring
-Get a transaction group from a provider key and connection string.
+Returns the matching transaction group from a provider key and connection string.
 
 Returns None if a matching transaction group is not available.
 
