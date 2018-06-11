@@ -3098,6 +3098,9 @@ QgsVectorDataProvider::Capabilities QgsPostgresProvider::capabilities() const
 
 bool QgsPostgresProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  if ( theSQL.trimmed() == mSqlWhereClause )
+    return true;
+
   QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();
