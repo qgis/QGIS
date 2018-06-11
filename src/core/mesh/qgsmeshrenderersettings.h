@@ -23,6 +23,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgscolorrampshader.h"
+
 
 /**
  * \ingroup core
@@ -69,49 +71,15 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 class CORE_EXPORT QgsMeshRendererScalarSettings
 {
   public:
-    //! Returns color representing maximum scalar value in the dataset
-    QColor maxColor() const;
-    //! Sets color representing maximum scalar value in the dataset
-    void setMaxColor( const QColor &maxColor );
+    //! Returns color ramp shader function
+    QgsColorRampShader colorRampShader() const;
+    //! Sets color ramp shader function
+    void setColorRampShader( const QgsColorRampShader &shader );
 
-    //! Returns color representing minimum scalar value in the dataset
-    QColor minColor() const;
-    //! Sets color representing maximum scalar value in the dataset
-    void setMinColor( const QColor &minColor );
-
-    /**
-     * Returns min scalar value that represents minColor()
-     *
-     * if set to numerical_limits<double>::quiet_NaN(), value for minColor() is
-     * taken from minimum value of active scalar dataset
-     */
-    double minValue() const;
-
-    /**
-     * Sets min scalar value that represents minColor()
-     * \see QgsMeshRendererScalarSettings::minValue()
-     */
-    void setMinValue( double minValue );
-
-    /**
-     * Returns max scalar value that represents maxColor()
-     *
-     * if set to numerical_limits<double>::quiet_NaN(), value for maxColor() is
-     * taken from maximum value of active scalar dataset
-     */
-    double maxValue() const;
-
-    /**
-     * Sets min scalar value that represents minColor()
-     * \see QgsMeshRendererScalarSettings::maxValue()
-     */
-    void setMaxValue( double maxValue );
-
+    //! Returns whether color ramp has any items assigned
+    bool isEnabled() const;
   private:
-    QColor mMaxColor = QColor::fromRgb( 255, 0, 0 );
-    QColor mMinColor = QColor::fromRgb( 0, 0, 255 );
-    double mMaxValue = std::numeric_limits<double>::quiet_NaN(); //disabled
-    double mMinValue = std::numeric_limits<double>::quiet_NaN(); //disabled
+    QgsColorRampShader mColorRampShader;
 };
 
 /**

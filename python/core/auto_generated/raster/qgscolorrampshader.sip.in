@@ -94,6 +94,13 @@ Returns the color ramp type as a string.
 Sets the color ramp type
 %End
 
+    bool isEmpty() const;
+%Docstring
+Whether the color ramp contains any items
+
+.. versionadded:: 3.4
+%End
+
     QgsColorRamp *sourceColorRamp() const /Factory/;
 %Docstring
 Gets the source color ramp

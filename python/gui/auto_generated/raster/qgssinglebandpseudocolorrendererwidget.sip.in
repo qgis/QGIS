@@ -23,11 +23,21 @@ class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
     virtual QgsRasterRenderer *renderer();
 
+
+    QgsColorRampShader *shaderFunction() const /Factory/;
+%Docstring
+Returns shader function used in the renderer. Caller takes ownership and deletes it.
+%End
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 
     virtual void doComputations();
 
     virtual QgsRasterMinMaxWidget *minMaxWidget();
+
+    int currentBand() const;
+%Docstring
+Returns the current raster band number
+%End
 
     void setFromRenderer( const QgsRasterRenderer *r );
 

@@ -307,6 +307,9 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
 
   mDatasets.push_back( ds );
 
+  if ( ds.valid )
+    emit dataChanged();
+
   return ds.valid;
 }
 

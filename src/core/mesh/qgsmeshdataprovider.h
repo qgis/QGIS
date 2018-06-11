@@ -215,6 +215,8 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
 
     /**
      * \brief Associate dataset with the mesh
+     *
+     * emits dataChanged when successful
      */
     virtual bool addDataset( const QString &uri ) = 0;
 

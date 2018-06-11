@@ -84,10 +84,6 @@ class QgsMeshVectorRenderer
     const QVector<double> &mDatasetValuesX;
     const QVector<double> &mDatasetValuesY;
     const QVector<double> &mDatasetValuesMag; //magnitudes
-    double mMinX = 0.0;
-    double mMaxX = 0.0;
-    double mMinY = 0.0;
-    double mMaxY = 0.0;
     double mMinMag = 0.0;
     double mMaxMag = 0.0;
     QgsRenderContext &mContext;

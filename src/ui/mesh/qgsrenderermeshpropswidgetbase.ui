@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsRendererMeshPropsWidgetBase</class>
+ <widget class="QWidget" name="QgsRendererMeshPropsWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>386</width>
+    <height>593</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mActiveDatasetGroup">
+     <property name="title">
+      <string>Active Dataset</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QgsMeshRendererActiveDatasetWidget" name="mMeshRendererActiveDatasetWidget" native="true">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mScalarRenderingGroup">
+     <property name="title">
+      <string>Scalar rendering</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QgsMeshRendererScalarSettingsWidget" name="mMeshRendererScalarSettingsWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mVectorRenderingGroup">
+     <property name="title">
+      <string>Vector rendering</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout2">
+      <item row="0" column="0">
+       <widget class="QgsMeshRendererVectorSettingsWidget" name="mMeshRendererVectorSettingsWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mMeshRenderingGroup">
+     <property name="title">
+      <string>Mesh rendering</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Native mesh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsMeshRendererMeshSettingsWidget" name="mNativeMeshSettingsWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Triangular mesh</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QgsMeshRendererMeshSettingsWidget" name="mTriangularMeshSettingsWidget" native="true"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshRendererScalarSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>mesh/qgsmeshrendererscalarsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshRendererActiveDatasetWidget</class>
+   <extends>QWidget</extends>
+   <header>mesh/qgsmeshrendereractivedatasetwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshRendererMeshSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>mesh/qgsmeshrenderermeshsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsMeshRendererVectorSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>mesh/qgsmeshrenderervectorsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

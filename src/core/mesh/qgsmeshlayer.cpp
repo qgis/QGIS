@@ -338,5 +338,7 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
+  connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
+
   return true;
 } // QgsMeshLayer:: setDataProvider

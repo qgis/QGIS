@@ -98,10 +98,21 @@ QgsMeshFace QgsMdalProvider::face( int index ) const
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
+  int datasetCount = mDatasets.count();
+
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
   refreshDatasets();
-  return true;
+
+  if ( datasetCount == mDatasets.count() )
+  {
+    return false;
+  }
+  else
+  {
+    emit dataChanged();
+    return true; // Ok
+  }
 }
 
 int QgsMdalProvider::datasetCount() const
