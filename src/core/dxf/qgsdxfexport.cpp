@@ -979,11 +979,11 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    bool hasStyleOverride = mMapSettings.layerStyleOverrides().contains( vl->id() );
-    if ( hasStyleOverride )
+    QgsLayerStyleOverride styleOverride( vl );
+    if ( mMapSettings.layerStyleOverrides().contains( vl->id() ) )
     {
       QgsDebugMsg( QString( "%1: apply override style" ).arg( vl->id() ) );
-      vl->styleManager()->setOverrideStyle( mMapSettings.layerStyleOverrides().value( vl->id() ) );
+      styleOverride.setOverrideStyle( mMapSettings.layerStyleOverrides().value( vl->id() ) );
     }
     else
     {
@@ -993,8 +993,6 @@ void QgsDxfExport::writeEntities()
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
     if ( !vl->renderer() )
     {
-      if ( hasStyleOverride )
-        vl->styleManager()->restoreOverrideStyle();
       continue;
     }
 
@@ -1043,9 +1041,6 @@ void QgsDxfExport::writeEntities()
     {
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
-
-      if ( hasStyleOverride )
-        vl->styleManager()->restoreOverrideStyle();
 
       continue;
     }
@@ -1108,9 +1103,6 @@ void QgsDxfExport::writeEntities()
     }
 
     renderer->stopRender( ctx );
-
-    if ( hasStyleOverride )
-      vl->styleManager()->restoreOverrideStyle();
   }
 
   engine.run( ctx );
