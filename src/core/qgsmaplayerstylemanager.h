@@ -16,16 +16,15 @@
 #ifndef QGSMAPLAYERSTYLEMANAGER_H
 #define QGSMAPLAYERSTYLEMANAGER_H
 
-
-class QgsMapLayer;
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmaplayer.h"
 
 #include <QByteArray>
 #include <QMap>
 #include <QStringList>
 #include <QObject>
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 class QDomElement;
 
@@ -195,4 +194,47 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     QString defaultStyleName() const;
 };
 
+
+/**
+ * \ingroup core
+ * Restore overridden layer style on destruction.
+ *
+ * \since QGIS 3.2
+ */
+class CORE_EXPORT QgsLayerStyleOverride
+{
+  public:
+
+    /**
+     * Construct a style override object associated with a map layer.
+     * The overridden style will be restored upon object destruction.
+     */
+    QgsLayerStyleOverride( QgsMapLayer *layer )
+      : mLayer( layer )
+    {
+    }
+
+    ~QgsLayerStyleOverride()
+    {
+      if ( mLayer && mStyleOverridden )
+        mLayer->styleManager()->restoreOverrideStyle();
+    }
+
+    /**
+     * Temporarily apply a different style to the layer. The argument
+     * can be either a style name or a full QML style definition.
+     */
+    void setOverrideStyle( const QString &style )
+    {
+      if ( mLayer && mStyleOverridden )
+        mLayer->styleManager()->restoreOverrideStyle();
+      mLayer->styleManager()->setOverrideStyle( style );
+      mStyleOverridden = true;
+    }
+
+  private:
+
+    QgsMapLayer *mLayer = nullptr;
+    bool mStyleOverridden = false;
+};
 #endif // QGSMAPLAYERSTYLEMANAGER_H

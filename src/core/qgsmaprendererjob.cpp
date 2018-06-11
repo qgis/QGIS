@@ -216,8 +216,6 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   return split;
 }
 
-
-
 LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 )
 {
   LayerRenderJobs layerJobs;
@@ -298,9 +296,9 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( mFeatureFilterProvider )
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
 
-    bool hasStyleOverride = mSettings.layerStyleOverrides().contains( ml->id() );
-    if ( hasStyleOverride )
-      ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
+    QgsLayerStyleOverride styleOverride( ml );
+    if ( mSettings.layerStyleOverrides().contains( ml->id() ) )
+      styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
     job.blendMode = ml->blendMode();
     job.opacity = 1.0;
@@ -312,9 +310,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
     {
-      if ( hasStyleOverride )
-        ml->styleManager()->restoreOverrideStyle();
-
       job.cached = true;
       job.imageInitialized = true;
       job.img = new QImage( mCache->cacheImage( ml->id() ) );
@@ -335,9 +330,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
                                       mSettings.outputImageFormat() );
       if ( mypFlattenedImage->isNull() )
       {
-        if ( hasStyleOverride )
-          ml->styleManager()->restoreOverrideStyle();
-
         mErrors.append( Error( ml->id(), tr( "Insufficient memory for image %1x%2" ).arg( mSettings.outputSize().width() ).arg( mSettings.outputSize().height() ) ) );
         delete mypFlattenedImage;
         layerJobs.removeLast();
@@ -354,9 +346,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
     job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
-
-    if ( hasStyleOverride )
-      ml->styleManager()->restoreOverrideStyle();
   } // while (li.hasPrevious())
 
   return layerJobs;
