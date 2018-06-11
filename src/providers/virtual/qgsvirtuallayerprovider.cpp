@@ -503,10 +503,16 @@ QString QgsVirtualLayerProvider::subsetString() const
 
 bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
+  if ( subset == mSubset )
+    return true;
+
   mSubset = subset;
   clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
+
+  emit dataChanged();
+
   return true;
 }
 

@@ -604,9 +604,10 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri, const Provider
                   << QgsVectorDataProvider::NativeType( tr( "Array of decimal numbers (double)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "REAL" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::Double )
                   << QgsVectorDataProvider::NativeType( tr( "Array of whole numbers (integer)" ), SPATIALITE_ARRAY_PREFIX.toUpper() + "INTEGER" + SPATIALITE_ARRAY_SUFFIX.toUpper(), QVariant::List, 0, 0, 0, 0, QVariant::LongLong )
                 );
+
   // Update extent and feature count
   if ( ! mSubsetString.isEmpty() )
-    setSubsetString( mSubsetString, true );
+    getTableSummary();
 
   mValid = true;
 }
@@ -3450,6 +3451,9 @@ QString QgsSpatiaLiteProvider::subsetString() const
 
 bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
+  if ( theSQL == mSubsetString )
+    return true;
+
   QString prevSubsetString = mSubsetString;
   mSubsetString = theSQL;
 
@@ -3461,6 +3465,7 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   // update feature count and extents
   if ( updateFeatureCount && getTableSummary() )
   {
+    emit dataChanged();
     return true;
   }
 
@@ -3472,8 +3477,6 @@ bool QgsSpatiaLiteProvider::setSubsetString( const QString &theSQL, bool updateF
   setDataSourceUri( uri.uri() );
 
   getTableSummary();
-
-  emit dataChanged();
 
   return false;
 }

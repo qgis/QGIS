@@ -2095,6 +2095,9 @@ bool QgsOracleProvider::setSubsetString( const QString &theSQL, bool updateFeatu
   if ( !mConnection )
     return false;
 
+  if ( theSQL.trimmed() == mSqlWhereClause )
+    return true;
+
   QString prevWhere = mSqlWhereClause;
 
   mSqlWhereClause = theSQL.trimmed();

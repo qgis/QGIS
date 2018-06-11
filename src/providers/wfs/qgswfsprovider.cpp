@@ -679,6 +679,9 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
 {
   QgsDebugMsg( QString( "theSql = '%1'" ).arg( theSQL ) );
 
+  if ( theSQL == mSubsetString )
+    return true;
+
   // Invalid and cancel current download before altering fields, etc...
   // (crashes might happen if not done at the beginning)
   mShared->invalidateCache();
@@ -710,6 +713,7 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
     mShared->mURI.setSql( QString() );
     mShared->mURI.setFilter( theSQL );
   }
+
   setDataSourceUri( mShared->mURI.uri() );
   QString errorMsg;
   if ( !mShared->computeFilter( errorMsg ) )
@@ -717,6 +721,9 @@ bool QgsWFSProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   reloadData();
   if ( updateFeatureCount )
     featureCount();
+
+  emit dataChanged();
+
   return true;
 }
 

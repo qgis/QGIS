@@ -373,10 +373,13 @@ class PyProvider(QgsVectorDataProvider):
         return self._subset_string
 
     def setSubsetString(self, subsetString):
+        if subsetString == self._subset_string:
+            return True
         self._subset_string = subsetString
         self.updateExtents()
         self.clearMinMaxCache()
         self.dataChanged.emit()
+        return True
 
     def supportsSubsetString(self):
         return True

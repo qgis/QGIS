@@ -565,6 +565,9 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
       return false;
   }
 
+  if ( theSQL == mSubsetString )
+    return true;
+
   mSubsetString = theSQL;
   clearMinMaxCache();
   mExtent.setMinimal();

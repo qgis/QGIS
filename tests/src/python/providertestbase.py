@@ -30,6 +30,7 @@ from qgis.core import (
     QgsTestUtils,
     NULL
 )
+from qgis.PyQt.QtTest import QSignalSpy
 
 from utilities import compareWkt
 from featuresourcetestbase import FeatureSourceTestCase
@@ -157,9 +158,16 @@ class ProviderTestCase(FeatureSourceTestCase):
             print('Provider does not support subset strings')
             return
 
+        changed_spy = QSignalSpy(self.source.dataChanged)
         subset = self.getSubsetString()
         self.source.setSubsetString(subset)
         self.assertEqual(self.source.subsetString(), subset)
+        self.assertEqual(len(changed_spy), 1)
+
+        # No signal should be emitted if the subset string is not modified
+        self.source.setSubsetString(subset)
+        self.assertEqual(len(changed_spy), 1)
+
         result = set([f['pk'] for f in self.source.getFeatures()])
         all_valid = (all(f.isValid() for f in self.source.getFeatures()))
         self.source.setSubsetString(None)
