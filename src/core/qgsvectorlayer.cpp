@@ -890,6 +890,9 @@ bool QgsVectorLayer::setSubsetString( const QString &subset )
     return false;
   }
 
+  if ( subset == mDataProvider->subsetString() )
+    return true;
+
   bool res = mDataProvider->setSubsetString( subset );
 
   // get the updated data source string from the provider
