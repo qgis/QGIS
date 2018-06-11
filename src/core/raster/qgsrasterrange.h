@@ -111,7 +111,16 @@ class CORE_EXPORT QgsRasterRange
      * Returns true if this range contains the specified \a value.
      * \since QGIS 3.2
      */
-    bool contains( double value ) const;
+    bool contains( double value ) const
+    {
+      return ( value > mMin
+               || ( !std::isnan( mMin ) && qgsDoubleNear( value, mMin ) && ( mType == IncludeMinAndMax || mType == IncludeMin ) )
+               || std::isnan( mMin ) )
+             &&
+             ( value < mMax
+               || ( !std::isnan( mMax ) && qgsDoubleNear( value, mMax ) && ( mType == IncludeMinAndMax || mType == IncludeMax ) )
+               || std::isnan( mMax ) );
+    }
 
     /**
      * \brief Tests if a \a value is within the list of ranges
@@ -119,7 +128,17 @@ class CORE_EXPORT QgsRasterRange
      *  \param rangeList list of ranges
      *  \returns true if value is in at least one of ranges
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList );
+    static bool contains( double value, const QgsRasterRangeList &rangeList )
+    {
+      for ( QgsRasterRange range : rangeList )
+      {
+        if ( range.contains( value ) )
+        {
+          return true;
+        }
+      }
+      return false;
+    }
 
   private:
     double mMin = std::numeric_limits<double>::quiet_NaN();
