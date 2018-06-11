@@ -48,9 +48,9 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   int iterCols = 0;
   int iterRows = 0;
   destinationRaster->setEditable( true );
-  QgsRasterBlock *rasterBlock = nullptr;
+  std::unique_ptr< QgsRasterBlock > rasterBlock;
   bool reclassed = false;
-  while ( iter.readNextRasterPart( band, iterCols, iterRows, &rasterBlock, iterLeft, iterTop ) )
+  while ( iter.readNextRasterPart( band, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
@@ -76,8 +76,6 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
       }
     }
     destinationRaster->writeBlock( reclassifiedBlock.get(), 1, iterLeft, iterTop );
-
-    delete rasterBlock;
   }
   destinationRaster->setEditable( false );
 }

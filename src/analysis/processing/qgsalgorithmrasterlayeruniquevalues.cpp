@@ -134,8 +134,8 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  QgsRasterBlock *rasterBlock = nullptr;
-  while ( iter.readNextRasterPart( band, iterCols, iterRows, &rasterBlock, iterLeft, iterTop ) )
+  std::unique_ptr< QgsRasterBlock > rasterBlock;
+  while ( iter.readNextRasterPart( band, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
   {
     feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     for ( int row = 0; row < iterRows; row++ )
@@ -155,7 +155,6 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
         }
       }
     }
-    delete rasterBlock;
   }
 
   QMap< double, qgssize > sortedUniqueValues;

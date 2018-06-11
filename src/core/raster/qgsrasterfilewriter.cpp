@@ -501,12 +501,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   int fileIndex = 0;
 
   //create destProvider for whole dataset here
-  QgsRasterDataProvider *destProvider = nullptr;
   double pixelSize;
   double geoTransform[6];
   globalOutputParameters( outputExtent, nCols, nRows, geoTransform, pixelSize );
 
-  destProvider = initOutput( nCols, nRows, crs, geoTransform, 4, Qgis::Byte );
+  std::unique_ptr< QgsRasterDataProvider > destProvider( initOutput( nCols, nRows, crs, geoTransform, 4, Qgis::Byte ) );
 
   iter->startRasterRead( 1, nCols, nRows, outputExtent, feedback );
 
@@ -518,8 +517,8 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
     nParts = nPartsX * nPartsY;
   }
 
-  QgsRasterBlock *inputBlock = nullptr;
-  while ( iter->readNextRasterPart( 1, iterCols, iterRows, &inputBlock, iterLeft, iterTop ) )
+  std::unique_ptr< QgsRasterBlock > inputBlock;
+  while ( iter->readNextRasterPart( 1, iterCols, iterRows, inputBlock, iterLeft, iterTop ) )
   {
     if ( !inputBlock )
     {
@@ -531,7 +530,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       feedback->setProgress( 100.0 * fileIndex / static_cast< double >( nParts ) );
       if ( feedback->isCanceled() )
       {
-        delete inputBlock;
         break;
       }
     }
@@ -564,16 +562,15 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
       memcpy( reinterpret_cast< char * >( blueData ) + i, &blue, 1 );
       memcpy( reinterpret_cast< char * >( alphaData ) + i, &alpha, 1 );
     }
-    delete inputBlock;
 
     //create output file
     if ( mTiledMode )
     {
       //delete destProvider;
-      QgsRasterDataProvider *partDestProvider = createPartProvider( outputExtent,
+      std::unique_ptr< QgsRasterDataProvider > partDestProvider( createPartProvider( outputExtent,
           nCols, iterCols, iterRows,
           iterLeft, iterTop, mOutputUrl, fileIndex,
-          4, Qgis::Byte, crs );
+          4, Qgis::Byte, crs ) );
 
       if ( partDestProvider )
       {
@@ -587,7 +584,6 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
         addToVRT( partFileName( fileIndex ), 2, iterCols, iterRows, iterLeft, iterTop );
         addToVRT( partFileName( fileIndex ), 3, iterCols, iterRows, iterLeft, iterTop );
         addToVRT( partFileName( fileIndex ), 4, iterCols, iterRows, iterLeft, iterTop );
-        delete partDestProvider;
       }
     }
     else if ( destProvider )
@@ -600,8 +596,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
 
     ++fileIndex;
   }
-
-  delete destProvider;
+  destProvider.reset();
 
   qgsFree( redData );
   qgsFree( greenData );
