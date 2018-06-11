@@ -2151,6 +2151,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
     if ( layer )
     {
+      layer->resolveReferences( this );
       layer->setItemVisibilityChecked( invisibleLayers.contains( layerId ) );
     }
   }

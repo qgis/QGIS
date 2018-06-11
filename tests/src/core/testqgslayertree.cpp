@@ -46,6 +46,7 @@ class TestQgsLayerTree : public QObject
     void testLegendSymbolGraduated();
     void testLegendSymbolRuleBased();
     void testResolveReferences();
+    void testEmbeddedGroup();
 
   private:
 
@@ -522,6 +523,69 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   //cleanup
   delete m;
   delete root;
+}
+
+
+void TestQgsLayerTree::testEmbeddedGroup()
+{
+  QString dataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
+  QString layerPath = dataDir + QStringLiteral( "/points.shp" );
+
+  // build a project with 3 layers, each having a simple renderer with SVG marker
+  // - existing SVG file in project dir
+  // - existing SVG file in QGIS dir
+  // - non-exsiting SVG file
+
+  QTemporaryDir dir;
+  QVERIFY( dir.isValid() );
+  // on mac the returned path was not canonical and the resolver failed to convert paths properly
+  QString dirPath = QFileInfo( dir.path() ).canonicalFilePath();
+
+  QString projectFilename = dirPath + QStringLiteral( "/project.qgs" );
+
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points 1" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( layerPath, QStringLiteral( "points 2" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer3 = new QgsVectorLayer( layerPath, QStringLiteral( "points 3" ), QStringLiteral( "ogr" ) );
+
+  QVERIFY( layer1->isValid() );
+
+  QgsProject project;
+  project.addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 << layer3, false );
+  QgsLayerTreeGroup *grp = project.layerTreeRoot()->addGroup( QStringLiteral( "Embed" ) );
+  grp->addLayer( layer1 );
+  grp->addLayer( layer2 );
+  grp->addLayer( layer3 );
+  project.write( projectFilename );
+
+  //
+  // now let's use the layer group embedded in another project...
+  //
+
+  QgsProject projectMaster;
+  QgsLayerTreeGroup *embeddedGroup = projectMaster.createEmbeddedGroup( grp->name(), projectFilename, QStringList() );
+  QVERIFY( embeddedGroup );
+  QCOMPARE( embeddedGroup->children().size(), 3 );
+
+  for ( QgsLayerTreeNode *child : embeddedGroup->children() )
+  {
+    QVERIFY( QgsLayerTree::toLayer( child )->layer() );
+  }
+  projectMaster.layerTreeRoot()->addChildNode( embeddedGroup );
+
+  QString projectMasterFilename = dirPath + QStringLiteral( "/projectMaster.qgs" );
+  projectMaster.write( projectMasterFilename );
+  projectMaster.clear();
+
+  QgsProject projectMasterCopy;
+  projectMasterCopy.read( projectMasterFilename );
+  QgsLayerTreeGroup *masterEmbeddedGroup = projectMasterCopy.layerTreeRoot()->findGroup( QStringLiteral( "Embed" ) );
+  QVERIFY( masterEmbeddedGroup );
+  QCOMPARE( masterEmbeddedGroup->children().size(), 3 );
+
+  for ( QgsLayerTreeNode *child : masterEmbeddedGroup->children() )
+  {
+    QVERIFY( QgsLayerTree::toLayer( child )->layer() );
+  }
 }
 
 
