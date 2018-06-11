@@ -235,6 +235,7 @@ IF (ENABLE_PGTEST)
   ADD_PYTHON_TEST(PyQgsAuthManagerPKIPostgresTest test_authmanager_pki_postgres.py)
   ADD_PYTHON_TEST(PyQgsAuthManagerPasswordPostgresTest test_authmanager_password_postgres.py)
   ADD_PYTHON_TEST(PyQgsAuthManagerOgrPostgresTest test_authmanager_ogr_postgres.py)
+  ADD_PYTHON_TEST(PyQgsDbManagerPostgis test_db_manager_postgis.py)
 ENDIF (ENABLE_PGTEST)
 
 IF (ENABLE_MSSQLTEST)

@@ -1,63 +1,45 @@
 # -*- coding: utf-8 -*-
-"""
-Tests for auth manager PKI access to postgres.
-
-This is an integration test for QGIS Desktop Auth Manager postgres provider that
-checks if QGIS can use a stored auth manager auth configuration to access
-a PKI protected postgres.
-
-Configuration from the environment:
-
-    * QGIS_POSTGRES_SERVER_PORT (default: 55432)
-    * QGIS_POSTGRES_EXECUTABLE_PATH (default: /usr/lib/postgresql/9.4/bin)
-
-
-From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
-
-or, if your PostgreSQL path differs from the default:
-
-QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
-    ctest -R PyQgsAuthManagerPKIPostgresTest -V
+"""QGIS Unit tests for the DBManager GPKG plugin
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+__author__ = 'Luigi Pirelli'
+__date__ = '2017-11-02'
+__copyright__ = 'Copyright 2017, Boundless Spatial Inc'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
+import shutil
 import time
 import signal
 import stat
 import subprocess
 import tempfile
 import glob
-
 from shutil import rmtree
 
-from utilities import unitTestDataPath
 from qgis.core import (
     QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsDataSourceUri,
+    QgsSettings,
+    QgsProviderRegistry,
     QgsWkbTypes,
 )
-
+from qgis.PyQt.QtCore import QCoreApplication, QFile
+from qgis.testing import start_app, unittest
 from qgis.PyQt.QtNetwork import QSslCertificate
-from qgis.PyQt.QtCore import QFile
 
-from qgis.testing import (
-    start_app,
-    unittest,
-)
+from plugins.db_manager.db_plugins import supportedDbTypes, createDbPlugin
+from plugins.db_manager.db_plugins.plugin import TableField
 
-
-__author__ = 'Alessandro Pasotti'
-__date__ = '25/10/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
-# This will get replaced with a git SHA1 when you do a git archive
-__revision__ = '$Format:%H$'
+from utilities import unitTestDataPath
 
 QGIS_POSTGRES_SERVER_PORT = os.environ.get('QGIS_POSTGRES_SERVER_PORT', '55432')
 QGIS_POSTGRES_EXECUTABLE_PATH = os.environ.get('QGIS_POSTGRES_EXECUTABLE_PATH', '/usr/lib/postgresql/9.4/bin')
@@ -94,8 +76,10 @@ host       all           all             127.0.0.1/32           trust
 host       all           all             ::1/32                 trust
 """
 
+TEST_CONNECTION_NAME = 'test_connection'
 
-class TestAuthManager(unittest.TestCase):
+
+class TestPyQgsDBManagerPostgis(unittest.TestCase):
 
     @classmethod
     def setUpAuth(cls):
@@ -150,7 +134,7 @@ class TestAuthManager(unittest.TestCase):
             f.write(QGIS_POSTGRES_HBA_TEMPLATE)
 
     @classmethod
-    def setUpClass(cls):
+    def setUpServer(cls):
         """Run before all tests:
         Creates an auth configuration"""
         cls.port = QGIS_POSTGRES_SERVER_PORT
@@ -188,6 +172,58 @@ class TestAuthManager(unittest.TestCase):
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'psql'), '-h', 'localhost', '-p', cls.port, '-c', 'CREATE ROLE "%s" WITH SUPERUSER LOGIN' % cls.username, cls.dbname])
 
     @classmethod
+    def setUpProvider(cls, authId):
+        cls.dbconn = 'dbname=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
+        uri = QgsDataSourceUri()
+        uri.setConnection("localhost", cls.port, cls.dbname, "", "", QgsDataSourceUri.SslVerifyFull, authId)
+        uri.setKeyColumn('pk')
+        uri.setSrid('EPSG:4326')
+        uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
+        provider = QgsProviderRegistry.instance().createProvider('postgres', uri.uri(False))
+        if provider is None:
+            raise Exception("cannot create postgres provider")
+        if not provider.isValid():
+            raise Exception("Created postgres provider is not valid: {}".format(str(provider.errors())))
+        # save provider config that is the way how db_manager is aware of a PG connection
+        cls.addConnectionConfig(TEST_CONNECTION_NAME, uri)
+
+    @classmethod
+    def addConnectionConfig(cls, conn_name, uri):
+        """Necessary to allow db_manager to have the list of connections get from settings."""
+        uri = QgsDataSourceUri(uri)
+
+        settings = QgsSettings()
+        baseKey = "/PostgreSQL/connections/"
+        baseKey += conn_name
+        settings.setValue(baseKey + "/service", uri.service())
+        settings.setValue(baseKey + "/host", uri.host())
+        settings.setValue(baseKey + "/port", uri.port())
+        settings.setValue(baseKey + "/database", uri.database())
+        if uri.username():
+            settings.setValue(baseKey + "/username", uri.username())
+        if uri.password():
+            settings.setValue(baseKey + "/password", uri.password())
+        if uri.authConfigId():
+            settings.setValue(baseKey + "/authcfg", uri.authConfigId())
+        if uri.sslMode():
+            settings.setValue(baseKey + "/sslmode", uri.sslMode())
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        # start ans setup server
+        cls.setUpServer()
+
+        # start a standalone qgis application
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsDBManagerPostgis.com")
+        QCoreApplication.setApplicationName("TestPyQgsDBManagerPostgis")
+        QgsSettings().clear()
+        start_app()
+
+    @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         cls.server.terminate()
@@ -196,50 +232,45 @@ class TestAuthManager(unittest.TestCase):
         time.sleep(2)
         rmtree(QGIS_AUTH_DB_DIR_PATH)
         rmtree(cls.tempfolder)
+        QgsSettings().clear()
 
-    def setUp(self):
-        """Run before each test."""
-        pass
+    ###########################################
 
-    def tearDown(self):
-        """Run after each test."""
-        pass
+    def testSupportedDbTypes(self):
+        self.assertIn('postgis', supportedDbTypes())
 
-    @classmethod
-    def _getPostGISLayer(cls, type_name, layer_name=None, authcfg=None):
-        """
-        PG layer factory
-        """
-        if layer_name is None:
-            layer_name = 'pg_' + type_name
-        uri = QgsDataSourceUri()
-        uri.setWkbType(QgsWkbTypes.Point)
-        uri.setConnection("localhost", cls.port, cls.dbname, "", "", QgsDataSourceUri.SslVerifyFull, authcfg)
-        uri.setKeyColumn('pk')
-        uri.setSrid('EPSG:4326')
-        uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
-        # Note: do not expand here!
-        layer = QgsVectorLayer(uri.uri(False), layer_name, 'postgres')
-        return layer
+    def testCreateDbPlugin(self):
+        plugin = createDbPlugin('postgis')
+        self.assertIsNotNone(plugin)
 
-    def testValidAuthAccess(self):
-        """
-        Access the protected layer with valid credentials
-        """
-        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
-        self.assertTrue(pg_layer.isValid())
+    def testConnect(self):
+        # create a PKI postgis connection
+        # that will be listed in postgis connection of db_manager
+        self.setUpProvider(self.auth_config.id())
 
-    def testInvalidAuthAccess(self):
-        """
-        Access the protected layer with not valid credentials
-        """
-        pg_layer = self._getPostGISLayer('testlayer_èé')
-        self.assertFalse(pg_layer.isValid())
+        plugin = createDbPlugin('postgis')
+        connections = plugin.connections()
+        self.assertEqual(len(connections), 1)
+        # test connection
+        postgisConnPlugin = connections[0]
+        self.assertTrue(postgisConnPlugin.connect())
+        # test removing connection
+        self.assertTrue(postgisConnPlugin.remove())
+        self.assertEqual(len(plugin.connections()), 0)
+        # test without connection params => fail
+        connection = createDbPlugin('postgis', 'conn name')
+        connection_succeeded = False
+        try:
+            connection.connect()
+            connection_succeeded = True
+        except:
+            pass
+        self.assertFalse(connection_succeeded, 'exception should have been raised')
 
     def testRemoveTemporaryCerts(self):
         """
         Check that no temporary cert remain after connection with
-        postgres provider
+        db_manager postgis plugin
         """
         def cleanTempPki():
             pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
@@ -251,9 +282,14 @@ class TestAuthManager(unittest.TestCase):
         # remove any temppki in temprorary path to check that no
         # other pki remain after connection
         cleanTempPki()
-        # connect using postgres provider
-        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
-        self.assertTrue(pg_layer.isValid())
+        # connect
+        self.setUpProvider(self.auth_config.id())
+        plugin = createDbPlugin('postgis')
+        connections = plugin.connections()
+        self.assertEqual(len(connections), 1)
+        # test connection
+        postgisConnPlugin = connections[0]
+        self.assertTrue(postgisConnPlugin.connect())
         # do test no certs remained
         pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
         self.assertEqual(len(pkies), 0)
