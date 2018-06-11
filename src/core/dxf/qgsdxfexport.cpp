@@ -994,11 +994,13 @@ void QgsDxfExport::writeEntities()
       QgsDebugMsg( QString( "%1: not override style" ).arg( vl->id() ) );
     }
 
-    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
     if ( !vl->renderer() )
     {
       continue;
     }
+
+    ctx.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
 
     std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer()->clone() );
     renderer->startRender( ctx, vl->fields() );
@@ -1046,6 +1048,7 @@ void QgsDxfExport::writeEntities()
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
 
+      delete ctx.expressionContext().popScope();
       continue;
     }
 
@@ -1129,6 +1132,7 @@ void QgsDxfExport::writeEntities()
     }
 
     renderer->stopRender( ctx );
+    delete ctx.expressionContext().popScope();
   }
 
   engine.run( ctx );

@@ -1232,7 +1232,6 @@ bool QgsSimpleMarkerSymbolLayer::writeDxf( QgsDxfExport &e, double mmMapUnitScal
   bool ok = true;
   if ( hasDataDefinedSize )
   {
-    context.setOriginalValueVariable( mSize );
     size = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertySize, context.renderContext().expressionContext(), mSize, &ok );
 
     if ( ok )
