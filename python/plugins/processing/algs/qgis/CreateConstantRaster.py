@@ -30,6 +30,8 @@ import math
 import struct
 
 from qgis.core import (Qgis,
+                       QgsErrorMessage,
+                       QgsProcessingException,
                        QgsRasterBlock,
                        QgsRasterFileWriter,
                        QgsProcessingParameterExtent,
@@ -94,6 +96,12 @@ class CreateConstantRaster(QgisAlgorithm):
         writer.setOutputProviderKey('gdal')
         writer.setOutputFormat(outputFormat)
         provider = writer.createOneBandRaster(Qgis.Float32, cols, rows, extent, crs)
+        if provider is None:
+            raise QgsProcessingException(self.tr("Could not create raster output: {}").format(outputFile))
+        if not provider.isValid():
+            raise QgsProcessingException(self.tr("Could not create raster output {}: {}").arg(outputFile,
+                                                                                              provider.error().message(QgsErrorMessage.Text)))
+
         provider.setNoDataValue(1, -9999)
 
         data = [value] * cols
