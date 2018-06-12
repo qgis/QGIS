@@ -142,7 +142,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#f6f6f6\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#f6f6f6;\">" )
     + tr( "the abbreviated localized day name (e.g. 'Mon' to 'Sun'). Uses the system locale to localize the name, i.e. " )
-    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale::system</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
+    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
                       "</td>"
                       "</tr>"
                       "<tr>"
@@ -154,7 +154,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
     + tr( "the long localized day name (e.g. 'Monday' to '" )
     + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qt.html#DayOfWeek-enum\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">Qt::Sunday</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">')." )
     + tr( "Uses the system locale to localize the name, i.e. " )
-    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale::system</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
+    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
                       "</td>"
                       "</tr>"
                       "<tr>"
@@ -184,7 +184,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#f6f6f6\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#f6f6f6;\">" )
     + tr( "the abbreviated localized month name (e.g. 'Jan' to 'Dec'). Uses the system locale to localize the name, i.e." )
-    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale::system</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
+    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
                       "</td>"
                       "</tr>"
                       "<tr>"
@@ -194,7 +194,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">" )
     + tr( "the long localized month name (e.g. 'January' to 'December'). Uses the system locale to localize the name, i.e." )
-    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale::system</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
+    + QStringLiteral( "</span><a href=\"http://qt-project.org/doc/qt-5/qlocale.html#system\"><span style=\"font-family:'Arial,FreeSans,sans-serif'; font-size:12px; font-weight:600; text-decoration: underline; color:#00732f;\">QLocale</span></a><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e;\">().</span></p>"
                       "</td>"
                       "</tr>"
                       "<tr>"

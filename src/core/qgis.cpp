@@ -97,15 +97,15 @@ const double Qgis::UI_SCALE_FACTOR = 1;
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toDouble( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toDouble( string, &ok );
 }
 
 int qgsPermissiveToInt( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toInt( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )

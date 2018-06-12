@@ -510,9 +510,9 @@ void QgsCustomProjectionDialog::pbnCalculate_clicked()
       precision = 7;
     }
 
-    tmp = QLocale::system().toString( northing, 'f', precision );
+    tmp = QLocale().toString( northing, 'f', precision );
     projectedX->setText( tmp );
-    tmp = QLocale::system().toString( easting, 'f', precision );
+    tmp = QLocale().toString( easting, 'f', precision );
     projectedY->setText( tmp );
   }
 

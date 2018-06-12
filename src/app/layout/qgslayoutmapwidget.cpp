@@ -477,7 +477,7 @@ void QgsLayoutMapWidget::mScaleLineEdit_editingFinished()
   }
 
   bool conversionSuccess = false;
-  double scaleDenominator = QLocale::system().toDouble( mScaleLineEdit->text(), &conversionSuccess );
+  double scaleDenominator = QLocale().toDouble( mScaleLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
   {
     return;
@@ -726,16 +726,16 @@ void QgsLayoutMapWidget::updateComposerExtentFromGui()
   double xmin, ymin, xmax, ymax;
   bool conversionSuccess;
 
-  xmin = QLocale::system().toDouble( mXMinLineEdit->text(), &conversionSuccess );
+  xmin = QLocale().toDouble( mXMinLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  xmax = QLocale::system().toDouble( mXMaxLineEdit->text(), &conversionSuccess );
+  xmax = QLocale().toDouble( mXMaxLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  ymin = QLocale::system().toDouble( mYMinLineEdit->text(), &conversionSuccess );
+  ymin = QLocale().toDouble( mYMinLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
-  ymax = QLocale::system().toDouble( mYMaxLineEdit->text(), &conversionSuccess );
+  ymax = QLocale().toDouble( mYMaxLineEdit->text(), &conversionSuccess );
   if ( !conversionSuccess )
     return;
 

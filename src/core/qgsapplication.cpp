@@ -976,7 +976,7 @@ QString QgsApplication::locale()
   }
   else
   {
-    return QLocale::system().name().left( 2 );
+    return QLocale().name().left( 2 );
   }
 }
 

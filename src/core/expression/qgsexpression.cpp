@@ -513,7 +513,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
   //first test if text is directly convertible to double
   // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
   // so we also want to allow user to rewrite it to "5,23" and it is still accepted
-  double convertedValue = QLocale::system().toDouble( text, &ok );
+  double convertedValue = QLocale().toDouble( text, &ok );
   if ( ok )
   {
     return convertedValue;
