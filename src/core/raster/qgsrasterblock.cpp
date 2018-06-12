@@ -219,11 +219,6 @@ Qgis::DataType QgsRasterBlock::typeWithNoDataValue( Qgis::DataType dataType, dou
   return newDataType;
 }
 
-bool QgsRasterBlock::hasNoData() const
-{
-  return mHasNoDataValue || mNoDataBitmap;
-}
-
 void QgsRasterBlock::setNoDataValue( double noDataValue )
 {
   mHasNoDataValue = true;
@@ -234,147 +229,6 @@ void QgsRasterBlock::resetNoDataValue()
 {
   mHasNoDataValue = false;
   mNoDataValue = std::numeric_limits<double>::quiet_NaN();
-}
-
-bool QgsRasterBlock::isNoDataValue( double value, double noDataValue )
-{
-  // TODO: optimize no data value test by memcmp()
-  // More precise would be std::isnan(value) && std::isnan(noDataValue(bandNo)), but probably
-  // not important and slower
-  return std::isnan( value ) ||
-         qgsDoubleNear( value, noDataValue );
-}
-
-double QgsRasterBlock::value( int row, int column ) const
-{
-  return value( static_cast< qgssize >( row ) * mWidth + column );
-}
-
-QRgb QgsRasterBlock::color( qgssize index ) const
-{
-  int row = std::floor( static_cast< double >( index ) / mWidth );
-  int column = index % mWidth;
-  return color( row, column );
-}
-
-QRgb QgsRasterBlock::color( int row, int column ) const
-{
-  if ( !mImage ) return NO_DATA_COLOR;
-
-  return mImage->pixel( column, row );
-}
-
-bool QgsRasterBlock::isNoData( qgssize index )
-{
-  if ( !mHasNoDataValue && !mNoDataBitmap ) return false;
-  if ( index >= static_cast< qgssize >( mWidth )*mHeight )
-  {
-    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
-    return true; // we consider no data if outside
-  }
-  if ( mHasNoDataValue )
-  {
-    double value = readValue( mData, mDataType, index );
-    return isNoDataValue( value );
-  }
-  // use no data bitmap
-  if ( !mNoDataBitmap )
-  {
-    // no data are not defined
-    return false;
-  }
-  // TODO: optimize
-  int row = static_cast< int >( index ) / mWidth;
-  int column = index % mWidth;
-  qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-  int bit = column % 8;
-  int mask = 0x80 >> bit;
-  //int x = mNoDataBitmap[byte] & mask;
-  //QgsDebugMsg ( QString("byte = %1 bit = %2 mask = %3 nodata = %4 is nodata = %5").arg(byte).arg(bit).arg(mask, 0, 2 ).arg( x, 0, 2 ).arg( (bool)(x) ) );
-  return mNoDataBitmap[byte] & mask;
-}
-
-bool QgsRasterBlock::isNoData( int row, int column )
-{
-  return isNoData( static_cast< qgssize >( row ) * mWidth + column );
-}
-
-bool QgsRasterBlock::setValue( qgssize index, double value )
-{
-  if ( !mData )
-  {
-    QgsDebugMsg( "Data block not allocated" );
-    return false;
-  }
-  if ( index >= static_cast< qgssize >( mWidth ) *mHeight )
-  {
-    QgsDebugMsg( QString( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
-    return false;
-  }
-  writeValue( mData, mDataType, index, value );
-  return true;
-}
-
-bool QgsRasterBlock::setValue( int row, int column, double value )
-{
-  return setValue( static_cast< qgssize >( row ) * mWidth + column, value );
-}
-
-bool QgsRasterBlock::setColor( int row, int column, QRgb color )
-{
-  return setColor( static_cast< qgssize >( row ) * mWidth + column, color );
-}
-
-bool QgsRasterBlock::setColor( qgssize index, QRgb color )
-{
-  if ( !mImage )
-  {
-    QgsDebugMsg( "Image not allocated" );
-    return false;
-  }
-
-  if ( index >= static_cast< qgssize >( mImage->width() ) * mImage->height() )
-  {
-    QgsDebugMsg( QString( "index %1 out of range" ).arg( index ) );
-    return false;
-  }
-
-  // setPixel() is slow, see Qt doc -> use direct access
-  QRgb *bits = reinterpret_cast< QRgb * >( mImage->bits() );
-  bits[index] = color;
-  return true;
-}
-
-bool QgsRasterBlock::setIsNoData( int row, int column )
-{
-  return setIsNoData( static_cast< qgssize >( row ) * mWidth + column );
-}
-
-bool QgsRasterBlock::setIsNoData( qgssize index )
-{
-  if ( mHasNoDataValue )
-  {
-    return setValue( index, mNoDataValue );
-  }
-  else
-  {
-    if ( !mNoDataBitmap )
-    {
-      if ( !createNoDataBitmap() )
-      {
-        return false;
-      }
-    }
-    // TODO: optimize
-    int row = static_cast< int >( index ) / mWidth;
-    int column = index % mWidth;
-    qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-    int bit = column % 8;
-    int nodata = 0x80 >> bit;
-    //QgsDebugMsg ( QString("set byte = %1 bit = %2 no data by %3").arg(byte).arg(bit).arg(nodata, 0,2 ) );
-    mNoDataBitmap[byte] = mNoDataBitmap[byte] | nodata;
-    return true;
-  }
 }
 
 bool QgsRasterBlock::setIsNoData()
@@ -587,33 +441,6 @@ bool QgsRasterBlock::setIsNoDataExcept( QRect exceptRect )
     delete [] nodataRow;
     return true;
   }
-}
-
-void QgsRasterBlock::setIsData( int row, int column )
-{
-  setIsData( static_cast< qgssize >( row )*mWidth + column );
-}
-
-void QgsRasterBlock::setIsData( qgssize index )
-{
-  if ( mHasNoDataValue )
-  {
-    //no data value set, so mNoDataBitmap is not being used
-    return;
-  }
-
-  if ( !mNoDataBitmap )
-  {
-    return;
-  }
-
-  // TODO: optimize
-  int row = static_cast< int >( index ) / mWidth;
-  int column = index % mWidth;
-  qgssize byte = static_cast< qgssize >( row ) * mNoDataBitmapWidth + column / 8;
-  int bit = column % 8;
-  int nodata = 0x80 >> bit;
-  mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
 }
 
 QByteArray QgsRasterBlock::data() const
