@@ -24,6 +24,47 @@ QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
 {
 }
 
+bool QgsRasterRange::overlaps( const QgsRasterRange &other ) const
+{
+  bool thisIncludesLower = mType == IncludeMinAndMax || mType == IncludeMin;
+  bool thisIncludesUpper = mType == IncludeMinAndMax || mType == IncludeMax;
+  bool thisLowerInfinite = !std::isfinite( mMin );
+  bool thisUpperInfinite = !std::isfinite( mMax );
+  bool otherIncludesLower = other.mType == IncludeMinAndMax || other.mType == IncludeMin;
+  bool otherIncludesUpper = other.mType == IncludeMinAndMax || other.mType == IncludeMax;
+  bool otherLowerInfinite = !std::isfinite( other.mMin );
+  bool otherUpperInfinite = !std::isfinite( other.mMax );
+
+  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) ||
+         ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin < other.mMin || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) ||
+            ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
+    return true;
+
+  if ( ( ( otherIncludesLower && ( mMin <= other.mMin || thisLowerInfinite ) ) ||
+         ( !otherIncludesLower && ( mMin < other.mMin || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesLower && ( mMax >= other.mMin || thisUpperInfinite ) ) ||
+            ( ( !thisIncludesUpper || !otherIncludesLower ) && ( mMax > other.mMin || thisUpperInfinite ) ) ) )
+    return true;
+
+  if ( ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite ) ) ||
+         ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite ) ) )
+       && ( ( thisIncludesUpper && otherIncludesUpper && ( mMax >= other.mMax || thisUpperInfinite ) ) ||
+            ( ( !thisIncludesUpper || !otherIncludesUpper ) && ( mMax > other.mMax || thisUpperInfinite ) ) ) )
+    return true;
+
+  if ( ( ( thisIncludesLower && otherIncludesLower && ( mMin >= other.mMin || otherLowerInfinite ) ) ||
+         ( ( !thisIncludesLower || !otherIncludesLower ) && ( mMin > other.mMin || otherLowerInfinite ) ) )
+       && ( ( thisIncludesLower && otherIncludesUpper && ( mMin <= other.mMax || thisLowerInfinite || otherUpperInfinite ) ) ||
+            ( ( !thisIncludesLower || !otherIncludesUpper ) && ( mMin < other.mMax || thisLowerInfinite || otherUpperInfinite ) ) ) )
+    return true;
+
+  if ( qgsDoubleNear( mMin, other.mMin ) && qgsDoubleNear( mMax, other.mMax ) )
+    return true;
+
+  return false;
+}
+
 
 
 

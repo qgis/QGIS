@@ -140,6 +140,12 @@ class CORE_EXPORT QgsRasterRange
       return false;
     }
 
+    /**
+     * Returns true if this range overlaps another range.
+     * \since QGIS 3.2
+     */
+    bool overlaps( const QgsRasterRange &other ) const;
+
   private:
     double mMin = std::numeric_limits<double>::quiet_NaN();
     double mMax = std::numeric_limits<double>::quiet_NaN();
