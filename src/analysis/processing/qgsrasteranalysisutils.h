@@ -17,8 +17,10 @@
 #define QGSRASTERANALYSISUTILS_H
 
 #include "qgis_analysis.h"
+#include "qgis.h"
 
 #include <functional>
+#include <memory>
 
 #define SIP_NO_FILE
 
@@ -27,6 +29,7 @@
 class QgsRasterInterface;
 class QgsGeometry;
 class QgsRectangle;
+class QgsProcessingParameterDefinition;
 
 namespace QgsRasterAnalysisUtils
 {
@@ -48,7 +51,22 @@ namespace QgsRasterAnalysisUtils
 
   //! Tests whether a pixel's value should be included in the result
   bool validPixel( double value );
+
+  /**
+   * Returns a new processing enum parameter for choice of raster data types.
+   * \see rasterTypeChoiceToDataType()
+   */
+  std::unique_ptr< QgsProcessingParameterDefinition > createRasterTypeParameter( const QString &name,
+      const QString &description,
+      Qgis::DataType defaultType = Qgis::Float32 );
+
+  /**
+   * Converts the value of a raster type parameter to the corresponding data type.
+   * \see createRasterTypeParameter()
+   */
+  Qgis::DataType rasterTypeChoiceToDataType( int choice );
 }
+
 
 ///@endcond PRIVATE
 
