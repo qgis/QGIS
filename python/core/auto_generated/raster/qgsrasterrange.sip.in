@@ -121,6 +121,13 @@ Returns true if this range overlaps another range.
 .. versionadded:: 3.2
 %End
 
+    QString asText() const;
+%Docstring
+Returns a text representation of the range.
+
+.. versionadded:: 3.2
+%End
+
 };
 
 

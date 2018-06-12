@@ -320,6 +320,24 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.IncludeMin)))
         self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.IncludeMax)))
 
+    def testAsText(self):
+        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.IncludeMinAndMax).asText(), '0 ≤ x ≤ 10')
+        self.assertEqual(QgsRasterRange(-1, float('NaN')).asText(), '-1 ≤ x ≤ ∞')
+        self.assertEqual(QgsRasterRange(float('NaN'), 5).asText(), '-∞ ≤ x ≤ 5')
+        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN')).asText(), '-∞ ≤ x ≤ ∞')
+        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.IncludeMin).asText(), '0 ≤ x < 10')
+        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.IncludeMin).asText(), '-1 ≤ x < ∞')
+        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.IncludeMin).asText(), '-∞ ≤ x < 5')
+        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.IncludeMin).asText(), '-∞ ≤ x < ∞')
+        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.IncludeMax).asText(), '0 < x ≤ 10')
+        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.IncludeMax).asText(), '-1 < x ≤ ∞')
+        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.IncludeMax).asText(), '-∞ < x ≤ 5')
+        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.IncludeMax).asText(), '-∞ < x ≤ ∞')
+        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.Exclusive).asText(), '0 < x < 10')
+        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.Exclusive).asText(), '-1 < x < ∞')
+        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.Exclusive).asText(), '-∞ < x < 5')
+        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.Exclusive).asText(), '-∞ < x < ∞')
+
 
 if __name__ == '__main__':
     unittest.main()
