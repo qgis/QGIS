@@ -341,13 +341,6 @@ class TestQgsDateRange(unittest.TestCase):
         self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isInfinite())
         self.assertTrue(QgsDateRange(QDate(), QDate()).isInfinite())
 
-    def testIsEmpty(self):
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2)).isEmpty())
-        self.assertFalse(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1)).isEmpty())
-        self.assertTrue(QgsDateRange(QDate(2010, 3, 1), QDate(2010, 3, 1), False, False).isEmpty())
-        self.assertTrue(QgsDateRange(QDate(2017, 3, 1), QDate(2010, 6, 2)).isEmpty())
-        self.assertFalse(QgsDateRange(QDate(), QDate()).isEmpty())
-
     def testEquality(self):
         range = QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False)
         self.assertEqual(range, QgsDateRange(QDate(2010, 3, 1), QDate(2010, 6, 2), False, False))
