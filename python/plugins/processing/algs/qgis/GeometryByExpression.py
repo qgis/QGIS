@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsGeometry,
+                       QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
@@ -104,6 +105,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
 
     def outputWkbType(self, input_wkb_type):
         return self.wkb_type
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def sourceFlags(self):
         return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
