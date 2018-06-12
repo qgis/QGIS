@@ -271,6 +271,15 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      */
     virtual void openConfigWidget( QWidget *parent = nullptr );
 
+    /**
+     * Logs a \a message to the log panel
+     * \warning in Python, do not use print() method as it might result in crashes
+     *          since fetching results does not happen in the main thread.
+     * \since QGIS 3.2
+     */
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+
+
   signals:
 
     /**
