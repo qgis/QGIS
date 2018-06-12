@@ -211,15 +211,23 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     return false;
   }
 
-  double x = ( index.column() == 0 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
-  double y = ( index.column() == 1 ? value.toDouble() : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
+  // Get double value wrt current locale.
+  bool ok;
+  double doubleValue = QLocale().toDouble( value.toString(), &ok );
+  // If not valid and locale's decimal point is not '.' let's try with english locale
+  if ( ! ok && QLocale().decimalPoint() != '.' )
+  {
+    doubleValue = QLocale( QLocale::English ).toDouble( value.toString() );
+  }
+
+  double x = ( index.column() == 0 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().x() );
+  double y = ( index.column() == 1 ? doubleValue : mSelectedFeature->vertexMap().at( index.row() )->point().y() );
 
   if ( index.column() == mRCol ) // radius modified
   {
     if ( index.row() == 0 || index.row() >= mSelectedFeature->vertexMap().count() - 1 )
       return false;
 
-    double r = value.toDouble();
     double x1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().x();
     double y1 = mSelectedFeature->vertexMap().at( index.row() - 1 )->point().y();
     double x2 = x;
@@ -228,7 +236,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
     double y3 = mSelectedFeature->vertexMap().at( index.row() + 1 )->point().y();
 
     QgsPoint result;
-    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, r, QgsPoint( x2, y2 ) ) )
+    if ( QgsGeometryUtils::segmentMidPoint( QgsPoint( x1, y1 ), QgsPoint( x3, y3 ), result, doubleValue, QgsPoint( x2, y2 ) ) )
     {
       x = result.x();
       y = result.y();

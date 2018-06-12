@@ -22,6 +22,7 @@
 
 #include <QDataStream>
 #include <QIcon>
+#include <QLocale>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -208,9 +209,51 @@ QString QgsField::displayString( const QVariant &v ) const
     return QgsApplication::nullRepresentation();
   }
 
-  if ( d->type == QVariant::Double && d->precision > 0 )
-    return QString::number( v.toDouble(), 'f', d->precision );
-
+  // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
+  if ( d->type == QVariant::Double )
+  {
+    // Locales with decimal point != '.' or that require group separator: use QLocale
+    if ( QLocale().decimalPoint() != '.' ||
+         !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    {
+      if ( d->precision > 0 )
+      {
+        return QLocale().toString( v.toDouble(), 'f', d->precision );
+      }
+      else
+      {
+        // Precision is not set, let's guess it from the
+        // standard conversion to string
+        QString s( v.toString() );
+        int dotPosition( s.indexOf( '.' ) );
+        int precision;
+        if ( dotPosition < 0 )
+        {
+          precision = 0;
+        }
+        else
+        {
+          precision = s.length() - dotPosition - 1;
+        }
+        return QLocale().toString( v.toDouble(), 'f', precision );
+      }
+    }
+    // Default for doubles with precision
+    else if ( d->type == QVariant::Double && d->precision > 0 )
+    {
+      return QString::number( v.toDouble(), 'f', d->precision );
+    }
+  }
+  // Other numeric types than doubles
+  else if ( isNumeric() &&
+            ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
+  {
+    bool ok;
+    qlonglong converted( v.toLongLong( &ok ) );
+    if ( ok )
+      return QLocale().toString( converted );
+  }
+  // Fallback if special rules do not apply
   return v.toString();
 }
 
@@ -232,6 +275,68 @@ bool QgsField::convertCompatible( QVariant &v ) const
   {
     v = QVariant( d->type );
     return false;
+  }
+
+  // Give it a chance to convert to double since for not '.' locales
+  // we accept both comma and dot as decimal point
+  if ( d->type == QVariant::Double && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      double d = QLocale().toDouble( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( d );
+        return true;
+      }
+      // For not 'dot' locales, we also want to accept '.'
+      if ( QLocale().decimalPoint() != '.' )
+      {
+        d = QLocale( QLocale::English ).toDouble( v.toString(), &ok );
+        if ( ok )
+        {
+          v = QVariant( d );
+          return true;
+        }
+      }
+    }
+  }
+
+  // For string representation of an int we also might have thousand separator
+  if ( d->type == QVariant::Int && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      int i = QLocale().toInt( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( i );
+        return true;
+      }
+    }
+  }
+
+  // For string representation of a long we also might have thousand separator
+  if ( d->type == QVariant::LongLong && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      qlonglong l = QLocale().toLongLong( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( l );
+        return true;
+      }
+    }
   }
 
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
@@ -257,6 +362,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
+
 
   if ( !v.convert( d->type ) )
   {

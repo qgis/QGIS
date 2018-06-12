@@ -217,7 +217,9 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
       v = QgsApplication::nullRepresentation();
   }
   else
-    v = val.toString();
+  {
+    v = field().displayString( val );
+  }
 
   if ( mTextEdit )
   {

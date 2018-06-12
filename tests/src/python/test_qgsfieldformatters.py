@@ -266,7 +266,13 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
         QgsSettings().clear()
+        QLocale.setDefault(QLocale(QLocale.English))
         start_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset locale"""
+        QLocale.setDefault(QLocale(QLocale.English))
 
     def test_representValue(self):
 
@@ -277,23 +283,21 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
 
         fieldFormatter = QgsRangeFieldFormatter()
 
-        QLocale.setDefault(QLocale.c())
-
         # Precision is ignored for integers and longlongs
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
-        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123000')
-        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for integers!
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, None), 'NULL')
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
-        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for long longs!
         self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, None), 'NULL')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, '123'), '123.0')
 
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
-        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123,000.00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0.00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123.00')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0.12')
@@ -308,6 +312,7 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0.127')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0.127')
 
+        # Check with Italian locale
         QLocale.setDefault(QLocale('it'))
 
         self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
@@ -332,6 +337,19 @@ class TestQgsRangeFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.127'), '-0,13')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0,127')
         self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0,127')
+
+        # Check with custom locale without thousand separator
+
+        custom = QLocale('en')
+        custom.setNumberOptions(QLocale.OmitGroupSeparator)
+        QLocale.setDefault(custom)
+
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
+                         '9999999')  # scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
 
         QgsProject.instance().removeAllMapLayers()
 
