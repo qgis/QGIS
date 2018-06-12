@@ -168,7 +168,6 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.allowing_null = False
         # set default value
         if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-            self.spnValue.setShowClearButton(True)
             min = self.spnValue.minimum() - 1
             self.spnValue.setMinimum(min)
             self.spnValue.setValue(min)
