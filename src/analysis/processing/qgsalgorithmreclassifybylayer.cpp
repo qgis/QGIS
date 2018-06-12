@@ -18,6 +18,7 @@
 #include "qgsalgorithmreclassifybylayer.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsreclassifyutils.h"
+#include "qgsrasteranalysisutils.h"
 #include "qgis.h"
 
 ///@cond PRIVATE
@@ -65,11 +66,16 @@ void QgsReclassifyAlgorithmBase::initAlgorithm( const QVariantMap & )
   missingValuesParam->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( missingValuesParam.release() );
 
+  std::unique_ptr< QgsProcessingParameterDefinition > typeChoice = QgsRasterAnalysisUtils::createRasterTypeParameter( QStringLiteral( "DATA_TYPE" ), QObject::tr( "Output data type" ), Qgis::Float32 );
+  typeChoice->setFlags( QgsProcessingParameterDefinition::FlagAdvanced );
+  addParameter( typeChoice.release() );
+
   addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Reclassified raster" ) ) );
 }
 
 bool QgsReclassifyAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
+  mDataType = QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( parameterAsEnum( parameters, QStringLiteral( "DATA_TYPE" ), context ) );
   QgsRasterLayer *layer = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT_RASTER" ), context );
 
   if ( !layer )
@@ -125,7 +131,7 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
   std::unique_ptr< QgsRasterFileWriter > writer = qgis::make_unique< QgsRasterFileWriter >( outputFile );
   writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( Qgis::Float32, mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mDataType, mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )

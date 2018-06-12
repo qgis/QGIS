@@ -19,7 +19,8 @@
 #include "qgsrasterblock.h"
 #include "qgsrasteriterator.h"
 #include "qgsgeos.h"
-
+#include "qgsprocessingparameters.h"
+#include <map>
 ///@cond PRIVATE
 
 void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
@@ -171,4 +172,51 @@ bool QgsRasterAnalysisUtils::validPixel( double value )
   return !std::isnan( value );
 }
 
+static QVector< QPair< QString, Qgis::DataType > > sDataTypes;
+
+void populateDataTypes()
+{
+  if ( sDataTypes.empty() )
+  {
+    sDataTypes.append( qMakePair( QStringLiteral( "Byte" ), Qgis::Byte ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Int16" ), Qgis::Int16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "UInt16" ), Qgis::UInt16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Int32" ), Qgis::Int32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "UInt32" ), Qgis::UInt32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Float32" ), Qgis::Float32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "Float64" ), Qgis::Float64 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CInt16" ), Qgis::CInt16 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CInt32" ), Qgis::CInt32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CFloat32" ), Qgis::CFloat32 ) );
+    sDataTypes.append( qMakePair( QStringLiteral( "CFloat64" ), Qgis::CFloat64 ) );
+  }
+}
+
+std::unique_ptr<QgsProcessingParameterDefinition> QgsRasterAnalysisUtils::createRasterTypeParameter( const QString &name, const QString &description, Qgis::DataType defaultType )
+{
+  populateDataTypes();
+
+  QStringList names;
+  int defaultChoice = 0;
+  int i = 0;
+  for ( auto it = sDataTypes.constBegin(); it != sDataTypes.constEnd(); ++it )
+  {
+    names.append( it->first );
+    if ( it->second == defaultType )
+      defaultChoice = i;
+    i++;
+  }
+
+  return qgis::make_unique< QgsProcessingParameterEnum >( name, description, names, false, defaultChoice );
+}
+
+Qgis::DataType QgsRasterAnalysisUtils::rasterTypeChoiceToDataType( int choice )
+{
+  if ( choice < 0 || choice >= sDataTypes.count() )
+    return Qgis::Float32;
+
+  return sDataTypes.value( choice ).second;
+}
+
 ///@endcond PRIVATE
+
