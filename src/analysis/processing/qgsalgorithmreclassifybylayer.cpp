@@ -124,6 +124,9 @@ QVariantMap QgsReclassifyAlgorithmBase::processAlgorithm( const QVariantMap &par
 {
   QVector< QgsReclassifyUtils::RasterClass > classes = createClasses( mBoundsType, parameters, context, feedback );
 
+  QgsReclassifyUtils::reportClasses( classes, feedback );
+  QgsReclassifyUtils::checkForOverlaps( classes, feedback );
+
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QFileInfo fi( outputFile );
   const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );

@@ -66,6 +66,17 @@ class ANALYSIS_EXPORT QgsReclassifyUtils
     };
 
     /**
+     * Prints a list of classes contained within \a classes to specified \a feedback object.
+     */
+    static void reportClasses( const QVector< RasterClass > &classes, QgsProcessingFeedback *feedback );
+
+    /**
+     * Checks for overlaps in a set of \a classes, reporting any overlapping
+     * classes the to specified \a feedback object.
+     */
+    static void checkForOverlaps( const QVector< RasterClass > &classes, QgsProcessingFeedback *feedback );
+
+    /**
      * Performs a reclassification operation on a raster source \a sourceRaster, reclassifying to the given
      * list of \a classes.
      *
