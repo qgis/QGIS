@@ -341,7 +341,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
 void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes )
 {
-  QString str = QLocale::system().toString( vId.vertex + 1 );
+  QString str = QLocale().toString( vId.vertex + 1 );
   derivedAttributes.insert( tr( "Closest vertex number" ), str );
 
   QgsPoint closestPoint = geometry.vertexAt( vId );
@@ -352,12 +352,12 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
 
   if ( closestPoint.is3D() )
   {
-    str = QLocale::system().toString( closestPoint.z(), 'g', 10 );
+    str = QLocale().toString( closestPoint.z(), 'g', 10 );
     derivedAttributes.insert( QStringLiteral( "Closest vertex Z" ), str );
   }
   if ( closestPoint.isMeasure() )
   {
-    str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
+    str = QLocale().toString( closestPoint.m(), 'g', 10 );
     derivedAttributes.insert( QStringLiteral( "Closest vertex M" ), str );
   }
 
@@ -370,7 +370,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
     ++vIdAfter.vertex;
     QgsGeometryUtils::circleCenterRadius( geometry.vertexAt( vIdBefore ), geometry.vertexAt( vId ),
                                           geometry.vertexAt( vIdAfter ), radius, centerX, centerY );
-    derivedAttributes.insert( QStringLiteral( "Closest vertex radius" ), QLocale::system().toString( radius ) );
+    derivedAttributes.insert( QStringLiteral( "Closest vertex radius" ), QLocale().toString( radius ) );
   }
 }
 
@@ -419,9 +419,9 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
 
   if ( QgsWkbTypes::isMultiType( wkbType ) )
   {
-    QString str = QLocale::system().toString( static_cast<const QgsGeometryCollection *>( feature.geometry().constGet() )->numGeometries() );
+    QString str = QLocale().toString( static_cast<const QgsGeometryCollection *>( feature.geometry().constGet() )->numGeometries() );
     derivedAttributes.insert( tr( "Parts" ), str );
-    str = QLocale::system().toString( vId.part + 1 );
+    str = QLocale().toString( vId.part + 1 );
     derivedAttributes.insert( tr( "Part number" ), str );
   }
 
@@ -447,7 +447,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
     const QgsAbstractGeometry *geom = feature.geometry().constGet();
     if ( geom )
     {
-      str = QLocale::system().toString( geom->nCoordinates() );
+      str = QLocale().toString( geom->nCoordinates() );
       derivedAttributes.insert( tr( "Vertices" ), str );
       //add details of closest vertex to identify point
       closestVertexAttributes( *geom, vId, layer, derivedAttributes );
@@ -493,7 +493,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
                           * QgsUnitTypes::fromUnitToUnitFactor( layer->crs().mapUnits(), cartesianDistanceUnits ), cartesianDistanceUnits );
     derivedAttributes.insert( tr( "Perimeter (Cartesian)" ), str );
 
-    str = QLocale::system().toString( feature.geometry().constGet()->nCoordinates() );
+    str = QLocale().toString( feature.geometry().constGet()->nCoordinates() );
     derivedAttributes.insert( tr( "Vertices" ), str );
 
     //add details of closest vertex to identify point
@@ -512,12 +512,12 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
 
       if ( QgsWkbTypes::hasZ( wkbType ) )
       {
-        str = QLocale::system().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->z(), 'g', 10 );
+        str = QLocale().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->z(), 'g', 10 );
         derivedAttributes.insert( QStringLiteral( "Z" ), str );
       }
       if ( QgsWkbTypes::hasM( wkbType ) )
       {
-        str = QLocale::system().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->m(), 'g', 10 );
+        str = QLocale().toString( static_cast<const QgsPoint *>( feature.geometry().constGet() )->m(), 'g', 10 );
         derivedAttributes.insert( QStringLiteral( "M" ), str );
       }
     }

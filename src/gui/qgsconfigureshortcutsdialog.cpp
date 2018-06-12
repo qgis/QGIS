@@ -206,7 +206,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   }
   else // use QGIS locale
   {
-    currentLocale = QLocale::system().name();
+    currentLocale = QLocale().name();
   }
 
   if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )

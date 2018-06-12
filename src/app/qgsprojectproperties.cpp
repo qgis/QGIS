@@ -523,7 +523,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mWMSInspireLanguage->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( "cy" ) ), QLocale( QStringLiteral( "cy" ) ).nativeLanguageName(), "cym" );
   mWMSInspireLanguage->setCurrentIndex(
     mWMSInspireLanguage->findText(
-      QLocale::system().nativeLanguageName()
+      QLocale().nativeLanguageName()
     )
   );
 
@@ -932,8 +932,8 @@ void QgsProjectProperties::apply()
     if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
     {
       QgsDebugMsgLevel( "Using parameteric major/minor", 4 );
-      major = QLocale::system().toDouble( leSemiMajor->text() );
-      minor = QLocale::system().toDouble( leSemiMinor->text() );
+      major = QLocale().toDouble( leSemiMajor->text() );
+      minor = QLocale().toDouble( leSemiMinor->text() );
     }
     QgsProject::instance()->setEllipsoid( QStringLiteral( "PARAMETER:%1:%2" )
                                           .arg( major, 0, 'g', 17 )
@@ -1980,8 +1980,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   if ( leSemiMajor->isModified() || leSemiMinor->isModified() )
   {
     QgsDebugMsgLevel( "Saving major/minor", 4 );
-    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale::system().toDouble( leSemiMajor->text() );
-    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale::system().toDouble( leSemiMinor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMajor = QLocale().toDouble( leSemiMajor->text() );
+    mEllipsoidList[ mEllipsoidIndex ].semiMinor = QLocale().toDouble( leSemiMinor->text() );
   }
 
   mEllipsoidIndex = newIndex;
@@ -2004,8 +2004,8 @@ void QgsProjectProperties::updateEllipsoidUI( int newIndex )
   }
   if ( mEllipsoidList[ mEllipsoidIndex ].acronym != GEO_NONE )
   {
-    leSemiMajor->setText( QLocale::system().toString( myMajor, 'f', 3 ) );
-    leSemiMinor->setText( QLocale::system().toString( myMinor, 'f', 3 ) );
+    leSemiMajor->setText( QLocale().toString( myMajor, 'f', 3 ) );
+    leSemiMinor->setText( QLocale().toString( myMinor, 'f', 3 ) );
   }
 
   if ( mCrs.isValid() )
