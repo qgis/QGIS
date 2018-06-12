@@ -31,12 +31,10 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
                                      QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues,
                                      QgsProcessingFeedback *feedback )
 {
-  int maxWidth = 4000;
-  int maxHeight = 4000;
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
 
   QgsRasterIterator iter( sourceRaster );
-  iter.setMaximumTileWidth( maxWidth );
-  iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );
 
   int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );

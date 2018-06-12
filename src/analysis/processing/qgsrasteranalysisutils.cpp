@@ -65,12 +65,7 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
   }
   polyEngine->prepareGeometry();
 
-  const int maxWidth = 4000;
-  const int maxHeight = 4000;
-
   QgsRasterIterator iter( rasterInterface );
-  iter.setMaximumTileWidth( maxWidth );
-  iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( rasterBand, nCellsX, nCellsY, rasterBBox );
 
   std::unique_ptr< QgsRasterBlock > block;
@@ -118,12 +113,7 @@ void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( QgsRasterInterfa
   }
   polyEngine->prepareGeometry();
 
-  const int maxWidth = 4000;
-  const int maxHeight = 4000;
-
   QgsRasterIterator iter( rasterInterface );
-  iter.setMaximumTileWidth( maxWidth );
-  iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( rasterBand, nCellsX, nCellsY, rasterBBox );
 
   std::unique_ptr< QgsRasterBlock > block;
