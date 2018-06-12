@@ -565,7 +565,7 @@ QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &str
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
 {
   if ( isError )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( formatStringForLog( message ) ) );
+    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
     txtLog->append( formatStringForLog( message.toHtmlEscaped() ) );
   else

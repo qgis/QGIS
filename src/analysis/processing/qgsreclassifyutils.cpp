@@ -26,6 +26,40 @@
 
 ///@cond PRIVATE
 
+void QgsReclassifyUtils::reportClasses( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsProcessingFeedback *feedback )
+{
+  int i = 1;
+  feedback->pushInfo( QObject::tr( "Using classes:" ) );
+  for ( const RasterClass &c : classes )
+  {
+    feedback->pushInfo( QStringLiteral( " %1) %2 %3 %4" ).arg( i )
+                        .arg( c.asText() )
+                        .arg( QChar( 0x2192 ) )
+                        .arg( c.value ) );
+    i++;
+  }
+}
+
+void QgsReclassifyUtils::checkForOverlaps( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsProcessingFeedback *feedback )
+{
+  // test each class against each other class
+  for ( int i = 0; i < classes.count() - 1; i++ )
+  {
+    for ( int j = i + 1; j < classes.count(); j++ )
+    {
+      const QgsReclassifyUtils::RasterClass &class1 = classes.at( i );
+      const QgsReclassifyUtils::RasterClass &class2 = classes.at( j );
+      if ( class1.overlaps( class2 ) )
+      {
+        feedback->reportError( QObject::tr( "Warning: Class %1 (%2) overlaps with class %3 (%4)" ).arg( i + 1 )
+                               .arg( class1.asText() )
+                               .arg( j + 1 )
+                               .arg( class2.asText() ) );
+      }
+    }
+  }
+}
+
 void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band,
                                      const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels,
                                      QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues,
