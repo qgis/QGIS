@@ -123,15 +123,13 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   qgssize noDataCount = 0;
 
   qgssize layerSize = static_cast< qgssize >( mLayerWidth ) * static_cast< qgssize >( mLayerHeight );
-  int maxWidth = 4000;
-  int maxHeight = 4000;
+  int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
+  int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
   int nbBlocksWidth = std::ceil( 1.0 * mLayerWidth / maxWidth );
   int nbBlocksHeight = std::ceil( 1.0 * mLayerHeight / maxHeight );
   int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   QgsRasterIterator iter( mInterface.get() );
-  iter.setMaximumTileWidth( maxWidth );
-  iter.setMaximumTileHeight( maxHeight );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
 
   int iterLeft = 0;
