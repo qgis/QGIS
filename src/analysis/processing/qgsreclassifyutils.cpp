@@ -54,6 +54,8 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   {
     if ( feedback )
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+    if ( feedback && feedback->isCanceled() )
+      break;
     std::unique_ptr< QgsRasterBlock > reclassifiedBlock = qgis::make_unique< QgsRasterBlock >( Qgis::Float32, iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
