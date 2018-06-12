@@ -17,6 +17,8 @@
 
 #include "qgsapplication.h"
 #include "qgsdxfexport.h"
+#include "qgsfillsymbollayer.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsfontutils.h"
@@ -24,6 +26,7 @@
 #include "qgstextrenderer.h"
 #include "qgspallabeling.h"
 #include "qgslabelingengine.h"
+#include "qgssinglesymbolrenderer.h"
 #include "qgsvectorlayerlabeling.h"
 #include <QTemporaryFile>
 
@@ -45,10 +48,12 @@ class TestQgsDxfExport : public QObject
     void testMTextNoSymbology(); //tests if label export works if layer has vector renderer type 'no symbols'
     void testMTextEscapeSpaces();
     void testText();
+    void testGeometryGeneratorExport();
 
   private:
     QgsVectorLayer *mPointLayer = nullptr;
     QgsVectorLayer *mPointLayerNoSymbols = nullptr;
+    QgsVectorLayer *mPointLayerGeometryGenerator = nullptr;
     QgsVectorLayer *mLineLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
@@ -77,14 +82,36 @@ void TestQgsDxfExport::cleanupTestCase()
 void TestQgsDxfExport::init()
 {
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
+
   mPointLayer = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayer->isValid() );
   QgsProject::instance()->addMapLayer( mPointLayer );
+
   mPointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayerNoSymbols->isValid() );
   mPointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
   mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QVariant::String ) );
   QgsProject::instance()->addMapLayer( mPointLayerNoSymbols );
+
+  //Point layer with geometry generator symbolizer
+  mPointLayerGeometryGenerator = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QVERIFY( mPointLayerGeometryGenerator );
+
+  QgsStringMap ggProps;
+  ggProps.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
+  ggProps.insert( QStringLiteral( "geometryModifier" ), QStringLiteral( "buffer( $geometry, 0.1 )" ) );
+  QgsSymbolLayer *ggSymbolLayer = QgsGeometryGeneratorSymbolLayer::create( ggProps );
+  QgsSymbolLayerList fillSymbolLayerList;
+  fillSymbolLayerList << new QgsSimpleFillSymbolLayer();
+  ggSymbolLayer->setSubSymbol( new QgsFillSymbol( fillSymbolLayerList ) );
+  QgsSymbolLayerList slList;
+  slList << ggSymbolLayer;
+  QgsMarkerSymbol *markerSymbol = new QgsMarkerSymbol( slList );
+  QgsSingleSymbolRenderer *sr = new QgsSingleSymbolRenderer( markerSymbol );
+  mPointLayerGeometryGenerator->setRenderer( sr );
+
+  QgsProject::instance()->addMapLayer( mPointLayerGeometryGenerator );
+
   filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   mLineLayer = new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( mLineLayer->isValid() );
@@ -98,6 +125,10 @@ void TestQgsDxfExport::init()
 void TestQgsDxfExport::cleanup()
 {
   QgsProject::instance()->removeMapLayer( mPointLayer->id() );
+  QgsProject::instance()->removeMapLayer( mPointLayerNoSymbols->id() );
+  QgsProject::instance()->removeMapLayer( mPointLayerGeometryGenerator->id() );
+  QgsProject::instance()->removeMapLayer( mLineLayer->id() );
+  QgsProject::instance()->removeMapLayer( mPolygonLayer->id() );
   mPointLayer = nullptr;
 }
 
@@ -360,6 +391,31 @@ bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFil
                              "  7\n"
                              "STANDARD\n"
                              "  0" ) );
+}
+
+void TestQgsDxfExport::testGeometryGeneratorExport()
+{
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerGeometryGenerator ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerGeometryGenerator->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerGeometryGenerator );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerGeometryGenerator->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 6000000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+
+  QString file = getTempFileName( "geometry_generator_dxf" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  dxfFile.close();
+
+  QVERIFY( fileContainsText( file, "HATCH" ) );
 }
 
 bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &text ) const
