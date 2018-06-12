@@ -74,3 +74,4 @@ class FixedTablePanel(BASE, WIDGET):
         dlg.exec_()
         if dlg.rettable is not None:
             self.setValue(dlg.rettable)
+        dlg.deleteLater()

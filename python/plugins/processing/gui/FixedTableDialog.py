@@ -28,6 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 import warnings
 
+from qgis.gui import QgsGui
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
@@ -51,6 +53,8 @@ class FixedTableDialog(BASE, WIDGET):
         super().__init__(None)
 
         self.setupUi(self)
+
+        QgsGui.instance().enableAutoGeometryRestore(self)
 
         self.tblView.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.tblView.setSelectionMode(QAbstractItemView.ExtendedSelection)
