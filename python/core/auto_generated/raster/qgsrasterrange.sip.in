@@ -114,6 +114,13 @@ Tests if a ``value`` is within the list of ranges
 :return: true if value is in at least one of ranges
 %End
 
+    bool overlaps( const QgsRasterRange &other ) const;
+%Docstring
+Returns true if this range overlaps another range.
+
+.. versionadded:: 3.2
+%End
+
 };
 
 
