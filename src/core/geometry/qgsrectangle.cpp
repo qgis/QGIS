@@ -245,6 +245,11 @@ void QgsRectangle::combineExtentWith( double x, double y )
   }
 }
 
+void QgsRectangle::combineExtentWith( const QgsPointXY &point )
+{
+  combineExtentWith( point.x(), point.y() );
+}
+
 QgsRectangle QgsRectangle::operator-( const QgsVector v ) const
 {
   double xmin = mXmin - v.x();

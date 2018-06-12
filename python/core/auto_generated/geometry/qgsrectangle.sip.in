@@ -229,12 +229,19 @@ Returns true when rectangle contains a point.
 
     void combineExtentWith( const QgsRectangle &rect );
 %Docstring
-Expand the rectangle so that covers both the original rectangle and the given rectangle.
+Expands the rectangle so that it covers both the original rectangle and the given rectangle.
 %End
 
     void combineExtentWith( double x, double y );
 %Docstring
-Expand the rectangle so that covers both the original rectangle and the given point.
+Expands the rectangle so that it covers both the original rectangle and the given point.
+%End
+
+    void combineExtentWith( const QgsPointXY &point );
+%Docstring
+Expands the rectangle so that it covers both the original rectangle and the given point.
+
+.. versionadded:: 3.2
 %End
 
     QgsRectangle operator-( QgsVector v ) const;
