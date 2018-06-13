@@ -296,7 +296,7 @@ IF(WITH_CORE)
     # Qt 5.8 is missing some classes, https://github.com/qgis/QGIS/pull/5203#discussion_r142319862
     SET(QT_MIN_VERSION 5.9.0)
   ELSE ()
-    SET(QT_MIN_VERSION 5.2.0)
+    SET(QT_MIN_VERSION 5.4.0)
   ENDIF()
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
