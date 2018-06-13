@@ -70,7 +70,7 @@ class QgsCurvePolygonV2: public QgsSurfaceV2
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
     virtual int nCoordinates() const;
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex /Out/ ) const;
 
     bool hasCurvedSegments() const;
     /** Returns a geometry without curves. Caller takes ownership

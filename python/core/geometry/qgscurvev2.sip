@@ -59,7 +59,7 @@ class QgsCurveV2: public QgsAbstractGeometryV2
     virtual void sumUpArea( double& sum ) const = 0;
 
     virtual QList< QList< QList< QgsPointV2 > > > coordinateSequence() const;
-    virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    virtual bool nextVertex( QgsVertexId& id, QgsPointV2& vertex /Out/ ) const;
 
     /** Returns the point and vertex id of a point within the curve.
      * @param node node number, where the first node is 0
