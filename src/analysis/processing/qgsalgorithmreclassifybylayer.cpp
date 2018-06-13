@@ -226,13 +226,35 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByLayerAlgorithm::createCl
   while ( mTableIterator.nextFeature( f ) )
   {
     bool ok = false;
-    double minValue = f.attribute( mMinFieldIdx ).toDouble( &ok );
-    if ( !ok )
-      throw QgsProcessingException( QObject::tr( "Invalid value for minimum: %1" ).arg( f.attribute( mMinFieldIdx ).toString() ) );
-    double maxValue = f.attribute( mMaxFieldIdx ).toDouble( &ok );
-    if ( !ok )
-      throw QgsProcessingException( QObject::tr( "Invalid value for maximum: %1" ).arg( f.attribute( mMaxFieldIdx ).toString() ) );
-    double value = f.attribute( mValueFieldIdx ).toDouble( &ok );
+
+    // null values map to nan, which corresponds to a range extended to +/- infinity....
+    const QVariant minVariant = f.attribute( mMinFieldIdx );
+    double minValue;
+    if ( minVariant.isNull() || minVariant.toString().isEmpty() )
+    {
+      minValue = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minValue = minVariant.toDouble( &ok );
+      if ( !ok )
+        throw QgsProcessingException( QObject::tr( "Invalid value for minimum: %1" ).arg( minVariant.toString() ) );
+    }
+    const QVariant maxVariant = f.attribute( mMaxFieldIdx );
+    double maxValue;
+    if ( maxVariant.isNull() || maxVariant.toString().isEmpty() )
+    {
+      maxValue = std::numeric_limits<double>::quiet_NaN();
+      ok = true;
+    }
+    else
+    {
+      maxValue = maxVariant.toDouble( &ok );
+      if ( !ok )
+        throw QgsProcessingException( QObject::tr( "Invalid value for maximum: %1" ).arg( maxVariant.toString() ) );
+    }
+
+    const double value = f.attribute( mValueFieldIdx ).toDouble( &ok );
     if ( !ok )
       throw QgsProcessingException( QObject::tr( "Invalid output value: %1" ).arg( f.attribute( mValueFieldIdx ).toString() ) );
 
@@ -296,12 +318,34 @@ QVector<QgsReclassifyUtils::RasterClass> QgsReclassifyByTableAlgorithm::createCl
   for ( int row = 0; row < rows; ++row )
   {
     bool ok = false;
-    const double minValue = table.at( row * 3 ).toDouble( &ok );
-    if ( !ok )
-      throw QgsProcessingException( QObject::tr( "Invalid value for minimum: %1" ).arg( table.at( row * 3 ).toString() ) );
-    const double maxValue = table.at( row * 3 + 1 ).toDouble( &ok );
-    if ( !ok )
-      throw QgsProcessingException( QObject::tr( "Invalid value for maximum: %1" ).arg( table.at( row * 3 + 1 ).toString() ) );
+
+    // null values map to nan, which corresponds to a range extended to +/- infinity....
+    const QVariant minVariant = table.at( row * 3 );
+    double minValue;
+    if ( minVariant.isNull()  || minVariant.toString().isEmpty() )
+    {
+      minValue = std::numeric_limits<double>::quiet_NaN();
+    }
+    else
+    {
+      minValue = minVariant.toDouble( &ok );
+      if ( !ok )
+        throw QgsProcessingException( QObject::tr( "Invalid value for minimum: %1" ).arg( table.at( row * 3 ).toString() ) );
+    }
+    const QVariant maxVariant = table.at( row * 3 + 1 );
+    double maxValue;
+    if ( maxVariant.isNull() || maxVariant.toString().isEmpty() )
+    {
+      maxValue = std::numeric_limits<double>::quiet_NaN();
+      ok = true;
+    }
+    else
+    {
+      maxValue = maxVariant.toDouble( &ok );
+      if ( !ok )
+        throw QgsProcessingException( QObject::tr( "Invalid value for maximum: %1" ).arg( table.at( row * 3 + 1 ).toString() ) );
+    }
+
     const double value = table.at( row * 3 + 2 ).toDouble( &ok );
     if ( !ok )
       throw QgsProcessingException( QObject::tr( "Invalid output value: %1" ).arg( table.at( row * 3 + 2 ).toString() ) );
