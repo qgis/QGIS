@@ -128,10 +128,13 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
 
-  QWaitCondition waitCondition;
+  QWaitCondition mainThreadWaitCondition;
+  QMutex mainThreadMutex;
 
-  QMutex mutex;
-  std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitCondition ]()
+  QWaitCondition downloaderThreadWaitCondition;
+  QMutex downloaderThreadMutex;
+
+  std::function<bool()> downloaderFunction = [ this, request, synchronous, &mainThreadMutex, &mainThreadWaitCondition, &downloaderThreadMutex, &downloaderThreadWaitCondition ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -145,26 +148,36 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       mErrorCode = QgsWfsRequest::NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
-      waitCondition.wakeAll();
+      mainThreadWaitCondition.wakeAll();
       success = false;
     }
     else
     {
       // We are able to use direct connection here, because we
-      // * either run on the thread mReply lives in, so DirectConnection is standard and safe anyway (if it is not the main thread)
+      // * either run on the thread mReply lives in, so DirectConnection is standard and safe anyway
       // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
       connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
       connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
-      connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&waitCondition]() { waitCondition.wakeAll(); } );
 
       if ( synchronous )
       {
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&mainThreadMutex, &mainThreadWaitCondition, &downloaderThreadMutex, &downloaderThreadWaitCondition]()
+        {
+          mainThreadMutex.lock();
+          mainThreadWaitCondition.wakeAll();
+          mainThreadMutex.unlock();
+
+          downloaderThreadMutex.lock();
+          downloaderThreadWaitCondition.wait( &downloaderThreadMutex );
+          downloaderThreadMutex.unlock();
+        }, Qt::DirectConnection
+               );
         QEventLoop loop;
         connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
         loop.exec();
       }
     }
-    waitCondition.wakeAll();
+    mainThreadWaitCondition.wakeAll();
     return success;
   };
 
@@ -176,9 +189,16 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     downloaderThread->start();
     while ( !downloaderThread->isFinished() )
     {
-      waitCondition.wait( &mutex );
+      mainThreadMutex.lock();
+      mainThreadWaitCondition.wait( &mainThreadMutex );
+      mainThreadMutex.unlock();
       if ( !downloaderThread->isFinished() )
+      {
         QgsApplication::instance()->processEvents();
+        downloaderThreadMutex.lock();
+        downloaderThreadWaitCondition.wakeAll();
+        downloaderThreadMutex.unlock();
+      }
     }
 
     success = downloaderThread->success();
@@ -187,7 +207,6 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   {
     success = downloaderFunction();
   }
-  mutex.unlock();
   return success && mErrorMessage.isEmpty();
 }
 
