@@ -217,8 +217,9 @@ class TestQgsDateRange(unittest.TestCase):
         range = QgsDateRange(QDate(2010, 3, 1), QDate())
         self.assertFalse(range.isEmpty())
 
+        # check QgsDateRange docs - this is treated as an infinite range, so is NOT empty
         range = QgsDateRange(QDate(), QDate())
-        self.assertTrue(range.isEmpty())
+        self.assertFalse(range.isEmpty())
 
         range = QgsDateRange(QDate(2017, 3, 1), QDate(2010, 6, 2))
         self.assertTrue(range.isEmpty())
