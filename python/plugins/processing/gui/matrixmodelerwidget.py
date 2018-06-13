@@ -103,26 +103,28 @@ class MatrixModelerWidget(BASE, WIDGET):
             self.tblView.model().setHeaderData(index, Qt.Horizontal, txt)
 
     def value(self):
+        cols = self.tblView.model().columnCount()
+        rows = self.tblView.model().rowCount()
+
         items = []
-        model = self.tblView.model()
-        for i in range(model.rowCount()):
-            row = []
-            for j in range(model.columnCount()):
-                item = model.item(i, j)
-                row.append(item.text())
-            items.append(row)
+        for row in range(rows):
+            for col in range(cols):
+                items.append(str(self.tblView.model().item(row, col).text()))
 
         return items
 
-    def setValue(self, table):
-        cols = len(table[0])
-        rows = len(table)
+    def setValue(self, headers, table):
+        model = self.tblView.model()
+        model.setHorizontalHeaderLabels(headers)
+
+        cols = len(headers)
+        rows = len(table) // cols
         model = QStandardItemModel(rows, cols)
 
-        for i in range(rows):
-            for j in range(cols):
-                item = QStandardItem(str(table[i][j]))
-                model.setItem(i, j, item)
+        for row in range(rows):
+            for col in range(cols):
+                item = QStandardItem(str(table[row * cols + col]))
+                model.setItem(row, col, item)
         self.tblView.setModel(model)
 
     def headers(self):
@@ -132,10 +134,6 @@ class MatrixModelerWidget(BASE, WIDGET):
             headers.append(str(model.headerData(i, Qt.Horizontal)))
 
         return headers
-
-    def setHeaders(self, headers):
-        model = self.tblView.model()
-        model.setHorizontalHeaderLabels(headers)
 
     def fixedRows(self):
         return self.chkFixedRows.isChecked()
