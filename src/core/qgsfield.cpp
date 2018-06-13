@@ -246,7 +246,7 @@ QString QgsField::displayString( const QVariant &v ) const
   }
   // Other numeric types than doubles
   else if ( isNumeric() &&
-            ! QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator )
+            !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
   {
     bool ok;
     qlonglong converted( v.toLongLong( &ok ) );
