@@ -73,6 +73,12 @@ void QgsFilterLineEdit::updateClearIcon()
   }
   else if ( !showClear && mClearAction )
   {
+    // pretty freakin weird... seems the deleteLater call on the mClearAction
+    // isn't sufficient to actually remove the action from the line edit, and
+    // a kind of "ghost" action gets left behind... resulting in duplicate
+    // clear actions appearing if later we re-create the action.
+    // in summary: don't remove this "removeAction" call!
+    removeAction( mClearAction );
     mClearAction->deleteLater();
     mClearAction = nullptr;
   }
