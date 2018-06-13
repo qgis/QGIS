@@ -717,7 +717,7 @@ class QgsGeometry
      * @note added in QGIS 2.10
      * @see vertexNrFromVertexId
      */
-    bool vertexIdFromVertexNr( int nr, QgsVertexId& id ) const;
+    bool vertexIdFromVertexNr( int nr, QgsVertexId& id /Out/ ) const;
 
     /** Returns the vertex number corresponding to a vertex idd
      * @param i vertex id
