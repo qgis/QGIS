@@ -166,7 +166,7 @@ class QgsPointV2: public QgsAbstractGeometryV2
     virtual bool deleteVertex( QgsVertexId position );
 
     double closestSegment( const QgsPointV2& pt, QgsPointV2& segmentPt,  QgsVertexId& vertexAfter, bool* leftOf, double epsilon ) const;
-    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex ) const;
+    bool nextVertex( QgsVertexId& id, QgsPointV2& vertex /Out/ ) const;
 
     /** Angle undefined. Always returns 0.0
         @param vertex the vertex id
