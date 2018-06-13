@@ -5581,6 +5581,29 @@ tests:
         hash: cea558f7e99a0564fef92a96cd8d6b59707d019f1751cb600ab00850
         type: rasterhash
 
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table infinite ranges
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - ''
+      - 850
+      - 3
+      - 850
+      - ''
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
   - algorithm: native:reclassifybylayer
     name: Reclassify by layer
     params:
@@ -5601,6 +5624,29 @@ tests:
       OUTPUT:
         hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
         type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer with nulls
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer_nulls.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
 
 
 # See ../README.md for a description of the file format
