@@ -310,6 +310,59 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
  ]
 }""".encode('UTF-8'))
 
+        with open(sanitize(endpoint,
+                           '/query?f=json&objectIds=2,4&inSR=4326&outSR=4326&returnGeometry=true&outFields=OBJECTID,pk,cnt,name,name2,num_char&returnM=false&returnZ=false'),
+                  'wb') as f:
+            f.write("""
+        {
+         "displayFieldName": "name",
+         "fieldAliases": {
+          "name": "name"
+         },
+         "geometryType": "esriGeometryPoint",
+         "spatialReference": {
+          "wkid": 4326,
+          "latestWkid": 4326
+         },
+         "fields":[{"name":"OBJECTID","type":"esriFieldTypeOID","alias":"OBJECTID","domain":null},
+        {"name":"pk","type":"esriFieldTypeInteger","alias":"pk","domain":null},
+        {"name":"cnt","type":"esriFieldTypeInteger","alias":"cnt","domain":null},
+        {"name":"name","type":"esriFieldTypeString","alias":"name","length":100,"domain":null},
+        {"name":"name2","type":"esriFieldTypeString","alias":"name2","length":100,"domain":null},
+        {"name":"num_char","type":"esriFieldTypeString","alias":"num_char","length":100,"domain":null},
+        {"name":"Shape","type":"esriFieldTypeGeometry","alias":"Shape","domain":null}],
+         "features": [
+          {
+           "attributes": {
+            "OBJECTID": 2,
+            "pk": 2,
+            "cnt": 200,
+            "name": "Apple",
+            "name2":"Apple",
+            "num_char":"2"
+           },
+           "geometry": {
+            "x": -68.2,
+            "y": 70.8
+           }
+          },
+          {
+           "attributes": {
+            "OBJECTID": 4,
+            "pk": 4,
+            "cnt": 400,
+            "name": "Honey",
+            "name2":"Honey",
+            "num_char":"4"
+           },
+           "geometry": {
+            "x": -65.32,
+            "y": 78.3
+           }
+          }
+         ]
+        }""".encode('UTF-8'))
+
         with open(sanitize(endpoint, '/query?f=json&where=OBJECTID=OBJECTID&returnIdsOnly=true&geometry=-70.000000,67.000000,-60.000000,80.000000&geometryType=esriGeometryEnvelope&spatialRel=esriSpatialRelEnvelopeIntersects'), 'wb') as f:
             f.write("""
         {
@@ -646,6 +699,16 @@ class TestPyQgsAFSProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(len(vl.renderer().categories()), 2)
         self.assertEqual(vl.renderer().categories()[0].value(), 'US')
         self.assertEqual(vl.renderer().categories()[1].value(), 'Canada')
+
+    def testBboxRestriction(self):
+        """
+        Test limiting provider to features within a preset bounding box
+        """
+        endpoint = self.basetestpath + '/fake_qgis_http_endpoint'
+        vl = QgsVectorLayer("url='http://" + endpoint + "' crs='epsg:4326' bbox='-70.000000,67.000000,-60.000000,80.000000'", 'test', 'arcgisfeatureserver')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 2)
+        self.assertEqual([f['pk'] for f in vl.getFeatures()], [2, 4])
 
 
 if __name__ == '__main__':
