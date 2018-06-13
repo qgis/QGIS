@@ -1869,13 +1869,23 @@ QString QgsProcessingParameterMatrix::valueAsPythonString( const QVariant &value
       QStringList parts2;
       Q_FOREACH ( const QVariant &v2, v.toList() )
       {
-        parts2 << v2.toString();
+        if ( v2.isNull() || !v2.isValid() )
+          parts2 << QStringLiteral( "None" );
+        else if ( v2.toString().isEmpty() )
+          parts2 << QStringLiteral( "''" );
+        else
+          parts2 << v2.toString();
       }
       parts << parts2.join( ',' ).prepend( '[' ).append( ']' );
     }
     else
     {
-      parts << v.toString();
+      if ( v.isNull() || !v.isValid() )
+        parts << QStringLiteral( "None" );
+      else if ( v.toString().isEmpty() )
+        parts << QStringLiteral( "''" );
+      else
+        parts << v.toString();
     }
   }
 
