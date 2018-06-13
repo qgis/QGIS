@@ -132,6 +132,22 @@ void TestQgsReclassifyUtils::testReclassify_data()
                                << -9999.0 << false << static_cast< int >( Qgis::Float32 )
                                << QVector< double > { -7, -7, 3, 8, 8, 6 };
 
+  QTest::newRow( "infinite range" ) << QVector< double > { 1, 2, 3, 4, 5, 6 }
+                                    << 3 << 2
+                                    << ( QVector< QgsReclassifyUtils::RasterClass  >()
+                                         << QgsReclassifyUtils::RasterClass( 3, std::numeric_limits<double>::quiet_NaN(), QgsRasterRange::IncludeMax, 8 )
+                                         << QgsReclassifyUtils::RasterClass( 1, 3, QgsRasterRange::IncludeMin, -7 ) )
+                                    << -9999.0 << false << static_cast< int >( Qgis::Float32 )
+                                    << QVector< double > { -7, -7, 3, 8, 8, 8 };
+
+  QTest::newRow( "infinite range 2" ) << QVector< double > { 1, 2, 3, 4, 5, 6 }
+                                      << 3 << 2
+                                      << ( QVector< QgsReclassifyUtils::RasterClass  >()
+                                          << QgsReclassifyUtils::RasterClass( 3, 4, QgsRasterRange::IncludeMax, 8 )
+                                          << QgsReclassifyUtils::RasterClass( std::numeric_limits<double>::quiet_NaN(), 3, QgsRasterRange::IncludeMin, -7 ) )
+                                      << -9999.0 << false << static_cast< int >( Qgis::Float32 )
+                                      << QVector< double > { -7, -7, 3, 8, 5, 6 };
+
   QTest::newRow( "with source no data" ) << QVector< double > { 1, 2, -9999, 4, 5, 6 }
                                          << 3 << 2
                                          << ( QVector< QgsReclassifyUtils::RasterClass  >()
