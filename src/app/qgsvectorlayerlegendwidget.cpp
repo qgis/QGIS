@@ -106,7 +106,7 @@ void QgsVectorLayerLegendWidget::populateLegendTreeView( const QHash<QString, QS
     if ( symbolItem.ruleKey().isEmpty() )
     {
       item1->setEnabled( false );
-      item2->setEnabled( true );
+      item2->setEnabled( false );
     }
     else
     {

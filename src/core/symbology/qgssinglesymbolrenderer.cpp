@@ -312,7 +312,7 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   }
 
   QgsLegendSymbolList lst;
-  lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QString() );
+  lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QStringLiteral( "0" ) );
   return lst;
 }
 
@@ -320,7 +320,7 @@ QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature 
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
-  return QSet< QString >() << QString();
+  return QSet< QString >() << QStringLiteral( "0" );
 }
 
 void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )
