@@ -241,6 +241,19 @@ custom configuration widget.
    hasConfigWidget() must return true to indicate that the filter supports configuration.
 %End
 
+    void logMessage( const QString &message, Qgis::MessageLevel level = Qgis::Info );
+%Docstring
+Logs a ``message`` to the log panel
+
+.. warning::
+
+   in Python, do not use print() method as it might result in crashes
+   since fetching results does not happen in the main thread.
+
+.. versionadded:: 3.2
+%End
+
+
   signals:
 
     void finished();
