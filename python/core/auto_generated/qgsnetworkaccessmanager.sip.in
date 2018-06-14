@@ -43,14 +43,14 @@ type that is used to handle signals that might require user interaction and ther
 need to be handled on the main thread. See in-depth discussion below.
 
 :param connectionType: In most cases the default of using a ``Qt.BlockingQueuedConnection``
-is ok, to make a background thread wait for the main thread to answer such a request is
-fine and anything else is dangerous.
-However, in case the request was started on the main thread, one should execute a
-local event loop in a helper thread and freeze the main thread for the duration of the
-download. In this case, if an authentication request is sent from the background thread
-network access manager, the background thread should be blocked, the main thread be woken
-up, processEvents() executed once, the main thread frozen again and the background thread
-continued.
+                       is ok, to make a background thread wait for the main thread to answer such a request is
+                       fine and anything else is dangerous.
+                       However, in case the request was started on the main thread, one should execute a
+                       local event loop in a helper thread and freeze the main thread for the duration of the
+                       download. In this case, if an authentication request is sent from the background thread
+                       network access manager, the background thread should be blocked, the main thread be woken
+                       up, processEvents() executed once, the main thread frozen again and the background thread
+                       continued.
 %End
 
     QgsNetworkAccessManager( QObject *parent = 0 );
