@@ -870,17 +870,8 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
     if ( !tag.isEmpty() )
     {
       // sql: gets the id of the tag if present or insert the tag and get the id of the tag
-      auto query = QgsSqlite3Mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() );
-
-      sqlite3_statement_unique_ptr statement;
-      int nErr; statement = mCurrentDB.prepare( query, nErr );
-
-      int tagid;
-      if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
-      {
-        tagid = sqlite3_column_int( statement.get(), 0 );
-      }
-      else
+      int tagid( tagId( tag ) );
+      if ( ! tagid )
       {
         tagid = addTag( tag );
       }
@@ -888,11 +879,12 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
       // Now map the tag to the symbol if it's not already tagged
       if ( !symbolHasTag( type, symbol, tag ) )
       {
-        query = type == SymbolEntity
-                ? QgsSqlite3Mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
-                : QgsSqlite3Mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
+        auto query = type == SymbolEntity
+                     ? QgsSqlite3Mprintf( "INSERT INTO tagmap VALUES (%d,%d)", tagid, symbolid )
+                     : QgsSqlite3Mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
 
         char *zErr = nullptr;
+        int nErr;
         nErr = sqlite3_exec( mCurrentDB.get(), query.toUtf8().constData(), nullptr, nullptr, &zErr );
         if ( nErr )
         {
@@ -963,7 +955,7 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
 {
   if ( !mCurrentDB )
   {
-    QgsDebugMsg( "Sorry! Cannot open database for detgging." );
+    QgsDebugMsg( "Sorry! Cannot open database for detagging." );
     return false;
   }
 
@@ -1085,7 +1077,8 @@ QString QgsStyle::tag( int id ) const
 
 int QgsStyle::getId( const QString &table, const QString &name )
 {
-  auto query = QgsSqlite3Mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), name.toUtf8().toLower().constData() );
+  QString lowerName( name.toLower() );
+  auto query = QgsSqlite3Mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), lowerName.toUtf8().constData() );
 
   sqlite3_statement_unique_ptr statement;
   int nErr; statement = mCurrentDB.prepare( query, nErr );
@@ -1094,6 +1087,18 @@ int QgsStyle::getId( const QString &table, const QString &name )
   if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     id = sqlite3_column_int( statement.get(), 0 );
+  }
+  else
+  {
+    // Try the name without lowercase conversion
+    auto query = QgsSqlite3Mprintf( "SELECT id FROM %q WHERE name='%q'", table.toUtf8().constData(), name.toUtf8().constData() );
+
+    sqlite3_statement_unique_ptr statement;
+    int nErr; statement = mCurrentDB.prepare( query, nErr );
+    if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
+    {
+      id = sqlite3_column_int( statement.get(), 0 );
+    }
   }
 
   return id;
