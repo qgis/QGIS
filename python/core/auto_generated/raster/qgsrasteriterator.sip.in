@@ -70,7 +70,7 @@ Sets the maximum tile width returned during iteration.
 
 .. seealso:: :py:func:`maximumTileWidth`
 
-.. seealso:: :py:func:`setMinimumTileWidth`
+.. seealso:: :py:func:`setMaximumTileHeight`
 %End
 
     int maximumTileWidth() const;
@@ -79,14 +79,14 @@ Returns the maximum tile width returned during iteration.
 
 .. seealso:: :py:func:`setMaximumTileWidth`
 
-.. seealso:: :py:func:`minimumTileWidth`
+.. seealso:: :py:func:`maximumTileHeight`
 %End
 
     void setMaximumTileHeight( int h );
 %Docstring
-Sets the minimum tile width returned during iteration.
+Sets the minimum tile height returned during iteration.
 
-.. seealso:: :py:func:`minimumTileWidth`
+.. seealso:: :py:func:`maximumTileHeight`
 
 .. seealso:: :py:func:`setMaximumTileWidth`
 %End
@@ -95,7 +95,7 @@ Sets the minimum tile width returned during iteration.
 %Docstring
 Returns the minimum tile width returned during iteration.
 
-.. seealso:: :py:func:`setMinimumTileWidth`
+.. seealso:: :py:func:`setMaximumTileHeight`
 
 .. seealso:: :py:func:`maximumTileWidth`
 %End

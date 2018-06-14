@@ -97,27 +97,27 @@ class CORE_EXPORT QgsRasterIterator
     /**
      * Sets the maximum tile width returned during iteration.
      * \see maximumTileWidth()
-     * \see setMinimumTileWidth()
+     * \see setMaximumTileHeight()
      */
     void setMaximumTileWidth( int w ) { mMaximumTileWidth = w; }
 
     /**
      * Returns the maximum tile width returned during iteration.
      * \see setMaximumTileWidth()
-     * \see minimumTileWidth()
+     * \see maximumTileHeight()
      */
     int maximumTileWidth() const { return mMaximumTileWidth; }
 
     /**
-     * Sets the minimum tile width returned during iteration.
-     * \see minimumTileWidth()
+     * Sets the minimum tile height returned during iteration.
+     * \see maximumTileHeight()
      * \see setMaximumTileWidth()
      */
     void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
 
     /**
      * Returns the minimum tile width returned during iteration.
-     * \see setMinimumTileWidth()
+     * \see setMaximumTileHeight()
      * \see maximumTileWidth()
      */
     int maximumTileHeight() const { return mMaximumTileHeight; }
