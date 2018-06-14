@@ -5647,6 +5647,17 @@ tests:
         hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
         type: rasterhash
 
-
+  - algorithm: native:pixelstopolygons
+    name: Pixels to polygons
+    params:
+      FIELD_NAME: pix_val
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/vectorize.gml
+        type: vector
 
 # See ../README.md for a description of the file format
