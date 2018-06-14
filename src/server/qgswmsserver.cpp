@@ -2582,12 +2582,7 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
     int index = 0;
     Q_FOREACH ( int bandNo, values.keys() )
     {
-      if ( values.value( bandNo ).isNull() )
-      {
-        fields.append( QgsField( layer->bandName( bandNo ), QVariant::String ) );
-        feature.setAttribute( index++, "no data" );
-      }
-      else
+      if ( !values.value( bandNo ).isNull() )
       {
         QVariant value( values.value( bandNo ) );
         fields.append( QgsField( layer->bandName( bandNo ), QVariant::Double ) );
