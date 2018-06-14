@@ -999,7 +999,12 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    ctx.expressionContext().appendScope( QgsExpressionContextUtils::layerScope( ml ) );
+    auto scopePopper = [&ctx]( QgsExpressionContextScope * scope )
+    {
+      delete ctx.expressionContext().popScope();
+    };
+    std::unique_ptr<QgsExpressionContextScope, decltype( scopePopper ) > layerScope( QgsExpressionContextUtils::layerScope( ml ), scopePopper );
+    ctx.expressionContext().appendScope( layerScope.get() );
     QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
 
     std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer()->clone() );
@@ -1048,7 +1053,6 @@ void QgsDxfExport::writeEntities()
       writeEntitiesSymbolLevels( vl );
       renderer->stopRender( ctx );
 
-      delete ctx.expressionContext().popScope();
       continue;
     }
 
@@ -1089,7 +1093,7 @@ void QgsDxfExport::writeEntities()
                 continue;
               }
 
-              bool isGeometryGenerator = ( sl->layerType() == "GeometryGenerator" );
+              bool isGeometryGenerator = ( sl->layerType() == QLatin1String( "GeometryGenerator" ) );
               if ( isGeometryGenerator )
               {
                 addGeometryGeneratorSymbolLayer( sctx, ct, lName, sl, true );
@@ -1110,7 +1114,7 @@ void QgsDxfExport::writeEntities()
             continue;
           }
 
-          if ( s->symbolLayer( 0 )->layerType() == "GeometryGenerator" )
+          if ( s->symbolLayer( 0 )->layerType() == QLatin1String( "GeometryGenerator" ) )
           {
             addGeometryGeneratorSymbolLayer( sctx, ct, lName, s->symbolLayer( 0 ), false );
           }
@@ -1132,7 +1136,6 @@ void QgsDxfExport::writeEntities()
     }
 
     renderer->stopRender( ctx );
-    delete ctx.expressionContext().popScope();
   }
 
   engine.run( ctx );
@@ -3989,7 +3992,7 @@ QgsRenderContext QgsDxfExport::renderContext() const
   return context;
 }
 
-double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel )
+double QgsDxfExport::mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel )
 {
   if ( symbolUnits == QgsUnitTypes::RenderMapUnits )
   {
@@ -3997,7 +4000,7 @@ double QgsDxfExport::mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::
   }
   else if ( symbolUnits == QgsUnitTypes::RenderMillimeters )
   {
-    return ( scaleDenominator * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0 );
+    return ( scale * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, mapUnits ) / 1000.0 );
   }
   else if ( symbolUnits == QgsUnitTypes::RenderPixels )
   {

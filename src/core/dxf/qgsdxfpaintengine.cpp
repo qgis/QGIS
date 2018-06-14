@@ -24,7 +24,6 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxf
   : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
   , mPaintDevice( dxfDevice )
   , mDxf( dxf )
-  , mOpacity( 1.0 )
 {
 }
 

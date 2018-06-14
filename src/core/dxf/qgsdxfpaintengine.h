@@ -65,7 +65,7 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QPen mPen;
     QBrush mBrush;
     //! Opacity
-    double mOpacity;
+    double mOpacity = 1.0;
     QString mLayer;
     QPointF mShift;
     QgsRingSequence mPolygon;
