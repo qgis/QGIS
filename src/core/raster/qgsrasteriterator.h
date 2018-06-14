@@ -34,15 +34,18 @@ class CORE_EXPORT QgsRasterIterator
 {
   public:
 
+    /**
+     * Constructor for QgsRasterIterator, iterating over the specified \a input raster source.
+     */
     QgsRasterIterator( QgsRasterInterface *input );
 
     /**
      * Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
-      \param bandNumber number of raster band to read
-      \param nCols number of columns
-      \param nRows number of rows
-      \param extent area to read
-      \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+     * \param bandNumber number of raster band to read
+     * \param nCols number of columns
+     * \param nRows number of rows
+     * \param extent area to read
+     * \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
      */
     void startRasterRead( int bandNumber, int nCols, int nRows, const QgsRectangle &extent, QgsRasterBlockFeedback *feedback = nullptr );
 
@@ -81,17 +84,48 @@ class CORE_EXPORT QgsRasterIterator
                              int &topLeftCol, int &topLeftRow,
                              QgsRectangle *blockExtent = nullptr ) SIP_SKIP;
 
+    /**
+     * Cancels the raster iteration and resets the iterator.
+     */
     void stopRasterRead( int bandNumber );
 
+    /**
+     * Returns the input raster interface which is being iterated over.
+     */
     const QgsRasterInterface *input() const { return mInput; }
 
+    /**
+     * Sets the maximum tile width returned during iteration.
+     * \see maximumTileWidth()
+     * \see setMinimumTileWidth()
+     */
     void setMaximumTileWidth( int w ) { mMaximumTileWidth = w; }
+
+    /**
+     * Returns the maximum tile width returned during iteration.
+     * \see setMaximumTileWidth()
+     * \see minimumTileWidth()
+     */
     int maximumTileWidth() const { return mMaximumTileWidth; }
 
+    /**
+     * Sets the minimum tile width returned during iteration.
+     * \see minimumTileWidth()
+     * \see setMaximumTileWidth()
+     */
     void setMaximumTileHeight( int h ) { mMaximumTileHeight = h; }
+
+    /**
+     * Returns the minimum tile width returned during iteration.
+     * \see setMinimumTileWidth()
+     * \see maximumTileWidth()
+     */
     int maximumTileHeight() const { return mMaximumTileHeight; }
 
+    //! Default maximum tile width
     static const int DEFAULT_MAXIMUM_TILE_WIDTH = 2000;
+
+    //! Default maximum tile height
     static const int DEFAULT_MAXIMUM_TILE_HEIGHT = 2000;
 
   private:
