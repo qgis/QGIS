@@ -158,7 +158,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
       if ( synchronous )
       {
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&waitConditionMutex, &waitCondition]()
+        auto resumeMainThread = [&waitConditionMutex, &waitCondition]()
         {
           waitConditionMutex.lock();
           waitCondition.wakeAll();
@@ -167,8 +167,14 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
           waitConditionMutex.lock();
           waitCondition.wait( &waitConditionMutex );
           waitConditionMutex.unlock();
-        }, Qt::DirectConnection
-               );
+        };
+
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+
+#ifndef QT_NO_SSL
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrors, this, resumeMainThread, Qt::DirectConnection );
+#endif
         QEventLoop loop;
         connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
         loop.exec();
