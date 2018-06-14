@@ -447,11 +447,6 @@ void QgsLayoutItemLegend::setRasterStrokeWidth( double width )
   mSettings.setRasterStrokeWidth( width );
 }
 
-void QgsLayoutItemLegend::synchronizeWithModel()
-{
-  adjustBoxSize();
-  updateFilterByMap( false );
-}
 
 void QgsLayoutItemLegend::updateLegend()
 {

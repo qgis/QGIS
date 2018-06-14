@@ -448,9 +448,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
   private slots:
 
-    //! Data changed
-    void synchronizeWithModel();
-
     //! Removes the associated map if the map is deleted.
     void invalidateCurrentMap();
 
