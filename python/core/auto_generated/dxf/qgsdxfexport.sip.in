@@ -397,7 +397,7 @@ Write mtext (MTEXT)
 .. versionadded:: 2.15
 %End
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 %Docstring
 Returns scale factor for conversion to map units
 

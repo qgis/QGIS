@@ -391,7 +391,7 @@ class CORE_EXPORT QgsDxfExport
      * \param mapUnits the map units
      * \param mapUnitsPerPixel Map units per pixel
     */
-    static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 
     /**
      * Clips value to scale minimum/maximum
