@@ -386,17 +386,19 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Returns scale factor for conversion to map units
-    * @param scaleDenominator the map scale denominator
-    * @param symbolUnits the symbol output units
-    * @param mapUnits the map units
-    * @param mapUnitsPerPixel Map units per pixel*/
+     * \param scaleDenominator the map scale denominator
+     * \param symbolUnits the symbol output units
+     * \param mapUnits the map units
+     * \param mapUnitsPerPixel Map units per pixel
+    */
     static double mapUnitScaleFactor( double scaleDenominator, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits, double mapUnitsPerPixel = 1.0 );
 
     /**
      * Clips value to scale minimum/maximum
-    * @param value the value to clip
-    * @param scale the scale dependent minimum/maximum values
-    * @param pixelToMMFactor pixels per mm*/
+     * \param value the value to clip
+     * \param scale the scale dependent minimum/maximum values
+     * \param pixelToMMFactor pixels per mm
+    */
     void clipValueToMapUnitScale( double &value, const QgsMapUnitScale &scale, double pixelToMMFactor ) const;
 
     //! Returns cleaned layer name for use in DXF
@@ -465,11 +467,12 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Writes geometry generator symbol layer
-        @param ctx the symbol render context
-        @param ct the coordinate transform
-        @param layer the layer name
-        @param symbolLayer the symbollayer to write to the dxf file
-        @param allSymbolLayers if true, all symbol layers of the subsymbol are writeen. If false, only the first one is written*/
+     * \param ctx the symbol render context
+     * \param ct the coordinate transform
+     * \param layer the layer name
+     * \param symbolLayer the symbollayer to write to the dxf file
+     * \param allSymbolLayers if true, all symbol layers of the subsymbol are written. If false, only the first one is written
+    */
     void addGeometryGeneratorSymbolLayer( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, QgsSymbolLayer *symbolLayer, bool allSymbolLayers );
 
     void addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateTransform &ct, const QString &layer, const QgsSymbolLayer *symbolLayer, const QgsSymbol *symbol );
