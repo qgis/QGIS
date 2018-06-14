@@ -286,6 +286,19 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
                                  'wms_getfeatureinfo_filter_no_width')
 
+    def test_value_relation(self):
+        """Test wether value relations are resolved: regression 18518"""
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&BBOX=537912.30469845747575164,4975501.92125043831765652,577227.89428471261635423,4996610.36656293831765652' +
+                                 '&CRS=EPSG:32632' +
+                                 '&WIDTH=1328&HEIGHT=713' +
+                                 '&LAYERS=test_multi' +
+                                 '&STYLES=&FORMAT=image/jpeg' +
+                                 '&QUERY_LAYERS=test_multi&INFO_FORMAT=text/xml' +
+                                 '&I=429&J=528&FEATURE_COUNT=10',
+                                 'wms_getfeatureinfo_value_relation',
+                                 project='test_project_value_relation.qgz')
+
 
 if __name__ == '__main__':
     unittest.main()

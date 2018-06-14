@@ -109,6 +109,18 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     ~QgsProject() override;
 
+#ifndef SIP_RUN
+
+    /**
+     * Set the current project instance to \a project
+     *
+     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+     * \see instance()
+     * \since QGIS 3.2
+     */
+    static void setInstance( QgsProject *project );
+#endif
+
     /**
      * Sets the project's title.
      * \param title new title
