@@ -99,7 +99,7 @@ class CreateConstantRaster(QgisAlgorithm):
         if provider is None:
             raise QgsProcessingException(self.tr("Could not create raster output: {}").format(outputFile))
         if not provider.isValid():
-            raise QgsProcessingException(self.tr("Could not create raster output {}: {}").arg(outputFile,
+            raise QgsProcessingException(self.tr("Could not create raster output {}: {}").format(outputFile,
                                                                                               provider.error().message(QgsErrorMessage.Text)))
 
         provider.setNoDataValue(1, -9999)
