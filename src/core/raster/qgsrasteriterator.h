@@ -70,6 +70,7 @@ class CORE_EXPORT QgsRasterIterator
      * \param block address of block pointer
      * \param topLeftCol top left column
      * \param topLeftRow top left row
+     * \param blockExtent optional storage for exact extent of returned raster block
      * \returns false if the last part was already returned
      * \note Not available in Python bindings
      * \since QGIS 3.2
@@ -77,7 +78,8 @@ class CORE_EXPORT QgsRasterIterator
     bool readNextRasterPart( int bandNumber,
                              int &nCols, int &nRows,
                              std::unique_ptr< QgsRasterBlock > &block,
-                             int &topLeftCol, int &topLeftRow ) SIP_SKIP;
+                             int &topLeftCol, int &topLeftRow,
+                             QgsRectangle *blockExtent = nullptr ) SIP_SKIP;
 
     void stopRasterRead( int bandNumber );
 

@@ -70,7 +70,7 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber,
   return result;
 }
 
-bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow )
+bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRows, std::unique_ptr<QgsRasterBlock> &block, int &topLeftCol, int &topLeftRow, QgsRectangle *blockExtent )
 {
   QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   block.reset();
@@ -111,6 +111,9 @@ bool QgsRasterIterator::readNextRasterPart( int bandNumber, int &nCols, int &nRo
                 viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / static_cast< double >( pInfo.nRows ) * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
+
+  if ( blockExtent )
+    *blockExtent = blockRect;
 
   block.reset( mInput->block( bandNumber, blockRect, nCols, nRows, mFeedback ) );
   topLeftCol = pInfo.currentCol;
