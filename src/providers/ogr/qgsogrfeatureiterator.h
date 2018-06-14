@@ -21,8 +21,12 @@
 
 #include <ogr_api.h>
 
+#include <memory>
+
 class QgsOgrFeatureIterator;
 class QgsOgrProvider;
+class QgsOgrDataset;
+using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
 
 class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
@@ -45,6 +49,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QString mDriverName;
     QgsCoordinateReferenceSystem mCrs;
     QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
+    QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
@@ -87,6 +92,7 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
+    QgsOgrDatasetSharedPtr mSharedDS = nullptr;
 
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 };

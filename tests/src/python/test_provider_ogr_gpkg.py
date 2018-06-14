@@ -983,6 +983,76 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001),
                         provider_extent.asPolygon()[0])
 
+    def testTransaction(self):
+
+        tmpfile = os.path.join(self.basetestpath, 'testTransaction.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('lyr1', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 1)'))
+        lyr.CreateFeature(f)
+        lyr = ds.CreateLayer('lyr2', geom_type=ogr.wkbPoint)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(2 3)'))
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(4 5)'))
+        lyr.CreateFeature(f)
+        ds = None
+
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', u'ogr')
+        self.assertTrue(vl1.isValid())
+        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', u'ogr')
+        self.assertTrue(vl2.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl1, vl2])
+
+        self.assertTrue(vl1.startEditing())
+        self.assertIsNotNone(vl1.dataProvider().transaction())
+        self.assertTrue(vl1.deleteFeature(1))
+
+        # An iterator opened on the layer should see the feature deleted
+        self.assertEqual(len([f for f in vl1.getFeatures(QgsFeatureRequest())]), 0)
+
+        # But not if opened from another connection
+        vl1_external = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr1", 'test', u'ogr')
+        self.assertTrue(vl1_external.isValid())
+        self.assertEqual(len([f for f in vl1_external.getFeatures(QgsFeatureRequest())]), 1)
+        del vl1_external
+
+        self.assertTrue(vl1.commitChanges())
+
+        # Should still get zero features on vl1
+        self.assertEqual(len([f for f in vl1.getFeatures(QgsFeatureRequest())]), 0)
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 2)
+
+        # Test undo/redo
+        self.assertTrue(vl2.startEditing())
+        self.assertIsNotNone(vl2.dataProvider().transaction())
+        self.assertTrue(vl2.editBuffer().deleteFeature(1))
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        self.assertTrue(vl2.editBuffer().deleteFeature(2))
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 0)
+        vl2.undoStack().undo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        vl2.undoStack().undo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 2)
+        vl2.undoStack().redo()
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        self.assertTrue(vl2.commitChanges())
+
+        self.assertEqual(len([f for f in vl2.getFeatures(QgsFeatureRequest())]), 1)
+        del vl1
+        del vl2
+
+        vl2_external = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "lyr2", 'test', u'ogr')
+        self.assertTrue(vl2_external.isValid())
+        self.assertEqual(len([f for f in vl2_external.getFeatures(QgsFeatureRequest())]), 1)
+        del vl2_external
+
 
 if __name__ == '__main__':
     unittest.main()

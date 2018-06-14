@@ -26,6 +26,7 @@
 #include "qgssettings.h"
 #include "qgsexception.h"
 #include "qgswkbtypes.h"
+#include "qgsogrtransaction.h"
 
 #include <QTextCodec>
 #include <QFile>
@@ -42,38 +43,51 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
   : QgsAbstractFeatureIteratorFromSource<QgsOgrFeatureSource>( source, ownSource, request )
   , mFilterFids( mRequest.filterFids() )
   , mFilterFidsIt( mFilterFids.constBegin() )
+  , mSharedDS( source->mSharedDS )
 {
-  //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
-  mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ) );
-  if ( !mConn->ds )
+  if ( mSharedDS )
   {
-    return;
-  }
-
-  if ( mSource->mLayerName.isNull() )
-  {
-    mOgrLayer = GDALDatasetGetLayer( mConn->ds, mSource->mLayerIndex );
-  }
-  else
-  {
-    mOgrLayer = GDALDatasetGetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
-  }
-  if ( !mOgrLayer )
-  {
-    return;
-  }
-
-  if ( !mSource->mSubsetString.isEmpty() )
-  {
-    mOgrOrigLayer = mOgrLayer;
-    mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), true, &mOrigFidAdded );
-    mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, true, &mOrigFidAdded );
+    mOgrLayer = mSharedDS->createSQLResultLayer( mSource->mEncoding, mSource->mLayerName, mSource->mLayerIndex );
     if ( !mOgrLayer )
     {
-      close();
       return;
     }
   }
+  else
+  {
+    //QgsDebugMsg( "Feature iterator of " + mSource->mLayerName + ": acquiring connection");
+    mConn = QgsOgrConnPool::instance()->acquireConnection( QgsOgrProviderUtils::connectionPoolId( mSource->mDataSource ) );
+    if ( !mConn->ds )
+    {
+      return;
+    }
+
+    if ( mSource->mLayerName.isNull() )
+    {
+      mOgrLayer = GDALDatasetGetLayer( mConn->ds, mSource->mLayerIndex );
+    }
+    else
+    {
+      mOgrLayer = GDALDatasetGetLayerByName( mConn->ds, mSource->mLayerName.toUtf8().constData() );
+    }
+    if ( !mOgrLayer )
+    {
+      return;
+    }
+
+    if ( !mSource->mSubsetString.isEmpty() )
+    {
+      mOgrOrigLayer = mOgrLayer;
+      mOgrLayerWithFid = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, QString(), true, &mOrigFidAdded );
+      mOgrLayer = QgsOgrProviderUtils::setSubsetString( mOgrLayer, mConn->ds, mSource->mEncoding, mSource->mSubsetString, true, &mOrigFidAdded );
+      if ( !mOgrLayer )
+      {
+        close();
+        return;
+      }
+    }
+  }
+  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
@@ -237,6 +251,8 @@ bool QgsOgrFeatureIterator::fetchFeatureWithId( QgsFeatureId id, QgsFeature &fea
 
 bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 {
+  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
+
   feature.setValid( false );
 
   if ( mClosed || !mOgrLayer )
@@ -286,6 +302,8 @@ bool QgsOgrFeatureIterator::fetchFeature( QgsFeature &feature )
 
 bool QgsOgrFeatureIterator::rewind()
 {
+  QMutexLocker locker( mSharedDS ? &mSharedDS->mutex() : nullptr );
+
   if ( mClosed || !mOgrLayer )
     return false;
 
@@ -299,6 +317,20 @@ bool QgsOgrFeatureIterator::rewind()
 
 bool QgsOgrFeatureIterator::close()
 {
+  if ( mSharedDS )
+  {
+    iteratorClosed();
+
+    if ( mOgrLayer )
+    {
+      mSharedDS->releaseResultSet( mOgrLayer );
+      mOgrLayer = nullptr;
+    }
+    mSharedDS.reset();
+    mClosed = true;
+    return true;
+  }
+
   if ( !mConn )
     return false;
 
@@ -444,7 +476,12 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mDriverName( p->mGDALDriverName )
   , mCrs( p->crs() )
   , mWkbType( p->wkbType() )
+  , mSharedDS( nullptr )
 {
+  if ( p->mTransaction )
+  {
+    mSharedDS = p->mTransaction->sharedDS();
+  }
   for ( int i = ( p->mFirstFieldIsFid ) ? 1 : 0; i < mFields.size(); i++ )
     mFieldsWithoutFid.append( mFields.at( i ) );
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( mDataSource ) );
