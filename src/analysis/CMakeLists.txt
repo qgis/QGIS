@@ -82,6 +82,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmunion.cpp
   processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
 
