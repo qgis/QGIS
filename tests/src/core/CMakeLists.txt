@@ -163,6 +163,7 @@ SET(TESTS
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
+ testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
  testqgsrasterlayer.cpp
  testqgsrastersublayer.cpp
