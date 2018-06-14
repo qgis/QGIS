@@ -42,7 +42,6 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class CreateConstantRaster(QgisAlgorithm):
-
     EXTENT = 'EXTENT'
     TARGET_CRS = 'TARGET_CRS'
     PIXEL_SIZE = 'PIXEL_SIZE'
@@ -100,7 +99,8 @@ class CreateConstantRaster(QgisAlgorithm):
             raise QgsProcessingException(self.tr("Could not create raster output: {}").format(outputFile))
         if not provider.isValid():
             raise QgsProcessingException(self.tr("Could not create raster output {}: {}").format(outputFile,
-                                                                                              provider.error().message(QgsErrorMessage.Text)))
+                                                                                                 provider.error().message(
+                                                                                                     QgsErrorMessage.Text)))
 
         provider.setNoDataValue(1, -9999)
 
