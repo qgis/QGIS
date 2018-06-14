@@ -128,13 +128,10 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
 
-  QWaitCondition mainThreadWaitCondition;
-  QMutex mainThreadMutex;
+  QWaitCondition waitCondition;
+  QMutex waitConditionMutex;
 
-  QWaitCondition downloaderThreadWaitCondition;
-  QMutex downloaderThreadMutex;
-
-  std::function<bool()> downloaderFunction = [ this, request, synchronous, &mainThreadMutex, &mainThreadWaitCondition, &downloaderThreadMutex, &downloaderThreadWaitCondition ]()
+  std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition ]()
   {
     if ( QThread::currentThread() != QgsApplication::instance()->thread() )
       QgsNetworkAccessManager::instance( Qt::DirectConnection );
@@ -148,7 +145,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
       mErrorCode = QgsWfsRequest::NetworkError;
       mErrorMessage = errorMessageFailedAuth();
       QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
-      mainThreadWaitCondition.wakeAll();
+      waitCondition.wakeAll();
       success = false;
     }
     else
@@ -161,15 +158,15 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
 
       if ( synchronous )
       {
-        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&mainThreadMutex, &mainThreadWaitCondition, &downloaderThreadMutex, &downloaderThreadWaitCondition]()
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, [&waitConditionMutex, &waitCondition]()
         {
-          mainThreadMutex.lock();
-          mainThreadWaitCondition.wakeAll();
-          mainThreadMutex.unlock();
+          waitConditionMutex.lock();
+          waitCondition.wakeAll();
+          waitConditionMutex.unlock();
 
-          downloaderThreadMutex.lock();
-          downloaderThreadWaitCondition.wait( &downloaderThreadMutex );
-          downloaderThreadMutex.unlock();
+          waitConditionMutex.lock();
+          waitCondition.wait( &waitConditionMutex );
+          waitConditionMutex.unlock();
         }, Qt::DirectConnection
                );
         QEventLoop loop;
@@ -177,7 +174,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
         loop.exec();
       }
     }
-    mainThreadWaitCondition.wakeAll();
+    waitCondition.wakeAll();
     return success;
   };
 
@@ -187,17 +184,23 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
   {
     std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
     downloaderThread->start();
+
     while ( !downloaderThread->isFinished() )
     {
-      mainThreadMutex.lock();
-      mainThreadWaitCondition.wait( &mainThreadMutex );
-      mainThreadMutex.unlock();
+      waitConditionMutex.lock();
+      waitCondition.wait( &waitConditionMutex );
+      waitConditionMutex.unlock();
+
+      // If the downloader thread wakes us (the main thread) up and is not yet finished
+      // he needs the authentication to run.
+      // The processEvents() call gives the auth manager the chance to show a dialog and
+      // once done with that, we can wake the downloaderThread again and continue the download.
       if ( !downloaderThread->isFinished() )
       {
         QgsApplication::instance()->processEvents();
-        downloaderThreadMutex.lock();
-        downloaderThreadWaitCondition.wakeAll();
-        downloaderThreadMutex.unlock();
+        waitConditionMutex.lock();
+        waitCondition.wakeAll();
+        waitConditionMutex.unlock();
       }
     }
 
