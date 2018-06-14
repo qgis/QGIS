@@ -26,7 +26,7 @@ The QgsMapLayerComboBox class is a combo box which displays the list of layers
 
     explicit QgsMapLayerComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsMapLayerComboBox creates a combo box to dislpay the list of layers (currently in the registry).
+QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
 The layers can be filtered and/or ordered.
 %End
 
