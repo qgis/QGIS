@@ -73,12 +73,14 @@ void QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( QgsRasterInterface *
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop ) )
+  QgsRectangle blockExtent;
+  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop, &blockExtent ) )
   {
-    double cellCenterY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
+    double cellCenterY = blockExtent.yMaximum() - 0.5 * cellSizeY;
+
     for ( int row = 0; row < iterRows; ++row )
     {
-      double cellCenterX = rasterBBox.xMinimum() + ( iterLeft + 0.5 ) * cellSizeX;
+      double cellCenterX = blockExtent.xMinimum() + 0.5 * cellSizeX;
       for ( int col = 0; col < iterCols; ++col )
       {
         double pixelValue = block->value( row, col );
@@ -121,12 +123,13 @@ void QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( QgsRasterInterfa
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop ) )
+  QgsRectangle blockExtent;
+  while ( iter.readNextRasterPart( rasterBand, iterCols, iterRows, block, iterLeft, iterTop, &blockExtent ) )
   {
-    double currentY = rasterBBox.yMinimum() + ( iterTop + iterRows - 0.5 ) * cellSizeY;
+    double currentY = blockExtent.yMaximum() - 0.5 * cellSizeY;
     for ( int row = 0; row < iterRows; ++row )
     {
-      double currentX = rasterBBox.xMinimum() + ( iterLeft + 0.5 ) * cellSizeX;
+      double currentX = blockExtent.xMinimum() + 0.5 * cellSizeX;
       for ( int col = 0; col < iterCols; ++col )
       {
         double pixelValue = block->value( row, col );
