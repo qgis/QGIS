@@ -385,11 +385,7 @@ QgsProject::~QgsProject()
 
 QgsProject *QgsProject::instance()
 {
-  if ( !sProject )
-  {
-    sProject = new QgsProject;
-  }
-  return sProject;
+  return QgsApplication::activeProject();
 }
 
 void QgsProject::setTitle( const QString &title )

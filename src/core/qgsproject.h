@@ -97,7 +97,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
 
   public:
-    //! Returns the QgsProject singleton instance
+
+    /**
+     * Returns the active QGIS project.
+     * Alias for ``QgsApplication.activeProject()``
+     *
+     * \deprecated since QGIS 3.2 use QgsApplication::activeProject() instead.
+     */
     static QgsProject *instance();
 
     /**

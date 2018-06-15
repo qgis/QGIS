@@ -1413,6 +1413,22 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
   }
 }
 
+QgsProject *QgsApplication::activeProject()
+{
+  return instance()->ABISYM( mActiveProject );
+}
+
+void QgsApplication::setActiveProject( QgsProject *activeProject )
+{
+  QgsApplication *app = instance();
+
+  if ( app->ABISYM( mActiveProject ) == activeProject )
+    return;
+
+  app->ABISYM( mActiveProject ) = activeProject;
+  emit app->activeProjectChanged();
+}
+
 QVariantMap QgsApplication::customVariables()
 {
   //read values from QgsSettings

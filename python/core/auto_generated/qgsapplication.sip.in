@@ -804,6 +804,20 @@ Set a single custom expression variable.
     bool x11EventFilter( XEvent *event );
 %End
 
+    static QgsProject *activeProject();
+%Docstring
+Returns the active QGIS project.
+
+.. versionadded:: 3.2
+%End
+
+    static void setActiveProject( QgsProject *activeProject );
+%Docstring
+Change the active QGIS project.
+
+.. versionadded:: 3.2
+%End
+
   signals:
 
     void customVariablesChanged();
@@ -817,6 +831,13 @@ Emitted whenever a custom global variable changes.
     void nullRepresentationChanged();
 %Docstring
 \copydoc nullRepresentation()
+%End
+
+    void activeProjectChanged();
+%Docstring
+Signal emitted whenever the active project changes.
+
+.. versionadded:: 3.2
 %End
 
 };

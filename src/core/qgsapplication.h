@@ -47,6 +47,7 @@ class QgsPageSizeRegistry;
 class QgsLayoutItemRegistry;
 class QgsAuthManager;
 class QgsNetworkContentFetcherRegistry;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -739,6 +740,20 @@ class CORE_EXPORT QgsApplication : public QApplication
     SIP_END
 #endif
 
+    /**
+     * Returns the active QGIS project.
+     *
+     *  \since QGIS 3.2
+     */
+    static QgsProject *activeProject();
+
+    /**
+     * Change the active QGIS project.
+     *
+     * \since QGIS 3.2
+     */
+    static void setActiveProject( QgsProject *activeProject );
+
   signals:
     //! \note not available in Python bindings
     void preNotify( QObject *receiver, QEvent *event, bool *done ) SIP_SKIP;
@@ -754,6 +769,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \copydoc nullRepresentation()
      */
     void nullRepresentationChanged();
+
+    /**
+     * Signal emitted whenever the active project changes.
+     *
+     * \since QGIS 3.2
+     */
+    void activeProjectChanged();
 
   private:
 
@@ -772,6 +794,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
     static QMap<QString, QString> ABISYM( mSystemEnvVars );
+    static QgsProject *ABISYM( mActiveProject ) ;
 
     static QString ABISYM( mConfigPath );
 
