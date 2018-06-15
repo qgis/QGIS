@@ -1,13 +1,8 @@
 GWR for Single Predictor Grid
 statistics_regression
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterFeatureSource|DEPENDENT|Dependent Variable|5|None|False
-QgsProcessingParameterVectorDestination|RESIDUALS|Residuals
 QgsProcessingParameterRasterLayer|PREDICTOR|Predictor|None|False
-QgsProcessingParameterRasterDestination|REGRESSION|Regression
-QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination
-QgsProcessingParameterRasterDestination|INTERCEPT|Intercept
-QgsProcessingParameterRasterDestination|SLOPE|Slope
+QgsProcessingParameterField|DEPENDENT|Dependent Variable|None|POINTS|-1|False|False
 QgsProcessingParameterEnum|DW_WEIGHTING|Weighting Function|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting|False|3
 QgsProcessingParameterNumber|DW_IDW_POWER|Inverse Distance Weighting Power|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
 QgsProcessingParameterBoolean|DW_IDW_OFFSET|Inverse Distance Offset|True
@@ -18,3 +13,8 @@ QgsProcessingParameterEnum|SEARCH_POINTS_ALL|Number of Points|[0] maximum number
 QgsProcessingParameterNumber|SEARCH_POINTS_MIN|Minimum|QgsProcessingParameterNumber.Integer|16|False|1|None
 QgsProcessingParameterNumber|SEARCH_POINTS_MAX|Maximum|QgsProcessingParameterNumber.Integer|20|False|1|None
 QgsProcessingParameterEnum|SEARCH_DIRECTION|Direction|[0] all directions;[1] quadrants|False|0
+QgsProcessingParameterVectorDestination|RESIDUALS|Residuals|-1|None|True
+QgsProcessingParameterRasterDestination|REGRESSION|Regression
+QgsProcessingParameterRasterDestination|QUALITY|Coefficient of Determination|None|True
+QgsProcessingParameterRasterDestination|INTERCEPT|Intercept|None|True
+QgsProcessingParameterRasterDestination|SLOPE|Slope|None|True

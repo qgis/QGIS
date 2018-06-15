@@ -1,8 +1,8 @@
 GWR for Single Predictor (Gridded Model Output)
 statistics_regression
 QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
-QgsProcessingParameterFeatureSource|DEPENDENT|Dependent Variable|5|None|False
-QgsProcessingParameterFeatureSource|PREDICTOR|Predictor|5|None|False
+QgsProcessingParameterField|DEPENDENT|Dependent Variable|None|POINTS|-1|False|False
+QgsProcessingParameterField|PREDICTOR|Predictor|None|POINTS|-1|False|False
 QgsProcessingParameterEnum|TARGET_DEFINITION|Target Grid System|[0] user defined;[1] grid or grid system|False|0
 QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
 QgsProcessingParameterNumber|TARGET_USER_XMIN|Left|QgsProcessingParameterNumber.Double|0.000000|False|None|None
