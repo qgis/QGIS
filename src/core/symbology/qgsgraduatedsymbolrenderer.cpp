@@ -1245,7 +1245,7 @@ double QgsGraduatedSymbolRenderer::minSymbolSize() const
 
 double QgsGraduatedSymbolRenderer::maxSymbolSize() const
 {
-  double max = DBL_MIN;
+  double max = std::numeric_limits<double>::min();
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;
