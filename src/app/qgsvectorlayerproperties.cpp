@@ -386,6 +386,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     layer->setItemVisibilityChecked( dependencySources.contains( layer->layerId() ) );
   }
 
+  QgsMapSettings ms = QgisApp::instance()->mapCanvas()->mapSettings();
+  mLayersDependenciesTreeModel->setLegendMapViewData( QgisApp::instance()->mapCanvas()->mapUnitsPerPixel(), ms.outputDpi(), ms.scale() );
   mLayersDependenciesTreeView->setModel( mLayersDependenciesTreeModel.get() );
 
   connect( mRefreshLayerCheckBox, &QCheckBox::toggled, mRefreshLayerIntervalSpinBox, &QDoubleSpinBox::setEnabled );
