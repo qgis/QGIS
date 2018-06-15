@@ -284,4 +284,19 @@ tests:
       RESULT:
         name: expected/saga/polygon_union.shp
         type: vector
-  
+
+  - algorithm: saga:polygonidentity
+    name: Polygon identity
+    params:
+      A:
+        name: custom/overlay1_a.geojson
+        type: vector
+      B:
+        name: custom/overlay1_b.geojson
+        type: vector
+      SPLIT: true
+    results:
+      RESULT:
+        name: expected/saga/polygon_identity.shp
+        type: vector
+
