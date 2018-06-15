@@ -370,7 +370,7 @@ void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, con
 
   mSelectedFeature->deselectAllVertices();
 
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
   std::unique_ptr<QgsRectangle> bbox;
   QModelIndexList indexList = selected.indexes();
   for ( int i = 0; i < indexList.length(); ++i )

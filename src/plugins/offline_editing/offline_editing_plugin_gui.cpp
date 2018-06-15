@@ -109,7 +109,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
+  QgsLayerTree *rootNode = QgsApplication::activeProject()->layerTreeRoot()->clone();
   QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
   mLayerTree->header()->setResizeMode( QHeaderView::ResizeToContents );

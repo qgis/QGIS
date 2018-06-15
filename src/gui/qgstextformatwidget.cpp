@@ -1256,7 +1256,7 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
     mShapeSVGPathLineEdit->setText( svgPath );
   }
 
-  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsApplication::activeProject()->pathResolver() );
   bool validSVG = QFileInfo::exists( resolvedPath );
 
   // draw red text for path field if invalid (path can't be resolved)

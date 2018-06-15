@@ -791,7 +791,7 @@ void QgsGeorefPluginGui::updateMouseCoordinatePrecision()
   // function needs to be called every time one of the above happens.
 
   // Get the display precision from the project s
-  bool automatic = QgsProject::instance()->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
+  bool automatic = QgsApplication::activeProject()->readBoolEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/Automatic" ) );
   int dp = 0;
 
   if ( automatic )
@@ -804,7 +804,7 @@ void QgsGeorefPluginGui::updateMouseCoordinatePrecision()
       dp = static_cast<int>( std::ceil( -1.0 * std::log10( mCanvas->mapUnitsPerPixel() ) ) );
   }
   else
-    dp = QgsProject::instance()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
+    dp = QgsApplication::activeProject()->readNumEntry( QStringLiteral( "PositionPrecision" ), QStringLiteral( "/DecimalPlaces" ) );
 
   // Keep dp sensible
   if ( dp < 0 )
@@ -1101,7 +1101,7 @@ void QgsGeorefPluginGui::setupConnections()
   connect( mCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
   connect( mCanvas, &QgsMapCanvas::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
   // Connect when one Layer is removed - Case where change the Projetct in QGIS
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsGeorefPluginGui::layerWillBeRemoved );
+  connect( QgsApplication::activeProject(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsGeorefPluginGui::layerWillBeRemoved );
 
   // Connect extents changed - Use for need add again Raster
   connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsGeorefPluginGui::extentsChanged );
@@ -1112,7 +1112,7 @@ void QgsGeorefPluginGui::removeOldLayer()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsProject::instance()->removeMapLayers(
+    QgsApplication::activeProject()->removeMapLayers(
       ( QStringList() << mLayer->id() ) );
     mLayer = nullptr;
   }
@@ -1158,7 +1158,7 @@ void QgsGeorefPluginGui::addRaster( const QString &file )
   mLayer = new QgsRasterLayer( file, QStringLiteral( "Raster" ) );
 
   // so layer is not added to legend
-  QgsProject::instance()->addMapLayers(
+  QgsApplication::activeProject()->addMapLayers(
     QList<QgsMapLayer *>() << mLayer, false, false );
 
   // add layer to map canvas
@@ -1512,7 +1512,7 @@ bool QgsGeorefPluginGui::writePDFMapFile( const QString &fileName, const QgsGeor
   double paperHeight = s.value( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), "420" ).toDouble();
 
   //create layout
-  QgsLayout layout( QgsProject::instance() );
+  QgsLayout layout( QgsApplication::activeProject() );
   std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
 
   double leftMargin = 8;
@@ -1578,7 +1578,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString &fileName, const QgsG
   }
 
   //create layout A4 with 300 dpi
-  QgsLayout layout( QgsProject::instance() );
+  QgsLayout layout( QgsApplication::activeProject() );
 
   std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( &layout );
   page->setPageSize( QgsLayoutSize( 210, 297 ) ); //A4

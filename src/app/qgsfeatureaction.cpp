@@ -57,8 +57,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );

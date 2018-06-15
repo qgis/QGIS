@@ -684,7 +684,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapSettings().destinationCrs();
-      QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS, QgsProject::instance() ); // use existing WGS84 CRS
+      QgsCoordinateTransform myTransform( mWgs84CRS, mypSRS, QgsApplication::activeProject() ); // use existing WGS84 CRS
 
       QgsPointXY myPoint = myTransform.transform( myNewCenter );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
@@ -758,7 +758,7 @@ void QgsGpsInformationWidget::addVertex()
   QgsPointXY myPoint;
   if ( mpCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
     myPoint = t.transform( mLastGpsPosition );
   }
   else
@@ -809,7 +809,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
   {
     QgsFeature *f = new QgsFeature( 0 );
 
-    QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsApplication::activeProject() );
     QgsPointXY myPoint = t.transform( mLastGpsPosition );
     double x = myPoint.x();
     double y = myPoint.y();
@@ -864,7 +864,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       {
         QgsPointXY savePoint = *it;
         // transform the gps point into the layer crs
-        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsApplication::activeProject() );
         QgsPointXY myPoint = t.transform( savePoint );
 
         wkbPtr << myPoint.x() << myPoint.y();
@@ -887,7 +887,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       {
         QgsPointXY savePoint = *it;
         // transform the gps point into the layer crs
-        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsProject::instance() );
+        QgsCoordinateTransform t( mWgs84CRS, vlayer->crs(), QgsApplication::activeProject() );
         QgsPointXY myPoint = t.transform( savePoint );
         wkbPtr << myPoint.x() << myPoint.y();
       }
@@ -902,7 +902,7 @@ void QgsGpsInformationWidget::mBtnCloseFeature_clicked()
       f->setGeometry( g );
 
       QgsGeometry featGeom = f->geometry();
-      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+      int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsApplication::activeProject()->avoidIntersectionsLayers() );
       f->setGeometry( featGeom );
       if ( avoidIntersectionsReturn == 1 )
       {

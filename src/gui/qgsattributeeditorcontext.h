@@ -91,7 +91,7 @@ class GUI_EXPORT QgsAttributeEditorContext
       if ( mLayer )
       {
         mDistanceArea = distanceArea;
-        mDistanceArea.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
+        mDistanceArea.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
       }
     }
 

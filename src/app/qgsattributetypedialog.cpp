@@ -296,7 +296,7 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
   QgsExpressionContext context;
   context
       << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+      << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
       << QgsExpressionContextUtils::layerScope( mLayer )
       << QgsExpressionContextUtils::mapToolCaptureScope( QList<QgsPointLocator::Match>() );
 

@@ -206,12 +206,12 @@ void QgsMapToolIdentifyAction::deactivate()
 
 QgsUnitTypes::DistanceUnit QgsMapToolIdentifyAction::displayDistanceUnits() const
 {
-  return QgsProject::instance()->distanceUnits();
+  return QgsApplication::activeProject()->distanceUnits();
 }
 
 QgsUnitTypes::AreaUnit QgsMapToolIdentifyAction::displayAreaUnits() const
 {
-  return QgsProject::instance()->areaUnits();
+  return QgsApplication::activeProject()->areaUnits();
 }
 
 void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureStore )

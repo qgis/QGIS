@@ -141,7 +141,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
+    QStringList noIdentifyLayerIdList = QgsApplication::activeProject()->readListEntry( QStringLiteral( "Identify" ), QStringLiteral( "/disabledLayers" ) );
 
     int layerCount;
     if ( layerList.isEmpty() )
@@ -376,7 +376,7 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
 
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
-  return QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), canvasPoint, mCanvas->mapSettings().destinationCrs(),
+  return QgsCoordinateUtils::formatCoordinateForProject( QgsApplication::activeProject(), canvasPoint, mCanvas->mapSettings().destinationCrs(),
          mCoordinatePrecision );
 }
 
@@ -399,10 +399,10 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
   QMap< QString, QString > derivedAttributes;
 
   // init distance/area calculator
-  QString ellipsoid = QgsProject::instance()->ellipsoid();
+  QString ellipsoid = QgsApplication::activeProject()->ellipsoid();
   QgsDistanceArea calc;
   calc.setEllipsoid( ellipsoid );
-  calc.setSourceCrs( layer->crs(), QgsProject::instance()->transformContext() );
+  calc.setSourceCrs( layer->crs(), QgsApplication::activeProject()->transformContext() );
 
   QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::NullGeometry;

@@ -213,7 +213,7 @@ QgsExpressionContext QgsActionManager::createExpressionContext() const
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
   if ( mLayer )
     context << QgsExpressionContextUtils::layerScope( mLayer );
 

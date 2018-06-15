@@ -42,7 +42,7 @@ bool QgsLayoutQptDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface,
 
   QDomDocument templateDoc;
   QgsReadWriteContext context;
-  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   if ( templateDoc.setContent( &templateFile ) )
   {
     bool ok = false;

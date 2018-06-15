@@ -615,11 +615,11 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsExpression *exp = new QgsExpression( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mSource->mCrs, QgsApplication::activeProject()->transformContext() );
+  da.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp->setDistanceUnits( QgsApplication::activeProject()->distanceUnits() );
+  exp->setAreaUnits( QgsApplication::activeProject()->areaUnits() );
 
   exp->prepare( mExpressionContext.get() );
   Q_FOREACH ( const QString &col, exp->referencedColumns() )
@@ -660,7 +660,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
 
   mExpressionContext.reset( new QgsExpressionContext() );
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() ) );
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
 
   mFieldsToPrepare = ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes ) ? mRequest.subsetOfAttributes() : mSource->mFields.allAttributesList();

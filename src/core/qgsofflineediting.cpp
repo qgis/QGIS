@@ -56,7 +56,7 @@ extern "C"
 
 QgsOfflineEditing::QgsOfflineEditing()
 {
-  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditing::layerAdded );
+  connect( QgsApplication::activeProject(), &QgsProject::layerWasAdded, this, &QgsOfflineEditing::layerAdded );
 }
 
 /**
@@ -101,7 +101,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
       Q_FOREACH ( const QString &layerId, layerIds )
       {
-        QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+        QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerId );
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
@@ -131,7 +131,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
 
-        QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIds.at( i ) );
+        QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerIds.at( i ) );
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( vl )
         {
@@ -141,7 +141,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
           {
             layerIdMapping.insert( origLayerId, newLayer );
             // remove remote layer
-            QgsProject::instance()->removeMapLayers(
+            QgsApplication::activeProject()->removeMapLayers(
               QStringList() << origLayerId );
           }
         }
@@ -172,15 +172,15 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
       emit progressStopped();
 
       // save offline project
-      QString projectTitle = QgsProject::instance()->title();
+      QString projectTitle = QgsApplication::activeProject()->title();
       if ( projectTitle.isEmpty() )
       {
-        projectTitle = QFileInfo( QgsProject::instance()->fileName() ).fileName();
+        projectTitle = QFileInfo( QgsApplication::activeProject()->fileName() ).fileName();
       }
       projectTitle += QLatin1String( " (offline)" );
-      QgsProject::instance()->setTitle( projectTitle );
+      QgsApplication::activeProject()->setTitle( projectTitle );
 
-      QgsProject::instance()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsProject::instance()->writePath( dbPath ) );
+      QgsApplication::activeProject()->writeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH, QgsApplication::activeProject()->writePath( dbPath ) );
 
       return true;
     }
@@ -191,7 +191,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
 
 bool QgsOfflineEditing::isOfflineProject() const
 {
-  return !QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty();
+  return !QgsApplication::activeProject()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ).isEmpty();
 }
 
 void QgsOfflineEditing::synchronize()
@@ -207,7 +207,7 @@ void QgsOfflineEditing::synchronize()
 
   // restore and sync remote layers
   QList<QgsMapLayer *> offlineLayers;
-  QMap<QString, QgsMapLayer *> mapLayers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> mapLayers = QgsApplication::activeProject()->mapLayers();
   for ( QMap<QString, QgsMapLayer *>::iterator layer_it = mapLayers.begin() ; layer_it != mapLayers.end(); ++layer_it )
   {
     QgsMapLayer *layer = layer_it.value();
@@ -246,7 +246,7 @@ void QgsOfflineEditing::synchronize()
       QgsVectorLayer *offlineLayer = qobject_cast<QgsVectorLayer *>( layer );
 
       // register this layer with the central layers registry
-      QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
+      QgsApplication::activeProject()->addMapLayers( QList<QgsMapLayer *>() << remoteLayer, true );
 
       // copy style
       copySymbology( offlineLayer, remoteLayer );
@@ -307,14 +307,14 @@ void QgsOfflineEditing::synchronize()
       // again with the same path
       offlineLayer->dataProvider()->invalidateConnections( QgsDataSourceUri( offlineLayer->source() ).database() );
       // remove offline layer
-      QgsProject::instance()->removeMapLayers( QStringList() << qgisLayerId );
+      QgsApplication::activeProject()->removeMapLayers( QStringList() << qgisLayerId );
 
 
       // disable offline project
-      QString projectTitle = QgsProject::instance()->title();
+      QString projectTitle = QgsApplication::activeProject()->title();
       projectTitle.remove( QRegExp( " \\(offline\\)$" ) );
-      QgsProject::instance()->setTitle( projectTitle );
-      QgsProject::instance()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
+      QgsApplication::activeProject()->setTitle( projectTitle );
+      QgsApplication::activeProject()->removeEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
       remoteLayer->reload(); //update with other changes
     }
     else
@@ -680,13 +680,13 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
       newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
 
       // register this layer with the central layers registry
-      QgsProject::instance()->addMapLayers(
+      QgsApplication::activeProject()->addMapLayers(
         QList<QgsMapLayer *>() << newLayer );
 
       // copy style
       copySymbology( layer, newLayer );
 
-      QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+      QgsLayerTreeGroup *layerTreeRoot = QgsApplication::activeProject()->layerTreeRoot();
       // Find the parent group of the original layer
       QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
       if ( layerTreeLayer )
@@ -919,7 +919,7 @@ void QgsOfflineEditing::copySymbology( QgsVectorLayer *sourceLayer, QgsVectorLay
 
 void QgsOfflineEditing::updateRelations( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
-  QgsRelationManager *relationManager = QgsProject::instance()->relationManager();
+  QgsRelationManager *relationManager = QgsApplication::activeProject()->relationManager();
   QList<QgsRelation> relations;
   relations = relationManager->referencedRelations( sourceLayer );
 
@@ -942,7 +942,7 @@ void QgsOfflineEditing::updateRelations( QgsVectorLayer *sourceLayer, QgsVectorL
 
 void QgsOfflineEditing::updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
-  QgsMapThemeCollection *mapThemeCollection = QgsProject::instance()->mapThemeCollection();
+  QgsMapThemeCollection *mapThemeCollection = QgsApplication::activeProject()->mapThemeCollection();
   QStringList mapThemeNames = mapThemeCollection->mapThemes();
 
   Q_FOREACH ( const QString &mapThemeName, mapThemeNames )
@@ -959,13 +959,13 @@ void QgsOfflineEditing::updateMapThemes( QgsVectorLayer *sourceLayer, QgsVectorL
       }
     }
 
-    QgsProject::instance()->mapThemeCollection()->update( mapThemeName, record );
+    QgsApplication::activeProject()->mapThemeCollection()->update( mapThemeName, record );
   }
 }
 
 void QgsOfflineEditing::updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVectorLayer *targetLayer )
 {
-  QList<QgsMapLayer *>  layerOrder = QgsProject::instance()->layerTreeRoot()->customLayerOrder();
+  QList<QgsMapLayer *>  layerOrder = QgsApplication::activeProject()->layerTreeRoot()->customLayerOrder();
 
   auto iterator = layerOrder.begin();
 
@@ -986,7 +986,7 @@ void QgsOfflineEditing::updateLayerOrder( QgsVectorLayer *sourceLayer, QgsVector
     ++iterator;
   }
 
-  QgsProject::instance()->layerTreeRoot()->setCustomLayerOrder( layerOrder );
+  QgsApplication::activeProject()->layerTreeRoot()->setCustomLayerOrder( layerOrder );
 }
 
 // NOTE: use this to map column indices in case the remote geometry column is not last
@@ -1013,10 +1013,10 @@ void QgsOfflineEditing::showWarning( const QString &message )
 sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
 {
   sqlite3_database_unique_ptr database;
-  QString dbPath = QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
+  QString dbPath = QgsApplication::activeProject()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
   if ( !dbPath.isEmpty() )
   {
-    QString absoluteDbPath = QgsProject::instance()->readPath( dbPath );
+    QString absoluteDbPath = QgsApplication::activeProject()->readPath( dbPath );
     int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
@@ -1289,7 +1289,7 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
   // get new feature ids from db
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
+  QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( qgisLayerId );
   QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
 
   // only store feature ids

@@ -156,15 +156,15 @@ void QgsBookmarks::addClicked()
   Q_ASSERT( canvas );
 
   QString projStr( QLatin1String( "" ) );
-  if ( QgsProject::instance() )
+  if ( QgsApplication::activeProject() )
   {
-    if ( !QgsProject::instance()->title().isEmpty() )
+    if ( !QgsApplication::activeProject()->title().isEmpty() )
     {
-      projStr = QgsProject::instance()->title();
+      projStr = QgsApplication::activeProject()->title();
     }
-    else if ( !QgsProject::instance()->fileName().isEmpty() )
+    else if ( !QgsApplication::activeProject()->fileName().isEmpty() )
     {
-      QFileInfo fi( QgsProject::instance()->fileName() );
+      QFileInfo fi( QgsApplication::activeProject()->fileName() );
       projStr = fi.exists() ? fi.fileName() : QLatin1String( "" );
     }
   }
@@ -254,7 +254,7 @@ void  QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
        authid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid() )
   {
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid ),
-                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsApplication::activeProject() );
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {
@@ -461,7 +461,7 @@ QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel( QObject *parent )
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+  return QgsApplication::activeProject()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
 }
 
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex &parent ) const
@@ -480,19 +480,19 @@ QVariant QgsProjectBookmarksTableModel::data( const QModelIndex &index, int role
   switch ( index.column() )
   {
     case 1:
-      return QgsProject::instance()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ) );
     case 2:
-      return QgsProject::instance()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ) );
     case 3:
-      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ) );
     case 4:
-      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ) );
     case 5:
-      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ) );
     case 6:
-      return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ) );
+      return QgsApplication::activeProject()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ) );
     case 7:
-      return  QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ) );
+      return  QgsApplication::activeProject()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ) );
     default:
       return QVariant();
   }
@@ -506,25 +506,25 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVa
   switch ( index.column() )
   {
     case 1:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.toString() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.toString() );
       return true;
     case 2:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.toString() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.toString() );
       return true;
     case 3:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
       return true;
     case 4:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ), value.toDouble() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinY" ).arg( index.row() ), value.toDouble() );
       return true;
     case 5:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ), value.toDouble() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxX" ).arg( index.row() ), value.toDouble() );
       return true;
     case 6:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ), value.toDouble() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ), value.toDouble() );
       return true;
     case 7:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ), value.toInt() );
+      QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ), value.toInt() );
       return true;
     default:
       return false;
@@ -536,9 +536,9 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
   Q_UNUSED( parent );
   Q_UNUSED( row );
   // append
-  int oldCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+  int oldCount = QgsApplication::activeProject()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
   beginInsertRows( parent, oldCount, oldCount + count );
-  bool result = QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), oldCount + count );
+  bool result = QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), oldCount + count );
   endInsertRows();
   return result;
 }
@@ -556,10 +556,10 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
   }
   for ( int newRow = rowCount() - count ; newRow < rowCount() ; newRow++ )
   {
-    QgsProject::instance()->removeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1" ).arg( newRow ) );
+    QgsApplication::activeProject()->removeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1" ).arg( newRow ) );
   }
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) - count );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsApplication::activeProject()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) - count );
   endRemoveRows();
   return true;
 }
@@ -750,7 +750,7 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
 
 bool QgsMergedBookmarksTableModel::projectAvailable() const
 {
-  return ! QgsProject::instance()->fileName().isEmpty();
+  return ! QgsApplication::activeProject()->fileName().isEmpty();
 }
 
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )

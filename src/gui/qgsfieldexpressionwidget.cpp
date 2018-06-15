@@ -67,7 +67,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mExpressionContext = QgsExpressionContext();
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 }
 
 void QgsFieldExpressionWidget::setExpressionDialogTitle( const QString &title )
@@ -162,7 +162,7 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
   if ( vl )
     mExpressionContext = vl->createExpressionContext();
   else
-    mExpressionContext = QgsProject::instance()->createExpressionContext();
+    mExpressionContext = QgsApplication::activeProject()->createExpressionContext();
 
   mFieldProxyModel->sourceFieldModel()->setLayer( vl );
 

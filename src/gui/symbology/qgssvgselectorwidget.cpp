@@ -488,7 +488,7 @@ void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
 
 void QgsSvgSelectorWidget::mFileLineEdit_textChanged( const QString &text )
 {
-  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsProject::instance()->pathResolver() );
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsApplication::activeProject()->pathResolver() );
   bool validSVG = !resolvedPath.isNull();
 
   updateLineEditFeedback( validSVG, resolvedPath );

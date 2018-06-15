@@ -104,7 +104,7 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
 {
   ValueRelationCache cache;
 
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( config.value( QStringLiteral( "Layer" ) ).toString() ) );
 
   if ( !layer )
     return cache;

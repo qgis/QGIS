@@ -124,7 +124,7 @@ void QgsMapToolAnnotation::canvasPressEvent( QgsMapMouseEvent *e )
                                          e->pos().y() / mCanvas->height() ) );
         annotation->setFrameSize( QSizeF( 200, 100 ) );
 
-        QgsProject::instance()->annotationManager()->addAnnotation( annotation );
+        QgsApplication::activeProject()->annotationManager()->addAnnotation( annotation );
 
         // select newly added item
         Q_FOREACH ( QGraphicsItem *item, mCanvas->items() )
@@ -156,7 +156,7 @@ void QgsMapToolAnnotation::keyPressEvent( QKeyEvent *e )
     if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
     {
       QCursor neutralCursor( item->cursorShapeForAction( QgsMapCanvasAnnotationItem::NoAction ) );
-      QgsProject::instance()->annotationManager()->removeAnnotation( item->annotation() );
+      QgsApplication::activeProject()->annotationManager()->removeAnnotation( item->annotation() );
       if ( mCanvas )
       {
         mCanvas->setCursor( neutralCursor );
@@ -183,7 +183,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
       annotation->setRelativePosition( QPointF( e->pos().x() / mCanvas->width(),
                                        e->pos().y() / mCanvas->height() ) );
       item->update();
-      QgsProject::instance()->setDirty( true );
+      QgsApplication::activeProject()->setDirty( true );
     }
     else if ( mCurrentMoveAction == QgsMapCanvasAnnotationItem::MoveFramePosition )
     {
@@ -202,7 +202,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
                                          newCanvasPos.y() / mCanvas->height() ) );
       }
       item->update();
-      QgsProject::instance()->setDirty( true );
+      QgsApplication::activeProject()->setDirty( true );
     }
     else if ( mCurrentMoveAction != QgsMapCanvasAnnotationItem::NoAction )
     {
@@ -261,7 +261,7 @@ void QgsMapToolAnnotation::canvasMoveEvent( QgsMapMouseEvent *e )
       annotation->setFrameSize( QSizeF( xmax - xmin, ymax - ymin ) );
       annotation->setRelativePosition( QPointF( relPosX, relPosY ) );
       item->update();
-      QgsProject::instance()->setDirty( true );
+      QgsApplication::activeProject()->setDirty( true );
     }
   }
   else if ( item )
@@ -286,7 +286,7 @@ void QgsMapToolAnnotation::canvasDoubleClickEvent( QgsMapMouseEvent *e )
   if ( itemEditor )
   {
     if ( itemEditor->exec() )
-      QgsProject::instance()->setDirty( true );
+      QgsApplication::activeProject()->setDirty( true );
     delete itemEditor;
   }
 }
@@ -359,7 +359,7 @@ QgsPointXY QgsMapToolAnnotation::transformCanvasToAnnotation( QgsPointXY p, QgsA
 {
   if ( annotation->mapPositionCrs() != mCanvas->mapSettings().destinationCrs() )
   {
-    QgsCoordinateTransform transform( mCanvas->mapSettings().destinationCrs(), annotation->mapPositionCrs(), QgsProject::instance() );
+    QgsCoordinateTransform transform( mCanvas->mapSettings().destinationCrs(), annotation->mapPositionCrs(), QgsApplication::activeProject() );
     try
     {
       p = transform.transform( p );

@@ -69,10 +69,10 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
 void QgsScaleRangeWidget::reloadProjectScales()
 {
-  bool projectScales = QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
+  bool projectScales = QgsApplication::activeProject()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) );
   if ( projectScales )
   {
-    QStringList scalesList = QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
+    QStringList scalesList = QgsApplication::activeProject()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) );
     mMinimumScaleWidget->updateScales( scalesList );
     mMaximumScaleWidget->updateScales( scalesList );
   }

@@ -309,7 +309,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         f->setGeometry( g );
 
         QgsGeometry featGeom = f->geometry();
-        int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+        int avoidIntersectionsReturn = featGeom.avoidIntersections( QgsApplication::activeProject()->avoidIntersectionsLayers() );
         f->setGeometry( featGeom );
         if ( avoidIntersectionsReturn == 1 )
         {

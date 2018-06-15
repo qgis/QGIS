@@ -71,7 +71,7 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   pbImportDrawing->setHidden( true );
   lblMessage->setHidden( true );
 
-  int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toInt();
+  int crsid = s.value( QStringLiteral( "/DwgImport/lastCrs" ), QString::number( QgsApplication::activeProject()->crs().srsid() ) ).toInt();
 
   QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( crs );
@@ -277,7 +277,7 @@ QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const 
     return nullptr;
   }
 
-  QgsProject::instance()->addMapLayer( l, false );
+  QgsApplication::activeProject()->addMapLayer( l, false );
   layerGroup->addLayer( l );
   return l;
 }

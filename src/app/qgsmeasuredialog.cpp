@@ -51,9 +51,9 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsApplication::activeProject()->areaUnits() ) );
   else
-    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
+    mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsApplication::activeProject()->distanceUnits() ) );
 
   if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
@@ -102,10 +102,10 @@ void QgsMeasureDialog::updateSettings()
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   mCanvasUnits = mCanvas->mapUnits();
   // Configure QgsDistanceArea
-  mDistanceUnits = QgsProject::instance()->distanceUnits();
-  mAreaUnits = QgsProject::instance()->areaUnits();
-  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
-  mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  mDistanceUnits = QgsApplication::activeProject()->distanceUnits();
+  mAreaUnits = QgsApplication::activeProject()->areaUnits();
+  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject()->transformContext() );
+  mDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   mTable->clear();
   mTotal = 0;

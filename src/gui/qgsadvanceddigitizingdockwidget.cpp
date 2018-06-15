@@ -150,7 +150,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
 
   updateCapacity( true );
-  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
+  connect( QgsApplication::activeProject(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
 
   disable();
 }
@@ -442,7 +442,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     return;
   }
 
-  bool snappingEnabled = QgsProject::instance()->snappingConfig().enabled();
+  bool snappingEnabled = QgsApplication::activeProject()->snappingConfig().enabled();
 
   // update the UI according to new capacities
   // still keep the old to compare

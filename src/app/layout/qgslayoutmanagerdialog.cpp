@@ -65,7 +65,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
     settings.setValue( QStringLiteral( "lastComposerTemplateDir" ), tmplFileInfo.absolutePath(), QgsSettings::App );
   } );
 
-  mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
+  mModel = new QgsLayoutManagerModel( QgsApplication::activeProject()->layoutManager(),
                                       this );
   mProxyModel = new QgsLayoutManagerProxyModel( mLayoutListView );
   mProxyModel->setSourceModel( mModel );
@@ -249,10 +249,10 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 
     if ( title.isEmpty() )
     {
-      title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
+      title = QgsApplication::activeProject()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
     }
 
-    std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+    std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsApplication::activeProject() );
     if ( loadingTemplate )
     {
       bool loadedOK = false;
@@ -272,7 +272,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       layout->setName( title );
       QgisApp::instance()->openLayoutDesignerDialog( layout.get() );
-      QgsProject::instance()->layoutManager()->addLayout( layout.release() );
+      QgsApplication::activeProject()->layoutManager()->addLayout( layout.release() );
     }
   }
 }
@@ -303,19 +303,19 @@ void QgsLayoutManagerDialog::createReport()
 
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
+    title = QgsApplication::activeProject()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
-  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );
+  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsApplication::activeProject() );
   report->setName( title );
 
-  std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( QgsProject::instance() );
+  std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( QgsApplication::activeProject() );
   header->initializeDefaults();
   report->setHeader( header.release() );
   report->setHeaderEnabled( true );
 
   QgisApp::instance()->openLayoutDesignerDialog( report.get() );
-  QgsProject::instance()->layoutManager()->addLayout( report.release() );
+  QgsApplication::activeProject()->layoutManager()->addLayout( report.release() );
 }
 
 void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
@@ -399,7 +399,7 @@ void QgsLayoutManagerDialog::removeClicked()
   // Once we have the layout list, we can delete all of them !
   for ( QgsMasterLayoutInterface *l : qgis::as_const( layoutList ) )
   {
-    QgsProject::instance()->layoutManager()->removeLayout( l );
+    QgsApplication::activeProject()->layoutManager()->removeLayout( l );
   }
 }
 
@@ -566,7 +566,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 
   //check if name already exists
   QStringList layoutNames;
-  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  const QList< QgsMasterLayoutInterface * > layouts = QgsApplication::activeProject()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();

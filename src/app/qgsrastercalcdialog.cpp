@@ -165,7 +165,7 @@ void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbo
 
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
-  const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &layers = QgsApplication::activeProject()->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
 
   for ( ; layerIt != layers.constEnd(); ++layerIt )

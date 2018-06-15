@@ -139,7 +139,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
 
   mContext << QgsExpressionContextUtils::globalScope()
-           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+           << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
            << QgsExpressionContextUtils::atlasScope( nullptr )
            << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
            << QgsExpressionContextUtils::layerScope( mLayer );
@@ -364,7 +364,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
 
-  mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );
+  mLayersDependenciesTreeGroup.reset( QgsApplication::activeProject()->layerTreeRoot()->clone() );
   QgsLayerTreeLayer *layer = mLayersDependenciesTreeGroup->findLayer( mLayer->id() );
   if ( layer )
   {
@@ -759,7 +759,7 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->triggerRepaint();
   // notify the project we've made a change
-  QgsProject::instance()->setDirty( true );
+  QgsApplication::activeProject()->setDirty( true );
 }
 
 void QgsVectorLayerProperties::onCancel()
@@ -851,7 +851,7 @@ void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString 
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsApplication::activeProject()->crs() );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
   mMetadataWidget->crsChanged();
@@ -1631,7 +1631,7 @@ void QgsVectorLayerProperties::updateVariableEditor()
   QgsExpressionContext context;
   mVariableEditor->setContext( &context );
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::globalScope() );
-  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mVariableEditor->context()->appendScope( QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() ) );
   mVariableEditor->context()->appendScope( QgsExpressionContextUtils::layerScope( mLayer ) );
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 2 );

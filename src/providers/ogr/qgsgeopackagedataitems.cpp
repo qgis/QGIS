@@ -109,7 +109,7 @@ void QgsGeoPackageRootItem::newConnection()
 void QgsGeoPackageRootItem::createDatabase()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
-  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.setCrs( QgsApplication::activeProject()->defaultCrsForNewLayers() );
   if ( dialog.exec() == QDialog::Accepted )
   {
     if ( QgsOgrDataCollectionItem::storeConnection( dialog.databasePath(), QStringLiteral( "GPKG" ) ) )
@@ -513,7 +513,7 @@ void QgsGeoPackageCollectionItem::addTable()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
   dialog.setDatabasePath( mPath );
-  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.setCrs( QgsApplication::activeProject()->defaultCrsForNewLayers() );
   dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
   dialog.lockDatabasePath();
   if ( dialog.exec() == QDialog::Accepted )
@@ -546,7 +546,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 {
   // Check if the layer(s) are in the registry
   QList<QgsMapLayer *> layersList;
-  const auto mapLayers( QgsProject::instance()->mapLayers() );
+  const auto mapLayers( QgsApplication::activeProject()->mapLayers() );
   for ( QgsMapLayer *layer :  mapLayers )
   {
     if ( layer->publicSource() == mUri )
@@ -572,7 +572,7 @@ void QgsGeoPackageAbstractLayerItem::deleteLayer()
 
   if ( layersList.isEmpty() )
   {
-    QgsProject::instance()->removeMapLayers( layersList );
+    QgsApplication::activeProject()->removeMapLayers( layersList );
   }
 
   QString errCause;

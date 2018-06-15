@@ -484,7 +484,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
     myList << layer;
     //addMapLayers returns a list of all successfully added layers
     //so we compare that to our original list.
-    if ( myList == QgsProject::instance()->addMapLayers( myList ) )
+    if ( myList == QgsApplication::activeProject()->addMapLayers( myList ) )
       return true;
   }
   else

@@ -132,7 +132,7 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context;
       context << QgsExpressionContextUtils::globalScope()
-              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+              << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
               << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
       actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );

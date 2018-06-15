@@ -85,8 +85,8 @@ QgsGlobeWidget::QgsGlobeWidget( QgisInterface *iface, QWidget *parent )
   setAttribute( Qt::WA_DeleteOnClose );
 
   connect( mQgisIface->mapCanvas(), SIGNAL( layersChanged() ), this, SLOT( updateLayerSelectionMenu() ) );
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( updateLayerSelectionMenu() ) );
-  connect( QgsProject::instance(), SIGNAL( layerRemoved( QString ) ), this, SLOT( updateLayerSelectionMenu() ) );
+  connect( QgsApplication::activeProject(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( updateLayerSelectionMenu() ) );
+  connect( QgsApplication::activeProject(), SIGNAL( layerRemoved( QString ) ), this, SLOT( updateLayerSelectionMenu() ) );
 
   updateLayerSelectionMenu();
 }
@@ -110,9 +110,9 @@ void QgsGlobeWidget::updateLayerSelectionMenu()
   }
 
   mLayerSelectionMenu->clear();
-  QString heightmap = QgsProject::instance()->readEntry( "Heightmap", "layer" );
+  QString heightmap = QgsApplication::activeProject()->readEntry( "Heightmap", "layer" );
   // Use layerTreeRoot to get layers ordered as in the layer tree
-  for ( QgsLayerTreeLayer *layerTreeLayer : QgsProject::instance()->layerTreeRoot()->findLayers() )
+  for ( QgsLayerTreeLayer *layerTreeLayer : QgsApplication::activeProject()->layerTreeRoot()->findLayers() )
   {
     QgsMapLayer *layer = layerTreeLayer->layer();
     if ( !layer )

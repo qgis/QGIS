@@ -1040,7 +1040,7 @@ void QgsApplication::initQgis()
   ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
-  QgsProject::instance();
+  QgsApplication::activeProject();
 
   // Initialize authentication manager and connect to database
   authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
@@ -1087,7 +1087,7 @@ void QgsApplication::exitQgis()
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
 
-  delete QgsProject::instance();
+  delete QgsApplication::activeProject();
 
   delete QgsProviderRegistry::instance();
 

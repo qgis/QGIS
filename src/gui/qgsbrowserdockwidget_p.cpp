@@ -204,7 +204,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   if ( defaultProjectionOption == QLatin1String( "prompt" ) )
   {
     QgsCoordinateReferenceSystem defaultCrs =
-      QgsProject::instance()->crs();
+      QgsApplication::activeProject()->crs();
     if ( layerCrs == defaultCrs )
       mNoticeLabel->setText( "NOTICE: Layer srs set from project (" + defaultCrs.authid() + ')' );
   }

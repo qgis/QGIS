@@ -75,28 +75,28 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mPreferredSize = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ), 0 );
-  mSnapping = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Snapping" ), true );
-  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mPreferredSize = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), 30 );
+  mStyleIndex = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/Style" ), 0 );
+  mSnapping = QgsApplication::activeProject()->readBoolEntry( mNameConfig, QStringLiteral( "/Snapping" ), true );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
+  mMarginHorizontal = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  QString textFormatXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/TextFormat" ) );
+  QString textFormatXml = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/TextFormat" ) );
   if ( !textFormatXml.isEmpty() )
   {
     doc.setContent( textFormatXml );
     elem = doc.documentElement();
     QgsReadWriteContext context;
-    context.setPathResolver( QgsProject::instance()->pathResolver() );
+    context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
     mTextFormat.readXml( elem, context );
   }
   else
   {
-    QString fontXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+    QString fontXml = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
     if ( !fontXml.isEmpty() )
     {
       doc.setContent( fontXml );
@@ -118,21 +118,21 @@ void QgsDecorationScaleBar::projectRead()
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), mPreferredSize );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Snapping" ), mSnapping );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), mStyleIndex );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/PreferredSize" ), mPreferredSize );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Snapping" ), mSnapping );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Style" ), mStyleIndex );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 
   QDomDocument fontDoc;
   QgsReadWriteContext context;
-  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
   fontDoc.appendChild( textElem );
 
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
 }
 
 

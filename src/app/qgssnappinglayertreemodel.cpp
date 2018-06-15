@@ -75,7 +75,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
   {
     QComboBox *w = new QComboBox( parent );
     w->addItem( tr( "px" ), QgsTolerance::Pixels );
-    w->addItem( QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() ), QgsTolerance::ProjectUnits );
+    w->addItem( QgsUnitTypes::toString( QgsApplication::activeProject()->distanceUnits() ), QgsTolerance::ProjectUnits );
     return w;
   }
 
@@ -474,7 +474,7 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
           case QgsTolerance::Pixels:
             return tr( "pixels" );
           case QgsTolerance::ProjectUnits:
-            return QgsUnitTypes::toString( QgsProject::instance()->distanceUnits() );
+            return QgsUnitTypes::toString( QgsApplication::activeProject()->distanceUnits() );
           default:
             return QVariant();
         }

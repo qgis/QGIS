@@ -60,44 +60,44 @@ void QgsDecorationCopyright::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mLabelText = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mLabelText = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Label" ), QString() );
+  mMarginHorizontal = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  QString textXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+  QString textXml = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
     elem = doc.documentElement();
     QgsReadWriteContext rwContext;
-    rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+    rwContext.setPathResolver( QgsApplication::activeProject()->pathResolver() );
     mTextFormat.readXml( elem, rwContext );
   }
 
   // Migratation for pre QGIS 3.2 settings
-  QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ) ) );
+  QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Color" ) ) );
   if ( oldColor.isValid() )
   {
     mTextFormat.setColor( oldColor );
-    QgsProject::instance()->removeEntry( mNameConfig, QStringLiteral( "/Color" ) );
+    QgsApplication::activeProject()->removeEntry( mNameConfig, QStringLiteral( "/Color" ) );
   }
 }
 
 void QgsDecorationCopyright::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Label" ), mLabelText );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  rwContext.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
 }
 
 // Slot called when the buffer menu item is activated

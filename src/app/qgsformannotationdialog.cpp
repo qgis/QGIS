@@ -82,7 +82,7 @@ void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
 void QgsFormAnnotationDialog::deleteItem()
 {
   if ( mItem && mItem->annotation() )
-    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
+    QgsApplication::activeProject()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

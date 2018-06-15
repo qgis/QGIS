@@ -199,7 +199,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 
   try
   {
-    QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
+    QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs(), QgsApplication::activeProject() );
     selectGeomTrans.transform( ct );
   }
   catch ( QgsCsException &cse )

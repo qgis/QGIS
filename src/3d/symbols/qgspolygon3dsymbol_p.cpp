@@ -33,7 +33,7 @@ static QgsExpressionContext _expressionContext3D()
 {
   QgsExpressionContext ctx;
   ctx << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+      << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
   return ctx;
 }
 

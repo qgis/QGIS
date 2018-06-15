@@ -162,7 +162,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   }
 
   connect( this, &QgsVectorLayer::selectionChanged, this, [ = ] { emit repaintRequested(); } );
-  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
+  connect( QgsApplication::activeProject()->relationManager(), &QgsRelationManager::relationsLoaded, this, &QgsVectorLayer::onRelationsLoaded );
 
   connect( this, &QgsVectorLayer::subsetStringChanged, this, &QgsMapLayer::configChanged );
 
@@ -1603,7 +1603,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider, const QgsDataProv
       QStringList stuff = reg.capturedTexts();
       QString lName = stuff[1];
 
-      const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
+      const QMap<QString, QgsMapLayer *> &layers = QgsApplication::activeProject()->mapLayers();
 
       QMap<QString, QgsMapLayer *>::const_iterator it;
       for ( it = layers.constBegin(); it != layers.constEnd() && ( *it )->name() != lName; ++it )
@@ -4285,7 +4285,7 @@ void QgsVectorLayer::onSymbolsCounted()
 
 QList<QgsRelation> QgsVectorLayer::referencingRelations( int idx ) const
 {
-  return QgsProject::instance()->relationManager()->referencingRelations( this, idx );
+  return QgsApplication::activeProject()->relationManager()->referencingRelations( this, idx );
 }
 
 int QgsVectorLayer::listStylesInDatabase( QStringList &ids, QStringList &names, QStringList &descriptions, QString &msgError )
@@ -4501,7 +4501,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   // disconnect layers that are not present in the list of dependencies anymore
   Q_FOREACH ( const QgsMapLayerDependency &dep, mDependencies )
   {
-    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( dep.layerId() ) );
     if ( !lyr )
       continue;
     disconnect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );
@@ -4521,7 +4521,7 @@ bool QgsVectorLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   // connect to new layers
   Q_FOREACH ( const QgsMapLayerDependency &dep, mDependencies )
   {
-    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( dep.layerId() ) );
+    QgsVectorLayer *lyr = static_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( dep.layerId() ) );
     if ( !lyr )
       continue;
     connect( lyr, &QgsVectorLayer::featureAdded, this, &QgsVectorLayer::dataChanged );

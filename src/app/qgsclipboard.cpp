@@ -292,7 +292,7 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
   QgsFeatureList featureList = copyOf( fields );
 
   QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
-  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
+  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsApplication::activeProject() );
 
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )

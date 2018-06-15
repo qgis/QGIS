@@ -39,7 +39,7 @@ QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
 
 void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
-  QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTree *tree = QgsApplication::activeProject()->layerTreeRoot();
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
   {
@@ -58,7 +58,7 @@ void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLo
 void QgsLayerTreeLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QString layerId = result.userData.toString();
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+  QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerId );
   QgisApp::instance()->setActiveLayer( layer );
 }
 
@@ -77,7 +77,7 @@ QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
 
 void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback * )
 {
-  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  const QList< QgsMasterLayoutInterface * > layouts = QgsApplication::activeProject()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
     if ( layout && ( stringMatches( layout->name(), string ) || ( context.usingPrefix && string.isEmpty() ) ) )
@@ -95,7 +95,7 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
 void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QString layoutName = result.userData.toString();
-  QgsMasterLayoutInterface *layout = QgsProject::instance()->layoutManager()->layoutByName( layoutName );
+  QgsMasterLayoutInterface *layout = QgsApplication::activeProject()->layoutManager()->layoutByName( layoutName );
   if ( !layout )
     return;
 
@@ -291,7 +291,7 @@ void QgsActiveLayerFeaturesLocatorFilter::triggerResult( const QgsLocatorResult 
   QVariantList dataList = result.userData.toList();
   QgsFeatureId id = dataList.at( 0 ).toLongLong();
   QString layerId = dataList.at( 1 ).toString();
-  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast< QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
@@ -316,7 +316,7 @@ void QgsExpressionCalculatorLocatorFilter::fetchResults( const QString &string, 
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 
   QString error;
   if ( QgsExpression::checkExpression( string, &context, error ) )

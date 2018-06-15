@@ -51,7 +51,7 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
              << QgsExpressionContextUtils::atlasScope( nullptr )
              << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
              << QgsExpressionContextUtils::layerScope( mLayer );
@@ -207,8 +207,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   // field combo and expression button
   mSizeFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   mSizeFieldExpressionWidget->setGeomCalculator( myDa );
 
   //insert all attributes into the combo boxes
@@ -641,7 +641,7 @@ void QgsDiagramProperties::mFindMaximumValueButton_clicked()
     QgsExpression exp( sizeFieldNameOrExp );
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
             << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
             << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -922,7 +922,7 @@ void QgsDiagramProperties::apply()
   mLayer->setDiagramLayerSettings( dls );
 
   // refresh
-  QgsProject::instance()->setDirty( true );
+  QgsApplication::activeProject()->setDirty( true );
   mLayer->triggerRepaint();
 }
 
@@ -930,7 +930,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
           << QgsExpressionContextUtils::atlasScope( nullptr )
           << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
           << QgsExpressionContextUtils::layerScope( mLayer );
@@ -939,8 +939,8 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
   dlg.setWindowTitle( tr( "Expression Based Attribute" ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )

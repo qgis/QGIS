@@ -160,7 +160,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
     // related attributes
     if ( mLayer && mIncludeRelatedAttributes )
     {
-      QList< QgsRelation > relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer.data() );
+      QList< QgsRelation > relations = QgsApplication::activeProject()->relationManager()->referencedRelations( mLayer.data() );
       Q_FOREACH ( const QgsRelation &relation, relations )
       {
         if ( attributeCounter > 0 )

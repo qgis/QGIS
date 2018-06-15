@@ -90,7 +90,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsLayoutPropertiesWidget::variablesChanged );
   // listen out for variable edits
   connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
-  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( QgsApplication::activeProject(), &QgsProject::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
 
   updateGui();
 }
@@ -245,7 +245,7 @@ void QgsLayoutPropertiesWidget::updateVariables()
 {
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
           << QgsExpressionContextUtils::layoutScope( mLayout );
   mVariableEditor->setContext( &context );
   mVariableEditor->setEditableScopeIndex( 2 );

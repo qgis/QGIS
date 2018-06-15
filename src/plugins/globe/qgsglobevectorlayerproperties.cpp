@@ -182,8 +182,8 @@ void QgsGlobeVectorLayerPropertiesPage::showRenderingModeWidget( int index )
 QgsGlobeLayerPropertiesFactory::QgsGlobeLayerPropertiesFactory( QObject *parent )
   : QObject( parent )
 {
-  connect( QgsProject::instance(), SIGNAL( readMapLayer( QgsMapLayer *, QDomElement ) ), this, SLOT( readGlobeVectorLayerConfig( QgsMapLayer *, QDomElement ) ) );
-  connect( QgsProject::instance(), SIGNAL( writeMapLayer( QgsMapLayer *, QDomElement &, QDomDocument & ) ), this, SLOT( writeGlobeVectorLayerConfig( QgsMapLayer *, QDomElement &, QDomDocument & ) ) );
+  connect( QgsApplication::activeProject(), SIGNAL( readMapLayer( QgsMapLayer *, QDomElement ) ), this, SLOT( readGlobeVectorLayerConfig( QgsMapLayer *, QDomElement ) ) );
+  connect( QgsApplication::activeProject(), SIGNAL( writeMapLayer( QgsMapLayer *, QDomElement &, QDomDocument & ) ), this, SLOT( writeGlobeVectorLayerConfig( QgsMapLayer *, QDomElement &, QDomDocument & ) ) );
 }
 
 QgsMapLayerConfigWidget *QgsGlobeLayerPropertiesFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const

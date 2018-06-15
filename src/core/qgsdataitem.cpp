@@ -1582,11 +1582,11 @@ QList<QAction *> QgsProjectHomeItem::actions( QWidget *parent )
   QAction *setHome = new QAction( tr( "Set Project Home…" ), parent );
   connect( setHome, &QAction::triggered, this, [ = ]
   {
-    QString oldHome = QgsProject::instance()->homePath();
+    QString oldHome = QgsApplication::activeProject()->homePath();
     QString newPath = QFileDialog::getExistingDirectory( parent, tr( "Select Project Home Directory" ), oldHome );
     if ( !newPath.isEmpty() )
     {
-      QgsProject::instance()->setPresetHomePath( newPath );
+      QgsApplication::activeProject()->setPresetHomePath( newPath );
     }
   } );
   lst << setHome;

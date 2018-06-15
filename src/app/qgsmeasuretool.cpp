@@ -132,7 +132,7 @@ void QgsMeasureTool::updateSettings()
 
     mDialog->restart();
     mDone = lastDone;
-    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
 
     Q_FOREACH ( const QgsPointXY &previousPoint, points )
     {

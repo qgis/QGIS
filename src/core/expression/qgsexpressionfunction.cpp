@@ -582,11 +582,11 @@ static QVariant fcnAggregateRelation( const QVariantList &values, const QgsExpre
   ENSURE_NO_EVAL_ERROR;
   QString relationId = value.toString();
   // check relation exists
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( relationId );
+  QgsRelation relation = QgsApplication::activeProject()->relationManager()->relation( relationId );
   if ( !relation.isValid() || relation.referencedLayer() != vl )
   {
     // check for relations by name
-    QList< QgsRelation > relations = QgsProject::instance()->relationManager()->relationsByName( relationId );
+    QList< QgsRelation > relations = QgsApplication::activeProject()->relationManager()->relationsByName( relationId );
     if ( relations.isEmpty() || relations.at( 0 ).referencedLayer() != vl )
     {
       parent->setEvalErrorString( QObject::tr( "Cannot find relation with id '%1'" ).arg( relationId ) );
@@ -3726,10 +3726,10 @@ static QVariant fcnGetRasterBandStat( const QVariantList &values, const QgsExpre
   QString layerIdOrName = QgsExpressionUtils::getStringValue( values.at( 0 ), parent );
 
   //try to find a matching layer by name
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerIdOrName ); //search by id first
+  QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerIdOrName ); //search by id first
   if ( !layer )
   {
-    QList<QgsMapLayer *> layersByName = QgsProject::instance()->mapLayersByName( layerIdOrName );
+    QList<QgsMapLayer *> layersByName = QgsApplication::activeProject()->mapLayersByName( layerIdOrName );
     if ( !layersByName.isEmpty() )
     {
       layer = layersByName.at( 0 );

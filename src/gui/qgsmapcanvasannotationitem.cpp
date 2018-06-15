@@ -60,7 +60,7 @@ void QgsMapCanvasAnnotationItem::updatePosition()
 
   if ( mAnnotation->hasFixedMapPosition() )
   {
-    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
     QgsPointXY coord = mAnnotation->mapPosition();
     try
     {
@@ -144,7 +144,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
 
   try
   {
-    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
     if ( ct.isValid() )
       mapPosition = ct.transform( mapPosition );
   }

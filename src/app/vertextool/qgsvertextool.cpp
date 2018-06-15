@@ -654,7 +654,7 @@ QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
   double tol = QgsTolerance::vertexSearchRadius( canvas()->mapSettings() );
 
-  QgsSnappingConfig config( QgsProject::instance() );
+  QgsSnappingConfig config( QgsApplication::activeProject() );
   config.setEnabled( true );
   config.setMode( QgsSnappingConfig::AdvancedConfiguration );
   config.setIntersectionSnapping( false );  // only snap to layers
@@ -1194,7 +1194,7 @@ void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 
   cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 
-  if ( QgsProject::instance()->topologicalEditing() )
+  if ( QgsApplication::activeProject()->topologicalEditing() )
   {
     // support for topo editing - find extra features
     // that have coincident point with the vertex being dragged
@@ -1560,7 +1560,7 @@ void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocato
 
   applyEditsToLayers( edits );
 
-  if ( QgsProject::instance()->topologicalEditing() && mapPointMatch->hasEdge() && mapPointMatch->layer() )
+  if ( QgsApplication::activeProject()->topologicalEditing() && mapPointMatch->hasEdge() && mapPointMatch->layer() )
   {
     // topo editing: add vertex to existing segments when moving/adding a vertex to such segment.
     // this requires that the snapping match is to a segment and the segment layer's CRS
@@ -1657,7 +1657,7 @@ void QgsVertexTool::deleteVertex()
   stopDragging();
   setHighlightedVertices( QList<Vertex>() ); // reset selection
 
-  if ( QgsProject::instance()->topologicalEditing() )
+  if ( QgsApplication::activeProject()->topologicalEditing() )
   {
     // if topo editing is enabled, delete all the vertices that are on the same location
     QSet<Vertex> topoVerticesToDelete;

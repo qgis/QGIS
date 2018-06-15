@@ -325,7 +325,7 @@ void QgsOgrLayerItem::deleteLayer()
   QString title = mIsSubLayer ? QObject::tr( "Delete Layer" ) : QObject::tr( "Delete File" );
   // Check if the layer is in the registry
   const QgsMapLayer *projectLayer = nullptr;
-  Q_FOREACH ( const QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
+  Q_FOREACH ( const QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers() )
   {
     if ( layer->publicSource() == mUri )
     {

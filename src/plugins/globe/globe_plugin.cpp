@@ -636,7 +636,7 @@ QgsRectangle GlobePlugin::getQGISLayerExtent() const
 void GlobePlugin::showCurrentCoordinates( const osgEarth::GeoPoint &geoPoint )
 {
   osg::Vec3d pos = geoPoint.vec3d();
-  emit xyCoordinates( QgsCoordinateTransform( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), mQGisIface->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() ).transform( QgsPointXY( pos.x(), pos.y() ) ) );
+  emit xyCoordinates( QgsCoordinateTransform( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), mQGisIface->mapCanvas()->mapSettings().destinationCrs(), QgsApplication::activeProject()->transformContext() ).transform( QgsPointXY( pos.x(), pos.y() ) ) );
 }
 
 void GlobePlugin::setSelectedCoordinates( const osg::Vec3d &coords )
@@ -665,11 +665,11 @@ void GlobePlugin::syncExtent()
   if ( mapSettings.destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
   {
     QgsCoordinateReferenceSystem srcCRS( mapSettings.destinationCrs() );
-    extent = QgsCoordinateTransform( srcCRS, globeCrs, QgsProject::instance()->transformContext() ).transformBoundingBox( extent );
+    extent = QgsCoordinateTransform( srcCRS, globeCrs, QgsApplication::activeProject()->transformContext() ).transformBoundingBox( extent );
   }
 
   QgsDistanceArea dist;
-  dist.setSourceCrs( globeCrs, QgsProject::instance()->transformContext() );
+  dist.setSourceCrs( globeCrs, QgsApplication::activeProject()->transformContext() );
   dist.setEllipsoid( "WGS84" );
 
   QgsPointXY ll = QgsPointXY( extent.xMinimum(), extent.yMinimum() );
@@ -924,7 +924,7 @@ void GlobePlugin::updateLayers()
 #endif
     for ( const osg::ref_ptr<osgEarth::ModelLayer> &modelLayer : modelLayers )
     {
-      QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( QString::fromStdString( modelLayer->getName() ) );
+      QgsMapLayer *mapLayer = QgsApplication::activeProject()->mapLayer( QString::fromStdString( modelLayer->getName() ) );
       if ( mapLayer )
         disconnect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
       if ( dynamic_cast<QgsVectorLayer *>( mapLayer ) )
@@ -935,7 +935,7 @@ void GlobePlugin::updateLayers()
 
     for ( const QString &layerId : selectedLayerIds )
     {
-      QgsMapLayer *mapLayer = QgsProject::instance()->mapLayer( layerId );
+      QgsMapLayer *mapLayer = QgsApplication::activeProject()->mapLayer( layerId );
       connect( mapLayer, SIGNAL( repaintRequested() ), this, SLOT( layerChanged() ) );
 
       QgsGlobeVectorLayerConfig *layerConfig = 0;
@@ -957,7 +957,7 @@ void GlobePlugin::updateLayers()
       else
       {
         drapedLayers.append( mapLayer );
-        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
+        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsApplication::activeProject()->transformContext() ).transform( mapLayer->extent() );
         mLayerExtents.insert( mapLayer->id(), extent );
       }
     }
@@ -1023,7 +1023,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
           if ( ! mMapNode->getMap()->getModelLayerByName( layerId.toStdString() ) )
 #endif
           {
-            QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+            QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerId );
             if ( layer )
             {
               layers.append( layer );
@@ -1031,7 +1031,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
           }
         }
         mTileSource->setLayers( layers );
-        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
+        QgsRectangle extent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsApplication::activeProject()->transformContext() ).transform( mapLayer->extent() );
         mLayerExtents.insert( mapLayer->id(), extent );
       }
       // Remove any model layer of that layer, in case one existed
@@ -1040,7 +1040,7 @@ void GlobePlugin::layerChanged( QgsMapLayer *mapLayer )
 #else
       mMapNode->getMap()->removeModelLayer( mMapNode->getMap()->getModelLayerByName( mapLayer->id().toStdString() ) );
 #endif
-      QgsRectangle layerExtent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsProject::instance()->transformContext() ).transform( mapLayer->extent() );
+      QgsRectangle layerExtent = QgsCoordinateTransform( mapLayer->crs(), QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ), QgsApplication::activeProject()->transformContext() ).transform( mapLayer->extent() );
       QgsRectangle dirtyExtent = layerExtent;
       if ( mLayerExtents.contains( mapLayer->id() ) )
       {

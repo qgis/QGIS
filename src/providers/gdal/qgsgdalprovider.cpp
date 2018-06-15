@@ -2797,7 +2797,7 @@ void QgsGdalProvider::initBaseDataset()
   //set up the coordinat transform - in the case of raster this is mainly used to convert
   //the inverese projection of the map extents of the canvas when zooming in etc. so
   //that they match the coordinate system of this layer
-  //QgsDebugMsg( "Layer registry has " + QString::number( QgsProject::instance()->count() ) + "layers" );
+  //QgsDebugMsg( "Layer registry has " + QString::number( QgsApplication::activeProject()->count() ) + "layers" );
 
   //metadata();
 

@@ -45,7 +45,7 @@ Alias for ``QgsApplication.activeProject()``
 %Docstring
 Create a new QgsProject.
 
-Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
+Most of the time you want to use QgsApplication.activeProject() instead as many components of QGIS work with the singleton.
 %End
 
     ~QgsProject();

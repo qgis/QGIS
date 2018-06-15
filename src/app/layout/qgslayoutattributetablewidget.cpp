@@ -92,7 +92,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   toggleAtlasSpecificControls( atlasEnabled );
 
   //update relations combo when relations modified in project
-  connect( QgsProject::instance()->relationManager(), &QgsRelationManager::changed, this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
+  connect( QgsApplication::activeProject()->relationManager(), &QgsRelationManager::changed, this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
 
   mLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutAttributeTableWidget::changeLayer );
@@ -513,7 +513,7 @@ void QgsLayoutAttributeTableWidget::updateRelationsCombo()
   QgsVectorLayer *atlasLayer = coverageLayer();
   if ( atlasLayer )
   {
-    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
+    const QList<QgsRelation> relations = QgsApplication::activeProject()->relationManager()->referencedRelations( atlasLayer );
     for ( const QgsRelation &relation : relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );

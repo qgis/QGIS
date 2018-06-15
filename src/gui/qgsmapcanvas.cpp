@@ -122,29 +122,29 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mMap = new QgsMapCanvasMap( this );
 
   // project handling
-  connect( QgsProject::instance(), &QgsProject::readProject,
+  connect( QgsApplication::activeProject(), &QgsProject::readProject,
            this, &QgsMapCanvas::readProject );
-  connect( QgsProject::instance(), &QgsProject::writeProject,
+  connect( QgsApplication::activeProject(), &QgsProject::writeProject,
            this, &QgsMapCanvas::writeProject );
 
-  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
-  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
+  connect( QgsApplication::activeProject()->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsMapCanvas::mapThemeChanged );
+  connect( QgsApplication::activeProject()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged, this, &QgsMapCanvas::projectThemesChanged );
 
   mSettings.setFlag( QgsMapSettings::DrawEditingInfo );
   mSettings.setFlag( QgsMapSettings::UseRenderingOptimization );
   mSettings.setFlag( QgsMapSettings::RenderPartialOutput );
-  mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
-  connect( QgsProject::instance(), &QgsProject::ellipsoidChanged,
+  mSettings.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
+  connect( QgsApplication::activeProject(), &QgsProject::ellipsoidChanged,
            this, [ = ]
   {
-    mSettings.setEllipsoid( QgsProject::instance()->ellipsoid() );
+    mSettings.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
     refresh();
   } );
-  mSettings.setTransformContext( QgsProject::instance()->transformContext() );
-  connect( QgsProject::instance(), &QgsProject::transformContextChanged,
+  mSettings.setTransformContext( QgsApplication::activeProject()->transformContext() );
+  connect( QgsApplication::activeProject(), &QgsProject::transformContextChanged,
            this, [ = ]
   {
-    mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+    mSettings.setTransformContext( QgsApplication::activeProject()->transformContext() );
     emit transformContextChanged();
     refresh();
   } );
@@ -374,7 +374,7 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
   QgsRectangle rect;
   if ( !mSettings.visibleExtent().isEmpty() )
   {
-    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsProject::instance() );
+    QgsCoordinateTransform transform( mSettings.destinationCrs(), crs, QgsApplication::activeProject() );
     try
     {
       rect = transform.transformBoundingBox( mSettings.visibleExtent() );
@@ -512,13 +512,13 @@ void QgsMapCanvas::refreshMap()
   //build the expression context
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
                     << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
-  mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+  mSettings.setPathResolver( QgsApplication::activeProject()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
   {
@@ -528,7 +528,7 @@ void QgsMapCanvas::refreshMap()
     // mapThemeChanged slot) then this xml could be out of date...
     // TODO: if in future QgsMapThemeCollection::mapThemeStyleOverrides is changed to
     // just return the style name, we can instead set the overrides in mapThemeChanged and not here
-    mSettings.setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
+    mSettings.setLayerStyleOverrides( QgsApplication::activeProject()->mapThemeCollection()->mapThemeStyleOverrides( mTheme ) );
   }
 
   // create the renderer job
@@ -563,7 +563,7 @@ void QgsMapCanvas::mapThemeChanged( const QString &theme )
     // set the canvas layers to match the new layers contained in the map theme
     // NOTE: we do this when the theme layers change and not when we are refreshing the map
     // as setLayers() sets up necessary connections to handle changes to the layers
-    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    setLayersPrivate( QgsApplication::activeProject()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
     // IMPORTANT: we don't set the layer style overrides here! (At the time of writing this
     // comment) retrieving layer styles from the theme collection gives an XML snapshot of the
     // current state of the style. If changes were made to the style then this xml
@@ -1784,17 +1784,17 @@ void QgsMapCanvas::setTheme( const QString &theme )
     return;
 
   clearCache();
-  if ( theme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( theme ) )
+  if ( theme.isEmpty() || !QgsApplication::activeProject()->mapThemeCollection()->hasMapTheme( theme ) )
   {
     mTheme.clear();
     mSettings.setLayerStyleOverrides( QMap< QString, QString>() );
-    setLayers( QgsProject::instance()->mapThemeCollection()->masterVisibleLayers() );
+    setLayers( QgsApplication::activeProject()->mapThemeCollection()->masterVisibleLayers() );
     emit themeChanged( QString() );
   }
   else
   {
     mTheme = theme;
-    setLayersPrivate( QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
+    setLayersPrivate( QgsApplication::activeProject()->mapThemeCollection()->mapThemeVisibleLayers( mTheme ) );
     emit themeChanged( theme );
   }
 }
@@ -1865,7 +1865,7 @@ void QgsMapCanvas::projectThemesChanged()
   if ( mTheme.isEmpty() )
     return;
 
-  if ( !QgsProject::instance()->mapThemeCollection()->hasMapTheme( mTheme ) )
+  if ( !QgsApplication::activeProject()->mapThemeCollection()->hasMapTheme( mTheme ) )
   {
     // theme has been removed - stop following
     setTheme( QString() );
@@ -2013,7 +2013,7 @@ void QgsMapCanvas::readProject( const QDomDocument &doc )
     QDomElement elem = node.toElement();
     if ( elem.hasAttribute( QStringLiteral( "theme" ) ) )
     {
-      if ( QgsProject::instance()->mapThemeCollection()->hasMapTheme( elem.attribute( QStringLiteral( "theme" ) ) ) )
+      if ( QgsApplication::activeProject()->mapThemeCollection()->hasMapTheme( elem.attribute( QStringLiteral( "theme" ) ) ) )
       {
         setTheme( elem.attribute( QStringLiteral( "theme" ) ) );
       }
@@ -2065,9 +2065,9 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &so
     int sourceDatumTransform = defaultSrcTransform.toInt();
     int destinationDatumTransform = defaultDestTransform.toInt();
 
-    QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+    QgsCoordinateTransformContext context = QgsApplication::activeProject()->transformContext();
     context.addSourceDestinationDatumTransform( source, destination, sourceDatumTransform, destinationDatumTransform );
-    QgsProject::instance()->setTransformContext( context );
+    QgsApplication::activeProject()->setTransformContext( context );
     return;
   }
 

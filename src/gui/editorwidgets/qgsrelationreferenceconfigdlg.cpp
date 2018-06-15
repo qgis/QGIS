@@ -92,7 +92,7 @@ void QgsRelationReferenceConfigDlg::setConfig( const QVariantMap &config )
 void QgsRelationReferenceConfigDlg::relationChanged( int idx )
 {
   QString relName = mComboRelation->itemData( idx ).toString();
-  QgsRelation rel = QgsProject::instance()->relationManager()->relation( relName );
+  QgsRelation rel = QgsApplication::activeProject()->relationManager()->relation( relName );
 
   mReferencedLayer = rel.referencedLayer();
   mExpressionWidget->setLayer( mReferencedLayer ); // set even if 0

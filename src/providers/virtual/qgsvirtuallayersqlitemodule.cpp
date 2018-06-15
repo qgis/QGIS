@@ -353,7 +353,7 @@ int vtableCreateConnect( sqlite3 *sql, void *aux, int argc, const char *const *a
     {
       layerid = layerid.mid( 1, layerid.size() - 2 );
     }
-    QgsMapLayer *l = QgsProject::instance()->mapLayer( layerid );
+    QgsMapLayer *l = QgsApplication::activeProject()->mapLayer( layerid );
     if ( !l || l->type() != QgsMapLayer::VectorLayer )
     {
       if ( outErr )
@@ -883,7 +883,7 @@ void registerQgisFunctions( sqlite3 *db )
 
   // initialize the expression context
   qgisFunctionExpressionContext << QgsExpressionContextUtils::globalScope();
-  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+  qgisFunctionExpressionContext << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 }
 
 int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ )

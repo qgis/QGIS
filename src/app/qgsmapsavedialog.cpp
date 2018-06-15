@@ -296,13 +296,13 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setLayers( mMapCanvas->layers() );
   mapSettings.setLabelingEngineSettings( mMapCanvas->mapSettings().labelingEngineSettings() );
-  mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
-  mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
+  mapSettings.setTransformContext( QgsApplication::activeProject()->transformContext() );
+  mapSettings.setPathResolver( QgsApplication::activeProject()->pathResolver() );
 
   //build the expression context
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope()
-                    << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+                    << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
                     << QgsExpressionContextUtils::mapSettingsScope( mapSettings );
 
   mapSettings.setExpressionContext( expressionContext );

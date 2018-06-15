@@ -174,7 +174,7 @@ QString QgsExternalResourceWidget::resolvePath( const QString &path )
       return path;
       break;
     case QgsFileWidget::RelativeProject:
-      return QFileInfo( QgsProject::instance()->absoluteFilePath() ).dir().filePath( path );
+      return QFileInfo( QgsApplication::activeProject()->absoluteFilePath() ).dir().filePath( path );
       break;
     case QgsFileWidget::RelativeDefaultPath:
       return QDir( mDefaultRoot ).filePath( path );

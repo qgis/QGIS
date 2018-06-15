@@ -198,7 +198,7 @@ void QgsMapToolPinLabels::highlightPinnedLabels()
       }
 
       QColor lblcolor = QColor( 54, 129, 255, 63 );
-      QgsMapLayer *layer = QgsProject::instance()->mapLayer( pos.layerID );
+      QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( pos.layerID );
       if ( !layer )
       {
         continue;

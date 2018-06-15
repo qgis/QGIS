@@ -477,7 +477,7 @@ void QgsProjectFileTransform::transform1800to1900()
   }
 
   QgsReadWriteContext context;
-  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
 
   QDomNodeList layerItemList = mDom.elementsByTagName( QStringLiteral( "rasterproperties" ) );
   for ( int i = 0; i < layerItemList.size(); ++i )

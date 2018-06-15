@@ -64,8 +64,8 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
 
   connect( mRunButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::runChecks );
   connect( ui.listWidgetInputLayers, &QListWidget::itemChanged, this, &QgsGeometryCheckerSetupTab::validateInput );
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
+  connect( QgsApplication::activeProject(), &QgsProject::layersAdded, this, &QgsGeometryCheckerSetupTab::updateLayers );
+  connect( QgsApplication::activeProject(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersRemoved ), this, &QgsGeometryCheckerSetupTab::updateLayers );
   connect( ui.radioButtonOutputNew, &QAbstractButton::toggled, ui.frameOutput, &QWidget::setEnabled );
   connect( ui.buttonGroupOutput, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ), this, &QgsGeometryCheckerSetupTab::validateInput );
   connect( ui.pushButtonOutputDirectory, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::selectOutputDirectory );
@@ -103,7 +103,7 @@ void QgsGeometryCheckerSetupTab::updateLayers()
   ui.comboBoxFollowBoundaries->clear();
 
   // Collect layers
-  for ( QgsVectorLayer *layer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+  for ( QgsVectorLayer *layer : QgsApplication::activeProject()->layers<QgsVectorLayer *>() )
   {
     QListWidgetItem *item = new QListWidgetItem( layer->name() );
     bool supportedGeometryType = true;
@@ -160,7 +160,7 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
     if ( item->checkState() == Qt::Checked )
     {
       QString layerId = item->data( LayerIdRole ).toString();
-      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
       if ( layer )
       {
         layers.append( layer );
@@ -172,7 +172,7 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
 
 void QgsGeometryCheckerSetupTab::validateInput()
 {
-  QStringList layerCrs = QStringList() << QgsProject::instance()->crs().authid();
+  QStringList layerCrs = QStringList() << QgsApplication::activeProject()->crs().authid();
   QList<QgsVectorLayer *> layers = getSelectedLayers();
   int nApplicable = 0;
   int nPoint = 0;
@@ -251,8 +251,8 @@ void QgsGeometryCheckerSetupTab::runChecks()
       }
     }
   }
-  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) ) : nullptr;
-  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
+  QgsVectorLayer *lineLayerCheckLayer = ui.comboLineLayerIntersection->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) ) : nullptr;
+  QgsVectorLayer *followBoundaryCheckLayer = ui.comboBoxFollowBoundaries->isEnabled() ? dynamic_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) ) : nullptr;
   if ( layers.contains( lineLayerCheckLayer ) || layers.contains( followBoundaryCheckLayer ) )
   {
     QMessageBox::critical( this, tr( "Check Geometries" ), tr( "The test layer set contains a layer selected for a topology check." ) );
@@ -303,7 +303,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
       QString outputPath = outputDir.absoluteFilePath( filenamePrefix + layer->name() + "." + outputExtension );
 
       // Remove existing layer with same uri from project
-      for ( QgsVectorLayer *projectLayer : QgsProject::instance()->layers<QgsVectorLayer *>() )
+      for ( QgsVectorLayer *projectLayer : QgsApplication::activeProject()->layers<QgsVectorLayer *>() )
       {
         if ( projectLayer->dataProvider()->dataSourceUri().startsWith( outputPath ) )
         {
@@ -349,7 +349,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     //  Remove layers from project
     if ( !toRemove.isEmpty() )
     {
-      QgsProject::instance()->removeMapLayers( toRemove );
+      QgsApplication::activeProject()->removeMapLayers( toRemove );
     }
 
     // Error if an output layer could not be created
@@ -415,20 +415,20 @@ void QgsGeometryCheckerSetupTab::runChecks()
   for ( QgsVectorLayer *layer : qgis::as_const( processLayers ) )
   {
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsApplication::activeProject()->crs(), QgsApplication::activeProject() );
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
   }
   // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
   if ( ui.checkLineLayerIntersection->isChecked() && !featurePools.keys().contains( ui.comboLineLayerIntersection->currentData().toString() ) )
   {
-    QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
+    QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
     Q_ASSERT( layer );
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsApplication::activeProject()->crs(), QgsApplication::activeProject() );
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
   }
 
-  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), featurePools );
+  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), QgsApplication::activeProject()->crs(), featurePools );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )
@@ -450,7 +450,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
     {
       addLayers.append( layer );
     }
-    QgsProject::instance()->addMapLayers( addLayers );
+    QgsApplication::activeProject()->addMapLayers( addLayers );
   }
 
   // Run

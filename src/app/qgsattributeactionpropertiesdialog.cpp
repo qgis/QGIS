@@ -213,8 +213,8 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
   }
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );
   mFieldExpression->setGeomCalculator( myDa );

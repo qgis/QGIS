@@ -178,7 +178,7 @@ QString QgsArcGisServiceSourceSelect::getPreferredCrs( const QSet<QString> &crsS
   }
 
   //first: project CRS
-  QgsCoordinateReferenceSystem projectRefSys = QgsProject::instance()->crs();
+  QgsCoordinateReferenceSystem projectRefSys = QgsApplication::activeProject()->crs();
   //convert to EPSG
   QString ProjectCRS;
   if ( projectRefSys.isValid() )

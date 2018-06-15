@@ -260,7 +260,7 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
   else
   {
     context << QgsExpressionContextUtils::globalScope()
-            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+            << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
             << QgsExpressionContextUtils::layerScope( mLayer );
   }
 
@@ -473,7 +473,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   if ( !mColorRampButton->colorRamp() )
   {
     // set a default ramp
-    QString defaultRampName = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
+    QString defaultRampName = QgsApplication::activeProject()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/ColorRamp" ), QString() );
     std::unique_ptr< QgsColorRamp > defaultRamp( QgsStyle::defaultStyle()->colorRamp( !defaultRampName.isEmpty() ? defaultRampName : QStringLiteral( "Blues" ) ) );
     if ( defaultRamp )
       mColorRampButton->setColorRamp( defaultRamp.get() );

@@ -188,7 +188,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
     mWidget->setChainFilters( config( QStringLiteral( "ChainFilters" ) ).toBool() );
   }
 
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
+  QgsRelation relation = QgsApplication::activeProject()->relationManager()->relation( config( QStringLiteral( "Relation" ) ).toString() );
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();

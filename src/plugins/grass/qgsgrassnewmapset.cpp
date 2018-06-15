@@ -520,7 +520,7 @@ void QgsGrassNewMapset::setRegionPage()
   if ( mRegionModified && newCrs.isValid() && mCrs.isValid()
        && newCrs.srsid() != mCrs.srsid() )
   {
-    QgsCoordinateTransform trans( mCrs, newCrs, QgsProject::instance() );
+    QgsCoordinateTransform trans( mCrs, newCrs, QgsApplication::activeProject() );
 
     double n = mNorthLineEdit->text().toDouble();
     double s = mSouthLineEdit->text().toDouble();
@@ -856,7 +856,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateTransform trans( source, dest, QgsProject::instance() );
+    QgsCoordinateTransform trans( source, dest, QgsApplication::activeProject() );
 
     bool ok = true;
     for ( int i = 0; i < 4; i++ )
@@ -946,7 +946,7 @@ void QgsGrassNewMapset::setCurrentRegion()
   if ( srs.isValid() && mCrs.isValid()
        && srs.srsid() != mCrs.srsid() )
   {
-    QgsCoordinateTransform trans( srs, mCrs, QgsProject::instance() );
+    QgsCoordinateTransform trans( srs, mCrs, QgsApplication::activeProject() );
 
     bool ok = true;
     for ( int i = 0; i < 2; i++ )
@@ -1064,7 +1064,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateTransform trans( source, dest, QgsProject::instance() );
+    QgsCoordinateTransform trans( source, dest, QgsApplication::activeProject() );
 
     for ( int i = points.size() - 1; i >= 0; i-- )
     {

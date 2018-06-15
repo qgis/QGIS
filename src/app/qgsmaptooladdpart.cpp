@@ -159,7 +159,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsCurvePolygon *cp = new QgsCurvePolygon();
         cp->setExteriorRing( curveToAdd );
         QgsGeometry *geom = new QgsGeometry( cp );
-        geom->avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers() );
+        geom->avoidIntersections( QgsApplication::activeProject()->avoidIntersectionsLayers() );
 
         const QgsCurvePolygon *cpGeom = qgsgeometry_cast<const QgsCurvePolygon *>( geom->constGet() );
         if ( !cpGeom )
@@ -195,7 +195,7 @@ void QgsMapToolAddPart::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       emit messageDiscarded();
 
       //add points to other features to keep topology up-to-date
-      bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+      bool topologicalEditing = QgsApplication::activeProject()->topologicalEditing();
       if ( topologicalEditing )
       {
         addTopologicalPoints( points() );

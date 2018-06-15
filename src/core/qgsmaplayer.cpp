@@ -921,7 +921,7 @@ QString QgsMapLayer::loadNamedProperty( const QString &uri, QgsMapLayer::Propert
   }
   else
   {
-    QFileInfo project( QgsProject::instance()->fileName() );
+    QFileInfo project( QgsApplication::activeProject()->fileName() );
     QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString xml;
@@ -1711,7 +1711,7 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   {
     Q_FOREACH ( const QgsMapLayerDependency &dep, layers )
     {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer *l = QgsApplication::activeProject()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }
@@ -1719,7 +1719,7 @@ static QList<const QgsMapLayer *> _depOutEdges( const QgsMapLayer *vl, const Qgs
   {
     Q_FOREACH ( const QgsMapLayerDependency &dep, vl->dependencies() )
     {
-      if ( const QgsMapLayer *l = QgsProject::instance()->mapLayer( dep.layerId() ) )
+      if ( const QgsMapLayer *l = QgsApplication::activeProject()->mapLayer( dep.layerId() ) )
         lst << l;
     }
   }

@@ -36,7 +36,7 @@ QgsExternalResourceConfigDlg::QgsExternalResourceConfigDlg( QgsVectorLayer *vl, 
   mUseLink->setChecked( false );
   mFullUrl->setChecked( false );
 
-  QString defpath = QgsProject::instance()->fileName().isEmpty() ? QDir::homePath() : QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
+  QString defpath = QgsApplication::activeProject()->fileName().isEmpty() ? QDir::homePath() : QFileInfo( QgsApplication::activeProject()->absoluteFilePath() ).path();
 
   mRootPath->setPlaceholderText( QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( defpath ) ) ).toString() );
 
@@ -97,7 +97,7 @@ void QgsExternalResourceConfigDlg::chooseDefaultPath()
   }
   else
   {
-    QString path = QFileInfo( QgsProject::instance()->absoluteFilePath() ).path();
+    QString path = QFileInfo( QgsApplication::activeProject()->absoluteFilePath() ).path();
     dir = QgsSettings().value( QStringLiteral( "/UI/lastExternalResourceWidgetDefaultPath" ), QDir::toNativeSeparators( QDir::cleanPath( path ) ) ).toString();
   }
 

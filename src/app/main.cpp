@@ -1359,7 +1359,7 @@ int main( int argc, char *argv[] )
     QList< QgsDxfExport::DxfLayer > layers;
     if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
@@ -1370,7 +1370,7 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      Q_FOREACH ( QgsMapLayer *ml, QgsProject::instance()->mapLayers() )
+      Q_FOREACH ( QgsMapLayer *ml, QgsApplication::activeProject()->mapLayers() )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
@@ -1411,7 +1411,7 @@ int main( int argc, char *argv[] )
   }
 
   // make sure we don't have a dirty blank project after launch
-  QgsProject::instance()->setDirty( false );
+  QgsApplication::activeProject()->setDirty( false );
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

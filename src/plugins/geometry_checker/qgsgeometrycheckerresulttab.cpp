@@ -79,7 +79,7 @@ QgsGeometryCheckerResultTab::QgsGeometryCheckerResultTab( QgisInterface *iface, 
   connect( ui.pushButtonFixWithPrompt, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::fixErrorsWithPrompt );
   connect( ui.pushButtonErrorResolutionSettings, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::setDefaultResolutionMethods );
   connect( ui.checkBoxHighlight, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::highlightErrors );
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
+  connect( QgsApplication::activeProject(), static_cast<void ( QgsProject::* )( const QStringList & )>( &QgsProject::layersWillBeRemoved ), this, &QgsGeometryCheckerResultTab::checkRemovedLayer );
   connect( ui.pushButtonExport, &QAbstractButton::clicked, this, &QgsGeometryCheckerResultTab::exportErrors );
 
   bool allLayersEditable = true;
@@ -263,7 +263,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
+  if ( !createEmptyDataSource( file, driver, "UTF-8", QgsWkbTypes::Point, attributes, QgsApplication::activeProject()->crs() ) )
   {
     return false;
   }
@@ -292,7 +292,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
 
   // Remove existing layer with same uri
   QStringList toRemove;
-  for ( QgsMapLayer *maplayer : QgsProject::instance()->mapLayers() )
+  for ( QgsMapLayer *maplayer : QgsApplication::activeProject()->mapLayers() )
   {
     if ( dynamic_cast<QgsVectorLayer *>( maplayer ) &&
          static_cast<QgsVectorLayer *>( maplayer )->dataProvider()->dataSourceUri() == layer->dataProvider()->dataSourceUri() )
@@ -302,10 +302,10 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   }
   if ( !toRemove.isEmpty() )
   {
-    QgsProject::instance()->removeMapLayers( toRemove );
+    QgsApplication::activeProject()->removeMapLayers( toRemove );
   }
 
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer );
+  QgsApplication::activeProject()->addMapLayers( QList<QgsMapLayer *>() << layer );
   return true;
 }
 

@@ -60,7 +60,7 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
 {
   setupUi( this );
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) > ( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );
+  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) > ( &QgsProject::layerWillBeRemoved ), this, &QgsLayerStylingWidget::layerAboutToBeRemoved );
 
   QgsSettings settings;
   mLiveApplyCheck->setChecked( settings.value( QStringLiteral( "UI/autoApplyStyling" ), true ).toBool() );
@@ -275,7 +275,7 @@ void QgsLayerStylingWidget::apply()
   if ( styleWasChanged )
   {
     emit styleChanged( mCurrentLayer );
-    QgsProject::instance()->setDirty( true );
+    QgsApplication::activeProject()->setDirty( true );
     mCurrentLayer->triggerRepaint();
   }
   connect( mCurrentLayer, &QgsMapLayer::styleChanged, this, &QgsLayerStylingWidget::updateCurrentWidgetLayer );

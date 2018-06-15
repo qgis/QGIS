@@ -223,7 +223,7 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 
   mToggleEditingButton->setVisible( true );
 
-  const auto transactionGroups = QgsProject::instance()->transactionGroups();
+  const auto transactionGroups = QgsApplication::activeProject()->transactionGroups();
   for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
   {
     if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
@@ -471,7 +471,7 @@ void QgsRelationEditorWidget::duplicateFeature()
   while ( fit.nextFeature( f ) )
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
-    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicatedFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsApplication::activeProject(), 0, duplicatedFeatureContext );
   }
 }
 

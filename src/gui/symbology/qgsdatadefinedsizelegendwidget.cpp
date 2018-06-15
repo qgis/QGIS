@@ -177,7 +177,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
 
   QgsExpressionContext ec;
   ec << QgsExpressionContextUtils::globalScope()
-     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+     << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
      << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mMapCanvas )
     ec << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() );

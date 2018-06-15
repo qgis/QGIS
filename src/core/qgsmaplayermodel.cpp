@@ -25,16 +25,16 @@
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
 {
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
 }
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
-  addLayers( QgsProject::instance()->mapLayers().values() );
+  connect( QgsApplication::activeProject(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
+  addLayers( QgsApplication::activeProject()->mapLayers().values() );
 }
 
 void QgsMapLayerModel::setItemsCheckable( bool checkable )

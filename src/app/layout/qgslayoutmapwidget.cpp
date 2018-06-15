@@ -99,7 +99,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   // follow preset combo
   mFollowVisibilityPresetCombo->setModel( new QStringListModel( mFollowVisibilityPresetCombo ) );
   connect( mFollowVisibilityPresetCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutMapWidget::followVisibilityPresetSelected );
-  connect( QgsProject::instance()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged,
+  connect( QgsApplication::activeProject()->mapThemeCollection(), &QgsMapThemeCollection::mapThemesChanged,
            this, &QgsLayoutMapWidget::onMapThemesChanged );
   onMapThemesChanged();
 
@@ -223,7 +223,7 @@ void QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
     return;
 
   menu->clear();
-  Q_FOREACH ( const QString &presetName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  Q_FOREACH ( const QString &presetName, QgsApplication::activeProject()->mapThemeCollection()->mapThemes() )
   {
     menu->addAction( presetName, this, SLOT( keepLayersVisibilityPresetSelected() ) );
   }
@@ -273,7 +273,7 @@ void QgsLayoutMapWidget::keepLayersVisibilityPresetSelected()
     mKeepLayerStylesCheckBox->setChecked( true );
 
     mMapItem->layout()->undoStack()->beginCommand( mMapItem, tr( "Change Map Preset" ) );
-    mMapItem->setLayerStyleOverrides( QgsProject::instance()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
+    mMapItem->setLayerStyleOverrides( QgsApplication::activeProject()->mapThemeCollection()->mapThemeStyleOverrides( presetName ) );
     mMapItem->layout()->undoStack()->endCommand();
 
     mMapItem->invalidateCache();
@@ -286,7 +286,7 @@ void QgsLayoutMapWidget::onMapThemesChanged()
   {
     QStringList lst;
     lst.append( tr( "(none)" ) );
-    lst += QgsProject::instance()->mapThemeCollection()->mapThemes();
+    lst += QgsApplication::activeProject()->mapThemeCollection()->mapThemes();
     model->setStringList( lst );
 
     // select the previously selected item again
@@ -314,7 +314,7 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
   QgsRectangle newExtent;
   try
   {
-    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsApplication::activeProject()->crs(), QgsApplication::activeProject() );
     QgsRectangle prevExtent = mMapItem->extent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
@@ -520,7 +520,7 @@ void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
     try
     {
       QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
-                                    mMapItem->crs(), QgsProject::instance() );
+                                    mMapItem->crs(), QgsApplication::activeProject() );
       newExtent = xForm.transformBoundingBox( newExtent );
     }
     catch ( QgsCsException & )
@@ -553,7 +553,7 @@ void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
       try
       {
         QgsCoordinateTransform xForm( mMapItem->crs(),
-                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
+                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsApplication::activeProject() );
         currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
       }
       catch ( QgsCsException & )
@@ -1067,8 +1067,8 @@ void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 bool QgsLayoutMapWidget::hasPredefinedScales() const
 {
   // first look at project's scales
-  QStringList scales( QgsProject::instance()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
-  bool hasProjectScales( QgsProject::instance()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  QStringList scales( QgsApplication::activeProject()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+  bool hasProjectScales( QgsApplication::activeProject()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
   if ( !hasProjectScales || scales.isEmpty() )
   {
     // default to global map tool scales

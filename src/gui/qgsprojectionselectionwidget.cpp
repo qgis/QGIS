@@ -35,7 +35,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
   mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
-  mProjectCrs = QgsProject::instance()->crs();
+  mProjectCrs = QgsApplication::activeProject()->crs();
   addProjectCrsOption();
 
   QgsSettings settings;
