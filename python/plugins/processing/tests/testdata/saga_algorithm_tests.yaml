@@ -315,4 +315,19 @@ tests:
         name: expected/saga/polygon_difference.shp
         type: vector
 
+  # Note - SAGA results are wrong here, so really we are just testing that the algorithm runs. Use the native one instead!
+  - algorithm: saga:symmetricaldifference
+    name: Polygon symmetrical difference
+    params:
+      A:
+        name: custom/overlay1_a.geojson
+        type: vector
+      B:
+        name: custom/overlay1_b.geojson
+        type: vector
+      SPLIT: true
+    results:
+      RESULT:
+        name: expected/saga/polygon_symmetrical_difference.shp
+        type: vector
 
