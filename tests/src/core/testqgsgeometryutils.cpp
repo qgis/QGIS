@@ -211,8 +211,8 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
             midPoint, radius, left );
 
   QVERIFY( ok );
-  QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryUtils::testSegmentMidPointCenter()
@@ -266,7 +266,7 @@ void TestQgsGeometryUtils::testCircleLength()
   QFETCH( double, y3 );
   QFETCH( double, expected );
 
-  QGSCOMPARENEAR( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ), 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ), 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryUtils::testNormalizedAngle_data()
@@ -323,7 +323,7 @@ void TestQgsGeometryUtils::testLineAngle()
 
   double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
-    QGSCOMPARENEAR( lineAngle, expected, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( lineAngle, expected, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
@@ -530,9 +530,9 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 
   double radius, centerX, centerY;
   QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
-  QGSCOMPARENEAR( expectedRadius, radius, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( expectedCenterX, centerX, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( expectedCenterY, centerY, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expectedRadius, radius, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( expectedCenterX, centerX, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( expectedCenterY, centerY, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 //QgsGeometryUtils::sqrDistToLine

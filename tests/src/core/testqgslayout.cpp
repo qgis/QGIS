@@ -841,9 +841,9 @@ void TestQgsLayout::georeference()
   t = exporter.computeGeoTransform( map );
   QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
   QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
-  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[3], 3050, 1 );
-  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   t.reset();
 
@@ -852,9 +852,9 @@ void TestQgsLayout::georeference()
   t = exporter.computeGeoTransform();
   QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
   QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
-  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[3], 3050, 1 );
-  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
   t.reset();
 
@@ -862,9 +862,9 @@ void TestQgsLayout::georeference()
   t = exporter.computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
   QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
   QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
-  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[3], 2800, 1 );
-  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
   t.reset();
 
@@ -872,9 +872,9 @@ void TestQgsLayout::georeference()
   t = exporter.computeGeoTransform( map, QRectF(), 75 );
   QGSCOMPARENEAR( t[0], 1925.0, 1 );
   QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
-  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[3], 3050.0, 1 );
-  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * std::numeric_limits<double>::epsilon() );
   QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
   t.reset();
 

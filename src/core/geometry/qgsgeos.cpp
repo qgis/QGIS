@@ -310,17 +310,17 @@ void QgsGeos::subdivideRecursive( const GEOSGeometry *currentPart, int maxNodes,
 
   if ( height <= 0 )
   {
-    halfClipRect1.setYMinimum( halfClipRect1.yMinimum() - DBL_EPSILON );
-    halfClipRect2.setYMinimum( halfClipRect2.yMinimum() - DBL_EPSILON );
-    halfClipRect1.setYMaximum( halfClipRect1.yMaximum() + DBL_EPSILON );
-    halfClipRect2.setYMaximum( halfClipRect2.yMaximum() + DBL_EPSILON );
+    halfClipRect1.setYMinimum( halfClipRect1.yMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setYMinimum( halfClipRect2.yMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect1.setYMaximum( halfClipRect1.yMaximum() + std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setYMaximum( halfClipRect2.yMaximum() + std::numeric_limits<double>::epsilon() );
   }
   if ( width <= 0 )
   {
-    halfClipRect1.setXMinimum( halfClipRect1.xMinimum() - DBL_EPSILON );
-    halfClipRect2.setXMinimum( halfClipRect2.xMinimum() - DBL_EPSILON );
-    halfClipRect1.setXMaximum( halfClipRect1.xMaximum() + DBL_EPSILON );
-    halfClipRect2.setXMaximum( halfClipRect2.xMaximum() + DBL_EPSILON );
+    halfClipRect1.setXMinimum( halfClipRect1.xMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setXMinimum( halfClipRect2.xMinimum() - std::numeric_limits<double>::epsilon() );
+    halfClipRect1.setXMaximum( halfClipRect1.xMaximum() + std::numeric_limits<double>::epsilon() );
+    halfClipRect2.setXMaximum( halfClipRect2.xMaximum() + std::numeric_limits<double>::epsilon() );
   }
 
   geos::unique_ptr clipPart1( GEOSClipByRect_r( geosinit.ctxt, currentPart, halfClipRect1.xMinimum(), halfClipRect1.yMinimum(), halfClipRect1.xMaximum(), halfClipRect1.yMaximum() ) );
