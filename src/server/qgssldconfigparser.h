@@ -112,6 +112,9 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
+    // Selection color
+    bool activateSelectionColor() const override;
+
     //printing
 
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/

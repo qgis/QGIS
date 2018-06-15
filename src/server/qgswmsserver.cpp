@@ -1424,6 +1424,9 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
 
+  // Selection color
+  mConfigParser->activateSelectionColor();
+
   QStringList layerSet = mMapRenderer->layerSet();
   QStringList highlightLayers = QgsWMSConfigParser::addHighlightLayers( mParameters, layerSet );
   mMapRenderer->setLayerSet( layerSet );

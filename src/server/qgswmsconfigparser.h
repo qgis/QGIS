@@ -118,6 +118,9 @@ class SERVER_EXPORT QgsWMSConfigParser
     /** Adds inspire capabilities to xml document. ParentElem usually is the <Capabilities> element*/
     virtual void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
+    // Selection color
+    virtual bool activateSelectionColor() const = 0;
+
     //printing
 
     /** Creates a print composition, usually for a GetPrint request. Replaces map and label parameters*/
