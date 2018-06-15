@@ -794,7 +794,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString ABISYM( mThemeName );
     static QStringList ABISYM( mDefaultSvgPaths );
     static QMap<QString, QString> ABISYM( mSystemEnvVars );
-    static QgsProject *ABISYM( mActiveProject ) ;
 
     static QString ABISYM( mConfigPath );
 
@@ -858,6 +857,7 @@ class CORE_EXPORT QgsApplication : public QApplication
       QgsLayoutItemRegistry *mLayoutItemRegistry = nullptr;
       QgsUserProfileManager *mUserConfigManager = nullptr;
       QString mNullRepresentation;
+      QgsProject *mActiveProject = nullptr;
 
       ApplicationMembers();
       ~ApplicationMembers();

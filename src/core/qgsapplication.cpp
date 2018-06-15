@@ -134,6 +134,9 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
 void QgsApplication::init( QString profileFolder )
 {
+  mApplicationMembers->mActiveProject = new QgsProject();
+  mApplicationMembers->mActiveProject->setParent( this );
+
   if ( profileFolder.isEmpty() )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
@@ -289,6 +292,9 @@ void QgsApplication::init( QString profileFolder )
 
 QgsApplication::~QgsApplication()
 {
+  if ( mApplicationMembers->mActiveProject && mApplicationMembers->mActiveProject->parent() == this )
+    delete mApplicationMembers->mActiveProject;
+
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
 }
@@ -1415,17 +1421,20 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
 
 QgsProject *QgsApplication::activeProject()
 {
-  return instance()->ABISYM( mActiveProject );
+  return instance()->mApplicationMembers->mActiveProject;
 }
 
 void QgsApplication::setActiveProject( QgsProject *activeProject )
 {
   QgsApplication *app = instance();
 
-  if ( app->ABISYM( mActiveProject ) == activeProject )
+  if ( app->mApplicationMembers->mActiveProject == activeProject )
     return;
 
-  app->ABISYM( mActiveProject ) = activeProject;
+  if ( app->mApplicationMembers->mActiveProject && app->mApplicationMembers->mActiveProject->parent() == this )
+    delete app->mApplicationMembers->mActiveProject;
+
+  app->mApplicationMembers->mActiveProject = activeProject;
   emit app->activeProjectChanged();
 }
 
