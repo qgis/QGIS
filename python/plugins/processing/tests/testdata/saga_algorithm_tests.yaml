@@ -255,3 +255,18 @@ tests:
         hash: ec7b708609178533ac2b89cd575140415ef93c70396fa630d1c15b67
         type: rasterhash
 
+  - algorithm: saga:polygonupdate
+    name: Polygon update
+    params:
+      A:
+        name: custom/overlay1_a.geojson
+        type: vector
+      B:
+        name: custom/overlay1_b.geojson
+        type: vector
+      SPLIT: true
+    results:
+      RESULT:
+        name: expected/saga/polygon_update.shp
+        type: vector
+
