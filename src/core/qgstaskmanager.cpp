@@ -351,8 +351,13 @@ QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
 {
-  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
-           this, &QgsTaskManager::layersWillBeRemoved );
+  connect( QgsApplication::instance(), &QgsApplication::activeProjectChanged, this, [this]()
+  {
+    QgsProject *activeProject = QgsApplication::activeProject();
+    if ( activeProject )
+      connect( activeProject, static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
+               this, &QgsTaskManager::layersWillBeRemoved, Qt::UniqueConnection );
+  } );
 }
 
 QgsTaskManager::~QgsTaskManager()

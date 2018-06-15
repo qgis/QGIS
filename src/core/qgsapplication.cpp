@@ -134,9 +134,6 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
 void QgsApplication::init( QString profileFolder )
 {
-  instance()->mApplicationMembers->mActiveProject = new QgsProject();
-  instance()->mApplicationMembers->mActiveProject->setParent( instance() );
-
   if ( profileFolder.isEmpty() )
   {
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
