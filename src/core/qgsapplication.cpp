@@ -134,8 +134,8 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
 void QgsApplication::init( QString profileFolder )
 {
-  mApplicationMembers->mActiveProject = new QgsProject();
-  mApplicationMembers->mActiveProject->setParent( this );
+  instance()->mApplicationMembers->mActiveProject = new QgsProject();
+  instance()->mApplicationMembers->mActiveProject->setParent( instance() );
 
   if ( profileFolder.isEmpty() )
   {
@@ -1431,7 +1431,7 @@ void QgsApplication::setActiveProject( QgsProject *activeProject )
   if ( app->mApplicationMembers->mActiveProject == activeProject )
     return;
 
-  if ( app->mApplicationMembers->mActiveProject && app->mApplicationMembers->mActiveProject->parent() == this )
+  if ( app->mApplicationMembers->mActiveProject && app->mApplicationMembers->mActiveProject->parent() == instance() )
     delete app->mApplicationMembers->mActiveProject;
 
   app->mApplicationMembers->mActiveProject = activeProject;
