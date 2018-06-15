@@ -109,8 +109,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     ~QgsProject() override;
 
-#ifndef SIP_RUN
-
     /**
      * Set the current project instance to \a project
      *
@@ -118,8 +116,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \see instance()
      * \since QGIS 3.2
      */
-    static void setInstance( QgsProject *project );
-#endif
+    static void setInstance( QgsProject *project ) SIP_SKIP;
 
     /**
      * Sets the project's title.

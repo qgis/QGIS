@@ -287,7 +287,7 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_filter_no_width')
 
     def test_value_relation(self):
-        """Test wether value relations are resolved: regression 18518"""
+        """Test whether value relations are resolved: regression 18518"""
         self.wms_request_compare('GetFeatureInfo',
                                  '&BBOX=537912.30469845747575164,4975501.92125043831765652,577227.89428471261635423,4996610.36656293831765652' +
                                  '&CRS=EPSG:32632' +
