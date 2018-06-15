@@ -347,7 +347,7 @@ tests:
         type: vector
 
 
-  - algorithm: saga:polygonselfintersection
+  - algorithm: saga:polygonselfintersection  #spellok
     name: Polygon self intersection
     params:
       POLYGONS:
