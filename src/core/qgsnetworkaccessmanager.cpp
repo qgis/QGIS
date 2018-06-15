@@ -102,7 +102,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
 //
 // Static calls to enforce singleton behavior
 //
-QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
+QgsNetworkAccessManager *QgsNetworkAccessManager::instance( Qt::ConnectionType connectionType )
 {
   static QThreadStorage<QgsNetworkAccessManager> sInstances;
   QgsNetworkAccessManager *nam = &sInstances.localData();
@@ -111,7 +111,7 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
     sMainNAM = nam;
 
   if ( !nam->mInitialized )
-    nam->setupDefaultProxyAndCache();
+    nam->setupDefaultProxyAndCache( connectionType );
 
   return nam;
 }
@@ -281,7 +281,7 @@ QNetworkRequest::CacheLoadControl QgsNetworkAccessManager::cacheLoadControlFromN
   return QNetworkRequest::PreferNetwork;
 }
 
-void QgsNetworkAccessManager::setupDefaultProxyAndCache()
+void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType connectionType )
 {
   mInitialized = true;
   mUseSystemProxy = false;
@@ -292,11 +292,11 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
   {
     connect( this, &QNetworkAccessManager::authenticationRequired,
              sMainNAM, &QNetworkAccessManager::authenticationRequired,
-             Qt::BlockingQueuedConnection );
+             connectionType );
 
     connect( this, &QNetworkAccessManager::proxyAuthenticationRequired,
              sMainNAM, &QNetworkAccessManager::proxyAuthenticationRequired,
-             Qt::BlockingQueuedConnection );
+             connectionType );
 
     connect( this, &QgsNetworkAccessManager::requestTimedOut,
              sMainNAM, &QgsNetworkAccessManager::requestTimedOut );
@@ -304,7 +304,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache()
 #ifndef QT_NO_SSL
     connect( this, &QNetworkAccessManager::sslErrors,
              sMainNAM, &QNetworkAccessManager::sslErrors,
-             Qt::BlockingQueuedConnection );
+             connectionType );
 #endif
   }
 

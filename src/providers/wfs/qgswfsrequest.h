@@ -19,6 +19,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QAuthenticator>
 
 #include "qgswfsdatasourceuri.h"
 
@@ -115,6 +116,33 @@ class QgsWfsRequest : public QObject
   private:
     QString errorMessageFailedAuth();
 
+};
+
+
+class DownloaderThread : public QThread
+{
+    Q_OBJECT
+
+  public:
+    DownloaderThread( std::function<bool()> function, QObject *parent = nullptr )
+      : QThread( parent )
+      , mFunction( function )
+    {
+    }
+
+    void run() override
+    {
+      mSuccess = mFunction();
+    }
+
+    bool success() const
+    {
+      return mSuccess;
+    }
+
+  private:
+    std::function<bool()> mFunction;
+    bool mSuccess = false;
 };
 
 #endif // QGSWFSREQUEST_H

@@ -49,9 +49,26 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     Q_OBJECT
 
   public:
-    //! returns a pointer to the single instance
-    // and creates that instance on the first call.
-    static QgsNetworkAccessManager *instance();
+
+    /**
+     * Returns a pointer to the active QgsNetworkAccessManager
+     * for the current thread.
+     *
+     * With the \a connectionType parameter it is possible to setup the default connection
+     * type that is used to handle signals that might require user interaction and therefore
+     * need to be handled on the main thread. See in-depth discussion below.
+     *
+     * \param connectionType In most cases the default of using a ``Qt::BlockingQueuedConnection``
+     * is ok, to make a background thread wait for the main thread to answer such a request is
+     * fine and anything else is dangerous.
+     * However, in case the request was started on the main thread, one should execute a
+     * local event loop in a helper thread and freeze the main thread for the duration of the
+     * download. In this case, if an authentication request is sent from the background thread
+     * network access manager, the background thread should be blocked, the main thread be woken
+     * up, processEvents() executed once, the main thread frozen again and the background thread
+     * continued.
+     */
+    static QgsNetworkAccessManager *instance( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
     QgsNetworkAccessManager( QObject *parent = nullptr );
 
@@ -79,8 +96,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     //! Gets QNetworkRequest::CacheLoadControl from name
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 
-    //! Setup the NAM according to the user's settings
-    void setupDefaultProxyAndCache();
+    /**
+     * Setup the QgsNetworkAccessManager (NAM) according to the user's settings.
+     * The \a connectionType sets up the default connection type that is used to
+     * handle signals that might require user interaction and therefore
+     * need to be handled on the main thread. See in-depth discussion in the documentation
+     * for the constructor of this class.
+     */
+    void setupDefaultProxyAndCache( Qt::ConnectionType connectionType = Qt::BlockingQueuedConnection );
 
     //! Returns whether the system proxy should be used
     bool useSystemProxy() const { return mUseSystemProxy; }

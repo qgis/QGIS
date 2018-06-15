@@ -30,7 +30,11 @@
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
 {
-  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
+  // Using Qt::DirectConnection since the download might be running on a different thread.
+  // In this case, the request was sent from the main thread and is executed with the main
+  // thread being blocked in future.waitForFinished() so we can run code on this object which
+  // lives in the main thread without risking havoc.
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished, Qt::DirectConnection );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )

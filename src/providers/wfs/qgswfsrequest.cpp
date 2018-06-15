@@ -24,6 +24,8 @@
 #include <QEventLoop>
 #include <QNetworkCacheMetaData>
 #include <QCryptographicHash> // just for testin file:// fake_qgis_http_endpoint hack
+#include <QFuture>
+#include <QtConcurrent>
 
 const qint64 READ_BUFFER_SIZE_HINT = 1024 * 1024;
 
@@ -126,26 +128,95 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
 
-  mReply = QgsNetworkAccessManager::instance()->get( request );
-  mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
-  if ( !mUri.auth().setAuthorizationReply( mReply ) )
+  QWaitCondition waitCondition;
+  QMutex waitConditionMutex;
+
+  std::function<bool()> downloaderFunction = [ this, request, synchronous, &waitConditionMutex, &waitCondition ]()
   {
-    mErrorCode = QgsWfsRequest::NetworkError;
-    mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
-    return false;
+    if ( QThread::currentThread() != QgsApplication::instance()->thread() )
+      QgsNetworkAccessManager::instance( Qt::DirectConnection );
+
+    bool success = true;
+    mReply = QgsNetworkAccessManager::instance()->get( request );
+
+    mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
+    if ( !mUri.auth().setAuthorizationReply( mReply ) )
+    {
+      mErrorCode = QgsWfsRequest::NetworkError;
+      mErrorMessage = errorMessageFailedAuth();
+      QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
+      waitCondition.wakeAll();
+      success = false;
+    }
+    else
+    {
+      // We are able to use direct connection here, because we
+      // * either run on the thread mReply lives in, so DirectConnection is standard and safe anyway
+      // * or the owner thread of mReply is currently not doing anything because it's blocked in future.waitForFinished() (if it is the main thread)
+      connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
+      connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
+
+      if ( synchronous )
+      {
+        auto resumeMainThread = [&waitConditionMutex, &waitCondition]()
+        {
+          waitConditionMutex.lock();
+          waitCondition.wakeAll();
+          waitConditionMutex.unlock();
+
+          waitConditionMutex.lock();
+          waitCondition.wait( &waitConditionMutex );
+          waitConditionMutex.unlock();
+        };
+
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::authenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::proxyAuthenticationRequired, this, resumeMainThread, Qt::DirectConnection );
+
+#ifndef QT_NO_SSL
+        connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::sslErrors, this, resumeMainThread, Qt::DirectConnection );
+#endif
+        QEventLoop loop;
+        connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit, Qt::DirectConnection );
+        loop.exec();
+      }
+    }
+    waitCondition.wakeAll();
+    return success;
+  };
+
+  bool success;
+
+  if ( synchronous && QThread::currentThread() == QApplication::instance()->thread() )
+  {
+    std::unique_ptr<DownloaderThread> downloaderThread = qgis::make_unique<DownloaderThread>( downloaderFunction );
+    downloaderThread->start();
+
+    while ( !downloaderThread->isFinished() )
+    {
+      waitConditionMutex.lock();
+      waitCondition.wait( &waitConditionMutex );
+      waitConditionMutex.unlock();
+
+      // If the downloader thread wakes us (the main thread) up and is not yet finished
+      // he needs the authentication to run.
+      // The processEvents() call gives the auth manager the chance to show a dialog and
+      // once done with that, we can wake the downloaderThread again and continue the download.
+      if ( !downloaderThread->isFinished() )
+      {
+        QgsApplication::instance()->processEvents();
+        waitConditionMutex.lock();
+        waitCondition.wakeAll();
+        waitConditionMutex.unlock();
+      }
+    }
+
+    success = downloaderThread->success();
   }
-  connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
-  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
-
-  if ( !synchronous )
-    return true;
-
-  QEventLoop loop;
-  connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
-  loop.exec( QEventLoop::ExcludeUserInputEvents );
-
-  return mErrorMessage.isEmpty();
+  else
+  {
+    success = downloaderFunction();
+  }
+  return success && mErrorMessage.isEmpty();
 }
 
 bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader, const QByteArray &data )
