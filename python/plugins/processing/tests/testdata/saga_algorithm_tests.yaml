@@ -346,3 +346,15 @@ tests:
         name: expected/saga/polygon_intersect.shp
         type: vector
 
+
+  - algorithm: saga:polygonselfintersection
+    name: Polygon self intersection
+    params:
+      POLYGONS:
+        name: custom/overlay2_b.geojson
+        type: vector
+    results:
+      INTERSECT:
+        name: expected/saga/polygon_self_intersection.shp
+        type: vector
+
