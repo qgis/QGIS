@@ -122,8 +122,8 @@ void FeaturePart::extractCoords( const GEOSGeometry *geom )
   coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, geom );
 
   // initialize bounding box
-  xmin = ymin = DBL_MAX;
-  xmax = ymax = -DBL_MAX;
+  xmin = ymin = std::numeric_limits<double>::max();
+  xmax = ymax = std::numeric_limits<double>::lowest();
 
   // initialize coordinate arrays
   deleteCoords();

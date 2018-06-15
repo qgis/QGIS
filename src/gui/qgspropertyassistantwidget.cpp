@@ -276,8 +276,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
                              .setSubsetOfAttributes( referencedCols, mLayer->fields() ) );
 
   // create list of non-null attribute values
-  double min = DBL_MAX;
-  double max = -DBL_MAX;
+  double min = std::numeric_limits<double>::max();
+  double max = std::numeric_limits<double>::lowest();
   QgsFeature f;
   bool found = false;
   while ( fit.nextFeature( f ) )

@@ -91,10 +91,10 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   if ( rendererContext.coordinateTransform().isValid() )
   {
     QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
-    if ( rendererContext.extent().xMinimum() == -DBL_MAX &&
-         rendererContext.extent().yMinimum() == -DBL_MAX &&
-         rendererContext.extent().xMaximum() == DBL_MAX &&
-         rendererContext.extent().yMaximum() == DBL_MAX )
+    if ( rendererContext.extent().xMinimum() == std::numeric_limits<double>::lowest() &&
+         rendererContext.extent().yMinimum() == std::numeric_limits<double>::lowest() &&
+         rendererContext.extent().xMaximum() == std::numeric_limits<double>::max() &&
+         rendererContext.extent().yMaximum() == std::numeric_limits<double>::max() )
     {
       // We get in this situation if the view CRS is geographical and the
       // extent goes beyond -180,-90,180,90. To avoid reprojection issues to the

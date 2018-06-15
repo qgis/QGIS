@@ -48,7 +48,7 @@ struct TiePointInfo
 
   int additionalPointId = -1;
   QgsPointXY mTiedPoint;
-  double mLength = DBL_MAX;
+  double mLength = std::numeric_limits<double>::max();
   QgsFeatureId mNetworkFeatureId = -1;
   QgsPointXY mFirstPoint;
   QgsPointXY mLastPoint;
@@ -245,7 +245,7 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
           {
 
             QgsPointXY snappedPoint;
-            double thisSegmentClosestDist = DBL_MAX;
+            double thisSegmentClosestDist = std::numeric_limits<double>::max();
             if ( pt1 == pt2 )
             {
               thisSegmentClosestDist = additionalPoint.sqrDist( pt1 );

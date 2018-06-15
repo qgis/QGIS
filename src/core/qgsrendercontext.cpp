@@ -328,7 +328,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
-      double minSizeMU = -DBL_MAX;
+      double minSizeMU = std::numeric_limits<double>::lowest();
       if ( scale.minSizeMMEnabled )
       {
         minSizeMU = scale.minSizeMM * mScaleFactor * mup;
@@ -339,7 +339,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       size = std::max( size, minSizeMU );
 
-      double maxSizeMU = DBL_MAX;
+      double maxSizeMU = std::numeric_limits<double>::max();
       if ( scale.maxSizeMMEnabled )
       {
         maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;

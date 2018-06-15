@@ -2200,9 +2200,9 @@ QString QgsProcessingParameterNumber::toolTip() const
 {
   QString text = QgsProcessingParameterDefinition::toolTip();
   QStringList parts;
-  if ( mMin > -DBL_MAX + 1 )
+  if ( mMin > std::numeric_limits<double>::lowest() + 1 )
     parts << QObject::tr( "Minimum value: %1" ).arg( mMin );
-  if ( mMax < DBL_MAX )
+  if ( mMax < std::numeric_limits<double>::max() )
     parts << QObject::tr( "Maximum value: %1" ).arg( mMax );
   if ( mDefault.isValid() )
     parts << QObject::tr( "Default value: %1" ).arg( mDataType == Integer ? mDefault.toInt() : mDefault.toDouble() );
