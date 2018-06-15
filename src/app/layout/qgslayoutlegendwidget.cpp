@@ -34,12 +34,15 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgslayoutitemlegend.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutmeasurementconverter.h"
+#include "qgsunittypes.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
 
+Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
 {
@@ -135,6 +138,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
 
   mItemTreeView->setModel( legend->model() );
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
+  setLegendMapViewData();
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
 
   // connect atlas state to the filter legend by atlas checkbox
@@ -627,6 +631,8 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
     mLegend->setLinkedMap( map );
     mLegend->updateFilterByMap();
     mLegend->endCommand();
+
+    setLegendMapViewData();
   }
 }
 
@@ -1033,6 +1039,21 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
 
   QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), ( QgsLegendStyle::Style ) a->data().toInt() );
   mLegend->updateFilterByMap();
+}
+
+void QgsLayoutLegendWidget::setLegendMapViewData()
+{
+  if ( mLegend->linkedMap() )
+  {
+    int dpi = qt_defaultDpiX();
+    QgsLayoutMeasurementConverter measurementConverter = QgsLayoutMeasurementConverter();
+    measurementConverter.setDpi( dpi );
+    double mapWidth = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).width();
+    double mapHeight = measurementConverter.convert( mLegend->linkedMap()->sizeWithUnits(), QgsUnitTypes::LayoutPixels ).height();
+    double mapUnitsPerPixelX = mLegend->linkedMap()->extent().width() / mapWidth;
+    double mapUnitsPerPixelY = mLegend->linkedMap()->extent().height() / mapHeight;
+    mLegend->model()->setLegendMapViewData( ( mapUnitsPerPixelX > mapUnitsPerPixelY ? mapUnitsPerPixelX : mapUnitsPerPixelY ), dpi, mLegend->linkedMap()->scale() );
+  }
 }
 
 void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
