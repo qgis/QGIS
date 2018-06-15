@@ -114,7 +114,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
   {
     if ( layer.isReferenced() )
     {
-      QgsMapLayer *l = QgsProject::instance()->mapLayer( layer.reference() );
+      QgsMapLayer *l = QgsApplication::activeProject()->mapLayer( layer.reference() );
       if ( !l )
       {
         PROVIDER_ERROR( QString( "Cannot find layer %1" ).arg( layer.reference() ) );
@@ -242,7 +242,7 @@ bool QgsVirtualLayerProvider::createIt()
       }
       // is it in loaded layers ?
       bool found = false;
-      Q_FOREACH ( const QgsMapLayer *l, QgsProject::instance()->mapLayers() )
+      Q_FOREACH ( const QgsMapLayer *l, QgsApplication::activeProject()->mapLayers() )
       {
         if ( l->type() != QgsMapLayer::VectorLayer )
           continue;

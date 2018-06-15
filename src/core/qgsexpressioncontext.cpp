@@ -928,7 +928,7 @@ QList<QgsExpressionContextScope *> QgsExpressionContextUtils::globalProjectLayer
   QList<QgsExpressionContextScope *> scopes;
   scopes << globalScope();
 
-  QgsProject *project = QgsProject::instance();  // TODO: use project associated with layer
+  QgsProject *project = QgsApplication::activeProject();  // TODO: use project associated with layer
   if ( project )
     scopes << projectScope( project );
 

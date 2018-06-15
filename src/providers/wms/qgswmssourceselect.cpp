@@ -115,7 +115,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     setTabOrder( lstLayers, mImageFormatGroup->button( 0 ) );
 
     //set the current project CRS if available
-    QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
+    QgsCoordinateReferenceSystem currentRefSys = QgsApplication::activeProject()->crs();
     //convert CRS id to epsg
     if ( currentRefSys.isValid() )
     {
@@ -637,7 +637,7 @@ void QgsWMSSourceSelect::btnChangeSpatialRefSys_clicked()
   mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mCRSs );
 
-  QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
+  QgsCoordinateReferenceSystem defaultCRS = QgsApplication::activeProject()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );

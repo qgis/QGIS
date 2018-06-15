@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
       , mCtfEnabled( ctfEnabled )
       , mTopologyTolerance( topologyTolerance )
     {
-      mDa.setSourceCrs( mCrs, QgsProject::instance()->transformContext() );
+      mDa.setSourceCrs( mCrs, QgsApplication::activeProject()->transformContext() );
       mDa.setEllipsoid( ellipsoidID );
     }
 

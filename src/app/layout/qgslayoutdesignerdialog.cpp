@@ -751,7 +751,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   //listen out to status bar updates from the view
   connect( mView, &QgsLayoutView::statusMessage, this, &QgsLayoutDesignerDialog::statusMessageReceived );
 
-  connect( QgsProject::instance(), &QgsProject::isDirtyChanged, this, &QgsLayoutDesignerDialog::updateWindowTitle );
+  connect( QgsApplication::activeProject(), &QgsProject::isDirtyChanged, this, &QgsLayoutDesignerDialog::updateWindowTitle );
 }
 
 QgsAppLayoutDesignerInterface *QgsLayoutDesignerDialog::iface()
@@ -1592,7 +1592,7 @@ void QgsLayoutDesignerDialog::saveAsTemplate()
   settings.setValue( QStringLiteral( "lastComposerTemplateDir" ), saveFileInfo.absolutePath(), QgsSettings::App );
 
   QgsReadWriteContext context;
-  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
   {
     QMessageBox::warning( this, tr( "Save Template" ), tr( "Error creating template file." ) );
@@ -1625,7 +1625,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
 
   QDomDocument templateDoc;
   QgsReadWriteContext context;
-  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  context.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   if ( templateDoc.setContent( &templateFile ) )
   {
     bool ok = false;
@@ -4159,7 +4159,7 @@ void QgsLayoutDesignerDialog::updateWindowTitle()
   else
     title = QStringLiteral( "%1 - %2" ).arg( mTitle, mSectionTitle );
 
-  if ( QgsProject::instance()->isDirty() )
+  if ( QgsApplication::activeProject()->isDirty() )
     title.prepend( '*' );
 
   setWindowTitle( title );

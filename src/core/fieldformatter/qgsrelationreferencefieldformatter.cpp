@@ -37,7 +37,7 @@ QString QgsRelationReferenceFieldFormatter::representValue( QgsVectorLayer *laye
     QgsMessageLog::logMessage( QObject::tr( "Missing Relation in configuration" ) );
     return value.toString();
   }
-  QgsRelation relation = QgsProject::instance()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
+  QgsRelation relation = QgsApplication::activeProject()->relationManager()->relation( config[QStringLiteral( "Relation" )].toString() );
   if ( !relation.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Invalid relation" ) );

@@ -216,7 +216,7 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
 
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
              << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )

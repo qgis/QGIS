@@ -138,7 +138,7 @@ void Qgs3DMapCanvasDockWidget::configure()
   QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
                     oldLookingAt,
                     oldOrigin, oldCrs,
-                    map->origin(), map->crs(), QgsProject::instance()->transformContext() );
+                    map->origin(), map->crs(), QgsApplication::activeProject()->transformContext() );
 
   if ( p != oldLookingAt )
   {

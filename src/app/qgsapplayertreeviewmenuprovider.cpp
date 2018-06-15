@@ -371,7 +371,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         }
       }
 
-      if ( layer && QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+      if ( layer && QgsApplication::activeProject()->layerIsEmbedded( layer->id() ).isEmpty() )
         menu->addAction( tr( "&Properties…" ), QgisApp::instance(), SLOT( layerProperties() ) );
     }
   }
@@ -584,7 +584,7 @@ void QgsAppLayerTreeViewMenuProvider::editVectorSymbol()
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
@@ -613,7 +613,7 @@ void QgsAppLayerTreeViewMenuProvider::setVectorSymbolColor( const QColor &color 
     return;
 
   QString layerId = action->property( "layerId" ).toString();
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
   if ( !layer )
     return;
 
@@ -705,7 +705,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
   QgsSymbol *newSymbol = originalSymbol->clone();
   newSymbol->setColor( color );
   node->setSymbol( newSymbol );
-  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) ) )
+  if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) ) )
   {
     layer->emitStyleChanged();
   }
@@ -714,7 +714,7 @@ void QgsAppLayerTreeViewMenuProvider::setSymbolLegendNodeColor( const QColor &co
 bool QgsAppLayerTreeViewMenuProvider::removeActionEnabled()
 {
   const QList<QgsLayerTreeLayer *> selectedLayers = mView->selectedLayerNodes();
-  const QSet<QgsMapLayer *> requiredLayers = QgsProject::instance()->requiredLayers();
+  const QSet<QgsMapLayer *> requiredLayers = QgsApplication::activeProject()->requiredLayers();
   for ( QgsLayerTreeLayer *nodeLayer : selectedLayers )
   {
     if ( requiredLayers.contains( nodeLayer->layer() ) )

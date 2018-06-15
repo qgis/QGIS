@@ -38,7 +38,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString name = elem.attribute( QStringLiteral( "name" ) );
   QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsApplication::activeProject()->mapLayers();
 
   QgsMapLayer *referencingLayer = mapLayers[referencingLayerId];
   QgsMapLayer *referencedLayer = mapLayers[referencedLayerId];
@@ -329,7 +329,7 @@ QString QgsRelation::resolveReferencingField( const QString &referencedField ) c
 
 void QgsRelation::updateRelationStatus()
 {
-  const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
+  const QMap<QString, QgsMapLayer *> &mapLayers = QgsApplication::activeProject()->mapLayers();
 
   mReferencingLayer = qobject_cast<QgsVectorLayer *>( mapLayers[mReferencingLayerId] );
   mReferencedLayer = qobject_cast<QgsVectorLayer *>( mapLayers[mReferencedLayerId] );

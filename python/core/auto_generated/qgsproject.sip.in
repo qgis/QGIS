@@ -32,16 +32,20 @@ properties.
 #include "qgsproject.h"
 %End
   public:
+
     static QgsProject *instance();
 %Docstring
-Returns the QgsProject singleton instance
+Returns the active QGIS project.
+Alias for ``QgsApplication.activeProject()``
+
+.. deprecated:: since QGIS 3.2 use QgsApplication.activeProject() instead.
 %End
 
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Create a new QgsProject.
 
-Most of the time you want to use QgsProject.instance() instead as many components of QGIS work with the singleton.
+Most of the time you want to use QgsApplication.activeProject() instead as many components of QGIS work with the singleton.
 %End
 
     ~QgsProject();

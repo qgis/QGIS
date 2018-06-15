@@ -114,7 +114,7 @@ void QgsGpsPlugin::run()
   // find all GPX layers
   std::vector<QgsVectorLayer *> gpxLayers;
   QMap<QString, QgsMapLayer *>::const_iterator iter;
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> layers = QgsApplication::activeProject()->mapLayers();
   for ( iter = layers.constBegin();
         iter != layers.constEnd(); ++iter )
   {

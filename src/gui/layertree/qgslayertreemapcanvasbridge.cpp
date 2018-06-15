@@ -92,7 +92,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mFirstCRS.isValid() && firstLayers )
   {
-    QgsProject::instance()->setCrs( mFirstCRS );
+    QgsApplication::activeProject()->setCrs( mFirstCRS );
   }
 
   mLastLayerCount = currentLayerCount;

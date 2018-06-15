@@ -164,7 +164,7 @@ void QgsTextAnnotationDialog::blockAllSignals( bool block )
 void QgsTextAnnotationDialog::deleteItem()
 {
   if ( mItem && mItem->annotation() )
-    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
+    QgsApplication::activeProject()->annotationManager()->removeAnnotation( mItem->annotation() );
   mItem = nullptr;
 }
 

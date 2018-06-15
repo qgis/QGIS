@@ -1047,7 +1047,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData *data, Qt::DropAction acti
   QDomElement elem = rootElem.firstChildElement();
   while ( !elem.isNull() )
   {
-    QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsProject::instance() );
+    QgsLayerTreeNode *node = QgsLayerTreeNode::readXml( elem, QgsApplication::activeProject() );
     if ( node )
       nodes << node;
 

@@ -38,7 +38,7 @@ void QgsNewAuxiliaryLayerDialog::accept()
   if ( idx >= 0 )
   {
     const QgsField field = mLayer->fields().field( idx );
-    QgsAuxiliaryLayer *alayer = QgsProject::instance()->auxiliaryStorage()->createAuxiliaryLayer( field, mLayer );
+    QgsAuxiliaryLayer *alayer = QgsApplication::activeProject()->auxiliaryStorage()->createAuxiliaryLayer( field, mLayer );
 
     if ( alayer )
     {

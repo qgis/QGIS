@@ -236,7 +236,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   , mCrs( p->mCrs )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
   mExpressionContext.setFields( mFields );
 }
 

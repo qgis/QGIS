@@ -465,7 +465,7 @@ QStringList QgsGrassModuleStandardOptions::checkOutput()
 QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 {
   QList<QgsGrassProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
@@ -486,7 +486,7 @@ QList<QgsGrassProvider *> QgsGrassModuleStandardOptions::grassProviders()
 QList<QgsGrassRasterProvider *> QgsGrassModuleStandardOptions::grassRasterProviders()
 {
   QList<QgsGrassRasterProvider *> providers;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer )
     {

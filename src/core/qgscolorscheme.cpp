@@ -195,8 +195,8 @@ QgsNamedColorList QgsProjectColorScheme::fetchColors( const QString &context, co
 
   QgsNamedColorList colorList;
 
-  QStringList colorStrings = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
-  QStringList colorLabels = QgsProject::instance()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
+  QStringList colorStrings = QgsApplication::activeProject()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ) );
+  QStringList colorLabels = QgsApplication::activeProject()->readListEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ) );
 
   //generate list from custom colors
   int colorIndex = 0;
@@ -234,8 +234,8 @@ bool QgsProjectColorScheme::setColors( const QgsNamedColorList &colors, const QS
     customColors.append( color );
     customColorLabels.append( label );
   }
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
-  QgsProject::instance()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Colors" ), customColors );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "Palette" ), QStringLiteral( "/Labels" ), customColorLabels );
   return true;
 }
 

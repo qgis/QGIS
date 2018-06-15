@@ -60,7 +60,7 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   arguments = QCoreApplication::arguments();
   // TODO In future this needs to be moved out into a "session state" file because we can't trust this is valid in
   // a crash.
-  arguments << QgsProject::instance()->fileName();
+  arguments << QgsApplication::activeProject()->fileName();
 
   QStringList reportData;
   reportData.append( QStringLiteral( "QGIS Version: %1" ).arg( Qgis::QGIS_VERSION ) );

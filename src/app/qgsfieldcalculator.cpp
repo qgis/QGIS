@@ -70,8 +70,8 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( vl->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( vl->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   builder->setGeomCalculator( myDa );
 
   //default values for field width and precision
@@ -169,14 +169,14 @@ void QgsFieldCalculator::accept()
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mVectorLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mVectorLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
   exp.setGeomCalculator( &myDa );
-  exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp.setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp.setDistanceUnits( QgsApplication::activeProject()->distanceUnits() );
+  exp.setAreaUnits( QgsApplication::activeProject()->areaUnits() );
 
   QgsExpressionContext expContext( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
 

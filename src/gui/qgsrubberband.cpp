@@ -265,7 +265,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   QgsGeometry geom = geometry;
   if ( crs.isValid() )
   {
-    QgsCoordinateTransform ct( crs, ms.destinationCrs(), QgsProject::instance() );
+    QgsCoordinateTransform ct( crs, ms.destinationCrs(), QgsApplication::activeProject() );
     geom.transform( ct );
   }
 

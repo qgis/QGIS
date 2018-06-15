@@ -35,7 +35,7 @@
 
 static QgsMapLayer *_rasterLayer( const QString &filename )
 {
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> layers = QgsApplication::activeProject()->mapLayers();
   Q_FOREACH ( QgsMapLayer *layer, layers )
   {
     if ( layer->type() == QgsMapLayer::RasterLayer && layer->source() == filename )
@@ -369,7 +369,7 @@ void QgsAlignRasterDialog::runAlign()
       {
         QgsRasterLayer *layer = new QgsRasterLayer( item.outputFilename, QFileInfo( item.outputFilename ).baseName() );
         if ( layer->isValid() )
-          QgsProject::instance()->addMapLayer( layer );
+          QgsApplication::activeProject()->addMapLayer( layer );
         else
           delete layer;
       }

@@ -1107,14 +1107,14 @@ void QgsGrass::saveMapset()
 {
 
   // Save working mapset in project file
-  QgsProject::instance()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ),
-                                      QgsProject::instance()->writePath( getDefaultGisdbase() ) );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ),
+      QgsApplication::activeProject()->writePath( getDefaultGisdbase() ) );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ),
-                                      getDefaultLocation() );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ),
+      getDefaultLocation() );
 
-  QgsProject::instance()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ),
-                                      getDefaultMapset() );
+  QgsApplication::activeProject()->writeEntry( QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ),
+      getDefaultMapset() );
 }
 
 void QgsGrass::createMapset( const QString &gisdbase, const QString &location,

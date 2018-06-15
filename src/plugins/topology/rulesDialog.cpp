@@ -135,8 +135,8 @@ void rulesDialog::readTest( int index, QgsProject *project )
 void rulesDialog::projectRead()
 {
   clearRules();
-  QgsProject *project = QgsProject::instance();
-  int testCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
+  QgsProject *project = QgsApplication::activeProject();
+  int testCount = QgsApplication::activeProject()->readNumEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ) );
   mRulesTable->clearContents();
 
   for ( int i = 0; i < testCount; ++i )
@@ -153,14 +153,14 @@ void rulesDialog::showControls( const QString &testName )
   mLayer2Box->clear();
   mLayer2Box->addItem( tr( "No layer" ) );
   TopologyRule topologyRule = mTestConfMap[testName];
-  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
+  QList<QString> layerList = QgsApplication::activeProject()->mapLayers().keys();
 
   if ( topologyRule.useSecondLayer )
   {
     mLayer2Box->setVisible( true );
     for ( int i = 0; i < layerList.count(); ++i )
     {
-      QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
+      QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayer( layerList[i] );
 
       if ( !v1 )
       {
@@ -245,7 +245,7 @@ void rulesDialog::addRule()
 
   // save state to the project file.....
   QString postfix = QStringLiteral( "%1" ).arg( row );
-  QgsProject *project = QgsProject::instance();
+  QgsProject *project = QgsApplication::activeProject();
 
   project->writeEntry( QStringLiteral( "Topol" ), QStringLiteral( "/testCount" ), row + 1 );
   project->writeEntry( QStringLiteral( "Topol" ), "/testname_" + postfix, test );
@@ -281,7 +281,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
   QString layerId = mLayer1Box->currentData().toString();
 
-  QgsVectorLayer *vlayer = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerId );
+  QgsVectorLayer *vlayer = ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayer( layerId );
 
   if ( !vlayer )
   {
@@ -302,7 +302,7 @@ void rulesDialog::updateRuleItems( const QString &layerName )
 
 void rulesDialog::initGui()
 {
-  QList<QString> layerList = QgsProject::instance()->mapLayers().keys();
+  QList<QString> layerList = QgsApplication::activeProject()->mapLayers().keys();
 
   mLayer1Box->clear();
   mLayer1Box->addItem( tr( "No layer" ) );
@@ -313,7 +313,7 @@ void rulesDialog::initGui()
   mLayer1Box->blockSignals( true );
   for ( int i = 0; i < layerList.size(); ++i )
   {
-    QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layerList[i] );
+    QgsVectorLayer *v1 = ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayer( layerList[i] );
     qDebug() << "layerid = " + layerList[i];
 
     // add layer name to the layer combo boxes

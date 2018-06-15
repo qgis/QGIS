@@ -251,7 +251,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
       QgsDistanceArea distanceArea;
-      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject()->transformContext() );
       distanceArea.setEllipsoid( mCanvas->mapSettings().ellipsoid() );
       // factor=1.0 / 1 meter in MapUnits
       factor = 1.0 / distanceArea.measureLineProjected( startPoint );

@@ -89,7 +89,7 @@ void QgsMapToolSplitParts::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     deleteTempRubberBand();
 
     //bring up dialog if a split was not possible (polygon) or only done once (line)
-    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    bool topologicalEditing = QgsApplication::activeProject()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Parts split" ) );
     QgsGeometry::OperationResult returnCode = vlayer->splitParts( points(), topologicalEditing );
     vlayer->endEditCommand();

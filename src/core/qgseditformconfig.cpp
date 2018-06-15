@@ -69,7 +69,7 @@ void QgsEditFormConfig::onRelationsLoaded()
     if ( !rel )
       continue;
 
-    rel->init( QgsProject::instance()->relationManager() );
+    rel->init( QgsApplication::activeProject()->relationManager() );
   }
 }
 

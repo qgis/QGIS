@@ -252,7 +252,7 @@ void QgsGrassPlugin::initGui()
   connect( QgsGrass::instance(), &QgsGrass::newLayer, this, &QgsGrassPlugin::onNewLayer );
 
   // Connect start/stop editing
-  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
+  connect( QgsApplication::activeProject(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
   connect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
            this, &QgsGrassPlugin::onCurrentLayerChanged );
@@ -428,7 +428,7 @@ void QgsGrassPlugin::onFieldsChanged()
   QString uri = grassProvider->dataSourceUri();
   uri.remove( QRegExp( "[^_]*$" ) );
   QgsDebugMsg( "uri = " + uri );
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
     {
@@ -726,13 +726,13 @@ void QgsGrassPlugin::projectRead()
 {
 
   bool ok;
-  QString gisdbase = QgsProject::instance()->readPath(
-                       QgsProject::instance()->readEntry(
+  QString gisdbase = QgsApplication::activeProject()->readPath(
+                       QgsApplication::activeProject()->readEntry(
                          QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingGisdbase" ), QLatin1String( "" ), &ok ).trimmed()
                      );
-  QString location = QgsProject::instance()->readEntry(
+  QString location = QgsApplication::activeProject()->readEntry(
                        QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingLocation" ), QLatin1String( "" ), &ok ).trimmed();
-  QString mapset = QgsProject::instance()->readEntry(
+  QString mapset = QgsApplication::activeProject()->readEntry(
                      QStringLiteral( "GRASS" ), QStringLiteral( "/WorkingMapset" ), QLatin1String( "" ), &ok ).trimmed();
 
   if ( gisdbase.isEmpty() || location.isEmpty() || mapset.isEmpty() )
@@ -792,12 +792,12 @@ void QgsGrassPlugin::unload()
   disconnect( QgsGrass::instance(), &QgsGrass::regionPenChanged, this, &QgsGrassPlugin::displayRegion );
   disconnect( QgsGrass::instance(), &QgsGrass::newLayer, this, &QgsGrassPlugin::onNewLayer );
 
-  disconnect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
+  disconnect( QgsApplication::activeProject(), &QgsProject::layerWasAdded, this, &QgsGrassPlugin::onLayerWasAdded );
 
   disconnect( qGisInterface->layerTreeView(), &QgsLayerTreeView::currentLayerChanged,
               this, &QgsGrassPlugin::onCurrentLayerChanged );
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
     {

@@ -119,7 +119,7 @@ void QgsSourceFieldsProperties::updateExpression()
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 
   QgsExpressionBuilderDialog dlg( mLayer, exp, nullptr, QStringLiteral( "generic" ), context );
 

@@ -69,7 +69,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   QgsRelation relation; // invalid relation by default
   if ( relationName.isValid() )
-    relation = QgsProject::instance()->relationManager()->relation( relationName.toString() );
+    relation = QgsApplication::activeProject()->relationManager()->relation( relationName.toString() );
   else if ( ! layer()->referencingRelations( fieldIdx() ).isEmpty() )
     relation = layer()->referencingRelations( fieldIdx() )[0];
 

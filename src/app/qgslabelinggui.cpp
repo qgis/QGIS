@@ -30,7 +30,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+             << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
              << QgsExpressionContextUtils::atlasScope( nullptr )
              << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
@@ -115,8 +115,8 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mFieldExpressionWidget->setLayer( mLayer );
   QgsDistanceArea da;
-  da.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  da.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   mFieldExpressionWidget->setGeomCalculator( da );
 
   // set placement methods page based on geometry type

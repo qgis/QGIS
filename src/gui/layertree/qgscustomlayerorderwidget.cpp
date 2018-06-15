@@ -108,14 +108,14 @@ QVariant CustomLayerOrderModel::data( const QModelIndex &index, int role ) const
 
   if ( role == Qt::DisplayRole )
   {
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
+    QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( id );
     if ( layer )
       return layer->name();
   }
 
   if ( role == Qt::UserRole + 1 )
   {
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
+    QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( id );
     if ( layer )
       return layer->id();
   }

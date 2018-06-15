@@ -163,7 +163,7 @@ void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWrite
   // upgrade old layer
   if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
   {
-    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) );
+    setMapLayer( QgsApplication::activeProject()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) );
   }
 
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );

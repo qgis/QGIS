@@ -93,7 +93,7 @@ void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 void QgsLabelPropertyDialog::init( const QString &layerId, const QString &providerId, int featureId, const QString &labelText )
 {
   //get feature attributes
-  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
   if ( !vlayer )
   {
     return;
@@ -254,7 +254,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() )
           << QgsExpressionContextUtils::atlasScope( nullptr )
           << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
           << QgsExpressionContextUtils::layerScope( vlayer );

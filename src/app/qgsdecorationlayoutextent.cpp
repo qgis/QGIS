@@ -53,8 +53,8 @@ void QgsDecorationLayoutExtent::projectRead()
   QDomDocument doc;
   QDomElement elem;
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QString xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Symbol" ) );
+  rwContext.setPathResolver( QgsApplication::activeProject()->pathResolver() );
+  QString xml = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Symbol" ) );
   mSymbol.reset( nullptr );
   if ( !xml.isEmpty() )
   {
@@ -69,14 +69,14 @@ void QgsDecorationLayoutExtent::projectRead()
     mSymbol->changeSymbolLayer( 0, layer );
   }
 
-  QString textXml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
+  QString textXml = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Font" ) );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
     elem = doc.documentElement();
     mTextFormat.readXml( elem, rwContext );
   }
-  mLabelExtents = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Labels" ), true );
+  mLabelExtents = QgsApplication::activeProject()->readBoolEntry( mNameConfig, QStringLiteral( "/Labels" ), true );
 }
 
 void QgsDecorationLayoutExtent::saveToProject()
@@ -86,20 +86,20 @@ void QgsDecorationLayoutExtent::saveToProject()
   QDomDocument doc;
   QDomElement elem;
   QgsReadWriteContext rwContext;
-  rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
+  rwContext.setPathResolver( QgsApplication::activeProject()->pathResolver() );
   if ( mSymbol )
   {
     elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
-    QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Symbol" ), doc.toString() );
+    QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Symbol" ), doc.toString() );
   }
 
   QDomDocument textDoc;
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Labels" ), mLabelExtents );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Labels" ), mLabelExtents );
 }
 
 void QgsDecorationLayoutExtent::run()
@@ -143,7 +143,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
       {
         // reproject extent
         QgsCoordinateTransform ct( map->crs(),
-                                   mapSettings.destinationCrs(), QgsProject::instance() );
+                                   mapSettings.destinationCrs(), QgsApplication::activeProject() );
         g = g.densifyByCount( 20 );
         try
         {

@@ -144,7 +144,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   {
     const QMap<QgsFeatureId, QList<QgsGeometryCheck::Change>> &layerChanges = it.value();
     QgsFeaturePool *featurePool = mContext->featurePools[it.key()];
-    QgsCoordinateTransform t( featurePool->getLayer()->crs(), mContext->mapCrs, QgsProject::instance() );
+    QgsCoordinateTransform t( featurePool->getLayer()->crs(), mContext->mapCrs, QgsApplication::activeProject() );
     for ( auto layerChangeIt = layerChanges.constBegin(); layerChangeIt != layerChanges.constEnd(); ++layerChangeIt )
     {
       bool removed = false;
@@ -183,7 +183,7 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
   for ( const QString &layerId : mContext->featurePools.keys() )
   {
     QgsFeaturePool *featurePool = mContext->featurePools[layerId];
-    QgsCoordinateTransform t( mContext->mapCrs, featurePool->getLayer()->crs(), QgsProject::instance() );
+    QgsCoordinateTransform t( mContext->mapCrs, featurePool->getLayer()->crs(), QgsApplication::activeProject() );
     recheckAreaFeatures[layerId] = featurePool->getIntersects( t.transform( recheckArea ) );
   }
 

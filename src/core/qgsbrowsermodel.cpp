@@ -55,7 +55,7 @@ QgsBrowserModel::~QgsBrowserModel()
 
 void QgsBrowserModel::updateProjectHome()
 {
-  QString home = QgsProject::instance()->homePath();
+  QString home = QgsApplication::activeProject()->homePath();
   if ( mProjectHome && mProjectHome->path() == home )
     return;
 
@@ -176,9 +176,9 @@ void QgsBrowserModel::initialize()
 {
   if ( ! mInitialized )
   {
-    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-    connect( QgsProject::instance(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
-    connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsApplication::activeProject(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsApplication::activeProject(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsApplication::activeProject(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
     addRootItems();
     mInitialized = true;
   }

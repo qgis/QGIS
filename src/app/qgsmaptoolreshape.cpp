@@ -156,7 +156,7 @@ void QgsMapToolReshape::reshape( QgsVectorLayer *vlayer )
           QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures;
           ignoreFeatures.insert( vlayer, vlayer->allFeatureIds() );
 
-          if ( geom.avoidIntersections( QgsProject::instance()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
+          if ( geom.avoidIntersections( QgsApplication::activeProject()->avoidIntersectionsLayers(), ignoreFeatures ) != 0 )
           {
             emit messageEmitted( tr( "An error was reported during intersection removal" ), Qgis::Critical );
             vlayer->destroyEditCommand();

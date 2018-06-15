@@ -42,7 +42,7 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   : QWidget( parent )
-  , mProject( QgsProject::instance() )
+  , mProject( QgsApplication::activeProject() )
 {
   setupUi( this );
   connect( btnRun, &QToolButton::pressed, this, &QgsExpressionBuilderWidget::btnRun_pressed );

@@ -337,7 +337,7 @@ class QgsExpressionUtils
     {
       // First check if we already received a layer pointer
       QgsMapLayer *ml = value.value< QgsWeakMapLayerPointer >().data();
-      QgsProject *project = QgsProject::instance();
+      QgsProject *project = QgsApplication::activeProject();
 
       // No pointer yet, maybe it's a layer id?
       if ( !ml )

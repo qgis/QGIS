@@ -55,7 +55,7 @@ QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
-             << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+             << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 
   if ( mLayer )
     expContext << QgsExpressionContextUtils::layerScope( mLayer );
@@ -144,8 +144,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   myDa = new QgsDistanceArea();
 
-  myDa->setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa->setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa->setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   mEditorContext.setDistanceArea( *myDa );
   mEditorContext.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
@@ -498,8 +498,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer *layer, const 
 
   QgsExpression exp( expression );
   exp.setGeomCalculator( myDa );
-  exp.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp.setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp.setDistanceUnits( QgsApplication::activeProject()->distanceUnits() );
+  exp.setAreaUnits( QgsApplication::activeProject()->areaUnits() );
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request( mMainView->masterModel()->request() );
@@ -628,8 +628,8 @@ void QgsAttributeTableDialog::filterExpressionBuilder()
   dlg.setWindowTitle( tr( "Expression Based Filter" ) );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
   dlg.setGeomCalculator( myDa );
 
   if ( dlg.exec() == QDialog::Accepted )
@@ -1018,8 +1018,8 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   QgsFeatureIds filteredFeatures;
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( mLayer->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   // parse search string and build parsed tree
   QgsExpression filterExpression( filter );
@@ -1041,8 +1041,8 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   filterExpression.setGeomCalculator( &myDa );
-  filterExpression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  filterExpression.setAreaUnits( QgsProject::instance()->areaUnits() );
+  filterExpression.setDistanceUnits( QgsApplication::activeProject()->distanceUnits() );
+  filterExpression.setAreaUnits( QgsApplication::activeProject()->areaUnits() );
   QgsFeatureRequest request( mMainView->masterModel()->request() );
   request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->fields() );
   if ( !fetchGeom )

@@ -96,7 +96,7 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( const QString &service, QWidget *parent,
   if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
     //set the current project CRS if available
-    QgsCoordinateReferenceSystem currentRefSys = QgsProject::instance()->crs();
+    QgsCoordinateReferenceSystem currentRefSys = QgsApplication::activeProject()->crs();
     //convert CRS id to epsg
     if ( currentRefSys.isValid() )
     {
@@ -397,7 +397,7 @@ void QgsOWSSourceSelect::mChangeCRSButton_clicked()
   mySelector->setMessage( QString() );
   mySelector->setOgcWmsCrsFilter( mSelectedLayersCRSs );
 
-  QgsCoordinateReferenceSystem defaultCRS = QgsProject::instance()->crs();
+  QgsCoordinateReferenceSystem defaultCRS = QgsApplication::activeProject()->crs();
   if ( defaultCRS.isValid() )
   {
     mySelector->setCrs( defaultCRS );

@@ -289,6 +289,9 @@ void QgsApplication::init( QString profileFolder )
 
 QgsApplication::~QgsApplication()
 {
+  if ( mApplicationMembers->mActiveProject && mApplicationMembers->mActiveProject->parent() == this )
+    delete mApplicationMembers->mActiveProject;
+
   delete mDataItemProviderRegistry;
   delete mApplicationMembers;
 }
@@ -1034,7 +1037,7 @@ void QgsApplication::initQgis()
   ( void )QgsApplication::dataItemProviderRegistry();
 
   // create project instance if doesn't exist
-  QgsProject::instance();
+  QgsApplication::activeProject();
 
   // Initialize authentication manager and connect to database
   authManager()->init( pluginPath(), qgisAuthDatabaseFilePath() );
@@ -1081,7 +1084,7 @@ void QgsApplication::exitQgis()
   //delete all registered functions from expression engine (see above comment)
   QgsExpression::cleanRegisteredFunctions();
 
-  delete QgsProject::instance();
+  delete QgsApplication::activeProject();
 
   delete QgsProviderRegistry::instance();
 
@@ -1411,6 +1414,25 @@ void QgsApplication::copyPath( const QString &src, const QString &dst )
   {
     QFile::copy( src + QDir::separator() + f, dst + QDir::separator() + f );
   }
+}
+
+QgsProject *QgsApplication::activeProject()
+{
+  return instance()->mApplicationMembers->mActiveProject;
+}
+
+void QgsApplication::setActiveProject( QgsProject *activeProject )
+{
+  QgsApplication *app = instance();
+
+  if ( app->mApplicationMembers->mActiveProject == activeProject )
+    return;
+
+  if ( app->mApplicationMembers->mActiveProject && app->mApplicationMembers->mActiveProject->parent() == instance() )
+    delete app->mApplicationMembers->mActiveProject;
+
+  app->mApplicationMembers->mActiveProject = activeProject;
+  emit app->activeProjectChanged();
 }
 
 QVariantMap QgsApplication::customVariables()

@@ -1052,7 +1052,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->triggerRepaint();
 
   // notify the project we've made a change
-  QgsProject::instance()->setDirty( true );
+  QgsApplication::activeProject()->setDirty( true );
 }//apply
 
 void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
@@ -1229,7 +1229,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
-  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsApplication::activeProject()->crs() );
   mRasterLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }

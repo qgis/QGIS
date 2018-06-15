@@ -229,49 +229,49 @@ void QgsGlobePluginDialog::readProjectSettings()
   mElevationTreeView->resizeColumnToContents( 0 );
 
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
-  mSpinBoxVerticalScale->setValue( QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/verticalScale", 1 ) );
+  mSpinBoxVerticalScale->setValue( QgsApplication::activeProject()->readDoubleEntry( "Globe-Plugin", "/verticalScale", 1 ) );
 #endif
 
   // Map settings
-  groupBoxSky->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true ) );
-  checkBoxDateTime->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false ) );
-  dateTimeEditSky->setDateTime( QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) ) );
-  checkBoxSkyAutoAmbient->setChecked( QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false ) );
-  horizontalSliderMinAmbient->setValue( QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) );
+  groupBoxSky->setChecked( QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true ) );
+  checkBoxDateTime->setChecked( QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false ) );
+  dateTimeEditSky->setDateTime( QDateTime::fromString( QgsApplication::activeProject()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) ) );
+  checkBoxSkyAutoAmbient->setChecked( QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false ) );
+  horizontalSliderMinAmbient->setValue( QgsApplication::activeProject()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) );
 }
 
 void QgsGlobePluginDialog::writeProjectSettings()
 {
   // Imagery settings
-  QgsProject::instance()->removeEntry( "Globe-Plugin", "/imageryDatasources/" );
+  QgsApplication::activeProject()->removeEntry( "Globe-Plugin", "/imageryDatasources/" );
   for ( int row = 0, nRows = mImageryTreeView->topLevelItemCount(); row < nRows; ++row )
   {
     QTreeWidgetItem *item = mImageryTreeView->topLevelItem( row );
     QString key = QString( "/imageryDatasources/L%1" ).arg( row );
-    QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
-    QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
+    QgsApplication::activeProject()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
+    QgsApplication::activeProject()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
   }
 
   // Elevation settings
-  QgsProject::instance()->removeEntry( "Globe-Plugin", "/elevationDatasources/" );
+  QgsApplication::activeProject()->removeEntry( "Globe-Plugin", "/elevationDatasources/" );
   for ( int row = 0, nRows = mElevationTreeView->topLevelItemCount(); row < nRows; ++row )
   {
     QTreeWidgetItem *item = mElevationTreeView->topLevelItem( row );
     QString key = QString( "/elevationDatasources/L%1" ).arg( row );
-    QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
-    QgsProject::instance()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
+    QgsApplication::activeProject()->writeEntry( "Globe-Plugin", key + "/type", item->text( 0 ) );
+    QgsApplication::activeProject()->writeEntry( "Globe-Plugin", key + "/uri", item->text( 1 ) );
   }
 
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL( 2, 5, 0 )
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/verticalScale", mSpinBoxVerticalScale->value() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/verticalScale", mSpinBoxVerticalScale->value() );
 #endif
 
   // Map settings
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyEnabled/", groupBoxSky->isChecked() );
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/overrideDateTime/", checkBoxDateTime->isChecked() );
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyDateTime/", dateTimeEditSky->dateTime().toString() );
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyAutoAmbient/", checkBoxSkyAutoAmbient->isChecked() );
-  QgsProject::instance()->writeEntry( "Globe-Plugin", "/skyMinAmbient/", horizontalSliderMinAmbient->value() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/skyEnabled/", groupBoxSky->isChecked() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/overrideDateTime/", checkBoxDateTime->isChecked() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/skyDateTime/", dateTimeEditSky->dateTime().toString() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/skyAutoAmbient/", checkBoxSkyAutoAmbient->isChecked() );
+  QgsApplication::activeProject()->writeEntry( "Globe-Plugin", "/skyMinAmbient/", horizontalSliderMinAmbient->value() );
 }
 
 bool QgsGlobePluginDialog::validateRemoteUri( const QString &uri, QString &errMsg ) const
@@ -432,14 +432,14 @@ void QgsGlobePluginDialog::on_mRemoveElevationButton_clicked()
 
 QList<QgsGlobePluginDialog::LayerDataSource> QgsGlobePluginDialog::getImageryDataSources() const
 {
-  int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/imageryDatasources/" ).count();
+  int keysCount = QgsApplication::activeProject()->subkeyList( "Globe-Plugin", "/imageryDatasources/" ).count();
   QList<LayerDataSource> datasources;
   for ( int i = 0; i < keysCount; ++i )
   {
     QString key = QString( "/imageryDatasources/L%1" ).arg( i );
     LayerDataSource datasource;
-    datasource.type  = QgsProject::instance()->readEntry( "Globe-Plugin", key + "/type" );
-    datasource.uri   = QgsProject::instance()->readEntry( "Globe-Plugin", key + "/uri" );
+    datasource.type  = QgsApplication::activeProject()->readEntry( "Globe-Plugin", key + "/type" );
+    datasource.uri   = QgsApplication::activeProject()->readEntry( "Globe-Plugin", key + "/uri" );
     datasources.append( datasource );
   }
   return datasources;
@@ -447,14 +447,14 @@ QList<QgsGlobePluginDialog::LayerDataSource> QgsGlobePluginDialog::getImageryDat
 
 QList<QgsGlobePluginDialog::LayerDataSource> QgsGlobePluginDialog::getElevationDataSources() const
 {
-  int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
+  int keysCount = QgsApplication::activeProject()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
   QList<LayerDataSource> datasources;
   for ( int i = 0; i < keysCount; ++i )
   {
     QString key = QString( "/elevationDatasources/L%1" ).arg( i );
     LayerDataSource datasource;
-    datasource.type  = QgsProject::instance()->readEntry( "Globe-Plugin", key + "/type" );
-    datasource.uri   = QgsProject::instance()->readEntry( "Globe-Plugin", key + "/uri" );
+    datasource.type  = QgsApplication::activeProject()->readEntry( "Globe-Plugin", key + "/type" );
+    datasource.uri   = QgsApplication::activeProject()->readEntry( "Globe-Plugin", key + "/uri" );
     datasources.append( datasource );
   }
   return datasources;
@@ -467,15 +467,15 @@ double QgsGlobePluginDialog::getVerticalScale() const
 
 bool QgsGlobePluginDialog::getSkyEnabled() const
 {
-  return QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true );
+  return QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/skyEnabled", true );
 }
 
 QDateTime QgsGlobePluginDialog::getSkyDateTime() const
 {
-  bool overrideDateTime = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false );
+  bool overrideDateTime = QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/overrideDateTime", false );
   if ( overrideDateTime )
   {
-    return QDateTime::fromString( QgsProject::instance()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) );
+    return QDateTime::fromString( QgsApplication::activeProject()->readEntry( "Globe-Plugin", "/skyDateTime", QDateTime::currentDateTime().toString() ) );
   }
   else
   {
@@ -485,12 +485,12 @@ QDateTime QgsGlobePluginDialog::getSkyDateTime() const
 
 bool QgsGlobePluginDialog::getSkyAutoAmbience() const
 {
-  return QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false );
+  return QgsApplication::activeProject()->readBoolEntry( "Globe-Plugin", "/skyAutoAmbient", false );
 }
 
 double QgsGlobePluginDialog::getSkyMinAmbient() const
 {
-  return QgsProject::instance()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) / 100.;
+  return QgsApplication::activeProject()->readDoubleEntry( "Globe-Plugin", "/skyMinAmbient", 30. ) / 100.;
 }
 
 /// ADVANCED //////////////////////////////////////////////////////////////////

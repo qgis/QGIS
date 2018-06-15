@@ -104,7 +104,7 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
       case UserExtent:
         try
         {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsApplication::activeProject() );
           QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
@@ -134,7 +134,7 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
   {
     try
     {
-      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
+      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsApplication::activeProject() );
       extent = ct.transformBoundingBox( r );
     }
     catch ( QgsCsException & )
@@ -245,7 +245,7 @@ void QgsExtentGroupBox::layerMenuAboutToShow()
 
 void QgsExtentGroupBox::setExtentToLayerExtent( const QString &layerId )
 {
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerId );
+  QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( layerId );
   if ( !layer )
     return;
 

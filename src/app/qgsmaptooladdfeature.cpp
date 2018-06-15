@@ -63,11 +63,11 @@ void QgsMapToolAddFeature::digitized( QgsFeature &f )
   if ( res && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
     //add points to other features to keep topology up-to-date
-    bool topologicalEditing = QgsProject::instance()->topologicalEditing();
+    bool topologicalEditing = QgsApplication::activeProject()->topologicalEditing();
 
     //use always topological editing for avoidIntersection.
     //Otherwise, no way to guarantee the geometries don't have a small gap in between.
-    QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();
+    QList<QgsVectorLayer *> intersectionLayers = QgsApplication::activeProject()->avoidIntersectionsLayers();
     bool avoidIntersection = !intersectionLayers.isEmpty();
     if ( avoidIntersection ) //try to add topological points also to background layers
     {

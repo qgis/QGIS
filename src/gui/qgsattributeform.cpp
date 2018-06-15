@@ -1334,7 +1334,7 @@ void QgsAttributeForm::init()
       }
     }
 
-    Q_FOREACH ( const QgsRelation &rel, QgsProject::instance()->relationManager()->referencedRelations( mLayer ) )
+    Q_FOREACH ( const QgsRelation &rel, QgsApplication::activeProject()->relationManager()->referencedRelations( mLayer ) )
     {
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, rel, nullptr, this );
       const QgsEditorWidgetSetup setup = QgsGui::editorWidgetRegistry()->findBest( mLayer, rel.id() );
@@ -1349,7 +1349,7 @@ void QgsAttributeForm::init()
       mFormWidgets.append( formWidget );
     }
 
-    if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).isEmpty() )
+    if ( QgsApplication::activeProject()->relationManager()->referencedRelations( mLayer ).isEmpty() )
     {
       QSpacerItem *spacerItem = new QSpacerItem( 20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding );
       gridLayout->addItem( spacerItem, row, 0 );
@@ -1794,7 +1794,7 @@ void QgsAttributeForm::createWrappers()
     QVariant vRel = myWidget->property( "qgisRelation" );
     if ( vRel.isValid() )
     {
-      QgsRelationManager *relMgr = QgsProject::instance()->relationManager();
+      QgsRelationManager *relMgr = QgsApplication::activeProject()->relationManager();
       QgsRelation relation = relMgr->relation( vRel.toString() );
       if ( relation.isValid() )
       {

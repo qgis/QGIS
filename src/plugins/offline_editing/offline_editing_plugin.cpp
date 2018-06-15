@@ -82,9 +82,9 @@ void QgsOfflineEditingPlugin::initGui()
 
   connect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
   connect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
-  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
-  connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditingPlugin::updateActions );
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsApplication::activeProject(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsApplication::activeProject(), &QgsProject::layerWasAdded, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
   updateActions();
 }
 
@@ -126,7 +126,7 @@ void QgsOfflineEditingPlugin::unload()
 {
   disconnect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
   disconnect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
-  disconnect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
+  disconnect( QgsApplication::activeProject(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
 
   // remove the GUI
   mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
@@ -144,7 +144,7 @@ void QgsOfflineEditingPlugin::help()
 
 void QgsOfflineEditingPlugin::updateActions()
 {
-  bool hasLayers = QgsProject::instance()->count() > 0;
+  bool hasLayers = QgsApplication::activeProject()->count() > 0;
   bool isOfflineProject = mOfflineEditing->isOfflineProject();
   mActionConvertProject->setEnabled( hasLayers && !isOfflineProject );
   mActionSynchronize->setEnabled( hasLayers && isOfflineProject );

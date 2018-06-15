@@ -524,7 +524,7 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
-          << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+          << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
 
   QVariant result = expr.evaluate( &context );
   convertedValue = result.toDouble( &ok );

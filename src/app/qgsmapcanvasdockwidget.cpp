@@ -349,7 +349,7 @@ void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
 
   // reproject extent
   QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
-                             destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+                             destCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
   try
   {
     destCanvas->setCenter( ct.transform( sourceCanvas->center() ) );
@@ -408,7 +408,7 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
 
   QAction *actionFollowMain = new QAction( tr( "(default)" ), mMenu );
   actionFollowMain->setCheckable( true );
-  if ( currentTheme.isEmpty() || !QgsProject::instance()->mapThemeCollection()->hasMapTheme( currentTheme ) )
+  if ( currentTheme.isEmpty() || !QgsApplication::activeProject()->mapThemeCollection()->hasMapTheme( currentTheme ) )
   {
     actionFollowMain->setChecked( true );
   }
@@ -419,7 +419,7 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
   } );
   mMenuPresetActions.append( actionFollowMain );
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  Q_FOREACH ( const QString &grpName, QgsApplication::activeProject()->mapThemeCollection()->mapThemes() )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );
@@ -449,7 +449,7 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
 
   // reproject point
   QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                             mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+                             mMapCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
   QgsPointXY t = p;
   try
   {
@@ -487,7 +487,7 @@ void QgsMapCanvasDockWidget::updateExtentRect()
   {
     // reproject extent
     QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                               mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+                               mMapCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject() );
     g = g.densifyByCount( 5 );
     try
     {

@@ -58,7 +58,7 @@ QgsMapThemes::QgsMapThemes()
 
 QgsMapThemeCollection::MapThemeRecord QgsMapThemes::currentState()
 {
-  QgsLayerTreeGroup *root = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTreeGroup *root = QgsApplication::activeProject()->layerTreeRoot();
   QgsLayerTreeModel *model = QgisApp::instance()->layerTreeView()->layerTreeModel();
   return QgsMapThemeCollection::createThemeFromCurrentState( root, model );
 }
@@ -73,21 +73,21 @@ QgsMapThemes *QgsMapThemes::instance()
 
 void QgsMapThemes::addPreset( const QString &name )
 {
-  QgsProject::instance()->mapThemeCollection()->insert( name, currentState() );
+  QgsApplication::activeProject()->mapThemeCollection()->insert( name, currentState() );
 }
 
 void QgsMapThemes::updatePreset( const QString &name )
 {
-  QgsProject::instance()->mapThemeCollection()->update( name, currentState() );
+  QgsApplication::activeProject()->mapThemeCollection()->update( name, currentState() );
 }
 
 QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &name ) const
 {
-  QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
+  QStringList visibleIds = QgsApplication::activeProject()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
 
   // also make sure to order the layers according to map canvas order
   QList<QgsMapLayer *> lst;
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerTreeRoot()->layerOrder() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->layerTreeRoot()->layerOrder() )
   {
     if ( visibleIds.contains( layer->id() ) )
     {
@@ -105,7 +105,7 @@ QMenu *QgsMapThemes::menu()
 
 void QgsMapThemes::addPreset()
 {
-  QStringList existingNames = QgsProject::instance()->mapThemeCollection()->mapThemes();
+  QStringList existingNames = QgsApplication::activeProject()->mapThemeCollection()->mapThemes();
   QgsNewNameDialog dlg( tr( "theme" ), tr( "Theme" ), QStringList(), existingNames, QRegExp(), Qt::CaseInsensitive, mMenu );
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
@@ -146,12 +146,12 @@ void QgsMapThemes::replaceTriggered()
 
 void QgsMapThemes::applyState( const QString &presetName )
 {
-  if ( !QgsProject::instance()->mapThemeCollection()->hasMapTheme( presetName ) )
+  if ( !QgsApplication::activeProject()->mapThemeCollection()->hasMapTheme( presetName ) )
     return;
 
-  QgsLayerTreeGroup *root = QgsProject::instance()->layerTreeRoot();
+  QgsLayerTreeGroup *root = QgsApplication::activeProject()->layerTreeRoot();
   QgsLayerTreeModel *model = QgisApp::instance()->layerTreeView()->layerTreeModel();
-  QgsProject::instance()->mapThemeCollection()->applyTheme( presetName, root, model );
+  QgsApplication::activeProject()->mapThemeCollection()->applyTheme( presetName, root, model );
 }
 
 void QgsMapThemes::removeCurrentPreset()
@@ -164,7 +164,7 @@ void QgsMapThemes::removeCurrentPreset()
                                        tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
       if ( res == QMessageBox::Yes )
-        QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
+        QgsApplication::activeProject()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
     }
   }
@@ -181,11 +181,11 @@ void QgsMapThemes::menuAboutToShow()
   QgsMapThemeCollection::MapThemeRecord rec = currentState();
   bool hasCurrent = false;
 
-  Q_FOREACH ( const QString &grpName, QgsProject::instance()->mapThemeCollection()->mapThemes() )
+  Q_FOREACH ( const QString &grpName, QgsApplication::activeProject()->mapThemeCollection()->mapThemes() )
   {
     QAction *a = new QAction( grpName, mMenu );
     a->setCheckable( true );
-    if ( !hasCurrent && rec == QgsProject::instance()->mapThemeCollection()->mapThemeState( grpName ) )
+    if ( !hasCurrent && rec == QgsApplication::activeProject()->mapThemeCollection()->mapThemeState( grpName ) )
     {
       a->setChecked( true );
       hasCurrent = true;

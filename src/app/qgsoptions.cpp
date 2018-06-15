@@ -1117,7 +1117,7 @@ void QgsOptions::cbxProjectDefaultNew_toggled( bool checked )
 void QgsOptions::setCurrentProjectDefault()
 {
   QString fileName = QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_default.qgs" );
-  if ( QgsProject::instance()->write( fileName ) )
+  if ( QgsApplication::activeProject()->write( fileName ) )
   {
     QMessageBox::information( nullptr, tr( "Save Default Project" ), tr( "Current project saved as default" ) );
   }

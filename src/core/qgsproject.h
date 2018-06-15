@@ -97,13 +97,19 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
 
   public:
-    //! Returns the QgsProject singleton instance
+
+    /**
+     * Returns the active QGIS project.
+     * Alias for ``QgsApplication.activeProject()``
+     *
+     * \deprecated since QGIS 3.2 use QgsApplication::activeProject() instead.
+     */
     static QgsProject *instance();
 
     /**
      * Create a new QgsProject.
      *
-     * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
+     * Most of the time you want to use QgsApplication::activeProject() instead as many components of QGIS work with the singleton.
      */
     explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -712,7 +718,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Example:
      *
-     *     QVector<QgsVectorLayer*> vectorLayers = QgsProject::instance()->layers<QgsVectorLayer*>();
+     *     QVector<QgsVectorLayer*> vectorLayers = QgsApplication::activeProject()->layers<QgsVectorLayer*>();
      *
      * \note not available in Python bindings
      * \see mapLayers()

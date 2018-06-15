@@ -729,8 +729,8 @@ QgsAttributeDialog *QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
 {
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( l->crs(), QgsProject::instance()->transformContext() );
-  myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  myDa.setSourceCrs( l->crs(), QgsApplication::activeProject()->transformContext() );
+  myDa.setEllipsoid( QgsApplication::activeProject()->ellipsoid() );
 
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );

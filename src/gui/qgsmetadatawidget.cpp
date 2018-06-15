@@ -207,7 +207,7 @@ void QgsMetadataWidget::fillSourceFromLayer()
       break;
 
     case ProjectMetadata:
-      lineEditIdentifier->setText( QgsProject::instance()->fileName() );
+      lineEditIdentifier->setText( QgsApplication::activeProject()->fileName() );
       break;
   }
 
@@ -983,7 +983,7 @@ void QgsMetadataWidget::acceptMetadata()
       break;
 
     case ProjectMetadata:
-      QgsProject::instance()->setMetadata( *static_cast< QgsProjectMetadata * >( mMetadata.get() ) );
+      QgsApplication::activeProject()->setMetadata( *static_cast< QgsProjectMetadata * >( mMetadata.get() ) );
       break;
   }
 }

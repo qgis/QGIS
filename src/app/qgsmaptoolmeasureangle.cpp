@@ -180,7 +180,7 @@ void QgsMapToolMeasureAngle::updateSettings()
 
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
-  QString ellipsoidId = QgsProject::instance()->ellipsoid();
-  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
+  QString ellipsoidId = QgsApplication::activeProject()->ellipsoid();
+  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsApplication::activeProject()->transformContext() );
   mDa.setEllipsoid( ellipsoidId );
 }

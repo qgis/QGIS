@@ -236,7 +236,7 @@ void QgsFileWidget::openFileDialog()
   QUrl url = QUrl::fromUserInput( oldPath );
   if ( !url.isValid() )
   {
-    QString defPath = QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() );
+    QString defPath = QDir::cleanPath( QFileInfo( QgsApplication::activeProject()->absoluteFilePath() ).path() );
     if ( defPath.isEmpty() )
     {
       defPath = QDir::homePath();
@@ -341,7 +341,7 @@ QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelativ
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
   {
-    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() ) );
+    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( QgsApplication::activeProject()->absoluteFilePath() ).path() ) );
   }
   else if ( mRelativeStorage == RelativeDefaultPath && !mDefaultRoot.isEmpty() )
   {

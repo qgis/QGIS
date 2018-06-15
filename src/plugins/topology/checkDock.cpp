@@ -89,7 +89,7 @@ checkDock::checkDock( QgisInterface *qIface, QWidget *parent )
   connect( mFixButton, &QAbstractButton::clicked, this, &checkDock::fix );
   connect( mErrorTableView, &QAbstractItemView::clicked, this, &checkDock::errorListClicked );
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
+  connect( QgsApplication::activeProject(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &checkDock::parseErrorListByLayer );
 
   connect( this, &QDockWidget::visibilityChanged, this, &checkDock::updateRubberBands );
   connect( qgsInterface, &QgisInterface::newProjectCreated, mConfigureDialog, &rulesDialog::clearRules );
@@ -151,7 +151,7 @@ void checkDock::deleteErrors()
 
 void checkDock::parseErrorListByLayer( const QString &layerId )
 {
-  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( layerId ) );
+  QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( layerId ) );
   QList<TopolError *>::Iterator it = mErrorList.begin();
 
   while ( it != mErrorList.end() )
@@ -328,17 +328,17 @@ void checkDock::runTests( ValidateType type )
     QString layer2Str = mTestTable->item( i, 4 )->text();
 
     // test if layer1 is in the registry
-    if ( !( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer1Str ) ) )
+    if ( !( ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayers().contains( layer1Str ) ) )
     {
       QgsMessageLog::logMessage( tr( "Layer %1 not found in registry." ).arg( layer1Str ), tr( "Topology plugin" ) );
       return;
     }
 
-    QgsVectorLayer *layer1 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer1Str );
+    QgsVectorLayer *layer1 = ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayer( layer1Str );
     QgsVectorLayer *layer2 = nullptr;
 
-    if ( ( QgsVectorLayer * )QgsProject::instance()->mapLayers().contains( layer2Str ) )
-      layer2 = ( QgsVectorLayer * )QgsProject::instance()->mapLayer( layer2Str );
+    if ( ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayers().contains( layer2Str ) )
+      layer2 = ( QgsVectorLayer * )QgsApplication::activeProject()->mapLayer( layer2Str );
 
     QProgressDialog progress( testName, tr( "Abort" ), 0, layer1->featureCount(), this );
     progress.setWindowModality( Qt::WindowModal );

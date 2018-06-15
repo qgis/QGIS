@@ -62,26 +62,26 @@ QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mSize = QgsProject::instance()->readDoubleEntry( mNameConfig, QStringLiteral( "/Size" ), 16.0 );
-  mSvgPath = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/SvgPath" ), QString() );
-  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Rotation" ), 0 );
-  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Automatic" ), true );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
+  mSize = QgsApplication::activeProject()->readDoubleEntry( mNameConfig, QStringLiteral( "/Size" ), 16.0 );
+  mSvgPath = QgsApplication::activeProject()->readEntry( mNameConfig, QStringLiteral( "/SvgPath" ), QString() );
+  mRotationInt = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/Rotation" ), 0 );
+  mAutomatic = QgsApplication::activeProject()->readBoolEntry( mNameConfig, QStringLiteral( "/Automatic" ), true );
+  mMarginHorizontal = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsApplication::activeProject()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/SvgPath" ), mSvgPath );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Size" ), mSize );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/SvgPath" ), mSvgPath );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsApplication::activeProject()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -95,7 +95,7 @@ QString QgsDecorationNorthArrow::svgPath()
 {
   if ( !mSvgPath.isEmpty() )
   {
-    QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mSvgPath, QgsProject::instance()->pathResolver() );
+    QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mSvgPath, QgsApplication::activeProject()->pathResolver() );
     bool validSvg = QFileInfo::exists( resolvedPath );
     if ( validSvg )
     {

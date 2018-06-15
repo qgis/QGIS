@@ -840,9 +840,9 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 
   lbl->setBuddy( mLayerPassword );
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded,
+  connect( QgsApplication::activeProject(), &QgsProject::layersAdded,
            this, &QgsGrassModuleGdalInput::updateQgisLayers );
-  connect( QgsProject::instance(), &QgsProject::layersRemoved,
+  connect( QgsApplication::activeProject(), &QgsProject::layersRemoved,
            this, &QgsGrassModuleGdalInput::updateQgisLayers );
 
   // Fill in QGIS layers
@@ -867,7 +867,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
     mLayerComboBox->addItem( tr( "Select a layer" ), QVariant() );
   }
 
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     if ( !layer ) continue;
 
@@ -1195,8 +1195,8 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   connect( mModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGrassModuleSelection::onModeChanged );
   l->addWidget( mModeComboBox );
 
-  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsGrassModuleSelection::onLayerChanged );
-  connect( QgsProject::instance(), &QgsProject::layersRemoved, this, &QgsGrassModuleSelection::onLayerChanged );
+  connect( QgsApplication::activeProject(), &QgsProject::layersAdded, this, &QgsGrassModuleSelection::onLayerChanged );
+  connect( QgsApplication::activeProject(), &QgsProject::layersRemoved, this, &QgsGrassModuleSelection::onLayerChanged );
 
   // Fill in layer current fields
   onLayerChanged();
@@ -1212,7 +1212,7 @@ void QgsGrassModuleSelection::onLayerChanged()
 
   QStringList layerIds;
   // add new layers matching selected input layer if not yet present
-  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers().values() )
+  Q_FOREACH ( QgsMapLayer *layer, QgsApplication::activeProject()->mapLayers().values() )
   {
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer && vectorLayer->providerType() == QLatin1String( "grass" ) )
@@ -1295,7 +1295,7 @@ QgsVectorLayer *QgsGrassModuleSelection::currentSelectionLayer()
   {
     return nullptr;
   }
-  QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
+  QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( id );
   return qobject_cast<QgsVectorLayer *>( layer );
 }
 
@@ -1309,13 +1309,13 @@ void QgsGrassModuleSelection::onModeChanged()
     QgsDebugMsg( "uri = " + uri );
 
     QgsVectorLayer *layer = new QgsVectorLayer( uri, name, QStringLiteral( "grass" ) );
-    QgsProject::instance()->addMapLayer( layer );
+    QgsApplication::activeProject()->addMapLayer( layer );
     onLayerChanged(); // update with added layer
   }
   else if ( mModeComboBox->itemData( index ).toInt() == Layer )
   {
     QString id = mModeComboBox->itemData( index, Qt::UserRole + 1 ).toString();
-    QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
+    QgsMapLayer *layer = QgsApplication::activeProject()->mapLayer( id );
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vectorLayer )
     {

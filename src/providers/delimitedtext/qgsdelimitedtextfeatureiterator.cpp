@@ -530,7 +530,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mFile->setFromUrl( url );
 
   mExpressionContext << QgsExpressionContextUtils::globalScope()
-                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
+                     << QgsExpressionContextUtils::projectScope( QgsApplication::activeProject() );
   mExpressionContext.setFields( mFields );
 }
 

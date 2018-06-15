@@ -264,7 +264,7 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometryFollowBoundarie
   QgsSettings().setValue( sSettingsGroup + "checkFollowBoundaries", ui.checkBoxFollowBoundaries->isChecked() );
   if ( ui.checkBoxFollowBoundaries->isEnabled() && ui.checkBoxFollowBoundaries->isChecked() )
   {
-    QgsVectorLayer *checkLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) );
+    QgsVectorLayer *checkLayer = qobject_cast<QgsVectorLayer *>( QgsApplication::activeProject()->mapLayer( ui.comboBoxFollowBoundaries->currentData().toString() ) );
     return new QgsGeometryFollowBoundariesCheck( context, checkLayer );
   }
   else

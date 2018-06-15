@@ -31,7 +31,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
            this, &QgsLabelEngineConfigDialog::setDefaults );
 
-  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
+  QgsLabelingEngineSettings engineSettings = QgsApplication::activeProject()->labelingEngineSettings();
 
   // search method
   cboSearchMethod->setCurrentIndex( engineSettings.searchMethod() );
@@ -65,7 +65,7 @@ void QgsLabelEngineConfigDialog::onOK()
   engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
   engineSettings.setFlag( QgsLabelingEngineSettings::RenderOutlineLabels, mDrawOutlinesChkBox->isChecked() );
 
-  QgsProject::instance()->setLabelingEngineSettings( engineSettings );
+  QgsApplication::activeProject()->setLabelingEngineSettings( engineSettings );
 
   accept();
 }

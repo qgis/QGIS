@@ -112,7 +112,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   catItemData = DnDTreeItemData( DnDTreeItemData::Container, "Relations", "Relations" );
   catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
 
-  const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mLayer );
+  const QList<QgsRelation> relations = QgsApplication::activeProject()->relationManager()->referencedRelations( mLayer );
 
   for ( const QgsRelation &relation : relations )
   {
@@ -335,9 +335,9 @@ void QgsAttributesFormProperties::loadAttributeRelationEdit()
 
     mAttributeRelationEdit->setCardinalityCombo( tr( "Many to one relation" ) );
 
-    QgsRelation relation = QgsProject::instance()->relationManager()->relation( currentItem->data( 0, FieldNameRole ).toString() );
+    QgsRelation relation = QgsApplication::activeProject()->relationManager()->relation( currentItem->data( 0, FieldNameRole ).toString() );
 
-    Q_FOREACH ( const QgsRelation &nmrel, QgsProject::instance()->relationManager()->referencingRelations( relation.referencingLayer() ) )
+    Q_FOREACH ( const QgsRelation &nmrel, QgsApplication::activeProject()->relationManager()->referencingRelations( relation.referencingLayer() ) )
     {
       if ( nmrel.fieldPairs().at( 0 ).referencingField() != relation.fieldPairs().at( 0 ).referencingField() )
         mAttributeRelationEdit->setCardinalityCombo( QStringLiteral( "%1 (%2)" ).arg( nmrel.referencedLayer()->name(), nmrel.fieldPairs().at( 0 ).referencedField() ), nmrel.id() );
@@ -531,7 +531,7 @@ QgsAttributeEditorElement *QgsAttributesFormProperties::createAttributeEditorWid
 
     case DnDTreeItemData::Relation:
     {
-      QgsRelation relation = QgsProject::instance()->relationManager()->relation( itemData.name() );
+      QgsRelation relation = QgsApplication::activeProject()->relationManager()->relation( itemData.name() );
       QgsAttributeEditorRelation *relDef = new QgsAttributeEditorRelation( relation, parent );
       relDef->setShowLinkButton( itemData.relationEditorConfiguration().showLinkButton );
       relDef->setShowUnlinkButton( itemData.relationEditorConfiguration().showUnlinkButton );
