@@ -1001,6 +1001,7 @@ void QgsDxfExport::writeEntities()
 
     auto scopePopper = [&ctx]( QgsExpressionContextScope * scope )
     {
+      Q_UNUSED( scope );
       delete ctx.expressionContext().popScope();
     };
     std::unique_ptr<QgsExpressionContextScope, decltype( scopePopper ) > layerScope( QgsExpressionContextUtils::layerScope( ml ), scopePopper );
