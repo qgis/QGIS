@@ -375,7 +375,7 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
   QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
   QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
   QgsLayoutGuide *closestGuide = nullptr;
-  double minDelta = DBL_MAX;
+  double minDelta = std::numeric_limits<double>::max();
   Q_FOREACH ( QgsLayoutGuide *guide, guides )
   {
     if ( visiblePages.contains( guide->page() ) )

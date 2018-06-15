@@ -186,10 +186,10 @@ namespace pal
       const GEOSPreparedGeometry *preparedGeom() const;
       void invalidateGeos();
 
-      double xmin = DBL_MAX;
-      double xmax = -DBL_MAX;
-      double ymin = DBL_MAX;
-      double ymax = -DBL_MAX;
+      double xmin = std::numeric_limits<double>::max();
+      double xmax = std::numeric_limits<double>::lowest();
+      double ymin = std::numeric_limits<double>::max();
+      double ymax = std::numeric_limits<double>::lowest();
 
     private:
 

@@ -15,7 +15,7 @@
 
 #include <QTextCodec>
 
-#include <cfloat> // for DBL_MAX
+#include <cfloat>
 #include <climits>
 #include <limits>
 

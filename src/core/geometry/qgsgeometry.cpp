@@ -917,10 +917,10 @@ QgsRectangle QgsGeometry::boundingBox() const
 QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle, double &width, double &height ) const
 {
   QgsRectangle minRect;
-  area = DBL_MAX;
+  area = std::numeric_limits<double>::max();
   angle = 0;
-  width = DBL_MAX;
-  height = DBL_MAX;
+  width = std::numeric_limits<double>::max();
+  height = std::numeric_limits<double>::max();
 
   if ( !d->geometry || d->geometry->nCoordinates() < 2 )
     return QgsGeometry();

@@ -573,8 +573,8 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             case EndPointPreferClosest:
             {
               QgsPoint nodeSnap, segmentSnap;
-              double distanceNode = DBL_MAX;
-              double distanceSegment = DBL_MAX;
+              double distanceNode = std::numeric_limits<double>::max();
+              double distanceSegment = std::numeric_limits<double>::max();
               if ( snapPoint )
               {
                 nodeSnap = snapPoint->getSnapPoint( p );

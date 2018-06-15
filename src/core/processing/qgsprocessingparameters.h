@@ -1246,8 +1246,8 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
   private:
 
-    double mMin = -DBL_MAX + 1;
-    double mMax = DBL_MAX;
+    double mMin = std::numeric_limits<double>::lowest() + 1;
+    double mMax = std::numeric_limits<double>::max();
     Type mDataType = Integer;
 };
 
@@ -1269,8 +1269,8 @@ class CORE_EXPORT QgsProcessingParameterDistance : public QgsProcessingParameter
         const QVariant &defaultValue = QVariant(),
         const QString &parentParameterName = QString(),
         bool optional = false,
-        double minValue = -DBL_MAX + 1,
-        double maxValue = DBL_MAX );
+        double minValue = std::numeric_limits<double>::lowest() + 1,
+        double maxValue = std::numeric_limits<double>::max() );
 
     /**
      * Returns the type name for the parameter class.

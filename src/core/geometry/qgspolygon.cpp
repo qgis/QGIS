@@ -239,7 +239,7 @@ double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
     return std::numeric_limits< double >::quiet_NaN();
 
   bool inside = false;
-  double minimumDistance = DBL_MAX;
+  double minimumDistance = std::numeric_limits<double>::max();
   double minDistX = 0.0;
   double minDistY = 0.0;
 

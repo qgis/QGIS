@@ -917,7 +917,7 @@ double Problem::popmusic_tabu( SubPart *part )
   while ( it < stop_it && best_cost >= EPSILON )
   {
     actualizeTabuCandidateList( m, it, nbOverlap, &candidateListSize, candidateBaseFactor, &candidateFactor, minCandidateListSize, reductionFactor, minTabuTSize, tabuFactor, &tenure, probSize );
-    delta_min     = DBL_MAX;
+    delta_min     = std::numeric_limits<double>::max();
     choosed_feat  = -1;
     choosed_label = -2;
     candidateId   = -1;
@@ -1167,7 +1167,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1203,7 +1203,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
   {
     subseed = sub[seed];
     seedNbLp = featNbLp[subseed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
     next_seed = -1;
     retainedLabel = -2;
 
@@ -1447,7 +1447,7 @@ inline Chain *Problem::chain( int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1482,7 +1482,7 @@ inline Chain *Problem::chain( int seed )
   while ( seed != -1 )
   {
     seedNbLp = featNbLp[seed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
 
     next_seed = -1;
     retainedLabel = -2;

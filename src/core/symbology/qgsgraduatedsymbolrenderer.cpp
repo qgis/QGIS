@@ -1230,7 +1230,7 @@ void QgsGraduatedSymbolRenderer::setSourceColorRamp( QgsColorRamp *ramp )
 
 double QgsGraduatedSymbolRenderer::minSymbolSize() const
 {
-  double min = DBL_MAX;
+  double min = std::numeric_limits<double>::max();
   for ( int i = 0; i < mRanges.count(); i++ )
   {
     double sz = 0;

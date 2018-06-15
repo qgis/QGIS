@@ -395,7 +395,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     int ps = -1, pe = -1, fps = -1, fpe = -1;
     if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
     {
-      c = DBL_MAX;
+      c = std::numeric_limits<double>::max();
 
       // iterate on all shape points except points which are in the hole
       bool isValid;
@@ -568,17 +568,17 @@ CHullBox *PointSet::compute_chull_bbox()
   double width;
   double length;
 
-  double best_area = DBL_MAX;
+  double best_area = std::numeric_limits<double>::max();
   double best_alpha = -1;
   double best_bb[16];
   double best_length = 0;
   double best_width = 0;
 
 
-  bbox[0] = DBL_MAX;
-  bbox[1] = DBL_MAX;
-  bbox[2] = - DBL_MAX;
-  bbox[3] = - DBL_MAX;
+  bbox[0] = std::numeric_limits<double>::max();
+  bbox[1] = std::numeric_limits<double>::max();
+  bbox[2] = std::numeric_limits<double>::lowest();
+  bbox[3] = std::numeric_limits<double>::lowest();
 
   for ( i = 0; i < cHullSize; i++ )
   {
@@ -632,7 +632,7 @@ CHullBox *PointSet::compute_chull_bbox()
 
       alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
-      best_cp = DBL_MAX;
+      best_cp = std::numeric_limits<double>::max();
       for ( j = 0; j < nbPoints; j++ )
       {
         cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
