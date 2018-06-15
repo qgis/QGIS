@@ -171,8 +171,8 @@ void TestQgsRasterSubLayer::checkStats()
 
     QVERIFY( sublayer->width() == width );
     QVERIFY( sublayer->height() == height );
-    QGSCOMPARENEAR( myStatistics.minimumValue, min, 4 * DBL_EPSILON );
-    QGSCOMPARENEAR( myStatistics.maximumValue, max, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( myStatistics.minimumValue, min, 4 * std::numeric_limits<double>::epsilon() );
+    QGSCOMPARENEAR( myStatistics.maximumValue, max, 4 * std::numeric_limits<double>::epsilon() );
     mReport += QLatin1String( "<p>Passed</p>" );
     delete sublayer;
   }

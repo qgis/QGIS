@@ -248,7 +248,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
  * \param b second double
  * \param epsilon maximum difference allowable between doubles
  */
-inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON )
+inline bool qgsDoubleNear( double a, double b, double epsilon = 4 * std::numeric_limits<double>::epsilon() )
 {
   const double diff = a - b;
   return diff > -epsilon && diff <= epsilon;

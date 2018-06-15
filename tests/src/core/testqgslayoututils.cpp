@@ -112,8 +112,8 @@ void TestQgsLayoutUtils::rotate()
     double x = ( *it ).first.x1();
     double y = ( *it ).first.y1();
     QgsLayoutUtils::rotate( ( *it ).second, x, y );
-    QGSCOMPARENEAR( x, ( *it ).first.x2(), 4 * DBL_EPSILON );
-    QGSCOMPARENEAR( y, ( *it ).first.y2(), 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( x, ( *it ).first.x2(), 4 * std::numeric_limits<double>::epsilon() );
+    QGSCOMPARENEAR( y, ( *it ).first.y2(), 4 * std::numeric_limits<double>::epsilon() );
   }
 }
 
@@ -140,7 +140,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first );
     qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
 
   }
 
@@ -161,7 +161,7 @@ void TestQgsLayoutUtils::normalizedAngle()
   {
     double result = QgsLayoutUtils::normalizedAngle( ( *it ).first, true );
     qDebug() << QStringLiteral( "actual: %1 expected: %2" ).arg( result ).arg( ( *it ).second );
-    QGSCOMPARENEAR( result, ( *it ).second, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( result, ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
 
   }
 }
@@ -211,7 +211,7 @@ void TestQgsLayoutUtils::snappedAngle()
   QList< QPair< double, double > >::const_iterator it = testVals.constBegin();
   for ( ; it != testVals.constEnd(); ++it )
   {
-    QGSCOMPARENEAR( QgsLayoutUtils::snappedAngle( ( *it ).first ), ( *it ).second, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( QgsLayoutUtils::snappedAngle( ( *it ).first ), ( *it ).second, 4 * std::numeric_limits<double>::epsilon() );
   }
 }
 
@@ -594,7 +594,7 @@ void TestQgsLayoutUtils::largestRotatedRect()
              || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
 
     //also verify that aspect ratio of rectangle has not changed
-    QGSCOMPARENEAR( result.width() / result.height(), wideRect.width() / wideRect.height(), 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( result.width() / result.height(), wideRect.width() / wideRect.height(), 4 * std::numeric_limits<double>::epsilon() );
   }
   //and again for the high rectangle
   for ( double rotation = 10; rotation < 360; rotation += 10 )
@@ -609,7 +609,7 @@ void TestQgsLayoutUtils::largestRotatedRect()
              || ( qgsDoubleNear( rotatedRectBounds.height(), bounds.height(), 0.001 ) && ( rotatedRectBounds.width() <= bounds.width() ) ) );
 
     //also verify that aspect ratio of rectangle has not changed
-    QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * std::numeric_limits<double>::epsilon() );
   }
 }
 
