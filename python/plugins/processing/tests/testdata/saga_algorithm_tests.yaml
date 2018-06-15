@@ -270,3 +270,18 @@ tests:
         name: expected/saga/polygon_update.shp
         type: vector
 
+  - algorithm: saga:polygonunion
+    name: Polygon union
+    params:
+      A:
+        name: custom/overlay1_a.geojson
+        type: vector
+      B:
+        name: custom/overlay1_b.geojson
+        type: vector
+      SPLIT: true
+    results:
+      RESULT:
+        name: expected/saga/polygon_union.shp
+        type: vector
+  
