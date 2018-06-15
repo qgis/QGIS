@@ -300,3 +300,19 @@ tests:
         name: expected/saga/polygon_identity.shp
         type: vector
 
+  - algorithm: saga:difference
+    name: Polygon difference
+    params:
+      A:
+        name: custom/overlay1_a.geojson
+        type: vector
+      B:
+        name: custom/overlay1_b.geojson
+        type: vector
+      SPLIT: true
+    results:
+      RESULT:
+        name: expected/saga/polygon_difference.shp
+        type: vector
+
+
