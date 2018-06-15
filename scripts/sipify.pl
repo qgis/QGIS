@@ -432,6 +432,14 @@ sub fix_annotations {
     return $line;
 }
 
+sub fix_constants {
+    my $line = $_[0];
+    $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/;
+    $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/;
+    $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/;
+    return $line;
+}
+
 # detect a comment block, return 1 if found
 # if STRICT comment block shall begin at beginning of line (no code in front)
 sub detect_comment_block{
@@ -1087,6 +1095,7 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
     }
 
+    $LINE = fix_constants($LINE);
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character

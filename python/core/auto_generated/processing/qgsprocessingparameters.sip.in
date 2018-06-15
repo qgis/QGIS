@@ -1264,8 +1264,8 @@ to determine what units the distance values are in.
         const QVariant &defaultValue = QVariant(),
         const QString &parentParameterName = QString(),
         bool optional = false,
-        double minValue = std::numeric_limits<double>::lowest() + 1,
-        double maxValue = std::numeric_limits<double>::max() );
+        double minValue = -DBL_MAX + 1,
+        double maxValue = DBL_MAX );
 %Docstring
 Constructor for QgsProcessingParameterDistance.
 %End
