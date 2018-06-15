@@ -72,6 +72,9 @@ class SERVER_EXPORT QgsWMSProjectParser : public QgsWMSConfigParser
     bool WMSInspireActivated() const override;
     void inspireCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
+    // Selection color
+    bool activateSelectionColor() const override;
+
     //printing
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
     void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;

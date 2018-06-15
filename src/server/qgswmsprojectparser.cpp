@@ -26,6 +26,7 @@
 #include "qgspallabeling.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include "qgscomposition.h"
 #include "qgscomposerarrow.h"
@@ -469,6 +470,51 @@ bool QgsWMSProjectParser::WMSInspireActivated() const
   return inspireActivated;
 }
 
+bool QgsWMSProjectParser::activateSelectionColor() const
+{
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement guiElem = propertiesElem.firstChildElement( "Gui" );
+    if ( !guiElem.isNull() )
+    {
+      int myAlpha = 255;
+      int myRed = 255;
+      int myGreen = 255;
+      int myBlue = 0;
+
+      QDomElement alphaElem = guiElem.firstChildElement( "SelectionColorAlphaPart" );
+      if ( !alphaElem.isNull() )
+      {
+        myAlpha = QVariant( alphaElem.text() ).toInt();
+      }
+      QDomElement redElem = guiElem.firstChildElement( "SelectionColorRedPart" );
+      if ( !redElem.isNull() )
+      {
+        myRed = QVariant( redElem.text() ).toInt();
+      }
+      QDomElement greenElem = guiElem.firstChildElement( "SelectionColorGreenPart" );
+      if ( !greenElem.isNull() )
+      {
+        myGreen = QVariant( greenElem.text() ).toInt();
+      }
+      QDomElement blueElem = guiElem.firstChildElement( "SelectionColorBluePart" );
+      if ( !blueElem.isNull() )
+      {
+        myBlue = QVariant( blueElem.text() ).toInt();
+      }
+      QgsProject* prj = QgsProject::instance();
+      prj->writeEntry( "Gui", "/SelectionColorRedPart", myRed );
+      prj->writeEntry( "Gui", "/SelectionColorGreenPart", myGreen );
+      prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
+      prj->writeEntry( "Gui", "/SelectionColorAlphaPart", myAlpha );
+      return true;
+    }
+  }
+
+  return false;
+}
+
 QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap* >& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlList ) const
 {
   //Create composition from xml
@@ -483,6 +529,9 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
   {
     return nullptr;
   }
+
+  // Selection color
+  activateSelectionColor();
 
   QgsComposition* composition = new QgsComposition( mapRenderer->mapSettings() ); //set resolution, paper size from composer element attributes
   if ( !composition->readXML( compositionElem, *( mProjectParser->xmlDocument() ) ) )

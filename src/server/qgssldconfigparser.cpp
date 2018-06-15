@@ -726,6 +726,15 @@ bool QgsSLDConfigParser::WMSInspireActivated() const
   return false;
 }
 
+bool QgsSLDConfigParser::activateSelectionColor() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->activateSelectionColor();
+  }
+  return false;
+}
+
 QgsComposition* QgsSLDConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap, QStringList& highlightLayers ) const
 {
   if ( mFallbackParser )
