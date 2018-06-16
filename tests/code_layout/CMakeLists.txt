@@ -2,6 +2,7 @@ IF(WITH_ASTYLE)
   ADD_TEST(qgis_indentation ${CMAKE_SOURCE_DIR}/scripts/verify-indentation.sh)
 ENDIF(WITH_ASTYLE)
 
+ADD_TEST(qgis_banned_keywords ${CMAKE_SOURCE_DIR}/tests/code_layout/test_banned_keywords.sh)
 ADD_TEST(qgis_licenses ${CMAKE_SOURCE_DIR}/tests/code_layout/test_licenses.sh)
 ADD_TEST(qgis_spelling ${CMAKE_SOURCE_DIR}/scripts/spell_check/spell_test.sh)
 
