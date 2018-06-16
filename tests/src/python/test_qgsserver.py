@@ -707,6 +707,7 @@ class TestQgsServer(unittest.TestCase):
             "REQUEST": "GetPrint",
             "TEMPLATE": "layoutA4",
             "FORMAT": "png",
+            "LAYERS": "Country,Hello",
             "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "HEIGHT": "500",
@@ -909,8 +910,8 @@ class TestQgsServer(unittest.TestCase):
             "SCALE": "15466642"
         }.items())])
 
-        r, h = self._result(self.server.handleRequest(qs) )
-        self.assertTrue( h['Content-Type'] == 'image/png' )
+        r, h = self._result(self.server.handleRequest(qs))
+        self.assertTrue(h['Content-Type'] == 'image/png')
 
     def _result(self, data):
         headers = {}
