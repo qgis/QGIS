@@ -28,13 +28,6 @@
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
-  , mFeatureQueueSize( 1 )
-  , mFetched( 0 )
-  , mFetchGeometry( false )
-  , mExpressionCompiled( false )
-  , mOrderByCompiled( false )
-  , mLastFetch( false )
-  , mFilterRequiresGeometry( false )
 {
   if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
   {
@@ -260,8 +253,10 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
   if ( mFeatureQueue.empty() && !mLastFetch )
   {
+#if 0 //disabled dynamic queue size
     QElapsedTimer timer;
     timer.start();
+#endif
 
     QString fetch = QStringLiteral( "FETCH FORWARD %1 FROM %2" ).arg( mFeatureQueueSize ).arg( mCursorName );
     QgsDebugMsgLevel( QString( "fetching %1 features." ).arg( mFeatureQueueSize ), 4 );
@@ -299,6 +294,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
     }
     unlock();
 
+#if 0 //disabled dynamic queue size
     if ( timer.elapsed() > 500 && mFeatureQueueSize > 1 )
     {
       mFeatureQueueSize /= 2;
@@ -307,6 +303,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
     {
       mFeatureQueueSize *= 2;
     }
+#endif
   }
 
   if ( mFeatureQueue.empty() )
