@@ -242,14 +242,28 @@ void QgsEllipseSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderConte
     context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_FILL_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
-      mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
+    {
+      QColor fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+      if ( context.alpha() < 1.0 )
+      {
+        fillColor.setAlpha( fillColor.alphaF() * context.alpha() );
+      }
+      mBrush.setColor( fillColor );
+    }
   }
   if ( hasDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerV2Utils::encodeColor( mOutlineColor ) );
     QString colorString = evaluateDataDefinedProperty( QgsSymbolLayerV2::EXPR_OUTLINE_COLOR, context, QVariant(), &ok ).toString();
     if ( ok )
-      mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) );
+    {
+      QColor outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
+      if ( context.alpha() < 1.0 )
+      {
+        outlineColor.setAlpha( outlineColor.alphaF() * context.alpha() );
+      }
+      mPen.setColor( outlineColor );
+    }
   }
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
@@ -348,11 +362,21 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   {
     preparePath( mSymbolName, context );
   }
-  mPen.setColor( mOutlineColor );
+
+  QColor outlineColor = mOutlineColor;
+  QColor fillColor = mColor;
+
+  if ( context.alpha() < 1.0 )
+  {
+    outlineColor.setAlphaF( mOutlineColor.alphaF() * context.alpha() );
+    fillColor.setAlphaF( mColor.alphaF() * context.alpha() );
+  }
+
+  mPen.setColor( outlineColor );
   mPen.setStyle( mOutlineStyle );
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setWidthF( QgsSymbolLayerV2Utils::convertToPainterUnits( context.renderContext(), mOutlineWidth, mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
-  mBrush.setColor( mColor );
+  mBrush.setColor( fillColor );
   prepareExpressions( context );
 }
 
