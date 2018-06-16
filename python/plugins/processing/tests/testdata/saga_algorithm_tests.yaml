@@ -358,3 +358,20 @@ tests:
         name: expected/saga/polygon_self_intersection.shp
         type: vector
 
+  - algorithm: saga:crossprofiles
+    name: Cross profiles
+    params:
+      DEM:
+        name: dem.tif
+        type: raster
+      DIST_LINE: 0.001
+      DIST_PROFILE: 0.002
+      LINES:
+        name: custom/lines_over.shp
+        type: vector
+      NUM_PROFILE: 10
+    results:
+      PROFILES:
+        name: expected/saga/cross_profiles.shp
+        type: vector
+
