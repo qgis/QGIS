@@ -23,6 +23,21 @@ HINTS[4]="Use the type-safe method std::numeric_limits<int>::min() instead"
 KEYWORDS[5]="INT_MAX"
 HINTS[5]="Use the type-safe method std::numeric_limits<int>::max() instead"
 
+KEYWORDS[6]="\bqMin("
+HINTS[6]="Use std::min instead"
+
+KEYWORDS[7]="\bqMax("
+HINTS[7]="Use std::max instead"
+
+KEYWORDS[8]="\bqAbs("
+HINTS[8]="Use std::fabs instead"
+
+KEYWORDS[9]="\bqRound("
+HINTS[9]="Use std::round instead"
+
+KEYWORDS[10]="\bqSort("
+HINTS[10]="Use std::sort instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
@@ -30,7 +45,7 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp')
+  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' -- ':!*qtermwidget*')
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"

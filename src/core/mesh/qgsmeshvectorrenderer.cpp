@@ -165,7 +165,7 @@ bool QgsMeshVectorRenderer::calcVectorLineEnd(
   // Flip the Y axis (pixel vs real-world axis)
   yDist *= -1.0;
 
-  if ( qAbs( xDist ) < 1 && qAbs( yDist ) < 1 )
+  if ( std::abs( xDist ) < 1 && std::abs( yDist ) < 1 )
     return true;
 
   // Determine the line coords

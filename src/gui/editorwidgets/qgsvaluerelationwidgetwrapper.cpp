@@ -236,7 +236,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
 
 int QgsValueRelationWidgetWrapper::columnCount() const
 {
-  return qMax( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
+  return std::max( 1, config( QStringLiteral( "NofColumns" ) ).toInt() );
 }
 
 void QgsValueRelationWidgetWrapper::populate( )

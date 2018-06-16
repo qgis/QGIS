@@ -44,8 +44,8 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
       zMin = zMax = z;
       first = false;
     }
-    zMin = qMin( zMin, z );
-    zMax = qMax( zMax, z );
+    zMin = std::min( zMin, z );
+    zMax = std::max( zMax, z );
   }
 }
 

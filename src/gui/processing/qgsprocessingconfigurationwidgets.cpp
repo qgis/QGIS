@@ -124,7 +124,7 @@ void QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs()
     rows.append( index.row() );
   }
 
-  qSort( rows );
+  std::sort( rows );
 
   int prev = -1;
   for ( int i = rows.count() - 1; i >= 0; i -= 1 )

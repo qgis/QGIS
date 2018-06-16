@@ -44,9 +44,9 @@ bool QgsAABB::intersects( float x, float y, float z ) const
 
 float QgsAABB::distanceFromPoint( float x, float y, float z ) const
 {
-  float dx = qMax( xMin - x, qMax( 0.f, x - xMax ) );
-  float dy = qMax( yMin - y, qMax( 0.f, y - yMax ) );
-  float dz = qMax( zMin - z, qMax( 0.f, z - zMax ) );
+  float dx = std::max( xMin - x, std::max( 0.f, x - xMax ) );
+  float dy = std::max( yMin - y, std::max( 0.f, y - yMax ) );
+  float dz = std::max( zMin - z, std::max( 0.f, z - zMax ) );
   return sqrt( dx * dx + dy * dy + dz * dz );
 }
 
