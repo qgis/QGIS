@@ -267,8 +267,8 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
   , mValueType( String )
   , mOutputType( None )
   , mHaveLimits( false )
-  , mMin( INT_MAX )
-  , mMax( INT_MIN )
+  , mMin( std::numeric_limits<int>::max() )
+  , mMax( std::numeric_limits<int>::min() )
   , mIsOutput( false )
   , mUsesRegion( false )
 {

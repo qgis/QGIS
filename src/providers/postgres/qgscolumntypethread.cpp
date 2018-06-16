@@ -83,7 +83,7 @@ void QgsGeomColumnTypeThread::run()
 
       if ( !layerProperty.geometryColName.isNull() &&
            ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
-             layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
+             layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
       {
         if ( dontResolveType )
         {

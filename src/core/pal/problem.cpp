@@ -39,7 +39,7 @@
 #include "priorityqueue.h"
 #include "internalexception.h"
 #include <cfloat>
-#include <limits> //for INT_MAX
+#include <limits> //for std::numeric_limits<int>::max()
 
 #include "qgslabelingengine.h"
 
@@ -347,7 +347,7 @@ void Problem::init_sol_falp()
     {
       if ( sol->s[i] == -1 )
       {
-        nbOverlap = INT_MAX;
+        nbOverlap = std::numeric_limits<int>::max();
         start_p = featStartId[i];
         for ( p = 0; p < featNbLp[i]; p++ )
         {

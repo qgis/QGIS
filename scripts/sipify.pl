@@ -437,6 +437,8 @@ sub fix_constants {
     $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/g;
     $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/g;
     $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
+    $line =~ s/\bstd::numeric_limits<int>::max\(\)/INT_MAX/g;
+    $line =~ s/\bstd::numeric_limits<int>::min\(\)/INT_MIN/g;
     return $line;
 }
 
