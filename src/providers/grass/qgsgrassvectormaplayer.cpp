@@ -143,7 +143,7 @@ void QgsGrassVectorMapLayer::load()
         // Read columns' description
         for ( int i = 0; i < nColumns; i++ )
         {
-          QPair<double, double> minMax( DBL_MAX, -DBL_MAX );
+          QPair<double, double> minMax( std::numeric_limits<double>::max(), std::numeric_limits<double>::lowest() );
 
           dbColumn *column = db_get_table_column( databaseTable, i );
 

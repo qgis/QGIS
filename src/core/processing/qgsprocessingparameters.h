@@ -1186,8 +1186,8 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                            Type type = Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
-                                           double minValue = -DBL_MAX + 1,
-                                           double maxValue = DBL_MAX
+                                           double minValue = std::numeric_limits<double>::lowest() + 1,
+                                           double maxValue = std::numeric_limits<double>::max()
                                          );
 
     /**

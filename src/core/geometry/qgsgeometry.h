@@ -794,7 +794,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \since QGIS 3.0
      */
-    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false );
 
     /**
      * Returns true if this geometry exactly intersects with a \a rectangle. This test is exact
@@ -1630,7 +1630,7 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * \since QGIS 2.9
      */
-    static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
+    static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * std::numeric_limits<double>::epsilon() );
     % MethodCode
     {
       sipRes = false;

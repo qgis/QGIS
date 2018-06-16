@@ -356,7 +356,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
+                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const = 0;
 
     //low-level editing
 
@@ -486,7 +486,7 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \since QGIS 3.0
      */
-    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
+    virtual bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) = 0;
 
     /**
      * Returns approximate angle at a vertex. This is usually the average angle between adjacent
