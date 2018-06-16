@@ -102,13 +102,13 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     QQueue<QgsFeature> mFeatureQueue;
 
     //! Maximal size of the feature queue
-    int mFeatureQueueSize;
+    int mFeatureQueueSize = 2000;
 
     //! Number of retrieved features
-    int mFetched;
+    int mFetched = 0;
 
     //! Sets to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    bool mFetchGeometry = false;
 
     bool mIsTransactionConnection = false;
 
@@ -119,10 +119,10 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     inline void lock();
     inline void unlock();
 
-    bool mExpressionCompiled;
-    bool mOrderByCompiled;
-    bool mLastFetch;
-    bool mFilterRequiresGeometry;
+    bool mExpressionCompiled = false;
+    bool mOrderByCompiled = false;
+    bool mLastFetch = false;
+    bool mFilterRequiresGeometry = false;
 
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
