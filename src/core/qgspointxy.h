@@ -210,7 +210,7 @@ class CORE_EXPORT QgsPointXY
      * \returns true if points are equal within specified tolerance
      * \since QGIS 2.9
      */
-    bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
+    bool compare( const QgsPointXY &other, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const;
 
     //! equality operator
     bool operator==( const QgsPointXY &other );

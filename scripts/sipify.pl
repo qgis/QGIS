@@ -434,9 +434,9 @@ sub fix_annotations {
 
 sub fix_constants {
     my $line = $_[0];
-    $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/;
-    $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/;
-    $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/;
+    $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
     return $line;
 }
 

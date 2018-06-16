@@ -5,14 +5,18 @@
 declare -a KEYWORDS=()
 declare -a HINTS=()
 
-KEYWORDS[0]="DBL_MAX"
-HINTS[0]="Use the type-safe method std::numeric_limits<double>::max() instead"
+KEYWORDS[0]="\-DBL_MAX"
+HINTS[0]="Use the type-safe method std::numeric_limits<double>::lowest() instead"
 
-KEYWORDS[1]="DBL_MIN"
-HINTS[1]="Use the type-safe method std::numeric_limits<double>::lowest() instead"
+KEYWORDS[1]="DBL_MAX"
+HINTS[1]="Use the type-safe method std::numeric_limits<double>::max() instead"
 
-KEYWORDS[2]="DBL_EPSILON"
-HINTS[2]="Use the type-safe method std::numeric_limits<double>::epsilon() instead"
+KEYWORDS[2]="DBL_MIN"
+HINTS[2]="Use the type-safe method std::numeric_limits<double>::min() instead (but be careful - maybe you actually want lowest!!)"
+
+KEYWORDS[3]="DBL_EPSILON"
+HINTS[3]="Use the type-safe method std::numeric_limits<double>::epsilon() instead"
+
 
 RES=
 DIR=$(git rev-parse --show-toplevel)
