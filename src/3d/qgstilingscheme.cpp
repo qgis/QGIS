@@ -21,7 +21,7 @@ QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoord
   : mCrs( crs )
 {
   mMapOrigin = QgsPointXY( fullExtent.xMinimum(), fullExtent.yMinimum() );
-  mBaseTileSide = qMax( fullExtent.width(), fullExtent.height() );
+  mBaseTileSide = std::max( fullExtent.width(), fullExtent.height() );
 }
 
 QgsPointXY QgsTilingScheme::tileToMap( int x, int y, int z ) const

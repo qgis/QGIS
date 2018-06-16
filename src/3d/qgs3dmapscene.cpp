@@ -163,7 +163,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
 void Qgs3DMapScene::viewZoomFull()
 {
   QgsRectangle extent = mMap.terrainGenerator()->extent();
-  float side = qMax( extent.width(), extent.height() );
+  float side = std::max( extent.width(), extent.height() );
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
@@ -179,7 +179,7 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
   state.cameraFov = camera->fieldOfView();
   state.cameraPos = camera->position();
   QRect rect = cameraController->viewport();
-  state.screenSizePx = qMax( rect.width(), rect.height() ); // TODO: is this correct?
+  state.screenSizePx = std::max( rect.width(), rect.height() ); // TODO: is this correct?
   state.viewProjectionMatrix = camera->projectionMatrix() * camera->viewMatrix();
   return state;
 }

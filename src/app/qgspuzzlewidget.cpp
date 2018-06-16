@@ -92,7 +92,7 @@ void QgsPuzzleWidget::mousePressEvent( QMouseEvent *event )
   int dx = cMouse - cEmpty;
   int dy = rMouse - rEmpty;
 
-  if ( ( dx == 0 && qAbs( dy ) == 1 ) || ( dy == 0 && qAbs( dx ) == 1 ) )
+  if ( ( dx == 0 && std::abs( dy ) == 1 ) || ( dy == 0 && std::abs( dx ) == 1 ) )
   {
     std::swap( mPositions[idxEmpty], mPositions[idxMouse] );
     updateTilePositions();
