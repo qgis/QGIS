@@ -540,11 +540,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       bool isMaterializedView = relkind == QLatin1String( "m" );
       QString comment = result.PQgetvalue( idx, 7 );
 
-      int srid = ssrid.isEmpty() ? INT_MIN : ssrid.toInt();
+      int srid = ssrid.isEmpty() ? std::numeric_limits<int>::min() : ssrid.toInt();
       if ( majorVersion() >= 2 && srid == 0 )
       {
         // 0 doesn't constraint => detect
-        srid = INT_MIN;
+        srid = std::numeric_limits<int>::min();
       }
 
 #if 0
@@ -665,7 +665,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
       layerProperty.types = QList<QgsWkbTypes::Type>() << QgsWkbTypes::Unknown;
-      layerProperty.srids = QList<int>() << INT_MIN;
+      layerProperty.srids = QList<int>() << std::numeric_limits<int>::min();
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
       layerProperty.geometryColName = column;
@@ -754,7 +754,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       //QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
       layerProperty.types = QList<QgsWkbTypes::Type>() << QgsWkbTypes::NoGeometry;
-      layerProperty.srids = QList<int>() << INT_MIN;
+      layerProperty.srids = QList<int>() << std::numeric_limits<int>::min();
       layerProperty.schemaName = schema;
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString();
@@ -1486,8 +1486,8 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
     query += ',';
 
-    int srid = layerProperty.srids.value( 0, INT_MIN );
-    if ( srid  == INT_MIN )
+    int srid = layerProperty.srids.value( 0, std::numeric_limits<int>::min() );
+    if ( srid  == std::numeric_limits<int>::min() )
     {
       query += QStringLiteral( "%1(%2%3)" )
                .arg( majorVersion() < 2 ? "srid" : "st_srid",

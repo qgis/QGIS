@@ -704,7 +704,7 @@ bool QgsPalettedRendererModel::removeRows( int row, int count, const QModelIndex
 bool QgsPalettedRendererModel::insertRows( int row, int count, const QModelIndex & )
 {
   QgsPalettedRasterRenderer::ClassData::const_iterator cIt = mData.constBegin();
-  int currentMaxValue = -INT_MAX;
+  int currentMaxValue = -std::numeric_limits<int>::max();
   for ( ; cIt != mData.constEnd(); ++cIt )
   {
     int value = cIt->value;

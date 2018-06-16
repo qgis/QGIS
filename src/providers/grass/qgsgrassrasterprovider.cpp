@@ -114,7 +114,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   double myInternalNoDataValue;
   if ( mGrassDataType == CELL_TYPE )
   {
-    myInternalNoDataValue = INT_MIN;
+    myInternalNoDataValue = std::numeric_limits<int>::min();
   }
   else if ( mGrassDataType == DCELL_TYPE )
   {

@@ -275,8 +275,8 @@ void QgsGradientStopEditor::mouseMoveEvent( QMouseEvent *e )
 int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
 {
   int closestStop = -1;
-  int closestDiff = INT_MAX;
-  int currentDiff = INT_MAX;
+  int closestDiff = std::numeric_limits<int>::max();
+  int currentDiff = std::numeric_limits<int>::max();
 
   // check for matching stops first, so that they take precedence
   // otherwise it's impossible to select a stop which sits above the first/last stop, making

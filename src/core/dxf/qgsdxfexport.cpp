@@ -444,7 +444,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p )
 void QgsDxfExport::writeGroup( const QColor &color, int exactMatchCode, int rgbCode, int transparencyCode )
 {
   int minDistAt = -1;
-  int minDist = INT_MAX;
+  int minDist = std::numeric_limits<int>::max();
 
   for ( int i = 1; i < static_cast< int >( sizeof( sDxfColors ) / sizeof( *sDxfColors ) ) && minDist > 0; ++i )
   {
@@ -3910,7 +3910,7 @@ QString QgsDxfExport::lineStyleFromSymbolLayer( const QgsSymbolLayer *symbolLaye
 int QgsDxfExport::closestColorMatch( QRgb pixel )
 {
   int idx = 0;
-  int current_distance = INT_MAX;
+  int current_distance = std::numeric_limits<int>::max();
   for ( int i = 1; i < static_cast< int >( sizeof( sDxfColors ) / sizeof( *sDxfColors ) ); ++i )
   {
     int dist = color_distance( pixel, i );

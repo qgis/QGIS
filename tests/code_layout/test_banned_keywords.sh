@@ -17,6 +17,11 @@ HINTS[2]="Use the type-safe method std::numeric_limits<double>::min() instead (b
 KEYWORDS[3]="DBL_EPSILON"
 HINTS[3]="Use the type-safe method std::numeric_limits<double>::epsilon() instead"
 
+KEYWORDS[4]="INT_MIN"
+HINTS[4]="Use the type-safe method std::numeric_limits<int>::min() instead"
+
+KEYWORDS[5]="INT_MAX"
+HINTS[5]="Use the type-safe method std::numeric_limits<int>::max() instead"
 
 RES=
 DIR=$(git rev-parse --show-toplevel)
