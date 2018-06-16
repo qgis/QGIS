@@ -38,6 +38,24 @@ HINTS[9]="Use std::round instead"
 KEYWORDS[10]="\bqSort("
 HINTS[10]="Use std::sort instead"
 
+KEYWORDS[11]="@param"
+HINTS[11]="Use \param instead (works correct with Python docstrings)"
+
+KEYWORDS[12]="@return"
+HINTS[12]="Use \returns instead (works correct with Python docstrings)"
+
+KEYWORDS[13]="@note"
+HINTS[13]="Use \note instead (works correct with Python docstrings)"
+
+KEYWORDS[14]="@since"
+HINTS[14]="Use \since instead (works correct with Python docstrings)"
+
+KEYWORDS[15]="@warning"
+HINTS[15]="Use \warning instead (works correct with Python docstrings)"
+
+KEYWORDS[11]="@deprecated"
+HINTS[11]="Use \deprecated instead (works correct with Python docstrings)"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
