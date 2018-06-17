@@ -83,7 +83,7 @@ class buildvrt(GdalAlgorithm):
                                                      options=self.RESOLUTION_OPTIONS,
                                                      defaultValue=0))
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        QCoreApplication.translate("ParameterVrtDestination", 'Layer stack'),
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Place each input file into a separate band'),
                                                         defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
                                                         QCoreApplication.translate("ParameterVrtDestination", 'Allow projection difference'),

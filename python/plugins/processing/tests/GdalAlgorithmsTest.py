@@ -41,6 +41,7 @@ from processing.algs.gdal.GridInverseDistance import GridInverseDistance
 from processing.algs.gdal.GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
 from processing.algs.gdal.GridLinear import GridLinear
 from processing.algs.gdal.GridNearestNeighbor import GridNearestNeighbor
+from processing.algs.gdal.buildvrt import buildvrt
 from processing.algs.gdal.hillshade import hillshade
 from processing.algs.gdal.ogr2ogr import ogr2ogr
 from processing.algs.gdal.proximity import proximity
@@ -637,6 +638,56 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                 'INPUT_C': None,
                 'OUTPUT': output}, context, feedback),
             ['gdal_calc', '--calc "{}" --format JPEG --type Float32 -A {} --A_band 1 --outfile {}'.format(formula, source, output)])
+
+    def testBuildVrt(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        alg = buildvrt()
+        alg.initAlgorithm()
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'RESOLUTION': 2,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution lowest', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'SEPARATE': False,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-separate', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'PROJ_DIFFERENCE': True,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-allow_projection_difference', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
 
     def testGdalTindex(self):
         context = QgsProcessingContext()
