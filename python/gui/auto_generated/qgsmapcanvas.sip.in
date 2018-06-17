@@ -1021,7 +1021,7 @@ called on resize or changed extent to notify canvas items to change their rectan
 %End
 
   private:
-    QgsMapCanvas( QgsMapCanvas const & );
+    QgsMapCanvas( const QgsMapCanvas &const );
 }; // class QgsMapCanvas
 
 
