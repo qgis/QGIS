@@ -429,7 +429,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
   QgsRectangle rect = mFilterRect;
   if ( mSource->mSpatialColType == SctGeography )
   {
-    rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
+    rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( rect );
   }
 
   if ( !rect.isFinite() )

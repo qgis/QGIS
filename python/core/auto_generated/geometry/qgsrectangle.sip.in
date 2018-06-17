@@ -207,7 +207,7 @@ Gets rectangle enlarged by buffer.
 .. versionadded:: 3.0
 %End
 
-    QgsRectangle intersect( const QgsRectangle *rect ) const;
+    QgsRectangle intersect( const QgsRectangle &rect ) const;
 %Docstring
 Returns the intersection with the given rectangle.
 %End

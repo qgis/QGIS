@@ -27,7 +27,7 @@ void QgsRasterAnalysisUtils::cellInfoForBBox( const QgsRectangle &rasterBBox, co
     int &nCellsX, int &nCellsY, int rasterWidth, int rasterHeight, QgsRectangle &rasterBlockExtent )
 {
   //get intersecting bbox
-  QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
+  QgsRectangle intersectBox = rasterBBox.intersect( featureBBox );
   if ( intersectBox.isEmpty() )
   {
     nCellsX = 0;

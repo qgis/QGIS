@@ -233,7 +233,7 @@ void ProjectorData::calcSrcExtent()
   // Expand a bit to avoid possible approx coords falling out because of representation error?
 
   // Combine with maximum source  extent
-  mSrcExtent = mSrcExtent.intersect( &mExtent );
+  mSrcExtent = mSrcExtent.intersect( mExtent );
 
   // If mMaxSrcXRes, mMaxSrcYRes are defined (fixed src resolution)
   // align extent to src resolution to avoid jumping of reprojected pixels

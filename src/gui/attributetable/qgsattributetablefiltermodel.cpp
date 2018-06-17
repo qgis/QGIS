@@ -447,7 +447,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   QgsFeatureRequest r( masterModel()->request() );
   if ( !r.filterRect().isNull() )
   {
-    r.setFilterRect( r.filterRect().intersect( &rect ) );
+    r.setFilterRect( r.filterRect().intersect( rect ) );
   }
   else
   {

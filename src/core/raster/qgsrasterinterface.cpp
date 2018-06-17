@@ -51,7 +51,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
   }
   else
   {
-    finalExtent = extent().intersect( &boundingBox );
+    finalExtent = extent().intersect( boundingBox );
   }
   statistics.extent = finalExtent;
 
@@ -295,7 +295,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   else
   {
-    finalExtent = extent().intersect( &boundingBox );
+    finalExtent = extent().intersect( boundingBox );
   }
   histogram.extent = finalExtent;
 
