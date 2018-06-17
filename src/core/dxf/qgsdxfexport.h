@@ -386,7 +386,7 @@ class CORE_EXPORT QgsDxfExport
 
     /**
      * Returns scale factor for conversion to map units
-     * \param scaleDenominator the map scale denominator
+     * \param scale the map scale denominator
      * \param symbolUnits the symbol output units
      * \param mapUnits the map units
      * \param mapUnitsPerPixel Map units per pixel
