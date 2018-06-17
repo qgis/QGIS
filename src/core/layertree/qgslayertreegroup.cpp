@@ -221,7 +221,7 @@ QList<QgsLayerTreeLayer *> QgsLayerTreeGroup::findLayers() const
   QList<QgsLayerTreeLayer *> list;
   Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
   {
-    if ( QgsLayerTree::isLayer( child ) && QgsLayerTree::toLayer( child )->layer( ) )
+    if ( QgsLayerTree::isLayer( child ) )
       list << QgsLayerTree::toLayer( child );
     else if ( QgsLayerTree::isGroup( child ) )
       list << QgsLayerTree::toGroup( child )->findLayers();
