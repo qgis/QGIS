@@ -37,7 +37,7 @@ class TestQgsLayerDefinition: public QObject
     void cleanup(); // will be called after every testfunction.
 
     /**
-     * test that findLayers() skips invalid layers
+     * test that findLayers()
      */
     void testFindLayers();
 
@@ -66,11 +66,13 @@ void TestQgsLayerDefinition::cleanupTestCase()
 
 void TestQgsLayerDefinition::init()
 {
-  mTempFile = new QTemporaryFile();
+  mTempFile = new QTemporaryFile( QStringLiteral( "qgis_XXXXXX.qlr" ) );
   QVERIFY( mTempFile->open() );
   mTempFile->close();
   QString errorMessage;
   const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug_18981_broken.qlr" ) );
+  QgsProject::instance()->removeAllMapLayers();
+  QgsProject::instance()->layerTreeRoot()->removeAllChildren();
   QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
   QVERIFY( errorMessage.isEmpty() );
 }
@@ -83,8 +85,9 @@ void TestQgsLayerDefinition::cleanup()
 
 void TestQgsLayerDefinition::testFindLayers()
 {
-  QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().count(), 1 );
-  QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().at( 0 )->name(), QStringLiteral( "NewMemory" ) );
+  QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().count(), 2 );
+  QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().at( 0 )->name(), QStringLiteral( "DTK/D850" ) );
+  QCOMPARE( QgsProject::instance()->layerTreeRoot()->findLayers().at( 1 )->name(), QStringLiteral( "NewMemory" ) );
 }
 
 void TestQgsLayerDefinition::testExportDoesNotCrash()
@@ -93,9 +96,9 @@ void TestQgsLayerDefinition::testExportDoesNotCrash()
   QVERIFY( QgsLayerDefinition::exportLayerDefinition( mTempFile->fileName(), QgsProject::instance()->layerTreeRoot()->children(), errorMessage ) );
   QVERIFY( errorMessage.isEmpty() );
   // Reload
-  const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug_18981_broken.qlr" ) );
   QgsProject::instance()->removeAllMapLayers();
-  QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
+  QgsProject::instance()->layerTreeRoot()->removeAllChildren();
+  QgsLayerDefinition::loadLayerDefinition( mTempFile->fileName(), QgsProject::instance(), QgsProject::instance()->layerTreeRoot(), errorMessage );
   testFindLayers();
 }
 
