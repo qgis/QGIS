@@ -46,7 +46,6 @@ Most of the time you want to use QgsProject.instance() instead as many component
 
     ~QgsProject();
 
-
     void setTitle( const QString &title );
 %Docstring
 Sets the project's title.
