@@ -4019,27 +4019,27 @@ void QgsDxfExport::clipValueToMapUnitScale( double &value, const QgsMapUnitScale
 
   double mapUnitsPerPixel = mMapSettings.mapToPixel().mapUnitsPerPixel();
 
-  double minSizeMU = -DBL_MAX;
+  double minSizeMU = std::numeric_limits<double>::lowest();
   if ( scale.minSizeMMEnabled )
   {
     minSizeMU = scale.minSizeMM * pixelToMMFactor * mapUnitsPerPixel;
   }
   if ( !qgsDoubleNear( scale.minScale, 0.0 ) )
   {
-    minSizeMU = qMax( minSizeMU, value );
+    minSizeMU = std::max( minSizeMU, value );
   }
-  value = qMax( value, minSizeMU );
+  value = std::max( value, minSizeMU );
 
-  double maxSizeMU = DBL_MAX;
+  double maxSizeMU = std::numeric_limits<double>::max();
   if ( scale.maxSizeMMEnabled )
   {
     maxSizeMU = scale.maxSizeMM * pixelToMMFactor * mapUnitsPerPixel;
   }
   if ( !qgsDoubleNear( scale.maxScale, 0.0 ) )
   {
-    maxSizeMU = qMin( maxSizeMU, value );
+    maxSizeMU = std::min( maxSizeMU, value );
   }
-  value = qMin( value, maxSizeMU );
+  value = std::min( value, maxSizeMU );
 }
 
 QList< QPair< QgsSymbolLayer *, QgsSymbol * > > QgsDxfExport::symbolLayers( QgsRenderContext &context )
