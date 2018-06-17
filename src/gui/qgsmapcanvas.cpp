@@ -239,14 +239,9 @@ QgsMapCanvas::~QgsMapCanvas()
 
   mScene->deleteLater();  // crashes in python tests on windows
 
-  // mCanvasProperties auto-deleted via QScopedPointer
-  // CanvasProperties struct has its own dtor for freeing resources
-
   delete mCache;
-
   delete mLabelingResults;
-
-} // dtor
+}
 
 void QgsMapCanvas::setMagnificationFactor( double factor )
 {

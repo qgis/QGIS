@@ -98,6 +98,12 @@ HINTS[24]="Use std::swap instead"
 KEYWORDS[25]="\bqUpperBound("
 HINTS[25]="Use std::upper_bound instead"
 
+KEYWORDS[26]="QScopedPointer"
+HINTS[26]="Use std::unique_ptr instead"
+
+KEYWORDS[27]="QSharedPointer"
+HINTS[27]="Use std::shared_ptr instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
@@ -105,11 +111,12 @@ pushd "${DIR}" > /dev/null || exit
 
 for i in "${!KEYWORDS[@]}"
 do
-  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' -- ':!*qtermwidget*')
+  FOUND=$(git grep "${KEYWORDS[$i]}" -- 'src/*.h' 'src/*.cpp' -- ':!*qtermwidget*' | grep --invert-match skip-keyword-check)
 
   if [[  ${FOUND} ]]; then
     echo "Found source files with banned keyword: ${KEYWORDS[$i]}!"
     echo " -> ${HINTS[$i]}"
+    echo "    or mark with // skip-keyword-check"
     echo
     echo "${FOUND}"
     echo
