@@ -884,13 +884,13 @@ void QgsLayerTreeModel::disconnectFromLayer( QgsLayerTreeLayer *nodeLayer )
 {
   disconnect( nodeLayer, nullptr, this, nullptr ); // disconnect from delayed load of layer
 
+  if ( !nodeLayer->layer() )
+    return; // we were never connected
+
   if ( testFlag( ShowLegend ) )
   {
     removeLegendFromLayer( nodeLayer );
   }
-
-  if ( !nodeLayer->layer() )
-    return; // we were never connected
 
   if ( _numLayerCount( mRootNode, nodeLayer->layerId() ) == 1 )
   {
