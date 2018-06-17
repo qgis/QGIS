@@ -237,6 +237,17 @@ bool QgsLocator::isRunning() const
   return !mActiveThreads.empty();
 }
 
+void QgsLocator::clearPreviousResults()
+{
+  for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
+  {
+    if ( filter->enabled() )
+    {
+      filter->clearPreviousResults();
+    }
+  }
+}
+
 void QgsLocator::filterSentResult( QgsLocatorResult result )
 {
   // if query has been canceled then discard any results we receive

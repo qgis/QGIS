@@ -209,7 +209,8 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
     /**
      * This method will be called on main thread on the original filter (not a clone)
-     * to clear any change made by a former call to triggerResult.
+     * before fetching results or before triggering a result to clear any change made
+     * by a former call to triggerResult.
      * For instance, this can be used to remove any on-canvas rubber bands which have been created
      * when a previous search result was triggered.
      * \since QGIS 3.2
