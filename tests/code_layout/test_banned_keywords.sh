@@ -56,6 +56,48 @@ HINTS[15]="Use \warning instead (works correct with Python docstrings)"
 KEYWORDS[11]="@deprecated"
 HINTS[11]="Use \deprecated instead (works correct with Python docstrings)"
 
+KEYWORDS[12]="\bqIsFinite("
+HINTS[12]="Use std::isfinite instead"
+
+KEYWORDS[13]="\bqIsInf("
+HINTS[13]="Use std::isinf instead"
+
+KEYWORDS[14]="\bqIsNaN("
+HINTS[14]="Use std::isnan instead"
+
+KEYWORDS[15]="\bqCopy("
+HINTS[15]="Use std::copy instead"
+
+KEYWORDS[16]="\bqCount("
+HINTS[16]="Use std::count instead"
+
+KEYWORDS[17]="\bqEqual("
+HINTS[17]="Use std::equal instead"
+
+KEYWORDS[18]="\bqFill("
+HINTS[18]="Use std::fill instead"
+
+KEYWORDS[19]="\bqFind("
+HINTS[19]="Use std::find instead"
+
+KEYWORDS[20]="\bqGreater("
+HINTS[20]="Use std::greater instead"
+
+KEYWORDS[21]="\bqLess("
+HINTS[21]="Use std::less instead"
+
+KEYWORDS[22]="\bqLowerBound("
+HINTS[22]="Use std::lower_bound instead"
+
+KEYWORDS[23]="\bqStableSort("
+HINTS[23]="Use std::stable_sort instead"
+
+KEYWORDS[24]="\bqSwap("
+HINTS[24]="Use std::swap instead"
+
+KEYWORDS[25]="\bqUpperBound("
+HINTS[25]="Use std::upper_bound instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
