@@ -92,11 +92,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! QgsMapCanvas cannot be copied
-    QgsMapCanvas( const QgsMapCanvas &other ) = delete;
-    //! QgsMapCanvas cannot be copied
-    QgsMapCanvas &operator=( const QgsMapCanvas &other ) = delete;
-
     ~QgsMapCanvas() override;
 
     /**
@@ -905,11 +900,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void startPreviewJob( int number );
 
   private:
-    /// this class is non-copyable
-
-#ifdef SIP_RUN
-    QgsMapCanvas( const QgsMapCanvas &const );
-#endif
 
     //! encompases all map settings necessary for map rendering
     QgsMapSettings mSettings;
