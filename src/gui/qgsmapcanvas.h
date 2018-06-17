@@ -908,7 +908,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// this class is non-copyable
 
 #ifdef SIP_RUN
-    QgsMapCanvas( QgsMapCanvas const & );
+    QgsMapCanvas( const QgsMapCanvas &const );
 #endif
 
     //! encompases all map settings necessary for map rendering
