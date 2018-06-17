@@ -208,6 +208,15 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;
 
     /**
+     * This method will be called on main thread on the original filter (not a clone)
+     * to clear any change made by a former call to triggerResult.
+     * For instance, this can be used to remove any on-canvas rubber bands which have been created
+     * when a previous search result was triggered.
+     * \since QGIS 3.2
+     */
+    virtual void clearPreviousResults() {}
+
+    /**
      * Returns true if the filter should be used when no prefix
      * is entered.
      * \see setUseWithoutPrefix()
