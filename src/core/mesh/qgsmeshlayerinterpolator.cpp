@@ -203,7 +203,7 @@ QgsRasterBlock *QgsMeshLayerInterpolator::block( int, const QgsRectangle &extent
                 );
         }
 
-        if ( !qIsNaN( val ) )
+        if ( !std::isnan( val ) )
         {
           line[k] = val;
           outputBlock->setIsData( j, k );
