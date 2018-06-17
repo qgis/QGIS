@@ -1062,7 +1062,7 @@ namespace QgsWfs
           }
         }
         // EPSG:4326 max extent is -180, -90, 180, 90
-        rect = new QgsRectangle( rect->intersect( new QgsRectangle( -180.0, -90.0, 180.0, 90.0 ) ) );
+        rect = new QgsRectangle( rect->intersect( QgsRectangle( -180.0, -90.0, 180.0, 90.0 ) ) );
 
         fcString = QStringLiteral( "{\"type\": \"FeatureCollection\",\n" );
         fcString += " \"bbox\": [ " + qgsDoubleToString( rect->xMinimum(), prec ) + ", " + qgsDoubleToString( rect->yMinimum(), prec ) + ", " + qgsDoubleToString( rect->xMaximum(), prec ) + ", " + qgsDoubleToString( rect->yMaximum(), prec ) + "],\n";

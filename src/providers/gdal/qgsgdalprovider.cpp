@@ -691,7 +691,7 @@ void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pi
   }
 #endif
 
-  QgsRectangle myRasterExtent = extent.intersect( &mExtent );
+  QgsRectangle myRasterExtent = extent.intersect( mExtent );
   if ( myRasterExtent.isEmpty() )
   {
     QgsDebugMsg( "draw request outside view extent." );

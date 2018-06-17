@@ -199,7 +199,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)
   QgsRectangle fullExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
-  extent = extent.intersect( &fullExtent );
+  extent = extent.intersect( fullExtent );
 
   JobData jd;
   jd.jobId = ++mLastJobId;
@@ -225,7 +225,7 @@ QByteArray QgsDemHeightMapGenerator::renderSynchronously( int x, int y, int z )
   extent.grow( mapUnitsPerPixel / 2 );
   // but make sure not to go beyond the full extent (returns invalid values)
   QgsRectangle fullExtent = mTilingScheme.tileToExtent( 0, 0, 0 );
-  extent = extent.intersect( &fullExtent );
+  extent = extent.intersect( fullExtent );
 
   QgsRasterBlock *block = mDtm->dataProvider()->block( 1, extent, mResolution, mResolution );
 

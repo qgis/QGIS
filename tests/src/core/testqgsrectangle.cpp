@@ -109,7 +109,7 @@ void TestQgsRectangle::manipulate()
   // Check intersection
   QVERIFY( rect2.intersects( rect1 ) );
   // Create intersection
-  rect3 = rect2.intersect( &rect1 );
+  rect3 = rect2.intersect( rect1 );
   // Check width and height (real numbers, careful)
   QCOMPARE( rect3.width(), 1.0 );
   QCOMPARE( rect3.height(), 1.0 );

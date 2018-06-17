@@ -134,7 +134,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   }
 
   // clip raster extent to view extent
-  QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( &myProjectedLayerExtent );
+  QgsRectangle myRasterExtent = myProjectedViewExtent.intersect( myProjectedLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
     QgsDebugMsg( "draw request outside view extent." );

@@ -183,15 +183,15 @@ QgsRectangle QgsRectangle::buffered( double width ) const
   return QgsRectangle( mXmin - width, mYmin - width, mXmax + width, mYmax + width );
 }
 
-QgsRectangle QgsRectangle::intersect( const QgsRectangle *rect ) const
+QgsRectangle QgsRectangle::intersect( const QgsRectangle &rect ) const
 {
   QgsRectangle intersection = QgsRectangle();
-  if ( rect && intersects( *rect ) )
+  if ( intersects( rect ) )
   {
-    intersection.setXMinimum( mXmin > rect->xMinimum() ? mXmin : rect->xMinimum() );
-    intersection.setXMaximum( mXmax < rect->xMaximum() ? mXmax : rect->xMaximum() );
-    intersection.setYMinimum( mYmin > rect->yMinimum() ? mYmin : rect->yMinimum() );
-    intersection.setYMaximum( mYmax < rect->yMaximum() ? mYmax : rect->yMaximum() );
+    intersection.setXMinimum( mXmin > rect.xMinimum() ? mXmin : rect.xMinimum() );
+    intersection.setXMaximum( mXmax < rect.xMaximum() ? mXmax : rect.xMaximum() );
+    intersection.setYMinimum( mYmin > rect.yMinimum() ? mYmin : rect.yMinimum() );
+    intersection.setYMaximum( mYmax < rect.yMaximum() ? mYmax : rect.yMaximum() );
   }
   return intersection;
 }

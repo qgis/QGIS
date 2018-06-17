@@ -243,7 +243,7 @@ int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
     }
     QgsGeometry featureGeometry = f.geometry();
 
-    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( &rasterBBox );
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( rasterBBox );
     if ( featureRect.isEmpty() )
     {
       ++featureCounter;

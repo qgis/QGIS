@@ -201,7 +201,7 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns the intersection with the given rectangle.
      */
-    QgsRectangle intersect( const QgsRectangle *rect ) const;
+    QgsRectangle intersect( const QgsRectangle &rect ) const;
 
     /**
      * Returns true when rectangle intersects with other rectangle.

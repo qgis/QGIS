@@ -203,7 +203,7 @@ namespace QgsWfs
           }
           else
           {
-            request.setFilterRect( request.filterRect().intersect( &childRequest.filterRect() ) );
+            request.setFilterRect( request.filterRect().intersect( childRequest.filterRect() ) );
           }
         }
         else

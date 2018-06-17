@@ -129,7 +129,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     }
 
     QgsGeometry featureGeometry = f.geometry();
-    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( &mRasterExtent );
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( mRasterExtent );
     if ( featureRect.isEmpty() )
     {
       current++;
