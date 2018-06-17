@@ -40,6 +40,7 @@ Map canvas is a class for displaying all GIS data types on a canvas.
 Constructor
 %End
 
+
     ~QgsMapCanvas();
 
     double magnificationFactor() const;
@@ -1019,6 +1020,8 @@ called when panning is in action, reset indicates end of panning
 called on resize or changed extent to notify canvas items to change their rectangle
 %End
 
+  private:
+    QgsMapCanvas( QgsMapCanvas const & );
 }; // class QgsMapCanvas
 
 

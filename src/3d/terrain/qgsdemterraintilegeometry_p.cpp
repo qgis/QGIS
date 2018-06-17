@@ -294,8 +294,8 @@ void DemTerrainTileGeometry::init()
   // Each primitive has 3 vertives
   mIndexAttribute->setCount( faces * 3 );
 
-  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) );
-  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution, mHeightMap ) );
+  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) ); // skip-keyword-check
+  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution, mHeightMap ) ); // skip-keyword-check
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );

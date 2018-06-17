@@ -2798,7 +2798,7 @@ namespace QgsWms
                                           QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter ) );
           }
           QDomElement filterElem = filterXml.firstChildElement();
-          QScopedPointer<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filteredLayer ) );
+          std::unique_ptr<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem, filteredLayer ) );
           mFeatureFilter.setFilter( filteredLayer, *expression );
         }
         else
