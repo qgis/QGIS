@@ -339,6 +339,7 @@ void QgsLocatorWidget::acceptCurrentEntry()
     QgsLocatorResult result = mProxyModel->data( index, QgsLocatorModel::ResultDataRole ).value< QgsLocatorResult >();
     mResultsContainer->hide();
     mLineEdit->clearFocus();
+    mLocator->clearPreviousResults();
     result.filter->triggerResult( result );
   }
 }

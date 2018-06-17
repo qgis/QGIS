@@ -172,6 +172,7 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   QList< QgsLocatorFilter *> threadedFilters;
   for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
   {
+    filter->clearPreviousResults();
     std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
     connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
     {
@@ -234,6 +235,17 @@ void QgsLocator::cancelWithoutBlocking()
 bool QgsLocator::isRunning() const
 {
   return !mActiveThreads.empty();
+}
+
+void QgsLocator::clearPreviousResults()
+{
+  for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
+  {
+    if ( filter->enabled() )
+    {
+      filter->clearPreviousResults();
+    }
+  }
 }
 
 void QgsLocator::filterSentResult( QgsLocatorResult result )
