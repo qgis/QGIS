@@ -653,6 +653,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-resolution average', commands[1])
         self.assertIn('-separate', commands[1])
         self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r nearest', commands[1])
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
 
@@ -664,6 +667,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-resolution lowest', commands[1])
         self.assertIn('-separate', commands[1])
         self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r nearest', commands[1])
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
 
@@ -675,6 +681,9 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-resolution average', commands[1])
         self.assertNotIn('-allow_projection_difference', commands[1])
         self.assertNotIn('-separate', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r nearest', commands[1])
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
 
@@ -686,6 +695,66 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertIn('-resolution average', commands[1])
         self.assertIn('-allow_projection_difference', commands[1])
         self.assertIn('-separate', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r nearest', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'ADD_ALPHA': True,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r nearest', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'ASSIGN_CRS': 'EPSG:3111',
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertIn('-a_srs EPSG:3111', commands[1])
+        self.assertIn('-r nearest', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        custom_crs = 'proj4: +proj=utm +zone=36 +south +a=6378249.145 +b=6356514.966398753 +towgs84=-143,-90,-294,0,0,0,0 +units=m +no_defs'
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'ASSIGN_CRS': custom_crs,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertIn('-a_srs EPSG:20936', commands[1])
+        self.assertIn('-r nearest', commands[1])
+        self.assertIn('-input_file_list', commands[1])
+        self.assertIn('d:/temp/test.vrt', commands[1])
+
+        commands = alg.getConsoleCommands({'LAYERS': [source],
+                                           'RESAMPLING': 4,
+                                           'OUTPUT': 'd:/temp/test.vrt'}, context, feedback)
+        self.assertEqual(len(commands), 2)
+        self.assertEqual(commands[0], 'gdalbuildvrt')
+        self.assertIn('-resolution average', commands[1])
+        self.assertIn('-separate', commands[1])
+        self.assertNotIn('-allow_projection_difference', commands[1])
+        self.assertNotIn('-add_alpha', commands[1])
+        self.assertNotIn('-a_srs', commands[1])
+        self.assertIn('-r lanczos', commands[1])
         self.assertIn('-input_file_list', commands[1])
         self.assertIn('d:/temp/test.vrt', commands[1])
 
