@@ -22,17 +22,17 @@
 
 class QgsMessageLogConsole;
 
-void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
+void QgsMessageLog::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
 {
   QgsDebugMsg( QStringLiteral( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ), tag ).arg( level ).arg( message ) );
 
-  QgsApplication::messageLog()->emitMessage( message, tag, level );
+  QgsApplication::messageLog()->emitMessage( message, tag, level, notifyUser );
 }
 
-void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
+void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser )
 {
   emit messageReceived( message, tag, level );
-  if ( level != Qgis::Info )
+  if ( level != Qgis::Info && notifyUser && mAdviseBlockCount == 0 )
   {
     emit messageReceived( true );
   }
@@ -55,3 +55,16 @@ void QgsMessageLogConsole::logMessage( const QString &message, const QString &ta
       << "]: " << message.toLocal8Bit().data() << std::endl;
 }
 
+//
+// QgsMessageLogNotifyBlocker
+//
+
+QgsMessageLogNotifyBlocker::QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount++;
+}
+
+QgsMessageLogNotifyBlocker::~QgsMessageLogNotifyBlocker()
+{
+  QgsApplication::messageLog()->mAdviseBlockCount--;
+}
