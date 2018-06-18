@@ -1536,6 +1536,19 @@ bool QgsApplication::createDatabase( QString *errorMessage )
       }
       return false;
     }
+
+    QFile::Permissions perms = QFile( qgisPrivateDbFile.fileName() ).permissions();
+    if ( !( perms & QFile::WriteOwner ) )
+    {
+      if ( !qgisPrivateDbFile.setPermissions( perms | QFile::WriteOwner ) )
+      {
+        if ( errorMessage )
+        {
+          *errorMessage = tr( "Can not make '%1' user writable" ).arg( qgisPrivateDbFile.fileName() );
+        }
+        return false;
+      }
+    }
   }
   else
   {
