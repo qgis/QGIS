@@ -245,9 +245,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
     /**
-     * Clear the project - removes all settings and resets it back to an empty, default state.
-     * \since QGIS 2.4
+     * Clears the project, removing all settings and resetting it back to an empty, default state.
      * \see cleared()
+     * \since QGIS 2.4
      */
     void clear();
 

@@ -218,11 +218,11 @@ from a source to destination coordinate reference system.
 
     void clear();
 %Docstring
-Clear the project - removes all settings and resets it back to an empty, default state.
-
-.. versionadded:: 2.4
+Clears the project, removing all settings and resetting it back to an empty, default state.
 
 .. seealso:: :py:func:`cleared`
+
+.. versionadded:: 2.4
 %End
 
     bool read( const QString &filename );
