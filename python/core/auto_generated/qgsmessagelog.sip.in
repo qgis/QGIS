@@ -56,7 +56,8 @@ value for the message.
 
     void messageReceived( bool received );
 %Docstring
-Emitted whenever the log receives a message which has the ``notifyUser`` flag as true.
+Emitted whenever the log receives a message which is not a Qgis.Info level message
+and which has the ``notifyUser`` flag as true.
 
 If QgsMessageLogNotifyBlocker objects have been created then this signal may be
 temporarily suppressed.

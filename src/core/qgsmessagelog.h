@@ -68,7 +68,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
     //TODO QGIS 4.0 - remove received argument
 
     /**
-     * Emitted whenever the log receives a message which has the \a notifyUser flag as true.
+     * Emitted whenever the log receives a message which is not a Qgis::Info level message
+     * and which has the \a notifyUser flag as true.
      *
      * If QgsMessageLogNotifyBlocker objects have been created then this signal may be
      * temporarily suppressed.
