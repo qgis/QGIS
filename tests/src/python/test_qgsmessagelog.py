@@ -45,7 +45,7 @@ class TestQgsMessageLog(unittest.TestCase):
         self.assertEqual(len(local_spy_received), 0)
         self.assertEqual(len(app_spy), 1)
         self.assertEqual(app_spy[-1], ['test', 'tag', Qgis.Info])
-        # info message, so messageReceived(bool) should not be emited
+        # info message, so messageReceived(bool) should not be emitted
         self.assertEqual(len(app_spy_received), 0)
 
         local_log.logMessage('test', 'tag', Qgis.Warning, notifyUser=True)
@@ -53,7 +53,7 @@ class TestQgsMessageLog(unittest.TestCase):
         self.assertEqual(len(local_spy_received), 0)
         self.assertEqual(len(app_spy), 2)
         self.assertEqual(app_spy[-1], ['test', 'tag', Qgis.Warning])
-        # warning message, so messageReceived(bool) should be emited
+        # warning message, so messageReceived(bool) should be emitted
         self.assertEqual(len(app_spy_received), 1)
 
         local_log.logMessage('test', 'tag', Qgis.Warning, notifyUser=False)
