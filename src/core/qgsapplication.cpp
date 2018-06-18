@@ -441,7 +441,11 @@ QString QgsApplication::prefixPath()
   {
     static bool sOnce = true;
     if ( sOnce )
+    {
+      QgsMessageLogNotifyBlocker blockNotifications;
+      ( void ) blockNotifications;
       qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+    }
     sOnce = false;
   }
 
