@@ -96,11 +96,11 @@ void TestQgsMimeDataUtils::testEncodeDecode()
 
   QStringList fragments( QgsMimeDataUtils::decode( data ) );
 
-  QCOMPARE( fragments[0], "raster" );
-  QCOMPARE( fragments[1], "wms" );
-  QCOMPARE( fragments[2], "A Fancy WMS From Ciriè City" );
-  QCOMPARE( fragments[3], "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." );
-  QCOMPARE( fragments[4], "EPSG\\:2036:EPSG\\:3857" );
+  QCOMPARE( fragments[0], QString( "raster" ) );
+  QCOMPARE( fragments[1], QString( "wms" ) );
+  QCOMPARE( fragments[2], QString( "A Fancy WMS From Ciriè City" ) );
+  QCOMPARE( fragments[3], QString( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." ) );
+  QCOMPARE( fragments[4], QString( "EPSG\\:2036:EPSG\\:3857" ) );
 
 }
 
