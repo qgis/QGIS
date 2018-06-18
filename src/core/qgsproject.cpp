@@ -606,6 +606,7 @@ void QgsProject::clear()
   mRootGroup->clear();
 
   setDirty( false );
+  emit cleared();
 }
 
 // basically a debugging tool to dump property list values

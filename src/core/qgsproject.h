@@ -247,6 +247,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Clear the project - removes all settings and resets it back to an empty, default state.
      * \since QGIS 2.4
+     * \see cleared()
      */
     void clear();
 
@@ -955,14 +956,28 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
   signals:
-    //! emitted when project is being read
+
+    /**
+     * Emitted when the project is cleared (and additionally when an open project is cleared
+     * just before a new project is read).
+     *
+     * \see clear()
+     * \since QGIS 3.2
+     */
+    void cleared();
+
+    /**
+     * Emitted when a project is being read.
+     */
     void readProject( const QDomDocument & );
 
-    //! emitted when project is being written
+    /**
+     * Emitted when the project is being written.
+     */
     void writeProject( QDomDocument & );
 
     /**
-     * Emitted, after the basic initialization of a layer from the project
+     * Emitted after the basic initialization of a layer from the project
      * file is done. You can use this signal to read additional information
      * from the project file.
      *
@@ -972,7 +987,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 
     /**
-     * Emitted, when a layer is being saved. You can use this method to save
+     * Emitted when a layer is being saved. You can use this method to save
      * additional information to the layer.
      *
      * \param mapLayer  The map layer which is being initialized
@@ -981,10 +996,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 
-    //! emitted when the project file has been written and closed
+    /**
+     * Emitted when the project file has been written and closed.
+     */
     void projectSaved();
 
-    //! emitted when an old project file is read.
+    /**
+     * Emitted when an old project file is read.
+     */
     void oldProjectVersionWarning( const QString & );
 
     /**
@@ -1019,7 +1038,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void homePathChanged();
 
-    //! emitted whenever the configuration for snapping has changed
+    /**
+     * Emitted whenever the configuration for snapping has changed.
+     */
     void snappingConfigChanged( const QgsSnappingConfig &config );
 
     /**

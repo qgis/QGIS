@@ -135,6 +135,14 @@ class TestQgsProject(unittest.TestCase):
     def catchMessage(self):
         self.messageCaught = True
 
+    def testClear(self):
+        prj = QgsProject.instance()
+        prj.setTitle('xxx')
+        spy = QSignalSpy(prj.cleared)
+        prj.clear()
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(prj.title())
+
     def testCrs(self):
         prj = QgsProject.instance()
         prj.clear()

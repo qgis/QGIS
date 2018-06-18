@@ -221,6 +221,8 @@ from a source to destination coordinate reference system.
 Clear the project - removes all settings and resets it back to an empty, default state.
 
 .. versionadded:: 2.4
+
+.. seealso:: :py:func:`cleared`
 %End
 
     bool read( const QString &filename );
@@ -984,19 +986,30 @@ in the project. The removeMapLayer(), removeMapLayers() calls do not block remov
 %End
 
   signals:
+
+    void cleared();
+%Docstring
+Emitted when the project is cleared (and additionally when an open project is cleared
+just before a new project is read).
+
+.. seealso:: :py:func:`clear`
+
+.. versionadded:: 3.2
+%End
+
     void readProject( const QDomDocument & );
 %Docstring
-emitted when project is being read
+Emitted when a project is being read.
 %End
 
     void writeProject( QDomDocument & );
 %Docstring
-emitted when project is being written
+Emitted when the project is being written.
 %End
 
     void readMapLayer( QgsMapLayer *mapLayer, const QDomElement &layerNode );
 %Docstring
-Emitted, after the basic initialization of a layer from the project
+Emitted after the basic initialization of a layer from the project
 file is done. You can use this signal to read additional information
 from the project file.
 
@@ -1006,7 +1019,7 @@ from the project file.
 
     void writeMapLayer( QgsMapLayer *mapLayer, QDomElement &layerElem, QDomDocument &doc );
 %Docstring
-Emitted, when a layer is being saved. You can use this method to save
+Emitted when a layer is being saved. You can use this method to save
 additional information to the layer.
 
 :param mapLayer: The map layer which is being initialized
@@ -1016,12 +1029,12 @@ additional information to the layer.
 
     void projectSaved();
 %Docstring
-emitted when the project file has been written and closed
+Emitted when the project file has been written and closed.
 %End
 
     void oldProjectVersionWarning( const QString & );
 %Docstring
-emitted when an old project file is read.
+Emitted when an old project file is read.
 %End
 
     void layerLoaded( int i, int n );
@@ -1070,7 +1083,7 @@ Emitted when the home path of the project changes.
 
     void snappingConfigChanged( const QgsSnappingConfig &config );
 %Docstring
-emitted whenever the configuration for snapping has changed
+Emitted whenever the configuration for snapping has changed.
 %End
 
     void customVariablesChanged();
