@@ -382,6 +382,11 @@ QgsProject::~QgsProject()
   }
 }
 
+void QgsProject::setInstance( QgsProject *project )
+{
+  sProject = project;
+}
+
 
 QgsProject *QgsProject::instance()
 {

@@ -110,14 +110,14 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     ~QgsProject() override;
 
     /**
-     * Sets the project's title.
-     * \param title new title
-     *
-     * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
-     *
-     * \see title()
-     * \since QGIS 2.4
-     */
+    * Sets the project's title.
+    * \param title new title
+    *
+    * \note Since QGIS 3.2 this is just a shortcut to setting the title in the project's metadata().
+    *
+    * \see title()
+    * \since QGIS 2.4
+    */
     void setTitle( const QString &title );
 
     /**
@@ -1258,6 +1258,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     static QgsProject *sProject;
 
     /**
+     * Set the current project instance to \a project
+     *
+     * \note this is used mainly by the server, which caches the projects and (potentially) needs to switch the current instance on every request
+     * \see instance()
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    static void setInstance( QgsProject *project ) SIP_SKIP;
+
+    /**
      * Read map layers from project file.
      * \param doc DOM document to parse
      * \param brokenNodes a list of DOM nodes corresponding to layers that we were unable to load; this could be
@@ -1362,6 +1372,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsProjectMetadata mMetadata;
 
     friend class QgsProjectDirtyBlocker;
+
+    // Required by QGIS Server for switching the current project instance
+    friend class QgsConfigCache;
 };
 
 /**

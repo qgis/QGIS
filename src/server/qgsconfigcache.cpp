@@ -48,7 +48,7 @@ const QgsProject *QgsConfigCache::project( const QString &path )
       mFileSystemWatcher.addPath( path );
     }
   }
-
+  QgsProject::setInstance( mProjectCache[ path ] );
   return mProjectCache[ path ];
 }
 
