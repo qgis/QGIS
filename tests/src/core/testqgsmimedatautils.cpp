@@ -34,9 +34,6 @@ class TestQgsMimeDataUtils: public QObject
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
 
-    /**
-     * test findLayers()
-     */
     void testEncodeDecode();
 
 };
