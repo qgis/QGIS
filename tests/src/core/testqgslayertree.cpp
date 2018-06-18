@@ -47,6 +47,7 @@ class TestQgsLayerTree : public QObject
     void testLegendSymbolRuleBased();
     void testResolveReferences();
     void testEmbeddedGroup();
+    void testLayerDeleted();
 
   private:
 
@@ -586,6 +587,29 @@ void TestQgsLayerTree::testEmbeddedGroup()
   {
     QVERIFY( QgsLayerTree::toLayer( child )->layer() );
   }
+}
+
+void TestQgsLayerTree::testLayerDeleted()
+{
+  //new memory layer
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+
+  QgsProject project;
+  project.addMapLayer( vl );
+
+  QgsLayerTree root;
+  QgsLayerTreeModel model( &root );
+
+  root.addLayer( vl );
+  QgsLayerTreeLayer *tl( root.findLayer( vl->id() ) );
+  QCOMPARE( tl->layer(), vl );
+
+  QCOMPARE( model.layerLegendNodes( tl ).count(), 1 );
+
+  project.removeMapLayer( vl );
+
+  QCOMPARE( model.layerLegendNodes( tl ).count(), 0 );
 }
 
 
