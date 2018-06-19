@@ -572,10 +572,10 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   int columns;
   bool exists = false;
   char table_raster[4192];
-  char sql[4192];
+  char sql[4258];
 
-  strncpy( table_raster, table, sizeof sql );
-  table_raster[ sizeof sql - 1 ] = '\0';
+  strncpy( table_raster, table, sizeof table_raster );
+  table_raster[ sizeof table_raster - 1 ] = '\0';
 
   size_t len = strlen( table_raster );
   if ( strlen( table_raster ) < 9 )
