@@ -27,8 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtXml import QDomDocument
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -54,19 +52,14 @@ class SetRasterStyle(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(filename)
-
         style = self.getParameterValue(self.STYLE)
+
+        dataobjects.resetLoadedLayers()
+        layer = dataobjects.getObjectFromUri(filename, False)
         if layer is None:
-            dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
+            dataobjects.load(filename, os.path.basename(filename), style=style, isRaster=True)
         else:
-            with open(style) as f:
-                xml = "".join(f.readlines())
-            d = QDomDocument()
-            d.setContent(xml)
-            n = d.firstChild()
-            layer.readSymbology(n, '')
-            self.setOutputValue(self.OUTPUT, filename)
-            iface.mapCanvas().refresh()
+            layer.loadNamedStyle(style)
+            layer.triggerRepaint()
             iface.legendInterface().refreshLayerSymbology(layer)
+        self.setOutputValue(self.OUTPUT, filename)
