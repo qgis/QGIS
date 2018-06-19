@@ -92,7 +92,7 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                 _f = self._source._features[list(self._source._features.keys())[self._index]]
                 self._index += 1
 
-                if self._feature_id_list is not None and f.id() not in self._feature_id_list:
+                if self._feature_id_list is not None and _f.id() not in self._feature_id_list:
                     continue
 
                 if not self._filter_rect.isNull():
@@ -387,7 +387,7 @@ class PyProvider(QgsVectorDataProvider):
     def createSpatialIndex(self):
         if self._spatialindex is None:
             self._spatialindex = QgsSpatialIndex()
-            for f in self._features:
+            for f in self._features.values():
                 self._spatialindex.insertFeature(f)
         return True
 
