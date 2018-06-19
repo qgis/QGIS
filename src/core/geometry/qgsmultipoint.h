@@ -69,7 +69,7 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QString( "<QgsMultiPoint %1>" ).arg( sipCpp->asWkt() );
+    QString str = QStringLiteral( "<QgsMultiPoint: %1>" ).arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().data() );
     % End
 #endif

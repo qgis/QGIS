@@ -544,7 +544,7 @@ class CORE_EXPORT QgsRectangle
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QString( "<QgsRectangle %1>" ).arg( sipCpp->asWktCoordinates() );
+    QString str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().data() );
     % End
 #endif

@@ -13,55 +13,56 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-import os
 
 from qgis.testing import unittest, start_app
-from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve, QgsCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsMultiLineString, QgsMultiPoint, QgsMultiPolygon,\
-    QgsPolygon, QgsRectangle
-
-import sip
+from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
+    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle
 
 start_app()
 
 
-class TestCoreAdditions(unittest.TestCase):
+class TestPython__repr__(unittest.TestCase):
+
+    def TestQgsGeometryRepr(self):
+        p = QgsPointXY(123.456, 987.654)
+        g = QgsGeometry.fromPointXY(p)
+        self.assertTrue(g.__repr__().startswith('<QgsGeometry: Point (123.456)'))
 
     def TestQgsPointRepr(self):
         p = QgsPoint(123.456, 987.654, 100)
-        print(p)
+        self.assertTrue(p.__repr__().startswith('<QgsPoint: PointZ (123.456)'))
 
     def TestQgsPointXYRepr(self):
         p = QgsPointXY(123.456, 987.654)
-        print(p)
+        self.assertTrue(p.__repr__().startswith('﻿<QgsPointXY: POINT(123.456'))
 
     def TestQgsCircleRepr(self):
         c = QgsCircle(QgsPoint(1, 1), 2.0)
-        print(c)
+        self.assertEqual(c.__repr__(), '﻿<QgsCircle: Circle (Center: Point (1 1), Radius: 2, Azimuth: 0)>')
 
     def TestQgsCircularstringRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
-        print(cs)
+        self.assertEqual(cs.__repr__(), '﻿<QgsCompoundCurve: CompoundCurve (CircularString (1 2, 2 3, 3 4))>')
 
     def TestQgsCompoundcurveRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
         cc = QgsCompoundCurve()
         cc.addCurve(cs)
-        print(cc)
+        self.assertEqual(cc.__repr__(), '<QgsCompoundCurve: CompoundCurve (CircularString (1 2, 2 3, 3 4))>')
 
     def TestQgsCurvepolygonRepr(self):
         cp = QgsCurvePolygon()
         cs = QgsCircularString(QgsPoint(1, 10), QgsPoint(2, 11), QgsPoint(1, 10))
         cp.setExteriorRing(cs)
-        print(cp)
+        self.assertEqual(cp.__repr__(), '<QgsCurvePolygon: CurvePolygon (CircularString (1 10, 2 11, 1 10))>')
 
     def TestQgsEllipseRepr(self):
         e = QgsEllipse(QgsPoint(1, 2), 2.0, 3.0)
-        print(e)
+        self.assertEqual(e.__repr__(), '<QgsEllipse: Ellipse (Center: Point (1 2), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 180)>')
 
     def TestQgsLineStringRepr(self):
         ls = QgsLineString([QgsPoint(10, 2), QgsPoint(10, 1), QgsPoint(5, 1)])
-        print(ls)
+        self.assertEqual(ls.__repr__(), '<QgsLineString: LineString (10 2, 10 1, 5 1)>')
 
     def TestQgsMulticurveRepr(self):
         mc = QgsMultiCurve()
@@ -69,7 +70,7 @@ class TestCoreAdditions(unittest.TestCase):
         mc.addGeometry(cs)
         cs2 = QgsCircularString(QgsPoint(4, 20), QgsPoint(5, 22), QgsPoint(6, 24))
         mc.addGeometry(cs2)
-        print(mc)
+        self.assertEqual(mc.__repr__(), '﻿<QgsMulitCurve: MultiCurve (CircularString (1 10, 2 11, 3 12),CircularString (4 20, 5 22, 6 24))>')
 
     def TestQgsMultilineStringRepr(self):
         ml = QgsGeometry.fromMultiPolylineXY(
@@ -78,12 +79,12 @@ class TestCoreAdditions(unittest.TestCase):
                 [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
             ]
         )
-        print(ml)
+        self.assertEqual(ml.constGet().__repr__(), '<QgsMultiLineString: MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0),(3 0, 3 1, 5 1, 5 0, 6 0))>')
 
     def TestQgsMultiPointRepr(self):
         wkt = "MultiPoint ((10 30),(40 20),(30 10),(20 10))"
         mp = QgsGeometry.fromWkt(wkt)
-        print(mp)
+        self.assertEqual(mp.constGet().__repr__(), '<QgsMultiPoint: MultiPoint ((10 30),(40 20),(30 10),(20 10))>')
 
     def TestQgsMultipolygonRepr(self):
         mp = QgsGeometry.fromMultiPolygonXY([
@@ -96,7 +97,7 @@ class TestCoreAdditions(unittest.TestCase):
               QgsPointXY(3, 1),
               QgsPointXY(2, 2)]]
         ])
-        print(mp)
+        self.assertEqual(mp.constGet().__repr__(), '<QgsMultiPolygon: MultiPolygon (((1 1, 2 2, 1 2, 1 1)),((2 2, 3 3, 3 1, 2 2)))>')
 
     def TestQgsPolygonRepr(self):
         p = QgsGeometry.fromPolygonXY(
@@ -105,11 +106,11 @@ class TestCoreAdditions(unittest.TestCase):
               QgsPointXY(2, 2),
               QgsPointXY(0, 2),
               QgsPointXY(0, 0)]])
-        print(p)
+        self.assertEqual(p.constGet().__repr__(), '<QgsPolygon: Polygon ((0 0, 2 0, 2 2, 0 2, 0 0))>')
 
     def TestQgsRectangleRepr(self):
         r = QgsRectangle(1, 2, 3, 4)
-        print(r)
+        self.assertEqual(r.constGet().__repr__(), '<QgsRectangle: 1 2, 3 4>')
 
 
 if __name__ == "__main__":
