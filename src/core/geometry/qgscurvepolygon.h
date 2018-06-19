@@ -66,9 +66,24 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
 
     //curve polygon interface
-    int numInteriorRings() const;
-    const QgsCurve *exteriorRing() const;
-    const QgsCurve *interiorRing( int i ) const;
+    int numInteriorRings() const
+    {
+      return mInteriorRings.size();
+    }
+
+    const QgsCurve *exteriorRing() const
+    {
+      return mExteriorRing.get();
+    }
+
+    const QgsCurve *interiorRing( int i ) const
+    {
+      if ( i < 0 || i >= mInteriorRings.size() )
+      {
+        return nullptr;
+      }
+      return mInteriorRings.at( i );
+    }
 
     /**
      * Returns a new polygon geometry corresponding to a segmentized approximation

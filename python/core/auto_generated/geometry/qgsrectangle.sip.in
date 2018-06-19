@@ -33,14 +33,17 @@ Examples are storing a layer extent or the current view extent of a map
 %Docstring
 Constructor
 %End
+
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
 Construct a rectangle from two points. The rectangle is normalized after construction.
 %End
+
     QgsRectangle( const QRectF &qRectF );
 %Docstring
 Construct a rectangle from a QRectF. The rectangle is normalized after construction.
 %End
+
     QgsRectangle( const QgsRectangle &other );
 %Docstring
 Copy constructor
@@ -70,7 +73,7 @@ Sets the rectangle from two :py:class:`QgsPoints`. The rectangle is
 normalised after construction.
 %End
 
-    void set( double mXmin, double mYmin, double mXmax, double mYmax );
+    void set( double xMin, double yMin, double xMax, double yMax );
 %Docstring
 Sets the rectangle from four points. The rectangle is
 normalised after construction.

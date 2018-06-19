@@ -181,16 +181,6 @@ int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
   return -1; // should not happen
 }
 
-int QgsGeometryCollection::numGeometries() const
-{
-  return mGeometries.size();
-}
-
-const QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n ) const
-{
-  return mGeometries.value( n );
-}
-
 QgsAbstractGeometry *QgsGeometryCollection::geometryN( int n )
 {
   clearCache();

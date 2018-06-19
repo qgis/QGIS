@@ -117,8 +117,29 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsAbstractGeometry &other ) const override;
-    bool operator!=( const QgsAbstractGeometry &other ) const override;
+    bool operator==( const QgsAbstractGeometry &other ) const override
+    {
+      const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+      if ( !pt )
+        return false;
+
+      const QgsWkbTypes::Type type = wkbType();
+
+      bool equal = pt->wkbType() == type;
+      equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+      if ( QgsWkbTypes::hasZ( type ) )
+        equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
+      if ( QgsWkbTypes::hasM( type ) )
+        equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
+
+      return equal;
+    }
+
+    bool operator!=( const QgsAbstractGeometry &other ) const override
+    {
+      return !operator==( other );
+    }
 
     /**
      * Returns the point's x-coordinate.
@@ -240,7 +261,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * Returns the point as a QPointF.
      * \since QGIS 2.14
      */
-    QPointF toQPointF() const;
+    QPointF toQPointF() const
+    {
+      return QPointF( mX, mY );
+    }
 
     /**
      * Returns the distance between this point and a specified x, y coordinate. In certain
@@ -249,7 +273,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distanceSquared()
      * \since QGIS 3.0
     */
-    double distance( double x, double y ) const;
+    double distance( double x, double y ) const
+    {
+      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+    }
 
     /**
      * Returns the 2D distance between this point and another point. In certain
@@ -257,7 +284,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const;
+    double distance( const QgsPoint &other ) const
+    {
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+    }
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate. Calling
@@ -266,7 +296,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const;
+    double distanceSquared( double x, double y ) const
+    {
+      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+    }
 
     /**
      * Returns the squared distance between this point another point. Calling
@@ -275,7 +308,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const;
+    double distanceSquared( const QgsPoint &other ) const
+    {
+      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+    }
 
     /**
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain

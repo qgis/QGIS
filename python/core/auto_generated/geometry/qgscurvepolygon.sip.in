@@ -71,7 +71,9 @@ Curve polygon geometry type
 
 
     int numInteriorRings() const;
+
     const QgsCurve *exteriorRing() const;
+
     const QgsCurve *interiorRing( int i ) const;
 
     virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
