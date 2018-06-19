@@ -4598,13 +4598,29 @@ void QgsDxfExport::drawLabel( QString layerId, QgsRenderContext& context, pal::L
     txt.prepend( "\\K" ).append( "\\k" );
   }
 
+  QFontMetricsF* fm = lf->labelFontMetrics();
+  if ( !fm )
+  {
+    return;
+  }
+
+  QRectF textBoundingRect = fm->tightBoundingRect( txt );
+
+  double maxAscent = -textBoundingRect.y();
+  double maxDescent = textBoundingRect.height() - maxAscent;
+
   txt.prepend( QString( "\\f%1|i%2|b%3;\\H%4;" )
                .arg( tmpLyr.textFont.family() )
                .arg( tmpLyr.textFont.italic() ? 1 : 0 )
                .arg( tmpLyr.textFont.bold() ? 1 : 0 )
-               .arg( label->getHeight() / ( 1 + txt.count( "\\P" ) ) * 0.75 ) );
+               .arg(( maxAscent ) * context.mapToPixel().mapUnitsPerPixel() ) );
 
-  writeMText( dxfLayer, txt, QgsPointV2( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.textColor );
+  double labelY = label->getY();
+
+  int nLines = txt.count( "\\P" ) + 1;
+  labelY += ( label->getHeight() - ( maxAscent + maxDescent + fm->lineSpacing() * ( nLines - 1 ) ) * context.mapToPixel().mapUnitsPerPixel() ) / 2.0;
+
+  writeMText( dxfLayer, txt, QgsPointV2( label->getX(), labelY ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.textColor );
 }
 
 
