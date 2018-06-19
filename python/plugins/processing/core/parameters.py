@@ -750,7 +750,10 @@ class ParameterString(Parameter):
         if not bool(obj):
             if not self.optional:
                 return False
-            self.value = ''
+            if isinstance(obj, basestring):
+                self.value = obj
+            else:
+                self.value = None
             return True
 
         self.value = unicode(obj).replace(
