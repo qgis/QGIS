@@ -246,7 +246,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderConte
       QColor fillColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
       if ( context.alpha() < 1.0 )
       {
-        fillColor.setAlpha( fillColor.alphaF() * context.alpha() );
+        fillColor.setAlphaF( fillColor.alphaF() * context.alpha() );
       }
       mBrush.setColor( fillColor );
     }
@@ -260,7 +260,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( QPointF point, QgsSymbolV2RenderConte
       QColor outlineColor = QgsSymbolLayerV2Utils::decodeColor( colorString );
       if ( context.alpha() < 1.0 )
       {
-        outlineColor.setAlpha( outlineColor.alphaF() * context.alpha() );
+        outlineColor.setAlphaF( outlineColor.alphaF() * context.alpha() );
       }
       mPen.setColor( outlineColor );
     }
