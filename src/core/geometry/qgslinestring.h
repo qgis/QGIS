@@ -102,7 +102,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *xData() const SIP_SKIP;
+    const double *xData() const SIP_SKIP
+    {
+      return mX.constData();
+    }
 
     /**
      * Returns a const pointer to the y vertex data.
@@ -110,7 +113,10 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see xData()
      * \since QGIS 3.2
      */
-    const double *yData() const SIP_SKIP;
+    const double *yData() const SIP_SKIP
+    {
+      return mY.constData();
+    }
 
     /**
      * Returns a const pointer to the z vertex data, or a nullptr if the linestring does
@@ -120,7 +126,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *zData() const SIP_SKIP;
+    const double *zData() const SIP_SKIP
+    {
+      if ( mZ.empty() )
+        return nullptr;
+      else
+        return mZ.constData();
+    }
 
     /**
      * Returns a const pointer to the m vertex data, or a nullptr if the linestring does
@@ -130,7 +142,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see yData()
      * \since QGIS 3.2
      */
-    const double *mData() const SIP_SKIP;
+    const double *mData() const SIP_SKIP
+    {
+      if ( mM.empty() )
+        return nullptr;
+      else
+        return mM.constData();
+    }
 
     /**
      * Returns the z-coordinate of the specified node in the line string.
@@ -139,7 +157,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have a z dimension
      * \see setZAt()
      */
-    double zAt( int index ) const;
+    double zAt( int index ) const
+    {
+      if ( index >= 0 && index < mZ.size() )
+        return mZ.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
     /**
      * Returns the m value of the specified node in the line string.
@@ -148,7 +172,13 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * does not have m values
      * \see setMAt()
      */
-    double mAt( int index ) const;
+    double mAt( int index ) const
+    {
+      if ( index >= 0 && index < mM.size() )
+        return mM.at( index );
+      else
+        return std::numeric_limits<double>::quiet_NaN();
+    }
 
     /**
      * Sets the x-coordinate of the specified node in the line string.
@@ -175,7 +205,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param z z-coordinate of node
      * \see zAt()
      */
-    void setZAt( int index, double z );
+    void setZAt( int index, double z )
+    {
+      if ( index >= 0 && index < mZ.size() )
+        mZ[ index ] = z;
+    }
 
     /**
      * Sets the m value of the specified node in the line string.
@@ -184,7 +218,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param m m value of node
      * \see mAt()
      */
-    void setMAt( int index, double m );
+    void setMAt( int index, double m )
+    {
+      if ( index >= 0 && index < mM.size() )
+        mM[ index ] = m;
+    }
 
     /**
      * Resets the line string to match the specified list of points. The line string will
@@ -325,7 +363,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \param type WKB type
      * \param wkb WKB representation of line geometry
      */
-    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
+    void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb )
+    {
+      mWkbType = type;
+      importVerticesFromWkb( wkb );
+    }
 
     friend class QgsPolygon;
     friend class QgsTriangle;

@@ -92,7 +92,6 @@ Construct a QgsPoint from a QPointF
 
     virtual bool operator!=( const QgsAbstractGeometry &other ) const;
 
-
     double x() const;
 %Docstring
 Returns the point's x-coordinate.

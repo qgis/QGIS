@@ -306,12 +306,6 @@ bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-void QgsLineString::fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb )
-{
-  mWkbType = type;
-  importVerticesFromWkb( wkb );
-}
-
 QgsRectangle QgsLineString::calculateBoundingBox() const
 {
   double xmin = std::numeric_limits<double>::max();
@@ -550,48 +544,6 @@ double QgsLineString::yAt( int index ) const
     return 0.0;
 }
 
-const double *QgsLineString::xData() const
-{
-  return mX.constData();
-}
-
-const double *QgsLineString::yData() const
-{
-  return mY.constData();
-}
-
-const double *QgsLineString::zData() const
-{
-  if ( mZ.empty() )
-    return nullptr;
-  else
-    return mZ.constData();
-}
-
-const double *QgsLineString::mData() const
-{
-  if ( mM.empty() )
-    return nullptr;
-  else
-    return mM.constData();
-}
-
-double QgsLineString::zAt( int index ) const
-{
-  if ( index >= 0 && index < mZ.size() )
-    return mZ.at( index );
-  else
-    return std::numeric_limits<double>::quiet_NaN();
-}
-
-double QgsLineString::mAt( int index ) const
-{
-  if ( index >= 0 && index < mM.size() )
-    return mM.at( index );
-  else
-    return std::numeric_limits<double>::quiet_NaN();
-}
-
 void QgsLineString::setXAt( int index, double x )
 {
   if ( index >= 0 && index < mX.size() )
@@ -604,18 +556,6 @@ void QgsLineString::setYAt( int index, double y )
   if ( index >= 0 && index < mY.size() )
     mY[ index ] = y;
   clearCache();
-}
-
-void QgsLineString::setZAt( int index, double z )
-{
-  if ( index >= 0 && index < mZ.size() )
-    mZ[ index ] = z;
-}
-
-void QgsLineString::setMAt( int index, double m )
-{
-  if ( index >= 0 && index < mM.size() )
-    mM[ index ] = m;
 }
 
 /***************************************************************************

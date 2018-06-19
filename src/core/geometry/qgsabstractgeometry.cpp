@@ -38,17 +38,6 @@ QgsAbstractGeometry &QgsAbstractGeometry::operator=( const QgsAbstractGeometry &
   return *this;
 }
 
-bool QgsAbstractGeometry::is3D() const
-{
-  return QgsWkbTypes::hasZ( mWkbType );
-}
-
-bool QgsAbstractGeometry::isMeasure() const
-{
-  return QgsWkbTypes::hasM( mWkbType );
-}
-
-
 void QgsAbstractGeometry::setZMTypeFromSubGeometry( const QgsAbstractGeometry *subgeom, QgsWkbTypes::Type baseGeomType )
 {
   if ( !subgeom )

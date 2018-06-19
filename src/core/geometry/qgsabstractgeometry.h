@@ -181,13 +181,19 @@ class CORE_EXPORT QgsAbstractGeometry
      * Returns true if the geometry is 3D and contains a z-value.
      * \see isMeasure
      */
-    bool is3D() const;
+    bool is3D() const
+    {
+      return QgsWkbTypes::hasZ( mWkbType );
+    }
 
     /**
      * Returns true if the geometry contains m values.
      * \see is3D
      */
-    bool isMeasure() const;
+    bool isMeasure() const
+    {
+      return QgsWkbTypes::hasM( mWkbType );
+    }
 
     /**
      * Returns the closure of the combinatorial boundary of the geometry (ie the topological boundary of the geometry).

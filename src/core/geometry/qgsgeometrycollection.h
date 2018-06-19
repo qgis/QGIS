@@ -47,14 +47,20 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Returns the number of geometries within the collection.
      */
-    int numGeometries() const;
+    int numGeometries() const
+    {
+      return mGeometries.size();
+    }
 
     /**
      * Returns a const reference to a geometry from within the collection.
      * \param n index of geometry to return
      * \note not available in Python bindings
      */
-    const QgsAbstractGeometry *geometryN( int n ) const SIP_SKIP;
+    const QgsAbstractGeometry *geometryN( int n ) const SIP_SKIP
+    {
+      return mGeometries.value( n );
+    }
 
     /**
      * Returns a geometry from within the collection.

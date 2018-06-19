@@ -588,25 +588,6 @@ QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceT
   return poly.release();
 }
 
-int QgsCurvePolygon::numInteriorRings() const
-{
-  return mInteriorRings.size();
-}
-
-const QgsCurve *QgsCurvePolygon::exteriorRing() const
-{
-  return mExteriorRing.get();
-}
-
-const QgsCurve *QgsCurvePolygon::interiorRing( int i ) const
-{
-  if ( i < 0 || i >= mInteriorRings.size() )
-  {
-    return nullptr;
-  }
-  return mInteriorRings.at( i );
-}
-
 void QgsCurvePolygon::setExteriorRing( QgsCurve *ring )
 {
   if ( !ring )

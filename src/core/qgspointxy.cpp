@@ -37,11 +37,6 @@ QgsPointXY::QgsPointXY( const QgsPoint &point )
 {
 }
 
-QPointF QgsPointXY::toQPointF() const
-{
-  return QPointF( mX, mY );
-}
-
 QString QgsPointXY::toString( int precision ) const
 {
   if ( precision < 0 )
@@ -65,26 +60,6 @@ QString QgsPointXY::asWkt() const
   return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 }
 
-double QgsPointXY::sqrDist( double x, double y ) const
-{
-  return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
-}
-
-double QgsPointXY::sqrDist( const QgsPointXY &other ) const
-{
-  return sqrDist( other.x(), other.y() );
-}
-
-double QgsPointXY::distance( double x, double y ) const
-{
-  return std::sqrt( sqrDist( x, y ) );
-}
-
-double QgsPointXY::distance( const QgsPointXY &other ) const
-{
-  return std::sqrt( sqrDist( other ) );
-}
-
 double QgsPointXY::azimuth( const QgsPointXY &other ) const
 {
   double dx = other.x() - mX;
@@ -98,39 +73,6 @@ QgsPointXY QgsPointXY::project( double distance, double bearing ) const
   double dx = distance * std::sin( rads );
   double dy = distance * std::cos( rads );
   return QgsPointXY( mX + dx, mY + dy );
-}
-
-bool QgsPointXY::compare( const QgsPointXY &other, double epsilon ) const
-{
-  return ( qgsDoubleNear( mX, other.x(), epsilon ) && qgsDoubleNear( mY, other.y(), epsilon ) );
-}
-
-// operators
-bool QgsPointXY::operator==( const QgsPointXY &other )
-{
-  return ( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
-}
-
-bool QgsPointXY::operator!=( const QgsPointXY &other ) const
-{
-  return !( qgsDoubleNear( mX, other.x() ) && qgsDoubleNear( mY, other.y() ) );
-}
-
-QgsPointXY &QgsPointXY::operator=( const QgsPointXY &other )
-{
-  if ( &other != this )
-  {
-    mX = other.x();
-    mY = other.y();
-  }
-
-  return *this;
-}
-
-void QgsPointXY::multiply( double scalar )
-{
-  mX *= scalar;
-  mY *= scalar;
 }
 
 double QgsPointXY::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint, double epsilon ) const
