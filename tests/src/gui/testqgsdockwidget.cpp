@@ -32,6 +32,7 @@ class TestQgsDockWidget: public QObject
     void testSignals();
     void testUserVisible();
     void testSetUserVisible();
+    void testToggleUserVisible();
 
   private:
 
@@ -169,6 +170,49 @@ void TestQgsDockWidget::testSetUserVisible()
 
   d1->setUserVisible( false );
   QVERIFY( d2->isVisible() );
+  QVERIFY( !d1->isUserVisible() );
+  QVERIFY( !d1->isVisible() );
+
+  delete w;
+
+}
+
+void TestQgsDockWidget::testToggleUserVisible()
+{
+  QMainWindow *w = new QMainWindow();
+  QApplication::setActiveWindow( w ); //required for focus events
+  QgsDockWidget *d1 = new QgsDockWidget( w );
+  QgsDockWidget *d2 = new QgsDockWidget( w );
+  w->addDockWidget( Qt::RightDockWidgetArea, d1 );
+  w->addDockWidget( Qt::RightDockWidgetArea, d2 );
+  w->tabifyDockWidget( d1, d2 );
+  w->show();
+
+  QVERIFY( d2->isUserVisible() );
+  QVERIFY( !d1->isUserVisible() );
+
+  d1->toggleUserVisible();
+  QVERIFY( !d2->isUserVisible() );
+  QVERIFY( d2->isVisible() );
+  QVERIFY( d1->isUserVisible() );
+  QVERIFY( d1->isVisible() );
+
+  d2->hide();
+  d2->toggleUserVisible();
+  QVERIFY( d2->isUserVisible() );
+  QVERIFY( d2->isVisible() );
+  QVERIFY( !d1->isUserVisible() );
+  QVERIFY( d1->isVisible() );
+
+  d2->hide();
+  d1->raise(); //shouldn't be necessary outside of tests
+  QVERIFY( !d2->isUserVisible() );
+  QVERIFY( !d2->isVisible() );
+  QVERIFY( d1->isUserVisible() );
+  QVERIFY( d1->isVisible() );
+
+  d1->toggleUserVisible();
+  QVERIFY( !d2->isVisible() );
   QVERIFY( !d1->isUserVisible() );
   QVERIFY( !d1->isVisible() );
 

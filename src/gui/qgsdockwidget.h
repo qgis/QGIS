@@ -53,6 +53,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * Returns true if the dock is both opened and raised to the front (ie not hidden by
      * any other tabs.
      * \see setUserVisible()
+     * \see toggleUserVisible()
      */
     bool isUserVisible() const;
 
@@ -70,8 +71,20 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * be closed
      * - hiding a dock which is closed has no effect and raises no signals
      * \see isUserVisible()
+     * \see toggleUserVisible()
      */
     void setUserVisible( bool visible );
+
+    /**
+     * Toggles whether the dock is user visible. If the dock is not currently user
+     * visible (i.e. opened and activated as a tab) then the dock will be opened
+     * and raised. If it is currently user visible it will be closed.
+     *
+     * \see setUserVisible()
+     * \see isUserVisible()
+     * \since QGIS 3.2
+     */
+    void toggleUserVisible();
 
   protected:
 
