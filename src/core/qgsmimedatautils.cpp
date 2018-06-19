@@ -207,12 +207,12 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
   // Do not escape colon twice
-  QRegExp re( "([^\\\\]):" );
+  QRegularExpression re( "(?<!\\\\):" );
   Q_FOREACH ( const QString &item, items )
   {
     QString str = item;
     str.replace( '\\', QLatin1String( "\\\\" ) );
-    str.replace( re, QLatin1String( "\\1\\:" ) );
+    str.replace( re, QLatin1String( "\\:" ) );
     encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );
