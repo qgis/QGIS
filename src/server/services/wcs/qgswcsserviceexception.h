@@ -25,7 +25,8 @@
 namespace QgsWcs
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WFS service exceptions.
    */
@@ -45,7 +46,8 @@ namespace QgsWcs
   };
 
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
@@ -57,7 +59,8 @@ namespace QgsWcs
       {}
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */

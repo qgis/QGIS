@@ -71,13 +71,36 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
   setupUi( this );
+  connect( mDatabaseButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mDatabaseButton_clicked );
+  connect( mDatabaseLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mDatabaseLineEdit_returnPressed );
+  connect( mDatabaseLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mDatabaseLineEdit_textChanged );
+  connect( mCreateLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mCreateLocationRadioButton_clicked );
+  connect( mSelectLocationRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mSelectLocationRadioButton_clicked );
+  connect( mLocationComboBox, &QComboBox::editTextChanged, this, &QgsGrassNewMapset::mLocationComboBox_textChanged );
+  connect( mLocationLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mLocationLineEdit_returnPressed );
+  connect( mLocationLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mLocationLineEdit_textChanged );
+  connect( mNoProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mNoProjRadioButton_clicked );
+  connect( mProjRadioButton, &QRadioButton::clicked, this, &QgsGrassNewMapset::mProjRadioButton_clicked );
+  connect( mNorthLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mNorthLineEdit_returnPressed );
+  connect( mNorthLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mNorthLineEdit_textChanged );
+  connect( mSouthLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mSouthLineEdit_returnPressed );
+  connect( mSouthLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mSouthLineEdit_textChanged );
+  connect( mEastLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mEastLineEdit_returnPressed );
+  connect( mEastLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mEastLineEdit_textChanged );
+  connect( mWestLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mWestLineEdit_returnPressed );
+  connect( mWestLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mWestLineEdit_textChanged );
+  connect( mCurrentRegionButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mCurrentRegionButton_clicked );
+  connect( mRegionButton, &QPushButton::clicked, this, &QgsGrassNewMapset::mRegionButton_clicked );
+  connect( mMapsetLineEdit, &QLineEdit::returnPressed, this, &QgsGrassNewMapset::mMapsetLineEdit_returnPressed );
+  connect( mMapsetLineEdit, &QLineEdit::textChanged, this, &QgsGrassNewMapset::mMapsetLineEdit_textChanged );
+  connect( mOpenNewMapsetCheckBox, &QCheckBox::stateChanged, this, &QgsGrassNewMapset::mOpenNewMapsetCheckBox_stateChanged );
 #ifdef Q_OS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif
 
   sRunning = true;
   mIface = iface;
-  mProjectionSelector = 0;
+  mProjectionSelector = nullptr;
   mPreviousPage = -1;
   mRegionModified = false;
 
@@ -117,7 +140,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   mMapsetsListView->clear();
   mMapsetLineEdit->setValidator( new QRegExpValidator( rx, mMapsetLineEdit ) );
 
-  mMapsetsListView->header()->setResizeMode( QHeaderView::ResizeToContents );
+  mMapsetsListView->header()->setSectionResizeMode( QHeaderView::ResizeToContents );
 
   // FINISH
   mOpenNewMapsetCheckBox->setChecked( settings.value( QStringLiteral( "GRASS/newMapsetWizard/openMapset" ), true ).toBool() );
@@ -389,8 +412,8 @@ void QgsGrassNewMapset::setGrassProjection()
   {
     mCellHead.proj = PROJECTION_XY;
     mCellHead.zone = 0;
-    mProjInfo = 0;
-    mProjUnits = 0;
+    mProjInfo = nullptr;
+    mProjUnits = nullptr;
 
     button( QWizard::NextButton )->setEnabled( true );
     return;
@@ -412,12 +435,12 @@ void QgsGrassNewMapset::setGrassProjection()
 
     if ( errcode != OGRERR_NONE )
     {
-      QgsDebugMsg( QString( "OGR can't parse PROJ.4-style parameter string:\n%1\nOGR Error code was %2" ).arg( proj4 ).arg( errcode ) );
+      QgsDebugMsg( QString( "OGR can't parse PROJ-style parameter string:\n%1\nOGR Error code was %2" ).arg( proj4 ).arg( errcode ) );
 
       mCellHead.proj = PROJECTION_XY;
       mCellHead.zone = 0;
-      mProjInfo = 0;
-      mProjUnits = 0;
+      mProjInfo = nullptr;
+      mProjUnits = nullptr;
     }
     else
     {
@@ -460,8 +483,8 @@ void QgsGrassNewMapset::setGrassProjection()
   {
     mCellHead.proj = PROJECTION_XY;
     mCellHead.zone = 0;
-    mProjInfo = 0;
-    mProjUnits = 0;
+    mProjInfo = nullptr;
+    mProjUnits = nullptr;
   }
   button( QWizard::NextButton )->setEnabled( mProjInfo && mProjUnits );
 }
@@ -497,7 +520,7 @@ void QgsGrassNewMapset::setRegionPage()
   if ( mRegionModified && newCrs.isValid() && mCrs.isValid()
        && newCrs.srsid() != mCrs.srsid() )
   {
-    QgsCoordinateTransform trans( mCrs, newCrs );
+    QgsCoordinateTransform trans( mCrs, newCrs, QgsProject::instance() );
 
     double n = mNorthLineEdit->text().toDouble();
     double s = mSouthLineEdit->text().toDouble();
@@ -833,7 +856,7 @@ void QgsGrassNewMapset::setSelectedRegion()
       return;
     }
 
-    QgsCoordinateTransform trans( source, dest );
+    QgsCoordinateTransform trans( source, dest, QgsProject::instance() );
 
     bool ok = true;
     for ( int i = 0; i < 4; i++ )
@@ -923,7 +946,7 @@ void QgsGrassNewMapset::setCurrentRegion()
   if ( srs.isValid() && mCrs.isValid()
        && srs.srsid() != mCrs.srsid() )
   {
-    QgsCoordinateTransform trans( srs, mCrs );
+    QgsCoordinateTransform trans( srs, mCrs, QgsProject::instance() );
 
     bool ok = true;
     for ( int i = 0; i < 2; i++ )
@@ -1041,7 +1064,7 @@ void QgsGrassNewMapset::drawRegion()
       return;
     }
 
-    QgsCoordinateTransform trans( source, dest );
+    QgsCoordinateTransform trans( source, dest, QgsProject::instance() );
 
     for ( int i = points.size() - 1; i >= 0; i-- )
     {
@@ -1180,7 +1203,7 @@ void QgsGrassNewMapset::mapsetChanged()
 }
 
 /**************************** FINISH ********************************/
-void QgsGrassNewMapset::on_mOpenNewMapsetCheckBox_stateChanged( int state )
+void QgsGrassNewMapset::mOpenNewMapsetCheckBox_stateChanged( int state )
 {
   Q_UNUSED( state );
   QgsSettings settings;

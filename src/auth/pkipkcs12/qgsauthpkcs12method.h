@@ -18,6 +18,7 @@
 #define QGSAUTHPKCS12METHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -29,7 +30,7 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkcs12Method();
-    ~QgsAuthPkcs12Method();
+    ~QgsAuthPkcs12Method() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -58,6 +59,7 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
     void removePkiConfigBundle( const QString &authcfg );
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
+
 };
 
 #endif // QGSAUTHPKCS12METHOD_H

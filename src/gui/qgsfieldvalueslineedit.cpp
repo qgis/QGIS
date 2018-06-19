@@ -23,10 +23,6 @@
 
 QgsFieldValuesLineEdit::QgsFieldValuesLineEdit( QWidget *parent )
   : QgsFilterLineEdit( parent )
-  , mLayer( nullptr )
-  , mAttributeIndex( -1 )
-  , mUpdateRequested( false )
-  , mGatherer( nullptr )
 {
   QCompleter *c = new QCompleter( this );
   c->setCaseSensitivity( Qt::CaseInsensitive );

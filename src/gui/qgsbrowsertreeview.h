@@ -22,7 +22,8 @@
 
 class QgsBrowserModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
  *
  * \see QgsBrowserModel
@@ -32,15 +33,17 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    virtual void setModel( QAbstractItemModel *model ) override;
-    //! Set the browser model
+    //! Constructor for QgsBrowserTreeView
+    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    void setModel( QAbstractItemModel *model ) override;
+    //! Sets the browser model
     void setBrowserModel( QgsBrowserModel *model );
-    //! Return the browser model
+    //! Returns the browser model
     QgsBrowserModel *browserModel() { return mBrowserModel; }
-    virtual void showEvent( QShowEvent *e ) override;
-    virtual void hideEvent( QHideEvent *e ) override;
+    void showEvent( QShowEvent *e ) override;
+    void hideEvent( QHideEvent *e ) override;
 
     // returns true if at least one descendat is expanded, used in refresh
     bool hasExpandedDescendant( const QModelIndex &index ) const;
@@ -49,7 +52,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     void setSettingsSection( const QString &section ) { mSettingsSection = section; }
 
   protected slots:
-    virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end ) override;
+    void rowsInserted( const QModelIndex &parentIndex, int start, int end ) override;
 
   private:
     QString mSettingsSection;
@@ -68,7 +71,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 
     // returns true if expanded from root to item
     bool treeExpanded( const QModelIndex &index );
-    QgsBrowserModel *mBrowserModel;
+    QgsBrowserModel *mBrowserModel = nullptr;
 };
 
 #endif // QGSBROWSERTREEVIEW_H

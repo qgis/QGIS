@@ -93,22 +93,22 @@ bool QgsUserProfileManager::rootLocationIsSet() const
 
 QString QgsUserProfileManager::defaultProfileName() const
 {
-  QString defaultName = "default";
+  QString defaultName = QStringLiteral( "default" );
   // If the profiles.ini doesn't have the default profile we grab it from
   // global settings as it might be set by the admin.
   // If the overrideProfile flag is set then no matter what the profiles.ini says we always take the
   // global profile.
   QgsSettings globalSettings;
-  if ( !mSettings->contains( "/core/defaultProfile" ) || globalSettings.value( "overrideLocalProfile", false, QgsSettings::Core ).toBool() )
+  if ( !mSettings->contains( QStringLiteral( "/core/defaultProfile" ) ) || globalSettings.value( QStringLiteral( "overrideLocalProfile" ), false, QgsSettings::Core ).toBool() )
   {
-    return globalSettings.value( "defaultProfile", defaultName, QgsSettings::Core ).toString();
+    return globalSettings.value( QStringLiteral( "defaultProfile" ), defaultName, QgsSettings::Core ).toString();
   }
-  return mSettings->value( "/core/defaultProfile", defaultName ).toString();
+  return mSettings->value( QStringLiteral( "/core/defaultProfile" ), defaultName ).toString();
 }
 
 void QgsUserProfileManager::setDefaultProfileName( const QString &name )
 {
-  mSettings->setValue( "/core/defaultProfile", name );
+  mSettings->setValue( QStringLiteral( "/core/defaultProfile" ), name );
   mSettings->sync();
 }
 
@@ -204,7 +204,7 @@ void QgsUserProfileManager::loadUserProfile( const QString &name )
   // http://doc.qt.io/qt-5/qcoreapplication.html#arguments
   arguments.removeFirst();
 
-  arguments << "--profile" << name;
+  arguments << QStringLiteral( "--profile" ) << name;
   QgsDebugMsg( QString( "Starting instance from %1 with %2" ).arg( path ).arg( arguments.join( " " ) ) );
   QProcess::startDetached( path, arguments, QDir::toNativeSeparators( QCoreApplication::applicationDirPath() ) );
 }

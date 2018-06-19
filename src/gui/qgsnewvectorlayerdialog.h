@@ -24,7 +24,8 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewVectorLayerDialog
  */
 class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
@@ -40,7 +41,7 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     static QString runAndCreateLayer( QWidget *parent = nullptr, QString *enc = nullptr, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 
     QgsNewVectorLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewVectorLayerDialog();
+    ~QgsNewVectorLayerDialog() override;
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
     //! Appends the chosen attribute names and types to at
@@ -49,6 +50,8 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     QString selectedFileFormat() const;
     //! Returns the file format for storage
     QString selectedFileEncoding() const;
+    //! Returns the name for the new layer
+    QString filename() const;
 
     /**
      * Returns the selected CRS for the new layer.
@@ -58,16 +61,17 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * \since QGIS 3.0
      * \see crs()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
-  protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mFileFormatComboBox_currentIndexChanged( int index );
-    void on_mTypeBox_currentIndexChanged( int index );
+  private slots:
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mFileFormatComboBox_currentIndexChanged( int index );
+    void mTypeBox_currentIndexChanged( int index );
+    void checkOk();
 
     //! Open the associated help
     void showHelp();

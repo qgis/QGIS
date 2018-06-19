@@ -26,11 +26,12 @@
 #include "qgsunittypes.h"
 #include "qgssettings.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsfeaturelistmodel.h"
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the attribute table dialog
  */
 class TestQgsAttributeTable : public QObject
@@ -49,16 +50,13 @@ class TestQgsAttributeTable : public QObject
     void testFieldCalculationArea();
     void testNoGeom();
     void testSelected();
+    void testSortByDisplayExpression();
 
   private:
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsAttributeTable::TestQgsAttributeTable()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsAttributeTable::TestQgsAttributeTable() = default;
 
 //runs before all tests
 void TestQgsAttributeTable::initTestCase()
@@ -73,8 +71,6 @@ void TestQgsAttributeTable::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
-
-  QSettings().setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
 }
 
 //runs after all tests
@@ -93,9 +89,9 @@ void TestQgsAttributeTable::testFieldCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline line3111;
+  QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -141,11 +137,11 @@ void TestQgsAttributeTable::testFieldCalculationArea()
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
-  QgsPolyline polygonRing3111;
+  QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 );
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 );
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -188,16 +184,14 @@ void TestQgsAttributeTable::testNoGeom()
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
-  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll );
-  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowAll ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry );
 
   // but if we are requesting only visible features, then geometry must be fetched...
 
-  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowVisible );
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowVisible ) );
   QVERIFY( dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QVERIFY( !( dlg->mMainView->masterModel()->request().flags() & QgsFeatureRequest::NoGeometry ) );
 
@@ -216,8 +210,6 @@ void TestQgsAttributeTable::testNoGeom()
 void TestQgsAttributeTable::testSelected()
 {
   // test attribute table opening in show selected mode
-  QgsSettings s;
-
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
 
@@ -226,8 +218,7 @@ void TestQgsAttributeTable::testSelected()
   QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
   QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
 
-  s.setValue( QStringLiteral( "/qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowSelected );
-  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
 
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   //should be nothing - because no selection!
@@ -240,7 +231,7 @@ void TestQgsAttributeTable::testSelected()
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
 
   // another test - start with selection when dialog created
-  dlg.reset( new QgsAttributeTableDialog( tempLayer.get() ) );
+  dlg.reset( new QgsAttributeTableDialog( tempLayer.get(), QgsAttributeTableFilterModel::ShowSelected ) );
   QVERIFY( !dlg->mMainView->masterModel()->layerCache()->cacheGeometry() );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterType(), QgsFeatureRequest::FilterFids );
   QCOMPARE( dlg->mMainView->masterModel()->request().filterFids(), QgsFeatureIds() << 1 << 3 );
@@ -250,18 +241,50 @@ void TestQgsAttributeTable::testSelected()
   QVERIFY( dlg->mMainView->masterModel()->request().filterFids().isEmpty() );
 }
 
+void TestQgsAttributeTable::testSortByDisplayExpression()
+{
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( 0, 1 );
+  f1.setAttribute( 1, 3.2 );
+  QgsFeature f2( tempLayer->dataProvider()->fields(), 2 );
+  f2.setAttribute( 0, 2 );
+  f2.setAttribute( 1, 1.8 );
+  QgsFeature f3( tempLayer->dataProvider()->fields(), 3 );
+  f3.setAttribute( 0, 3 );
+  f3.setAttribute( 1, 5.0 );
+  QVERIFY( tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+
+  std::unique_ptr< QgsAttributeTableDialog > dlg( new QgsAttributeTableDialog( tempLayer.get() ) );
+
+  dlg->mMainView->mFeatureList->setDisplayExpression( "pk" );
+  QgsFeatureListModel *listModel = dlg->mMainView->mFeatureListModel;
+  QCOMPARE( listModel->rowCount(), 3 );
+
+  QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1 ) );
+  QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 2 ) );
+  QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 3 ) );
+
+  dlg->mMainView->mFeatureList->setDisplayExpression( "col1" );
+  QCOMPARE( listModel->index( 0, 0 ).data( Qt::DisplayRole ), QVariant( 1.8 ) );
+  QCOMPARE( listModel->index( 1, 0 ).data( Qt::DisplayRole ), QVariant( 3.2 ) );
+  QCOMPARE( listModel->index( 2, 0 ).data( Qt::DisplayRole ), QVariant( 5.0 ) );
+}
+
 void TestQgsAttributeTable::testRegression15974()
 {
   // Test duplicated rows in attribute table + two crashes.
   QString path = QDir::tempPath() + "/testshp15974.shp";
   std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( tempLayer->isValid() );
-  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, "system", QgsCoordinateReferenceSystem( 4326 ), "ESRI Shapefile" );
+  QgsVectorFileWriter::writeAsVectorFormat( tempLayer.get(), path, QStringLiteral( "system" ), QgsCoordinateReferenceSystem( 4326 ), QStringLiteral( "ESRI Shapefile" ) );
   std::unique_ptr< QgsVectorLayer> shpLayer( new QgsVectorLayer( path, QStringLiteral( "test" ),  QStringLiteral( "ogr" ) ) );
   QgsFeature f1( shpLayer->dataProvider()->fields(), 1 );
   QgsGeometry geom;
   geom = QgsGeometry().fromWkt( QStringLiteral( "polygon((0 0, 0 1, 1 1, 1 0, 0 0))" ) );
-  Q_ASSERT( geom.isGeosValid() );
+  QVERIFY( geom.isGeosValid() );
   f1.setGeometry( geom );
   QgsFeature f2( shpLayer->dataProvider()->fields(), 2 );
   f2.setGeometry( geom );

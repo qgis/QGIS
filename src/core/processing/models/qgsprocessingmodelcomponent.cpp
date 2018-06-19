@@ -38,7 +38,7 @@ QPointF QgsProcessingModelComponent::position() const
   return mPosition;
 }
 
-void QgsProcessingModelComponent::setPosition( const QPointF &position )
+void QgsProcessingModelComponent::setPosition( QPointF position )
 {
   mPosition = position;
 }

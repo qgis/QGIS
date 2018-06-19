@@ -32,8 +32,8 @@
  * QgsTask task which performs a QgsGeoPackageRasterWriter layer saving operation as a background
  * task. This can be used to save a raster layer out to a file without blocking the
  * QGIS interface.
- * \since QGIS 3.0
  * \see QgsGeoPackageRasterWriterTask
+ * \since QGIS 3.0
  */
 class QgsGeoPackageRasterWriterTask : public QgsTask
 {
@@ -45,9 +45,9 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
      * Constructor for QgsVectorFileWriterTask. Takes a source \a layer, destination \a fileName
      * and save \a options.
      */
-    QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri sourceUri, const QString destinationPath );
+    QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -65,14 +65,14 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 
     QgsGeoPackageRasterWriter mWriter;
     std::unique_ptr< QgsFeedback > mFeedback;
-    QgsGeoPackageRasterWriter::WriterError mError = QgsGeoPackageRasterWriter::WriterError::NoError ;
+    QgsGeoPackageRasterWriter::WriterError mError = QgsGeoPackageRasterWriter::WriterError::NoError;
     QString mErrorMessage;
 
 };

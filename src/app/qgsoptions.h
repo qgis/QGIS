@@ -32,6 +32,7 @@
 class QgsExpressionContext;
 class QgsOptionsPageWidget;
 class QgsLocatorOptionsWidget;
+class QgsAuthConfigSelect;
 
 /**
  * \class QgsOptions
@@ -52,26 +53,30 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                 const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
-    ~QgsOptions();
+    ~QgsOptions() override;
 
-    /** Sets the page with the specified widget name as the current page
+    /**
+     * Sets the page with the specified widget name as the current page
      * \since QGIS 2.1
      */
     void setCurrentPage( const QString &pageWidgetName );
 
+    QMap<QString, QString> pageWidgetNameMap();
+
+
   public slots:
-    void on_cbxProjectDefaultNew_toggled( bool checked );
-    void on_pbnProjectDefaultSetCurrent_clicked();
-    void on_pbnProjectDefaultReset_clicked();
-    void on_pbnTemplateFolderBrowse_pressed();
-    void on_pbnTemplateFolderReset_pressed();
+    void cbxProjectDefaultNew_toggled( bool checked );
+    void setCurrentProjectDefault();
+    void resetProjectDefault();
+    void browseTemplateFolder();
+    void resetTemplateFolder();
     //! Slot called when user chooses to change the project wide projection.
-    void on_leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void leProjectGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
-    void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
-    void on_pbnEditCreateOptions_pressed();
-    void on_pbnEditPyramidsOptions_pressed();
+    void leLayerGlobalCrs_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void editCreateOptions();
+    void editPyramidsOptions();
     void editGdalDriver( const QString &driverName );
     void saveOptions();
 
@@ -84,127 +89,137 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void uiThemeChanged( const QString &theme );
 
-    /** Slot to handle when type of project to open after launch is changed
+    /**
+     * Slot to handle when type of project to open after launch is changed
      */
-    void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
+    void mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
 
     //! Slot to choose path to project to open after launch
-    void on_mProjectOnLaunchPushBtn_pressed();
+    void selectProjectOnLaunch();
 
     /**
-     * Return the desired state of newly added layers. If a layer
+     * Returns the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns
      * true.
      */
     bool newVisible();
 
     //! Slot to select the default font point size for app
-    void on_spinFontSize_valueChanged( int fontSize );
+    void spinFontSize_valueChanged( int fontSize );
 
     //! Slot to set font family for app to Qt default
-    void on_mFontFamilyRadioQt_released();
+    void mFontFamilyRadioQt_released();
 
     //! Slot to set font family for app to custom choice
-    void on_mFontFamilyRadioCustom_released();
+    void mFontFamilyRadioCustom_released();
 
     //! Slot to select custom font family choice for app
-    void on_mFontFamilyComboBox_currentFontChanged( const QFont &font );
+    void mFontFamilyComboBox_currentFontChanged( const QFont &font );
 
     //! Slot to set whether to use custom group boxes
-    void on_mCustomGroupBoxChkBx_clicked( bool chkd );
+    void useCustomGroupBox( bool chkd );
 
-    void on_mProxyTypeComboBox_currentIndexChanged( int idx );
+    void mProxyTypeComboBox_currentIndexChanged( int idx );
 
     //! Add a new URL to exclude from Proxy
-    void on_mAddUrlPushButton_clicked();
+    void addExcludedUrl();
 
     //! Remove an URL to exclude from Proxy
-    void on_mRemoveUrlPushButton_clicked();
+    void removeExcludedUrl();
 
     //! Slot to flag restoring/delete window state settings upon restart
-    void on_mRestoreDefaultWindowStateBtn_clicked();
+    void restoreDefaultWindowState();
 
     //! Slot to enable custom environment variables table and buttons
-    void on_mCustomVariablesChkBx_toggled( bool chkd );
+    void mCustomVariablesChkBx_toggled( bool chkd );
 
     //! Slot to add a custom environment variable to the app
-    void on_mAddCustomVarBtn_clicked();
+    void addCustomVariable();
 
     //! Slot to remove a custom environment variable from the app
-    void on_mRemoveCustomVarBtn_clicked();
+    void removeCustomVariable();
 
     //! Slot to filter out current environment variables not specific to QGIS
-    void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
+    void mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
 
     /* Let the user add a path to the list of search paths
      * used for finding user Plugin libs. */
-    void on_mBtnAddPluginPath_clicked();
+    void addPluginPath();
 
     /* Let the user remove a path from the list of search paths
      * used for finding Plugin libs. */
-    void on_mBtnRemovePluginPath_clicked();
+    void removePluginPath();
 
     /* Let the user add a path to the list of search paths
      * used for finding QGIS help. */
-    void on_mBtnAddHelpPath_clicked();
+    void addHelpPath();
 
     /* Let the user remove a path from the list of search paths
      * used for finding QGIS help. */
-    void on_mBtnRemoveHelpPath_clicked();
+    void removeHelpPath();
 
     /* Let the user move selected path(s) up in the list raising
      * their priority. */
-    void on_mBtnMoveHelpUp_clicked();
+    void moveHelpPathUp();
 
     /* Let the user move selected path(s) down in the list lowering
      * their priority. */
-    void on_mBtnMoveHelpDown_clicked();
+    void moveHelpPathDown();
 
     /* Let the user add a path to the list of search paths
      * used for finding composer template files. */
-    void on_mBtnAddTemplatePath_clicked();
+    void addTemplatePath();
 
     /* Let the user remove a path from the list of search paths
      * used for finding composer template files. */
-    void on_mBtnRemoveTemplatePath_clicked();
+    void removeTemplatePath();
 
     /* Let the user add a path to the list of search paths
      * used for finding SVG files. */
-    void on_mBtnAddSVGPath_clicked();
+    void addSVGPath();
 
     /* Let the user remove a path from the list of search paths
      * used for finding SVG files. */
-    void on_mBtnRemoveSVGPath_clicked();
+    void removeSVGPath();
 
     /* Let the user remove a path from the hidden path list
      * for the browser */
-    void on_mBtnRemoveHiddenPath_clicked();
+    void removeHiddenPath();
 
-    void on_mBrowseCacheDirectory_clicked();
-    void on_mClearCache_clicked();
+    void browseCacheDirectory();
+    void clearCache();
 
-    /** Let the user add a scale to the list of scales
+    /**
+     * \brief clearAuthenticationConnectionCache clears the QNetworkAccessManager
+     * authentication connection cache
+     */
+    void clearAccessCache();
+
+    /**
+     * Let the user add a scale to the list of scales
      * used in scale combobox
      */
-    void on_pbnAddScale_clicked();
+    void addScale();
 
-    /** Let the user remove a scale from the list of scales
+    /**
+     * Let the user remove a scale from the list of scales
      * used in scale combobox
      */
-    void on_pbnRemoveScale_clicked();
+    void removeScale();
 
-    /** Let the user restore default scales
+    /**
+     * Let the user restore default scales
      * used in scale combobox  */
-    void on_pbnDefaultScaleValues_clicked();
+    void restoreDefaultScaleValues();
 
     //! Let the user load scales from file
-    void on_pbnImportScales_clicked();
+    void importScales();
 
     //! Let the user load scales from file
-    void on_pbnExportScales_clicked();
+    void exportScales();
 
     //! Auto slot executed when the active page in the option section widget is changed
-    void on_mOptionsStackedWidget_currentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
 
     //! A scale in the list of predefined scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
@@ -215,10 +230,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /* Save the list of which gdal drivers should be used. */
     void saveGdalDriverList();
 
-    void on_mRemoveDefaultTransformButton_clicked();
-    void on_mAddDefaultTransformButton_clicked();
-
-    void on_mButtonAddColor_clicked();
+    void addColor();
 
   private:
     QgsSettings *mSettings = nullptr;
@@ -236,12 +248,12 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Generate table row for custom environment variables
     void addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply = QString() );
 
-    void saveDefaultDatumTransformations();
-
     void showHelp();
 
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
     void addScaleToScaleList( QListWidgetItem *newItem );
+
+    void refreshSchemeComboBox();
 
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
@@ -255,6 +267,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
+
+    void updateActionsForCurrentColorScheme( QgsColorScheme *scheme );
+
 
 };
 

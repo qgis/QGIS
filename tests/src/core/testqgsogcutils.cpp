@@ -21,8 +21,10 @@
 #include <qgsgeometry.h>
 #include <qgsogcutils.h>
 #include "qgsapplication.h"
+#include "qgsvectorlayer.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for OGC utilities
  */
 class TestQgsOgcUtils : public QObject
@@ -33,13 +35,12 @@ class TestQgsOgcUtils : public QObject
     void initTestCase()
     {
       // Needed on Qt 5 so that the serialization of XML is consistent among all executions
-#if QT_VERSION < QT_VERSION_CHECK( 5, 6 ,0)
+#if QT_VERSION >= 0x50600
+      qSetGlobalQHashSeed( 0 );
+#else
       extern Q_CORE_EXPORT QBasicAtomicInt qt_qhash_seed;
       qt_qhash_seed.store( 0 );
-#else
-      qSetGlobalQHashSeed( 0 );
 #endif
-
 
       //
       // Runs once before any tests are run
@@ -211,7 +212,7 @@ static QDomElement comparableElement( const QString &xmlText )
 void TestQgsOgcUtils::testGeometryToGML()
 {
   QDomDocument doc;
-  QgsGeometry geomPoint( QgsGeometry::fromPoint( QgsPointXY( 111, 222 ) ) );
+  QgsGeometry geomPoint( QgsGeometry::fromPointXY( QgsPointXY( 111, 222 ) ) );
   QgsGeometry geomLine( QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(111 222, 222 222)" ) ) );
 
   // Elements to compare
@@ -368,6 +369,13 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
                                   "</Intersects>"
                                   "</Filter>" )
                                 << QStringLiteral( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
+
+  QTest::newRow( "Literal conversion" ) << QString(
+                                          "<Filter><PropertyIsEqualTo>"
+                                          "<PropertyName>LITERAL</PropertyName>"
+                                          "<Literal>+2</Literal>"
+                                          "</PropertyIsEqualTo></Filter>" )
+                                        << QStringLiteral( "LITERAL = '+2'" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -379,7 +387,9 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter()
   QVERIFY( doc.setContent( xmlText, true ) );
   QDomElement rootElem = doc.documentElement();
 
-  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem ) );
+  QgsVectorLayer layer( "Point?crs=epsg:4326&field=LITERAL:string(20)", "temp", "memory" );
+
+  std::shared_ptr<QgsExpression> expr( QgsOgcUtils::expressionFromOgcFilter( rootElem, &layer ) );
   QVERIFY( expr.get() );
 
   qDebug( "OGC XML  : %s", xmlText.toAscii().data() );

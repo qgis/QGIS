@@ -26,7 +26,8 @@
 class QShortcut;
 class QgsShortcutsManager;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsConfigureShortcutsDialog
  * Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
  * \since QGIS 2.16
@@ -38,14 +39,13 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
   public:
 
-    /** Constructor for QgsConfigureShortcutsDialog.
+    /**
+     * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget
      * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = 0, QgsShortcutsManager *manager = nullptr );
-
-    ~QgsConfigureShortcutsDialog();
+    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsShortcutsManager *manager = nullptr );
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void setNoShortcut();
     void saveShortcuts();
     void loadShortcuts();
-    void on_mLeFilter_textChanged( const QString &text );
+    void mLeFilter_textChanged( const QString &text );
 
     void actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
@@ -65,12 +65,6 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void showHelp();
 
   private:
-
-    //! Saves the dialog window state
-    void saveState();
-
-    //! Restores the dialog window state
-    void restoreState();
 
     //! Populates the dialog with all actions from the manager
     void populateActions();
@@ -90,8 +84,8 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
     QgsShortcutsManager *mManager = nullptr;
 
-    bool mGettingShortcut;
-    int mModifiers, mKey;
+    bool mGettingShortcut = false;
+    int mModifiers = 0, mKey = 0;
 
 };
 

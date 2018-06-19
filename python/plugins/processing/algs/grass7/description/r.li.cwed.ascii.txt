@@ -1,8 +1,8 @@
 r.li.cwed
 r.li.cwed.ascii - Calculates contrast weighted edge density index on a raster map
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|config_txt|Landscape structure configuration|None|True|True
-ParameterFile|config|Landscape structure configuration file|False|True
-ParameterFile|path|Name of file that contains the weight to calculate the index|False|False
-OutputFile|output|CWED
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
+QgsProcessingParameterFile|config|Landscape structure configuration file|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterFile|path|Name of file that contains the weight to calculate the index|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterFileDestination|output_txt|CWED|Txt files (*.txt)|None|False

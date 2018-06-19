@@ -61,7 +61,11 @@ class ModelerGraphicItem(QGraphicsItem):
             painter = QPainter(self.picture)
             svg.render(painter)
             self.pixmap = None
-            self.text = self.model.parameterDefinition(element.parameterName()).description()
+            paramDef = self.model.parameterDefinition(element.parameterName())
+            if paramDef:
+                self.text = paramDef.description()
+            else:
+                self.text = 'Error ({})'.format(element.parameterName())
         elif isinstance(element, QgsProcessingModelOutput):
             # Output name
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'output.svg'))
@@ -71,15 +75,24 @@ class ModelerGraphicItem(QGraphicsItem):
             self.pixmap = None
             self.text = element.name()
         else:
+            if element.algorithm().svgIconPath():
+                svg = QSvgRenderer(element.algorithm().svgIconPath())
+                size = svg.defaultSize()
+                self.picture = QPicture()
+                painter = QPainter(self.picture)
+                painter.scale(16 / size.width(), 16 / size.width())
+                svg.render(painter)
+                self.pixmap = None
+            else:
+                self.pixmap = element.algorithm().icon().pixmap(15, 15)
             self.text = element.description()
-            self.pixmap = element.algorithm().icon().pixmap(15, 15)
         self.arrows = []
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setZValue(1000)
 
-        if not isinstance(element, QgsProcessingModelOutput) and controls:
+        if controls:
             svg = QSvgRenderer(os.path.join(pluginPath, 'images', 'edit.svg'))
             picture = QPicture()
             painter = QPainter(picture)
@@ -203,18 +216,25 @@ class ModelerGraphicItem(QGraphicsItem):
                 self.text = dlg.param.description()
                 self.scene.dialog.repaintModel()
         elif isinstance(self.element, QgsProcessingModelChildAlgorithm):
-            dlg = None
-            try:
-                dlg = self.element.algorithm().getCustomModelerParametersDialog(self.model, self.element.childId())
-            except:
-                pass
-            if not dlg:
-                dlg = ModelerParametersDialog(self.element.algorithm(), self.model, self.element.childId())
-            dlg.exec_()
-            if dlg.alg is not None:
-                dlg.alg.setChildId(self.element.childId())
-                self.updateAlgorithm(dlg.alg)
+            elemAlg = self.element.algorithm()
+            dlg = ModelerParametersDialog(elemAlg, self.model, self.element.childId(), self.element.configuration())
+            if dlg.exec_():
+                alg = dlg.createAlgorithm()
+                alg.setChildId(self.element.childId())
+                self.updateAlgorithm(alg)
                 self.scene.dialog.repaintModel()
+
+        elif isinstance(self.element, QgsProcessingModelOutput):
+            child_alg = self.model.childAlgorithm(self.element.childId())
+            param_name = '{}:{}'.format(self.element.childId(), self.element.name())
+            dlg = ModelerParameterDefinitionDialog(self.model,
+                                                   param=self.model.parameterDefinition(param_name))
+            if dlg.exec_() and dlg.param is not None:
+                model_output = child_alg.modelOutput(self.element.name())
+                model_output.setDescription(dlg.param.description())
+                model_output.setDefaultValue(dlg.param.defaultValue())
+                model_output.setMandatory(not (dlg.param.flags() & QgsProcessingParameterDefinition.FlagOptional))
+                self.model.updateDestinationParameters()
 
     def updateAlgorithm(self, alg):
         existing_child = self.model.childAlgorithm(alg.childId())
@@ -250,6 +270,11 @@ class ModelerGraphicItem(QGraphicsItem):
             else:
                 self.scene.dialog.haschanged = True
                 self.scene.dialog.repaintModel()
+        elif isinstance(self.element, QgsProcessingModelOutput):
+            self.model.childAlgorithm(self.element.childId()).removeModelOutput(self.element.name())
+            self.model.updateDestinationParameters()
+            self.scene.dialog.haschanged = True
+            self.scene.dialog.repaintModel()
 
     def getAdjustedText(self, text):
         font = QFont('Verdana', 8)

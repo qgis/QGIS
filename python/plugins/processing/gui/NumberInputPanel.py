@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,29 +27,41 @@ __revision__ = '$Format:%H$'
 
 import os
 import math
+import sip
+import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import pyqtSignal
-from qgis.PyQt.QtWidgets import QDialog
+from qgis.PyQt.QtCore import pyqtSignal, QSize
+from qgis.PyQt.QtWidgets import QDialog, QLabel
 
-from qgis.core import (QgsExpression,
+from qgis.core import (QgsApplication,
+                       QgsExpression,
+                       QgsProperty,
+                       QgsUnitTypes,
+                       QgsMapLayer,
+                       QgsCoordinateReferenceSystem,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
-                       QgsProcessingModelChildParameterSource)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelChildParameterSource,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingUtils)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    NUMBER_WIDGET, NUMBER_BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetNumberSelector.ui'))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class ModellerNumberInputPanel(BASE, WIDGET):
+class ModelerNumberInputPanel(BASE, WIDGET):
 
     """
-    Number input panel for use inside the modeller - this input panel
+    Number input panel for use inside the modeler - this input panel
     is based off the base input panel and includes a text based line input
     for entering values. This allows expressions and other non-numeric
     values to be set, which are later evalauted to numbers when the model
@@ -60,7 +71,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
     hasChanged = pyqtSignal()
 
     def __init__(self, param, modelParametersDialog):
-        super(ModellerNumberInputPanel, self).__init__(None)
+        super().__init__(None)
         self.setupUi(self)
 
         self.param = param
@@ -81,7 +92,7 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 
         dlg = QgsExpressionBuilderDialog(None, str(self.leText.text()), self, 'generic', context)
 
-        dlg.setWindowTitle(self.tr('Expression based input'))
+        dlg.setWindowTitle(self.tr('Expression Based Input'))
         if dlg.exec_() == QDialog.Accepted:
             exp = QgsExpression(dlg.expressionText())
             if not exp.hasParserError():
@@ -122,10 +133,8 @@ class ModellerNumberInputPanel(BASE, WIDGET):
 class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     """
-    Number input panel for use outside the modeller - this input panel
-    contains a user friendly spin box for entering values. It also
-    allows expressions to be evaluated, but these expressions are evaluated
-    immediately after entry and are not stored anywhere.
+    Number input panel for use outside the modeler - this input panel
+    contains a user friendly spin box for entering values.
     """
 
     hasChanged = pyqtSignal()
@@ -156,43 +165,71 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         else:
             self.spnValue.setMinimum(-999999999)
 
+        self.allowing_null = False
         # set default value
+        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            self.spnValue.setShowClearButton(True)
+            min = self.spnValue.minimum() - 1
+            self.spnValue.setMinimum(min)
+            self.spnValue.setValue(min)
+            self.spnValue.setSpecialValueText(self.tr('Not set'))
+            self.allowing_null = True
+
         if param.defaultValue() is not None:
             self.setValue(param.defaultValue())
-            try:
-                self.spnValue.setClearValue(float(param.defaultValue()))
-            except:
-                pass
+            if not self.allowing_null:
+                try:
+                    self.spnValue.setClearValue(float(param.defaultValue()))
+                except:
+                    pass
         elif self.param.minimum() is not None:
             try:
                 self.setValue(float(self.param.minimum()))
-                self.spnValue.setClearValue(float(self.param.minimum()))
+                if not self.allowing_null:
+                    self.spnValue.setClearValue(float(self.param.minimum()))
             except:
                 pass
-        else:
+        elif not self.allowing_null:
             self.setValue(0)
             self.spnValue.setClearValue(0)
-        self.btnSelect.setFixedHeight(self.spnValue.height())
 
-        self.btnSelect.clicked.connect(self.showExpressionsBuilder)
+        # we don't show the expression button outside of modeler
+        self.layout().removeWidget(self.btnSelect)
+        sip.delete(self.btnSelect)
+        self.btnSelect = None
+
+        if not self.param.isDynamic():
+            # only show data defined button for dynamic properties
+            self.layout().removeWidget(self.btnDataDefined)
+            sip.delete(self.btnDataDefined)
+            self.btnDataDefined = None
+        else:
+            self.btnDataDefined.init(0, QgsProperty(), self.param.dynamicPropertyDefinition())
+            self.btnDataDefined.registerEnabledWidget(self.spnValue, False)
+
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
-    def showExpressionsBuilder(self):
-        context = createExpressionContext()
-        dlg = QgsExpressionBuilderDialog(None, str(self.spnValue.value()), self, 'generic', context)
+    def setDynamicLayer(self, layer):
+        try:
+            self.btnDataDefined.setVectorLayer(self.getLayerFromValue(layer))
+        except:
+            pass
 
-        dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.Accepted:
-            exp = QgsExpression(dlg.expressionText())
-            if not exp.hasParserError():
-                try:
-                    val = float(exp.evaluate(context))
-                    self.setValue(val)
-                except:
-                    return
+    def getLayerFromValue(self, value):
+        context = createContext()
+        if isinstance(value, QgsProcessingFeatureSourceDefinition):
+            value, ok = value.source.valueAsString(context.expressionContext())
+        if isinstance(value, str):
+            value = QgsProcessingUtils.mapLayerFromString(value, context)
+        return value
 
     def getValue(self):
-        return self.spnValue.value()
+        if self.btnDataDefined is not None and self.btnDataDefined.isActive():
+            return self.btnDataDefined.toProperty()
+        elif self.allowing_null and self.spnValue.value() == self.spnValue.minimum():
+            return None
+        else:
+            return self.spnValue.value()
 
     def setValue(self, value):
         try:
@@ -208,3 +245,45 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             return round(step, -int(math.floor(math.log10(step))))
         else:
             return 1.0
+
+
+class DistanceInputPanel(NumberInputPanel):
+
+    """
+    Distance input panel for use outside the modeler - this input panel
+    contains a label showing the distance unit.
+    """
+
+    def __init__(self, param):
+        super().__init__(param)
+
+        self.label = QLabel('')
+        label_margin = self.fontMetrics().width('X')
+        self.layout().insertSpacing(1, label_margin / 2)
+        self.layout().insertWidget(2, self.label)
+        self.layout().insertSpacing(3, label_margin / 2)
+        self.warning_label = QLabel()
+        icon = QgsApplication.getThemeIcon('mIconWarning.svg')
+        size = max(24, self.spnValue.height() * 0.5)
+        self.warning_label.setPixmap(icon.pixmap(icon.actualSize(QSize(size, size))))
+        self.warning_label.setToolTip(self.tr('Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results.'))
+        self.layout().insertWidget(4, self.warning_label)
+        self.layout().insertSpacing(5, label_margin)
+        self.setUnits(QgsUnitTypes.DistanceUnknownUnit)
+
+    def setUnits(self, units):
+        self.label.setText(QgsUnitTypes.toString(units))
+        self.warning_label.setVisible(units == QgsUnitTypes.DistanceDegrees)
+
+    def setUnitParameterValue(self, value):
+        units = QgsUnitTypes.DistanceUnknownUnit
+        layer = self.getLayerFromValue(value)
+        if isinstance(layer, QgsMapLayer):
+            units = layer.crs().mapUnits()
+        elif isinstance(value, QgsCoordinateReferenceSystem):
+            units = value.mapUnits()
+        elif isinstance(value, str):
+            crs = QgsCoordinateReferenceSystem(value)
+            if crs.isValid():
+                units = crs.mapUnits()
+        self.setUnits(units)

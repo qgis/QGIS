@@ -32,8 +32,6 @@
 QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent )
   : QSortFilterProxyModel( parent )
   , mCanvas( canvas )
-  , mFilterMode( ShowAll )
-  , mSelectedOnTop( false )
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
@@ -131,11 +129,16 @@ int QgsAttributeTableFilterModel::columnCount( const QModelIndex &parent ) const
 
 void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTableConfig &config )
 {
+  QgsAttributeTableConfig oldConfig = mConfig;
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  QVector<int> newColumnMapping;
+  if ( mConfig.hasSameColumns( oldConfig ) )
+  {
+    return;
+  }
 
+  QVector<int> newColumnMapping;
   Q_FOREACH ( const QgsAttributeTableConfig::ColumnConfig &columnConfig, mConfig.columns() )
   {
     // Hidden? Forget about this column
@@ -227,7 +230,7 @@ void QgsAttributeTableFilterModel::sort( const QString &expression, Qt::SortOrde
 
   QSortFilterProxyModel::sort( -1 );
   masterModel()->prefetchSortData( expression );
-  QSortFilterProxyModel::sort( 0, order ) ;
+  QSortFilterProxyModel::sort( 0, order );
 }
 
 QString QgsAttributeTableFilterModel::sortExpression() const
@@ -408,15 +411,15 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   QgsRectangle rect = mCanvas->mapSettings().mapToLayerCoordinates( layer(), mCanvas->extent() );
   QgsRenderContext renderContext;
   renderContext.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer() ) );
-  QgsFeatureRenderer *renderer = layer()->renderer();
 
   mFilteredFeatures.clear();
-
-  if ( !renderer )
+  if ( !layer()->renderer() )
   {
     QgsDebugMsg( "Cannot get renderer" );
     return;
   }
+
+  std::unique_ptr< QgsFeatureRenderer > renderer( layer()->renderer()->clone() );
 
   const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )
@@ -425,7 +428,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
   else
   {
-    if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
+    if ( renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
     {
       // setup scale
       // mapRenderer()->renderContext()->scale is not automatically updated when
@@ -436,7 +439,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
       renderContext.setRendererScale( ms.scale() );
     }
 
-    filter = renderer && renderer->capabilities() & QgsFeatureRenderer::Filter;
+    filter = renderer->capabilities() & QgsFeatureRenderer::Filter;
   }
 
   renderer->startRender( renderContext, layer()->fields() );
@@ -444,7 +447,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   QgsFeatureRequest r( masterModel()->request() );
   if ( !r.filterRect().isNull() )
   {
-    r.setFilterRect( r.filterRect().intersect( &rect ) );
+    r.setFilterRect( r.filterRect().intersect( rect ) );
   }
   else
   {
@@ -476,7 +479,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   features.close();
 
-  if ( renderer && renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
+  if ( renderer->capabilities() & QgsFeatureRenderer::ScaleDependent )
   {
     renderer->stopRender( renderContext );
   }

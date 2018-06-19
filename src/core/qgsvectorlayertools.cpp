@@ -34,7 +34,7 @@ bool QgsVectorLayerTools::copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureReq
 
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
-  QgsAttributeList pkAttrList = layer->pkAttributeList();
+  QgsAttributeList pkAttrList = layer->primaryKeyAttributes();
 
   int browsedFeatureCount = 0;
   int couldNotWriteCount = 0;

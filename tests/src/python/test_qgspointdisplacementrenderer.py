@@ -206,6 +206,26 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.layer.renderer().setCenterSymbol(old_marker)
         self.assertTrue(result)
 
+    def testRenderGrid(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_grid')
+        self.assertTrue(renderchecker.runTest('expected_displacement_grid'))
+
+    def testRenderGridAdjust(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setCircleRadiusAddition(5)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        self.layer.renderer().setCircleColor(QColor())
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_adjust_grid')
+        self.assertTrue(renderchecker.runTest('expected_displacement_adjust_grid'))
+
 
 if __name__ == '__main__':
     unittest.main()

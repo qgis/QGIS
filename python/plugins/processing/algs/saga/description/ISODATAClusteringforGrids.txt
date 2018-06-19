@@ -1,10 +1,10 @@
 ISODATA Clustering for Grids
 imagery_classification
-ParameterMultipleInput|FEATURES|Features|3|False
-OutputRaster|CLUSTER|Clusters
-ParameterTable|STATISTICS|Statistics|False
-ParameterBoolean|NORMALIZE|Normalize|False
-ParameterNumber|ITERATIONS|Maximum Number of Iterations| 3|None| 20
-ParameterNumber|CLUSTER_INI|Initial Number of Clusters| 0|None| 5
-ParameterNumber|CLUSTER_MAX|Maximum Number of Clusters| 3|None| 16
-ParameterNumber|SAMPLES_MIN|Minimum Number of Samples in a Cluster| 2|None| 5
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
+QgsProcessingParameterRasterDestination|CLUSTER|Clusters
+QgsProcessingParameterFeatureSource|STATISTICS|Statistics|5|None|False
+QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
+QgsProcessingParameterNumber|ITERATIONS|Maximum Number of Iterations|QgsProcessingParameterNumber.Integer|20|False|3|None
+QgsProcessingParameterNumber|CLUSTER_INI|Initial Number of Clusters|QgsProcessingParameterNumber.Integer|5|False|0|None
+QgsProcessingParameterNumber|CLUSTER_MAX|Maximum Number of Clusters|QgsProcessingParameterNumber.Integer|16|False|3|None
+QgsProcessingParameterNumber|SAMPLES_MIN|Minimum Number of Samples in a Cluster|QgsProcessingParameterNumber.Integer|5|False|2|None

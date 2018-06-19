@@ -39,7 +39,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     Q_OBJECT
   public:
 
-    /** Predefined CRS options shown in widget
+    /**
+     * Predefined CRS options shown in widget
      */
     enum CrsOption
     {
@@ -51,30 +52,27 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       CrsNotSet, //!< Not set (hidden by default)
     };
 
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsProjectionSelectionWidget
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns a pointer to the projection selector dialog used by the widget.
-     * Can be used to modify how the projection selector dialog behaves.
-     * \returns projection selector dialog
-     */
-    QgsProjectionSelectionDialog *dialog() { return mDialog; }
-
-    /** Returns the currently selected CRS for the widget
+    /**
+     * Returns the currently selected CRS for the widget
      * \returns current CRS
      */
     QgsCoordinateReferenceSystem crs() const;
 
-    /** Sets whether a predefined CRS option should be shown in the widget.
+    /**
+     * Sets whether a predefined CRS option should be shown in the widget.
      * \param option CRS option to show/hide
      * \param visible whether the option should be shown
      * \see optionVisible()
      */
-    void setOptionVisible( const CrsOption option, const bool visible );
+    void setOptionVisible( CrsOption option, bool visible );
 
     /**
      * Returns whether the specified CRS option is visible in the widget.
-     * \since QGIS 3.0
      * \see setOptionVisible()
+     * \since QGIS 3.0
      */
     bool optionVisible( CrsOption option ) const;
 
@@ -85,9 +83,18 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     void setNotSetText( const QString &text );
 
+    /**
+     * Sets a \a message to show in the dialog. If an empty string is
+     * passed, the message will be a generic
+     * 'define the CRS for this layer'.
+     * \since QGIS 3.0
+     */
+    void setMessage( const QString &text );
+
   signals:
 
-    /** Emitted when the selected CRS is changed
+    /**
+     * Emitted when the selected CRS is changed
      */
     void crsChanged( const QgsCoordinateReferenceSystem & );
 
@@ -99,18 +106,21 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
   public slots:
 
-    /** Sets the current CRS for the widget
+    /**
+     * Sets the current CRS for the widget
      * \param crs new CRS
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
-    /** Sets the layer CRS for the widget. If set, this will be added as an option
+    /**
+     * Sets the layer CRS for the widget. If set, this will be added as an option
      * to the preset CRSes shown in the widget.
      * \param crs layer CRS
      */
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 
-    /** Opens the dialog for selecting a new CRS
+    /**
+     * Opens the dialog for selecting a new CRS
      */
     void selectCrs();
 
@@ -124,6 +134,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QToolButton *mButton = nullptr;
     QgsProjectionSelectionDialog *mDialog = nullptr;
     QString mNotSetText;
+    QString mMessage;
 
     void addNotSetOption();
     void addProjectCrsOption();
@@ -131,7 +142,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     void addCurrentCrsOption();
     QString currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const;
     void addRecentCrs();
-    bool crsIsShown( const long srsid ) const;
+    bool crsIsShown( long srsid ) const;
 
     int firstRecentCrsIndex() const;
 

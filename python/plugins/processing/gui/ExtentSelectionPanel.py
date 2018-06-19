@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
@@ -36,14 +36,21 @@ from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
-                       QgsProject)
+                       QgsProcessingParameters,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsRectangle,
+                       QgsReferencedRectangle)
 from processing.gui.RectangleMapTool import RectangleMapTool
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class ExtentSelectionPanel(BASE, WIDGET):
@@ -54,6 +61,8 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
         self.param = param
+        self.crs = QgsProject.instance().crs()
+
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
@@ -73,10 +82,14 @@ class ExtentSelectionPanel(BASE, WIDGET):
         if param.defaultValue() is not None:
             context = createContext()
             rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            crs = QgsProcessingParameters.parameterAsExtentCrs(param, {param.name(): param.defaultValue()}, context)
             if not rect.isNull():
                 try:
                     s = '{},{},{},{}'.format(
                         rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    if crs.isValid():
+                        s += ' [' + crs.authid() + ']'
+                        self.crs = crs
                     self.leText.setText(s)
                 except:
                     pass
@@ -123,14 +136,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
                 layerName = layer.name()
             extents.append(layerName)
             extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
-        (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
+        (item, ok) = QInputDialog.getItem(self, self.tr('Select Extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item]["extent"])
-            if extentsDict[item]["authid"] != iface.mapCanvas().mapSettings().destinationCrs().authid():
-                iface.messageBar().pushMessage(self.tr("Warning"),
-                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."),
-                                               QgsMessageBar.WARNING, 8)
+            self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()
@@ -144,6 +153,13 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def setValueFromRect(self, r):
         s = '{},{},{},{}'.format(
             r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum())
+
+        try:
+            self.crs = r.crs()
+        except:
+            self.crs = QgsProject.instance().crs()
+        if self.crs.isValid():
+            s += ' [' + self.crs.authid() + ']'
 
         self.leText.setText(s)
         self.tool.reset()

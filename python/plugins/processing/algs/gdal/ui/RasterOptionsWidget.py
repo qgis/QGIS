@@ -49,6 +49,7 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
             widget = QLineEdit()
             if self.param.defaultValue():
                 widget.setText(self.param.defaultValue())
+            return widget
         else:
             return QgsRasterFormatSaveOptionsWidget()
 
@@ -61,7 +62,7 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
-            self.widget.setValue(value)
+            self.widget.setOptions(value)
 
     def value(self):
         if self.dialogType == DIALOG_MODELER:
@@ -69,4 +70,4 @@ class RasterOptionsWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.text()
         else:
-            return ' '.join(self.widget.options())
+            return '|'.join(self.widget.options())

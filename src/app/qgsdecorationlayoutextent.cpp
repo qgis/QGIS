@@ -20,12 +20,12 @@
 #include "qgsdecorationlayoutextentdialog.h"
 
 #include "qgslayoutmanager.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
 #include "qgsgeometry.h"
 #include "qgsexception.h"
 #include "qgslinesymbollayer.h"
-#include "qgscomposer.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -124,11 +124,15 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
   const QgsMapToPixel &m2p = mapSettings.mapToPixel();
   QTransform transform = m2p.transform();
 
-  // only loop through open composers
-  Q_FOREACH ( QgsComposer *composer, QgisApp::instance()->printComposers() )
+  // only loop through open layout designers
+  const QSet< QgsLayoutDesignerDialog * > designers = QgisApp::instance()->layoutDesigners();
+
+  for ( QgsLayoutDesignerDialog *designer : designers )
   {
-    QgsComposition *composition = composer->composition();
-    Q_FOREACH ( const QgsComposerMap *map, composition->composerMapItems() )
+    QgsLayout *layout = designer->currentLayout();
+    QList< QgsLayoutItemMap * > maps;
+    layout->layoutItems( maps );
+    for ( const QgsLayoutItemMap *map : qgis::as_const( maps ) )
     {
       QPolygonF extent = map->visibleExtentPolygon();
       QPointF labelPoint = extent.at( 1 );
@@ -139,7 +143,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
       {
         // reproject extent
         QgsCoordinateTransform ct( map->crs(),
-                                   mapSettings.destinationCrs() );
+                                   mapSettings.destinationCrs(), QgsProject::instance() );
         g = g.densifyByCount( 20 );
         try
         {
@@ -158,7 +162,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
 
       if ( mLabelExtents )
       {
-        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, QgsTextRenderer::AlignRight, QStringList() << tr( "%1: %2" ).arg( composition->name(), map->displayName() ),
+        QgsTextRenderer::drawText( labelPoint, ( map->mapRotation() - mapSettings.rotation() ) * M_PI / 180.0, QgsTextRenderer::AlignRight, QStringList() << tr( "%1: %2" ).arg( designer->masterLayout()->name(), map->displayName() ),
                                    context, mTextFormat );
       }
     }

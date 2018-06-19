@@ -12,9 +12,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QEvent>
 #include <QTabWidget>
 #include <QVBoxLayout>
 #include <QShortcut>
+#include <QKeyEvent>
 #include <QKeySequence>
 
 #include "qgslogger.h"
@@ -33,7 +35,6 @@ extern "C"
 
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
   : QFrame( parent )
-  , mTerminal( 0 )
   , mTools( tools )
   , mTabWidget( parent )
 {
@@ -74,8 +75,25 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   mTerminal->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 10pt;" ) );
 }
 
-QgsGrassShell::~QgsGrassShell()
+bool QgsGrassShell::event( QEvent *e )
 {
+  // We have to accept simple shortcuts, QGIS defines shortcuts without Ctrl/Shift for map tools,
+  // for example S for Enable Snapping. See #18262.
+  // See also QWidgetLineControl::processShortcutOverrideEvent and TerminalDisplay::handleShortcutOverrideEvent
+  if ( e->type() == QEvent::ShortcutOverride )
+  {
+    QKeyEvent *ke = static_cast<QKeyEvent *>( e );
+    if ( ke->modifiers() == Qt::NoModifier || ke->modifiers() == Qt::ShiftModifier
+         || ke->modifiers() == Qt::KeypadModifier )
+    {
+      if ( ke->key() < Qt::Key_Escape )
+      {
+        ke->accept();
+        return true;
+      }
+    }
+  }
+  return QFrame::event( e );
 }
 
 void QgsGrassShell::closeShell()
@@ -114,7 +132,7 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   env << QStringLiteral( "TERM=vt100" );
   env << QStringLiteral( "GISRC_MODE_MEMORY" );
   // TODO: we should check if these environment variable were set by user before QGIS was started
-  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath() ;
+  env << "GRASS_HTML_BROWSER=" + QgsGrassUtils::htmlBrowserPath();
   env << QStringLiteral( "GRASS_WISH=wish" );
   env << QStringLiteral( "GRASS_TCLSH=tclsh" );
   env << QStringLiteral( "GRASS_PYTHON=python" );

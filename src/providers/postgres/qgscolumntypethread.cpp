@@ -23,9 +23,7 @@ email                : jef at norbit dot de
 #include <climits>
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
-  : QThread()
-  , mConn( nullptr )
-  , mName( name )
+  : mName( name )
   , mUseEstimatedMetadata( useEstimatedMetaData )
   , mAllowGeometrylessTables( allowGeometrylessTables )
   , mStopped( false )
@@ -56,7 +54,7 @@ void QgsGeomColumnTypeThread::run()
 
   bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
 
-  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
+  emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsPostgresLayerProperty> layerProperties;
   if ( !mConn->supportedLayers( layerProperties,
                                 QgsPostgresConn::geometryColumnsOnly( mName ),
@@ -78,14 +76,14 @@ void QgsGeomColumnTypeThread::run()
     if ( !mStopped )
     {
       emit progress( i++, n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
                             .arg( layerProperty.schemaName,
                                   layerProperty.tableName,
                                   layerProperty.geometryColName ) );
 
       if ( !layerProperty.geometryColName.isNull() &&
            ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
-             layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
+             layerProperty.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) )
       {
         if ( dontResolveType )
         {

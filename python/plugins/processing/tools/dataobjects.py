@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,6 +30,7 @@ import re
 
 from qgis.core import (QgsVectorFileWriter,
                        QgsMapLayer,
+                       QgsDataProvider,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
@@ -106,17 +105,6 @@ def createExpressionContext():
     return context
 
 
-def getSupportedOutputRasterLayerExtensions():
-    allexts = []
-    for exts in list(GdalUtils.getSupportedRasters().values()):
-        for ext in exts:
-            if ext != 'tif' and ext not in allexts:
-                allexts.append(ext)
-    allexts.sort()
-    allexts.insert(0, 'tif')  # tif is the default, should be the first
-    return allexts
-
-
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """Loads a layer/table into the current project, given its file.
     """
@@ -143,8 +131,8 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
-            raise RuntimeError('Could not load layer: ' + str(fileName) +
-                               '\nCheck the processing framework log to look for errors')
+            raise RuntimeError(QCoreApplication.translate('dataobject',
+                                                          'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(fileName))
     else:
         qgslayer = QgsVectorLayer(fileName, name, 'ogr')
         if qgslayer.isValid():
@@ -166,113 +154,6 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
     return qgslayer
 
 
-def exportVectorLayer(layer, supported=None):
-    """Takes a QgsVectorLayer and returns the filename to refer to it,
-    which allows external apps which support only file-based layers to
-    use it. It performs the necessary export in case the input layer
-    is not in a standard format suitable for most applications, it is
-    a remote one or db-based (non-file based) one, or if there is a
-    selection and it should be used, exporting just the selected
-    features.
-
-    Currently, the output is restricted to shapefiles, so anything
-    that is not in a shapefile will get exported. It also export to
-    a new file if the original one contains non-ascii characters.
-    """
-
-    supported = supported or ["shp"]
-    settings = QgsSettings()
-    systemEncoding = settings.value('/UI/encoding', 'System')
-
-    output = getTempFilename('shp')
-    basename = removeInvalidChars(os.path.basename(layer.source()))
-    if basename:
-        if not basename.endswith("shp"):
-            basename = os.path.splitext(basename)[0] + ".shp"
-        output = QgsProcessingUtils.generateTempFilename(basename)
-    else:
-        output = getTempFilename("shp")
-    useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
-    if useSelection and layer.selectedFeatureCount() != 0:
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     layer.fields(),
-                                     layer.wkbType(), layer.crs())
-        selection = layer.selectedFeatures()
-        for feat in selection:
-            writer.addFeature(feat, QgsFeatureSink.FastInsert)
-        del writer
-        return output
-    else:
-        if not os.path.splitext(layer.source())[1].lower() in supported:
-            writer = QgsVectorFileWriter(
-                output, systemEncoding,
-                layer.fields(), layer.wkbType(),
-                layer.crs()
-            )
-            for feat in layer.getFeatures():
-                writer.addFeature(feat, QgsFeatureSink.FastInsert)
-            del writer
-            return output
-        else:
-            return layer.source()
-
-
-def exportRasterLayer(layer):
-    """Takes a QgsRasterLayer and returns the filename to refer to it,
-    which allows external apps which support only file-based layers to
-    use it. It performs the necessary export in case the input layer
-    is not in a standard format suitable for most applications, it is
-    a remote one or db-based (non-file based) one.
-
-    Currently, the output is restricted to geotiff, but not all other
-    formats are exported. Only those formats not supported by GDAL are
-    exported, so it is assumed that the external app uses GDAL to read
-    the layer.
-    """
-
-    # TODO: Do the conversion here
-    return str(layer.source())
-
-
-def exportTable(table):
-    """Takes a QgsVectorLayer and returns the filename to refer to its
-    attributes table, which allows external apps which support only
-    file-based layers to use it.
-
-    It performs the necessary export in case the input layer is not in
-    a standard format suitable for most applications, it isa remote
-    one or db-based (non-file based) one.
-
-    Currently, the output is restricted to DBF. It also export to a new
-    file if the original one contains non-ascii characters.
-    """
-
-    settings = QgsSettings()
-    systemEncoding = settings.value('/UI/encoding', 'System')
-    output = getTempFilename()
-    isASCII = True
-    try:
-        str(table.source()).decode('ascii')
-    except UnicodeEncodeError:
-        isASCII = False
-    isDbf = str(table.source()).endswith('dbf') \
-        or str(table.source()).endswith('shp')
-    if not isDbf or not isASCII:
-        writer = QgsVectorFileWriter(output, systemEncoding,
-                                     table.fields(), QgsWkbTypes.NullGeometry,
-                                     QgsCoordinateReferenceSystem('4326'))
-        for feat in table.getFeatures():
-            writer.addFeature(feat, QgsFeatureSink.FastInsert)
-        del writer
-        return output + '.dbf'
-    else:
-        filename = str(table.source())
-        if str(table.source()).endswith('shp'):
-            return filename[:-3] + 'dbf'
-        else:
-            return filename
-
-
 def getRasterSublayer(path, param):
 
     layer = QgsRasterLayer(path)
@@ -291,7 +172,7 @@ def getRasterSublayer(path, param):
                     subLayer = subLayer[1:]
                 else:
                     # remove driver name and file name
-                    subLayer.replace(subLayer.split(":")[0], "")
+                    subLayer.replace(subLayer.split(QgsDataProvider.SUBLAYER_SEPARATOR)[0], "")
                     subLayer.replace(path, "")
                 # remove any : or " left over
                 if subLayer.startswith(":"):
@@ -325,18 +206,3 @@ def getRasterSublayer(path, param):
     except:
         # If the layer is not a raster layer, then just return the input path
         return path
-
-
-def vectorDataType(obj):
-    types = ''
-    for t in obj.datatype:
-        if t == dataobjects.TYPE_VECTOR_POINT:
-            types += 'point, '
-        elif t == dataobjects.TYPE_VECTOR_LINE:
-            types += 'line, '
-        elif t == dataobjects.TYPE_VECTOR_POLYGON:
-            types += 'polygon, '
-        else:
-            types += 'any, '
-
-    return types[:-2]

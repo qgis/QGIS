@@ -28,17 +28,23 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
                        QgsUnitTypes,
                        QgsFeature,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
                        QgsGeometry,
+                       QgsGeometryUtils,
                        QgsFields,
+                       QgsPointXY,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterField,
@@ -73,8 +79,9 @@ class ServiceAreaFromLayer(QgisAlgorithm):
     SPEED_FIELD = 'SPEED_FIELD'
     DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_POINTS = 'OUTPUT_POINTS'
-    OUTPUT_POLYGON = 'OUTPUT_POLYGON'
+    INCLUDE_BOUNDS = 'INCLUDE_BOUNDS'
+    OUTPUT = 'OUTPUT'
+    OUTPUT_LINES = 'OUTPUT_LINES'
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
@@ -82,14 +89,17 @@ class ServiceAreaFromLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -138,23 +148,27 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
                                                    5.0, False, 0, 99999999.99))
-        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
-                                                   self.tr('Topology tolerance'),
-                                                   QgsProcessingParameterNumber.Double,
-                                                   0.0, False, 0, 99999999.99))
-
+        params.append(QgsProcessingParameterDistance(self.TOLERANCE,
+                                                     self.tr('Topology tolerance'),
+                                                     0.0, self.INPUT, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterBoolean(self.INCLUDE_BOUNDS,
+                                                    self.tr('Include upper/lower bound points'),
+                                                    defaultValue=False))
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POINTS,
-                                                            self.tr('Service area (boundary nodes)'),
-                                                            QgsProcessing.TypeVectorPoint,
-                                                            optional=True))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT_POLYGON,
-                                                            self.tr('Service area (convex hull)'),
-                                                            QgsProcessing.TypeVectorPolygon,
-                                                            optional=True))
+        lines_output = QgsProcessingParameterFeatureSink(self.OUTPUT_LINES,
+                                                         self.tr('Service area (lines)'),
+                                                         QgsProcessing.TypeVectorLine, optional=True)
+        lines_output.setCreateByDefault(True)
+        self.addParameter(lines_output)
+
+        nodes_output = QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                         self.tr('Service area (boundary nodes)'),
+                                                         QgsProcessing.TypeVectorPoint, optional=True)
+        nodes_output.setCreateByDefault(False)
+        self.addParameter(nodes_output)
 
     def name(self):
         return 'serviceareafromlayer'
@@ -164,7 +178,13 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
+        if startPoints is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.START_POINTS))
+
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
         travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
 
@@ -177,7 +197,11 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-        fields = QgsFields()
+        include_bounds = True # default to true to maintain 3.0 API
+        if self.INCLUDE_BOUNDS in parameters:
+            include_bounds = self.parameterAsBool(parameters, self.INCLUDE_BOUNDS, context)
+
+        fields = startPoints.fields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
 
@@ -208,46 +232,44 @@ class ServiceAreaFromLayer(QgisAlgorithm):
                                                multiplier * 1000.0 / 3600.0)
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
 
-        feedback.pushInfo(self.tr('Loading start points...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Loading start points…'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        request.setDestinationCrs(network.sourceCrs())
+        request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
         total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = []
+        source_attributes = {}
+        i = 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
-            points.append(f.geometry().asPoint())
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
+
             feedback.setProgress(int(current * total))
 
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, points, feedback)
 
-        feedback.pushInfo(self.tr('Calculating service areas...'))
+        feedback.pushInfo(QCoreApplication.translate('ServiceAreaFromLayer', 'Calculating service areas…'))
         graph = builder.graph()
 
-        results = {}
-        (sinkPoints, pointsId) = self.parameterAsSink(parameters, self.OUTPUT_POINTS, context,
-                                                      fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
+        (point_sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                     fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
+        (line_sink, line_dest_id) = self.parameterAsSink(parameters, self.OUTPUT_LINES, context,
+                                                         fields, QgsWkbTypes.MultiLineString, network.sourceCrs())
 
-        (sinkPolygon, polygonId) = self.parameterAsSink(parameters, self.OUTPUT_POLYGON, context,
-                                                        fields, QgsWkbTypes.Polygon, network.sourceCrs())
-
-        if sinkPoints:
-            results[self.OUTPUT_POINTS] = pointsId
-        if sinkPolygon:
-            results[self.OUTPUT_POLYGON] = polygonId
-
-        vertices = []
-        upperBoundary = []
-        lowerBoundary = []
         total = 100.0 / len(snappedPoints) if snappedPoints else 1
         for i, p in enumerate(snappedPoints):
             if feedback.isCanceled():
@@ -257,52 +279,92 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             origPoint = points[i].toString()
 
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
-            for j, v in enumerate(cost):
-                if v > travelCost and tree[j] != -1:
-                    vertexId = graph.edge(tree[j]).outVertex()
-                    if cost[vertexId] <= travelCost:
-                        vertices.append(j)
 
-            for j in vertices:
-                upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
-                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
+            vertices = set()
+            area_points = []
+            lines = []
+            for vertex, start_vertex_cost in enumerate(cost):
+                inbound_edge_index = tree[vertex]
+                if inbound_edge_index == -1 and vertex != idxStart:
+                    # unreachable vertex
+                    continue
 
-            if sinkPoints:
-                geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-                geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+                if start_vertex_cost > travelCost:
+                    # vertex is too expensive, discard
+                    continue
 
-                feat.setGeometry(geomUpper)
-                feat['type'] = 'upper'
-                feat['start'] = origPoint
-                sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+                vertices.add(vertex)
+                start_point = graph.vertex(vertex).point()
 
-                feat.setGeometry(geomLower)
-                feat['type'] = 'lower'
-                feat['start'] = origPoint
-                sinkPoints.addFeature(feat, QgsFeatureSink.FastInsert)
+                # find all edges coming from this vertex
+                for edge_id in graph.vertex(vertex).outgoingEdges():
+                    edge = graph.edge(edge_id)
+                    end_vertex_cost = start_vertex_cost + edge.cost(0)
+                    end_point = graph.vertex(edge.toVertex()).point()
+                    if end_vertex_cost <= travelCost:
+                        # end vertex is cheap enough to include
+                        vertices.add(edge.toVertex())
+                        lines.append([start_point, end_point])
+                    else:
+                        # travelCost sits somewhere on this edge, interpolate position
+                        interpolated_end_point = QgsGeometryUtils.interpolatePointOnLineByValue(start_point.x(), start_point.y(), start_vertex_cost,
+                                                                                                end_point.x(), end_point.y(), end_vertex_cost, travelCost)
+                        area_points.append(interpolated_end_point)
+                        lines.append([start_point, interpolated_end_point])
 
-            if sinkPolygon:
-                upperBoundary.append(origPoint)
-                lowerBoundary.append(origPoint)
-                geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-                geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+            for v in vertices:
+                area_points.append(graph.vertex(v).point())
 
-                geom = geomUpper.convexHull()
-                feat.setGeometry(geom)
-                feat['type'] = 'upper'
-                feat['start'] = origPoint
-                sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
+            feat = QgsFeature()
+            if point_sink is not None:
+                geomPoints = QgsGeometry.fromMultiPointXY(area_points)
+                feat.setGeometry(geomPoints)
+                attrs = source_attributes[i]
+                attrs.extend(['within', origPoint])
+                feat.setAttributes(attrs)
+                point_sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
-                geom = geomLower.convexHull()
-                feat.setGeometry(geom)
-                feat['type'] = 'lower'
-                feat['start'] = origPoint
-                sinkPolygon.addFeature(feat, QgsFeatureSink.FastInsert)
+                if include_bounds:
+                    upperBoundary = []
+                    lowerBoundary = []
 
-            vertices[:] = []
-            upperBoundary[:] = []
-            lowerBoundary[:] = []
+                    vertices = []
+                    for vertex, c in enumerate(cost):
+                        if c > travelCost and tree[vertex] != -1:
+                            vertexId = graph.edge(tree[vertex]).fromVertex()
+                            if cost[vertexId] <= travelCost:
+                                vertices.append(vertex)
+
+                    for v in vertices:
+                        upperBoundary.append(graph.vertex(graph.edge(tree[v]).toVertex()).point())
+                        lowerBoundary.append(graph.vertex(graph.edge(tree[v]).fromVertex()).point())
+
+                    geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+                    geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
+
+                    feat.setGeometry(geomUpper)
+                    attrs[-2] = 'upper'
+                    feat.setAttributes(attrs)
+                    point_sink.addFeature(feat, QgsFeatureSink.FastInsert)
+
+                    feat.setGeometry(geomLower)
+                    attrs[-2] = 'lower'
+                    feat.setAttributes(attrs)
+                    point_sink.addFeature(feat, QgsFeatureSink.FastInsert)
+
+            if line_sink is not None:
+                geom_lines = QgsGeometry.fromMultiPolylineXY(lines)
+                feat.setGeometry(geom_lines)
+                attrs = source_attributes[i]
+                attrs.extend(['lines', origPoint])
+                feat.setAttributes(attrs)
+                line_sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feedback.setProgress(int(i * total))
 
+        results = {}
+        if point_sink is not None:
+            results[self.OUTPUT] = dest_id
+        if line_sink is not None:
+            results[self.OUTPUT_LINES] = line_dest_id
         return results

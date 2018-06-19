@@ -28,8 +28,6 @@
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , vlayer( nullptr )
-  , mRubberBand( nullptr )
   , mPressedFid( 0 )
   , mPressedPartNum( 0 )
   , mPressedRingNum( 0 )
@@ -87,7 +85,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
   {
     QgsFeature f;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( mPressedFid ) ).nextFeature( f );
-    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+    mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( ringGeom, vlayer );
     mRubberBand->show();
@@ -128,18 +126,19 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   QgsFeature f;
   QgsGeometry g;
   QgsGeometry ringGeom;
-  QgsMultiPolygon pol;
-  QgsPolygon tempPol;
+  QgsMultiPolygonXY pol;
+  QgsPolygonXY tempPol;
   QgsGeometry tempGeom;
   double area = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
   {
     g = f.geometry();
-    if ( g.isNull() )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
       continue;
-    if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
+
+    if ( !QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      pol = QgsMultiPolygon() << g.asPolygon();
+      pol = QgsMultiPolygonXY() << g.asPolygon();
     }
     else
     {
@@ -153,8 +152,8 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          tempPol = QgsPolygon() << pol[i][j];
-          tempGeom = QgsGeometry::fromPolygon( tempPol );
+          tempPol = QgsPolygonXY() << pol[i][j];
+          tempGeom = QgsGeometry::fromPolygonXY( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
             fid = f.id();
@@ -180,16 +179,17 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
   QgsWkbTypes::Type wkbtype = g.wkbType();
   int ringNum, partNum = 0;
 
-  if ( wkbtype == QgsWkbTypes::Polygon || wkbtype == QgsWkbTypes::Polygon25D )
+  if ( QgsWkbTypes::geometryType( wkbtype ) != QgsWkbTypes::PolygonGeometry )
+    return;
+
+  if ( !QgsWkbTypes::isMultiType( wkbtype ) )
   {
     ringNum = ringNumInPolygon( g, beforeVertexNr );
   }
-  else if ( wkbtype == QgsWkbTypes::MultiPolygon || wkbtype == QgsWkbTypes::MultiPolygon25D )
+  else
   {
     ringNum = ringNumInMultiPolygon( g, beforeVertexNr, partNum );
   }
-  else
-    return;
 
   QgsGeometry editableGeom = f.geometry();
   if ( editableGeom.deleteRing( ringNum, partNum ) )
@@ -204,7 +204,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
 
 int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
 {
-  QgsPolygon polygon = g.asPolygon();
+  QgsPolygonXY polygon = g.asPolygon();
   for ( int ring = 0; ring < polygon.count(); ring++ )
   {
     if ( vertexNr < polygon[ring].count() )
@@ -217,10 +217,10 @@ int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
 
 int QgsMapToolDeleteRing::ringNumInMultiPolygon( const QgsGeometry &g, int vertexNr, int &partNum )
 {
-  QgsMultiPolygon mpolygon = g.asMultiPolygon();
+  QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
   for ( int part = 0; part < mpolygon.count(); part++ )
   {
-    const QgsPolygon &polygon = mpolygon[part];
+    const QgsPolygonXY &polygon = mpolygon[part];
     for ( int ring = 0; ring < polygon.count(); ring++ )
     {
       if ( vertexNr < polygon[ring].count() )

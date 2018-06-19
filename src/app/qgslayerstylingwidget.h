@@ -39,6 +39,7 @@ class QgsRendererRasterPropertiesWidget;
 class QgsUndoWidget;
 class QgsRasterHistogramWidget;
 class QgsMapLayerStyleManagerWidget;
+class QgsVectorLayer3DRendererWidget;
 
 class APP_EXPORT QgsLayerStyleManagerWidgetFactory : public QgsMapLayerConfigWidgetFactory
 {
@@ -54,16 +55,17 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
   public:
     QgsMapLayerStyleCommand( QgsMapLayer *layer, const QString &text, const QDomNode &current, const QDomNode &last );
 
-    /** Return unique ID for this kind of undo command.
+    /**
+     * Returns unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
-    virtual int id() const override { return 0xbeef; }
+    int id() const override { return 0xbeef; }
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
     //! Try to merge with other commands of this type when they are created in small time interval
-    virtual bool mergeWith( const QUndoCommand *other ) override;
+    bool mergeWith( const QUndoCommand *other ) override;
 
   private:
     QgsMapLayer *mLayer = nullptr;
@@ -84,15 +86,17 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       RasterTransparency,
       RasterHistogram,
       History,
+      Symbology3D,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
-    ~QgsLayerStylingWidget();
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
+    ~QgsLayerStylingWidget() override;
     QgsMapLayer *layer() { return mCurrentLayer; }
 
     void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );
 
-    /** Sets whether updates of the styling widget are blocked. This can be called to prevent
+    /**
+     * Sets whether updates of the styling widget are blocked. This can be called to prevent
      * the widget being refreshed multiple times when a batch of layer style changes are
      * about to be applied
      * \param blocked set to true to block updates, or false to re-allow updates
@@ -110,10 +114,11 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     void redo();
     void updateCurrentWidgetLayer();
 
-    /** Sets the current visible page in the widget.
+    /**
+     * Sets the current visible page in the widget.
      * \param page standard page to display
      */
-    void setCurrentPage( Page page );
+    void setCurrentPage( QgsLayerStylingWidget::Page page );
 
   private slots:
 
@@ -131,6 +136,9 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     QgsUndoWidget *mUndoWidget = nullptr;
     QgsMapLayer *mCurrentLayer = nullptr;
     QgsLabelingWidget *mLabelingWidget = nullptr;
+#ifdef HAVE_3D
+    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
+#endif
     QgsRendererRasterPropertiesWidget *mRasterStyleWidget = nullptr;
     QList<QgsMapLayerConfigWidgetFactory *> mPageFactories;
     QMap<int, QgsMapLayerConfigWidgetFactory *> mUserPages;

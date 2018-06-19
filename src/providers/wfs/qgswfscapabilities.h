@@ -27,7 +27,6 @@ class QgsWfsCapabilities : public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWfsCapabilities( const QString &uri );
-    virtual ~QgsWfsCapabilities();
 
     //! start network connection to get capabilities
     bool requestCapabilities( bool synchronous, bool forceRefresh );
@@ -36,17 +35,18 @@ class QgsWfsCapabilities : public QgsWfsRequest
     struct FeatureType
     {
       //! Default constructor
-      FeatureType() : bboxSRSIsWGS84( false ), insertCap( false ), updateCap( false ), deleteCap( false ) {}
+      FeatureType() = default;
 
       QString name;
+      QString nameSpace; // for some Deegree servers that requires a NAMESPACES parameter for GetFeature
       QString title;
       QString abstract;
       QList<QString> crslist; // first is default
       QgsRectangle bbox;
-      bool bboxSRSIsWGS84; // if false, the bbox is expressed in crslist[0] CRS
-      bool insertCap;
-      bool updateCap;
-      bool deleteCap;
+      bool bboxSRSIsWGS84 = false; // if false, the bbox is expressed in crslist[0] CRS
+      bool insertCap = false;
+      bool updateCap = false;
+      bool deleteCap = false;
     };
 
     //! argument of a function
@@ -66,12 +66,12 @@ class QgsWfsCapabilities : public QgsWfsRequest
     {
       //! name
       QString name;
-      //! return type, or empty if unknown
+      //! Returns type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
-      int minArgs;
+      int minArgs = -1;
       //! maximum number of argument (or -1 if unknown)
-      int maxArgs;
+      int maxArgs = -1;
       //! list of arguments. May be empty despite minArgs > 0
       QList<Argument> argumentList;
 
@@ -80,7 +80,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() : minArgs( -1 ), maxArgs( -1 ) {}
+      Function() = default;
     };
 
     //! parsed get capabilities document
@@ -98,6 +98,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QList<Function> functionList;
       bool useEPSGColumnFormat; // whether to use EPSG:XXXX srsname
       QList< QString > outputFormats;
+      QgsStringMap operationGetEndpoints;
+      QgsStringMap operationPostEndpoints;
 
       QSet< QString > setAllTypenames;
       QMap< QString, QString> mapUnprefixedTypenameToPrefixedTypename;
@@ -107,7 +109,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       QString addPrefixIfNeeded( const QString &name ) const;
     };
 
-    //! return parsed capabilities - requestCapabilities() must be called before
+    //! Returns parsed capabilities - requestCapabilities() must be called before
     const Capabilities &capabilities() const { return mCaps; }
 
   signals:
@@ -118,8 +120,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
     void capabilitiesReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
-    virtual int defaultExpirationInSec() override;
+    QString errorMessageWithReason( const QString &reason ) override;
+    int defaultExpirationInSec() override;
 
   private:
     Capabilities mCaps;

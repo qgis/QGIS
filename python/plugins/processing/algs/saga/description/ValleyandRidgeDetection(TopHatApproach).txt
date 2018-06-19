@@ -1,12 +1,12 @@
 Valley and Ridge Detection (Top Hat Approach)
 ta_morphometry
-ParameterRaster|DEM|Elevation|False
-OutputRaster|VALLEY|Valley Depth
-OutputRaster|HILL|Hill Height
-OutputRaster|VALLEY_IDX|Valley Index
-OutputRaster|HILL_IDX|Hill Index
-OutputRaster|SLOPE_IDX|Hillslope Index
-ParameterNumber|RADIUS_VALLEY|Valley Radius| 0.000000|None| 1000.000000
-ParameterNumber|RADIUS_HILL|Hill Radius| 0.000000|None| 1000.000000
-ParameterNumber|THRESHOLD|Elevation Threshold| 0.000000|None| 100.000000
-ParameterSelection|METHOD|Slope Index|[0] default;[1] alternative| 0
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterDestination|VALLEY|Valley Depth
+QgsProcessingParameterRasterDestination|HILL|Hill Height
+QgsProcessingParameterRasterDestination|VALLEY_IDX|Valley Index
+QgsProcessingParameterRasterDestination|HILL_IDX|Hill Index
+QgsProcessingParameterRasterDestination|SLOPE_IDX|Hillslope Index
+QgsProcessingParameterNumber|RADIUS_VALLEY|Valley Radius|QgsProcessingParameterNumber.Double|1000.000000|False|0.000000|None
+QgsProcessingParameterNumber|RADIUS_HILL|Hill Radius|QgsProcessingParameterNumber.Double|1000.000000|False|0.000000|None
+QgsProcessingParameterNumber|THRESHOLD|Elevation Threshold|QgsProcessingParameterNumber.Double|100.000000|False|0.000000|None
+QgsProcessingParameterEnum|METHOD|Slope Index|[0] default;[1] alternative|False|0

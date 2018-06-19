@@ -87,13 +87,14 @@ for f in sorted(glob.glob('resources/function_help/json/*')):
 
         if 'arguments' in v:
             for a in v['arguments']:
-                cpp.write("\n              << HelpArg( \"{0}\", tr( \"{1}\" ), {2}, {3} )".format(
+                cpp.write("\n              << HelpArg( \"{0}\", tr( \"{1}\" ), {2}, {3}, {4}, \"{5}\" )".format(
                     a['arg'],
                     a.get('description', ''),
                     "true" if a.get('descOnly', False) else "false",
                     "true" if a.get('syntaxOnly', False) else "false",
                     "true" if a.get('optional', False) else "false",
-                    a.get('default', ''))
+                    a.get('default', '')
+                )
                 )
 
         cpp.write(",\n          /* variableLenArguments */ {0}".format(

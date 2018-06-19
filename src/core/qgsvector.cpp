@@ -18,12 +18,6 @@
 #include "qgis.h"
 #include "qgsexception.h"
 
-QgsVector::QgsVector()
-  : mX( 0.0 )
-  , mY( 0.0 )
-{
-}
-
 QgsVector::QgsVector( double x, double y )
   : mX( x )
   , mY( y )
@@ -103,6 +97,11 @@ double QgsVector::angle() const
 double QgsVector::angle( QgsVector v ) const
 {
   return v.angle() - angle();
+}
+
+double QgsVector::crossProduct( QgsVector v ) const
+{
+  return mX * v.y() - mY * v.x();
 }
 
 QgsVector QgsVector::rotateBy( double rot ) const

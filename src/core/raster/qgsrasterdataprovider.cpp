@@ -59,7 +59,7 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
   }
 
   // Read necessary extent only
-  QgsRectangle tmpExtent = extent().intersect( &boundingBox );
+  QgsRectangle tmpExtent = extent().intersect( boundingBox );
 
   if ( tmpExtent.isEmpty() )
   {
@@ -206,16 +206,20 @@ QgsRasterBlock *QgsRasterDataProvider::block( int bandNo, QgsRectangle  const &b
 }
 
 QgsRasterDataProvider::QgsRasterDataProvider()
-  : QgsRasterInterface( nullptr )
-  , mDpi( -1 )
+  : QgsDataProvider( QString(), QgsDataProvider::ProviderOptions() )
+  , QgsRasterInterface( nullptr )
 {
 }
 
-QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
-  : QgsDataProvider( uri )
+QgsRasterDataProvider::QgsRasterDataProvider( const QString &uri, const ProviderOptions &options )
+  : QgsDataProvider( uri, options )
   , QgsRasterInterface( nullptr )
-  , mDpi( -1 )
 {
+}
+
+QgsRasterDataProvider::ProviderCapabilities QgsRasterDataProvider::providerCapabilities() const
+{
+  return QgsRasterDataProvider::NoProviderCapabilities;
 }
 
 //
@@ -223,44 +227,8 @@ QgsRasterDataProvider::QgsRasterDataProvider( QString const &uri )
 //
 /////////////////////////////////////////////////////////
 // convenience function for building metadata() HTML table cells
-// convenience function for creating a string list from a C style string list
-QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
-{
-  QStringList strings;
 
-  // presume null terminated string list
-  for ( qgssize i = 0; stringList[i]; ++i )
-  {
-    strings.append( QString::fromUtf8( stringList[i] ) );
-  }
-
-  return strings;
-
-} // cStringList2Q_
-
-QString QgsRasterDataProvider::makeTableCell( QString const &value )
-{
-  return "<p>\n" + value + "</p>\n";
-} // makeTableCell_
-
-// convenience function for building metadata() HTML table cells
-QString QgsRasterDataProvider::makeTableCells( QStringList const &values )
-{
-  QString s( QStringLiteral( "<tr>" ) );
-
-  for ( QStringList::const_iterator i = values.begin();
-        i != values.end();
-        ++i )
-  {
-    s += QgsRasterDataProvider::makeTableCell( *i );
-  }
-
-  s += QLatin1String( "</tr>" );
-
-  return s;
-} // makeTableCell_
-
-QString QgsRasterDataProvider::metadata()
+QString QgsRasterDataProvider::htmlMetadata()
 {
   QString s;
   return s;

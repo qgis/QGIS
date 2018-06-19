@@ -43,12 +43,12 @@ class QgsServerInterfaceImpl : public QgsServerInterface
                                      QgsServerSettings *serverSettings );
 
 
-    ~QgsServerInterfaceImpl();
+    ~QgsServerInterfaceImpl() override;
 
     void setRequestHandler( QgsRequestHandler *requestHandler ) override;
     void clearRequestHandler() override;
     QgsCapabilitiesCache *capabilitiesCache() override { return mCapabilitiesCache; }
-    //! Return the QgsRequestHandler, to be used only in server plugins
+    //! Returns the QgsRequestHandler, to be used only in server plugins
     QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
@@ -56,7 +56,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
-    /** Gets the helper over all the registered access control filters
+    /**
+     * Gets the helper over all the registered access control filters
      * \returns the access control helper
      */
     QgsAccessControl *accessControls() const override { return mAccessControls; }
@@ -65,7 +66,6 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     void setConfigFilePath( const QString &configFilePath ) override;
     void setFilters( QgsServerFiltersMap *filters ) override;
     void removeConfigCacheEntry( const QString &path ) override;
-    void removeProjectLayers( const QString &path ) override;
 
     QgsServiceRegistry *serviceRegistry() override;
 

@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication, QgsProcessingModelAlgorithm
 from processing.gui.ContextAction import ContextAction
 from processing.modeler.ModelerDialog import ModelerDialog
@@ -33,7 +34,7 @@ from processing.modeler.ModelerDialog import ModelerDialog
 class EditModelAction(ContextAction):
 
     def __init__(self):
-        self.name = self.tr('Edit model', 'EditModelAction')
+        self.name = QCoreApplication.translate('EditModelAction', 'Edit Model…')
 
     def isEnabled(self):
         return isinstance(self.itemData, QgsProcessingModelAlgorithm)

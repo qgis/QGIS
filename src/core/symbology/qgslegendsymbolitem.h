@@ -25,7 +25,8 @@
 class QgsDataDefinedSizeLegend;
 class QgsSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The class stores information about one class/rule of a vector layer renderer in a unified way
  * that can be used by legend model for rendering of legend.
  *
@@ -35,22 +36,29 @@ class QgsSymbol;
 class CORE_EXPORT QgsLegendSymbolItem
 {
   public:
-    QgsLegendSymbolItem();
-    //! Construct item. Does not take ownership of symbol (makes internal clone)
-    //! \since QGIS 2.8
+
+    /**
+     * Constructor for QgsLegendSymbolItem.
+     */
+    QgsLegendSymbolItem() = default;
+
+    /**
+     * Construct item. Does not take ownership of symbol (makes internal clone)
+     * \since QGIS 2.8
+     */
     QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable = false, int scaleMinDenom = -1, int scaleMaxDenom = -1, int level = 0, const QString &parentRuleKey = QString() );
     ~QgsLegendSymbolItem();
 
     QgsLegendSymbolItem( const QgsLegendSymbolItem &other );
     QgsLegendSymbolItem &operator=( const QgsLegendSymbolItem &other );
 
-    //! Return associated symbol. May be null.
+    //! Returns associated symbol. May be null.
     QgsSymbol *symbol() const { return mSymbol; }
-    //! Return text label
+    //! Returns text label
     QString label() const { return mLabel; }
-    //! Return unique identifier of the rule for identification of the item within renderer
+    //! Returns unique identifier of the rule for identification of the item within renderer
     QString ruleKey() const { return mKey; }
-    //! Return whether the item is user-checkable - whether renderer supports enabling/disabling it
+    //! Returns whether the item is user-checkable - whether renderer supports enabling/disabling it
     bool isCheckable() const { return mCheckable; }
 
     //! Used for older code that identifies legend entries from symbol pointer within renderer
@@ -58,21 +66,29 @@ class CORE_EXPORT QgsLegendSymbolItem
 
     //! Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
     bool isScaleOK( double scale ) const;
-    //! Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
-    //! Value <= 0 means the range is unbounded on this side
+
+    /**
+     * Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
+     * Value <= 0 means the range is unbounded on this side
+     */
     int scaleMinDenom() const { return mScaleMinDenom; }
-    //! Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
-    //! Value <= 0 means the range is unbounded on this side
+
+    /**
+     * Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
+     * Value <= 0 means the range is unbounded on this side
+     */
     int scaleMaxDenom() const { return mScaleMaxDenom; }
 
-    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    //! Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
     int level() const { return mLevel; }
 
-    //! Key of the parent legend node. For legends with tree hierarchy
-    //! \note Parameter parentRuleKey added in QGIS 2.8
+    /**
+     * Key of the parent legend node. For legends with tree hierarchy
+     * \note Parameter parentRuleKey added in QGIS 2.8
+     */
     QString parentRuleKey() const { return mParentKey; }
 
-    //! Set symbol of the item. Takes ownership of symbol.
+    //! Sets symbol of the item. Takes ownership of symbol.
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
     /**
@@ -98,21 +114,23 @@ class CORE_EXPORT QgsLegendSymbolItem
     //! unique identifier of the symbol item (within renderer)
     QString mKey;
     //! whether it can be enabled/disabled
-    bool mCheckable;
+    bool mCheckable = false;
 
     QgsSymbol *mOriginalSymbolPointer = nullptr;
 
-    //! optional pointer to data-defined legend size settings - if set, the output legend
-    //! node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
+    /**
+     * optional pointer to data-defined legend size settings - if set, the output legend
+     * node should be QgsDataDefinedSizeLegendNode rather than ordinary QgsSymbolLegendNode
+     */
     QgsDataDefinedSizeLegend *mDataDefinedSizeLegendSettings = nullptr;
 
     // additional data that may be used for filtering
 
-    int mScaleMinDenom;
-    int mScaleMaxDenom;
+    int mScaleMinDenom = -1;
+    int mScaleMaxDenom = -1;
 
-    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
-    int mLevel;
+    //! Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    int mLevel = 0;
     //! Key of the parent legend node. For legends with tree hierarchy
     QString mParentKey;
 };

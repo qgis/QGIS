@@ -980,7 +980,7 @@ class TestQgsServerAccessControl(unittest.TestCase):
         test we reuse the projectsubsetstring reference images as we are using filter requests to set the same
         filter " pkuid in (7,8) " as the project subsetstring uses for its test.
         """
-        query_string = "&".join(["%s=%s" % i for i in list({
+        query_string = "&".join(["%s=%s" % i for i in {
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -993,12 +993,12 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items())])
+        }.items()])
 
         response, headers = self._get_fullaccess(query_string)
         self._img_diff_error(response, headers, "WMS_GetMap_projectsubstring")
 
-        query_string = "&".join(["%s=%s" % i for i in list({
+        query_string = "&".join(["%s=%s" % i for i in {
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
@@ -1011,10 +1011,31 @@ class TestQgsServerAccessControl(unittest.TestCase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "SRS": "EPSG:3857"
-        }.items())])
+        }.items()])
 
         response, headers = self._get_restricted(query_string)
         self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring")
+
+        filter = "<Filter><Or><PropertyIsEqualTo><PropertyName>pkuid</PropertyName><Literal>7</Literal>" \
+                 "</PropertyIsEqualTo><PropertyIsEqualTo><PropertyName>pkuid</PropertyName><Literal>8</Literal>" \
+                 "</PropertyIsEqualTo></Or></Filter>"
+        query_string = "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetMap",
+            "LAYERS": "Hello_Filter_SubsetString",
+            "FILTER": filter,
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "BBOX": "-16817707,-6318936.5,5696513,16195283.5",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "SRS": "EPSG:3857"
+        }.items()])
+
+        response, headers = self._get_restricted(query_string)
+        self._img_diff_error(response, headers, "Restricted_WMS_GetMap_projectsubstring_OGC")
 
     def test_wms_getmap_projectsubsetstring(self):
         """ test that project set layer subsetStrings are honored"""

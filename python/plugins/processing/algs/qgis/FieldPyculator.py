@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya & NextGIS'
 __date__ = 'August 2012'
@@ -52,10 +51,13 @@ class FieldsPyculator(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
     RESULT_VAR_NAME = 'value'
 
-    TYPES = [QVariant.Int, QVariant.Double, QVariant.String]
+    TYPES = [QVariant.LongLong, QVariant.Double, QVariant.String]
 
     def group(self):
         return self.tr('Vector table')
+
+    def groupId(self):
+        return 'vectortable'
 
     def __init__(self):
         super().__init__()
@@ -89,6 +91,9 @@ class FieldsPyculator(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
         field_type = self.TYPES[self.parameterAsEnum(parameters, self.FIELD_TYPE, context)]
         width = self.parameterAsInt(parameters, self.FIELD_LENGTH, context)
@@ -97,12 +102,14 @@ class FieldsPyculator(QgisAlgorithm):
         globalExpression = self.parameterAsString(parameters, self.GLOBAL, context)
 
         fields = source.fields()
-        fields.append(QgsField(field_name, self.TYPES[field_type], '',
-                               width, precision))
+        field = QgsField(field_name, field_type, '', width, precision)
+        fields.append(field)
         new_ns = {}
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # Run global code
         if globalExpression.strip() != '':

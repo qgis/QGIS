@@ -20,7 +20,9 @@
  ***************************************************************************/
 #include "qgswmsutils.h"
 #include "qgswmsgetschemaextension.h"
+#include "qgsapplication.h"
 
+#include <QDir>
 #include <QFileInfo>
 
 namespace QgsWms
@@ -44,11 +46,13 @@ namespace QgsWms
 
     QDomDocument xsdDoc;
 
-    QFileInfo xsdFileInfo( QStringLiteral( "schemaExtension.xsd" ) );
+    QDir resourcesDir = QFileInfo( QgsApplication::serverResourcesPath() ).absoluteDir();
+    QFileInfo xsdFileInfo( resourcesDir, QStringLiteral( "schemaExtension.xsd" ) );
+
     if ( !xsdFileInfo.exists() )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),
-                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "Server" ), Qgis::Critical );
       return xsdDoc;
     }
 
@@ -57,14 +61,14 @@ namespace QgsWms
     if ( !xsdFile.exists() )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error, xsd file 'schemaExtension.xsd' does not exist" ),
-                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "Server" ), Qgis::Critical );
       return xsdDoc;
     }
 
     if ( !xsdFile.open( QIODevice::ReadOnly ) )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error, cannot open xsd file 'schemaExtension.xsd' does not exist" ),
-                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "Server" ), Qgis::Critical );
       return xsdDoc;
     }
 
@@ -74,7 +78,7 @@ namespace QgsWms
     {
       QgsMessageLog::logMessage( QStringLiteral( "Error parsing file 'schemaExtension.xsd" ) +
                                  QStringLiteral( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ),
-                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "Server" ), Qgis::Critical );
     }
 
     return xsdDoc;

@@ -16,8 +16,10 @@ import qgis  # NOQA
 
 from qgis.core import (QgsFeature, QgsProject, QgsRelation, QgsVectorLayer,
                        QgsValueMapFieldFormatter, QgsValueRelationFieldFormatter,
-                       QgsRelationReferenceFieldFormatter, QgsSettings)
+                       QgsRelationReferenceFieldFormatter, QgsRangeFieldFormatter,
+                       QgsSettings, QgsGeometry, QgsPointXY)
 
+from qgis.PyQt.QtCore import QCoreApplication, QLocale
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -39,6 +41,7 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         fieldFormatter = QgsValueMapFieldFormatter()
 
         # Tests with different value types occurring in the value map
+        # old style config (pre 3.0)
         config = {'map': {'two': '2', 'twoandhalf': '2.5', 'NULL text': 'NULL',
                           'nothing': self.VALUEMAP_NULL_TEXT}}
         self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), 'two')
@@ -48,6 +51,20 @@ class TestQgsValueMapFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), 'nothing')
         self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), 'nothing')
         self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), 'nothing')
+
+        # new style config (post 3.0)
+        config = {'map': [{'two': '2'},
+                          {'twoandhalf': '2.5'},
+                          {'NULL text': 'NULL'},
+                          {'nothing': self.VALUEMAP_NULL_TEXT}]}
+        self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), 'two')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, config, None, 2.5), 'twoandhalf')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, config, None, 'NULL'), 'NULL text')
+        # Tests with null values of different types, if value map contains null
+        self.assertEqual(fieldFormatter.representValue(layer, 3, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 4, config, None, None), 'nothing')
+        self.assertEqual(fieldFormatter.representValue(layer, 5, config, None, None), 'nothing')
+
         # Tests with fallback display for different value types
         config = {}
         self.assertEqual(fieldFormatter.representValue(layer, 0, config, None, 2), '(2)')
@@ -106,6 +123,49 @@ class TestQgsValueRelationFieldFormatter(unittest.TestCase):
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '456'), '(456)')
 
         QgsProject.instance().removeMapLayer(second_layer.id())
+
+    def test_valueToStringList(self):
+
+        def _test(a, b):
+            self.assertEqual(QgsValueRelationFieldFormatter.valueToStringList(a), b)
+
+        _test([1, 2, 3], ["1", "2", "3"])
+        _test("{1,2,3}", ["1", "2", "3"])
+        _test(['1', '2', '3'], ["1", "2", "3"])
+        _test('not an array', ['not an array'])
+
+    def test_expressionRequiresFormScope(self):
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormAttributes("current_value('ONE') AND current_value('TWO')"))
+        res = sorted(res)
+        self.assertEqual(res, ['ONE', 'TWO'])
+
+        res = list(QgsValueRelationFieldFormatter.expressionFormVariables("@current_geometry"))
+        self.assertEqual(res, ['current_geometry'])
+
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionRequiresFormScope(""))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value('TWO')"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("current_value ( 'TWO' )"))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionRequiresFormScope("@current_geometry"))
+
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("", QgsFeature()))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry", QgsFeature()))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", QgsFeature()))
+
+        layer = QgsVectorLayer("none?field=pkid:integer&field=decoded:string",
+                               "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+        f = QgsFeature(layer.fields())
+        f.setAttributes([1, 'value'])
+        point = QgsGeometry.fromPointXY(QgsPointXY(123, 456))
+        f.setGeometry(point)
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_geometry", f))
+        self.assertFalse(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'TWO' )", f))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("current_value ( 'pkid' )", f))
+        self.assertTrue(QgsValueRelationFieldFormatter.expressionIsUsable("@current_geometry current_value ( 'pkid' )", f))
+
+        QgsProject.instance().removeMapLayer(layer.id())
 
 
 class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
@@ -193,6 +253,103 @@ class TestQgsRelationReferenceFieldFormatter(unittest.TestCase):
         config = {'Relation': rel.id()}
         second_layer.setDisplayExpression('decoded')
         self.assertEqual(fieldFormatter.representValue(first_layer, 0, config, None, '123'), '123')
+
+        QgsProject.instance().removeAllMapLayers()
+
+
+class TestQgsRangeFieldFormatter(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
+        QgsSettings().clear()
+        QLocale.setDefault(QLocale(QLocale.English))
+        start_app()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Reset locale"""
+        QLocale.setDefault(QLocale(QLocale.English))
+
+    def test_representValue(self):
+
+        layer = QgsVectorLayer("point?field=int:integer&field=double:double&field=long:long",
+                               "layer", "memory")
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayers([layer])
+
+        fieldFormatter = QgsRangeFieldFormatter()
+
+        # Precision is ignored for integers and longlongs
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '123000'), '123,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9,999,999')  # no scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 1}, None, '123'), '123.0')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123,000.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0.12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.127'), '0.13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0'), '0.000')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0.127'), '0.127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '1.27e-1'), '0.127')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-123'), '-123.00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.123'), '-0.12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.127'), '-0.13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0.127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0.127')
+
+        # Check with Italian locale
+        QLocale.setDefault(QLocale('it'))
+
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
+                         '9.999.999')  # scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123.000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9.999.999')  # scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, None), 'NULL')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, None), 'NULL')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123.000,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0'), '0,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123'), '123,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.123'), '0,12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '0.127'), '0,13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0'), '0,000')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '0.127'), '0,127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '1.27e-1'), '0,127')
+
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-123'), '-123,00')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.123'), '-0,12')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '-0.127'), '-0,13')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-0.127'), '-0,127')
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 3}, None, '-1.27e-1'), '-0,127')
+
+        # Check with custom locale without thousand separator
+
+        custom = QLocale('en')
+        custom.setNumberOptions(QLocale.OmitGroupSeparator)
+        QLocale.setDefault(custom)
+
+        self.assertEqual(fieldFormatter.representValue(layer, 0, {'Precision': 1}, None, '9999999'),
+                         '9999999')  # scientific notation for integers!
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123'), '123')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '123000'), '123000')
+        self.assertEqual(fieldFormatter.representValue(layer, 2, {'Precision': 1}, None, '9999999'), '9999999')  # scientific notation for long longs!
+        self.assertEqual(fieldFormatter.representValue(layer, 1, {'Precision': 2}, None, '123000'), '123000.00')
 
         QgsProject.instance().removeAllMapLayers()
 

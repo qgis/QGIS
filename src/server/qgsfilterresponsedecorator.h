@@ -35,7 +35,6 @@ class QgsFilterResponseDecorator: public QgsServerResponse
   public:
 
     QgsFilterResponseDecorator( QgsServerFiltersMap filters, QgsServerResponse &response );
-    ~QgsFilterResponseDecorator();
 
     /**
      * Call filters requestReady() method

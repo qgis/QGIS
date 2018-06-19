@@ -25,10 +25,6 @@ __copyright__ = '(C) 2013, Victor Olaya  and Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from builtins import str
-from builtins import range
-from builtins import object
-
 import os
 import struct
 

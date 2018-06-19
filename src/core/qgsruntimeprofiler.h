@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsruntimeprofiler.h
+    ---------------------
+    begin                : June 2016
+    copyright            : (C) 2016 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSRUNTIMEPROFILER_H
 #define QGSRUNTIMEPROFILER_H
 
@@ -8,7 +22,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRuntimeProfiler
  */
 class CORE_EXPORT QgsRuntimeProfiler
@@ -18,7 +33,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     /**
      * Constructor to create a new runtime profiler.
      */
-    QgsRuntimeProfiler();
+    QgsRuntimeProfiler() = default;
 
     /**
      * \brief Begin the group for the profiler. Groups will append {GroupName}/ to the
@@ -45,7 +60,7 @@ class CORE_EXPORT QgsRuntimeProfiler
     void end();
 
     /**
-     * \brief Return all the current profile times.
+     * Returns all the current profile times.
      * \returns A list of profile event names and times.
      * \note not available in Python bindings
      */

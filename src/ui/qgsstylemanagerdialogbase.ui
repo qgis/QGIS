@@ -304,7 +304,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+             <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
            </property>
           </widget>
          </item>
@@ -357,10 +357,10 @@
      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
    </property>
    <property name="text">
-    <string>Remove item(s)</string>
+    <string>Remove Item(s)…</string>
    </property>
    <property name="toolTip">
-    <string>Remove item(s)</string>
+    <string>Remove Item(s)</string>
    </property>
   </action>
   <action name="actnEditItem">
@@ -369,13 +369,13 @@
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
+     <normaloff>:/images/themes/default/mActionProjectProperties.svg</normaloff>:/images/themes/default/mActionProjectProperties.svg</iconset>
    </property>
    <property name="text">
-    <string>Edit item...</string>
+    <string>Edit Item…</string>
    </property>
    <property name="toolTip">
-    <string>Edit item</string>
+    <string>Edit Item</string>
    </property>
   </action>
   <action name="actnAddFavorite">
@@ -383,10 +383,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Add to favorites</string>
+    <string>Add to Favorites</string>
    </property>
    <property name="toolTip">
-    <string>Add to favorites</string>
+    <string>Add to Favorites</string>
    </property>
   </action>
   <action name="actnRemoveFavorite">
@@ -394,10 +394,10 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Remove from favorites</string>
+    <string>Remove from Favorites</string>
    </property>
    <property name="toolTip">
-    <string>Remove from favorites</string>
+    <string>Remove from Favorites</string>
    </property>
   </action>
   <action name="actnDetag">
@@ -405,15 +405,18 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>Clear tags</string>
+    <string>Clear Tags</string>
    </property>
    <property name="toolTip">
-    <string>Clear tags</string>
+    <string>Clear Tags</string>
    </property>
   </action>
   <action name="actnEditSmartGroup">
    <property name="text">
-    <string>Edit smart group...</string>
+    <string>Edit Smart Group…</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit Smart Group</string>
    </property>
   </action>
   <action name="actnAddTag">
@@ -422,7 +425,10 @@
      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
    </property>
    <property name="text">
-    <string>Add tag…</string>
+    <string>Add Tag…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Tag</string>
    </property>
   </action>
   <action name="actnAddSmartgroup">
@@ -431,7 +437,10 @@
      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
    </property>
    <property name="text">
-    <string>Add smart group…</string>
+    <string>Add Smart Group…</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Smart Group</string>
    </property>
   </action>
   <action name="actnRemoveGroup">
@@ -445,7 +454,10 @@
   </action>
   <action name="actnTagSymbols">
    <property name="text">
-    <string>Attach selected tag to symbols</string>
+    <string>Attach Selected Tag to Symbols</string>
+   </property>
+   <property name="toolTip">
+    <string>Attach Selected Tag to Symbols</string>
    </property>
   </action>
   <action name="actnFinishTagging">
@@ -453,7 +465,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Finish tagging</string>
+    <string>Finish Tagging</string>
+   </property>
+   <property name="toolTip">
+    <string>Finish Tagging</string>
    </property>
    <property name="visible">
     <bool>true</bool>
@@ -468,10 +483,10 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as PNG…</string>
+    <string>Export Selected Symbol(s) as PNG…</string>
    </property>
    <property name="toolTip">
-    <string>Export selected symbol(s) as PNG</string>
+    <string>Export Selected Symbol(s) as PNG</string>
    </property>
   </action>
   <action name="actnExportAsSVG">
@@ -483,10 +498,10 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export selected symbol(s) as SVG…</string>
+    <string>Export Selected Symbol(s) as SVG…</string>
    </property>
    <property name="toolTip">
-    <string>Export selected symbol(s) as SVG</string>
+    <string>Export Selected Symbol(s) as SVG</string>
    </property>
   </action>
  </widget>

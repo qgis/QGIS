@@ -14,12 +14,16 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import (QgsVectorLayer,
+from qgis.core import (QgsProject,
+                       QgsVectorLayer,
                        QgsVectorLayerUtils,
                        QgsFieldConstraints,
                        QgsFeature,
+                       QgsFeatureIterator,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsDefaultValue,
+                       QgsRelation,
                        NULL
                        )
 from qgis.testing import start_app, unittest
@@ -35,7 +39,7 @@ def createLayerWithOnePoint():
     f = QgsFeature()
     f.setAttributes(["test", 123])
     assert pr.addFeatures([f])
-    assert layer.pendingFeatureCount() == 1
+    assert layer.featureCount() == 1
     return layer
 
 
@@ -236,27 +240,27 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         self.assertEqual(f.attributes(), [NULL, NULL, NULL])
 
         # set geometry
-        g = QgsGeometry.fromPoint(QgsPointXY(100, 200))
+        g = QgsGeometry.fromPointXY(QgsPointXY(100, 200))
         f = QgsVectorLayerUtils.createFeature(layer, g)
         self.assertTrue(f.hasGeometry())
-        self.assertEqual(f.geometry().exportToWkt(), g.exportToWkt())
+        self.assertEqual(f.geometry().asWkt(), g.asWkt())
 
         # using attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 6.0])
 
         # layer with default value expression
-        layer.setDefaultValueExpression(2, '3*4')
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('3*4'))
         f = QgsVectorLayerUtils.createFeature(layer)
         self.assertEqual(f.attributes(), [NULL, NULL, 12.0])
         # we expect the default value expression to take precedence over the attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})
         self.assertEqual(f.attributes(), ['a', NULL, 12.0])
         # layer with default value expression based on geometry
-        layer.setDefaultValueExpression(2, '3*$x')
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('3*$x'))
         f = QgsVectorLayerUtils.createFeature(layer, g)
         self.assertEqual(f.attributes(), [NULL, NULL, 300.0])
-        layer.setDefaultValueExpression(2, None)
+        layer.setDefaultValueDefinition(2, QgsDefaultValue(None))
 
         # test with violated unique constraints
         layer.setFieldConstraint(1, QgsFieldConstraints.ConstraintUnique)
@@ -265,6 +269,159 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         layer.setFieldConstraint(0, QgsFieldConstraints.ConstraintUnique)
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'test_1', 1: 123})
         self.assertEqual(f.attributes(), ['test_4', 128, NULL])
+
+    def testDuplicateFeature(self):
+        """ test duplicating a feature """
+
+        project = QgsProject().instance()
+
+        # LAYERS
+        # - add first layer (parent)
+        layer1 = QgsVectorLayer("Point?field=fldtxt:string&field=pkid:integer",
+                                "parentlayer", "memory")
+        # > check first layer (parent)
+        self.assertTrue(layer1.isValid())
+        # -  set the value for the copy
+        layer1.setDefaultValueDefinition(1, QgsDefaultValue("rand(1000,2000)"))
+        # > check first layer (parent)
+        self.assertTrue(layer1.isValid())
+        # - add second layer (child)
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string&field=id:integer&field=foreign_key:integer",
+                                "childlayer", "memory")
+        # > check second layer (child)
+        self.assertTrue(layer2.isValid())
+        # - add layers
+        project.addMapLayers([layer1, layer2])
+
+        # FEATURES
+        # - add 2 features on layer1 (parent)
+        l1f1orig = QgsFeature()
+        l1f1orig.setFields(layer1.fields())
+        l1f1orig.setAttributes(["F_l1f1", 100])
+        l1f2orig = QgsFeature()
+        l1f2orig.setFields(layer1.fields())
+        l1f2orig.setAttributes(["F_l1f2", 101])
+        # > check by adding features
+        self.assertTrue(layer1.dataProvider().addFeatures([l1f1orig, l1f2orig]))
+        # add 4 features on layer2 (child)
+        l2f1orig = QgsFeature()
+        l2f1orig.setFields(layer2.fields())
+        l2f1orig.setAttributes(["F_l2f1", 201, 100])
+        l2f2orig = QgsFeature()
+        l2f2orig.setFields(layer2.fields())
+        l2f2orig.setAttributes(["F_l2f2", 202, 100])
+        l2f3orig = QgsFeature()
+        l2f3orig.setFields(layer2.fields())
+        l2f3orig.setAttributes(["F_l2f3", 203, 100])
+        l2f4orig = QgsFeature()
+        l2f4orig.setFields(layer2.fields())
+        l2f4orig.setAttributes(["F_l2f4", 204, 101])
+        # > check by adding features
+        self.assertTrue(layer2.dataProvider().addFeatures([l2f1orig, l2f2orig, l2f3orig, l2f4orig]))
+
+        # RELATION
+        # - create the relationmanager
+        relMgr = project.relationManager()
+        # - create the relation
+        rel = QgsRelation()
+        rel.setId('rel1')
+        rel.setName('childrel')
+        rel.setReferencingLayer(layer2.id())
+        rel.setReferencedLayer(layer1.id())
+        rel.addFieldPair('foreign_key', 'pkid')
+        rel.setStrength(QgsRelation.Composition)
+        # > check relation
+        self.assertTrue(rel.isValid())
+        # - add relation
+        relMgr.addRelation(rel)
+        # > check if referencedLayer is layer1
+        self.assertEqual(rel.referencedLayer(), layer1)
+        # > check if referencingLayer is layer2
+        self.assertEqual(rel.referencingLayer(), layer2)
+        # > check if the layers are correct in relation when loading from relationManager
+        relations = project.relationManager().relations()
+        relation = relations[list(relations.keys())[0]]
+        # > check if referencedLayer is layer1
+        self.assertEqual(relation.referencedLayer(), layer1)
+        # > check if referencingLayer is layer2
+        self.assertEqual(relation.referencingLayer(), layer2)
+        # > check the relatedfeatures
+
+        '''
+        # testoutput 1
+        print( "\nAll Features and relations")
+        featit=layer1.getFeatures()
+        f=QgsFeature()
+        while featit.nextFeature(f):
+            print( f.attributes())
+            childFeature = QgsFeature()
+            relfeatit=rel.getRelatedFeatures(f)
+            while relfeatit.nextFeature(childFeature):
+                 print( childFeature.attributes() )
+        print( "\n--------------------------")
+
+        print( "\nFeatures on layer1")
+        for f in layer1.getFeatures():
+            print( f.attributes() )
+
+        print( "\nFeatures on layer2")
+        for f in layer2.getFeatures():
+            print( f.attributes() )
+        '''
+
+        # DUPLICATION
+        # - duplicate feature l1f1orig with children
+        layer1.startEditing()
+        results = QgsVectorLayerUtils.duplicateFeature(layer1, l1f1orig, project, 0)
+
+        # > check if name is name of duplicated (pk is different)
+        result_feature = results[0]
+        self.assertEqual(result_feature.attribute('fldtxt'), l1f1orig.attribute('fldtxt'))
+        # > check duplicated child layer
+        result_layer = results[1].layers()[0]
+        self.assertEqual(result_layer, layer2)
+        #  > check duplicated child features
+        self.assertTrue(results[1].duplicatedFeatures(result_layer))
+
+        '''
+        # testoutput 2
+        print( "\nFeatures on layer1 (after duplication)")
+        for f in layer1.getFeatures():
+            print( f.attributes() )
+
+        print( "\nFeatures on layer2 (after duplication)")
+        for f in layer2.getFeatures():
+            print( f.attributes() )
+            
+        print( "\nAll Features and relations")
+        featit=layer1.getFeatures()
+        f=QgsFeature()
+        while featit.nextFeature(f):
+            print( f.attributes())
+            childFeature = QgsFeature()
+            relfeatit=rel.getRelatedFeatures(f)
+            while relfeatit.nextFeature(childFeature):
+                 print( childFeature.attributes() )
+        '''
+
+        # > compare text of parent feature
+        self.assertEqual(result_feature.attribute('fldtxt'), l1f1orig.attribute('fldtxt'))
+
+        # - create copyValueList
+        childFeature = QgsFeature()
+        relfeatit = rel.getRelatedFeatures(result_feature)
+        copyValueList = []
+        while relfeatit.nextFeature(childFeature):
+            copyValueList.append(childFeature.attribute('fldtxt'))
+        # - create origValueList
+        childFeature = QgsFeature()
+        relfeatit = rel.getRelatedFeatures(l1f1orig)
+        origValueList = []
+        while relfeatit.nextFeature(childFeature):
+            origValueList.append(childFeature.attribute('fldtxt'))
+
+        # - check if the ids are still the same
+        self.assertEqual(copyValueList, origValueList)
 
 
 if __name__ == '__main__':

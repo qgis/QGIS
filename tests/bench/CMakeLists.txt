@@ -28,19 +28,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${GEOS_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(qgis_bench
   qgis_core
   ${SQLITE3_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTNETWORK_LIBRARY}
-  ${QT_QTSVG_LIBRARY}
-  ${QT_QTXML_LIBRARY}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5Xml_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
-  ${QT_QTTEST_LIBRARY}
+  ${Qt5Test_LIBRARIES}
 )
 
 IF(APPLE)
@@ -58,12 +57,12 @@ INSTALL (TARGETS qgis_bench
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
 )
 IF (APPLE)
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Frameworks\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../${QGIS_LIB_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/lib\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_PLUGIN_SUBDIR}/.. \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Plugins\")")
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_DATA_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Resources\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfn ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Frameworks\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfn ../../../../${QGIS_LIB_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/lib\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfn ../../../${QGIS_PLUGIN_SUBDIR}/.. \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Plugins\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfn ../../../${QGIS_DATA_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Resources\")")
   # may not exist, unless BundleUtilities are used
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../../share \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/share\")")
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfn ../../../../share \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/MacOS/share\")")
 
 ENDIF (APPLE)
 

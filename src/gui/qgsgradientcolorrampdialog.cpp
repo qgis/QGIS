@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 
 #include <QColorDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QPainter>
 #include <QTableWidget>
@@ -47,6 +48,13 @@ QgsGradientColorRampDialog::QgsGradientColorRampDialog( const QgsGradientColorRa
   , mCurrentPlotMarkerIndex( 0 )
 {
   setupUi( this );
+  connect( cboType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGradientColorRampDialog::cboType_currentIndexChanged );
+  connect( btnInformation, &QPushButton::pressed, this, &QgsGradientColorRampDialog::btnInformation_pressed );
+  connect( mPositionSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsGradientColorRampDialog::mPositionSpinBox_valueChanged );
+  connect( mPlotHueCheckbox, &QCheckBox::toggled, this, &QgsGradientColorRampDialog::mPlotHueCheckbox_toggled );
+  connect( mPlotLightnessCheckbox, &QCheckBox::toggled, this, &QgsGradientColorRampDialog::mPlotLightnessCheckbox_toggled );
+  connect( mPlotSaturationCheckbox, &QCheckBox::toggled, this, &QgsGradientColorRampDialog::mPlotSaturationCheckbox_toggled );
+  connect( mPlotAlphaCheckbox, &QCheckBox::toggled, this, &QgsGradientColorRampDialog::mPlotAlphaCheckbox_toggled );
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -172,7 +180,7 @@ void QgsGradientColorRampDialog::setRamp( const QgsGradientColorRamp &ramp )
   emit changed();
 }
 
-void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
+void QgsGradientColorRampDialog::cboType_currentIndexChanged( int index )
 {
   if ( ( index == 0 && mRamp.isDiscrete() ) ||
        ( index == 1 && !mRamp.isDiscrete() ) )
@@ -185,7 +193,7 @@ void QgsGradientColorRampDialog::on_cboType_currentIndexChanged( int index )
   emit changed();
 }
 
-void QgsGradientColorRampDialog::on_btnInformation_pressed()
+void QgsGradientColorRampDialog::btnInformation_pressed()
 {
   if ( mRamp.info().isEmpty() )
     return;
@@ -317,30 +325,30 @@ void QgsGradientColorRampDialog::colorWidgetChanged( const QColor &color )
   mStopEditor->setSelectedStopColor( color );
 }
 
-void QgsGradientColorRampDialog::on_mPositionSpinBox_valueChanged( double val )
+void QgsGradientColorRampDialog::mPositionSpinBox_valueChanged( double val )
 {
   mStopEditor->setSelectedStopOffset( val / 100.0 );
 }
 
-void QgsGradientColorRampDialog::on_mPlotHueCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::mPlotHueCheckbox_toggled( bool checked )
 {
   mHueCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsGradientColorRampDialog::on_mPlotLightnessCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::mPlotLightnessCheckbox_toggled( bool checked )
 {
   mLightnessCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsGradientColorRampDialog::on_mPlotSaturationCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::mPlotSaturationCheckbox_toggled( bool checked )
 {
   mSaturationCurve->setVisible( checked );
   updatePlot();
 }
 
-void QgsGradientColorRampDialog::on_mPlotAlphaCheckbox_toggled( bool checked )
+void QgsGradientColorRampDialog::mPlotAlphaCheckbox_toggled( bool checked )
 {
   mAlphaCurve->setVisible( checked );
   updatePlot();

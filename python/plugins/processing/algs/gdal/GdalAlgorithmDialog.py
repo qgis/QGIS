@@ -40,35 +40,26 @@ from qgis.PyQt.QtWidgets import (QWidget,
 from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingParameterDefinition)
 from qgis.gui import (QgsMessageBar,
-                      QgsProjectionSelectionWidget)
+                      QgsProjectionSelectionWidget,
+                      QgsProcessingAlgorithmDialogBase)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.NumberInputPanel import NumberInputPanel
+from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.tools.dataobjects import createContext
 
 
 class GdalAlgorithmDialog(AlgorithmDialog):
 
     def __init__(self, alg):
-        AlgorithmDialogBase.__init__(self, alg)
+        super().__init__(alg)
+        self.mainWidget().parametersHaveChanged()
 
-        self.alg = alg
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().insertWidget(0, self.bar)
-
-        self.setMainWidget(GdalParametersPanel(self, alg))
-
-        self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
-        self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        self.buttonBox.addButton(self.runAsBatchButton,
-                                 QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
-
-        self.mainWidget.parametersHaveChanged()
+    def getParametersPanel(self, alg, parent):
+        return GdalParametersPanel(parent, alg)
 
 
 class GdalParametersPanel(ParametersPanel):
@@ -98,6 +89,8 @@ class GdalParametersPanel(ParametersPanel):
             self.connectWidgetChangedSignals(w)
             for c in w.findChildren(QWidget):
                 self.connectWidgetChangedSignals(c)
+        for output_widget in self.outputWidgets.values():
+            self.connectWidgetChangedSignals(output_widget)
 
     def connectWidgetChangedSignals(self, w):
         if isinstance(w, QLineEdit):
@@ -112,23 +105,25 @@ class GdalParametersPanel(ParametersPanel):
             w.selectionChanged.connect(self.parametersHaveChanged)
         elif isinstance(w, NumberInputPanel):
             w.hasChanged.connect(self.parametersHaveChanged)
+        elif isinstance(w, DestinationSelectionPanel):
+            w.destinationChanged.connect(self.parametersHaveChanged)
 
     def parametersHaveChanged(self):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.parent.getParamValues()
+            parameters = self.parent.getParameterValues()
             for output in self.alg.destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
             for p in self.alg.parameterDefinitions():
                 if (not p.name() in parameters and not p.flags() & QgsProcessingParameterDefinition.FlagOptional) \
-                        or (not p.checkValueIsAcceptable(parameters[p.name()], context)):
+                        or (not p.checkValueIsAcceptable(parameters[p.name()])):
                     # not ready yet
                     self.text.setPlainText('')
                     return
 
-            commands = self.alg.getConsoleCommands(parameters, context, feedback)
+            commands = self.alg.getConsoleCommands(parameters, context, feedback, executing=False)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:

@@ -1,13 +1,21 @@
-SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "99")
+#############################################################
+# CMake settings
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
+SET(CMAKE_COLOR_MAKEFILE ON)
+# set path to additional CMake modules
+SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+# POLICIES
+CMAKE_POLICY (SET CMP0048 NEW)
+CMAKE_POLICY (SET CMP0053 NEW)
+
+#############################################################
+# Project and version
+SET(CPACK_PACKAGE_VERSION_MAJOR "3")
+SET(CPACK_PACKAGE_VERSION_MINOR "1")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
-IF (POLICY CMP0048) # in CMake 3.0.0+
-  CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
-ENDIF (POLICY CMP0048)
-SET(PROJECT_VERSION ${COMPLETE_VERSION})
-PROJECT(qgis${PROJECT_VERSION})
+PROJECT(qgis VERSION ${COMPLETE_VERSION})
 IF (APPLE)
   SET(QGIS_APP_NAME "QGIS")
 ELSE (APPLE)
@@ -18,15 +26,17 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
+
 #############################################################
-# CMake settings
-
-CMAKE_MINIMUM_REQUIRED(VERSION 3.0.0)
-
-SET(CMAKE_COLOR_MAKEFILE ON)
-
-# set path to additional CMake modules
-SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+# Configure CCache if available
+option(USE_CCACHE "Use ccache" ON)
+if (USE_CCACHE)
+    find_program(CCACHE_FOUND ccache)
+    if(CCACHE_FOUND)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+    endif(CCACHE_FOUND)
+endif()
 
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
@@ -59,6 +69,10 @@ IF(WITH_CORE)
 
   SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
+  SET (WITH_3D FALSE CACHE BOOL "Determines whether QGIS 3D library should be built")
+
+  SET (WITH_QUICK FALSE CACHE BOOL "Determines whether QGIS Quick library should be built")
+
   # server disabled default because it needs FastCGI (which is optional dependency)
   SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
   IF(WITH_SERVER)
@@ -82,6 +96,12 @@ IF(WITH_CORE)
   ELSE ()
     SET (HAVE_GUI TRUE)     # used in qgsconfig.h
   ENDIF()
+
+  # try to configure and build MDAL support
+  SET (WITH_INTERNAL_MDAL TRUE CACHE BOOL "Determines whether MDAL support should be built")
+  IF (NOT WITH_INTERNAL_MDAL)
+    SET (MDAL_PREFIX "" CACHE PATH "Path to MDAL base directory")
+  ENDIF (NOT WITH_INTERNAL_MDAL)
 
   # try to configure and build POSTGRESQL support
   SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -139,6 +159,24 @@ IF(WITH_CORE)
       SET(HAVE_OSGEARTHQT TRUE)
     ENDIF (OSGEARTHQT_LIBRARY)
   ENDIF (WITH_GLOBE)
+
+  SET (WITH_THREAD_LOCAL TRUE CACHE BOOL "Determines whether std::thread_local should be used")
+  MARK_AS_ADVANCED(WITH_THREAD_LOCAL)
+
+  IF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    # MingW has broken support for thread_local, so force disabling it
+    # see
+    # https://sourceforge.net/p/mingw-w64/bugs/445/
+    # https://sourceforge.net/p/mingw-w64/bugs/527/
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80816
+
+    # also OpenBSD has no thread_local support, see https://issues.qgis.org/issues/17351
+
+  ELSE (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+    IF (WITH_THREAD_LOCAL)
+      SET (USE_THREAD_LOCAL TRUE)  # used in qgsconfig.h
+    ENDIF (WITH_THREAD_LOCAL)
+  ENDIF (MINGW OR CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
 
   # Compile flag. Make it possible to turn it off.
   SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
@@ -213,7 +251,7 @@ IF(WITH_CORE)
   FIND_PACKAGE(LibZip REQUIRED)
 
   IF (WITH_INTERNAL_QEXTSERIALPORT)
-    SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
+    SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qextserialport)
   ELSE (WITH_INTERNAL_QEXTSERIALPORT)
     FIND_PACKAGE(Qextserialport REQUIRED)
   ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
@@ -228,17 +266,11 @@ IF(WITH_CORE)
     FIND_PACKAGE(Postgres) # PostgreSQL provider
   ENDIF (WITH_POSTGRESQL)
 
-  FIND_PACKAGE(SpatiaLite REQUIRED)
+  IF (NOT WITH_INTERNAL_MDAL)
+    FIND_PACKAGE(MDAL REQUIRED) # MDAL provider
+  ENDIF (NOT WITH_INTERNAL_MDAL)
 
-  IF(SPATIALITE_VERSION_GE_4_0_0)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_GE_4_0_0")
-  ENDIF(SPATIALITE_VERSION_GE_4_0_0)
-  IF(SPATIALITE_VERSION_G_4_1_1)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_G_4_1_1")
-  ENDIF(SPATIALITE_VERSION_G_4_1_1)
-  IF(SPATIALITE_HAS_INIT_EX)
-      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_HAS_INIT_EX")
-  ENDIF(SPATIALITE_HAS_INIT_EX)
+  FIND_PACKAGE(SpatiaLite REQUIRED)
 
   IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
     MESSAGE (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")
@@ -258,7 +290,14 @@ IF(WITH_CORE)
   ENDIF(WITH_QTWEBKIT)
   #############################################################
   # search for Qt5
-  SET(QT_MIN_VERSION 5.2.0)
+  IF (WITH_3D)
+    # for 3D support we strictly require Qt >= 5.9
+    # (Qt 3D was introduced in 5.7 but it is not stable enough in that branch)
+    # Qt 5.8 is missing some classes, https://github.com/qgis/QGIS/pull/5203#discussion_r142319862
+    SET(QT_MIN_VERSION 5.9.0)
+  ELSE ()
+    SET(QT_MIN_VERSION 5.4.0)
+  ENDIF()
   FIND_PACKAGE(Qt5Core QUIET)
   FIND_PACKAGE(Qt5Gui REQUIRED)
   FIND_PACKAGE(Qt5Widgets REQUIRED)
@@ -274,13 +313,32 @@ IF(WITH_CORE)
   ENDIF(WITH_QTWEBKIT)
   FIND_PACKAGE(Qt5Test REQUIRED)
   FIND_PACKAGE(Qt5UiTools REQUIRED)
-  FIND_PACKAGE(Qt5Script REQUIRED)
   FIND_PACKAGE(Qt5Sql REQUIRED)
+  IF (WITH_3D)
+    FIND_PACKAGE(Qt53DCore REQUIRED)
+    FIND_PACKAGE(Qt53DRender REQUIRED)
+    FIND_PACKAGE(Qt53DInput REQUIRED)
+    FIND_PACKAGE(Qt53DLogic REQUIRED)
+    FIND_PACKAGE(Qt53DExtras REQUIRED)
+    SET(HAVE_3D TRUE)  # used in qgsconfig.h
+  ENDIF (WITH_3D)
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
   MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+  IF (WITH_QUICK)
+    FIND_PACKAGE(Qt5Qml REQUIRED)
+    FIND_PACKAGE(Qt5Quick REQUIRED)
+    IF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        FIND_PACKAGE(Qt5AndroidExtras)
+    ELSE(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+        FIND_PACKAGE(QtQmlTools REQUIRED)
+    ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Android")
+
+    # following variable is used in qgsconfig.h
+    SET (HAVE_QUICK TRUE)
+  ENDIF (WITH_QUICK)
 
   IF(WITH_QTWEBKIT)
-    SET(OPTIONAL_QTWEBKIT ${QT_QTWEBKIT_LIBRARY})
+    SET(OPTIONAL_QTWEBKIT ${Qt5WebKitWidgets_LIBRARIES})
   ENDIF(WITH_QTWEBKIT)
 
   IF (WITH_QTMOBILITY)
@@ -303,6 +361,11 @@ IF(WITH_CORE)
   FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
   ENDIF(NOT MSVC)
 
+  IF (APPLE)
+    # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
+    FIND_PACKAGE(Libtasn1 REQUIRED)
+  ENDIF (APPLE)
+
   IF (SUPPRESS_QT_WARNINGS)
     # Newer versions of UseQt4.cmake include Qt with -isystem automatically
     # This can be used to force this behavior on older systems
@@ -323,6 +386,9 @@ ENDIF(WITH_CORE)
 
 # build our version of astyle
 SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+
+# QML
+SET(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
 #############################################################
 # testing
@@ -433,12 +499,14 @@ ENDIF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
 
 IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
   MESSAGE (STATUS "Debug output enabled")
-  ADD_DEFINITIONS(-DQGISDEBUG=1)
+  SET(QGISDEBUG TRUE)
+ELSE (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+  SET(QGISDEBUG FALSE)
 ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
 
 IF(MSVC)
-  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO} -DQGISDEBUG=1")
-  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DQGISDEBUG=1")
+  SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELWITHDEBINFO}")
+  SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
   # disable macros that offend std::numeric_limits<T>::min()/max()
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
@@ -462,6 +530,7 @@ IF (WITH_CORE)
     SET (DEFAULT_DATA_SUBDIR    .)
     SET (DEFAULT_PLUGIN_SUBDIR  plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include)
+    SET (DEFAULT_QML_SUBDIR     qml)
 
     SET (DEFAULT_SERVER_MODULE_SUBDIR server)
 
@@ -479,13 +548,6 @@ IF (WITH_CORE)
       ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
       ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
 
-      IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-        IF (NOT USING_NMAKE AND NOT USING_NINJA)
-          MESSAGE (STATUS "Generating browse files")
-          ADD_DEFINITIONS( /FR )
-        ENDIF (NOT USING_NMAKE AND NOT USING_NINJA)
-      ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-
       IF (INSTALL_DEPS)
         INSTALL(DIRECTORY ${INSTALL_DEPS} DESTINATION .)
       ENDIF (INSTALL_DEPS)
@@ -499,6 +561,9 @@ IF (WITH_CORE)
       IF (POLICY CMP0042) # in CMake 3.0.0+
         SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
       ENDIF (POLICY CMP0042)
+      IF (POLICY CMP0068) # in CMake 3.9.0+
+        cmake_policy(SET CMP0068 NEW)
+      ENDIF (POLICY CMP0068)
       # for Mac OS X, everything is put inside an application bundle
       # save the root install prefix for the app later
       SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -536,6 +601,7 @@ IF (WITH_CORE)
       SET (DEFAULT_PLUGIN_SUBDIR   ../PlugIns/qgis)
       SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
       SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
+      SET (DEFAULT_QML_SUBDIR     qml)
 
       # Set server moodules path to DEFAULT_LIBEXEC_SUBDIR+'/server'
       SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
@@ -563,6 +629,7 @@ IF (WITH_CORE)
       SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
       SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
       SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
+      SET (DEFAULT_QML_SUBDIR     qml)
 
       SET (DEFAULT_SERVER_MODULE_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR}/server)
     ENDIF (APPLE)
@@ -589,11 +656,11 @@ IF (WITH_CORE)
     ENDIF(MSVC)
   ENDIF(COMMAND cmake_policy)
 
-  IF (PEDANTIC AND NOT WIN32 AND NOT APPLE)
+  if("${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")
     SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,--no-undefined")
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--no-undefined")
-  ENDIF(PEDANTIC AND NOT WIN32 AND NOT APPLE)
+  endif() #"${CMAKE_SYSTEM_NAME}"  MATCHES "Linux")
 
   SET(CMAKE_CXX_VISIBILITY_PRESET hidden)
   INCLUDE(GenerateExportHeader)
@@ -611,6 +678,7 @@ SET (QGIS_LIBEXEC_SUBDIR ${DEFAULT_LIBEXEC_SUBDIR} CACHE STRING "Subdirectory wh
 SET (QGIS_DATA_SUBDIR    ${DEFAULT_DATA_SUBDIR}    CACHE STRING "Subdirectory where QGIS data will be installed")
 SET (QGIS_PLUGIN_SUBDIR  ${DEFAULT_PLUGIN_SUBDIR}  CACHE STRING "Subdirectory where plugins will be installed")
 SET (QGIS_INCLUDE_SUBDIR ${DEFAULT_INCLUDE_SUBDIR} CACHE STRING "Subdirectory where header files will be installed")
+SET (QGIS_QML_SUBDIR     ${DEFAULT_QML_SUBDIR}     CACHE STRING "Subdirectory where qml files/libraries will be installed")
 
 SET (QGIS_SERVER_MODULE_SUBDIR  ${DEFAULT_SERVER_MODULE_SUBDIR}  CACHE STRING "Subdirectory where server modules will be installed")
 
@@ -626,6 +694,7 @@ SET (QGIS_LIBEXEC_DIR ${QGIS_LIBEXEC_SUBDIR})
 SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
 SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
 SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
+SET (QGIS_QML_DIR     ${QGIS_QML_SUBDIR})
 
 SET (QGIS_SERVER_MODULE_DIR ${QGIS_SERVER_MODULE_SUBDIR})
 
@@ -710,18 +779,22 @@ ENDIF (WITH_CORE)
 
 ####################################################
 # clang-tidy
+SET (WITH_CLANG_TIDY FALSE CACHE BOOL "Use Clang tidy")
+MARK_AS_ADVANCED(WITH_CLANG_TIDY)
 IF (WITH_CORE)
-  FIND_PROGRAM(
-    CLANG_TIDY_EXE
-    NAMES "clang-tidy"
-    DOC "Path to clang-tidy executable"
-    )
-  IF(NOT CLANG_TIDY_EXE)
-    MESSAGE(STATUS "clang-tidy not found.")
-  ELSE(NOT CLANG_TIDY_EXE)
-    MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
-    SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
-  ENDIF(NOT CLANG_TIDY_EXE)
+  IF(WITH_CLANG_TIDY)
+    FIND_PROGRAM(
+      CLANG_TIDY_EXE
+      NAMES "clang-tidy"
+      DOC "Path to clang-tidy executable"
+      )
+    IF(NOT CLANG_TIDY_EXE)
+      MESSAGE(STATUS "clang-tidy not found.")
+    ELSE(NOT CLANG_TIDY_EXE)
+      MESSAGE(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+      SET(DO_CLANG_TIDY "${CLANG_TIDY_EXE}" "-checks=*,-clang-analyzer-alpha.*,-cppcoreguidelines*,-readability-implicit-bool-cast,-llvm-include-order,-cert-err58-cpp,-modernize-pass-by-value,-google-readability-braces-around-statements,-modernize-use-auto,-modernize-loop-convert,-readability-else-after-return,-readability-braces-around-statements,-google-runtime-references,-readability-named-parameter,-google-default-arguments,-google-readability-todo,-readability-inconsistent-declaration-parameter-name,-cert-flp30-c,-google-readability-casting,-clang-analyzer-security.FloatLoopCounter,-google-runtime-int,-modernize-use-using,-google-explicit-constructor,-google-build-using-namespace,-cert-err34-c,-clang-analyzer-core.CallAndMessage,-google-readability-function-size,-modernize-make-shared,-modernize-use-nullptr,-clang-analyzer-cplusplus.NewDeleteLeaks,-clang-analyzer-core.NonNullParamChecker,performance-unnecessary-copy-initialization,-readability-simplify-boolean-expr,-modernize-raw-string-literal,-performance-unnecessary-copy-initialization")
+    ENDIF(NOT CLANG_TIDY_EXE)
+  ENDIF(WITH_CLANG_TIDY)
 ENDIF (WITH_CORE)
 
 #############################################################
@@ -819,7 +892,7 @@ IF (WITH_CORE)
     SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} QGIS")
     SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\qgis.org")
     SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\qgis.org")
-    SET(CPACK_NSIS_CONTACT "tim@linfiniti.com")
+    SET(CPACK_NSIS_CONTACT "info@qgis.org")
     SET(CPACK_NSIS_MODIFY_PATH ON)
 
   #  SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "  !include \\\"${CMAKE_SOURCE_DIR}\\\\win_build\\\\extra.nsh\\\"")

@@ -30,7 +30,7 @@ class CUSTOMWIDGETS_EXPORT QgsFileWidgetPlugin : public QObject, public QDesigne
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFileWidgetPlugin( QObject *parent = 0 );
+    explicit QgsFileWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

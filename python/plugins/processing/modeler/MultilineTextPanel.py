@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'January 2013'

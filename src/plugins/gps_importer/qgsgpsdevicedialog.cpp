@@ -17,45 +17,48 @@
 #include <QMessageBox>
 
 
-QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map < QString,
-                                        QgsGPSDevice * > &devices )
+QgsGpsDeviceDialog::QgsGpsDeviceDialog( std::map < QString,
+                                        QgsGpsDevice * > &devices )
   : QDialog( nullptr, QgsGuiUtils::ModalDialogFlags )
   , mDevices( devices )
 {
   setupUi( this );
+  connect( pbnNewDevice, &QPushButton::clicked, this, &QgsGpsDeviceDialog::pbnNewDevice_clicked );
+  connect( pbnDeleteDevice, &QPushButton::clicked, this, &QgsGpsDeviceDialog::pbnDeleteDevice_clicked );
+  connect( pbnUpdateDevice, &QPushButton::clicked, this, &QgsGpsDeviceDialog::pbnUpdateDevice_clicked );
   setAttribute( Qt::WA_DeleteOnClose );
   // Manually set the relative size of the two main parts of the
   // device dialog box.
 
   QObject::connect( lbDeviceList, &QListWidget::currentItemChanged,
-                    this, &QgsGPSDeviceDialog::slotSelectionChanged );
+                    this, &QgsGpsDeviceDialog::slotSelectionChanged );
   slotUpdateDeviceList();
 }
 
 
-void QgsGPSDeviceDialog::on_pbnNewDevice_clicked()
+void QgsGpsDeviceDialog::pbnNewDevice_clicked()
 {
-  std::map<QString, QgsGPSDevice *>::const_iterator iter = mDevices.begin();
+  std::map<QString, QgsGpsDevice *>::const_iterator iter = mDevices.begin();
   QString deviceName = tr( "New device %1" );
   int i = 1;
   for ( ; iter != mDevices.end(); ++i )
     iter = mDevices.find( deviceName.arg( i ) );
   deviceName = deviceName.arg( i - 1 );
-  mDevices[deviceName] = new QgsGPSDevice;
+  mDevices[deviceName] = new QgsGpsDevice;
   writeDeviceSettings();
   slotUpdateDeviceList( deviceName );
   emit devicesChanged();
 }
 
 
-void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked()
+void QgsGpsDeviceDialog::pbnDeleteDevice_clicked()
 {
-  if ( QMessageBox::warning( this, tr( "Are you sure?" ),
+  if ( QMessageBox::warning( this, tr( "Delete Device" ),
                              tr( "Are you sure that you want to delete this device?" ),
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {
 
-    std::map<QString, QgsGPSDevice *>::iterator iter =
+    std::map<QString, QgsGpsDevice *>::iterator iter =
       mDevices.find( lbDeviceList->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
@@ -69,18 +72,18 @@ void QgsGPSDeviceDialog::on_pbnDeleteDevice_clicked()
 }
 
 
-void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
+void QgsGpsDeviceDialog::pbnUpdateDevice_clicked()
 {
   if ( lbDeviceList->count() > 0 )
   {
-    std::map<QString, QgsGPSDevice *>::iterator iter =
+    std::map<QString, QgsGpsDevice *>::iterator iter =
       mDevices.find( lbDeviceList->currentItem()->text() );
     if ( iter != mDevices.end() )
     {
       delete iter->second;
       mDevices.erase( iter );
       mDevices[leDeviceName->text()] =
-        new QgsGPSDevice( leWptDown->text(), leWptUp->text(),
+        new QgsGpsDevice( leWptDown->text(), leWptUp->text(),
                           leRteDown->text(), leRteUp->text(),
                           leTrkDown->text(), leTrkUp->text() );
       writeDeviceSettings();
@@ -90,13 +93,13 @@ void QgsGPSDeviceDialog::on_pbnUpdateDevice_clicked()
   }
 }
 
-void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
+void QgsGpsDeviceDialog::slotUpdateDeviceList( const QString &selection )
 {
   QString selected;
-  if ( selection == QLatin1String( "" ) )
+  if ( selection.isEmpty() )
   {
     QListWidgetItem *item = lbDeviceList->currentItem();
-    selected = ( item ? item->text() : QLatin1String( "" ) );
+    selected = ( item ? item->text() : QString() );
   }
   else
   {
@@ -106,10 +109,10 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
   // We're going to be changing the selected item, so disable our
   // notificaton of that.
   QObject::disconnect( lbDeviceList, &QListWidget::currentItemChanged,
-                       this, &QgsGPSDeviceDialog::slotSelectionChanged );
+                       this, &QgsGpsDeviceDialog::slotSelectionChanged );
 
   lbDeviceList->clear();
-  std::map<QString, QgsGPSDevice *>::const_iterator iter;
+  std::map<QString, QgsGpsDevice *>::const_iterator iter;
   for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
   {
     QListWidgetItem *item = new QListWidgetItem( iter->first, lbDeviceList );
@@ -125,17 +128,17 @@ void QgsGPSDeviceDialog::slotUpdateDeviceList( const QString &selection )
   // Update the display and reconnect the selection changed signal
   slotSelectionChanged( lbDeviceList->currentItem() );
   QObject::connect( lbDeviceList, &QListWidget::currentItemChanged,
-                    this, &QgsGPSDeviceDialog::slotSelectionChanged );
+                    this, &QgsGpsDeviceDialog::slotSelectionChanged );
 }
 
 
-void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
+void QgsGpsDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
 {
   if ( lbDeviceList->count() > 0 )
   {
     QString devName = current->text();
     leDeviceName->setText( devName );
-    QgsGPSDevice *device = mDevices[devName];
+    QgsGpsDevice *device = mDevices[devName];
     leWptDown->setText( device->
                         importCommand( QStringLiteral( "%babel" ), QStringLiteral( "-w" ), QStringLiteral( "%in" ), QStringLiteral( "%out" ) ).join( QStringLiteral( " " ) ) );
     leWptUp->setText( device->
@@ -152,14 +155,14 @@ void QgsGPSDeviceDialog::slotSelectionChanged( QListWidgetItem *current )
 }
 
 
-void QgsGPSDeviceDialog::writeDeviceSettings()
+void QgsGpsDeviceDialog::writeDeviceSettings()
 {
   QStringList deviceNames;
   QgsSettings settings;
   QString devPath = QStringLiteral( "/Plugin-GPS/devices/%1" );
   settings.remove( QStringLiteral( "/Plugin-GPS/devices" ) );
 
-  std::map<QString, QgsGPSDevice *>::const_iterator iter;
+  std::map<QString, QgsGpsDevice *>::const_iterator iter;
   for ( iter = mDevices.begin(); iter != mDevices.end(); ++iter )
   {
     deviceNames.append( iter->first );
@@ -188,7 +191,7 @@ void QgsGPSDeviceDialog::writeDeviceSettings()
   settings.setValue( QStringLiteral( "/Plugin-GPS/devicelist" ), deviceNames );
 }
 
-void QgsGPSDeviceDialog::on_pbnClose_clicked()
+void QgsGpsDeviceDialog::on_pbnClose_clicked()
 {
   close();
 }

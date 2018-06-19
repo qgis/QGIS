@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
@@ -28,15 +27,16 @@ __revision__ = '$Format:%H$'
 
 import os
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingProvider,
+                       QgsVectorFileWriter,
                        QgsMessageLog,
                        QgsProcessingUtils)
-from processing.core.ProcessingConfig import ProcessingConfig, Setting
+from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
-#from .nviz7 import nviz7
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -70,6 +70,14 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             Grass7Utils.GRASS_HELP_PATH,
             self.tr('Location of GRASS docs'),
             Grass7Utils.grassHelpPath()))
+        # Add a setting for using v.external instead of v.in.ogr
+        # But set it to False by default because some algorithms
+        # can't be used with external data (need a solid v.in.ogr).
+        ProcessingConfig.addSetting(Setting(
+            self.name(),
+            Grass7Utils.GRASS_USE_VEXTERNAL,
+            self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
+            False))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -81,6 +89,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_COMMANDS)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_LOG_CONSOLE)
         ProcessingConfig.removeSetting(Grass7Utils.GRASS_HELP_PATH)
+        ProcessingConfig.removeSetting(Grass7Utils.GRASS_USE_VEXTERNAL)
 
     def isActive(self):
         return ProcessingConfig.getSetting('ACTIVATE_GRASS7')
@@ -98,11 +107,10 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                     if alg.name().strip() != '':
                         algs.append(alg)
                     else:
-                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                        QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}').format(descriptionFile), self.tr('Processing'), Qgis.Critical)
                 except Exception as e:
                     QgsMessageLog.logMessage(
-                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #algs.append(nviz7())
+                        self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), Qgis.Critical)
         return algs
 
     def loadAlgorithms(self):
@@ -111,6 +119,9 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def name(self):
+        return 'GRASS'
+
+    def longName(self):
         version = Grass7Utils.installedVersion()
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
@@ -121,10 +132,23 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return QgsApplication.getThemeIcon("/providerGrass.svg")
 
     def svgIconPath(self):
-        return QgsApplication.iconPath("providerGrass.svg")
+        return QgsApplication.iconPath("/providerGrass.svg")
+
+    def supportsNonFileBasedOutput(self):
+        """
+        GRASS7 Provider doesn't support non file based outputs
+        """
+        return False
 
     def supportedOutputVectorLayerExtensions(self):
-        return ['shp']
+        # We use the same extensions than QGIS because:
+        # - QGIS is using OGR like GRASS
+        # - There are very chances than OGR version used in GRASS is
+        # different from QGIS OGR version.
+        return QgsVectorFileWriter.supportedFormatExtensions()
+
+    def supportedOutputRasterLayerExtensions(self):
+        return Grass7Utils.getSupportedOutputRasterExtensions()
 
     def canBeActivated(self):
         return not bool(Grass7Utils.checkGrass7IsInstalled())

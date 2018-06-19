@@ -47,25 +47,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="mMainWidget" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-      </layout>
-     </widget>
+     <widget class="QWidget" name="mMainWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -161,6 +143,8 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

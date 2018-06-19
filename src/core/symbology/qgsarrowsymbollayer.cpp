@@ -14,28 +14,9 @@
  ***************************************************************************/
 
 #include "qgsarrowsymbollayer.h"
+#include "qgssymbollayerutils.h"
 
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
-  : QgsLineSymbolLayer()
-  , mArrowWidth( 1.0 )
-  , mArrowWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mArrowStartWidth( 1.0 )
-  , mArrowStartWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadLength( 1.5 )
-  , mHeadLengthUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadThickness( 1.5 )
-  , mHeadThicknessUnit( QgsUnitTypes::RenderMillimeters )
-  , mHeadType( HeadSingle )
-  , mArrowType( ArrowPlain )
-  , mIsCurved( true )
-  , mIsRepeated( true )
-  , mScaledArrowWidth( 1.0 )
-  , mScaledArrowStartWidth( 1.0 )
-  , mScaledHeadLength( 1.5 )
-  , mScaledHeadThickness( 1.5 )
-  , mScaledOffset( 0.0 )
-  , mComputedHeadType( HeadSingle )
-  , mComputedArrowType( ArrowPlain )
 {
   /* default values */
   setOffset( 0.0 );
@@ -340,7 +321,7 @@ inline qreal clampAngle( qreal a )
 
 /**
  * Compute the circumscribed circle from three points
- * @return false if the three points are colinear
+ * \return false if the three points are colinear
  */
 bool pointsToCircle( QPointF a, QPointF b, QPointF c, QPointF &center, qreal &radius )
 {
@@ -668,10 +649,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( headType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowHeadType, context.renderContext().expressionContext() );
-    int h = exprVal.toInt( &ok );
+    HeadType h = QgsSymbolLayerUtils::decodeArrowHeadType( exprVal, &ok );
     if ( ok )
     {
-      mComputedHeadType = static_cast<HeadType>( h );
+      mComputedHeadType = h;
     }
   }
 
@@ -679,10 +660,10 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
   {
     context.setOriginalValueVariable( arrowType() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyArrowType, context.renderContext().expressionContext() );
-    int h = exprVal.toInt( &ok );
+    ArrowType h = QgsSymbolLayerUtils::decodeArrowType( exprVal, &ok );
     if ( ok )
     {
-      mComputedArrowType = static_cast<ArrowType>( h );
+      mComputedArrowType = h;
     }
   }
 }
@@ -802,7 +783,7 @@ void QgsArrowSymbolLayer::renderPolyline( const QPolygonF &points, QgsSymbolRend
 
 void QgsArrowSymbolLayer::setColor( const QColor &c )
 {
-  if ( mSymbol.get() )
+  if ( mSymbol )
     mSymbol->setColor( c );
 
   mColor = c;

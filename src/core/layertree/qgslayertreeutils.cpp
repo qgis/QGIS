@@ -111,7 +111,7 @@ static QDomElement _writeOldLegendLayer( QDomDocument &doc, QgsLayerTreeLayer *n
 
   QDomElement layerElem = doc.createElement( QStringLiteral( "legendlayer" ) );
   layerElem.setAttribute( QStringLiteral( "drawingOrder" ), drawingOrder );
-  layerElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? "true" : "false" );
+  layerElem.setAttribute( QStringLiteral( "open" ), nodeLayer->isExpanded() ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   layerElem.setAttribute( QStringLiteral( "checked" ), QgsLayerTreeUtils::checkStateToXml( nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked ) );
   layerElem.setAttribute( QStringLiteral( "name" ), nodeLayer->name() );
   layerElem.setAttribute( QStringLiteral( "showFeatureCount" ), nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ) ).toInt() );
@@ -170,7 +170,7 @@ static void _writeOldLegendGroupChildren( QDomDocument &doc, QDomElement &groupE
 QDomElement QgsLayerTreeUtils::writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order )
 {
   QDomElement legendElem = doc.createElement( QStringLiteral( "legend" ) );
-  legendElem.setAttribute( QStringLiteral( "updateDrawingOrder" ), hasCustomOrder ? "false" : "true" );
+  legendElem.setAttribute( QStringLiteral( "updateDrawingOrder" ), hasCustomOrder ? QStringLiteral( "false" ) : QStringLiteral( "true" ) );
 
   _writeOldLegendGroupChildren( doc, legendElem, root, hasCustomOrder, order );
 

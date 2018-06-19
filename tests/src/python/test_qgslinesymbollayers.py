@@ -56,7 +56,7 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
 
     def testSimpleLineWithOffset(self):
         """ test that rendering a simple line symbol with offset"""
-        layer = QgsSimpleLineSymbolLayer()
+        layer = QgsSimpleLineSymbolLayer(QColor(0, 0, 0))
         layer.setOffset(1)
 
         symbol = QgsLineSymbol()
@@ -70,9 +70,9 @@ class TestQgsLineSymbolLayers(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        extent = geom.geometry().boundingBox()
+        extent = geom.constGet().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

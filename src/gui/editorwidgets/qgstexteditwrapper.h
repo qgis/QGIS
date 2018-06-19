@@ -20,12 +20,13 @@
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
-#include <QTextEdit>
+#include <QTextBrowser>
 #include "qgis_gui.h"
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a text widget. Users will be able to modify text with this widget type.
  *
  * Options:
@@ -67,6 +68,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
     void textChanged( const QString &text );
 
   private:
+    QTextBrowser *mTextBrowser = nullptr;
     QTextEdit *mTextEdit = nullptr;
     QPlainTextEdit *mPlainTextEdit = nullptr;
     QLineEdit *mLineEdit = nullptr;

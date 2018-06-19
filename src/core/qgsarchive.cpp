@@ -19,7 +19,11 @@
 #include "qgsarchive.h"
 #include "qgsziputils.h"
 #include "qgsmessagelog.h"
+#include "qgsauxiliarystorage.h"
 #include <iostream>
+
+#include <QStandardPaths>
+#include <QUuid>
 
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
@@ -53,10 +57,9 @@ void QgsArchive::clear()
 
 bool QgsArchive::zip( const QString &filename )
 {
-  // create a temporary path
-  QTemporaryFile tmpFile;
-  tmpFile.open();
-  tmpFile.close();
+  QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+  QString uuid = QUuid::createUuid().toString();
+  QFile tmpFile( tempPath + QDir::separator() + uuid );
 
   // zip content
   if ( ! QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
@@ -77,9 +80,6 @@ bool QgsArchive::zip( const QString &filename )
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }
-
-  // keep the zip filename
-  tmpFile.setAutoRemove( false );
 
   return true;
 }
@@ -135,4 +135,19 @@ bool QgsProjectArchive::unzip( const QString &filename )
 bool QgsProjectArchive::clearProjectFile()
 {
   return removeFile( projectFile() );
+}
+
+QString QgsProjectArchive::auxiliaryStorageFile() const
+{
+  const QString extension = QgsAuxiliaryStorage::extension();
+
+  const QStringList fileList = files();
+  for ( const QString &file : fileList )
+  {
+    const QFileInfo fileInfo( file );
+    if ( fileInfo.suffix().compare( extension, Qt::CaseInsensitive ) == 0 )
+      return file;
+  }
+
+  return QString();
 }

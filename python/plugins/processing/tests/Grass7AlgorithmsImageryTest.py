@@ -34,6 +34,7 @@ from qgis.testing import (
     start_app,
     unittest
 )
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -44,6 +45,8 @@ class TestGrass7AlgorithmsImageryTest(unittest.TestCase, AlgorithmsTestBase.Algo
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []
+
+        assert Grass7Utils.installedVersion()
 
     @classmethod
     def tearDownClass(cls):

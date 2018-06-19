@@ -21,12 +21,6 @@
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
-  , mClosed( false )
-  , mZombie( false )
-  , refs( 0 )
-  , mFetchedCount( 0 )
-  , mCompileStatus( NoCompilation )
-  , mUseCachedFeatures( false )
 {
 }
 
@@ -153,6 +147,11 @@ void QgsAbstractFeatureIterator::deref()
     delete this;
 }
 
+bool QgsAbstractFeatureIterator::compileFailed() const
+{
+  return mCompileFailed;
+}
+
 bool QgsAbstractFeatureIterator::prepareSimplification( const QgsSimplifyMethod &simplifyMethod )
 {
   Q_UNUSED( simplifyMethod );
@@ -217,7 +216,7 @@ bool QgsAbstractFeatureIterator::prepareOrderBy( const QList<QgsFeatureRequest::
   return false;
 }
 
-void QgsAbstractFeatureIterator::setInterruptionChecker( QgsInterruptionChecker * )
+void QgsAbstractFeatureIterator::setInterruptionChecker( QgsFeedback * )
 {
 }
 
@@ -234,4 +233,9 @@ QgsFeatureIterator &QgsFeatureIterator::operator=( const QgsFeatureIterator &oth
       mIter->ref();
   }
   return *this;
+}
+
+bool QgsFeatureIterator::isValid() const
+{
+  return mIter && mIter->isValid();
 }

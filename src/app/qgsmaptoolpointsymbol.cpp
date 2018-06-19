@@ -24,7 +24,6 @@
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mActiveLayer( nullptr )
   , mFeatureNumber( -1 )
 {}
 
@@ -57,7 +56,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
   if ( !m.isValid() )
   {
-    emit messageEmitted( tr( "No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), QgsMessageBar::CRITICAL );
+    emit messageEmitted( tr( "No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings->Options->Digitizing->Search radius for vertex edits" ), Qgis::Critical );
     return; //error during snapping
   }
 
@@ -71,9 +70,10 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   }
 
   //check whether selected feature has a modifiable symbol
-  QgsFeatureRenderer *renderer = mActiveLayer->renderer();
-  if ( !renderer )
+  if ( !mActiveLayer->renderer() )
     return;
+
+  std::unique_ptr< QgsFeatureRenderer > renderer( mActiveLayer->renderer()->clone() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( mActiveLayer );
   context.expressionContext().setFeature( feature );

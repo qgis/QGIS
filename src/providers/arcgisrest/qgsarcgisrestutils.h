@@ -18,6 +18,7 @@
 #include <QStringList>
 #include <QVariant>
 #include "geometry/qgswkbtypes.h"
+#include "qgsfeature.h"
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
@@ -25,23 +26,45 @@ class QgsFields;
 class QgsRectangle;
 class QgsAbstractGeometry;
 class QgsCoordinateReferenceSystem;
+class QgsFeedback;
+class QgsSymbol;
+class QgsLineSymbol;
+class QgsFillSymbol;
+class QgsMarkerSymbol;
+class QgsFeatureRenderer;
 
 class QgsArcGisRestUtils
 {
   public:
     static QVariant::Type mapEsriFieldType( const QString &esriFieldType );
     static QgsWkbTypes::Type mapEsriGeometryType( const QString &esriGeometryType );
-    static QgsAbstractGeometry *parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = 0 );
+    static std::unique_ptr< QgsAbstractGeometry > parseEsriGeoJSON( const QVariantMap &geometryData, const QString &esriGeometryType, bool readM, bool readZ, QgsCoordinateReferenceSystem *crs = nullptr );
     static QgsCoordinateReferenceSystem parseSpatialReference( const QVariantMap &spatialReferenceMap );
 
     static QVariantMap getServiceInfo( const QString &baseurl, QString &errorTitle, QString &errorText );
     static QVariantMap getLayerInfo( const QString &layerurl, QString &errorTitle, QString &errorText );
-    static QVariantMap getObjectIds( const QString &layerurl, QString &errorTitle, QString &errorText );
+    static QVariantMap getObjectIds( const QString &layerurl, const QString &objectIdFieldName, QString &errorTitle, QString &errorText,
+                                     const QgsRectangle &bbox = QgsRectangle() );
     static QVariantMap getObjects( const QString &layerurl, const QList<quint32> &objectIds, const QString &crs,
                                    bool fetchGeometry, const QStringList &fetchAttributes, bool fetchM, bool fetchZ,
-                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText );
-    static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText );
-    static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText );
+                                   const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QList<quint32> getObjectIdsByExtent( const QString &layerurl, const QString &objectIdField, const QgsRectangle &filterRect, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QByteArray queryService( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+    static QVariantMap queryServiceJSON( const QUrl &url, QString &errorTitle, QString &errorText, QgsFeedback *feedback = nullptr );
+
+    static std::unique_ptr< QgsSymbol > parseEsriSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr< QgsLineSymbol > parseEsriLineSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr< QgsFillSymbol > parseEsriFillSymbolJson( const QVariantMap &symbolData );
+    static std::unique_ptr< QgsMarkerSymbol > parseEsriMarkerSymbolJson( const QVariantMap &symbolData );
+    static QgsFeatureRenderer *parseEsriRenderer( const QVariantMap &rendererData );
+
+    static QColor parseEsriColorJson( const QVariant &colorData );
+    static Qt::PenStyle parseEsriLineStyle( const QString &style );
+    static Qt::BrushStyle parseEsriFillStyle( const QString &style );
+
+    static QDateTime parseDateTime( const QVariant &value );
+
+    static QUrl parseUrl( const QUrl &url );
 };
 
 class QgsArcGisAsyncQuery : public QObject
@@ -49,7 +72,7 @@ class QgsArcGisAsyncQuery : public QObject
     Q_OBJECT
   public:
     QgsArcGisAsyncQuery( QObject *parent = nullptr );
-    ~QgsArcGisAsyncQuery();
+    ~QgsArcGisAsyncQuery() override;
 
     void start( const QUrl &url, QByteArray *result, bool allowCache = false );
   signals:
@@ -75,8 +98,8 @@ class QgsArcGisAsyncParallelQuery : public QObject
     void handleReply();
 
   private:
-    QVector<QByteArray> *mResults;
-    int mPendingRequests;
+    QVector<QByteArray> *mResults = nullptr;
+    int mPendingRequests = 0;
     QStringList mErrors;
 };
 

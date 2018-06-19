@@ -31,6 +31,9 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsfeatureiterator.h"
+#include "qgsvectorlayer.h"
+#include "qgssvgcache.h"
 
 #include <QColorDialog>
 #include <QPainter>
@@ -49,10 +52,7 @@
 static const int SYMBOL_LAYER_ITEM_TYPE = QStandardItem::UserType + 1;
 
 DataDefinedRestorer::DataDefinedRestorer( QgsSymbol *symbol, const QgsSymbolLayer *symbolLayer )
-  : mMarker( nullptr )
-  , mMarkerSymbolLayer( nullptr )
-  , mLine( nullptr )
-  , mLineSymbolLayer( nullptr )
+
 {
   if ( symbolLayer->type() == QgsSymbol::Marker && symbol->type() == QgsSymbol::Marker )
   {
@@ -218,9 +218,8 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent )
+QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
   : QgsPanelWidget( parent )
-  , mAdvancedMenu( nullptr )
   , mVectorLayer( vl )
 {
 #ifdef Q_OS_MAC
@@ -251,6 +250,19 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   layersTree->setModel( model );
   layersTree->setHeaderHidden( true );
 
+  //get first feature from layer for previews
+  if ( mVectorLayer )
+  {
+    QgsFeatureIterator it = mVectorLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    it.nextFeature( mPreviewFeature );
+    mPreviewExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
+    mPreviewExpressionContext.setFeature( mPreviewFeature );
+  }
+  else
+  {
+    mPreviewExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( nullptr ) );
+  }
+
   QItemSelectionModel *selModel = layersTree->selectionModel();
   connect( selModel, &QItemSelectionModel::currentChanged, this, &QgsSymbolSelectorWidget::layerChanged );
 
@@ -271,7 +283,18 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
 
-  setPanelTitle( tr( "Symbol selector" ) );
+  setPanelTitle( tr( "Symbol Selector" ) );
+
+  connect( QgsApplication::svgCache(), &QgsSvgCache::remoteSvgFetched, this, [ = ]
+  {
+    // when a remote svg has been fetched, update the widget's previews
+    // this is required if the symbol utilizes remote svgs, and the current previews
+    // have been generated using the temporary "downloading" svg. In this case
+    // we require the preview to be regenerated to use the correct fetched
+    // svg
+    symbolChanged();
+    updatePreview();
+  } );
 }
 
 QMenu *QgsSymbolSelectorWidget::advancedMenu()
@@ -288,6 +311,15 @@ QMenu *QgsSymbolSelectorWidget::advancedMenu()
 void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
+
+  if ( mContext.expressionContext() )
+  {
+    mPreviewExpressionContext = *mContext.expressionContext();
+    if ( mVectorLayer )
+      mPreviewExpressionContext.appendScope( QgsExpressionContextUtils::layerScope( mVectorLayer ) );
+
+    mPreviewExpressionContext.setFeature( mPreviewFeature );
+  }
 
   QWidget *widget = stackedWidget->currentWidget();
   QgsLayerPropertiesWidget *layerProp = dynamic_cast< QgsLayerPropertiesWidget * >( widget );
@@ -339,7 +371,7 @@ void QgsSymbolSelectorWidget::loadSymbol()
 
 void QgsSymbolSelectorWidget::updateUi()
 {
-  QModelIndex currentIdx =  layersTree->currentIndex();
+  QModelIndex currentIdx = layersTree->currentIndex();
   if ( !currentIdx.isValid() )
     return;
 
@@ -366,7 +398,7 @@ void QgsSymbolSelectorWidget::updateUi()
 
 void QgsSymbolSelectorWidget::updatePreview()
 {
-  QImage preview = mSymbol->bigSymbolPreviewImage( mContext.expressionContext() );
+  QImage preview = mSymbol->bigSymbolPreviewImage( &mPreviewExpressionContext );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
   emit symbolModified();
@@ -675,7 +707,7 @@ void QgsSymbolSelectorWidget::changeLayer( QgsSymbolLayer *newLayer )
   layerChanged();
 }
 
-QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, const QgsVectorLayer *vl, QWidget *parent, bool embedded )
+QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent, bool embedded )
   : QDialog( parent )
 {
   setLayout( new QVBoxLayout() );

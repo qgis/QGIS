@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 
   public:
     QgsMapToolDeletePart( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolDeletePart();
+    ~QgsMapToolDeletePart() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 

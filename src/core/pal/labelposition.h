@@ -97,7 +97,7 @@ namespace pal
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
 
-      ~LabelPosition() { delete nextPart; }
+      ~LabelPosition() override { delete nextPart; }
 
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)
@@ -114,6 +114,16 @@ namespace pal
       bool isIntersect( double *bbox );
 
       /**
+       * Returns true if the label position intersects a \a geometry.
+       */
+      bool intersects( const GEOSPreparedGeometry *geometry );
+
+      /**
+       * Returns true if the label position is within a \a geometry.
+       */
+      bool within( const GEOSPreparedGeometry *geometry );
+
+      /**
        * \brief Is the labelposition inside the bounding-box ?
        *
        *\param bbox the bounding-box double[4] = {xmin, ymin, xmax, ymax}
@@ -128,10 +138,10 @@ namespace pal
        */
       bool isInConflict( LabelPosition *ls );
 
-      //! Return bounding box - amin: xmin,ymin - amax: xmax,ymax
+      //! Returns bounding box - amin: xmin,ymin - amax: xmax,ymax
       void getBoundingBox( double amin[2], double amax[2] ) const;
 
-      //! Get distance from this label to a point. If point lies inside, returns negative number.
+      //! Gets distance from this label to a point. If point lies inside, returns negative number.
       double getDistanceToPoint( double xp, double yp ) const;
 
       //! Returns true if this label crosses the specified line
@@ -140,26 +150,28 @@ namespace pal
       //! Returns true if this label crosses the boundary of the specified polygon
       bool crossesBoundary( PointSet *polygon ) const;
 
-      /** Returns cost of position intersection with polygon (testing area of intersection and center).
+      /**
+       * Returns cost of position intersection with polygon (testing area of intersection and center).
        * Cost ranges between 0 and 12, with extra cost if center of label position is covered.
        */
       int polygonIntersectionCost( PointSet *polygon ) const;
 
-      /** Returns true if if any intersection between polygon and position exists.
+      /**
+       * Returns true if any intersection between polygon and position exists.
       */
       bool intersectsWithPolygon( PointSet *polygon ) const;
 
       //! Shift the label by specified offset
       void offsetPosition( double xOffset, double yOffset );
 
-      /** \brief return id
-       * \returns id
+      /**
+       * Returns the id
        */
       int getId() const;
 
 
-      /** \brief return the feature corresponding to this labelposition
-       * \returns the feature
+      /**
+       * Returns the feature corresponding to this labelposition
        */
       FeaturePart *getFeaturePart();
 
@@ -168,7 +180,8 @@ namespace pal
 
       int getProblemFeatureId() const { return probFeat; }
 
-      /** Set problem feature ID and assigned label candidate ID.
+      /**
+       * Set problem feature ID and assigned label candidate ID.
        *  called from pal.cpp during extraction */
       void setProblemIds( int probFid, int lpId )
       {
@@ -177,25 +190,29 @@ namespace pal
         if ( nextPart ) nextPart->setProblemIds( probFid, lpId );
       }
 
-      /** Returns the candidate label position's geographical cost.
+      /**
+       * Returns the candidate label position's geographical cost.
        * \see setCost
        */
       double cost() const { return mCost; }
 
-      /** Sets the candidate label position's geographical cost.
+      /**
+       * Sets the candidate label position's geographical cost.
        * \param newCost new cost for position
        * \see cost
       */
       void setCost( double newCost ) { mCost = newCost; }
 
-      /** Sets whether the position is marked as conflicting with an obstacle feature.
+      /**
+       * Sets whether the position is marked as conflicting with an obstacle feature.
        * \param conflicts set to true to mark candidate as being in conflict
        * \note This method applies to all label parts for the candidate position.
        * \see conflictsWithObstacle
        */
       void setConflictsWithObstacle( bool conflicts );
 
-      /** Returns whether the position is marked as conflicting with an obstacle feature.
+      /**
+       * Returns whether the position is marked as conflicting with an obstacle feature.
        * \see setConflictsWithObstacle
        */
       bool conflictsWithObstacle() const { return mHasObstacleConflict; }
@@ -204,14 +221,14 @@ namespace pal
       void validateCost();
 
       /**
-       * \brief get the down-left x coordinate
-       * \returns x coordinate
+       * Returns the down-left x coordinate.
+       * \see getY()
        */
       double getX( int i = 0 ) const;
 
       /**
-       * \brief get the down-left y coordinate
-       * \returns y coordinate
+       * Returns the down-left y coordinate.
+       * \see getX()
        */
       double getY( int i = 0 ) const;
 
@@ -219,8 +236,7 @@ namespace pal
       double getHeight() const { return h; }
 
       /**
-       * \brief get alpha
-       * \returns alpha to rotate text (in rad)
+       * Returns the angle to rotate text (in rad).
        */
       double getAlpha() const;
       bool getReversed() const { return reversed; }
@@ -309,11 +325,13 @@ namespace pal
       bool mHasObstacleConflict;
       int mUpsideDownCharCount;
 
-      /** Calculates the total number of parts for this label position
+      /**
+       * Calculates the total number of parts for this label position
        */
       int partCount() const;
 
-      /** Calculates the polygon intersection cost for a single label position part
+      /**
+       * Calculates the polygon intersection cost for a single label position part
        * \returns double between 0 - 12
        */
       double polygonIntersectionCostForParts( PointSet *polygon ) const;

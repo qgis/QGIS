@@ -31,8 +31,7 @@ import plotly.graph_objs as go
 from qgis.core import (QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
 
@@ -46,6 +45,9 @@ class RasterLayerHistogram(QgisAlgorithm):
 
     def group(self):
         return self.tr('Graphics')
+
+    def groupId(self):
+        return 'graphics'
 
     def __init__(self):
         super().__init__()
@@ -61,7 +63,6 @@ class RasterLayerHistogram(QgisAlgorithm):
                                                        self.tr('number of bins'), minValue=2, defaultValue=10))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Histogram')))
 
     def name(self):
         return 'rasterlayerhistogram'

@@ -26,7 +26,8 @@
 
 #include <memory>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * User profile manager is used to manager list, and manage user profiles on the users machine.
  *
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
@@ -56,15 +57,15 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     static QString resolveProfilesFolder( const QString &basePath = QString() );
 
     /**
-     * Return the profile from the given root profile location.
+     * Returns the profile from the given root profile location.
      * If no name is given it returns a profile called "default".
      * By default will create the profile folder if not found.
      * By default will init the user settings.
-     * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      * \param defaultProfile The profile name to find. Empty profile name will return "default" for the name.
      * \param createNew Create the profile folder if it doesn't exist.
      * \param initSettings if the settings should be initialized
      * \return The user profile
+     * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      */
     QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) SIP_FACTORY;
 
@@ -109,8 +110,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     bool rootLocationIsSet() const;
 
     /**
-     * A list of all found profile names.
-     * \return
+     * Returns a list of all found profile names.
      */
     QStringList allProfiles() const;
 
@@ -125,8 +125,8 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * First checks profile.ini in \\profiles folder
      * Then checks defaultProfile in global settings
      * Finally returns "default" if all else fails
-     * \note Setting overrideLocalProfile in global settings will always ignore profiles.ini
      * \return The name of the default profile.
+     * \note Setting overrideLocalProfile in global settings will always ignore profiles.ini
      */
     QString defaultProfileName() const;
 
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
     void setDefaultFromActive();
 
     /**
-     * Return the profile found for a given name.
+     * Returns the profile found for a given name.
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
@@ -158,9 +158,9 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     /**
      * Deletes a profile from the root profiles folder.
-     * \note There is no undo on this as it deletes the folder from the machine.
      * \param name The name of the profile to delete.
      * \return A QgsError with a message if the profile failed to be deleted.
+     * \note There is no undo on this as it deletes the folder from the machine.
      */
     QgsError deleteProfile( const QString &name );
 
@@ -211,5 +211,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
 
     std::unique_ptr< QSettings > mSettings;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSUSERPROFILEMANAGER_H

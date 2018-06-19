@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
+    <width>948</width>
     <height>731</height>
    </rect>
   </property>
@@ -146,7 +146,7 @@
          <enum>QAbstractItemView::SelectRows</enum>
         </property>
         <property name="columnCount">
-         <number>6</number>
+         <number>8</number>
         </property>
         <column>
          <property name="text">
@@ -176,6 +176,19 @@
         <column>
          <property name="text">
           <string>Action Scopes</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>On Notification</string>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If not empty, this will enable provider notification listening and the action will be executed when the notification message matched the specified value. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Only when editable</string>
          </property>
         </column>
        </widget>
@@ -266,6 +279,33 @@
   <tabstop>mAttributeActionTable</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

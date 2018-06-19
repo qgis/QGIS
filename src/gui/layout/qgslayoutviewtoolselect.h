@@ -22,6 +22,8 @@
 #include "qgslayoutviewrubberband.h"
 #include <memory>
 
+class QgsLayoutMouseHandles;
+
 /**
  * \ingroup gui
  * Layout view tool for selecting items in the layout.
@@ -38,11 +40,25 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
      * Constructor for QgsLayoutViewToolSelect.
      */
     QgsLayoutViewToolSelect( QgsLayoutView *view SIP_TRANSFERTHIS );
+    ~QgsLayoutViewToolSelect() override;
 
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutReleaseEvent( QgsLayoutViewMouseEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
+
+    ///@cond PRIVATE
+
+    /**
+     * Returns the view's mouse handles.
+     * \note Not available in Python bindings.
+     */
+    SIP_SKIP QgsLayoutMouseHandles *mouseHandles();
+    ///@endcond
+
+    void setLayout( QgsLayout *layout );
 
   private:
 
@@ -57,6 +73,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
+    QPointer< QgsLayoutMouseHandles > mMouseHandles; //owned by scene
 };
 
 #endif // QGSLAYOUTVIEWTOOLSELECT_H

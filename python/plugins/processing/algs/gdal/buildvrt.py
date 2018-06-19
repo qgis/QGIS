@@ -27,14 +27,18 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessing,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessing,
+                       QgsProcessingParameterDefinition,
                        QgsProperty,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterCrs,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -50,8 +54,12 @@ class buildvrt(GdalAlgorithm):
     RESOLUTION = 'RESOLUTION'
     SEPARATE = 'SEPARATE'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
+    ADD_ALPHA = 'ADD_ALPHA'
+    ASSIGN_CRS = 'ASSIGN_CRS'
+    RESAMPLING = 'RESAMPLING'
 
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
+    RESAMPLING_OPTIONS = ['nearest', 'bilinear', 'cubic', 'cubicspline', 'lanczos', 'average', 'mode']
 
     def __init__(self):
         super().__init__()
@@ -74,28 +82,59 @@ class buildvrt(GdalAlgorithm):
                 return 'vrt'
 
         self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
-                                                               self.tr('Input layers'), QgsProcessing.TypeRaster))
+                                                               QCoreApplication.translate("ParameterVrtDestination", 'Input layers'),
+                                                               QgsProcessing.TypeRaster))
         self.addParameter(QgsProcessingParameterEnum(self.RESOLUTION,
-                                                     self.tr('Resolution'), options=self.RESOLUTION_OPTIONS, defaultValue=0))
+                                                     QCoreApplication.translate("ParameterVrtDestination", 'Resolution'),
+                                                     options=self.RESOLUTION_OPTIONS,
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
-                                                        self.tr('Layer stack'), defaultValue=True))
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Place each input file into a separate band'),
+                                                        defaultValue=True))
         self.addParameter(QgsProcessingParameterBoolean(self.PROJ_DIFFERENCE,
-                                                        self.tr('Allow projection difference'), defaultValue=False))
-        self.addParameter(ParameterVrtDestination(self.OUTPUT, self.tr('Virtual')))
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Allow projection difference'),
+                                                        defaultValue=False))
+
+        add_alpha_param = QgsProcessingParameterBoolean(self.ADD_ALPHA,
+                                                        QCoreApplication.translate("ParameterVrtDestination", 'Add alpha mask band to VRT when source raster has none'),
+                                                        defaultValue=False)
+        add_alpha_param.setFlags(add_alpha_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(add_alpha_param)
+
+        assign_crs = QgsProcessingParameterCrs(self.ASSIGN_CRS,
+                                               QCoreApplication.translate("ParameterVrtDestination", 'Override projection for the output file'),
+                                               defaultValue=None, optional=True)
+        assign_crs.setFlags(assign_crs.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(assign_crs)
+
+        resampling = QgsProcessingParameterEnum(self.RESAMPLING,
+                                                QCoreApplication.translate("ParameterVrtDestination", 'Resampling algorithm'),
+                                                options=self.RESAMPLING_OPTIONS,
+                                                defaultValue=0)
+        resampling.setFlags(resampling.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(resampling)
+
+        self.addParameter(ParameterVrtDestination(self.OUTPUT, QCoreApplication.translate("ParameterVrtDestination", 'Virtual')))
 
     def name(self):
         return 'buildvirtualraster'
 
     def displayName(self):
-        return self.tr('Build Virtual Raster')
+        return QCoreApplication.translate("buildvrt", 'Build virtual raster')
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'vrt.png'))
 
     def group(self):
-        return self.tr('Raster miscellaneous')
+        return QCoreApplication.translate("buildvrt", 'Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def commandName(self):
+        return "gdalbuildvrt"
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)])
@@ -103,29 +142,22 @@ class buildvrt(GdalAlgorithm):
             arguments.append('-separate')
         if self.parameterAsBool(parameters, buildvrt.PROJ_DIFFERENCE, context):
             arguments.append('-allow_projection_difference')
+        if self.parameterAsBool(parameters, buildvrt.ADD_ALPHA, context):
+            arguments.append('-addalpha')
+        crs = self.parameterAsCrs(parameters, self.ASSIGN_CRS, context)
+        if crs.isValid():
+            arguments.append('-a_srs')
+            arguments.append(GdalUtils.gdal_crs_string(crs))
+        arguments.append('-r')
+        arguments.append(self.RESAMPLING_OPTIONS[self.parameterAsEnum(parameters, self.RESAMPLING, context)])
+
         # Always write input files to a text file in case there are many of them and the
         # length of the command will be longer then allowed in command prompt
-        listFile = os.path.join(QgsProcessingUtils.tempFolder(), 'buildvrtInputFiles.txt')
-        with open(listFile, 'w') as f:
-            layers = []
-            for l in self.parameterAsLayerList(parameters, self.INPUT, context):
-                layers.append(l.source())
-            f.write('\n'.join(layers))
+        list_file = GdalUtils.writeLayerParameterToTextFile(filename='buildvrtInputFiles.txt', alg=self, parameters=parameters, parameter_name=self.INPUT, context=context, executing=executing, quote=False)
         arguments.append('-input_file_list')
-        arguments.append(listFile)
+        arguments.append(list_file)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        # Ideally the file extensions should be limited to just .vrt but I'm not sure how
-        # to do it simply so instead a check is performed.
-        _, ext = os.path.splitext(out)
-        if not ext.lower() == '.vrt':
-            out = out[:-len(ext)] + '.vrt'
-            if isinstance(parameters[self.OUTPUT], QgsProcessingOutputLayerDefinition):
-                output_def = QgsProcessingOutputLayerDefinition(parameters[self.OUTPUT])
-                output_def.sink = QgsProperty.fromValue(out)
-                self.setOutputValue(self.OUTPUT, output_def)
-            else:
-                self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
-        return ['gdalbuildvrt', GdalUtils.escapeAndJoin(arguments)]
+        return [self.commandName(), GdalUtils.escapeAndJoin(arguments)]

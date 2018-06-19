@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
@@ -39,6 +38,9 @@ class PostGISExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def groupId(self):
+        return 'database'
+
     def __init__(self):
         super().__init__()
 
@@ -50,7 +52,7 @@ class PostGISExecuteSQL(QgisAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.gui.wrappers_postgis.ConnectionWidgetWrapper'}})
         self.addParameter(db_param)
-        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query')))
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), multiLine=True))
 
     def name(self):
         return 'postgisexecutesql'

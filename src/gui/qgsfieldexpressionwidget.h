@@ -34,7 +34,8 @@ class QgsMapLayer;
 class QgsVectorLayer;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFieldExpressionWidget class reates a widget to choose fields and edit expressions
  * It contains a combo boxto display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
@@ -46,8 +47,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
-    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
 
@@ -59,7 +60,16 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! define the title used in the expression dialog
     void setExpressionDialogTitle( const QString &title );
 
-    //! return the title used for the expression dialog
+    /**
+     * Appends a scope to the current expression context.
+     *
+     * \param scope The scope to add.
+     *
+     * \since QGIS 3.2
+     */
+    void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
+
+    //! Returns the title used for the expression dialog
     const QString expressionDialogTitle() { return mExpressionDialogTitle; }
 
     //! setFilters allows fitering according to the type of field
@@ -70,7 +80,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     //! currently used filter on list of fields
     QgsFieldProxyModel::Filters filters() const { return mFieldProxyModel->filters(); }
 
-    //! set the geometry calculator used in the expression dialog
+    //! Sets the geometry calculator used in the expression dialog
     void setGeomCalculator( const QgsDistanceArea &da );
 
     /**
@@ -81,7 +91,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QString currentField( bool *isExpression = nullptr, bool *isValid = nullptr ) const;
 
     /**
-      * Return true if the current expression is valid
+      * Returns true if the current expression is valid
       */
     bool isValidExpression( QString *expressionError = nullptr ) const;
 
@@ -91,7 +101,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     bool isExpression() const;
 
     /**
-      * Return the current text that is set in the expression area
+      * Returns the current text that is set in the expression area
       */
     QString currentText() const;
 
@@ -129,12 +139,36 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    bool allowEvalErrors() const;
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void setAllowEvalErrors( bool allowEvalErrors );
+
   signals:
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( const QString &fieldName, bool isValid );
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void allowEvalErrorsChanged();
 
   public slots:
 
@@ -197,6 +231,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
+    bool mAllowEvalErrors = false;
 
     friend class TestQgsFieldExpressionWidget;
 };

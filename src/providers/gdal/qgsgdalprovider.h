@@ -33,9 +33,12 @@
 #include <QMap>
 #include <QVector>
 
+class QMutex;
+
 class QgsRasterPyramid;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
@@ -62,24 +65,42 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-     *                otherwise we contact the host directly.
+     * \param   uri         file name
+     * \param   update      whether to open in update mode
+     * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( QString const &uri = QString(), bool update = false );
+    QgsGdalProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
-    QgsGdalProvider( QString const &uri, QgsError error );
+    QgsGdalProvider( const QString &uri, const QgsError &error );
 
 
-    ~QgsGdalProvider();
+    ~QgsGdalProvider() override;
 
+    /**
+     * Gets the data source specification. This may be a path or a protocol
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
+     */
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
+
+    /**
+     * Clone the provider.
+     *
+     * The underlying GDAL dataset is shared among the main provider and its
+     * clones.
+     */
     QgsGdalProvider *clone() const override;
 
     QString name() const override;
     QString description() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
     bool isValid() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
@@ -103,7 +124,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     double bandScale( int bandNo ) const override;
     double bandOffset( int bandNo ) const override;
     QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QStringList subLayers() const override;
     static QStringList subLayers( GDALDatasetH dataset );
 
@@ -140,9 +161,6 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                            QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
-    //! \brief Close data set and release related data
-    void closeDataset();
-
     static QMap<QString, QString> supportedMimes();
 
     bool isEditable() const override;
@@ -156,6 +174,37 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString validatePyramidsConfigOptions( QgsRaster::RasterPyramidsFormat pyramidsFormat,
                                            const QStringList &configOptions, const QString &fileFormat ) override;
   private:
+
+    QgsGdalProvider( const QgsGdalProvider &other );
+
+    //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
+    bool mHasInit = false;
+
+    //! Open mGdalDataset/mGdalBaseDataset if needed.
+    bool initIfNeeded();
+
+    // There are 2 cloning mechanisms.
+    // * Either the cloned provider use the same GDAL handles as the main provider
+    //   instance, in which case *mpRefCounter is used to count how many providers
+    //    use the main provider. And *mpMutex is used to protect access to the
+    //   GDAL resource.
+    // * Or the cloned provider use its own GDAL handles, but with a cache mechanism
+    //   to avoid constant opening/closing of datasets. In that case *mpParent is
+    //   used to point to the main provider, and *mpLightRefCounter to count how
+    //   many providers point to that main provider.
+
+    // reference counter to know how many main and shared provider instances are linked
+    QAtomicInt *mpRefCounter = nullptr;
+
+    // mutex to protect access to mGdalDataset among main and shared provider instances
+    QMutex *mpMutex = nullptr;
+
+    // pointer to a QgsGdalProvider* that is the parent. Note when *mpParent == this, we are the parent.
+    QgsGdalProvider **mpParent = nullptr;
+
+    // reference counter to know how many main and related provider instances are linked
+    mutable QAtomicInt *mpLightRefCounter = nullptr;
+
     // update mode
     bool mUpdate;
 
@@ -168,22 +217,24 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Whether this raster has overviews / pyramids or not
-    bool mHasPyramids;
+    bool mHasPyramids = false;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
      * indexed from 0
      */
     QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
-    int mWidth;
-    int mHeight;
-    int mXBlockSize;
-    int mYBlockSize;
+    int mWidth = 0;
+    int mHeight = 0;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
+    int mBandCount = 1;
 
     //mutable QList<bool> mMinMaxComputed;
 
@@ -194,10 +245,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //mutable QList<double> mMaximum;
 
     //! \brief Pointer to the gdaldataset
-    GDALDatasetH mGdalBaseDataset;
+    GDALDatasetH mGdalBaseDataset = nullptr;
 
     //! \brief Pointer to the gdaldataset (possibly warped vrt)
-    GDALDatasetH mGdalDataset;
+    GDALDatasetH mGdalDataset = nullptr;
 
     //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];
@@ -214,6 +265,32 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! Wrapper for GDALGetRasterBand() that takes into account mMaskBandExposedAsAlpha.
     GDALRasterBandH getBand( int bandNo ) const;
+
+    //! \brief Close data set and release related data
+    void closeDataset();
+
+    //! Pair of GDAL base dataset and "real" dataset handles.
+    struct DatasetPair
+    {
+      GDALDatasetH mGdalBaseDataset;
+      GDALDatasetH mGdalDataset;
+    };
+
+    // Dataset cache
+    static QHash< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+
+    // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
+    static int mgDatasetCacheSize;
+
+    //! Add handles to the cache if possible for the specified parent provider, in which case true is returned. If false returned, then the handles should be processed appropriately by the caller
+    static bool cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider, GDALDatasetH gdalBaseDataset, GDALDatasetH gdalDataset );
+
+    //! Gets cached handles for the specified provider, in which case true is returned and 2 handles are set.
+    static bool getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset );
+
+    //! Close all cached dataset for the specified provider.
+    static void closeCachedGdalHandlesFor( QgsGdalProvider *provider );
+
 };
 
 #endif

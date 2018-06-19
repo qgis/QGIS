@@ -50,6 +50,7 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/symbology  # needed by qgsvectorfilewriter.h
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
@@ -59,12 +60,12 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_BINARY_DIR}/src/ui
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${GEOS_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR} # needed by qgsvectorfilewriter.h
   ${SQLITE3_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)

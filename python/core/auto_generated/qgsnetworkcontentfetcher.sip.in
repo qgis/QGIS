@@ -1,0 +1,97 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcher.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsNetworkContentFetcher : QObject
+{
+%Docstring
+HTTP network content fetcher. A simple method for fetching remote HTTP content
+and converting the content to standard formats. Url redirects are automatically
+handled.
+
+.. seealso:: :py:class:`QgsNetworkContentFetcherTask`
+
+.. versionadded:: 2.5
+%End
+
+%TypeHeaderCode
+#include "qgsnetworkcontentfetcher.h"
+%End
+  public:
+
+    QgsNetworkContentFetcher();
+%Docstring
+Constructor for QgsNetworkContentFetcher.
+%End
+
+    ~QgsNetworkContentFetcher();
+
+    void fetchContent( const QUrl &url );
+%Docstring
+Fetches content from a remote URL and handles redirects. The finished()
+signal will be emitted when content has been fetched.
+
+:param url: URL to fetch
+%End
+
+    void fetchContent( const QNetworkRequest &request );
+%Docstring
+Fetches content using a network ``request`` and handles redirects. The finished()
+signal will be emitted when content has been fetched.
+
+.. versionadded:: 3.2
+%End
+
+    QNetworkReply *reply();
+%Docstring
+Returns a reference to the network reply
+
+:return: QNetworkReply for fetched URL content
+%End
+
+    QString contentAsString() const;
+%Docstring
+Returns the fetched content as a string
+
+:return: string containing network content
+%End
+
+    void cancel();
+%Docstring
+Cancels any ongoing request.
+
+.. versionadded:: 3.2
+%End
+
+  signals:
+
+    void finished();
+%Docstring
+Emitted when content has loaded
+%End
+
+    void downloadProgress( qint64 bytesReceived, qint64 bytesTotal );
+%Docstring
+Emitted when data is received.
+
+.. versionadded:: 3.2
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkcontentfetcher.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

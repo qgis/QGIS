@@ -1,8 +1,8 @@
 r.mfilter
 Performs raster map matrix filter.
 Raster (r.*)
-ParameterRaster|input|Input layer|False
-ParameterFile|filter|Filter file|False
-ParameterNumber|repeat|Number of times to repeat the filter|1|None|1
-ParameterBoolean|-z|Apply filter only to zero data values|False
-OutputRaster|output|Filtered
+QgsProcessingParameterRasterLayer|input|Input layer|None|False
+QgsProcessingParameterFile|filter|Filter file|QgsProcessingParameterFile.File|txt|None|False
+QgsProcessingParameterNumber|repeat|Number of times to repeat the filter|QgsProcessingParameterNumber.Integer|1|True|1|None
+QgsProcessingParameterBoolean|-z|Apply filter only to zero data values|False
+QgsProcessingParameterRasterDestination|output|Filtered

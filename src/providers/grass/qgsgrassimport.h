@@ -43,7 +43,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImportProgress( QProcess *process, QObject *parent = 0 );
+    QgsGrassImportProgress( QProcess *process, QObject *parent = nullptr );
 
     void setProcess( QProcess *process );
     QString progressHtml() { return mProgressHtml; }
@@ -74,7 +74,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     Q_OBJECT
   public:
     QgsGrassImport( const QgsGrassObject &grassObject );
-    virtual ~QgsGrassImport();
+    ~QgsGrassImport() override;
     QgsGrassObject grassObject() const { return mGrassObject; }
     virtual void importInThread();
     virtual bool import() = 0;
@@ -108,7 +108,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     bool mCanceled;
     QProcess *mProcess = nullptr;
     QgsGrassImportProgress *mProgress = nullptr;
-    QFutureWatcher<bool> *mFutureWatcher;
+    QFutureWatcher<bool> *mFutureWatcher = nullptr;
 };
 
 class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
@@ -118,7 +118,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     // takes pipe ownership
     QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject,
                           const QgsRectangle &extent, int xSize, int ySize );
-    ~QgsGrassRasterImport();
+    ~QgsGrassRasterImport() override;
     bool import() override;
     QString srcDescription() const override;
     // get list of extensions (for bands)
@@ -139,7 +139,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorImport : public QgsGrassImport
   public:
     // takes provider ownership
     QgsGrassVectorImport( QgsVectorDataProvider *provider, const QgsGrassObject &grassObject );
-    ~QgsGrassVectorImport();
+    ~QgsGrassVectorImport() override;
     bool import() override;
     QString srcDescription() const override;
 

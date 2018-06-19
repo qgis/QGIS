@@ -25,9 +25,17 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import regroupRasters
+from .i import regroupRasters, importSigFile
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
-    regroupRasters(alg, parameters, 'input', 'group', 'subgroup', {'signaturefile': 'sigset'})
+    group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
+
+    # import signature
+    signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
+    shortSigFile = importSigFile(alg, group, subgroup, signatureFile, 'sigset')
+    parameters['signaturefile'] = shortSigFile
+
+    # Handle other parameters
+    alg.processCommand(parameters, context, feedback)

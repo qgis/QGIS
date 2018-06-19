@@ -20,6 +20,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsWkbTypes,
+    QgsProject,
     QgsGeometry,
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
@@ -74,15 +75,15 @@ class FeatureSourceTestCase(object):
         while it.nextFeature(f):
             # expect feature to be valid
             self.assertTrue(f.isValid())
-            # split off the first 5 attributes only - some source test datasets will include
-            # additional attributes which we ignore
-            attrs = f.attributes()[0:5]
+            # some source test datasets will include additional attributes which we ignore,
+            # so cherry pick desired attributes
+            attrs = [f['pk'], f['cnt'], f['name'], f['name2'], f['num_char']]
             # force the num_char attribute to be text - some sources (e.g., delimited text) will
             # automatically detect that this attribute contains numbers and set it as a numeric
             # field
             attrs[4] = str(attrs[4])
             attributes[f['pk']] = attrs
-            geometries[f['pk']] = f.hasGeometry() and f.geometry().exportToWkt()
+            geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
                                3: [3, 300, 'Pear', 'PEaR', '3'],
@@ -98,7 +99,7 @@ class FeatureSourceTestCase(object):
         for f in extra_features:
             expected_attributes[f[0]] = f.attributes()
             if f.hasGeometry():
-                expected_geometries[f[0]] = f.geometry().exportToWkt()
+                expected_geometries[f[0]] = f.geometry().asWkt()
             else:
                 expected_geometries[f[0]] = None
 
@@ -110,7 +111,7 @@ class FeatureSourceTestCase(object):
                 expected_attributes[i][attr_idx] = v
         for i, g, in changed_geometries.items():
             if g:
-                expected_geometries[i] = g.exportToWkt()
+                expected_geometries[i] = g.asWkt()
             else:
                 expected_geometries[i] = None
 
@@ -319,6 +320,10 @@ class FeatureSourceTestCase(object):
         values = [f['name'] for f in self.source.getFeatures(request)]
         self.assertEqual(values, ['Pear', 'Orange', 'Honey', 'Apple', NULL])
 
+        request = QgsFeatureRequest().addOrderBy('num_char', False)
+        values = [f['pk'] for f in self.source.getFeatures(request)]
+        self.assertEqual(values, [5, 4, 3, 2, 1])
+
         # Case sensitivity
         request = QgsFeatureRequest().addOrderBy('name2')
         values = [f['name2'] for f in self.source.getFeatures(request)]
@@ -485,6 +490,14 @@ class FeatureSourceTestCase(object):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
 
+        # ExactIntersection flag set, but no filter rect set. Should be ignored.
+        request = QgsFeatureRequest()
+        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)
@@ -508,34 +521,64 @@ class FeatureSourceTestCase(object):
         for f in self.source.getFeatures():
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
+    def testRectAndFids(self):
+        """
+        Test the combination of a filter rect along with filterfids
+        """
+
+        # first get feature ids
+        ids = {f['pk']: f.id() for f in self.source.getFeatures()}
+
+        extent = QgsRectangle(-70, 67, -60, 80)
+        request = QgsFeatureRequest().setFilterFids([ids[3], ids[4]]).setFilterRect(extent)
+        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        expected = [4]
+        assert set(expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(set(expected), result)
+        self.assertTrue(all_valid)
+
+        # shouldn't matter what order this is done in
+        request = QgsFeatureRequest().setFilterRect(extent).setFilterFids([ids[3], ids[4]])
+        result = set([f['pk'] for f in self.source.getFeatures(request)])
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        expected = [4]
+        assert set(
+            expected) == result, 'Expected {} and got {} when testing for combination of filterRect and expression'.format(
+            set(expected), result)
+        self.assertTrue(all_valid)
+
+        # test that results match QgsFeatureRequest.acceptFeature
+        for f in self.source.getFeatures():
+            self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
+
     def testGetFeaturesDestinationCrs(self):
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext())
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         # test that features have been reprojected
-        self.assertAlmostEqual(features[1].geometry().geometry().x(), -7829322, -5)
-        self.assertAlmostEqual(features[1].geometry().geometry().y(), 9967753, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
+        self.assertAlmostEqual(features[1].geometry().constGet().x(), -7829322, -5)
+        self.assertAlmostEqual(features[1].geometry().constGet().y(), 9967753, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
         self.assertFalse(features[3].hasGeometry())
-        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
-        self.assertAlmostEqual(features[5].geometry().geometry().x(), -7917376, -5)
-        self.assertAlmostEqual(features[5].geometry().geometry().y(), 14493008, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().x(), -7917376, -5)
+        self.assertAlmostEqual(features[5].geometry().constGet().y(), 14493008, -5)
 
         # when destination crs is set, filter rect should be in destination crs
         rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785')).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext()).setFilterRect(rect)
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         self.assertEqual(set(features.keys()), {2, 4})
         # test that features have been reprojected
-        self.assertAlmostEqual(features[2].geometry().geometry().x(), -7591989, -5)
-        self.assertAlmostEqual(features[2].geometry().geometry().y(), 11334232, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().x(), -7271389, -5)
-        self.assertAlmostEqual(features[4].geometry().geometry().y(), 14531322, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().x(), -7591989, -5)
+        self.assertAlmostEqual(features[2].geometry().constGet().y(), 11334232, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().x(), -7271389, -5)
+        self.assertAlmostEqual(features[4].geometry().constGet().y(), 14531322, -5)
 
         # bad rect for transform
         rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356')).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356'), QgsProject.instance().transformContext()).setFilterRect(rect)
         features = [f for f in self.source.getFeatures(request)]
         self.assertFalse(features)
 
@@ -637,13 +680,17 @@ class FeatureSourceTestCase(object):
             self.assertTrue(f.isValid())
 
     def testUniqueValues(self):
-        self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
-        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(2)), 'Got {}'.format(set(self.source.uniqueValues(2)))
+        self.assertEqual(set(self.source.uniqueValues(self.source.fields().lookupField('cnt'))), set([-200, 100, 200, 300, 400]))
+        assert set(['Apple', 'Honey', 'Orange', 'Pear', NULL]) == set(self.source.uniqueValues(self.source.fields().lookupField('name'))), 'Got {}'.format(set(self.source.uniqueValues(self.source.fields().lookupField('name'))))
 
     def testMinimumValue(self):
-        self.assertEqual(self.source.minimumValue(1), -200)
-        self.assertEqual(self.source.minimumValue(2), 'Apple')
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('cnt')), -200)
+        self.assertEqual(self.source.minimumValue(self.source.fields().lookupField('name')), 'Apple')
 
     def testMaximumValue(self):
-        self.assertEqual(self.source.maximumValue(1), 400)
-        self.assertEqual(self.source.maximumValue(2), 'Pear')
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('cnt')), 400)
+        self.assertEqual(self.source.maximumValue(self.source.fields().lookupField('name')), 'Pear')
+
+    def testAllFeatureIds(self):
+        ids = set([f.id() for f in self.source.getFeatures()])
+        self.assertEqual(set(self.source.allFeatureIds()), ids)

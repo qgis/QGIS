@@ -38,18 +38,11 @@
 #include "qgssettings.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsproject.h"
 
 QgsClipboard::QgsClipboard()
-  : QObject()
-  , mFeatureClipboard()
-  , mFeatureFields()
-  , mUseSystemClipboard( false )
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );
-}
-
-QgsClipboard::~QgsClipboard()
-{
 }
 
 void QgsClipboard::replaceWithCopyOf( QgsVectorLayer *src )
@@ -83,15 +76,7 @@ void QgsClipboard::replaceWithCopyOf( QgsFeatureStore &featureStore )
 
 QString QgsClipboard::generateClipboardText() const
 {
-  QgsSettings settings;
-  CopyFormat format = AttributesWithWKT;
-  if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
-    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
-  else
-  {
-    //old format setting
-    format = settings.value( QStringLiteral( "qgis/copyGeometryAsWKT" ), true ).toBool() ? AttributesWithWKT : AttributesOnly;
-  }
+  CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ),  AttributesWithWKT );
 
   switch ( format )
   {
@@ -123,7 +108,7 @@ QString QgsClipboard::generateClipboardText() const
         if ( format == AttributesWithWKT )
         {
           if ( it->hasGeometry() )
-            textFields += it->geometry().exportToWkt();
+            textFields += it->geometry().asWkt();
           else
           {
             textFields += QgsApplication::nullRepresentation();
@@ -155,22 +140,51 @@ QString QgsClipboard::generateClipboardText() const
 
 void QgsClipboard::setSystemClipboard()
 {
-  QString textCopy = generateClipboardText();
+  // avoid overwriting internal clipboard - note that on Windows, the call to QClipboard::setText
+  // below doesn't immediately trigger QClipboard::dataChanged, and accordingly the call to
+  // systemClipboardChanged() is delayed. So by setting mIgnoreNextSystemClipboardChange we indicate
+  // that just the next call to systemClipboardChanged() should be ignored
+  mIgnoreNextSystemClipboardChange = true;
 
   QClipboard *cb = QApplication::clipboard();
 
   // Copy text into the clipboard
+  QString textCopy = generateClipboardText();
+  QMimeData *m = new QMimeData();
+  m->setText( textCopy );
+
+  if ( mFeatureClipboard.count() < 1000 )
+  {
+    CopyFormat format = QgsSettings().enumValue( QStringLiteral( "qgis/copyFeatureFormat" ), AttributesWithWKT );
+
+    QString htmlCopy;
+    switch ( format )
+    {
+      case AttributesOnly:
+      case AttributesWithWKT:
+        htmlCopy = textCopy;
+        htmlCopy.replace( '\n', QStringLiteral( "</td></tr><tr><td>" ) );
+        htmlCopy.replace( '\t', QStringLiteral( "</td><td>" ) );
+        htmlCopy = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>" ) + htmlCopy + QStringLiteral( "</td></tr></table></body></html>" );
+        break;
+      case GeoJSON:
+        break;
+    }
+    if ( !htmlCopy.isEmpty() )
+    {
+      m->setHtml( htmlCopy );
+    }
+  }
 
   // With qgis running under Linux, but with a Windows based X
   // server (Xwin32), ::Selection was necessary to get the data into
   // the Windows clipboard (which seems contrary to the Qt
   // docs). With a Linux X server, ::Clipboard was required.
   // The simple solution was to put the text into both clipboards.
-
 #ifdef Q_OS_LINUX
-  cb->setText( textCopy, QClipboard::Selection );
+  cb->setMimeData( m, QClipboard::Selection );
 #endif
-  cb->setText( textCopy, QClipboard::Clipboard );
+  cb->setMimeData( m, QClipboard::Clipboard );
 
   QgsDebugMsgLevel( QString( "replaced system clipboard with: %1." ).arg( textCopy ), 4 );
 }
@@ -257,7 +271,7 @@ void QgsClipboard::insert( const QgsFeature &feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsgLevel( "inserted " + feature.geometry().exportToWkt(), 4 );
+  QgsDebugMsgLevel( "inserted " + feature.geometry().asWkt(), 4 );
   mUseSystemClipboard = false;
   emit changed();
 }
@@ -277,16 +291,8 @@ QgsFeatureList QgsClipboard::transformedCopyOf( const QgsCoordinateReferenceSyst
 {
   QgsFeatureList featureList = copyOf( fields );
 
-  QgsCoordinateTransform ct;
-  if ( mSrcLayer )
-  {
-    QgisApp::instance()->mapCanvas()->getDatumTransformInfo( mSrcLayer, crs().authid(), destCRS.authid() );
-    ct = QgisApp::instance()->mapCanvas()->mapSettings().datumTransformStore().transformation( mSrcLayer, crs().authid(), destCRS.authid() );
-  }
-  else
-  {
-    ct = QgsCoordinateTransform( crs(), destCRS );
-  }
+  QgisApp::instance()->askUserForDatumTransform( crs(), destCRS );
+  QgsCoordinateTransform ct = QgsCoordinateTransform( crs(), destCRS, QgsProject::instance() );
 
   QgsDebugMsg( "transforming clipboard." );
   for ( QgsFeatureList::iterator iter = featureList.begin(); iter != featureList.end(); ++iter )
@@ -338,8 +344,22 @@ QByteArray QgsClipboard::data( const QString &mimeType ) const
   return QApplication::clipboard()->mimeData()->data( mimeType );
 }
 
+QgsFields QgsClipboard::fields() const
+{
+  if ( !mUseSystemClipboard )
+    return mFeatureFields;
+  else
+    return retrieveFields();
+}
+
 void QgsClipboard::systemClipboardChanged()
 {
+  if ( mIgnoreNextSystemClipboardChange )
+  {
+    mIgnoreNextSystemClipboardChange = false;
+    return;
+  }
+
   mUseSystemClipboard = true;
   emit changed();
 }

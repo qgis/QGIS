@@ -33,13 +33,18 @@ class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsFeature;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Description of feature class in GML
 */
 class CORE_EXPORT QgsGmlFeatureClass
 {
   public:
-    QgsGmlFeatureClass();
+
+    /**
+     * Constructor for QgsGmlFeatureClass.
+     */
+    QgsGmlFeatureClass() = default;
     QgsGmlFeatureClass( const QString &name, const QString &path );
 
     QList<QgsField> &fields() { return  mFields; }
@@ -70,7 +75,8 @@ class CORE_EXPORT QgsGmlFeatureClass
     QStringList mGeometryAttributes;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGmlSchema
  */
 class CORE_EXPORT QgsGmlSchema : public QObject
@@ -79,26 +85,27 @@ class CORE_EXPORT QgsGmlSchema : public QObject
   public:
     QgsGmlSchema();
 
-    //! Get fields info from XSD
+    //! Gets fields info from XSD
     bool parseXSD( const QByteArray &xml );
 
-    /** Guess GML schema from data if XSD does not exist.
+    /**
+     * Guess GML schema from data if XSD does not exist.
       * Currently only recognizes UMN Mapserver GetFeatureInfo GML response.
       * Supports only UTF-8, UTF-16, ISO-8859-1, US-ASCII XML encodings.
       * \param data GML data
       * \returns true in case of success */
     bool guessSchema( const QByteArray &data );
 
-    //! Get list of dot separated paths to feature classes parsed from GML or XSD
+    //! Gets list of dot separated paths to feature classes parsed from GML or XSD
     QStringList typeNames() const;
 
-    //! Get fields for type/class name parsed from GML or XSD
+    //! Gets fields for type/class name parsed from GML or XSD
     QList<QgsField> fields( const QString &typeName );
 
-    //! Get list of geometry attributes for type/class name
+    //! Gets list of geometry attributes for type/class name
     QStringList geometryAttributes( const QString &typeName );
 
-    //! Get error if parseXSD() or guessSchema() failed
+    //! Gets error if parseXSD() or guessSchema() failed
     QgsError error() const { return mError; }
 
   private:
@@ -135,40 +142,42 @@ class CORE_EXPORT QgsGmlSchema : public QObject
 
     //helper routines
 
-    /** Reads attribute as string
+    /**
+     * Reads attribute as string
       \returns attribute value or an empty string if no such attribute*/
     QString readAttribute( const QString &attributeName, const XML_Char **attr ) const;
 
     //! Returns pointer to main window or 0 if it does not exist
     QWidget *findMainWindow() const;
 
-    //! Get dom elements by path
+    //! Gets dom elements by path
     QList<QDomElement> domElements( const QDomElement &element, const QString &path );
 
-    //! Get dom element by path
+    //! Gets dom element by path
     QDomElement domElement( const QDomElement &element, const QString &path );
 
     //! Filter list of elements by attribute value
     QList<QDomElement> domElements( QList<QDomElement> &elements, const QString &attr, const QString &attrVal );
 
-    //! Get dom element by path and attribute value
+    //! Gets dom element by path and attribute value
     QDomElement domElement( const QDomElement &element, const QString &path, const QString &attr, const QString &attrVal );
 
     //! Strip namespace from element name
     QString stripNS( const QString &name );
 
-    /** Find GML base type for complex type of given name
+    /**
+     * Find GML base type for complex type of given name
      * \param element input element
      * \param name complex type name
      * \returns name of GML base type without NS, e.g. AbstractFeatureType or empty string if not passed on GML type
      */
     QString xsdComplexTypeGmlBaseType( const QDomElement &element, const QString &name );
 
-    //! Get feature class information from complex type recursively
+    //! Gets feature class information from complex type recursively
     bool xsdFeatureClass( const QDomElement &element, const QString &typeName, QgsGmlFeatureClass &featureClass );
 
 
-    //! Get safely (if empty) top from mode stack
+    //! Gets safely (if empty) top from mode stack
     ParseMode modeStackTop() { return mParseModeStack.isEmpty() ? None : mParseModeStack.top(); }
 
     //! Safely (if empty) pop from mode stack
@@ -181,7 +190,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QString mStringCash;
     QgsFeature *mCurrentFeature = nullptr;
     QString mCurrentFeatureId;
-    int mFeatureCount;
+    int mFeatureCount = 0;
     QString mAttributeName;
     //! Coordinate separator for coordinate strings. Usually ","
     QString mCoordinateSeparator;
@@ -191,7 +200,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     /* Schema information guessed/parsed from GML in getSchema() */
 
     //! Depth level, root element is 0
-    int mLevel;
+    int mLevel = 0;
 
     //! Skip all levels under this
     int mSkipLevel;

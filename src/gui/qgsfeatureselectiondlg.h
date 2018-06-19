@@ -30,7 +30,8 @@ class QgsGenericFeatureSelectionManager;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureSelectionDlg
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
@@ -48,10 +49,12 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsFeatureSelectionDlg
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-     * Get the selected features
+     * Gets the selected features
      *
      * \returns The selected feature ids
      */

@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsFontButtonPlugin : public QObject, public QDesigne
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFontButtonPlugin( QObject *parent = 0 );
+    explicit QgsFontButtonPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

@@ -28,25 +28,27 @@ class QgisInterface;
 class QgsVectorLayer;
 class QAction;
 
-/** A plugin with various GPS tools.
+/**
+ * A plugin with various GPS tools.
 */
-class QgsGPSPlugin: public QObject, public QgisPlugin
+class QgsGpsPlugin: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
 
-    /** Constructor for a plugin. The QgisInterface pointer
+    /**
+     * Constructor for a plugin. The QgisInterface pointer
      *  is passed by QGIS when it attempts to instantiate the plugin.
-     *  \param qI Pointer to the QgisInterface object.
+     *  \param interface pointer to the QgisInterface object.
      */
-    explicit QgsGPSPlugin( QgisInterface * );
+    explicit QgsGpsPlugin( QgisInterface * );
 
 
-    virtual ~QgsGPSPlugin();
+    ~QgsGpsPlugin() override;
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! Create a new GPX layer
@@ -98,7 +100,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     //! Importers for external GPS data file formats
     std::map<QString, QgsBabelFormat *> mImporters;
     //! Upload/downloaders for GPS devices
-    std::map<QString, QgsGPSDevice *> mDevices;
+    std::map<QString, QgsGpsDevice *> mDevices;
 };
 
 #endif

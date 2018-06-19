@@ -24,7 +24,8 @@ class QgsRelationReferenceWidget;
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:
@@ -43,29 +44,31 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 {
     Q_OBJECT
   public:
+
+    //! Constructor for QgsRelationReferenceWidgetWrapper
     explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl,
         int fieldIdx,
         QWidget *editor,
         QgsMapCanvas *canvas,
         QgsMessageBar *messageBar,
-        QWidget *parent SIP_TRANSFERTHIS = 0 );
+        QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QWidget *createWidget( QWidget *parent ) override;
-    virtual void initWidget( QWidget *editor ) override;
-    virtual QVariant value() const override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
+    QVariant value() const override;
     bool valid() const override;
     void showIndeterminateState() override;
 
   public slots:
-    virtual void setValue( const QVariant &value ) override;
-    virtual void setEnabled( bool enabled ) override;
+    void setValue( const QVariant &value ) override;
+    void setEnabled( bool enabled ) override;
 
   private slots:
     void foreignKeyChanged( QVariant value );
 
   protected:
 
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
   private:
     QgsRelationReferenceWidget *mWidget = nullptr;

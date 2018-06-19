@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QDomNode>
 #include <QMap>
+#include <QPointer>
 
 class QgsLayout;
 class QPainter;
@@ -40,7 +41,8 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     Q_OBJECT
   public:
 
-    /** Data defined properties for different item types
+    /**
+     * Data defined properties for different item types
      */
     enum DataDefinedProperty
     {
@@ -51,7 +53,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       PresetPaperSize, //!< Preset paper size for composition
       PaperWidth, //!< Paper width (deprecated)
       PaperHeight, //!< Paper height (deprecated)
-      NumPages, //!< Number of pages in composition
+      NumPages, //!< Number of pages in composition (deprecated)
       PaperOrientation, //!< Paper orientation
       //general composer item properties
       PageNumber, //!< Page number for item placement
@@ -90,7 +92,20 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       ScalebarFillColor, //!< Scalebar fill color
       ScalebarFillColor2, //!< Scalebar secondary fill color
       ScalebarLineColor, //!< Scalebar line color
-      ScalebarLineWidth, //!< Scalebar line width
+      ScalebarLineWidth, //!< Scalebar line width,
+      //table item
+      AttributeTableSourceLayer, //!< Attribute table source layer
+    };
+
+    /**
+     * Specifies whether the value returned by a function should be the original, user
+     * set value, or the current evaluated value for the property. This may differ if
+     * a property has a data defined expression active.
+     */
+    enum PropertyValueType
+    {
+      EvaluatedValue = 0, //!< Return the current evaluated value for the property
+      OriginalValue //!< Return the original, user set value
     };
 
     /**
@@ -109,12 +124,12 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     /**
      * Returns the layout the object is attached to.
      */
-    SIP_SKIP const QgsLayout *layout() const { return mLayout; }
+    SIP_SKIP const QgsLayout *layout() const;
 
     /**
      * Returns the layout the object is attached to.
      */
-    QgsLayout *layout() { return mLayout; }
+    QgsLayout *layout();
 
     /**
      * Returns a reference to the object's property collection, used for data defined overrides.
@@ -167,7 +182,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     void removeCustomProperty( const QString &key );
 
     /**
-     * Return list of keys stored in custom properties for the object.
+     * Returns list of keys stored in custom properties for the object.
      * \see setCustomProperty()
      * \see customProperty()
      * \see removeCustomProperty()
@@ -186,6 +201,13 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * Refreshes the object, causing a recalculation of any property overrides.
      */
     virtual void refresh() {}
+
+  signals:
+
+    /**
+     * Emitted when the object's properties change.
+     */
+    void changed();
 
   protected:
 
@@ -209,7 +231,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      */
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
-    QgsLayout *mLayout = nullptr;
+    QPointer< QgsLayout > mLayout;
 
     QgsPropertyCollection mDataDefinedProperties;
 
@@ -224,6 +246,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     static void initPropertyDefinitions();
 
     friend class TestQgsLayoutObject;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUTOBJECT_H

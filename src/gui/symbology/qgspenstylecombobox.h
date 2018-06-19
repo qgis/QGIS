@@ -20,7 +20,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPenStyleComboBox
  */
 class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
@@ -39,7 +40,8 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPenJoinStyleComboBox
  */
 class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
@@ -54,7 +56,8 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
     void setPenJoinStyle( Qt::PenJoinStyle style );
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPenCapStyleComboBox
  */
 class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox

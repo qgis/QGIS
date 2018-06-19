@@ -20,7 +20,8 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsgeometrycollection.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsMultiSurface
  * \brief Multi surface geometry collection.
  * \since QGIS 2.10
@@ -29,23 +30,17 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
 {
   public:
     QgsMultiSurface();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiSurface" ); }
+    QString geometryType() const override;
+    void clear() override;
     QgsMultiSurface *clone() const override SIP_FACTORY;
-
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
-
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
-
-
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QString asJson( int precision = 17 ) const override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -70,6 +65,10 @@ class CORE_EXPORT QgsMultiSurface: public QgsGeometryCollection
     }
 #endif
 
+    QgsMultiSurface *createEmptyWithSameType() const override SIP_FACTORY;
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTISURFACEV2_H

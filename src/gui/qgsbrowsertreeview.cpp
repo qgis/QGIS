@@ -22,7 +22,6 @@
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
   : QTreeView( parent )
   , mSettingsSection( QStringLiteral( "browser" ) )
-  , mBrowserModel( nullptr )
 {
 }
 
@@ -144,7 +143,7 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
   if ( !model() )
     return false;
 
-  for ( int i = 0 ; i < model()->rowCount( index ); i++ )
+  for ( int i = 0; i < model()->rowCount( index ); i++ )
   {
     QModelIndex childIndex = model()->index( i, 0, index );
     if ( isExpanded( childIndex ) )

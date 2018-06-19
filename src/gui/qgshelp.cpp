@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsexpressioncontext.h"
+#include "qgsmessagelog.h"
 
 #include <QUrl>
 #include <QFileInfo>
@@ -44,6 +45,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
     return helpNotFound;
   }
 
@@ -55,7 +57,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
 
   Q_FOREACH ( const QString &path, paths )
   {
-    if ( path.endsWith( "\\" ) || path.endsWith( "/" ) )
+    if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1String( "/" ) ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -69,9 +71,11 @@ QUrl QgsHelp::helpUrl( const QString &key )
       QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
-    fullPath.replace( QRegularExpression( "(\\$\\$)" ), "$" );
+    fullPath.replace( QRegularExpression( QStringLiteral( "(\\$\\$)" ) ), QStringLiteral( "$" ) );
 
     helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
+
+    QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::Info );
 
     if ( helpPath.startsWith( QStringLiteral( "http" ) ) )
     {
@@ -83,16 +87,16 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     else
     {
-      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( "#" ) );
+      QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( QLatin1String( "#" ) ) );
       if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      int pos = helpPath.lastIndexOf( "#" );
+      int pos = helpPath.lastIndexOf( QLatin1String( "#" ) );
       if ( pos != -1 )
       {
-        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( "#" ) + 1, -1 ) );
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( QLatin1String( "#" ) ) + 1, -1 ) );
       }
     }
 
@@ -160,7 +164,7 @@ bool QgsHelp::urlExists( const QString &url )
     if ( socket.waitForReadyRead() )
     {
       QByteArray bytes = socket.readAll();
-      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) )
+      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) ||  bytes.contains( "301 Moved" ) )
       {
         return true;
       }

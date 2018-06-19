@@ -32,7 +32,8 @@ class QgsRasterLayer;
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-/** \class QgsPalettedRendererClassGatherer
+/**
+ * \class QgsPalettedRendererClassGatherer
 * Calculated raster stats for paletted renderer in a thread
 */
 class QgsPalettedRendererClassGatherer: public QThread
@@ -45,45 +46,10 @@ class QgsPalettedRendererClassGatherer: public QThread
       , mBandNumber( bandNumber )
       , mRamp( ramp )
       , mClasses( existingClasses )
-      , mFeedback( nullptr )
       , mWasCanceled( false )
     {}
 
-    virtual void run() override
-    {
-      mWasCanceled = false;
-
-      // allow responsive cancelation
-      mFeedback = new QgsRasterBlockFeedback();
-      connect( mFeedback, &QgsRasterBlockFeedback::progressChanged, this, &QgsPalettedRendererClassGatherer::progressChanged );
-
-      QgsPalettedRasterRenderer::ClassData newClasses = QgsPalettedRasterRenderer::classDataFromRaster( mLayer->dataProvider(), mBandNumber, mRamp.get(), mFeedback );
-
-      // combine existing classes with new classes
-      QgsPalettedRasterRenderer::ClassData::iterator classIt = newClasses.begin();
-      for ( ; classIt != newClasses.end(); ++classIt )
-      {
-        // check if existing classes contains this same class
-        Q_FOREACH ( const QgsPalettedRasterRenderer::Class &existingClass, mClasses )
-        {
-          if ( existingClass.value == classIt->value )
-          {
-            classIt->color = existingClass.color;
-            classIt->label = existingClass.label;
-            break;
-          }
-        }
-      }
-      mClasses = newClasses;
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit collectedClasses();
-    }
+    void run() override;
 
     //! Informs the gatherer to immediately stop collecting values
     void stop()
@@ -104,7 +70,8 @@ class QgsPalettedRendererClassGatherer: public QThread
 
   signals:
 
-    /** Emitted when classes have been collected
+    /**
+     * Emitted when classes have been collected
      */
     void collectedClasses();
 
@@ -154,7 +121,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
@@ -179,7 +146,8 @@ class QgsPalettedRendererModel : public QAbstractItemModel
 ///@endcond PRIVATE
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPalettedRendererWidget
  */
 class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
@@ -189,7 +157,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
   public:
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsPalettedRendererWidget();
+    ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;

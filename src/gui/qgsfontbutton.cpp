@@ -34,7 +34,7 @@
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mDialogTitle( dialogTitle.isEmpty() ? tr( "Text Format" ) : dialogTitle )
-  , mMenu( nullptr )
+
 {
   setText( tr( "Font" ) );
 
@@ -49,8 +49,9 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
 
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
-  mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
+  int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
+  int minWidth = Qgis::UI_SCALE_FACTOR * fontMetrics().width( 'X' ) * 20;
+  mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
@@ -105,6 +106,7 @@ void QgsFontButton::showSettingsDialog()
 
   // reactivate button's window
   activateWindow();
+  raise();
 }
 
 QgsMapCanvas *QgsFontButton::mapCanvas() const
@@ -538,7 +540,7 @@ void QgsFontButton::prepareMenu()
   sizeWidget->setFocusPolicy( Qt::StrongFocus );
   mMenu->addAction( sizeAction );
 
-  QMenu *recentFontMenu = new QMenu( tr( "Recent fonts" ), mMenu );
+  QMenu *recentFontMenu = new QMenu( tr( "Recent Fonts" ), mMenu );
   Q_FOREACH ( const QString &family, QgsFontUtils::recentFontFamilies() )
   {
     QAction *fontAction = new QAction( family, recentFontMenu );
@@ -581,14 +583,14 @@ void QgsFontButton::prepareMenu()
   }
   mMenu->addMenu( recentFontMenu );
 
-  QAction *configureAction = new QAction( tr( "Configure format..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure Format…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsFontButton::showSettingsDialog );
 
-  QAction *copyFormatAction = new QAction( tr( "Copy format" ), this );
+  QAction *copyFormatAction = new QAction( tr( "Copy Format" ), this );
   mMenu->addAction( copyFormatAction );
   connect( copyFormatAction, &QAction::triggered, this, &QgsFontButton::copyFormat );
-  QAction *pasteFormatAction = new QAction( tr( "Paste format" ), this );
+  QAction *pasteFormatAction = new QAction( tr( "Paste Format" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QgsTextFormat tempFormat;
@@ -653,11 +655,11 @@ void QgsFontButton::prepareMenu()
 
     mMenu->addSeparator();
 
-    QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+    QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
     mMenu->addAction( copyColorAction );
     connect( copyColorAction, &QAction::triggered, this, &QgsFontButton::copyColor );
 
-    QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+    QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
     //enable or disable paste action based on current clipboard contents. We always show the paste
     //action, even if it's disabled, to give hint to the user that pasting colors is possible
     QColor clipColor;
@@ -697,7 +699,7 @@ QgsFontButton::Mode QgsFontButton::mode() const
   return mMode;
 }
 
-void QgsFontButton::setMode( const Mode &mode )
+void QgsFontButton::setMode( Mode mode )
 {
   mMode = mode;
   updatePreview();

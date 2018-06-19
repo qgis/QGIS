@@ -36,7 +36,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -45,7 +45,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -78,7 +78,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 {
   bool limitAtProvider = ( mRequest.limit() >= 0 );
-  QString delim = QLatin1String( "" );
+  QString delim;
 
   // build sql statement
   mStatement = QStringLiteral( "SELECT " );
@@ -471,10 +471,6 @@ QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   , mSqlWhereClause( p->mSqlWhereClause )
   , mCrs( p->crs() )
 {}
-
-QgsDb2FeatureSource::~QgsDb2FeatureSource()
-{
-}
 
 QgsFeatureIterator QgsDb2FeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

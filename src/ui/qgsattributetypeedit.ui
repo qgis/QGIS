@@ -1,20 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>QgsAttributeTypeDialog</class>
- <widget class="QDialog" name="QgsAttributeTypeDialog">
+ <widget class="QWidget" name="QgsAttributeTypeDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>751</width>
-    <height>487</height>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Edit Widget Properties</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="1">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Alias</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Comment</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLineEdit" name="leAlias">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="laComment">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="isFieldEditableCheckBox">
+        <property name="text">
+         <string>Editable</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QCheckBox" name="labelOnTopCheckBox">
+        <property name="text">
+         <string>Label on top</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Widget Type</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="1" column="1">
+       <widget class="QStackedWidget" name="stackedWidget"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="mWidgetTypeComboBox"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QgsCollapsibleGroupBox" name="groupBox">
      <property name="focusPolicy">
       <enum>Qt::NoFocus</enum>
@@ -104,91 +179,65 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="isFieldEditableCheckBox">
-       <property name="text">
-        <string>Editable</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="labelOnTopCheckBox">
-       <property name="text">
-        <string>Label on top</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="title">
-        <string>Defaults</string>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>Default value</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>Preview</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
-          <property name="focusPolicy">
-           <enum>Qt::StrongFocus</enum>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QLabel" name="mDefaultPreviewLabel">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_3">
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Widget Type</string>
+      <string>Defaults</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QListWidget" name="selectionListWidget"/>
+     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Default value</string>
+        </property>
+       </widget>
       </item>
-      <item>
-       <widget class="QStackedWidget" name="stackedWidget"/>
+      <item row="3" column="1">
+       <widget class="QLabel" name="mDefaultPreviewLabel">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsExpressionLineEdit" name="mExpressionWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Preview</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="mApplyDefaultValueOnUpdateCheckBox">
+        <property name="toolTip">
+         <string>&lt;p&gt;With this option checked, the default value will not only be used when the feature is first created, but also whenever a feature's attribute or geometry is changed.&lt;/p&gt;&lt;p&gt;This is often useful for a last_modified timestamp or to record the username that last modified the feature.&lt;/p&gt;</string>
+        </property>
+        <property name="text">
+         <string>Apply default value on update</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item>
+    <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Vertical</enum>
      </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>0</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>
@@ -213,11 +262,10 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>selectionListWidget</tabstop>
+  <tabstop>leAlias</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
-  <tabstop>mExpressionWidget</tabstop>
-  <tabstop>groupBox</tabstop>
+  <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
   <tabstop>mCheckBoxEnforceNotNull</tabstop>
   <tabstop>mUniqueCheckBox</tabstop>
@@ -225,40 +273,9 @@
   <tabstop>constraintExpressionWidget</tabstop>
   <tabstop>leConstraintExpressionDescription</tabstop>
   <tabstop>mCheckBoxEnforceExpression</tabstop>
+  <tabstop>mExpressionWidget</tabstop>
+  <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsAttributeTypeDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>520</x>
-     <y>435</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsAttributeTypeDialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>588</x>
-     <y>435</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

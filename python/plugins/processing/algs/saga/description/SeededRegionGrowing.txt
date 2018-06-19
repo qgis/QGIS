@@ -1,15 +1,15 @@
 Seeded Region Growing
 imagery_segmentation
-ParameterRaster|SEEDS|Seeds|False
-ParameterMultipleInput|FEATURES|Features|3|False
-OutputRaster|SEGMENTS|Segments
-OutputRaster|SIMILARITY|Similarity
-ParameterTable|TABLE|Seeds|False
-ParameterBoolean|NORMALIZE|Normalize|False
-ParameterSelection|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)| 0
-ParameterSelection|METHOD|Method|[0] feature space and position;[1] feature space| 0
-ParameterNumber|SIG_1|Variance in Feature Space| 0.000000|None| 1.000000
-ParameterNumber|SIG_2|Variance in Position Space| 0.000000|None| 1.000000
-ParameterNumber|THRESHOLD|Similarity Threshold| 0.000000|None| 0.000000
-ParameterBoolean|REFRESH|Refresh|False
-ParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)| 2|None| 256
+QgsProcessingParameterRasterLayer|SEEDS|Seeds|None|False
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
+QgsProcessingParameterRasterDestination|SEGMENTS|Segments
+QgsProcessingParameterRasterDestination|SIMILARITY|Similarity
+QgsProcessingParameterFeatureSource|TABLE|Seeds|5|None|False
+QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
+QgsProcessingParameterEnum|NEIGHBOUR|Neighbourhood|[0] 4 (von Neumann);[1] 8 (Moore)|False|0
+QgsProcessingParameterEnum|METHOD|Method|[0] feature space and position;[1] feature space|False|0
+QgsProcessingParameterNumber|SIG_1|Variance in Feature Space|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
+QgsProcessingParameterNumber|SIG_2|Variance in Position Space|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
+QgsProcessingParameterNumber|THRESHOLD|Similarity Threshold|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None
+QgsProcessingParameterBoolean|REFRESH|Refresh|False
+QgsProcessingParameterNumber|LEAFSIZE|Leaf Size (for Speed Optimisation)|QgsProcessingParameterNumber.Integer|256|False|2|None

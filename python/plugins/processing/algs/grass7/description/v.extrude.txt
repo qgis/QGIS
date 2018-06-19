@@ -1,14 +1,15 @@
 v.extrude
 Extrudes flat vector object to 3D with defined height.
 Vector (v.*)
-ParameterVector|input|Name of input 2D vector map|-1|False
-ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
-ParameterNumber|zshift|Shifting value for z coordinates|0.0|None|0.0|True
-ParameterString|height|Fixed height for 3D vector objects (float)|None|False|True
-ParameterTableField|height_column|Name of attribute column with object heights|input|0|True
-ParameterRaster|elevation|Elevation raster for height extraction|True
-ParameterSelection|method|Sampling interpolation method|nearest;bilinear;bicubic|0
-ParameterNumber|scale|Scale factor sampled raster values|0.0|None|1.0|True
-ParameterString|null_value|Height for sampled raster NULL values|None|False|True
-*ParameterBoolean|-t|Trace elevation|False
-OutputVector|output|3D Vector
+QgsProcessingParameterFeatureSource|input|Name of input 2D vector map|-1|None|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+QgsProcessingParameterEnum|type|Input feature type|point;line;area|True|0,1,2|True
+QgsProcessingParameterNumber|zshift|Shifting value for z coordinates|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|height|Fixed height for 3D vector objects|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterField|height_column|Name of attribute column with object heights|None|input|0|False|True
+QgsProcessingParameterRasterLayer|elevation|Elevation raster for height extraction|None|True
+QgsProcessingParameterEnum|method|Sampling interpolation method|nearest;bilinear;bicubic|False|0|True
+QgsProcessingParameterNumber|scale|Scale factor sampled raster values|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|None|True|None|None
+*QgsProcessingParameterBoolean|-t|Trace elevation|False
+QgsProcessingParameterVectorDestination|output|3D Vector

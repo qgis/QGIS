@@ -34,9 +34,28 @@ QString QgsValueMapFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   else
     valueInternalText = value.toString();
 
-  QVariantMap map = config.value( QStringLiteral( "map" ) ).toMap();
-
-  return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
+  const QVariant v = config.value( QStringLiteral( "map" ) );
+  const QVariantList list = v.toList();
+  if ( !list.empty() )
+  {
+    for ( const QVariant &item : list )
+    {
+      const QVariantMap map = item.toMap();
+      // no built-in Qt way to check if a map contains a value, so iterate through each value
+      for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+      {
+        if ( it.value().toString() == valueInternalText )
+          return it.key();
+      }
+    }
+    return QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) );
+  }
+  else
+  {
+    // old style config
+    QVariantMap map = v.toMap();
+    return map.key( valueInternalText, QVariant( QStringLiteral( "(%1)" ).arg( layer->fields().at( fieldIndex ).displayString( value ) ) ).toString() );
+  }
 }
 
 QVariant QgsValueMapFieldFormatter::sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const

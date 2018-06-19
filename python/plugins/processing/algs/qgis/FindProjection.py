@@ -34,7 +34,9 @@ from qgis.core import (QgsGeometry,
                        QgsFields,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
+                       QgsCoordinateTransformContext,
                        QgsWkbTypes,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
                        QgsProcessingParameterCrs,
@@ -59,6 +61,9 @@ class FindProjection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general')
 
+    def groupId(self):
+        return 'vectorgeneral'
+
     def __init__(self):
         super().__init__()
 
@@ -82,6 +87,8 @@ class FindProjection(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         extent = self.parameterAsExtent(parameters, self.TARGET_AREA, context)
         target_crs = self.parameterAsCrs(parameters, self.TARGET_AREA_CRS, context)
@@ -93,9 +100,11 @@ class FindProjection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # make intersection tests nice and fast
-        engine = QgsGeometry.createGeometryEngine(target_geom.geometry())
+        engine = QgsGeometry.createGeometryEngine(target_geom.constGet())
         engine.prepareGeometry()
 
         layer_bounds = QgsGeometry.fromRect(source.sourceExtent())
@@ -105,6 +114,7 @@ class FindProjection(QgisAlgorithm):
 
         found_results = 0
 
+        transform_context = QgsCoordinateTransformContext()
         for current, srs_id in enumerate(crses_to_check):
             if feedback.isCanceled():
                 break
@@ -113,7 +123,7 @@ class FindProjection(QgisAlgorithm):
             if not candidate_crs.isValid():
                 continue
 
-            transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs)
+            transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs, transform_context)
             transformed_bounds = QgsGeometry(layer_bounds)
             try:
                 if not transformed_bounds.transform(transform_candidate) == 0:
@@ -121,12 +131,15 @@ class FindProjection(QgisAlgorithm):
             except:
                 continue
 
-            if engine.intersects(transformed_bounds.geometry()):
-                feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
-                f = QgsFeature(fields)
-                f.setAttributes([candidate_crs.authid()])
-                sink.addFeature(f, QgsFeatureSink.FastInsert)
-                found_results += 1
+            try:
+                if engine.intersects(transformed_bounds.constGet()):
+                    feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
+                    f = QgsFeature(fields)
+                    f.setAttributes([candidate_crs.authid()])
+                    sink.addFeature(f, QgsFeatureSink.FastInsert)
+                    found_results += 1
+            except:
+                continue
 
             feedback.setProgress(int(current * total))
 

@@ -6,6 +6,7 @@
     <comment xml:lang="de">QGIS-Projekt</comment>
     <sub-class-of type="application/xml"/>
     <alias type="application/x-qgis"/>
+    <icon name="qgis-qgs"/>
     <magic priority="50">
       <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
         <match type="string" offset="0:256" value="&lt;qgis projectname"/>
@@ -18,6 +19,7 @@
     <comment>QGIS layer settings</comment>
     <comment xml:lang="de">QGIS-Layereinstellungen</comment>
     <sub-class-of type="application/xml"/>
+    <icon name="qgis-qml"/>
     <magic priority="50">
       <match type="string" offset="0" value="&lt;!DOCTYPE qgis">
         <match type="string" offset="0:256" value="&lt;qgis version"/>

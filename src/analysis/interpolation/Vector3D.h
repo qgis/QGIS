@@ -22,7 +22,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * Class Vector3D represents a 3D-Vector, capable to store x-,y- and
  * z-coordinates in double values. In fact, the class is the same as QgsPoint.
  * The name 'vector' makes it easier to understand the programs.
@@ -33,17 +34,17 @@ class ANALYSIS_EXPORT Vector3D
 {
   protected:
     //! X-component of the vector
-    double mX;
+    double mX = 0;
     //! Y-component of the vector
-    double mY;
+    double mY = 0;
     //! Z-component of the vector
-    double mZ;
+    double mZ = 0;
 
   public:
     //! Constructor taking the three components as arguments
     Vector3D( double x, double y, double z );
     //! Default constructor
-    Vector3D();
+    Vector3D() = default;
 
     bool operator==( const Vector3D &v ) const;
     bool operator!=( const Vector3D &v ) const;
@@ -78,14 +79,6 @@ inline Vector3D::Vector3D( double x, double y, double z )
   : mX( x )
   , mY( y )
   , mZ( z )
-{
-
-}
-
-inline Vector3D::Vector3D()
-  : mX( 0 )
-  , mY( 0 )
-  , mZ( 0 )//using a list
 {
 
 }

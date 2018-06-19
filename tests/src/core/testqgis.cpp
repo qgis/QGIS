@@ -22,7 +22,8 @@
 //qgis includes...
 #include <qgis.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Includes unit tests for the Qgis namespace
  */
 class TestQgis : public QObject
@@ -74,15 +75,15 @@ void TestQgis::permissiveToDouble()
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale::system().groupSeparator() + "000", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "5" ) + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "5" ) + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 5.5 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale::system().groupSeparator() + "000" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "1" ) + QLocale().groupSeparator() + "000" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 
@@ -93,11 +94,11 @@ void TestQgis::permissiveToDouble()
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale::system().groupSeparator() + "00", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.0 );
   ok = false;
-  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale::system().groupSeparator() + "00" + QLocale::system().decimalPoint() + "5", ok );
+  result = qgsPermissiveToDouble( QStringLiteral( "10" ) + QLocale().groupSeparator() + "00" + QLocale().decimalPoint() + "5", ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000.5 );
 }
@@ -110,7 +111,7 @@ void TestQgis::permissiveToInt()
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "1%01000" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QStringLiteral( "1%01000" ).arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 
@@ -121,7 +122,7 @@ void TestQgis::permissiveToInt()
 
   //messy input (invalid thousand separator position), should still be converted
   ok = false;
-  result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale::system().groupSeparator() ), ok );
+  result = qgsPermissiveToInt( QStringLiteral( "10%0100" ).arg( QLocale().groupSeparator() ), ok );
   QVERIFY( ok );
   QCOMPARE( result, 1000 );
 }
@@ -301,7 +302,7 @@ void TestQgis::testQgsAsConst()
   ConstTester ct;
   ct.doSomething();
   QCOMPARE( ct.mVal, 1 );
-  qgsAsConst( ct ).doSomething();
+  qgis::as_const( ct ).doSomething();
   QCOMPARE( ct.mVal, 2 );
 }
 

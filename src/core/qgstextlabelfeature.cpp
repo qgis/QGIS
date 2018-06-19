@@ -21,9 +21,9 @@
 #include "pal/feature.h"
 
 
-QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size )
-  : QgsLabelFeature( id, geometry, size )
-  , mFontMetrics( nullptr )
+QgsTextLabelFeature::QgsTextLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size )
+  : QgsLabelFeature( id, std::move( geometry ), size )
+
 {
   mDefinedFont = QFont();
 }

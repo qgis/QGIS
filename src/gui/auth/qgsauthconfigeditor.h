@@ -27,7 +27,8 @@
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing authentication configuration database
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
@@ -42,16 +43,16 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
      * \param showUtilities Whether to show the widget's utilities button
      * \param relayMessages Whether to relay auth manager messages to internal message bar
      */
-    explicit QgsAuthConfigEditor( QWidget *parent SIP_TRANSFERTHIS = 0, bool showUtilities = true, bool relayMessages = true );
+    explicit QgsAuthConfigEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showUtilities = true, bool relayMessages = true );
 
     //! Hide the widget's title, e.g. when embedding
     void toggleTitleVisibility( bool visible );
 
   public slots:
-    //! Set whether to show the widget's utilities button, e.g. when embedding
+    //! Sets whether to show the widget's utilities button, e.g. when embedding
     void setShowUtilitiesButton( bool show = true );
 
-    //! Set whether to relay auth manager messages to internal message bar, e.g. when embedding
+    //! Sets whether to relay auth manager messages to internal message bar, e.g. when embedding
     void setRelayMessages( bool relay = true );
 
   private slots:
@@ -85,11 +86,11 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     //! Update UI based upon current selection
     void checkSelection();
 
-    void on_btnAddConfig_clicked();
+    void btnAddConfig_clicked();
 
-    void on_btnEditConfig_clicked();
+    void btnEditConfig_clicked();
 
-    void on_btnRemoveConfig_clicked();
+    void btnRemoveConfig_clicked();
 
   private:
     bool mRelayMessages;
@@ -107,7 +108,7 @@ class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfig
     QAction *mActionRemoveAuthConfigs = nullptr;
     QAction *mActionEraseAuthDatabase = nullptr;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

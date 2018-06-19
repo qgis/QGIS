@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
                        QgsGeometryCollection,
                        QgsMultiLineString,
                        QgsMultiCurve,
@@ -44,13 +45,19 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class PolygonsToLines(QgisFeatureBasedAlgorithm):
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'to_lines.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmPolygonToLine.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmPolygonToLine.svg")
 
     def tags(self):
         return self.tr('line,polygon,convert').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -67,13 +74,16 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
     def outputType(self):
         return QgsProcessing.TypeVectorLine
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon]
+
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToLines(input_wkb_type)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             feature.setGeometry(QgsGeometry(self.convertToLines(feature.geometry())))
-        return feature
+        return [feature]
 
     def convertWkbToLines(self, wkb):
         multi_wkb = None
@@ -89,7 +99,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
         return multi_wkb
 
     def convertToLines(self, geometry):
-        rings = self.getRings(geometry.geometry())
+        rings = self.getRings(geometry.constGet())
         output_wkb = self.convertWkbToLines(geometry.wkbType())
         out_geom = None
         if QgsWkbTypes.flatType(output_wkb) == QgsWkbTypes.MultiLineString:

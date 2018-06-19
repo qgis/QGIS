@@ -29,7 +29,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
   , mExpressionDialogTitle( tr( "Expression Dialog" ) )
   , mDa( nullptr )
-  , mExpressionContextGenerator( nullptr )
+
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -173,7 +173,10 @@ void QgsFieldExpressionWidget::setLayer( QgsMapLayer *layer )
 void QgsFieldExpressionWidget::setField( const QString &fieldName )
 {
   if ( fieldName.isEmpty() )
+  {
+    setRow( -1 );
     return;
+  }
 
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( fieldName );
   if ( !idx.isValid() )
@@ -216,6 +219,7 @@ void QgsFieldExpressionWidget::editExpression()
     dlg.setGeomCalculator( *mDa );
   }
   dlg.setWindowTitle( mExpressionDialogTitle );
+  dlg.setAllowEvalErrors( mAllowEvalErrors );
 
   if ( dlg.exec() )
   {
@@ -263,6 +267,20 @@ void QgsFieldExpressionWidget::afterResetModel()
 {
   // Restore expression
   mCombo->lineEdit()->setText( mBackupExpression );
+}
+
+bool QgsFieldExpressionWidget::allowEvalErrors() const
+{
+  return mAllowEvalErrors;
+}
+
+void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
+{
+  if ( allowEvalErrors == mAllowEvalErrors )
+    return;
+
+  mAllowEvalErrors = allowEvalErrors;
+  emit allowEvalErrorsChanged();
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()
@@ -327,4 +345,9 @@ bool QgsFieldExpressionWidget::isExpressionValid( const QString &expressionStr )
   QgsExpression expression( expressionStr );
   expression.prepare( &mExpressionContext );
   return !expression.hasParserError();
+}
+
+void QgsFieldExpressionWidget::appendScope( QgsExpressionContextScope *scope )
+{
+  mExpressionContext.appendScope( scope );
 }

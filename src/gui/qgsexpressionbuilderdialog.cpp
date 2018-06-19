@@ -15,24 +15,24 @@
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgssettings.h"
+#include "qgsguiutils.h"
+#include "qgsgui.h"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
   , mRecentKey( key )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
-  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, okButton, &QWidget::setEnabled );
+  connect( builder, &QgsExpressionBuilderWidget::parserErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
+  connect( builder, &QgsExpressionBuilderWidget::evalErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
 
   builder->setExpressionContext( context );
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
@@ -52,6 +52,16 @@ QString QgsExpressionBuilderDialog::expressionText()
   return builder->expressionText();
 }
 
+QString QgsExpressionBuilderDialog::expectedOutputFormat()
+{
+  return builder->expectedOutputFormat();
+}
+
+void QgsExpressionBuilderDialog::setExpectedOutputFormat( const QString &expected )
+{
+  builder->setExpectedOutputFormat( expected );
+}
+
 QgsExpressionContext QgsExpressionBuilderDialog::expressionContext() const
 {
   return builder->expressionContext();
@@ -65,9 +75,6 @@ void QgsExpressionBuilderDialog::setExpressionContext( const QgsExpressionContex
 void QgsExpressionBuilderDialog::done( int r )
 {
   QDialog::done( r );
-
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()
@@ -82,7 +89,34 @@ void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
   builder->setGeomCalculator( da );
 }
 
+bool QgsExpressionBuilderDialog::allowEvalErrors() const
+{
+  return mAllowEvalErrors;
+}
+
+void QgsExpressionBuilderDialog::setAllowEvalErrors( bool allowEvalErrors )
+{
+  if ( allowEvalErrors == mAllowEvalErrors )
+    return;
+
+  mAllowEvalErrors = allowEvalErrors;
+  syncOkButtonEnabledState();
+  emit allowEvalErrorsChanged();
+}
+
 void QgsExpressionBuilderDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
+}
+
+void QgsExpressionBuilderDialog::syncOkButtonEnabledState()
+{
+  QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
+
+  if ( builder->parserError() )
+    okButton->setEnabled( false );
+  else if ( !builder->evalError() || mAllowEvalErrors )
+    okButton->setEnabled( true );
+  else
+    okButton->setEnabled( true );
 }

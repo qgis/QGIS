@@ -38,17 +38,8 @@
 using namespace pal;
 
 PointSet::PointSet()
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
 {
-  nbPoints = cHullSize =  0;
+  nbPoints = cHullSize = 0;
   x = nullptr;
   y = nullptr;
   cHull = nullptr;
@@ -56,16 +47,7 @@ PointSet::PointSet()
 }
 
 PointSet::PointSet( int nbPoints, double *x, double *y )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , cHullSize( 0 )
-  , holeOf( nullptr )
-  , parent( nullptr )
-  , xmin( DBL_MAX )
-  , xmax( -DBL_MAX )
-  , ymin( DBL_MAX )
-  , ymax( -DBL_MAX )
-  , mPreparedGeom( nullptr )
+  : cHullSize( 0 )
 {
   this->nbPoints = nbPoints;
   this->x = new double[nbPoints];
@@ -82,13 +64,10 @@ PointSet::PointSet( int nbPoints, double *x, double *y )
 }
 
 PointSet::PointSet( double aX, double aY )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , xmin( aX )
+  : xmin( aX )
   , xmax( aY )
   , ymin( aX )
   , ymax( aY )
-  , mPreparedGeom( nullptr )
 {
   nbPoints = cHullSize = 1;
   x = new double[1];
@@ -104,14 +83,10 @@ PointSet::PointSet( double aX, double aY )
 }
 
 PointSet::PointSet( const PointSet &ps )
-  : mGeos( nullptr )
-  , mOwnsGeom( false )
-  , parent( nullptr )
-  , xmin( ps.xmin )
+  : xmin( ps.xmin )
   , xmax( ps.xmax )
   , ymin( ps.ymin )
   , ymax( ps.ymax )
-  , mPreparedGeom( nullptr )
 {
   int i;
 
@@ -142,14 +117,14 @@ PointSet::PointSet( const PointSet &ps )
 
   if ( ps.mGeos )
   {
-    mGeos = GEOSGeom_clone_r( geosContext(), ps.mGeos );
+    mGeos = GEOSGeom_clone_r( QgsGeos::getGEOSHandler(), ps.mGeos );
     mOwnsGeom = true;
   }
 }
 
 void PointSet::createGeosGeom() const
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   bool needClose = false;
   if ( type == GEOS_POLYGON && ( !qgsDoubleNear( x[0], x[ nbPoints - 1] ) || !qgsDoubleNear( y[0], y[ nbPoints - 1 ] ) ) )
@@ -196,14 +171,14 @@ const GEOSPreparedGeometry *PointSet::preparedGeom() const
 
   if ( !mPreparedGeom )
   {
-    mPreparedGeom = GEOSPrepare_r( geosContext(), mGeos );
+    mPreparedGeom = GEOSPrepare_r( QgsGeos::getGEOSHandler(), mGeos );
   }
   return mPreparedGeom;
 }
 
 void PointSet::invalidateGeos()
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   if ( mOwnsGeom ) // delete old geometry if we own it
     GEOSGeom_destroy_r( geosctxt, mGeos );
   GEOSPreparedGeom_destroy_r( geosctxt, mPreparedGeom );
@@ -214,7 +189,7 @@ void PointSet::invalidateGeos()
 
 PointSet::~PointSet()
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   if ( mGeos && mOwnsGeom )
   {
@@ -267,15 +242,14 @@ PointSet *PointSet::extractShape( int nbPtSh, int imin, int imax, int fps, int f
 
 bool PointSet::containsPoint( double x, double y ) const
 {
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSCoordSequence *seq = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, seq, 0, x );
     GEOSCoordSeq_setY_r( geosctxt, seq, 0, y );
-    GEOSGeometry *point = GEOSGeom_createPoint_r( geosctxt, seq );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, point );
+    geos::unique_ptr point( GEOSGeom_createPoint_r( geosctxt, seq ) );
+    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, preparedGeom(), point.get() ) == 1 );
 
     return result;
   }
@@ -421,7 +395,7 @@ void PointSet::splitPolygons( QLinkedList<PointSet *> &shapes_toProcess,
     int ps = -1, pe = -1, fps = -1, fpe = -1;
     if ( retainedPt >= 0 && bestArea > labelArea ) // there is a hole so we'll cut the shape in two new shape (only if hole area is bigger than twice labelArea)
     {
-      c = DBL_MAX;
+      c = std::numeric_limits<double>::max();
 
       // iterate on all shape points except points which are in the hole
       bool isValid;
@@ -594,17 +568,17 @@ CHullBox *PointSet::compute_chull_bbox()
   double width;
   double length;
 
-  double best_area = DBL_MAX;
+  double best_area = std::numeric_limits<double>::max();
   double best_alpha = -1;
   double best_bb[16];
   double best_length = 0;
   double best_width = 0;
 
 
-  bbox[0] =   DBL_MAX;
-  bbox[1] =   DBL_MAX;
-  bbox[2] = - DBL_MAX;
-  bbox[3] = - DBL_MAX;
+  bbox[0] = std::numeric_limits<double>::max();
+  bbox[1] = std::numeric_limits<double>::max();
+  bbox[2] = std::numeric_limits<double>::lowest();
+  bbox[3] = std::numeric_limits<double>::lowest();
 
   for ( i = 0; i < cHullSize; i++ )
   {
@@ -658,7 +632,7 @@ CHullBox *PointSet::compute_chull_bbox()
 
       alpha_seg = ( ( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI_2 + alpha;
 
-      best_cp = DBL_MAX;
+      best_cp = std::numeric_limits<double>::max();
       for ( j = 0; j < nbPoints; j++ )
       {
         cp = GeomFunction::cross_product( bb[i + 2], bb[i + 3], bb[i], bb[i + 1], x[cHull[j]], y[cHull[j]] );
@@ -725,13 +699,13 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
   if ( !mGeos )
     return 0;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   try
   {
     GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
     GEOSCoordSeq_setX_r( geosctxt, coord, 0, px );
     GEOSCoordSeq_setY_r( geosctxt, coord, 0, py );
-    GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geosctxt, coord );
+    geos::unique_ptr geosPt( GEOSGeom_createPoint_r( geosctxt, coord ) );
 
     int type = GEOSGeomTypeId_r( geosctxt, mGeos );
     const GEOSGeometry *extRing = nullptr;
@@ -744,13 +718,11 @@ double PointSet::minDistanceToPoint( double px, double py, double *rx, double *r
       //for polygons, we want distance to exterior ring (not an interior point)
       extRing = GEOSGetExteriorRing_r( geosctxt, mGeos );
     }
-    GEOSCoordSequence *nearestCoord = GEOSNearestPoints_r( geosctxt, extRing, geosPt );
+    geos::coord_sequence_unique_ptr nearestCoord( GEOSNearestPoints_r( geosctxt, extRing, geosPt.get() ) );
     double nx;
     double ny;
-    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord, 0, &nx );
-    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord, 0, &ny );
-    GEOSCoordSeq_destroy_r( geosctxt, nearestCoord );
-    GEOSGeom_destroy_r( geosctxt, geosPt );
+    ( void )GEOSCoordSeq_getX_r( geosctxt, nearestCoord.get(), 0, &nx );
+    ( void )GEOSCoordSeq_getY_r( geosctxt, nearestCoord.get(), 0, &ny );
 
     if ( rx )
       *rx = nx;
@@ -776,11 +748,11 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
 
   try
   {
-    GEOSContextHandle_t geosctxt = geosContext();
-    GEOSGeometry *centroidGeom = GEOSGetCentroid_r( geosctxt, mGeos );
+    GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
+    geos::unique_ptr centroidGeom( GEOSGetCentroid_r( geosctxt, mGeos ) );
     if ( centroidGeom )
     {
-      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom );
+      const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, centroidGeom.get() );
       GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
       GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
     }
@@ -788,18 +760,15 @@ void PointSet::getCentroid( double &px, double &py, bool forceInside ) const
     // check if centroid inside in polygon
     if ( forceInside && !containsPoint( px, py ) )
     {
-      GEOSGeometry *pointGeom = GEOSPointOnSurface_r( geosctxt, mGeos );
+      geos::unique_ptr pointGeom( GEOSPointOnSurface_r( geosctxt, mGeos ) );
 
       if ( pointGeom )
       {
-        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom );
+        const GEOSCoordSequence *coordSeq = GEOSGeom_getCoordSeq_r( geosctxt, pointGeom.get() );
         GEOSCoordSeq_getX_r( geosctxt, coordSeq, 0, &px );
         GEOSCoordSeq_getY_r( geosctxt, coordSeq, 0, &py );
-        GEOSGeom_destroy_r( geosctxt, pointGeom );
       }
     }
-
-    GEOSGeom_destroy_r( geosctxt, centroidGeom );
   }
   catch ( GEOSException &e )
   {
@@ -863,7 +832,7 @@ double PointSet::length() const
   if ( !mGeos )
     return -1;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
 
   try
   {
@@ -876,4 +845,9 @@ double PointSet::length() const
     QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
     return -1;
   }
+}
+
+bool PointSet::isClosed() const
+{
+  return qgsDoubleNear( x[0], x[nbPoints - 1] ) && qgsDoubleNear( y[0], y[nbPoints - 1] );
 }

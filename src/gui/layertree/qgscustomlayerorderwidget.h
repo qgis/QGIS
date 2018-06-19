@@ -44,7 +44,9 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsCustomLayerOrderWidget
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   signals:
 

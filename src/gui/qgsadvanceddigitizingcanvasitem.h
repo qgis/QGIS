@@ -23,7 +23,8 @@
 
 class QgsAdvancedDigitizingDockWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (\see QgsAdvancedDigitizingDockWidget) on the map canvas.
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem

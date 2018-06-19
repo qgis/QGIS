@@ -79,42 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtFilePath">
-          <property name="toolTip">
-           <string>Full path to the delimited text file</string>
-          </property>
-          <property name="whatsThis">
-           <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnBrowseForFile">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Browse to find the delimited text file to be processed</string>
-          </property>
-          <property name="whatsThis">
-           <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-          </property>
-          <property name="text">
-           <string>Browse...</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="QgsFileWidget" name="mFileWidget"/>
         </item>
        </layout>
       </item>
@@ -132,7 +97,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Layer name</string>
+           <string>Layer Name</string>
           </property>
          </widget>
         </item>
@@ -151,19 +116,6 @@
            <string>Name displayed in the map legend</string>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="lblEncoding">
@@ -215,8 +167,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>696</width>
-        <height>742</height>
+        <width>714</width>
+        <height>514</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -235,16 +187,16 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>File Format</string>
+          <string>File format</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_8">
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayout_3">
             <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_7">
+             <layout class="QGridLayout" name="gridLayout_71">
               <property name="topMargin">
                <number>0</number>
               </property>
@@ -419,6 +371,9 @@
                        <property name="alignment">
                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                        </property>
+                       <property name="buddy">
+                        <cstring>txtDelimiterOther</cstring>
+                       </property>
                       </widget>
                      </item>
                      <item>
@@ -542,6 +497,9 @@
                      <property name="alignment">
                       <set>Qt::AlignJustify|Qt::AlignVCenter</set>
                      </property>
+                     <property name="buddy">
+                      <cstring>txtQuoteChars</cstring>
+                     </property>
                     </widget>
                    </item>
                    <item>
@@ -595,6 +553,9 @@
                      </property>
                      <property name="alignment">
                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                     </property>
+                     <property name="buddy">
+                      <cstring>txtEscapeChars</cstring>
                      </property>
                     </widget>
                    </item>
@@ -717,13 +678,13 @@
           </sizepolicy>
          </property>
          <property name="title">
-          <string>Record options</string>
+          <string>Record and fields options</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout_9">
-          <item>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <property name="rightMargin">
              <number>9</number>
@@ -738,6 +699,9 @@
               </property>
               <property name="text">
                <string>Number of header lines to discard</string>
+              </property>
+              <property name="buddy">
+               <cstring>rowCounter</cstring>
               </property>
              </widget>
             </item>
@@ -775,22 +739,9 @@
               </property>
              </widget>
             </item>
-            <item>
-             <spacer name="horizontalSpacer">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
            </layout>
           </item>
-          <item>
+          <item row="1" column="0">
            <widget class="QCheckBox" name="cbxUseHeader">
             <property name="toolTip">
              <string>Field names are read from the first record. If not selected then fields are numbered</string>
@@ -809,78 +760,56 @@
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBox" name="fieldOptionsGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="title">
-          <string>Field options</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_13">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_4">
-            <item row="1" column="0">
-             <widget class="QCheckBox" name="cbxTrimFields">
-              <property name="toolTip">
-               <string>Trim leading and trailing spaces from fields</string>
-              </property>
-              <property name="statusTip">
-               <string>Trim leading and trailing spaces from fields</string>
-              </property>
-              <property name="whatsThis">
-               <string>Trim leading and trailing spaces from fields</string>
-              </property>
-              <property name="text">
-               <string>Trim fields</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QCheckBox" name="cbxPointIsComma">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="toolTip">
-               <string>Number fields use comma for a decimal separator</string>
-              </property>
-              <property name="statusTip">
-               <string>Number fields use comma for a decimal separator</string>
-              </property>
-              <property name="whatsThis">
-               <string>Number fields use comma for a decimal separator</string>
-              </property>
-              <property name="text">
-               <string>Decimal separator is comma</string>
-              </property>
-             </widget>
-            </item>
-            <item row="2" column="0">
-             <widget class="QCheckBox" name="cbxSkipEmptyFields">
-              <property name="toolTip">
-               <string>Discard empty fields in each record</string>
-              </property>
-              <property name="statusTip">
-               <string>Discard empty fields in each record</string>
-              </property>
-              <property name="whatsThis">
-               <string>Discard empty fields in each record</string>
-              </property>
-              <property name="text">
-               <string>Discard empty fields</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
+          <item row="1" column="1">
+           <widget class="QCheckBox" name="cbxTrimFields">
+            <property name="toolTip">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="statusTip">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="whatsThis">
+             <string>Trim leading and trailing spaces from fields</string>
+            </property>
+            <property name="text">
+             <string>Trim fields</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="cbxPointIsComma">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="statusTip">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="whatsThis">
+             <string>Number fields use comma for a decimal separator</string>
+            </property>
+            <property name="text">
+             <string>Decimal separator is comma</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QCheckBox" name="cbxSkipEmptyFields">
+            <property name="toolTip">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="statusTip">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="whatsThis">
+             <string>Discard empty fields in each record</string>
+            </property>
+            <property name="text">
+             <string>Discard empty fields</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -896,7 +825,7 @@
          <property name="title">
           <string>Geometry definition</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
@@ -942,7 +871,7 @@
                <string>Geometry is read as a well known text string from the selected fields</string>
               </property>
               <property name="text">
-               <string>Well known text (WKT) </string>
+               <string>Well known text (WKT)</string>
               </property>
              </widget>
             </item>
@@ -985,7 +914,7 @@
               </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0">
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <widget class="QCheckBox" name="cbxXyDms">
                   <property name="toolTip">
                    <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
@@ -998,37 +927,6 @@
                   </property>
                   <property name="text">
                    <string>DMS coordinates</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="cmbYField">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>120</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="statusTip">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="whatsThis">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="editable">
-                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1063,19 +961,34 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="textLabely">
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="cmbYField">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="text">
-                   <string>&lt;p align=&quot;left&quot;&gt;Y field&lt;/p&gt;</string>
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="editable">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1089,6 +1002,28 @@
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cmbXField</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="textLabely">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>&lt;p align=&quot;left&quot;&gt;Y field&lt;/p&gt;</string>
+                  </property>
+                  <property name="buddy">
+                   <cstring>cmbYField</cstring>
                   </property>
                  </widget>
                 </item>
@@ -1197,6 +1132,19 @@
             <widget class="QWidget" name="swpGeomNone"/>
            </widget>
           </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabelCrs">
+            <property name="text">
+             <string>Geometry CRS</string>
+            </property>
+            <property name="buddy">
+             <cstring>crsGeometry</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsProjectionSelectionWidget" name="crsGeometry"/>
+          </item>
          </layout>
         </widget>
        </item>
@@ -1211,7 +1159,7 @@
          <property name="title">
           <string>Layer settings</string>
          </property>
-         <property name="collapsed" stdset="0">
+         <property name="collapsed">
           <bool>true</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1252,7 +1200,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="0" column="2">
              <widget class="QCheckBox" name="cbxWatchFile">
               <property name="toolTip">
                <string>Watch for changes to the file by other applications while QGIS is running</string>
@@ -1354,16 +1302,55 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtFilePath</tabstop>
-  <tabstop>btnBrowseForFile</tabstop>
   <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>fileFormatGroupBox</tabstop>
+  <tabstop>delimiterCSV</tabstop>
+  <tabstop>delimiterRegexp</tabstop>
+  <tabstop>delimiterChars</tabstop>
+  <tabstop>cbxDelimTab</tabstop>
+  <tabstop>cbxDelimColon</tabstop>
+  <tabstop>cbxDelimSpace</tabstop>
+  <tabstop>cbxDelimSemicolon</tabstop>
+  <tabstop>cbxDelimComma</tabstop>
+  <tabstop>txtDelimiterOther</tabstop>
+  <tabstop>txtQuoteChars</tabstop>
+  <tabstop>txtEscapeChars</tabstop>
+  <tabstop>recordOptionsGroupBox</tabstop>
+  <tabstop>rowCounter</tabstop>
+  <tabstop>cbxUseHeader</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
+  <tabstop>cbxTrimFields</tabstop>
+  <tabstop>cbxSkipEmptyFields</tabstop>
+  <tabstop>geometryDefinitionGroupBox</tabstop>
+  <tabstop>geomTypeXY</tabstop>
+  <tabstop>geomTypeWKT</tabstop>
   <tabstop>geomTypeNone</tabstop>
+  <tabstop>cmbXField</tabstop>
+  <tabstop>cmbYField</tabstop>
+  <tabstop>cbxXyDms</tabstop>
+  <tabstop>crsGeometry</tabstop>
+  <tabstop>layeSettingsGroupBox</tabstop>
   <tabstop>cbxSpatialIndex</tabstop>
   <tabstop>cbxSubsetIndex</tabstop>
+  <tabstop>cbxWatchFile</tabstop>
+  <tabstop>tblSample</tabstop>
+  <tabstop>cmbWktField</tabstop>
+  <tabstop>cmbGeometryType</tabstop>
+  <tabstop>txtDelimiterRegexp</tabstop>
  </tabstops>
  <resources/>
  <connections>

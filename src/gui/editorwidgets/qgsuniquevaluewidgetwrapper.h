@@ -24,7 +24,8 @@
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a unique value widget. Will offer any value previously used for this field.
  *
  * Options:

@@ -30,20 +30,6 @@
 
 static int sRenderCounter = 0;
 
-QgsRenderChecker::QgsRenderChecker()
-  : mReport( QLatin1String( "" ) )
-  , mMatchTarget( 0 )
-  , mElapsedTime( 0 )
-  , mRenderedImageFile( QLatin1String( "" ) )
-  , mExpectedImageFile( QLatin1String( "" ) )
-  , mMismatchCount( 0 )
-  , mColorTolerance( 0 )
-  , mMaxSizeDifferenceX( 0 )
-  , mMaxSizeDifferenceY( 0 )
-  , mElapsedTimeTarget( 0 )
-  , mBufferDashMessages( false )
-{
-}
 
 QString QgsRenderChecker::controlImagePath() const
 {

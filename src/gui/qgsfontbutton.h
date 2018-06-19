@@ -26,7 +26,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsFontButton
- * A button for customising QgsTextFormat settings.
+ * A button for customizing QgsTextFormat settings.
  *
  * The button will open a detailed text format settings dialog when clicked. An attached drop-down
  * menu allows for copying and pasting text styles, picking colors for the text, and for dropping
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
       ModeQFont, //!< Configure font settings for use with QFont objects
     };
 
-    Q_ENUM( Mode );
+    Q_ENUM( Mode )
 
     /**
      * Construct a new font button.
@@ -66,8 +66,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     QgsFontButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
-    virtual QSize minimumSizeHint() const override;
-    virtual QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Returns the current button mode.
@@ -82,7 +82,7 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      * no color settings or the other advanced options QgsTextFormat allows).
      * \see mode()
      */
-    void setMode( const QgsFontButton::Mode &mode );
+    void setMode( Mode mode );
 
     /**
      * Sets the \a title for the text settings dialog window.
@@ -147,7 +147,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     void setColor( const QColor &color );
 
-    /** Copies the current text format to the clipboard.
+    /**
+     * Copies the current text format to the clipboard.
      * \see pasteFormat()
      */
     void copyFormat();
@@ -208,7 +209,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
 
     void showSettingsDialog();
 
-    /** Creates the drop-down menu entries
+    /**
+     * Creates the drop-down menu entries
      */
     void prepareMenu();
 
@@ -251,7 +253,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     bool fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const;
 
-    /** Attempts to parse mimeData as a color, either via the mime data's color data or by
+    /**
+     * Attempts to parse mimeData as a color, either via the mime data's color data or by
      * parsing a textual representation of a color.
      * \returns true if mime data could be intrepreted as a color
      * \param mimeData mime data

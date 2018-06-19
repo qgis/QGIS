@@ -195,15 +195,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       // icons possibly overriding default icon
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
-        if ( testFlag( ShowRasterPreviewIcon ) )
-        {
-          QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-          return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
-        }
-        else
-        {
-          return QgsLayerItem::iconRaster();
-        }
+        return QgsLayerItem::iconRaster();
       }
 
       QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
@@ -250,11 +242,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
-      {
-        if ( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
-          return QVariant(); // do not show checkbox for non-spatial tables
-      }
+
+      if ( nodeLayer->layer() && !nodeLayer->layer()->isSpatial() )
+        return QVariant(); // do not show checkbox for non-spatial tables
+
       return nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
     else if ( QgsLayerTree::isGroup( node ) )
@@ -266,8 +257,6 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::FontRole )
   {
     QFont f( QgsLayerTree::isLayer( node ) ? mFontLayer : ( QgsLayerTree::isGroup( node ) ? mFontGroup : QFont() ) );
-    if ( node->customProperty( QStringLiteral( "embedded" ) ).toInt() )
-      f.setItalic( true );
     if ( index == mCurrentIndex )
       f.setUnderline( true );
     return f;
@@ -278,7 +267,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-      if ( !node->isVisible() || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
+      if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
         brush.setColor( Qt::lightGray );
       }
@@ -291,20 +280,38 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     {
       if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
       {
-        QStringList parts;
-        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
-        if ( title.isEmpty() )
-          title = layer->name();
-        title = "<b>" + title + "</b>";
-        if ( layer->crs().isValid() )
-          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
+        QString title =
+          !layer->title().isEmpty() ? layer->title() :
+          !layer->shortName().isEmpty() ? layer->shortName() :
+          layer->name();
 
+        title = "<b>" + title.toHtmlEscaped() + "</b>";
+
+        if ( layer->crs().isValid() )
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() ).toHtmlEscaped();
+          else
+            title += tr( " (%1)" ).arg( layer->crs().authid() ).toHtmlEscaped();
+        }
+
+        QStringList parts;
         parts << title;
 
         if ( !layer->abstract().isEmpty() )
-          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
-        parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        {
+          parts << QString();
+          const QStringList abstractLines = layer->abstract().split( "\n" );
+          for ( const auto &l : abstractLines )
+          {
+            parts << l.toHtmlEscaped();
+          }
+          parts << QString();
+        }
+
+        parts << "<i>" + layer->publicSource().toHtmlEscaped() + "</i>";
+
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
     }
   }
@@ -365,7 +372,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
 
   QgsLayerTreeNode *node = index2node( index );
   if ( !node )
-    return QgsLayerTreeModel::setData( index, value, role );
+    return QAbstractItemModel::setData( index, value, role );
 
   if ( role == Qt::CheckStateRole )
   {
@@ -416,7 +423,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
 
 QModelIndex QgsLayerTreeModel::node2index( QgsLayerTreeNode *node ) const
 {
-  if ( !node->parent() )
+  if ( !node || !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
 
   QModelIndex parentIndex = node2index( node->parent() );
@@ -504,7 +511,7 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer *nodeLayer )
 
   // update children
   int oldNodeCount = rowCount( idx );
-  beginRemoveRows( idx, 0, oldNodeCount - 1 );
+  beginRemoveRows( idx, 0, std::max( oldNodeCount - 1, 0 ) );
   removeLegendFromLayer( nodeLayer );
   endRemoveRows();
 
@@ -767,6 +774,9 @@ void QgsLayerTreeModel::nodeLayerWillBeUnloaded()
 
 void QgsLayerTreeModel::layerLegendChanged()
 {
+  if ( !mRootNode )
+    return;
+
   if ( !testFlag( ShowLegend ) )
     return;
 
@@ -996,7 +1006,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
   Q_FOREACH ( QgsLayerTreeNode *node, nodesFinal )
-    node->writeXml( rootElem );
+    node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
@@ -1168,7 +1178,7 @@ void QgsLayerTreeModel::removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer )
 
 void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 {
-  if ( !nodeL->layer() )
+  if ( !nodeL || !nodeL->layer() )
     return;
 
   QgsMapLayer *ml = nodeL->layer();
@@ -1176,9 +1186,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   if ( !layerLegend )
     return;
 
-  bool hasStyleOverride = mLayerStyleOverrides.contains( ml->id() );
-  if ( hasStyleOverride )
-    ml->styleManager()->setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
+  QgsMapLayerStyleOverride styleOverride( ml );
+  if ( mLayerStyleOverrides.contains( ml->id() ) )
+    styleOverride.setOverrideStyle( mLayerStyleOverrides.value( ml->id() ) );
 
   QList<QgsLayerTreeModelLegendNode *> lstNew = layerLegend->createLayerTreeModelLegendNodes( nodeL );
 
@@ -1237,9 +1247,6 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
   mLegend[nodeL] = data;
 
   if ( !filteredLstNew.isEmpty() ) endInsertRows();
-
-  if ( hasStyleOverride )
-    ml->styleManager()->restoreOverrideStyle();
 
   // invalidate map based data even if the data is not map-based to make sure
   // the symbol sizes are computed at least once
@@ -1423,7 +1430,7 @@ Qt::ItemFlags QgsLayerTreeModel::legendNodeFlags( QgsLayerTreeModelLegendNode *n
 
 bool QgsLayerTreeModel::legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const
 {
-  return mLegend[nodeLayer].embeddedNodeInParent != nullptr;
+  return static_cast< bool >( mLegend[nodeLayer].embeddedNodeInParent );
 }
 
 QgsLayerTreeModelLegendNode *QgsLayerTreeModel::legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const

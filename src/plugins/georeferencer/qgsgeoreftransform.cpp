@@ -32,7 +32,7 @@
 class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsLinearGeorefTransform() : mParameters() {}
+    QgsLinearGeorefTransform() = default;
 
     bool getOriginScale( QgsPointXY &origin, double &scaleX, double &scaleY ) const;
 
@@ -58,7 +58,7 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsHelmertGeorefTransform() : mHelmertParameters() {}
+    QgsHelmertGeorefTransform() = default;
     struct HelmertParameters
     {
       QgsPointXY origin;
@@ -86,7 +86,7 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
-    ~QgsGDALGeorefTransform();
+    ~QgsGDALGeorefTransform() override;
 
     bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
     int getMinimumGCPCount() const override;
@@ -477,8 +477,8 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       yT -= y0;
       // | std::cos a,  std::sin a |^-1   |cos a,  std::sin a|
       // | std::sin a, -cos a |    = |sin a, -cos a|
-      x[i] =  a * xT + b * yT;
-      y[i] =  b * xT - a * yT;
+      x[i] = a * xT + b * yT;
+      y[i] = b * xT - a * yT;
       panSuccess[i] = true;
     }
   }
@@ -511,7 +511,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs( const QVector<QgsPointXY>
     GCPList[i].pszId = new char[20];
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
     GCPList[i].pszInfo = nullptr;
-    GCPList[i].dfGCPPixel =  pixelCoords[i].x();
+    GCPList[i].dfGCPPixel = pixelCoords[i].x();
     GCPList[i].dfGCPLine  = -pixelCoords[i].y();
     GCPList[i].dfGCPX = mapCoords[i].x();
     GCPList[i].dfGCPY = mapCoords[i].y();
@@ -588,17 +588,17 @@ bool QgsProjectiveGeorefTransform::updateParametersFromGCPs( const QVector<QgsPo
   double *H = mParameters.H;
 
   double adjoint[9];
-  adjoint[0] =  H[4] * H[8] - H[5] * H[7];
+  adjoint[0] = H[4] * H[8] - H[5] * H[7];
   adjoint[1] = -H[1] * H[8] + H[2] * H[7];
-  adjoint[2] =  H[1] * H[5] - H[2] * H[4];
+  adjoint[2] = H[1] * H[5] - H[2] * H[4];
 
   adjoint[3] = -H[3] * H[8] + H[5] * H[6];
-  adjoint[4] =  H[0] * H[8] - H[2] * H[6];
+  adjoint[4] = H[0] * H[8] - H[2] * H[6];
   adjoint[5] = -H[0] * H[5] + H[2] * H[3];
 
-  adjoint[6] =  H[3] * H[7] - H[4] * H[6];
+  adjoint[6] = H[3] * H[7] - H[4] * H[6];
   adjoint[7] = -H[0] * H[7] + H[1] * H[6];
-  adjoint[8] =  H[0] * H[4] - H[1] * H[3];
+  adjoint[8] = H[0] * H[4] - H[1] * H[3];
 
   double det = H[0] * adjoint[0] + H[3] * adjoint[1] + H[6] * adjoint[2];
 

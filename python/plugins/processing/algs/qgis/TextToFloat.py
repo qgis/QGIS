@@ -27,7 +27,9 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
-                       QgsProcessingParameterField)
+                       QgsProcessing,
+                       QgsProcessingParameterField,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -37,6 +39,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
 
     def group(self):
         return self.tr('Vector table')
+
+    def groupId(self):
+        return 'vectortable'
 
     def __init__(self):
         super().__init__()
@@ -59,6 +64,9 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Float from text')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
+
     def outputFields(self, inputFields):
         self.field_idx = inputFields.lookupField(self.field_name)
         if self.field_idx >= 0:
@@ -69,7 +77,10 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         self.field_name = self.parameterAsString(parameters, self.FIELD, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
+    def processFeature(self, feature, context, feedback):
         value = feature[self.field_idx]
         try:
             if '%' in value:
@@ -78,4 +89,4 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
                 feature[self.field_idx] = float(value)
         except:
             feature[self.field_idx] = None
-        return feature
+        return [feature]

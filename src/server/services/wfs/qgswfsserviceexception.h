@@ -25,7 +25,8 @@
 namespace QgsWfs
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WFS service exceptions.
    */
@@ -45,7 +46,8 @@ namespace QgsWfs
   };
 
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
@@ -57,7 +59,8 @@ namespace QgsWfs
       {}
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */
@@ -69,9 +72,18 @@ namespace QgsWfs
       {}
   };
 
-
-
-
+  /**
+   * \ingroup server
+   * \class  QgsBadRequestException
+   * \brief Exception thrown in case of malformed request
+   */
+  class QgsBadRequestException: public QgsServiceException
+  {
+    public:
+      QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
+        : QgsServiceException( code, message, locator, 400 )
+      {}
+  };
 
 
 } // namespace QgsWfs

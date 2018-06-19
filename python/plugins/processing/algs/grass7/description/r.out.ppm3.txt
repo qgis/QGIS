@@ -1,0 +1,8 @@
+r.out.ppm3
+Converts 3 GRASS raster layers (R,G,B) to a PPM image file
+Raster (r.*)
+QgsProcessingParameterRasterLayer|red|Name of raster map to be used for <red>|None|False
+QgsProcessingParameterRasterLayer|green|Name of raster map to be used for <green>|None|False
+QgsProcessingParameterRasterLayer|blue|Name of raster map to be used for <blue>|None|False
+QgsProcessingParameterBoolean|-c|Add comments to describe the region|False|True
+QgsProcessingParameterFileDestination|output|Name for new PPM file|PPM files (*.ppm)|None|False

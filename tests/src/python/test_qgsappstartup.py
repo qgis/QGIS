@@ -94,49 +94,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
             if e.errno != errno.ESRCH:
                 raise e
 
-    def testOptionsPath(self):
-        subdir = 'QGIS'  # Linux
-        if sys.platform[:3] == 'dar':  # Mac
-            subdir = 'qgis.org'
-        ini = os.path.join(subdir, 'QGIS3.ini')
-        for p in ['test_opts', 'test opts', 'test_optsé€']:
-            self.doTestStartup(option="--optionspath",
-                               testDir=os.path.join(self.TMP_DIR, p),
-                               testFile=ini,
-                               timeOut=360)
-
-    def testConfigPath(self):
-        for p in ['test_config', 'test config', 'test_configé€']:
-            self.doTestStartup(option="--configpath",
-                               testDir=os.path.join(self.TMP_DIR, p),
-                               testFile="qgis.db",
-                               timeOut=360)
-
-    def testPluginPath(self):
-        for t in ['test_plugins', 'test plugins', 'test_pluginsé€']:
-
-            # get a unicode test dir
-            testDir = os.path.join(self.TMP_DIR, t)
-
-            # copy from testdata
-            if not os.path.exists(testDir):
-                os.mkdir(testDir)
-            test_plug_dir = os.path.join(TEST_DATA_DIR, 'test_plugin_path')
-            for item in os.listdir(test_plug_dir):
-                shutil.copytree(os.path.join(test_plug_dir, item),
-                                os.path.join(testDir, item))
-
-            # we use here a minimal plugin that writes to 'plugin_started.txt'
-            # when it is started. if QGIS_PLUGINPATH is correctly parsed, this
-            # plugin is executed and the file is created
-            self.doTestStartup(
-                option="--optionspath",
-                testDir=testDir,
-                testFile="plugin_started.txt",
-                timeOut=360,
-                loadPlugins=True,
-                env={'QGIS_PLUGINPATH': testDir})
-
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
         # create a temp python module that writes out test file
@@ -155,26 +112,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
             testFile=testfilepath,
             timeOut=360,
             env={'PYQGIS_STARTUP': testmod})
-
-    def testOptionsAsFiles(self):
-        if os.name == 'nt':
-            return
-
-        # verify QGIS accepts filenames that match options after the special option '--'
-        # '--help' should return immediately (after displaying the usage hints)
-        # '-- --help' should not exit but try (and probably fail) to load a layer called '--help'
-        with self.assertRaises(Exception):
-            self.doTestStartup(option="--configpath",
-                               testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
-                               testFile="qgis.db",
-                               timeOut=360,
-                               additionalArguments=['--help'])
-        self.doTestStartup(option="--configpath",
-                           testDir=os.path.join(self.TMP_DIR, 'test_optionsAsFiles'),
-                           testFile="qgis.db",
-                           timeOut=360,
-                           additionalArguments=['--', '--help'])
-
 
 if __name__ == '__main__':
     # look for qgis bin path

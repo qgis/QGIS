@@ -23,9 +23,10 @@
 #include "qgsabstractgeometry.h"
 #include "qgsrectangle.h"
 
-class QgsPolygonV2;
+class QgsPolygon;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSurface
  */
 class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
@@ -33,14 +34,15 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
   public:
 
     /**
-     * Get a polygon representation of this surface.
+     * Gets a polygon representation of this surface.
      * Ownership is transferred to the caller.
      */
-    virtual QgsPolygonV2 *surfaceToPolygon() const = 0 SIP_FACTORY;
+    virtual QgsPolygon *surfaceToPolygon() const = 0 SIP_FACTORY;
 
-    /** Returns the minimal bounding box for the geometry
+    /**
+     * Returns the minimal bounding box for the geometry
      */
-    virtual QgsRectangle boundingBox() const override
+    QgsRectangle boundingBox() const override
     {
       if ( mBoundingBox.isNull() )
       {
@@ -63,7 +65,7 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
       if ( !geom )
         return nullptr;
 
-      QgsWkbTypes::Type flatType = geom->wkbType();
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
       if ( flatType == QgsWkbTypes::CurvePolygon
            || flatType == QgsWkbTypes::Polygon
            || flatType == QgsWkbTypes::Triangle )
@@ -73,9 +75,8 @@ class CORE_EXPORT QgsSurface: public QgsAbstractGeometry
 #endif
   protected:
 
-    virtual void clearCache() const override { mBoundingBox = QgsRectangle(); mCoordinateSequence.clear(); QgsAbstractGeometry::clearCache(); }
+    void clearCache() const override { mBoundingBox = QgsRectangle(); QgsAbstractGeometry::clearCache(); }
 
-    mutable QgsCoordinateSequence mCoordinateSequence;
     mutable QgsRectangle mBoundingBox;
 };
 

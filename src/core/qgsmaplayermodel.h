@@ -26,7 +26,8 @@
 class QgsMapLayer;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsMapLayerModel class is a model to display layers in widgets.
  * \see QgsMapLayerProxyModel to sort and/filter the layers
  * \see QgsFieldModel to combine in with a field selector.
@@ -109,8 +110,16 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     /**
      * \brief indexFromLayer returns the model index for a given layer
+     * \see layerFromIndex()
      */
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
+
+    /**
+     * Returns the map layer corresponding to the specified \a index.
+     * \see indexFromLayer()
+     * \since QGIS 3.0
+     */
+    QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 
     /**
      * Sets a list of additional (non map layer) items to include at the end of the model.
@@ -122,7 +131,7 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
     void setAdditionalItems( const QStringList &items );
 
     /**
-     * Return the list of additional (non map layer) items included at the end of the model.
+     * Returns the list of additional (non map layer) items included at the end of the model.
      * \see setAdditionalItems()
      * \since QGIS 3.0
      */
@@ -158,12 +167,12 @@ class CORE_EXPORT QgsMapLayerModel : public QAbstractItemModel
   protected:
     QList<QgsMapLayer *> mLayers;
     QMap<QString, Qt::CheckState> mLayersChecked;
-    bool mItemCheckable;
+    bool mItemCheckable = false;
 
   private:
 
-    bool mAllowEmpty;
-    bool mShowCrs;
+    bool mAllowEmpty = false;
+    bool mShowCrs = false;
     QStringList mAdditionalItems;
 };
 

@@ -31,6 +31,7 @@
 #include <QMouseEvent>
 #include <QRubberBand>
 #include <QSettings>
+#include <QDoubleValidator>
 
 
 //! Map tool which uses rubber band for changing grass region
@@ -188,18 +189,15 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
                                 QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassRegionBase()
-  , mInterface( 0 )
-  , mCanvas( 0 )
-  , mRadioGroup( 0 )
   , mX( 0 )
   , mY( 0 )
   , mUpdatingGui( false )
-  , mRegionEdit( 0 )
 {
   QgsDebugMsg( "QgsGrassRegion()" );
   QgsGrass::initRegion( &mWindow );
 
   setupUi( this );
+  connect( mDrawButton, &QPushButton::clicked, this, &QgsGrassRegion::mDrawButton_clicked );
   setAttribute( Qt::WA_DeleteOnClose );
 
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsGrassRegion::buttonClicked );
@@ -210,8 +208,8 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mUpdatingGui = false;
 
   // Set input validators
-  QDoubleValidator *dv = new QDoubleValidator( 0 );
-  QIntValidator *iv = new QIntValidator( 0 );
+  QDoubleValidator *dv = new QDoubleValidator( nullptr );
+  QIntValidator *iv = new QIntValidator( nullptr );
 
   mNorth->setValidator( dv );
   mSouth->setValidator( dv );
@@ -308,7 +306,7 @@ void QgsGrassRegion::reloadRegion()
 void QgsGrassRegion::mapsetChanged()
 {
   delete mRegionEdit;
-  mRegionEdit = 0;
+  mRegionEdit = nullptr;
   if ( QgsGrass::activeMode() )
   {
     mRegionEdit = new QgsGrassRegionEdit( mCanvas );
@@ -493,7 +491,7 @@ void QgsGrassRegion::displayRegion()
   mRegionEdit->setSrcRegion( QgsRectangle( ul, lr ) );
 }
 
-void QgsGrassRegion::on_mDrawButton_clicked()
+void QgsGrassRegion::mDrawButton_clicked()
 {
   mCanvas->setMapTool( mRegionEdit );
 }

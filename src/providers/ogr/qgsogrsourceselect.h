@@ -27,8 +27,9 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include "ui_qgsogrsourceselectbase.h"
 #include <QDialog>
+
+#include "ui_qgsogrsourceselectbase.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
@@ -46,8 +47,8 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     Q_OBJECT
 
   public:
-    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = 0, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsOgrSourceSelect();
+    QgsOgrSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+    ~QgsOgrSourceSelect() override;
     //! Opens a dialog to select a file datasource*/
     QStringList openFile();
     //! Opens a dialog to select a directory datasource*/
@@ -58,6 +59,9 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     QString encoding();
     //! Returns the connection type
     QString dataSourceType();
+    //! Returns whether the protocol is a cloud type
+    bool isProtocolCloudType();
+
   private:
     //! Stores the file vector filters */
     QString mVectorFileFilter;
@@ -90,16 +94,19 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void setSelectedConnectionType();
     //! Sets the selected connection
     void setSelectedConnection();
+    //! Sets protocol-related widget visibility
+    void setProtocolWidgetsVisibility();
 
-    void on_radioSrcFile_toggled( bool checked );
-    void on_radioSrcDirectory_toggled( bool checked );
-    void on_radioSrcDatabase_toggled( bool checked );
-    void on_radioSrcProtocol_toggled( bool checked );
-    void on_btnNew_clicked();
-    void on_btnEdit_clicked();
-    void on_btnDelete_clicked();
-    void on_cmbDatabaseTypes_currentIndexChanged( const QString &text );
-    void on_cmbConnections_currentIndexChanged( const QString &text );
+    void radioSrcFile_toggled( bool checked );
+    void radioSrcDirectory_toggled( bool checked );
+    void radioSrcDatabase_toggled( bool checked );
+    void radioSrcProtocol_toggled( bool checked );
+    void btnNew_clicked();
+    void btnEdit_clicked();
+    void btnDelete_clicked();
+    void cmbDatabaseTypes_currentIndexChanged( const QString &text );
+    void cmbConnections_currentIndexChanged( const QString &text );
+    void cmbProtocolTypes_currentIndexChanged( const QString &text );
     void showHelp();
 
   private:

@@ -20,7 +20,7 @@
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )
-  , mCanvas( nullptr )
+
 {
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );

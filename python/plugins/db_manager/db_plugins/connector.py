@@ -42,6 +42,9 @@ class DBConnector(object):
     def uri(self):
         return QgsDataSourceUri(self._uri.uri(False))
 
+    def cancel(self):
+        pass
+
     def publicUri(self):
         publicUri = QgsDataSourceUri.removePassword(self._uri.uri(False))
         return QgsDataSourceUri(publicUri)
@@ -80,7 +83,7 @@ class DBConnector(object):
         if cursor is None:
             cursor = self._get_cursor()
         try:
-            cursor.execute(str(sql))
+            cursor.execute(sql)
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)

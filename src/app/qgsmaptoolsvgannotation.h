@@ -27,7 +27,6 @@ class APP_EXPORT QgsMapToolSvgAnnotation: public QgsMapToolAnnotation
 
   public:
     QgsMapToolSvgAnnotation( QgsMapCanvas *canvas );
-    ~QgsMapToolSvgAnnotation();
   protected:
     QgsAnnotation *createItem() const override;
 };

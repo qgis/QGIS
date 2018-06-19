@@ -29,12 +29,7 @@
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
-  , mLineEdit( nullptr )
-  , mCodeEditor( nullptr )
   , mExpressionDialogTitle( tr( "Expression Dialog" ) )
-  , mDa( nullptr )
-  , mExpressionContextGenerator( nullptr )
-  , mLayer( nullptr )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );

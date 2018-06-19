@@ -54,6 +54,9 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnAddServer">
+         <property name="toolTip">
+          <string>Add new server certificate configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -65,6 +68,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnRemoveServer">
+         <property name="toolTip">
+          <string>Remove selected server certificate configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -76,12 +82,15 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnEditServer">
+         <property name="toolTip">
+          <string>Edit selected server certificate configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
+           <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
          </property>
         </widget>
        </item>
@@ -125,7 +134,7 @@
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/mActionRefresh.png</normaloff>:/images/themes/default/mActionRefresh.png</iconset>
+           <normaloff>:/images/themes/default/mActionRefresh.svg</normaloff>:/images/themes/default/mActionRefresh.svg</iconset>
          </property>
         </widget>
        </item>

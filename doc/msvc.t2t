@@ -33,24 +33,12 @@ For the QGIS build you need to install following packages from cygwin:
 - git
 -
 
-OSGeo4W does not only provide ready packages for the current QGIS release and
-nightly builds of master, but also offers most of the dependencies needs to
-build it.
+and from OSGeo4W (select //Advanced Installation//):
 
-OSGeo4W Installation (select //Advanced Installation//):
-  The easiest way to install the build and run dependencies would be to run the following 
-  command from cmd (otherwise you would need to select the packages one by one).
-  In the following example d:\OSGeo4W64 will refer to the destination OSGeo4W Path, 
-  You may choose a different directory if you wish.
-  All the required packages are listed in the following command following a set of -P switches.
-  This will also select packages the above packages depend on.
-  The qgis-dev package [QGIS dev release] is also listed here, partly because then 
-  all the runtime dependencies for QGIS will also get selected.
-  You may run OSGeo4W-setup-x86_64.exe --help to get a list of all the available parameters
+- qgis-rel-deps
+-
 
-```  
-  OSGeo4W-setup-x86_64.exe -R d:\OSGeo4W64 -a x86_64 -A -k -P qgis-dev -P qtkeychain-qt5-devel -P oci-devel -P expat -P fcgi -P gdal -P grass -P gsl-devel -P iconv -P libzip-devel -P libspatialindex-devel -P pyqt5 -P python3-devel -P python3-qscintilla -P python3-nose2 -P python3-future -P python3-pyyaml -P python3-mock -P qca-qt5-devel -P qca-qt5-libs -P qscintilla-qt5 -P qt5-devel -P qt5-libs-debug -P qtwebkit-qt5-devel -P qtwebkit-qt5-libs-debug -P qwt-devel-qt5 -P sip-qt5 -P spatialite
-```
+This will also select packages the above packages depend on.
 
   If you install other packages, this might cause issues. Particularly, make sure
   **not** to install the msinttypes package. It installs a stdint.h file in

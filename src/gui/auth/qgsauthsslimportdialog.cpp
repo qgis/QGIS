@@ -78,28 +78,23 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
-  , mSocket( nullptr )
-  , mExecErrorsDialog( false )
-  , mTimer( nullptr )
-  , mSslErrors( QList<QSslError>() )
-  , mTrustedCAs( QList<QSslCertificate>() )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnCertPath, &QToolButton::clicked, this, &QgsAuthSslImportDialog::btnCertPath_clicked );
     QStyle *style = QApplication::style();
     lblWarningIcon->setPixmap( style->standardIcon( QStyle::SP_MessageBoxWarning ).pixmap( 48, 48 ) );
     lblWarningIcon->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
@@ -138,7 +133,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
              this, &QgsAuthSslImportDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setEnabled( false );
 
-    mTrustedCAs = QgsAuthManager::instance()->getTrustedCaCertsCache();
+    mTrustedCAs = QgsApplication::authManager()->trustedCaCertsCache();
   }
 }
 
@@ -164,7 +159,7 @@ void QgsAuthSslImportDialog::updateEnabledState()
   bool connected = mSocket && mSocket->state() == QAbstractSocket::ConnectedState;
   if ( connected && !mSocket->peerName().isEmpty() )
   {
-    appendString( tr( "Connected to %1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
+    appendString( tr( "Connected to %1: %2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
   }
 }
 
@@ -312,9 +307,6 @@ void QgsAuthSslImportDialog::sslErrors( const QList<QSslError> &errors )
   QDialog errorDialog( this );
   Ui_SslErrors ui;
   ui.setupUi( &errorDialog );
-  connect( ui.certificateChainButton, &QAbstractButton::clicked,
-           this, &QgsAuthSslImportDialog::showCertificateInfo );
-
   Q_FOREACH ( const QSslError &error, errors )
   {
     ui.sslErrorList->addItem( error.errorString() );
@@ -375,9 +367,9 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
   clearStatusCertificateConfig();
 }
 
-void QgsAuthSslImportDialog::on_btnCertPath_clicked()
+void QgsAuthSslImportDialog::btnCertPath_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leCertPath->setText( fn );

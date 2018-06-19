@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsconfigcache.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsConfigCache : QObject
+{
+%Docstring
+Cache for server configuration.
+%End
+
+%TypeHeaderCode
+#include "qgsconfigcache.h"
+%End
+  public:
+    static QgsConfigCache *instance();
+
+    void removeEntry( const QString &path );
+
+    const QgsProject *project( const QString &path );
+%Docstring
+If the project is not cached yet, then the project is read thank to the
+path. If the project is not available, then a None is returned.
+
+:param path: the filename of the QGIS project
+
+:return: the project or None if an error happened
+
+.. versionadded:: 3.0
+%End
+
+  private:
+    QgsConfigCache();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsconfigcache.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

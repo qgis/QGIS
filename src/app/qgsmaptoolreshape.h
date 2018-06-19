@@ -26,8 +26,14 @@ class APP_EXPORT QgsMapToolReshape: public QgsMapToolCapture
 
   public:
     QgsMapToolReshape( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolReshape();
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+
+  private:
+    void reshape( QgsVectorLayer *vlayer );
+
+    bool isBindingLine( QgsVectorLayer *vlayer, const QgsRectangle &bbox ) const;
+
+    friend class TestQgsMapToolReshape;
 };
 
 #endif

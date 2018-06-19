@@ -39,7 +39,7 @@
 #include "priorityqueue.h"
 #include "internalexception.h"
 #include <cfloat>
-#include <limits> //for INT_MAX
+#include <limits> //for std::numeric_limits<int>::max()
 
 #include "qgslabelingengine.h"
 
@@ -56,20 +56,6 @@ inline void delete_chain( Chain *chain )
 }
 
 Problem::Problem()
-  : nbLabelledLayers( 0 )
-  , nblp( 0 )
-  , all_nblp( 0 )
-  , nbft( 0 )
-  , displayAll( false )
-  , labelPositionCost( nullptr )
-  , nbOlap( nullptr )
-  , featStartId( nullptr )
-  , featNbLp( nullptr )
-  , inactiveCost( nullptr )
-  , sol( nullptr )
-  , nbActive( 0 )
-  , nbOverlap( 0.0 )
-  , pal( nullptr )
 {
   bbox[0] = 0;
   bbox[1] = 0;
@@ -304,7 +290,7 @@ void Problem::init_sol_falp()
       {
         list->insert( label, mLabelPositions.at( label )->getNumOverlaps() );
       }
-      catch ( pal::InternalException::Full )
+      catch ( pal::InternalException::Full & )
       {
         continue;
       }
@@ -361,7 +347,7 @@ void Problem::init_sol_falp()
     {
       if ( sol->s[i] == -1 )
       {
-        nbOverlap = INT_MAX;
+        nbOverlap = std::numeric_limits<int>::max();
         start_p = featStartId[i];
         for ( p = 0; p < featNbLp[i]; p++ )
         {
@@ -931,7 +917,7 @@ double Problem::popmusic_tabu( SubPart *part )
   while ( it < stop_it && best_cost >= EPSILON )
   {
     actualizeTabuCandidateList( m, it, nbOverlap, &candidateListSize, candidateBaseFactor, &candidateFactor, minCandidateListSize, reductionFactor, minTabuTSize, tabuFactor, &tenure, probSize );
-    delta_min     = DBL_MAX;
+    delta_min     = std::numeric_limits<double>::max();
     choosed_feat  = -1;
     choosed_label = -2;
     candidateId   = -1;
@@ -1096,7 +1082,7 @@ double Problem::popmusic_tabu( SubPart *part )
   delete[] best_sol;
   delete[] tabu_list;
 
-  /* Return delta */
+  /* Returns delta */
   return initial_cost - best_cost;
 }
 
@@ -1181,7 +1167,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1217,7 +1203,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
   {
     subseed = sub[seed];
     seedNbLp = featNbLp[subseed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
     next_seed = -1;
     retainedLabel = -2;
 
@@ -1295,7 +1281,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
               {
                 delta_min = delta_tmp;
                 retainedLabel = lid;
-                next_seed =  conflicts->takeFirst();
+                next_seed = conflicts->takeFirst();
               }
               else
               {
@@ -1427,7 +1413,7 @@ inline Chain *Problem::chain( SubPart *part, int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans *et =  currentChain->takeFirst();
+    ElemTrans *et = currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1461,7 +1447,7 @@ inline Chain *Problem::chain( int seed )
 
   double delta;
   double delta_min;
-  double delta_best = DBL_MAX;
+  double delta_best = std::numeric_limits<double>::max();
   double delta_tmp;
 
   int next_seed;
@@ -1496,7 +1482,7 @@ inline Chain *Problem::chain( int seed )
   while ( seed != -1 )
   {
     seedNbLp = featNbLp[seed];
-    delta_min = DBL_MAX;
+    delta_min = std::numeric_limits<double>::max();
 
     next_seed = -1;
     retainedLabel = -2;
@@ -1572,7 +1558,7 @@ inline Chain *Problem::chain( int seed )
               {
                 delta_min = delta_tmp;
                 retainedLabel = lid;
-                next_seed =  conflicts->takeFirst();
+                next_seed = conflicts->takeFirst();
               }
               else
               {
@@ -1710,7 +1696,7 @@ inline Chain *Problem::chain( int seed )
 
   while ( !currentChain->isEmpty() )
   {
-    ElemTrans *et =  currentChain->takeFirst();
+    ElemTrans *et = currentChain->takeFirst();
 
     if ( et->new_label != -1 )
     {
@@ -1854,7 +1840,7 @@ double Problem::popmusic_chain( SubPart *part )
 
   /*
   for (i=borderSize;i<subSize;i++){
-     chain =  chain (part, i);
+     chain = chain (part, i);
      if (chain){
         if (chain->delta < 0.0){
            best_cost += chain->delta;
@@ -2242,11 +2228,10 @@ bool Problem::compareLabelArea( pal::LabelPosition *l1, pal::LabelPosition *l2 )
   return l1->getWidth() * l1->getHeight() > l2->getWidth() * l2->getHeight();
 }
 
-QList<LabelPosition *> *Problem::getSolution( bool returnInactive )
+QList<LabelPosition *> Problem::getSolution( bool returnInactive )
 {
-
   int i;
-  QList<LabelPosition *> *solList = new QList<LabelPosition *>();
+  QList<LabelPosition *> solList;
 
   if ( nbft == 0 )
   {
@@ -2257,20 +2242,20 @@ QList<LabelPosition *> *Problem::getSolution( bool returnInactive )
   {
     if ( sol->s[i] != -1 )
     {
-      solList->push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
+      solList.push_back( mLabelPositions.at( sol->s[i] ) ); // active labels
     }
     else if ( returnInactive
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->layer()->displayAll()
               || mLabelPositions.at( featStartId[i] )->getFeaturePart()->alwaysShow() )
     {
-      solList->push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
+      solList.push_back( mLabelPositions.at( featStartId[i] ) ); // unplaced label
     }
   }
 
   // if features collide, order by size, so smaller ones appear on top
   if ( returnInactive )
   {
-    std::sort( solList->begin(), solList->end(), compareLabelArea );
+    std::sort( solList.begin(), solList.end(), compareLabelArea );
   }
 
   return solList;

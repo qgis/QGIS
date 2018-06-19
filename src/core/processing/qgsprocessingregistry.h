@@ -23,6 +23,9 @@
 #include "qgsprocessingprovider.h"
 #include <QMap>
 
+class QgsProcessingParameterType;
+class QgsProcessingAlgorithmConfigurationWidgetFactory;
+
 /**
  * \class QgsProcessingRegistry
  * \ingroup core
@@ -44,7 +47,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProcessingRegistry();
+    ~QgsProcessingRegistry() override;
 
     //! Registry cannot be copied
     QgsProcessingRegistry( const QgsProcessingRegistry &other ) = delete;
@@ -52,7 +55,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     QgsProcessingRegistry &operator=( const QgsProcessingRegistry &other ) = delete;
 
     /**
-     * Get list of available providers.
+     * Gets list of available providers.
      */
     QList<QgsProcessingProvider *> providers() const { return mProviders.values(); }
 
@@ -130,6 +133,42 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QgsProcessingAlgorithm *createAlgorithmById( const QString &id, const QVariantMap &configuration = QVariantMap() ) const SIP_TRANSFERBACK;
 
+    /**
+     * Register a new parameter type for processing.
+     * Ownership is transferred to the registry.
+     * Will emit parameterTypeAdded.
+     *
+     * \see removeParameterType
+     *
+     * \since QGIS 3.2
+     */
+    bool addParameterType( QgsProcessingParameterType *type SIP_TRANSFER );
+
+    /**
+     * Unregister a custom parameter type from processing.
+     * The type will be deleted.
+     * Will emit parameterTypeRemoved.
+     *
+     * \see addParameterType
+     *
+     * \since QGIS 3.2
+     */
+    void removeParameterType( QgsProcessingParameterType *type );
+
+    /**
+     * Returns the parameter type registered for \a id.
+     *
+     * \since QGIS 3.2
+     */
+    QgsProcessingParameterType *parameterType( const QString &id ) const;
+
+    /**
+     * Returns a list with all known parameter types.
+     *
+     * \since QGIS 3.2
+     */
+    QList<QgsProcessingParameterType *> parameterTypes() const;
+
   signals:
 
     //! Emitted when a provider has been added to the registry.
@@ -138,10 +177,28 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
     //! Emitted when a provider is removed from the registry
     void providerRemoved( const QString &id );
 
+    /**
+     * Emitted when a new parameter type has been added to the registry.
+     *
+     * \since QGIS 3.2
+     */
+    void parameterTypeAdded( QgsProcessingParameterType *type );
+
+    /**
+     * Emitted when a parameter type has been removed from the
+     * registry and is about to be deleted.
+     *
+     * \since QGIS 3.2
+     */
+    void parameterTypeRemoved( QgsProcessingParameterType *type );
+
   private:
 
     //! Map of available providers by id. This class owns the pointers
     QMap<QString, QgsProcessingProvider *> mProviders;
+
+    //! Hash of available parameter types by id. This object owns the pointers.
+    QMap<QString, QgsProcessingParameterType *> mParameterTypes;
 
 #ifdef SIP_RUN
     QgsProcessingRegistry( const QgsProcessingRegistry &other );

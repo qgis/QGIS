@@ -23,7 +23,8 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLUDialog
  */
 class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase

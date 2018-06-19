@@ -1,8 +1,8 @@
 Threshold Buffer
 grid_tools
-ParameterRaster|FEATURES|Features Grid|False
-ParameterRaster|VALUE|Value Grid|False
-ParameterRaster|THRESHOLDGRID|Threshold Grid|True
-ParameterNumber|THRESHOLD|Threshold|None|None|0.0
-ParameterSelection|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
-OutputRaster|BUFFER|Buffer Grid
+QgsProcessingParameterRasterLayer|FEATURES|Features Grid|None|False
+QgsProcessingParameterRasterLayer|VALUE|Value Grid|None|False
+QgsProcessingParameterRasterLayer|THRESHOLDGRID|Threshold Grid|None|True
+QgsProcessingParameterNumber|THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterEnum|THRESHOLDTYPE|Threshold Type|[0] Absolute;[1] Relative from cell value
+QgsProcessingParameterRasterDestination|BUFFER|Buffer Grid

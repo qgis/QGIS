@@ -29,16 +29,20 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
+from qgis.core import (QgsRasterFileWriter,
+                       QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingUtils)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import (ParameterBoolean,
-                                        ParameterString,
-                                        ParameterSelection,
-                                        ParameterMultipleInput)
-from processing.core.outputs import OutputRaster
-from processing.tools.system import isWindows
-from processing.tools import dataobjects
-
 from processing.algs.gdal.GdalUtils import GdalUtils
+
+from processing.tools.system import isWindows
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -46,39 +50,64 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class merge(GdalAlgorithm):
 
     INPUT = 'INPUT'
-    OPTIONS = 'OPTIONS'
     PCT = 'PCT'
     SEPARATE = 'SEPARATE'
-    RTYPE = 'RTYPE'
+    OPTIONS = 'OPTIONS'
+    DATA_TYPE = 'DATA_TYPE'
+    NODATA_INPUT = 'NODATA_INPUT'
+    NODATA_OUTPUT = 'NODATA_OUTPUT'
     OUTPUT = 'OUTPUT'
 
-    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
+    TYPES = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64', 'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(ParameterMultipleInput(self.INPUT,
-                                                 self.tr('Input layers'),
-                                                 dataobjects.TYPE_RASTER))
-        self.addParameter(ParameterString(self.OPTIONS,
-                                          self.tr('Additional creation options'),
-                                          optional=True,
-                                          metadata={'widget_wrapper': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}))
-        self.addParameter(ParameterBoolean(self.PCT,
-                                           self.tr('Grab pseudocolor table from first layer'),
-                                           False))
-        self.addParameter(ParameterBoolean(self.SEPARATE,
-                                           self.tr('Place each input file into a separate band'),
-                                           False))
-        self.addParameter(ParameterSelection(self.RTYPE,
-                                             self.tr('Output raster type'),
-                                             self.TYPE, 5))
+        self.addParameter(QgsProcessingParameterMultipleLayers(self.INPUT,
+                                                               self.tr('Input layers'),
+                                                               QgsProcessing.TypeRaster))
+        self.addParameter(QgsProcessingParameterBoolean(self.PCT,
+                                                        self.tr('Grab pseudocolor table from first layer'),
+                                                        defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.SEPARATE,
+                                                        self.tr('Place each input file into a separate band'),
+                                                        defaultValue=False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Merged')))
+        nodata_param = QgsProcessingParameterNumber(self.NODATA_INPUT,
+                                                    self.tr('Input pixel value to treat as "nodata"'),
+                                                    type=QgsProcessingParameterNumber.Integer,
+                                                    defaultValue=None,
+                                                    optional=True)
+        nodata_param.setFlags(nodata_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(nodata_param)
+
+        nodata_out_param = QgsProcessingParameterNumber(self.NODATA_OUTPUT,
+                                                        self.tr('Assign specified "nodata" value to output'),
+                                                        type=QgsProcessingParameterNumber.Integer,
+                                                        defaultValue=None,
+                                                        optional=True)
+        nodata_out_param.setFlags(nodata_out_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(nodata_out_param)
+
+        options_param = QgsProcessingParameterString(self.OPTIONS,
+                                                     self.tr('Additional creation parameters'),
+                                                     defaultValue='',
+                                                     optional=True)
+        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        options_param.setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
+        self.addParameter(options_param)
+
+        self.addParameter(QgsProcessingParameterEnum(self.DATA_TYPE,
+                                                     self.tr('Output data type'),
+                                                     self.TYPES,
+                                                     allowMultiple=False,
+                                                     defaultValue=5))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
+                                                                  self.tr('Merged')))
 
     def name(self):
         return 'merge'
@@ -89,31 +118,59 @@ class merge(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
+
+    def commandName(self):
+        return 'gdal_merge'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
+
         arguments = []
-        arguments.append('-ot')
-        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if self.getParameterValue(self.SEPARATE):
-            arguments.append('-separate')
-        if self.getParameterValue(self.PCT):
+        if self.parameterAsBool(parameters, self.PCT, context):
             arguments.append('-pct')
-        opts = self.getParameterValue(self.OPTIONS)
-        if opts:
-            arguments.append('-co')
-            arguments.append(opts)
+
+        if self.parameterAsBool(parameters, self.SEPARATE, context):
+            arguments.append('-separate')
+
+        if self.NODATA_INPUT in parameters and parameters[self.NODATA_INPUT] is not None:
+            nodata_input = self.parameterAsInt(parameters, self.NODATA_INPUT, context)
+            arguments.append('-n')
+            arguments.append(str(nodata_input))
+
+        if self.NODATA_OUTPUT in parameters and parameters[self.NODATA_OUTPUT] is not None:
+            nodata_output = self.parameterAsInt(parameters, self.NODATA_OUTPUT, context)
+            arguments.append('-a_nodata')
+            arguments.append(str(nodata_output))
+
+        arguments.append('-ot')
+        arguments.append(self.TYPES[self.parameterAsEnum(parameters, self.DATA_TYPE, context)])
+
+        arguments.append('-of')
+        arguments.append(QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1]))
+
+        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        if options:
+            arguments.extend(GdalUtils.parseCreationOptions(options))
 
         arguments.append('-o')
-        out = self.getOutputValue(self.OUTPUT)
         arguments.append(out)
-        arguments.append('-of')
-        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
-        arguments.extend(self.getParameterValue(self.INPUT).split(';'))
+
+        # Always write input files to a text file in case there are many of them and the
+        # length of the command will be longer then allowed in command prompt
+        list_file = GdalUtils.writeLayerParameterToTextFile(filename='mergeInputFiles.txt', alg=self, parameters=parameters, parameter_name=self.INPUT, context=context, quote=True, executing=executing)
+        arguments.append('--optfile')
+        arguments.append(list_file)
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_merge.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_merge.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         return commands

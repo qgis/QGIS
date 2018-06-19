@@ -5,6 +5,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
   ${CMAKE_BINARY_DIR}/src/ui
@@ -13,7 +14,6 @@ INCLUDE_DIRECTORIES(
 )
 
 INCLUDE_DIRECTORIES(SYSTEM
-  ${GEOS_INCLUDE_DIR}
 )
 
 IF (WITH_GUI)
@@ -52,14 +52,22 @@ ENDIF ()
 
 QT5_WRAP_CPP (AFS_MOC_SRCS ${AFS_MOC_HDRS})
 
+ADD_LIBRARY (arcgisfeatureserverprovider_a STATIC ${AFS_SRCS} ${AFS_MOC_SRCS})
 ADD_LIBRARY(arcgisfeatureserverprovider MODULE ${AFS_SRCS} ${AFS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
   qgis_core
 )
 
+TARGET_LINK_LIBRARIES (arcgisfeatureserverprovider_a
+  qgis_core
+)
+
 IF (WITH_GUI)
   TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider
+    qgis_gui
+  )
+  TARGET_LINK_LIBRARIES(arcgisfeatureserverprovider_a
     qgis_gui
   )
 ENDIF ()

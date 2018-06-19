@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'January 2017'
@@ -30,10 +29,12 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingUtils,
                        QgsProcessingParameterVectorLayer,
@@ -57,13 +58,22 @@ class EliminateSelection(QgisAlgorithm):
     MODE_BOUNDARY = 2
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmDissolve.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmDissolve.svg")
 
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest Area'),
@@ -97,6 +107,8 @@ class EliminateSelection(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                inLayer.fields(), inLayer.wkbType(), inLayer.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         for aFeat in inLayer.getFeatures():
             if feedback.isCanceled():
@@ -147,7 +159,7 @@ class EliminateSelection(QgisAlgorithm):
                 selFeat = QgsFeature()
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.constGet())
                 engine.prepareGeometry()
 
                 while fit.nextFeature(selFeat):
@@ -156,7 +168,7 @@ class EliminateSelection(QgisAlgorithm):
 
                     selGeom = selFeat.geometry()
 
-                    if engine.intersects(selGeom.geometry()):
+                    if engine.intersects(selGeom.constGet()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 

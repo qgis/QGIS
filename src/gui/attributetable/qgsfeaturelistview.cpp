@@ -19,7 +19,6 @@
 #include <QSet>
 #include <QSettings>
 
-#include "qgsactionmenu.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
@@ -35,13 +34,6 @@
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )
-  , mModel( nullptr )
-  , mCurrentEditSelectionModel( nullptr )
-  , mFeatureSelectionModel( nullptr )
-  , mFeatureSelectionManager( nullptr )
-  , mItemDelegate( nullptr )
-  , mEditSelectionDrag( false )
-  , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }
@@ -66,6 +58,10 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
 
   mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
   setSelectionModel( mFeatureSelectionModel );
+  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [ this ]()
+  {
+    ensureEditSelection( true );
+  } );
 
   if ( mItemDelegate && mItemDelegate->parent() == this )
   {
@@ -83,6 +79,9 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
            this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
   connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [ = ] { repaintRequested(); } );
+  connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::modelReset, this, [ this ]() { ensureEditSelection(); } );
 }
 
 bool QgsFeatureListView::setDisplayExpression( const QString &expression )
@@ -111,7 +110,8 @@ QString QgsFeatureListView::parserErrorString()
 QgsFeatureIds QgsFeatureListView::currentEditSelection()
 {
   QgsFeatureIds selection;
-  Q_FOREACH ( const QModelIndex &idx, mCurrentEditSelectionModel->selectedIndexes() )
+  const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
+  for ( const QModelIndex &idx : selectedIndexes )
   {
     selection << idx.data( QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
   }
@@ -201,6 +201,11 @@ void QgsFeatureListView::setEditSelection( const QModelIndex &index, QItemSelect
 {
   bool ok = true;
   emit aboutToChangeEditSelection( ok );
+
+#ifdef QGISDEBUG
+  if ( index.model() != mModel->masterModel() )
+    qWarning() << "Index from wrong model passed in";
+#endif
 
   if ( ok )
     mCurrentEditSelectionModel->select( index, command );
@@ -304,14 +309,17 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
   {
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
-    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "AttributeTableRow" ), this );
+    QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
+
+    emit willShowContextMenu( menu, index );
+
     menu->exec( event->globalPos() );
   }
 }
 
 void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 {
-  QItemSelectionModel::SelectionFlags command =  selectionCommand( index );
+  QItemSelectionModel::SelectionFlags command = selectionCommand( index );
   int row = index.row();
 
   if ( anchor )
@@ -333,6 +341,98 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
   QModelIndex br = model()->index( std::max( mRowAnchor, row ), model()->columnCount() - 1 );
 
   mFeatureSelectionModel->selectFeatures( QItemSelection( tl, br ), command );
+}
+
+void QgsFeatureListView::ensureEditSelection( bool inSelection )
+{
+  if ( !mModel->rowCount() )
+    return;
+
+  const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
+
+  // We potentially want a new edit selection
+  // If we it should be in the feature selection
+  // but we don't find a matching one we might
+  // still stick to the old edit selection
+  bool editSelectionUpdateRequested = false;
+  // There is a valid selection available which we
+  // could fall back to
+  bool validEditSelectionAvailable = false;
+
+  if ( selectedIndexes.isEmpty() || mModel->mapFromMaster( selectedIndexes.first() ).row() == -1 )
+  {
+    validEditSelectionAvailable = false;
+  }
+  else
+  {
+    validEditSelectionAvailable = true;
+  }
+
+  // If we want to force the edit selection to be within the feature selection
+  // let's do some additional checks
+  if ( inSelection )
+  {
+    // no valid edit selection, update anyway
+    if ( !validEditSelectionAvailable )
+    {
+      editSelectionUpdateRequested = true;
+    }
+    else
+    {
+      // valid selection: update only if it's not in the feature selection
+      const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
+
+      if ( !selectedFids.contains( mModel->idxToFid( mModel->mapFromMaster( selectedIndexes.first() ) ) ) )
+      {
+        editSelectionUpdateRequested = true;
+      }
+    }
+  }
+  else
+  {
+    // we don't care if the edit selection is in the feature selection?
+    // well then, only update if there is no valid edit selection available
+    if ( !validEditSelectionAvailable )
+      editSelectionUpdateRequested = true;
+  }
+
+  if ( editSelectionUpdateRequested )
+  {
+    QTimer::singleShot( 0, this, [ this, inSelection, validEditSelectionAvailable ]()
+    {
+      // The layer might have been removed between timer start and timer triggered
+      // in this case there is nothing left for us to do.
+      if ( !layerCache() )
+        return;
+
+      int rowToSelect = -1;
+
+      if ( inSelection )
+      {
+        const QgsFeatureIds selectedFids = layerCache()->layer()->selectedFeatureIds();
+        const int rowCount = mModel->rowCount();
+
+        for ( int i = 0; i < rowCount; i++ )
+        {
+          if ( selectedFids.contains( mModel->idxToFid( mModel->index( i, 0 ) ) ) )
+          {
+            rowToSelect = i;
+            break;
+          }
+
+          if ( rowToSelect == -1 && !validEditSelectionAvailable )
+            rowToSelect = 0;
+        }
+      }
+      else
+        rowToSelect = 0;
+
+      if ( rowToSelect != -1 )
+      {
+        setEditSelection( mModel->mapToMaster( mModel->index( rowToSelect, 0 ) ), QItemSelectionModel::ClearAndSelect );
+      }
+    } );
+  }
 }
 
 void QgsFeatureListView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )

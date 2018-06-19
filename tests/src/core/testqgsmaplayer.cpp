@@ -34,10 +34,9 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-      : QObject( 0 )
-      , blendMode( QPainter::CompositionMode_SourceOver )
+      : QObject( nullptr )
     {}
-    QPainter::CompositionMode blendMode;
+    QPainter::CompositionMode blendMode =  QPainter::CompositionMode_SourceOver ;
   public slots:
     void onBlendModeChanged( const QPainter::CompositionMode blendMode )
     {
@@ -45,7 +44,8 @@ class TestSignalReceiver : public QObject
     }
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
 class TestQgsMapLayer : public QObject
@@ -53,9 +53,7 @@ class TestQgsMapLayer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapLayer()
-      : mpLayer( 0 )
-    {}
+    TestQgsMapLayer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -64,6 +62,7 @@ class TestQgsMapLayer : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void isValid();
+    void formatName();
 
     void setBlendMode();
 
@@ -116,6 +115,14 @@ void TestQgsMapLayer::cleanupTestCase()
 void TestQgsMapLayer::isValid()
 {
   QVERIFY( mpLayer->isValid() );
+}
+
+void TestQgsMapLayer::formatName()
+{
+  QCOMPARE( QgsMapLayer::formatLayerName( QString() ), QString() );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer" ) ), QStringLiteral( "Layer" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer name" ) ), QStringLiteral( "Layer Name" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer_name" ) ), QStringLiteral( "Layer Name" ) );
 }
 
 void TestQgsMapLayer::setBlendMode()
@@ -254,8 +261,8 @@ void TestQgsMapLayer::layerRef()
 void TestQgsMapLayer::layerRefListUtils()
 {
   // conversion utils
-  QgsVectorLayer *vlA = new QgsVectorLayer( "Point", "a", "memory" );
-  QgsVectorLayer *vlB = new QgsVectorLayer( "Point", "b", "memory" );
+  QgsVectorLayer *vlA = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "a" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlB = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "b" ), QStringLiteral( "memory" ) );
 
   QList<QgsMapLayer *> listRawSource;
   listRawSource << vlA << vlB;
@@ -268,8 +275,8 @@ void TestQgsMapLayer::layerRefListUtils()
   QCOMPARE( raw, QList< QgsMapLayer *>() << vlA << vlB );
 
   //remove layers
-  QgsVectorLayer *vlC = new QgsVectorLayer( "Point", "c", "memory" );
-  QgsVectorLayer *vlD = new QgsVectorLayer( "Point", "d", "memory" );
+  QgsVectorLayer *vlC = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "c" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vlD = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "d" ), QStringLiteral( "memory" ) );
   refs << QgsMapLayerRef( vlC ) << QgsMapLayerRef( vlD );
 
   _qgis_removeLayers( refs, QList< QgsMapLayer *>() << vlB << vlD );

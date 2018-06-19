@@ -18,7 +18,7 @@
 #include "qgsattributeform.h"
 
 QgsKeyValueWidgetWrapper::QgsKeyValueWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
-  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
@@ -72,7 +72,7 @@ void QgsKeyValueWidgetWrapper::setValue( const QVariant &value )
   mWidget->setMap( value.toMap() );
 }
 
-void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult /*constraintValid*/ )
+void QgsKeyValueWidgetWrapper::updateConstraintWidgetStatus()
 {
   // Nothing
 }

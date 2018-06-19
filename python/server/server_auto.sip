@@ -1,31 +1,30 @@
 // Include auto-generated SIP files
-%Include qgsmapserviceexception.sip
-%Include qgscapabilitiescache.sip
-%Include qgsconfigcache.sip
-%Include qgsserversettings.sip
-%Include qgsbufferserverrequest.sip
-%Include qgsbufferserverresponse.sip
-%Include qgsrequesthandler.sip
-%Include qgsserver.sip
-%Include qgsserverexception.sip
+%Include auto_generated/qgsmapserviceexception.sip
+%Include auto_generated/qgscapabilitiescache.sip
+%Include auto_generated/qgsconfigcache.sip
+%Include auto_generated/qgsserversettings.sip
+%Include auto_generated/qgsbufferserverrequest.sip
+%Include auto_generated/qgsbufferserverresponse.sip
+%Include auto_generated/qgsrequesthandler.sip
+%Include auto_generated/qgsserver.sip
+%Include auto_generated/qgsserverexception.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
-%Include qgsserverinterface.sip
+%Include auto_generated/qgsserverinterface.sip
 %End
-%Include qgsserverprojectparser.sip
-%Include qgsserverprojectutils.sip
-%Include qgsserverrequest.sip
-%Include qgsserverresponse.sip
-%Include qgsservice.sip
-%Include qgsservicemodule.sip
-%Include qgsserviceregistry.sip
-%Include qgswmsconfigparser.sip
-%Include qgswmsprojectparser.sip
+%Include auto_generated/qgsserverprojectutils.sip
+%Include auto_generated/qgsserverrequest.sip
+%Include auto_generated/qgsserverresponse.sip
+%Include auto_generated/qgsservice.sip
+%Include auto_generated/qgsservicemodule.sip
+%Include auto_generated/qgsserviceregistry.sip
+%Include auto_generated/qgsfeaturefilterprovidergroup.sip
+%Include auto_generated/qgsfeaturefilter.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
-%Include qgsserverfilter.sip
-%End
-%If ( HAVE_SERVER_PYTHON_PLUGINS )
-%Include qgsaccesscontrolfilter.sip
+%Include auto_generated/qgsserverfilter.sip
 %End
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
-%Include qgsaccesscontrol.sip
+%Include auto_generated/qgsaccesscontrolfilter.sip
+%End
+%If ( HAVE_SERVER_PYTHON_PLUGINS )
+%Include auto_generated/qgsaccesscontrol.sip
 %End

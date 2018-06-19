@@ -86,6 +86,15 @@ class TestQgsExtentGroupBox(unittest.TestCase):
 
     def testSetOutputCrs(self):
         w = qgis.gui.QgsExtentGroupBox()
+        w.setCheckable(True)
+
+        # ensure setting output crs doesn't change state of group box
+        w.setChecked(False)
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
+        self.assertFalse(w.isChecked())
+        w.setChecked(True)
+        w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
+        self.assertTrue(w.isChecked())
 
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setCurrentExtent(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('epsg:4326'))

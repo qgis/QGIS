@@ -2,7 +2,7 @@
   QgsAttributeTableFilterModel.h - Filter Model for attribute table
   -------------------
          date                 : Feb 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -29,7 +29,8 @@ class QgsVectorLayerCache;
 class QgsMapCanvas;
 class QItemSelectionModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsAttributeTableFilterModel
  */
 class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
@@ -49,6 +50,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ShowFilteredList, //!< Show only features whose ids are on the filter list. {\see setFilteredFeatures}
       ShowEdited        //!< Show only features which have unsaved changes
     };
+    Q_ENUM( FilterMode )
 
     /**
      * The type of a column.
@@ -58,6 +60,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
       ColumnTypeField,       //!< This column shows a field
       ColumnTypeActionButton //!< This column shows action buttons
     };
+    Q_ENUM( ColumnType )
 
     /**
      * The additional roles defined by this filter model.
@@ -77,7 +80,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * \param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Set the attribute table model that backs this model
@@ -112,7 +115,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
 
     /**
-     * Get a list of currently filtered feature ids
+     * Gets a list of currently filtered feature ids
      *
      * \returns A list of feature ids
      */
@@ -168,11 +171,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     inline QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const { return mapFromSource( sourceIndex ); }
 
-    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
-    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Sort by the given column using the given order.
@@ -181,7 +184,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param column The column which should be sorted
      * \param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
     /**
      * Sort by the given expression using the given order.
@@ -200,12 +203,12 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     //! Returns the map canvas
     QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 
     /**
-     * Get the index of the first column that contains an action widget.
+     * Gets the index of the first column that contains an action widget.
      * Returns -1 if none is defined.
      */
     int actionColumnIndex() const;
@@ -265,8 +268,8 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
   private:
     QgsFeatureIds mFilteredFeatures;
     QgsMapCanvas *mCanvas = nullptr;
-    FilterMode mFilterMode;
-    bool mSelectedOnTop;
+    FilterMode mFilterMode = FilterMode::ShowAll;
+    bool mSelectedOnTop = false;
     QgsAttributeTableModel *mTableModel = nullptr;
 
     QgsAttributeTableConfig mConfig;

@@ -22,6 +22,7 @@
 #include "qgsrelationreferencefieldformatter.h"
 #include "qgskeyvaluefieldformatter.h"
 #include "qgslistfieldformatter.h"
+#include "qgsrangefieldformatter.h"
 #include "qgsfallbackfieldformatter.h"
 
 
@@ -34,6 +35,7 @@ QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   addFieldFormatter( new QgsKeyValueFieldFormatter() );
   addFieldFormatter( new QgsListFieldFormatter() );
   addFieldFormatter( new QgsDateTimeFieldFormatter() );
+  addFieldFormatter( new QgsRangeFieldFormatter() );
 
   mFallbackFieldFormatter = new QgsFallbackFieldFormatter();
 }

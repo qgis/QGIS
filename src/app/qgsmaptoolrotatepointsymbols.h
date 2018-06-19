@@ -23,7 +23,8 @@
 class QgsPointRotationItem;
 class QgsMarkerSymbol;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsMapToolRotatePointSymbols
  * \brief A class that allows interactive manipulation the value of the rotation field(s) for point layers.
  */
@@ -34,21 +35,22 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
 
   public:
     QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas );
-    ~QgsMapToolRotatePointSymbols();
+    ~QgsMapToolRotatePointSymbols() override;
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    /** Returns true if the symbols of a maplayer can be rotated. This means the layer
+    /**
+     * Returns true if the symbols of a maplayer can be rotated. This means the layer
       is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
     static bool layerIsRotatable( QgsMapLayer *ml );
 
   protected:
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
-    virtual void noCompatibleSymbols() override;
+    void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
+    bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
+    void noCompatibleSymbols() override;
 
   private:
 

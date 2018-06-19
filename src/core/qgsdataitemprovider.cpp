@@ -16,3 +16,8 @@
 #include "qgsdataitemprovider.h"
 
 // no implementation currently
+
+bool QgsDataItemProvider::handlesDirectoryPath( const QString & )
+{
+  return false;
+}

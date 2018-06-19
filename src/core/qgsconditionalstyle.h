@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsconditionalstyle.h
+    ---------------------
+    begin                : August 2015
+    copyright            : (C) 2015 by Nathan Woodrow
+    email                : woodrow dot nathan at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
@@ -16,7 +30,8 @@ class QgsReadWriteContext;
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsConditionalLayerStyles class holds conditional style information
  * for a layer. This includes field styles and full row styles.
  */
@@ -48,11 +63,13 @@ class CORE_EXPORT QgsConditionalLayerStyles
      */
     QList<QgsConditionalStyle> fieldStyles( const QString &fieldName );
 
-    /** Reads field ui properties specific state from Dom node.
+    /**
+     * Reads field ui properties specific state from Dom node.
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write field ui properties specific state from Dom node.
+    /**
+     * Write field ui properties specific state from Dom node.
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
@@ -61,7 +78,8 @@ class CORE_EXPORT QgsConditionalLayerStyles
     QList<QgsConditionalStyle> mRowStyles;
 };
 
-/** \class QgsConditionalStyle
+/**
+ * \class QgsConditionalStyle
  *  \ingroup core
  * Conditional styling for a rule.
  */
@@ -114,7 +132,7 @@ class CORE_EXPORT QgsConditionalStyle
     void setTextColor( const QColor &value ) { mTextColor = value; mValid = true; }
 
     /**
-     * \brief Set the font for the the style
+     * \brief Set the font for the style
      * \param value QFont to be used for text
      */
     void setFont( const QFont &value ) { mFont = value; mValid = true; }
@@ -221,18 +239,20 @@ class CORE_EXPORT QgsConditionalStyle
      */
     static QgsConditionalStyle compressStyles( const QList<QgsConditionalStyle> &styles );
 
-    /** Reads vector conditional style specific state from layer Dom node.
+    /**
+     * Reads vector conditional style specific state from layer Dom node.
      */
     bool readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
-    /** Write vector conditional style specific state from layer Dom node.
+    /**
+     * Write vector conditional style specific state from layer Dom node.
      */
     bool writeXml( QDomNode &node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 
   private:
 
-    bool mValid;
+    bool mValid = false;
     QString mName;
     QString mRule;
     std::unique_ptr<QgsSymbol> mSymbol;

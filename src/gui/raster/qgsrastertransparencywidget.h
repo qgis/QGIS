@@ -29,7 +29,8 @@ class QgsMapToolEmitPoint;
 class QgsPointXY;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Widget to control a layers transparency and related options
  */
 class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, private Ui::QgsRasterTransparencyWidget
@@ -40,7 +41,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * \brief Widget to control a layers transparency and related options
      */
-    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
 
@@ -52,7 +53,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * Apply any changes on the widget to the set layer.
      */
-    void apply();
+    void apply() override;
 
   private slots:
 
@@ -62,21 +63,21 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void transparencyCellTextEdited( const QString &text );
 
     //! \brief slot executed when user presses "Add Values From Display" button on the transparency page
-    void on_pbnAddValuesFromDisplay_clicked();
+    void pbnAddValuesFromDisplay_clicked();
 
     //! \brief slot executed when user presses "Add Values Manually" button on the transparency page
-    void on_pbnAddValuesManually_clicked();
+    void pbnAddValuesManually_clicked();
 
     //! \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value
-    void on_pbnDefaultValues_clicked();
+    void pbnDefaultValues_clicked();
 
     //! \brief slot executed when user wishes to export transparency values
-    void on_pbnExportTransparentPixelValues_clicked();
+    void pbnExportTransparentPixelValues_clicked();
 
     //! \brief slow executed when user wishes to import transparency values
-    void on_pbnImportTransparentPixelValues_clicked();
+    void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page
-    void on_pbnRemoveSelectedRow_clicked();
+    void pbnRemoveSelectedRow_clicked();
 
   private:
     //! \brief  A constant that signals property not used

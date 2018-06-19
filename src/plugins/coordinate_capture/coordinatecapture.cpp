@@ -1,11 +1,9 @@
 /***************************************************************************
-  coordinatecapture.cpp
-//   Capture mouse coordinates in different CRS
-  -------------------
-         begin                : [PluginDate]
-         copyright            : [(C) Your Name and Date]
-         email                : [Your Email]
-
+    coordinatecapture.cpp
+    ---------------------
+    begin                : August 2008
+    copyright            : (C) 2008 by Tim Sutton
+    email                : tim at linfiniti dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -34,7 +32,7 @@
 #include "coordinatecapturegui.h"
 
 //
-// Qt4 Related Includes
+// Qt Related Includes
 //
 
 #include <QAction>
@@ -46,6 +44,7 @@
 #include <QToolButton>
 #include <QFile>
 #include <QLabel>
+#include <QMenu>
 
 static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
@@ -60,28 +59,13 @@ static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
 //
 //////////////////////////////////////////////////////////////////////
 
-/**
- * Constructor for the plugin. The plugin is passed a pointer
- * an interface object that provides access to exposed functions in QGIS.
- * @param theQGisInterface - Pointer to the QGIS interface object
- */
+
 CoordinateCapture::CoordinateCapture( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-  , mpMapTool( nullptr )
-  , mpTrackMouseButton( nullptr )
-  , mpCaptureButton( nullptr )
-  , mypUserCrsToolButton( nullptr )
-  , mypCRSLabel( nullptr )
   , mCanvasDisplayPrecision( 5 )
   , mUserCrsDisplayPrecision( 5 )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
-}
-
-CoordinateCapture::~CoordinateCapture()
-{
-
 }
 
 /*
@@ -114,7 +98,7 @@ void CoordinateCapture::initGui()
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
   connect( mQActionPointer, &QAction::triggered, this, &CoordinateCapture::showOrHide );
-  mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( QString(), mQActionPointer );
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
 
   // create our map tool
@@ -266,7 +250,7 @@ void CoordinateCapture::showOrHide()
 void CoordinateCapture::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->vectorMenu()->removeAction( mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   mpMapTool->deactivate();
   delete mpMapTool;

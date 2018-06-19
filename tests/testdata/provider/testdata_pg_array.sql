@@ -1,4 +1,5 @@
-﻿DROP TABLE IF EXISTS qgis_test.string_array;
+
+DROP TABLE IF EXISTS qgis_test.string_array;
 
 CREATE TABLE qgis_test.string_array
 (
@@ -34,4 +35,3 @@ CREATE TABLE qgis_test.double_array
 INSERT INTO qgis_test.double_array(value)
   VALUES
     ('{1.1,2,-5.12345}');
-

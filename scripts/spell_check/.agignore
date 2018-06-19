@@ -5,7 +5,7 @@ debian/build.*/
 debian/build*/
 debian/.*/usr/
 i18n/
-external/astyle
+external/*
 ms-windows/osgeo4w/
 python/ext-libs/
 python/plugins/processing/algs/saga/
@@ -14,7 +14,7 @@ src/app/gps/qwtpolar-1.0/
 src/app/gps/qwtpolar-1.1.1/
 src/core/pal
 src/plugins/grass/qtermwidget/
-
+src/3d/poly2tri/
 
 
 #Extensions
@@ -62,3 +62,6 @@ src/server/qgis_wms.xmi
 tests/testdata/qgis_server_accesscontrol/Hello.qml
 tests/testdata/qgis_server_accesscontrol/project.qgs
 tests/testdata/qgis_server/ets-wms13/project.qgs
+tests/testdata/layouts/sample_project.qgs
+tests/testdata/layouts/2x_template_attributetable.qpt
+

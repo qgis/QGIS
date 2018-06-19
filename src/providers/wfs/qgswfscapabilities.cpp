@@ -22,22 +22,24 @@
 #include "qgsogcutils.h"
 #include "qgssettings.h"
 
+#include <cpl_minixml.h>
+
 #include <QDomDocument>
 #include <QStringList>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
-  : QgsWfsRequest( uri )
+  : QgsWfsRequest( QgsWFSDataSourceURI( uri ) )
 {
-  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
-}
-
-QgsWfsCapabilities::~QgsWfsCapabilities()
-{
+  // Using Qt::DirectConnection since the download might be running on a different thread.
+  // In this case, the request was sent from the main thread and is executed with the main
+  // thread being blocked in future.waitForFinished() so we can run code on this object which
+  // lives in the main thread without risking havoc.
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished, Qt::DirectConnection );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
 {
-  QUrl url( baseURL() );
+  QUrl url( mUri.baseURL( ) );
   url.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetCapabilities" ) );
 
   const QString &version = mUri.version();
@@ -66,7 +68,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();
@@ -85,6 +87,35 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
+class CPLXMLTreeUniquePointer
+{
+  public:
+    //! Constructor
+    explicit CPLXMLTreeUniquePointer( CPLXMLNode *data ) { the_data_ = data; }
+
+    //! Destructor
+    ~CPLXMLTreeUniquePointer()
+    {
+      if ( the_data_ ) CPLDestroyXMLNode( the_data_ );
+    }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * \return the node pointer */
+    CPLXMLNode *get() const { return the_data_; }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * \return the node pointer */
+    CPLXMLNode *operator->() const { return get(); }
+
+  private:
+    CPLXMLNode *the_data_;
+};
+
+
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray &buffer = mResponse;
@@ -101,6 +132,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     emit gotCapabilities();
     return;
   }
+
+  CPLXMLTreeUniquePointer oCPLXML( CPLParseXMLString( buffer.constData() ) );
 
   QDomElement doc = capabilitiesDocument.documentElement();
 
@@ -220,7 +253,28 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     for ( int i = 0; i < operationList.size(); ++i )
     {
       QDomElement operation = operationList.at( i ).toElement();
-      if ( operation.attribute( QStringLiteral( "name" ) ) == QLatin1String( "GetFeature" ) )
+      QString name = operation.attribute( QStringLiteral( "name" ) );
+
+      // Search for DCP/HTTP
+      QDomNodeList operationHttpList = operation.elementsByTagName( QStringLiteral( "HTTP" ) );
+      for ( int j = 0; j < operationHttpList.size(); ++j )
+      {
+        QDomElement value = operationHttpList.at( j ).toElement();
+        QDomNodeList httpGetMethodList = value.elementsByTagName( QStringLiteral( "Get" ) );
+        QDomNodeList httpPostMethodList = value.elementsByTagName( QStringLiteral( "Post" ) );
+        if ( httpGetMethodList.size() > 0 )
+        {
+          mCaps.operationGetEndpoints[name] = httpGetMethodList.at( 0 ).toElement().attribute( QStringLiteral( "href" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Adding DCP Get %1 %2" ).arg( name, mCaps.operationGetEndpoints[name] ), 3 );
+        }
+        if ( httpPostMethodList.size() > 0 )
+        {
+          mCaps.operationPostEndpoints[name] = httpPostMethodList.at( 0 ).toElement().attribute( QStringLiteral( "href" ) );
+          QgsDebugMsgLevel( QStringLiteral( "Adding DCP Post %1 %2" ).arg( name, mCaps.operationPostEndpoints[name] ), 3 );
+        }
+      }
+
+      if ( name == QLatin1String( "GetFeature" ) )
       {
         QDomNodeList operationContraintList = operation.elementsByTagName( QStringLiteral( "Constraint" ) );
         for ( int j = 0; j < operationContraintList.size(); ++j )
@@ -294,17 +348,31 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
   else // WFS 2.0.0 tested on GeoServer
   {
-    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    QDomNodeList operationNodes = doc.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
       QDomElement operationElement = operationNodes.at( i ).toElement();
-      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( "name" ) )
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( QStringLiteral( "name" ) ) )
       {
         insertCap = true;
         updateCap = true;
         deleteCap = true;
       }
     }
+  }
+
+  // This is messy, but there's apparently no way to get the xmlns:ci attribute value with QDom API
+  // in snippets like
+  //  <wfs:FeatureType xmlns:ci="http://www.interactive-instruments.de/namespaces/demo/cities/4.0/cities">
+  //    <wfs:Name>ci:City</wfs:Name>
+  // so fallback to using GDAL XML parser for that...
+
+  CPLXMLNode *psFeatureTypeIter = nullptr;
+  if ( oCPLXML.get() )
+  {
+    psFeatureTypeIter = CPLGetXMLNode( oCPLXML.get(), "=wfs:WFS_Capabilities.wfs:FeatureTypeList" );
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psChild;
   }
 
   // get the <FeatureType> elements
@@ -314,12 +382,35 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     FeatureType featureType;
     QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
 
+    for ( ; psFeatureTypeIter; psFeatureTypeIter = psFeatureTypeIter->psNext )
+    {
+      if ( psFeatureTypeIter->eType != CXT_Element )
+        continue;
+      break;
+    }
+
     //Name
     QDomNodeList nameList = featureTypeElem.elementsByTagName( QStringLiteral( "Name" ) );
     if ( nameList.length() > 0 )
     {
       featureType.name = nameList.at( 0 ).toElement().text();
+
+      QgsDebugMsg( QString( "featureType.name = %1" ) . arg( featureType.name ) );
+      if ( featureType.name.contains( ':' ) )
+      {
+        QString prefixOfTypename = featureType.name.section( ':', 0, 0 );
+
+        // for some Deegree servers that requires a NAMESPACES parameter for GetFeature
+        if ( psFeatureTypeIter )
+        {
+          featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+        }
+      }
     }
+
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psNext;
+
     //Title
     QDomNodeList titleList = featureTypeElem.elementsByTagName( QStringLiteral( "Title" ) );
     if ( titleList.length() > 0 )
@@ -392,7 +483,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
+
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( crsWGS84, crs );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );

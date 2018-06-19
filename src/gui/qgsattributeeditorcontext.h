@@ -23,9 +23,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertools.h"
 #include "qgis_gui.h"
+#include "qgsproject.h"
 
+class QgsMapCanvas;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class contains context information for attribute editor widgets.
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
@@ -52,77 +55,132 @@ class GUI_EXPORT QgsAttributeEditorContext
       Popup             //!< A widget was opened as a popup (e.g. attribute table editor widget)
     };
 
-    QgsAttributeEditorContext()
-      : mParentContext( nullptr )
-      , mLayer( nullptr )
-      , mVectorLayerTools( nullptr )
-      , mRelationMode( Undefined )
-      , mFormMode( Embed )
-      , mAllowCustomUi( true )
-    {}
+    //! Constructor for QgsAttributeEditorContext
+    QgsAttributeEditorContext() = default;
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
       : mParentContext( &parentContext )
-      , mLayer( nullptr )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
-      , mRelationMode( Undefined )
+      , mFormFeature( parentContext.mFormFeature )
       , mFormMode( formMode )
-      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode )
       : mParentContext( &parentContext )
-      , mLayer( nullptr )
       , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mMapCanvas( parentContext.mMapCanvas )
       , mDistanceArea( parentContext.mDistanceArea )
       , mRelation( relation )
       , mRelationMode( relationMode )
       , mFormMode( widgetMode )
-      , mAllowCustomUi( true )
     {
       Q_ASSERT( parentContext.vectorLayerTools() );
     }
 
+    /**
+     * Sets distance area object, \a distanceArea, for area/length calculations
+     * \see distanceArea()
+     * \since QGIS 2.2
+     */
     inline void setDistanceArea( const QgsDistanceArea &distanceArea )
     {
       if ( mLayer )
       {
         mDistanceArea = distanceArea;
-        mDistanceArea.setSourceCrs( mLayer->crs() );
+        mDistanceArea.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
       }
     }
 
+    /**
+     * Returns the distance area object used for area/length calculations.
+     * \see setDistanceArea()
+     * \since QGIS 2.2
+     */
     inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
 
+    /**
+     * Sets the associated map canvas, \a mapCanvas, (e.g. to zoom to related features).
+     * \see mapCanvas()
+     * \since QGIS 3.2
+     */
+    inline void setMapCanvas( QgsMapCanvas *mapCanvas ) { mMapCanvas = mapCanvas; }
+
+    /**
+     * Returns the associated map canvas (e.g. to zoom to related features).
+     * \see setMapCanvas()
+     * \since QGIS 3.2
+     */
+    inline QgsMapCanvas *mapCanvas() const { return mMapCanvas; }
+
+    /**
+     * Sets the associated vector layer tools.
+     * \param vlTools vector layer tools
+     * \see vectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
+    // TODO QGIS 4.0 - rename vlTools to tools
+
+    /**
+     * Returns the associated vector layer tools.
+     * \see setVectorLayerTools()
+     * \since QGIS 2.2
+     */
     inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
 
+    /**
+     * Set attribute relation and mode
+     * \param relation relation
+     * \param mode relation mode
+     * \see relation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+
+    /**
+     * Returns the attribute relation.
+     * \see setRelation()
+     * \see relationMode()
+     * \since QGIS 2.6
+     */
     inline const QgsRelation &relation() const { return mRelation; }
+
+    /**
+     * Returns the attribute relation mode.
+     * \see setRelation()
+     * \see relation()
+     * \since QGIS 2.6
+     */
     inline RelationMode relationMode() const { return mRelationMode; }
 
-    /** Returns the form mode.
+    /**
+     * Returns the form mode.
      * \see setFormMode()
      */
     inline FormMode formMode() const { return mFormMode; }
 
-    /** Sets the form mode.
+    /**
+     * Sets the form mode.
      * \param mode form mode
      * \see formMode()
      * \since QGIS 2.16
      */
     inline void setFormMode( FormMode mode ) { mFormMode = mode; }
 
-    /** Returns true if the attribute editor should permit use of custom UI forms.
+    /**
+     * Returns true if the attribute editor should permit use of custom UI forms.
      * \see setAllowCustomUi()
      * \since QGIS 2.16
      */
     bool allowCustomUi() const { return mAllowCustomUi; }
 
-    /** Sets whether the attribute editor should permit use of custom UI forms.
+    /**
+     * Sets whether the attribute editor should permit use of custom UI forms.
      * \param allow set to true to allow custom UI forms, or false to disable them and use default generated
      * QGIS forms
      * \see allowCustomUi()
@@ -132,15 +190,33 @@ class GUI_EXPORT QgsAttributeEditorContext
 
     inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
+    /**
+     * Returns current feature from the currently edited form or table row
+     * \see setFormFeature()
+     * \since QGIS 3.2
+     */
+    QgsFeature formFeature() const { return mFormFeature; }
+
+    /**
+     * Set current \a feature for the currently edited form or table row
+     * \see formFeature()
+     * \since QGIS 3.2
+     */
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
+
+
   private:
     const QgsAttributeEditorContext *mParentContext = nullptr;
     QgsVectorLayer *mLayer = nullptr;
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QgsDistanceArea mDistanceArea;
     QgsRelation mRelation;
-    RelationMode mRelationMode;
-    FormMode mFormMode;
-    bool mAllowCustomUi;
+    RelationMode mRelationMode = Undefined;
+    //! Store the values of the currently edited form or table row
+    QgsFeature mFormFeature;
+    FormMode mFormMode = Embed;
+    bool mAllowCustomUi = true;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

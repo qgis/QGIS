@@ -1,7 +1,7 @@
 r.rescale
 Rescales the range of category values in a raster layer.
 Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterRange|from|The input data range to be rescaled|0,1
-ParameterRange|to|The output data range|0,1
-OutputRaster|output|Rescaled
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterRange|from|The input data range to be rescaled|QgsProcessingParameterNumber.Double|0,1|True
+QgsProcessingParameterRange|to|The output data range|QgsProcessingParameterNumber.Double|0,1|True
+QgsProcessingParameterRasterDestination|output|Rescaled

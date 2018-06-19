@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'October 2013'
@@ -28,12 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QApplication, QMessageBox
 from qgis.PyQt.QtGui import QCursor
-from qgis.core import (QgsExpressionContextUtils,
+from qgis.core import (Qgis,
+                       QgsExpressionContextUtils,
                        QgsProcessingFeedback,
                        QgsSettings,
                        QgsMapLayerProxyModel,
@@ -53,8 +54,10 @@ from processing.gui.PostgisTableSelector import PostgisTableSelector
 from processing.gui.ParameterGuiUtils import getFileFilter
 
 pluginPath = os.path.dirname(__file__)
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'DlgFieldsCalculator.ui'))
 
 
 class FieldCalculatorFeedback(QgsProcessingFeedback):
@@ -67,7 +70,7 @@ class FieldCalculatorFeedback(QgsProcessingFeedback):
         QgsProcessingFeedback.__init__(self)
         self.dialog = dialog
 
-    def reportError(self, msg):
+    def reportError(self, msg, fatalError=False):
         self.dialog.error(msg)
 
 
@@ -78,6 +81,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.setupUi(self)
 
         self.executed = False
+        self._wasExecuted = False
         self.alg = alg
         self.layer = None
 
@@ -245,6 +249,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                                            context,
                                            self.feedback,
                                            not keepOpen)
+                self._wasExecuted = self.executed or self._wasExecuted
                 if not keepOpen:
                     QDialog.reject(self)
 
@@ -257,4 +262,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
-        QgsMessageLog.logMessage(text, self.tr('Processing'), QgsMessageLog.CRITICAL)
+        QgsMessageLog.logMessage(text, self.tr('Processing'), Qgis.Critical)
+
+    def wasExecuted(self):
+        return self._wasExecuted

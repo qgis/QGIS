@@ -21,7 +21,8 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsDockWidget
  * QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
  * \since QGIS 2.16
@@ -33,22 +34,33 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   public:
 
-    /** Constructor for QgsDockWidget.
+    /**
+     * Constructor for QgsDockWidget.
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
-    /** Constructor for QgsDockWidget.
+    /**
+     * Constructor for QgsDockWidget.
      * \param title dock title
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
+
+    /**
+     * Returns true if the dock is both opened and raised to the front (ie not hidden by
+     * any other tabs.
+     * \see setUserVisible()
+     * \see toggleUserVisible()
+     */
+    bool isUserVisible() const;
 
   public slots:
 
-    /** Sets the dock widget as visible to a user, ie both shown and raised to the front.
+    /**
+     * Sets the dock widget as visible to a user, ie both shown and raised to the front.
      * \param visible set to true to show the dock to the user, or false to hide the dock.
      * When setting a dock as user visible, the dock will be opened (if it is not already
      * opened) and raised to the front.
@@ -59,42 +71,52 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * be closed
      * - hiding a dock which is closed has no effect and raises no signals
      * \see isUserVisible()
+     * \see toggleUserVisible()
      */
     void setUserVisible( bool visible );
 
-    /** Returns true if the dock is both opened and raised to the front (ie not hidden by
-     * any other tabs.
+    /**
+     * Toggles whether the dock is user visible. If the dock is not currently user
+     * visible (i.e. opened and activated as a tab) then the dock will be opened
+     * and raised. If it is currently user visible it will be closed.
+     *
      * \see setUserVisible()
+     * \see isUserVisible()
+     * \since QGIS 3.2
      */
-    bool isUserVisible() const;
+    void toggleUserVisible();
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
-    virtual void showEvent( QShowEvent *event ) override;
+    void closeEvent( QCloseEvent * ) override;
+    void showEvent( QShowEvent *event ) override;
 
   signals:
 
-    /** Emitted when dock widget is closed.
+    /**
+     * Emitted when dock widget is closed.
      * \see closedStateChanged()
      * \see opened()
      */
     void closed();
 
-    /** Emitted when dock widget is closed (or opened).
+    /**
+     * Emitted when dock widget is closed (or opened).
      * \param wasClosed will be true if dock widget was closed, or false if dock widget was opened
      * \see closed()
      * \see openedStateChanged()
      */
     void closedStateChanged( bool wasClosed );
 
-    /** Emitted when dock widget is opened.
+    /**
+     * Emitted when dock widget is opened.
      * \see openedStateChanged()
      * \see closed()
      */
     void opened();
 
-    /** Emitted when dock widget is opened (or closed).
+    /**
+     * Emitted when dock widget is opened (or closed).
      * \param wasOpened will be true if dock widget was opened, or false if dock widget was closed
      * \see closedStateChanged()
      * \see opened()
@@ -107,7 +129,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   private:
 
-    bool mVisibleAndActive;
+    bool mVisibleAndActive = false;
 
 };
 #endif //QGSDOCKWIDGET_H

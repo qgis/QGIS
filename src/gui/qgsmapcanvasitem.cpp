@@ -26,8 +26,7 @@
 #include "qgslogger.h"
 
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
-  : QGraphicsItem()
-  , mMapCanvas( mapCanvas )
+  : mMapCanvas( mapCanvas )
   , mRectRotation( 0.0 )
   , mItemSize( 0, 0 )
 {

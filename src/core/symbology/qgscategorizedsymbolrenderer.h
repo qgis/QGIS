@@ -21,19 +21,24 @@
 #include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
+#include "qgsdatadefinedsizelegend.h"
 
 #include <QHash>
 
-class QgsDataDefinedSizeLegend;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief categorized renderer
 */
 class CORE_EXPORT QgsRendererCategory
 {
   public:
-    QgsRendererCategory();
+
+    /**
+     * Constructor for QgsRendererCategory.
+     */
+    QgsRendererCategory() = default;
 
     //! takes ownership of symbol
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol SIP_TRANSFER, const QString &label, bool render = true );
@@ -51,8 +56,18 @@ class CORE_EXPORT QgsRendererCategory
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
     void setLabel( const QString &label );
 
-    // \since QGIS 2.5
+    /**
+     * Returns true if the category is currently enabled and should be rendered.
+     * \see setRenderState()
+     * \since QGIS 2.5
+     */
     bool renderState() const;
+
+    /**
+     * Sets whether the category is currently enabled and should be rendered.
+     * \see renderState()
+     * \since QGIS 2.5
+     */
     void setRenderState( bool render );
 
     // debugging
@@ -64,14 +79,15 @@ class CORE_EXPORT QgsRendererCategory
     QVariant mValue;
     std::unique_ptr<QgsSymbol> mSymbol;
     QString mLabel;
-    bool mRender;
+    bool mRender = true;
 
     void swap( QgsRendererCategory &other );
 };
 
 typedef QList<QgsRendererCategory> QgsCategoryList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCategorizedSymbolRenderer
  */
 class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
@@ -79,21 +95,21 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
   public:
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
-    ~QgsCategorizedSymbolRenderer();
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    virtual void stopRender( QgsRenderContext &context ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual QString dump() const override;
-    virtual QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
-    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QString dump() const override;
+    QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
+    QString filter( const QgsFields &fields = QgsFields() ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
-    /** Update all the symbols but leave categories and colors. This method also sets the source
+    /**
+     * Update all the symbols but leave categories and colors. This method also sets the source
      * symbol for the renderer.
      * \param sym source symbol to use for categories. Ownership is not transferred.
      * \see setSourceSymbol()
@@ -102,11 +118,13 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     const QgsCategoryList &categories() const { return mCategories; }
 
-    //! return index of category with specified value (-1 if not found)
+    //! Returns index of category with specified value (-1 if not found)
     int categoryIndexForValue( const QVariant &val );
 
-    //! return index of category with specified label (-1 if not found or not unique)
-    //! \since QGIS 2.5
+    /**
+     * Returns index of category with specified label (-1 if not found or not unique)
+     * \since QGIS 2.5
+     */
     int categoryIndexForLabel( const QString &val );
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
@@ -132,18 +150,20 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    /** Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \see setSourceSymbol()
      * \see sourceColorRamp()
      */
     QgsSymbol *sourceSymbol();
 
-    /** Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
+    /**
+     * Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
      * the categories' color.
      * \param sym source symbol, ownership is transferred to the renderer
      * \see sourceSymbol()
@@ -151,34 +171,39 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
      */
     void setSourceSymbol( QgsSymbol *sym SIP_TRANSFER );
 
-    /** Returns the source color ramp, from which each categories' color is derived.
+    /**
+     * Returns the source color ramp, from which each categories' color is derived.
      * \see setSourceColorRamp()
      * \see sourceSymbol()
      */
     QgsColorRamp *sourceColorRamp();
 
-    /** Sets the source color ramp.
+    /**
+     * Sets the source color ramp.
       * \param ramp color ramp. Ownership is transferred to the renderer
       * \see sourceColorRamp()
       * \see setSourceSymbol()
       */
     void setSourceColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    /** Update the color ramp used and all symbols colors.
+    /**
+     * Update the color ramp used and all symbols colors.
       * \param ramp color ramp. Ownership is transferred to the renderer
       * \since QGIS 2.5
       */
     void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    virtual bool legendSymbolItemsCheckable() const override;
-    virtual bool legendSymbolItemChecked( const QString &key ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
-    virtual QString legendClassificationAttribute() const override { return classAttribute(); }
+    bool legendSymbolItemsCheckable() const override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QString legendClassificationAttribute() const override { return classAttribute(); }
 
-    //! creates a QgsCategorizedSymbolRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsCategorizedSymbolRenderer from an existing renderer.
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
+     */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     /**
@@ -210,17 +235,41 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 
     //! attribute index (derived from attribute name in startRender)
-    int mAttrNum;
+    int mAttrNum = -1;
 
     //! hashtable for faster access to symbols
     QHash<QString, QgsSymbol *> mSymbolHash;
-    bool mCounting;
+    bool mCounting = false;
 
     void rebuildHash();
 
-    QgsSymbol *skipRender();
+    /**
+     * \deprecated No longer used, will be removed in QGIS 4.0
+     */
+    Q_DECL_DEPRECATED QgsSymbol *skipRender() SIP_DEPRECATED;
 
-    QgsSymbol *symbolForValue( const QVariant &value );
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     * \deprecated use variant which takes a second bool argument instead.
+     */
+    Q_DECL_DEPRECATED QgsSymbol *symbolForValue( const QVariant &value ) const SIP_DEPRECATED;
+
+    // TODO QGIS 4.0 - rename Python method to symbolForValue
+
+    /**
+     * Returns the matching symbol corresponding to an attribute \a value.
+     *
+     * Will return nullptr if no matching symbol was found for \a value, or
+     * if the category corresponding to \a value is currently disabled (see QgsRendererCategory::renderState()).
+     *
+     * If \a foundMatchingSymbol is specified then it will be set to true if
+     * a matching category was found. This can be used to differentiate between
+     * a nullptr returned as a result of no matching category vs a nullptr as a result
+     * of disabled categories.
+     *
+     * \note available in Python bindings as symbolForValue2
+     */
+    QgsSymbol *symbolForValue( const QVariant &value, bool &foundMatchingSymbol SIP_OUT ) const SIP_PYNAME( symbolForValue2 );
 
   private:
 #ifdef SIP_RUN
@@ -229,7 +278,7 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 #endif
 
     //! Returns calculated classification value for a feature
-    QVariant valueForFeature( QgsFeature &feature, QgsRenderContext &context ) const;
+    QVariant valueForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
     //! Returns list of legend symbol items from individual categories
     QgsLegendSymbolList baseLegendSymbolItems() const;

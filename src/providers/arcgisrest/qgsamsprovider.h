@@ -54,7 +54,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
-    QgsAmsProvider( const QString &uri );
+    QgsAmsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /* Inherited from QgsDataProvider */
     bool isValid() const override { return mValid; }
@@ -79,9 +79,9 @@ class QgsAmsProvider : public QgsRasterDataProvider
     Qgis::DataType dataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
     Qgis::DataType sourceDataType( int /*bandNo*/ ) const override { return Qgis::ARGB32; }
     QgsRasterInterface *clone() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     bool supportsLegendGraphic() const override { return true; }
-    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = 0 ) override;
+    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 
@@ -91,7 +91,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     void draw( const QgsRectangle &viewExtent, int pixelWidth, int pixelHeight );
 
   private:
-    bool mValid;
+    bool mValid = false;
     QgsAmsLegendFetcher *mLegendFetcher = nullptr;
     QVariantMap mServiceInfo;
     QVariantMap mLayerInfo;

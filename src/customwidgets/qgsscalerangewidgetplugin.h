@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsScaleRangeWidgetPlugin : public QObject, public QD
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsScaleRangeWidgetPlugin( QObject *parent = 0 );
+    explicit QgsScaleRangeWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

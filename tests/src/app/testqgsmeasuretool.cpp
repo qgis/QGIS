@@ -24,9 +24,9 @@
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the measure tool
  */
 class TestQgsMeasureTool : public QObject
@@ -50,12 +50,7 @@ class TestQgsMeasureTool : public QObject
     QgsMapCanvas *mCanvas = nullptr;
 };
 
-TestQgsMeasureTool::TestQgsMeasureTool()
-  : mQgisApp( nullptr )
-  , mCanvas( nullptr )
-{
-
-}
+TestQgsMeasureTool::TestQgsMeasureTool() = default;
 
 //runs before all tests
 void TestQgsMeasureTool::initTestCase()
@@ -134,7 +129,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   // check new CoordinateReferenceSystem, points must be reprojected to paint them successfully (issue #15182)
   QgsCoordinateReferenceSystem srs2( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
 
-  QgsCoordinateTransform ct( srs, srs2 );
+  QgsCoordinateTransform ct( srs, srs2, QgsProject::instance() );
 
   QgsPointXY p0 = ct.transform( tool2->points()[0] );
   QgsPointXY p1 = ct.transform( tool2->points()[1] );

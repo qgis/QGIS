@@ -29,18 +29,10 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
-  , mFilePath( QString() )
-  , mButtonVisible( true )
-  , mUseLink( false )
-  , mFullUrl( false )
-  , mDialogTitle( QString() )
-  , mFilter( QString() )
-  , mDefaultRoot( QString() )
-  , mStorageMode( GetFile )
-  , mRelativeStorage( Absolute )
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -65,7 +57,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( QStringLiteral( "…" ) );
+  mFileWidgetButton->setText( QChar( 0x2026 ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   mLayout->addWidget( mFileWidgetButton );
 
@@ -94,7 +86,7 @@ void QgsFileWidget::setFilePath( QString path )
 {
   if ( path == QgsApplication::nullRepresentation() )
   {
-    path = QLatin1String( "" );
+    path.clear();
   }
 
   //will trigger textEdited slot
@@ -219,7 +211,7 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
   mRelativeStorage = relativeStorage;
 }
 
-QLineEdit *QgsFileWidget::lineEdit()
+QgsFilterLineEdit *QgsFileWidget::lineEdit()
 {
   return mLineEdit;
 }
@@ -244,7 +236,7 @@ void QgsFileWidget::openFileDialog()
   QUrl url = QUrl::fromUserInput( oldPath );
   if ( !url.isValid() )
   {
-    QString defPath = QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() );
+    QString defPath = QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() );
     if ( defPath.isEmpty() )
     {
       defPath = QDir::homePath();
@@ -261,16 +253,33 @@ void QgsFileWidget::openFileDialog()
   {
     case GetFile:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
       break;
     case GetMultipleFiles:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
-      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
       break;
     case GetDirectory:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
       fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
       break;
+    case SaveFile:
+    {
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
+      if ( !confirmOverwrite() )
+      {
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, QFileDialog::DontConfirmOverwrite );
+      }
+      else
+      {
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
+      }
+
+      // make sure filename ends with filter. This isn't automatically done by
+      // getSaveFileName on some platforms (e.g. gnome)
+      fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
+    }
+    break;
   }
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
@@ -284,7 +293,7 @@ void QgsFileWidget::openFileDialog()
   {
     for ( int i = 0; i < fileNames.length(); i++ )
     {
-      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) ) ;
+      fileNames.replace( i, QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( fileNames.at( i ) ).absoluteFilePath() ) ) );
     }
   }
 
@@ -292,6 +301,7 @@ void QgsFileWidget::openFileDialog()
   switch ( mStorageMode )
   {
     case GetFile:
+    case SaveFile:
       settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
       break;
     case GetDirectory:
@@ -316,7 +326,7 @@ void QgsFileWidget::openFileDialog()
     }
     if ( fileNames.length() > 1 )
     {
-      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( "\" \"" ) ) );
+      setFilePath( QStringLiteral( "\"%1\"" ).arg( fileNames.join( QStringLiteral( "\" \"" ) ) ) );
     }
     else
     {
@@ -331,7 +341,7 @@ QString QgsFileWidget::relativePath( const QString &filePath, bool removeRelativ
   QString RelativePath;
   if ( mRelativeStorage == RelativeProject )
   {
-    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QgsProject::instance()->fileInfo().absolutePath() ) );
+    RelativePath = QDir::toNativeSeparators( QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() ) );
   }
   else if ( mRelativeStorage == RelativeDefaultPath && !mDefaultRoot.isEmpty() )
   {
@@ -367,7 +377,7 @@ QString QgsFileWidget::toUrl( const QString &path ) const
   if ( !url.isValid() || !url.isLocalFile() )
   {
     QgsDebugMsg( QString( "URL: %1 is not valid or not a local file!" ).arg( path ) );
-    rep =  path;
+    rep = path;
   }
 
   QString pathStr = url.toString();
@@ -403,7 +413,7 @@ void QgsFileDropEdit::setFilters( const QString &filters )
   if ( filters.contains( QStringLiteral( "*.*" ) ) )
     return; // everything is allowed!
 
-  QRegularExpression rx( "\\*\\.(\\w+)" );
+  QRegularExpression rx( QStringLiteral( "\\*\\.(\\w+)" ) );
   QRegularExpressionMatchIterator i = rx.globalMatch( filters );
   while ( i.hasNext() )
   {
@@ -431,7 +441,7 @@ QString QgsFileDropEdit::acceptableFilePath( QDropEvent *event ) const
   }
   if ( paths.size() > 1 )
   {
-    return QStringLiteral( "\"%1\"" ).arg( paths.join( "\" \"" ) );
+    return QStringLiteral( "\"%1\"" ).arg( paths.join( QStringLiteral( "\" \"" ) ) );
   }
   else if ( paths.size() == 1 )
   {

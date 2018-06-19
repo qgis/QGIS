@@ -77,7 +77,7 @@ class QgsPostgresConnPool : public QgsConnectionPool<QgsPostgresConn *, QgsPostg
 
   private:
     QgsPostgresConnPool();
-    ~QgsPostgresConnPool();
+    ~QgsPostgresConnPool() override;
 
     static QgsPostgresConnPool *sInstance;
 };

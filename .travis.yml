@@ -3,39 +3,29 @@ matrix:
   include:
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
+      services: docker
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
-      dist: precise
+        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
+        # TRAVIS_BRANCH is either the git tag or the branch name when no tag
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - TRAVIS_TIMESTAMP=$(date +%s)
+        - CCACHE_DIR=${HOME}/.ccache
+      dist: trusty
       sudo: false
       cache:
         apt: true
         pip: true
         directories:
           - $HOME/.ccache
-          - $HOME/depcache
         timeout: 1000
       compiler: clang
-      python: "3.3"
+      python: "3.5"
       addons:
-        postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
-            - ubuntu-toolchain-r-test
           packages:
-            - bison
-            - flex
-            - libpq-dev
-            - libfcgi-dev
-            - libfftw3-3
-            - libgsl0-dev
-            - pkg-config
-            - poppler-utils
-            - xvfb
-            - clang-3.8
-            - libzip-dev
 
 
     - os: linux
@@ -64,23 +54,37 @@ matrix:
             - silversearcher-ag
             - expect-dev  # unbuffer
             - coreutils
+            # dependencies for licensecheck
+            - cpanminus
             - libyaml-tiny-perl
+            - libio-socket-ssl-perl
+            - libhttp-date-perl
+            - libgetopt-long-descriptive-perl
+            - libmoo-perl
+            - libnamespace-clean-perl
+            - libpath-tiny-perl
+            - libpod-constants-perl
+            - libscalar-list-utils-perl
+            - libsort-key-perl
+            - libstrictures-perl
+            - libstring-escape-perl
+            - libtry-tiny-perl
     # OSX based build with QT4 and Python 2
-    - os: osx
-      osx_image: xcode8.3 # MacOS 10.12: Sierra
-      cache:
-        pip: true
-        directories:
-          - $HOME/.ccache
-      env:
-        - TRAVIS_CONFIG=macos
-        - IGNORE_BUILD_FAILURES=YES
-
-  allow_failures:
-    - os: osx
+#    - os: osx
+#      osx_image: xcode8.3 # MacOS 10.12: Sierra
+#      cache:
+#        pip: true
+#        directories:
+#          - $HOME/.ccache
+#      env:
+#        - TRAVIS_CONFIG=macos
+#        - IGNORE_BUILD_FAILURES=YES
+#
+#  allow_failures:
+#    - os: osx
 
 git:
-  depth: 30
+  depth: 120
 
 notifications:
   irc: "chat.freenode.net#qgis-test"

@@ -30,7 +30,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     QgsTransformSettingsDialog( const QString &raster, const QString &output,
                                 int countGCPpoints, QWidget *parent = nullptr );
 
-    ~QgsTransformSettingsDialog();
+    ~QgsTransformSettingsDialog() override;
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
                                QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
@@ -42,11 +42,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void accept() override;
 
   private slots:
-    void on_tbnOutputRaster_clicked();
-    void on_tbnMapFile_clicked();
-    void on_tbnReportFile_clicked();
-    void on_cmbTransformType_currentIndexChanged( const QString &text );
-    void on_mWorldFileCheckBox_stateChanged( int state );
+    void cmbTransformType_currentIndexChanged( const QString &text );
+    void mWorldFileCheckBox_stateChanged( int state );
     QIcon getThemeIcon( const QString &name );
 
   private:

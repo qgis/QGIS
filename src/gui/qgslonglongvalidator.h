@@ -25,7 +25,8 @@
 #include <QLocale>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLongLongValidator
  */
 class GUI_EXPORT QgsLongLongValidator : public QValidator
@@ -43,9 +44,6 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
       : QValidator( parent )
       , b( bottom )
       , t( top )
-    {}
-
-    ~QgsLongLongValidator()
     {}
 
     QValidator::State validate( QString &input, int & ) const override

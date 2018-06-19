@@ -23,17 +23,18 @@
 #include "qgsserverexception.h"
 #include "qgis_server.h"
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class  QgsMapServiceException
  * \brief Exception class for WMS service exceptions (for compatibility only).
  *
- * \deprecated Use QsgServerException
  *
  * The most important codes are:
  *  * "InvalidFormat"
  *  * "Invalid CRS"
  *  * "LayerNotDefined" / "StyleNotDefined"
  *  * "OperationNotSupported"
+ * \deprecated Use QsgServerException
  */
 
 class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException

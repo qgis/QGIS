@@ -234,7 +234,7 @@ void QgsPropertyAssistantWidget::updatePreview()
     i++;
   }
   // center icon and align text left by giving icons the same width
-  // @todo maybe add some space so that icons don't touch
+  // TODO maybe add some space so that icons don't touch
   for ( int i = 0; i < breaks.length(); i++ )
   {
     QPixmap img( mPreviewList.item( i )->icon().pixmap( mPreviewList.item( i )->icon().actualSize( QSize( 512, 512 ) ) ) );
@@ -276,8 +276,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
                              .setSubsetOfAttributes( referencedCols, mLayer->fields() ) );
 
   // create list of non-null attribute values
-  double min = DBL_MAX;
-  double max = -DBL_MAX;
+  double min = std::numeric_limits<double>::max();
+  double max = std::numeric_limits<double>::lowest();
   QgsFeature f;
   bool found = false;
   while ( fit.nextFeature( f ) )
@@ -538,12 +538,12 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     minOutputSpinBox->setValue( 0.0 );
     minOutputSpinBox->setShowClearButton( true );
     minOutputSpinBox->setClearValue( 0.0 );
-    minOutputSpinBox->setSuffix( trUtf8( " °" ) );
+    minOutputSpinBox->setSuffix( tr( " °" ) );
     maxOutputSpinBox->setMaximum( 360.0 );
     maxOutputSpinBox->setValue( 360.0 );
     maxOutputSpinBox->setShowClearButton( true );
     maxOutputSpinBox->setClearValue( 360.0 );
-    maxOutputSpinBox->setSuffix( trUtf8( " °" ) );
+    maxOutputSpinBox->setSuffix( tr( " °" ) );
     exponentSpinBox->hide();
     mExponentLabel->hide();
     mLabelMinOutput->setText( tr( "Angle from" ) );

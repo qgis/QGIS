@@ -1,8 +1,8 @@
 Line Dissolve
 shapes_lines
-ParameterVector|LINES|Lines|-1|False
-ParameterTableField|FIELD_1|1. Attribute|LINES|-1|False
-ParameterTableField|FIELD_2|2. Attribute|LINES|-1|False
-ParameterTableField|FIELD_3|3. Attribute|LINES|-1|False
-ParameterSelection|ALL|Dissolve...|[0] lines with same attribute value(s);[1] all lines
-OutputVector|DISSOLVED|Dissolved Lines
+QgsProcessingParameterFeatureSource|LINES|Lines|-1|None|False
+QgsProcessingParameterField|FIELD_1|1. Attribute|None|LINES|-1|False|False
+QgsProcessingParameterField|FIELD_2|2. Attribute|None|LINES|-1|False|False
+QgsProcessingParameterField|FIELD_3|3. Attribute|None|LINES|-1|False|False
+QgsProcessingParameterEnum|ALL|Dissolve...|[0] lines with same attribute value(s);[1] all lines
+QgsProcessingParameterVectorDestination|DISSOLVED|Dissolved Lines

@@ -22,18 +22,21 @@
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A HTML editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
+ * \since QGIS 2.6
  */
 class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
 {
     Q_OBJECT
 
   public:
-    QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsCodeEditorHTML
+    QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     void setSciLexerHTML();

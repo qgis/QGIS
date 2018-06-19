@@ -51,7 +51,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
                              const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -69,8 +69,8 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

@@ -49,8 +49,17 @@ class QgsSpatialIndexData;
 class QgsFeatureIterator;
 class QgsFeatureSource;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSpatialIndex
+ *
+ * A spatial index for QgsFeature objects.
+ *
+ * QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
+ *
+ * \note While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
+ * class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
+ * be used across multiple threads.
  */
 class CORE_EXPORT QgsSpatialIndex
 {
@@ -59,10 +68,13 @@ class CORE_EXPORT QgsSpatialIndex
 
     /* creation of spatial index */
 
-    //! Constructor - creates R-tree
+    /**
+     * Constructor for QgsSpatialIndex. Creates an empty R-tree index.
+     */
     QgsSpatialIndex();
 
-    /** Constructor - creates R-tree and bulk loads it with features from the iterator.
+    /**
+     * Constructor - creates R-tree and bulk loads it with features from the iterator.
      * This is much faster approach than creating an empty index and then inserting features one by one.
      *
      * The optional \a feedback object can be used to allow cancelation of bulk feature loading. Ownership
@@ -97,8 +109,10 @@ class CORE_EXPORT QgsSpatialIndex
 
     /* operations */
 
-    //! Add feature to index
-    bool insertFeature( const QgsFeature &f );
+    /**
+     * Adds a \a feature to the index.
+     */
+    bool insertFeature( const QgsFeature &feature );
 
     /**
      * Add a feature \a id to the index with a specified bounding box.
@@ -107,28 +121,43 @@ class CORE_EXPORT QgsSpatialIndex
     */
     bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
 
-    //! Remove feature from index
-    bool deleteFeature( const QgsFeature &f );
+    /**
+     * Removes a \a feature from the index.
+     */
+    bool deleteFeature( const QgsFeature &feature );
 
 
     /* queries */
 
-    //! Returns features that intersect the specified rectangle
-    QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
+    /**
+     * Returns a list of features with a bounding box which intersects the specified \a rectangle.
+     *
+     * \note The intersection test is performed based on the feature bounding boxes only, so for non-point
+     * geometry features it is necessary to manually test the returned features for exact geometry intersection
+     * when required.
+     */
+    QList<QgsFeatureId> intersects( const QgsRectangle &rectangle ) const;
 
-    //! Returns nearest neighbors (their count is specified by second parameter)
+    /**
+     * Returns nearest neighbors to a \a point. The number of neighbours returned is specified
+     * by the \a neighbours argument.
+     *
+     * \note The nearest neighbour test is performed based on the feature bounding boxes only, so for non-point
+     * geometry features this method is not guaranteed to return the actual closest neighbours.
+     */
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 
     /* debugging */
 
-    //! get reference count - just for debugging!
+    //! Gets reference count - just for debugging!
     QAtomicInt SIP_PYALTERNATIVETYPE( int ) refs() const;
 
   private:
 
     static SpatialIndex::Region rectToRegion( const QgsRectangle &rect );
 
-    /** Calculates feature info to insert into index.
+    /**
+     * Calculates feature info to insert into index.
     * \param f input feature
     * \param r will be set to spatial index region
     * \param id will be set to feature's ID
@@ -137,7 +166,8 @@ class CORE_EXPORT QgsSpatialIndex
     */
     static bool featureInfo( const QgsFeature &f, SpatialIndex::Region &r, QgsFeatureId &id ) SIP_SKIP;
 
-    /** Calculates feature info to insert into index.
+    /**
+     * Calculates feature info to insert into index.
      * \param f input feature
      * \param rect will be set to feature's geometry bounding box
      * \param id will be set to feature's ID

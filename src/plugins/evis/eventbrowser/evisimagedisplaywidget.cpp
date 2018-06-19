@@ -36,15 +36,11 @@
 
 /**
 * Constructor
-* @param parent - Pointer the to parent QWidget for modality
-* @param fl - Windown flags
+* \param parent - Pointer the to parent QWidget for modality
+* \param fl - Windown flags
 */
 eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags fl )
   : QWidget( parent, fl )
-  , mCurrentHttpImageRequestId( 0 )
-  , mImageSizeRatio( 0.0 )
-  , mScaleFactor( 1.0 )
-  , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();
@@ -63,9 +59,9 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags
   pbtnZoomIn->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomIn.svg" ) ) );
   pbtnZoomOut->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomOut.svg" ) ) );
   pbtnZoomFull->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomFullExtent.svg" ) ) );
-  connect( pbtnZoomIn, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomIn_clicked );
-  connect( pbtnZoomOut, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomOut_clicked );
-  connect( pbtnZoomFull, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::on_pbtnZoomFull_clicked );
+  connect( pbtnZoomIn, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomIn_clicked );
+  connect( pbtnZoomOut, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomOut_clicked );
+  connect( pbtnZoomFull, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomFull_clicked );
 
   //Setup zoom button layout
   QWidget *myButtonBar = new QWidget();
@@ -128,7 +124,7 @@ void eVisImageDisplayWidget::resizeEvent( QResizeEvent *event )
 
 /**
 * Public method called to display an image loaded locally from disk
-* @param path - The path and filename of the image to load from disk
+* \param path - The path and filename of the image to load from disk
 */
 void eVisImageDisplayWidget::displayImage( const QString &path )
 {
@@ -185,7 +181,7 @@ void eVisImageDisplayWidget::displayImage()
 
 /**
 * Public method called to display an image loaded from a url
-* @param url - The url from which to load an image
+* \param url - The url from which to load an image
 */
 void eVisImageDisplayWidget::displayUrlImage( const QString &url )
 {
@@ -228,8 +224,8 @@ void eVisImageDisplayWidget::setScalers()
 
 /**
 * Slot called when a http request is complete
-* @param requestId - The id of the http request
-* @param error - Boolean denoting success of http request
+* \param requestId - The id of the http request
+* \param error - Boolean denoting success of http request
 */
 void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 {
@@ -262,7 +258,7 @@ void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 /**
 * Slot called when the pbtnZoomIn button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomIn_clicked()
+void eVisImageDisplayWidget::pbtnZoomIn_clicked()
 {
   if ( mCurrentZoomStep < ZOOM_STEPS )
   {
@@ -281,7 +277,7 @@ void eVisImageDisplayWidget::on_pbtnZoomIn_clicked()
 /**
 * Slot called when the pbtnZoomOut button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomOut_clicked()
+void eVisImageDisplayWidget::pbtnZoomOut_clicked()
 {
   if ( mCurrentZoomStep > 0 )
   {
@@ -300,7 +296,7 @@ void eVisImageDisplayWidget::on_pbtnZoomOut_clicked()
 /**
 * Slot called when the pbtnZoomFull button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomFull_clicked()
+void eVisImageDisplayWidget::pbtnZoomFull_clicked()
 {
   pbtnZoomOut->setEnabled( false );
   pbtnZoomFull->setEnabled( false );

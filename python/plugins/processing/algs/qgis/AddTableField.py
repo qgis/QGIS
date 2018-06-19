@@ -27,9 +27,11 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsField,
+                       QgsProcessing,
                        QgsProcessingParameterString,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterEnum)
+                       QgsProcessingParameterEnum,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -44,6 +46,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
 
     def group(self):
         return self.tr('Vector table')
+
+    def groupId(self):
+        return 'vectortable'
 
     def __init__(self):
         super().__init__()
@@ -72,6 +77,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Added')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
+
     def prepareAlgorithm(self, parameters, context, feedback):
         field_type = self.parameterAsEnum(parameters, self.FIELD_TYPE, context)
         field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
@@ -86,8 +94,11 @@ class AddTableField(QgisFeatureBasedAlgorithm):
         inputFields.append(self.field)
         return inputFields
 
-    def processFeature(self, feature, feedback):
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         attributes.append(None)
         feature.setAttributes(attributes)
-        return feature
+        return [feature]

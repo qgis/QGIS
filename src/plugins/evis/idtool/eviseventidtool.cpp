@@ -26,7 +26,6 @@
 **/
 #include "eviseventidtool.h"
 
-#include "qgscursors.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
@@ -39,15 +38,13 @@
 /**
 * Constructor for the id style tool, this tool inherits the QgsMapTool and requires a pointer to
 * to the map canvas.
-* @param canvas - Pointer to the QGIS map canvas
+* \param canvas - Pointer to the QGIS map canvas
 */
 eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mBrowser( nullptr )
 {
   //set cursor
-  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
-  mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 
   //set the current tool to this object
   if ( mCanvas )
@@ -58,7 +55,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
 
 /**
 * Mouse release, i.e., select, event
-* @param mouseEvent - Pointer to a QMouseEvent
+* \param mouseEvent - Pointer to a QMouseEvent
 */
 void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
 {
@@ -75,18 +72,18 @@ void eVisEventIdTool::canvasReleaseEvent( QgsMapMouseEvent *mouseEvent )
     }
     else
     {
-      QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "This tool only supports vector data" ) );
+      QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "This tool only supports vector data." ) );
     }
   }
   else
   {
-    QMessageBox::warning( mCanvas, QObject::tr( "Warning" ), QObject::tr( "No active layers found" ) );
+    QMessageBox::warning( mCanvas, QObject::tr( "eVis Event Id Tool" ), QObject::tr( "No active layers found." ) );
   }
 }
 
 /**
 * Selection routine called by the mouse release event
-* @param point = QgsPointXY representing the x, y coordinates of the mouse release event
+* \param point = QgsPointXY representing the x, y coordinates of the mouse release event
 */
 void eVisEventIdTool::select( const QgsPointXY &point )
 {
@@ -121,6 +118,6 @@ void eVisEventIdTool::select( const QgsPointXY &point )
   myLayer->selectByIds( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
-  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, 0 );
+  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );
 }

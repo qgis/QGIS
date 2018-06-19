@@ -54,7 +54,8 @@ typedef QMap<QgsFeatureId SIP_PYALTERNATIVETYPE( qint64 ), QgsAttributeMap SIP_P
 typedef QMap<QgsFeatureId, QgsAttributeMap> SIP_PYALTERNATIVETYPE( 'QMap<qint64, QMap<int, QVariant> >' ) QgsChangedAttributesMap;
 typedef QMap<QgsFeatureId, QPair<QMap<Something, Complex> >>  SIP_PYALTERNATIVETYPE( 'QMap<qint64, QMap<int, QVariant>>' ) QgsChangedAttributesMap;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A super QGIS class
  */
 #ifndef SIP_RUN // following will be hidden
@@ -84,12 +85,13 @@ typedef QVector<QVariant> QgsSuperClass;
 }
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Documentation goes here
  *
  * Here's some comment mentioning another class QgsAutoAwesomemater::makeAwesome.
- * \since QGIS 3.0
  * \note some other note
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsSipifyHeader : public QtClass<QVariant>, private Ui::QgsBaseClass
 {

@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import (QgsFeature,
+from qgis.core import (QgsApplication,
+                       QgsFeature,
                        QgsFeatureSink,
                        QgsField,
                        QgsGeometry,
@@ -37,6 +38,7 @@ from qgis.core import (QgsFeature,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterString,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -56,10 +58,16 @@ class SumLines(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_lines.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumLengthLines.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumLengthLines.svg")
 
     def group(self):
         return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
@@ -84,7 +92,12 @@ class SumLines(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         line_source = self.parameterAsSource(parameters, self.LINES, context)
+        if line_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.LINES))
+
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
 
         length_field_name = self.parameterAsString(parameters, self.LEN_FIELD, context)
         count_field_name = self.parameterAsString(parameters, self.COUNT_FIELD, context)
@@ -99,12 +112,14 @@ class SumLines(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         spatialIndex = QgsSpatialIndex(line_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
-        distArea.setSourceCrs(poly_source.sourceCrs())
+        distArea.setSourceCrs(poly_source.sourceCrs(), context.transformContext())
         distArea.setEllipsoid(context.project().ellipsoid())
 
         features = poly_source.getFeatures()
@@ -124,16 +139,16 @@ class SumLines(QgisAlgorithm):
                 if len(lines) > 0:
                     has_intersections = True
                     # use prepared geometries for faster intersection tests
-                    engine = QgsGeometry.createGeometryEngine(poly_geom.geometry())
+                    engine = QgsGeometry.createGeometryEngine(poly_geom.constGet())
                     engine.prepareGeometry()
 
                 if has_intersections:
-                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())
+                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
                     for line_feature in line_source.getFeatures(request):
                         if feedback.isCanceled():
                             break
 
-                        if engine.intersects(line_feature.geometry().geometry()):
+                        if engine.intersects(line_feature.geometry().constGet()):
                             outGeom = poly_geom.intersection(line_feature.geometry())
                             length += distArea.measureLength(outGeom)
                             count += 1

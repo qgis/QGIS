@@ -22,6 +22,7 @@
 #include "qgis.h"
 #include <QString>
 #include <QObject>
+#include <QStack>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
@@ -29,7 +30,8 @@
 class QgsVectorDataProvider;
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class allows including a set of layers in a database-side transaction,
  * provided the layer data providers support transactions and are compatible
  * with each other.
@@ -38,7 +40,7 @@ class QgsVectorLayer;
  * and all layers need to be in read-only mode for a transaction to be committed
  * or rolled back.
  *
- * Layers cannot only be included in one transaction at a time.
+ * Layers can only be included in one transaction at a time.
  *
  * When editing layers which are part of a transaction group, all changes are
  * sent directly to the data provider (bypassing the undo/redo stack), and the
@@ -50,6 +52,7 @@ class QgsVectorLayer;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
+
 class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
@@ -63,20 +66,13 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     static QgsTransaction *create( const QString &connString, const QString &providerKey ) SIP_FACTORY;
 
     /**
-     * Create a transaction which includes the layers specified with
-     * \a layerIds.
+     * Create a transaction which includes the \a layers.
      * All layers are expected to have the same connection string and data
      * provider.
      */
-    static QgsTransaction *create( const QStringList &layerIds ) SIP_FACTORY;
+    static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) SIP_FACTORY;
 
-    virtual ~QgsTransaction();
-
-    /**
-     * Add the layer with \a layerId to the transaction. The layer must not be
-     * in edit mode and the connection string must match.
-     */
-    bool addLayer( const QString &layerId );
+    ~QgsTransaction() override;
 
     /**
      * Add the \a layer to the transaction. The layer must not be
@@ -107,15 +103,60 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     bool rollback( QString &errorMsg SIP_OUT );
 
     /**
-     * Execute the \a sql string. The result must not be a tuple, so running a
-     * ``SELECT`` query will return an error.
+     * Execute the \a sql string.
+     *
+     * \param sql The sql query to execute
+     * \param error The error message
+     * \param isDirty Flag to indicate if the underlying data will be modified
+     * \param name Name of the transaction ( only used if `isDirty` is true)
+     *
+     * \returns true if everything is OK, false otherwise
      */
-    virtual bool executeSql( const QString &sql, QString &error SIP_OUT ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error SIP_OUT, bool isDirty = false, const QString &name = QString() ) = 0;
 
     /**
-     * Checks if a the provider of a given \a layer supports transactions.
+     * Checks if the provider of a given \a layer supports transactions.
      */
     static bool supportsTransaction( const QgsVectorLayer *layer );
+
+    /**
+     * creates a save point
+     * returns empty string on error
+     * returns the last created savepoint if it's not dirty
+     * \since QGIS 3.0
+     */
+    QString createSavepoint( QString &error SIP_OUT );
+
+    /**
+     * creates a save point
+     * returns empty string on error
+     * \since QGIS 3.0
+     */
+    QString createSavepoint( const QString &savePointId, QString &error SIP_OUT );
+
+    /**
+     * rollback to save point, the save point is maintained and is "undertied"
+     * \since QGIS 3.0
+     */
+    bool rollbackToSavepoint( const QString &name, QString &error SIP_OUT );
+
+    /**
+     * dirty save point such that next call to createSavepoint will create a new one
+     * \since QGIS 3.0
+     */
+    void dirtyLastSavePoint();
+
+    /**
+     * returns savepoints
+     * \since QGIS 3.0
+     */
+    QList< QString > savePoints() const { return QList< QString >::fromVector( mSavepoints ); }
+
+    /**
+     * returns the last created savepoint
+     * \since QGIS 3.0
+     */
+    bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
 
   signals:
 
@@ -124,18 +165,26 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      */
     void afterRollback();
 
+    /**
+     * Emitted if a sql query is executed and the underlying data is modified
+     */
+    void dirtied( const QString &sql, const QString &name );
+
   protected:
     QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
 
   private slots:
-    void onLayersDeleted( const QStringList &layerids );
+    void onLayerDeleted();
 
   private:
 
     bool mTransactionActive;
     QSet<QgsVectorLayer *> mLayers;
+
+    QStack< QString > mSavepoints;
+    bool mLastSavePointIsDirty;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
 

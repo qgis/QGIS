@@ -57,6 +57,9 @@ class Aggregate(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def name(self):
         return 'aggregate'
 
@@ -128,11 +131,14 @@ class Aggregate(QgisAlgorithm):
 
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         group_by = self.parameterAsExpression(parameters, self.GROUP_BY, context)
         aggregates = self.parameterAsAggregates(parameters, self.AGGREGATES, context)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         self.source = source
@@ -167,7 +173,7 @@ class Aggregate(QgisAlgorithm):
         return True
 
     def processAlgorithm(self, parameters, context, feedback):
-        expr_context = self.createExpressionContext(parameters, context)
+        expr_context = self.createExpressionContext(parameters, context, self.source)
         self.group_by_expr.prepare(expr_context)
 
         # Group features in memory layers
@@ -218,6 +224,8 @@ class Aggregate(QgisAlgorithm):
                                                self.fields,
                                                QgsWkbTypes.multiType(source.wkbType()),
                                                source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         # Calculate aggregates on memory layers
         if len(keys):

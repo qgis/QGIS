@@ -23,7 +23,8 @@
 
 class QPainter;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A class for marking the position of a gps pointer.
  */
 class QgsGpsMarker : public QgsMapCanvasItem
@@ -37,7 +38,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
 
     QRectF boundingRect() const override;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
     void setSize( int size );
 

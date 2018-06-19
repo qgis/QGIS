@@ -31,10 +31,12 @@
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )
-  , mDizzyTimer( nullptr )
-  , mMapCanvas( nullptr )
   , mMousePrecisionDecimalPlaces( 0 )
 {
+  // calculate the size of two chars
+  mTwoCharSize = fontMetrics().width( QStringLiteral( "OO" ) );
+  mMinimumWidth = mTwoCharSize * 4;
+
   // add a label to show current position
   mLabel = new QLabel( QString(), this );
   mLabel->setObjectName( QStringLiteral( "mCoordsLabel" ) );
@@ -48,7 +50,6 @@ QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
 
   mLineEdit = new QLineEdit( this );
   mLineEdit->setMinimumWidth( 10 );
-  mLineEdit->setMaximumWidth( 300 );
   //mLineEdit->setMaximumHeight( 20 );
   mLineEdit->setContentsMargins( 0, 0, 0, 0 );
   mLineEdit->setAlignment( Qt::AlignCenter );
@@ -136,6 +137,11 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     mMapCanvas->setProperty( "retro", !mMapCanvas->property( "retro" ).toBool() );
     refreshMapCanvas();
     return;
+  }
+  else if ( mLineEdit->text() == QStringLiteral( "bored" ) )
+  {
+    // it's friday afternoon and too late to start another piece of work...
+    emit weAreBored();
   }
 
   bool xOk = false;
@@ -225,13 +231,10 @@ void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
     return;
   }
 
-  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( p, mMapCanvas->mapSettings().destinationCrs(),
+  mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), p, mMapCanvas->mapSettings().destinationCrs(),
                       mMousePrecisionDecimalPlaces ) );
 
-  if ( mLineEdit->width() > mLineEdit->minimumWidth() )
-  {
-    mLineEdit->setMinimumWidth( mLineEdit->width() );
-  }
+  ensureCoordinatesVisible();
 }
 
 
@@ -246,9 +249,19 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   QgsRectangle myExtents = mMapCanvas->extent();
   mLabel->setText( tr( "Extents:" ) );
   mLineEdit->setText( myExtents.toString( true ) );
-  //ensure the label is big enough
-  if ( mLineEdit->width() > mLineEdit->minimumWidth() )
+
+  ensureCoordinatesVisible();
+}
+
+void QgsStatusBarCoordinatesWidget::ensureCoordinatesVisible()
+{
+
+  //ensure the label is big (and small) enough
+  int width = std::max( mLineEdit->fontMetrics().width( mLineEdit->text() ) + 10, mMinimumWidth );
+  if ( mLineEdit->minimumWidth() < width || ( mLineEdit->minimumWidth() - width ) > mTwoCharSize )
   {
-    mLineEdit->setMinimumWidth( mLineEdit->width() );
+    mLineEdit->setMinimumWidth( width );
+    mLineEdit->setMaximumWidth( width );
   }
 }
+

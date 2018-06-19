@@ -26,12 +26,12 @@ class DummyColorScheme : public QgsColorScheme
 {
   public:
 
-    DummyColorScheme() {}
+    DummyColorScheme() = default;
 
-    virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
       if ( context == QLatin1String( "testscheme" ) )
@@ -49,9 +49,32 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme *clone() const override
+    QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
+    }
+
+};
+
+class DummyColorScheme2 : public QgsColorScheme
+{
+  public:
+
+    DummyColorScheme2() = default;
+
+    QString schemeName() const override { return QStringLiteral( "Dummy scheme2" ); }
+
+    QgsNamedColorList fetchColors( const QString & = QString(),
+                                   const QColor & = QColor() ) override
+    {
+      QList< QPair< QColor, QString> > colors;
+      colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
+      return colors;
+    }
+
+    QgsColorScheme *clone() const override
+    {
+      return new DummyColorScheme2();
     }
 
 };
@@ -73,6 +96,7 @@ class TestQgsColorSchemeRegistry : public QObject
     void populateFromInstance(); // check populating an empty scheme from the registry
     void removeScheme(); // check removing a scheme from a registry
     void matchingSchemes(); //check fetching schemes of specific type
+    void fetchRandomStyleColor();
 
   private:
 
@@ -80,7 +104,8 @@ class TestQgsColorSchemeRegistry : public QObject
 
 void TestQgsColorSchemeRegistry::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsColorSchemeRegistry::cleanupTestCase()
@@ -183,6 +208,50 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
   registry->schemes( dummySchemes );
   QVERIFY( dummySchemes.length() == 1 );
   QCOMPARE( dummySchemes.at( 0 ), dummyScheme );
+}
+
+void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
+{
+  std::unique_ptr<QgsColorSchemeRegistry> registry = qgis::make_unique< QgsColorSchemeRegistry >();
+
+  // no randomStyleColorScheme set - test lots of colors to make sure their valid
+  for ( int i = 0; i < 10000; ++i )
+  {
+    QVERIFY( registry->fetchRandomStyleColor().isValid() );
+  }
+
+  // set a randomStyleColorScheme
+  DummyColorScheme2 *dummyScheme = new DummyColorScheme2();
+  registry->addColorScheme( dummyScheme );
+  registry->setRandomStyleColorScheme( dummyScheme );
+
+  // only one color in scheme
+
+  for ( int i = 0; i < 10; ++i )
+  {
+    QCOMPARE( registry->fetchRandomStyleColor().name(), QStringLiteral( "#ffff00" ) );
+  }
+
+  DummyColorScheme *dummyScheme2 = new DummyColorScheme();
+  registry->addColorScheme( dummyScheme2 );
+  registry->setRandomStyleColorScheme( dummyScheme2 );
+  for ( int i = 0; i < 10; ++i )
+  {
+    QString color = registry->fetchRandomStyleColor().name();
+    QVERIFY( color == QStringLiteral( "#ff0000" ) || color == QStringLiteral( "#00ff00" ) );
+  }
+
+  // remove current random style color scheme
+  registry->removeColorScheme( dummyScheme2 );
+  QVERIFY( !registry->randomStyleColorScheme() );
+  // no crash!
+  for ( int i = 0; i < 10; ++i )
+  {
+    QVERIFY( registry->fetchRandomStyleColor().isValid() );
+  }
+
+  // we expect the default application color scheme registry to have a randomStyleColorScheme set
+  QVERIFY( QgsApplication::colorSchemeRegistry()->randomStyleColorScheme() );
 }
 
 QGSTEST_MAIN( TestQgsColorSchemeRegistry )

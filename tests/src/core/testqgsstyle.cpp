@@ -32,7 +32,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
 class TestStyle : public QObject
@@ -69,11 +70,7 @@ class TestStyle : public QObject
 
 };
 
-TestStyle::TestStyle()
-  : mStyle( nullptr )
-{
-
-}
+TestStyle::TestStyle() = default;
 
 // slots
 void TestStyle::initTestCase()
@@ -211,7 +208,7 @@ void TestStyle::testLoadColorRamps()
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != 0 );
+    QVERIFY( ramp != nullptr );
     // test colors
     if ( colorTests.contains( name ) )
     {
@@ -239,7 +236,7 @@ void TestStyle::testSaveLoad()
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != 0 );
+    QVERIFY( ramp != nullptr );
     if ( ramp )
       delete ramp;
   }
@@ -258,9 +255,9 @@ void TestStyle::testFavorites()
   std::unique_ptr< QgsMarkerSymbol > sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol > sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
-  mStyle->saveSymbol( "symbolA", sym1.get(), true, QStringList() );
-  mStyle->saveSymbol( "symbolB", sym2.get(), false, QStringList() );
-  mStyle->saveSymbol( "symbolC", sym3.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolA" ), sym1.get(), true, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolB" ), sym2.get(), false, QStringList() );
+  mStyle->saveSymbol( QStringLiteral( "symbolC" ), sym3.get(), true, QStringList() );
 
   // check for added symbols to favorites
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -269,7 +266,7 @@ void TestStyle::testFavorites()
   QVERIFY( favorites.contains( "symbolC" ) );
 
   // remove one symbol from favorites
-  mStyle->removeFavorite( QgsStyle::SymbolEntity, "symbolA" );
+  mStyle->removeFavorite( QgsStyle::SymbolEntity, QStringLiteral( "symbolA" ) );
 
   // insure favorites updated after removal
   favorites = mStyle->symbolsOfFavorite( QgsStyle::SymbolEntity );
@@ -294,28 +291,35 @@ void TestStyle::testTags()
   QCOMPARE( id, mStyle->tagId( "purple" ) );
   QCOMPARE( QStringLiteral( "purple" ), mStyle->tag( id ) );
 
+  // Cyrillic
+  id = mStyle->addTag( QStringLiteral( "МЕТЕОР" ) );
+  QCOMPARE( id, mStyle->tagId( "МЕТЕОР" ) );
+
   QStringList tags = mStyle->tags();
-  QCOMPARE( tags.count(), 5 );
+  QCOMPARE( tags.count(), 6 );
   QVERIFY( tags.contains( "red" ) );
   QVERIFY( tags.contains( "starry" ) );
   QVERIFY( tags.contains( "circle" ) );
   QVERIFY( tags.contains( "blue" ) );
   QVERIFY( tags.contains( "purple" ) );
+  QVERIFY( tags.contains( "МЕТЕОР" ) );
 
   //remove tag
   mStyle->remove( QgsStyle::TagEntity, mStyle->tagId( QStringLiteral( "purple" ) ) );
   mStyle->remove( QgsStyle::TagEntity, -999 ); //bad id
   tags = mStyle->tags();
-  QCOMPARE( tags.count(), 4 );
+  QCOMPARE( tags.count(), 5 );
   QVERIFY( !tags.contains( "purple" ) );
 
   //add some symbols
   std::unique_ptr< QgsMarkerSymbol> sym1( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol> sym2( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   std::unique_ptr< QgsMarkerSymbol> sym3( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
+  std::unique_ptr< QgsMarkerSymbol> sym4( QgsMarkerSymbol::createSimple( QgsStringMap() ) );
   QVERIFY( mStyle->saveSymbol( "symbol1", sym1.get(), false, QStringList() << "red" << "starry" ) );
   mStyle->addSymbol( QStringLiteral( "blue starry" ), sym2.release(), true );
   mStyle->addSymbol( QStringLiteral( "red circle" ), sym3.release(), true );
+  mStyle->addSymbol( QStringLiteral( "МЕТЕОР" ), sym4.release(), true );
 
   //tag them
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "blue starry", QStringList() << "blue" << "starry" ) );
@@ -326,6 +330,13 @@ void TestStyle::testTags()
   QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "red circle", QStringList() << "round" ) );
   tags = mStyle->tags();
   QVERIFY( tags.contains( "round" ) );
+
+  // Cyrillic
+  // Add twice (see issue #18281)
+  QVERIFY( mStyle->tagSymbol( QgsStyle::SymbolEntity, "МЕТЕОР", QStringList() << "МЕТЕОР" ) );
+  tags = mStyle->tags();
+  QVERIFY( tags.contains( "МЕТЕОР" ) );
+  QCOMPARE( tags.filter( "МЕТЕОР" ).count(), 1 );
 
   //check that tags have been applied
   tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ) );
@@ -342,8 +353,13 @@ void TestStyle::testTags()
   QVERIFY( tags.contains( "red" ) );
   QVERIFY( tags.contains( "starry" ) );
 
+  tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, QStringLiteral( "МЕТЕОР" ) );
+  QCOMPARE( tags.count(), 1 );
+  QVERIFY( tags.contains( "МЕТЕОР" ) );
+
   //check that a given tag is attached to a symbol
   QVERIFY( mStyle->symbolHasTag( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ), QStringLiteral( "blue" ) ) );
+  QVERIFY( mStyle->symbolHasTag( QgsStyle::SymbolEntity, QStringLiteral( "МЕТЕОР" ), QStringLiteral( "МЕТЕОР" ) ) );
 
   //check that a given tag is not attached to a symbol
   QCOMPARE( false, mStyle->symbolHasTag( QgsStyle::SymbolEntity, QStringLiteral( "blue starry" ), QStringLiteral( "notblue" ) ) );
@@ -371,7 +387,9 @@ void TestStyle::testTags()
   QVERIFY( symbols.contains( "red circle" ) );
   symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( QStringLiteral( "round" ) ) );
   QCOMPARE( symbols.count(), 1 );
-  QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( QStringLiteral( "МЕТЕОР" ) ) );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "МЕТЕОР" ) );
   symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( QStringLiteral( "blue" ) ) );
   QVERIFY( symbols.isEmpty() );
   symbols = mStyle->symbolsWithTag( QgsStyle::SymbolEntity, mStyle->tagId( QStringLiteral( "no tag" ) ) );
@@ -395,6 +413,10 @@ void TestStyle::testTags()
   symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "round" ) );
   QCOMPARE( symbols.count(), 1 );
   QVERIFY( symbols.contains( "red circle" ) );
+  symbols = mStyle->findSymbols( QgsStyle::SymbolEntity, QStringLiteral( "МЕТЕОР" ) );
+  QCOMPARE( symbols.count(), 1 );
+  QVERIFY( symbols.contains( "МЕТЕОР" ) );
+
 }
 
 QGSTEST_MAIN( TestStyle )

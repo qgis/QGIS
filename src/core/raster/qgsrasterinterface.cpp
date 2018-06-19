@@ -30,7 +30,6 @@
 
 QgsRasterInterface::QgsRasterInterface( QgsRasterInterface *input )
   : mInput( input )
-  , mOn( true )
 {
 }
 
@@ -52,7 +51,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
   }
   else
   {
-    finalExtent = extent().intersect( &boundingBox );
+    finalExtent = extent().intersect( boundingBox );
   }
   statistics.extent = finalExtent;
 
@@ -189,9 +188,10 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         if ( blk->isNoData( i ) ) continue; // NULL
 
         double myValue = blk->value( i );
-
         myRasterBandStats.sum += myValue;
         myRasterBandStats.elementCount++;
+
+        if ( !std::isfinite( myValue ) ) continue; // inf
 
         if ( myFirstIterationFlag )
         {
@@ -295,7 +295,7 @@ void QgsRasterInterface::initHistogram( QgsRasterHistogram &histogram,
   }
   else
   {
-    finalExtent = extent().intersect( &boundingBox );
+    finalExtent = extent().intersect( boundingBox );
   }
   histogram.extent = finalExtent;
 

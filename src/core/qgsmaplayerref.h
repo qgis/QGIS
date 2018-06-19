@@ -24,7 +24,8 @@
 #include "qgsdataprovider.h"
 #include "qgsproject.h"
 
-/** Internal structure to keep weak pointer to QgsMapLayer or layerId
+/**
+ * Internal structure to keep weak pointer to QgsMapLayer or layerId
  *  if the layer is not available yet.
  *  \note not available in Python bindings
  */
@@ -170,7 +171,8 @@ struct _LayerRef
 
     if ( project && !name.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *l, project->mapLayersByName( name ) )
+      const QList<QgsMapLayer *> layers = project->mapLayersByName( name );
+      for ( QgsMapLayer *l : layers )
       {
         if ( TYPE *tl = qobject_cast< TYPE *>( l ) )
         {

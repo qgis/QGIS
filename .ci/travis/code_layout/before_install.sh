@@ -14,3 +14,7 @@
 ###########################################################################
 
 pip install autopep8 nose2 mock termcolor
+
+export PERL_MM_USE_DEFAULT=1
+export PERL_EXTUTILS_AUTOINSTALL="--defaultdeps"
+cpanm --notest App::Licensecheck

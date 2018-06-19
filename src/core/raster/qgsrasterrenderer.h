@@ -30,7 +30,8 @@ class QDomElement;
 class QPainter;
 class QgsRasterTransparency;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe that applies colors to a raster.
   */
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
@@ -42,8 +43,11 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     static const QRgb NODATA_COLOR;
 
-    QgsRasterRenderer( QgsRasterInterface *input = nullptr, const QString &type = "" );
-    virtual ~QgsRasterRenderer();
+    /**
+     * Constructor for QgsRasterRenderer.
+     */
+    QgsRasterRenderer( QgsRasterInterface *input = nullptr, const QString &type = QString() );
+    ~QgsRasterRenderer() override;
 
     //! QgsRasterRenderer cannot be copied. Use clone() instead.
     QgsRasterRenderer( const QgsRasterRenderer & ) = delete;
@@ -52,19 +56,19 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
 
-    virtual int bandCount() const override;
+    int bandCount() const override;
 
-    virtual Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 
-    virtual bool setInput( QgsRasterInterface *input ) override;
+    bool setInput( QgsRasterInterface *input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo,
-                                   const QgsRectangle &extent,
-                                   int width,
-                                   int height,
-                                   QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
+    QgsRasterBlock *block( int bandNo,
+                           const QgsRectangle &extent,
+                           int width,
+                           int height,
+                           QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
     bool usesTransparency() const;
 
@@ -88,13 +92,14 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    //! Get symbology items if provided by renderer
+    //! Gets symbology items if provided by renderer
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
     //! Sets base class members from xml. Usually called from create() methods of subclasses
     void readXml( const QDomElement &rendererElem ) override;
 
-    /** Copies common properties like opacity / transparency data from other renderer.
+    /**
+     * Copies common properties like opacity / transparency data from other renderer.
      *  Useful when cloning renderers.
      *  \since QGIS 2.16  */
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
@@ -120,9 +125,10 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Raster transparency per color or value. Overwrites global alpha value
     QgsRasterTransparency *mRasterTransparency = nullptr;
 
-    /** Read alpha value from band. Is combined with value from raster transparency / global alpha value.
+    /**
+     * Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
-    int mAlphaBand;
+    int mAlphaBand = -1;
 
     //! Origin of min/max values
     QgsRasterMinMaxOrigin mMinMaxOrigin;

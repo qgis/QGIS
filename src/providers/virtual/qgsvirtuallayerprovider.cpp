@@ -36,6 +36,11 @@ extern "C"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
 
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsvirtuallayersourceselect.h"
+#endif
+
 const QString VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
 const QString VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
 
@@ -49,11 +54,8 @@ static QString quotedColumn( QString name )
 #define PROVIDER_ERROR( msg ) do { mError = QgsError( msg, VIRTUAL_LAYER_KEY ); QgsDebugMsg( msg ); } while(0)
 
 
-QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
-  : QgsVectorDataProvider( uri )
-  , mValid( true )
-  , mCachedStatistics( false )
-  , mFeatureCount( 0 )
+QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri, const QgsDataProvider::ProviderOptions &options )
+  : QgsVectorDataProvider( uri, options )
 {
   mError.clear();
 
@@ -74,15 +76,9 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   {
     mDefinition = QgsVirtualLayerDefinition::fromUrl( url );
 
-    if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
+    if ( !mDefinition.isLazy() )
     {
-      // open the file
-      mValid = openIt();
-    }
-    else
-    {
-      // create the file
-      mValid = createIt();
+      reloadData();
     }
   }
   catch ( std::runtime_error &e )
@@ -95,6 +91,20 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   if ( mDefinition.geometrySrid() != -1 )
   {
     mCrs = QgsCoordinateReferenceSystem( mDefinition.geometrySrid() );
+  }
+}
+
+void QgsVirtualLayerProvider::reloadData()
+{
+  if ( mDefinition.sourceLayers().empty() && !mDefinition.filePath().isEmpty() && mDefinition.query().isEmpty() )
+  {
+    // open the file
+    mValid = openIt();
+  }
+  else
+  {
+    // create the file
+    mValid = createIt();
   }
 }
 
@@ -445,8 +455,9 @@ bool QgsVirtualLayerProvider::createIt()
   return true;
 }
 
-QgsVirtualLayerProvider::~QgsVirtualLayerProvider()
+bool QgsVirtualLayerProvider::cancelReload()
 {
+  return mSqlite.interrupt();
 }
 
 void QgsVirtualLayerProvider::resetSqlite()
@@ -492,10 +503,16 @@ QString QgsVirtualLayerProvider::subsetString() const
 
 bool QgsVirtualLayerProvider::setSubsetString( const QString &subset, bool updateFeatureCount )
 {
+  if ( subset == mSubset )
+    return true;
+
   mSubset = subset;
   clearMinMaxCache();
   if ( updateFeatureCount )
     updateStatistics();
+
+  emit dataChanged();
+
   return true;
 }
 
@@ -565,11 +582,14 @@ bool QgsVirtualLayerProvider::isValid() const
 
 QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() const
 {
+  QgsVectorDataProvider::Capabilities capabilities = CancelSupport;
+
   if ( !mDefinition.uid().isNull() )
   {
-    return SelectAtId;
+    capabilities |= SelectAtId;
   }
-  return 0;
+
+  return capabilities;
 }
 
 QString QgsVirtualLayerProvider::name() const
@@ -615,12 +635,13 @@ QSet<QgsMapLayerDependency> QgsVirtualLayerProvider::dependencies() const
  * Class factory to return a pointer to a newly created
  * QgsSpatiaLiteProvider object
  */
-QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri )
+QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri, const QgsDataProvider::ProviderOptions &options )
 {
-  return new QgsVirtualLayerProvider( *uri );
+  return new QgsVirtualLayerProvider( *uri, options );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -647,3 +668,34 @@ QGISEXTERN bool isProvider()
 QGISEXTERN void cleanupProvider()
 {
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for virtual layers source select
+class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return QStringLiteral( "virtual" ); }
+    QString text() const override { return QObject::tr( "Virtual Layer" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }
+    QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsVirtualSourceSelectProvider;
+
+  return providers;
+}
+#endif

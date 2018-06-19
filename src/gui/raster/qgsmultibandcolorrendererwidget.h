@@ -29,7 +29,8 @@ class QgsRasterLayer;
 class QLineEdit;
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMultiBandColorRendererWidget
  */
 class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsMultiBandColorRendererWidgetBase
@@ -58,14 +59,13 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     void loadMinMax( int bandNo, double min, double max );
 
   private slots:
-    //void on_mLoadPushButton_clicked();
     void onBandChanged( int );
-    void on_mRedMinLineEdit_textChanged( const QString & );
-    void on_mRedMaxLineEdit_textChanged( const QString & );
-    void on_mGreenMinLineEdit_textChanged( const QString & );
-    void on_mGreenMaxLineEdit_textChanged( const QString & );
-    void on_mBlueMinLineEdit_textChanged( const QString & );
-    void on_mBlueMaxLineEdit_textChanged( const QString & );
+    void mRedMinLineEdit_textChanged( const QString & );
+    void mRedMaxLineEdit_textChanged( const QString & );
+    void mGreenMinLineEdit_textChanged( const QString & );
+    void mGreenMaxLineEdit_textChanged( const QString & );
+    void mBlueMinLineEdit_textChanged( const QString & );
+    void mBlueMaxLineEdit_textChanged( const QString & );
 
   private:
     void createValidators();

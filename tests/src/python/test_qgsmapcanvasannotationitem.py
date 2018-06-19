@@ -142,7 +142,7 @@ class TestQgsMapCanvasAnnotationItem(unittest.TestCase):
                                'test', "memory")
         canvas.setLayers([layer])
         f = QgsFeature(layer.fields())
-        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(14, 31)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(14, 31)))
         f.setValid(True)
         f.setAttributes(['hurstbridge', 'somewhere'])
         self.assertTrue(layer.dataProvider().addFeatures([f]))

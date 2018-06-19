@@ -29,18 +29,18 @@
 #include "qgsnmeaconnection.h"
 #include "qgslogger.h"
 
-QgsGPSConnection::QgsGPSConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
+QgsGpsConnection::QgsGpsConnection( QIODevice *dev ): QObject( nullptr ), mSource( dev ), mStatus( NotConnected )
 {
   clearLastGPSInformation();
-  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGPSConnection::parseData );
+  QObject::connect( dev, &QIODevice::readyRead, this, &QgsGpsConnection::parseData );
 }
 
-QgsGPSConnection::~QgsGPSConnection()
+QgsGpsConnection::~QgsGpsConnection()
 {
   cleanupSource();
 }
 
-bool QgsGPSConnection::connect()
+bool QgsGpsConnection::connect()
 {
   if ( !mSource )
   {
@@ -55,7 +55,7 @@ bool QgsGPSConnection::connect()
   return connected;
 }
 
-bool QgsGPSConnection::close()
+bool QgsGpsConnection::close()
 {
   if ( !mSource )
   {
@@ -66,7 +66,7 @@ bool QgsGPSConnection::close()
   return true;
 }
 
-void QgsGPSConnection::cleanupSource()
+void QgsGpsConnection::cleanupSource()
 {
   if ( mSource )
   {
@@ -76,14 +76,14 @@ void QgsGPSConnection::cleanupSource()
   mSource = nullptr;
 }
 
-void QgsGPSConnection::setSource( QIODevice *source )
+void QgsGpsConnection::setSource( QIODevice *source )
 {
   cleanupSource();
   mSource = source;
   clearLastGPSInformation();
 }
 
-void QgsGPSConnection::clearLastGPSInformation()
+void QgsGpsConnection::clearLastGPSInformation()
 {
   mLastGPSInformation.direction = 0;
   mLastGPSInformation.elevation = 0;

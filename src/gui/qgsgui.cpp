@@ -19,6 +19,7 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
 #include "qgsmaplayeractionregistry.h"
+#include "qgssourceselectproviderregistry.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutviewrubberband.h"
@@ -27,7 +28,10 @@
 #else
 #include "qgsnative.h"
 #endif
+#include "qgsprocessingguiregistry.h"
 #include "qgsshortcutsmanager.h"
+#include "qgswidgetstatehelper_p.h"
+#include "qgslogger.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -43,6 +47,11 @@ QgsNative *QgsGui::nativePlatformInterface()
 QgsEditorWidgetRegistry *QgsGui::editorWidgetRegistry()
 {
   return instance()->mEditorWidgetRegistry;
+}
+
+QgsSourceSelectProviderRegistry *QgsGui::sourceSelectProviderRegistry()
+{
+  return instance()->mSourceSelectProviderRegistry;
 }
 
 QgsShortcutsManager *QgsGui::shortcutsManager()
@@ -65,14 +74,31 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
   return instance()->mLayoutItemGuiRegistry;
 }
 
+QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
+{
+  return instance()->mProcessingGuiRegistry;
+}
+
+void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
+{
+  if ( widget->objectName().isEmpty() )
+  {
+    QgsDebugMsg( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" );
+  }
+  instance()->mWidgetStateHelper->registerWidget( widget, key );
+}
+
 QgsGui::~QgsGui()
 {
+  delete mProcessingGuiRegistry;
   delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
   delete mMapLayerActionRegistry;
+  delete mSourceSelectProviderRegistry;
   delete mShortcutsManager;
   delete mNative;
+  delete mWidgetStateHelper;
 }
 
 QgsGui::QgsGui()
@@ -87,6 +113,8 @@ QgsGui::QgsGui()
   mShortcutsManager = new QgsShortcutsManager();
   mLayerTreeEmbeddedWidgetRegistry = new QgsLayerTreeEmbeddedWidgetRegistry();
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
+  mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
-  mLayoutItemGuiRegistry->populate();
+  mWidgetStateHelper = new QgsWidgetStateHelper();
+  mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 }

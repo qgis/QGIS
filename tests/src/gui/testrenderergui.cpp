@@ -55,8 +55,8 @@ void TestRendererGUI::loadLayers()
 void TestRendererGUI::setRenderer()
 {
   QgsMapLayer *layer = mMapCanvas->layer( 0 );
-  Q_ASSERT( layer );
-  Q_ASSERT( layer->type() == QgsMapLayer::VectorLayer );
+  QVERIFY( layer );
+  QVERIFY( layer->type() == QgsMapLayer::VectorLayer );
   QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
 
   QgsRendererPropertiesDialog dlg( vlayer, QgsStyle::defaultStyle() );

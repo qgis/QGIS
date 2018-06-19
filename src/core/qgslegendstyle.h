@@ -27,7 +27,8 @@
 #include "qgis_core.h"
 #include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Composer legend components style
  */
 class CORE_EXPORT QgsLegendStyle
@@ -76,20 +77,20 @@ class CORE_EXPORT QgsLegendStyle
     double margin( Side side ) { return mMarginMap.value( side ); }
     void setMargin( Side side, double margin ) { mMarginMap[side] = margin; }
 
-    //! set all margins
+    //! Sets all margins
     void setMargin( double margin );
 
     void writeXml( const QString &name, QDomElement &elem, QDomDocument &doc ) const;
 
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 
-    //! Get name for style, used in project file
+    //! Gets name for style, used in project file
     static QString styleName( Style s );
 
-    //! Get style from name, used in project file
+    //! Gets style from name, used in project file
     static Style styleFromName( const QString &styleName );
 
-    //! Get style label, translated, used in UI
+    //! Gets style label, translated, used in UI
     static QString styleLabel( Style s );
 
   private:

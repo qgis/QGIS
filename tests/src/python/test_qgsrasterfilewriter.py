@@ -16,7 +16,9 @@ import qgis  # NOQA
 
 import os
 import glob
+import tempfile
 
+from osgeo import gdal
 from qgis.PyQt.QtCore import QTemporaryFile, QDir
 from qgis.core import (QgsRasterLayer,
                        QgsRasterChecker,
@@ -104,8 +106,77 @@ class TestQgsRasterFileWriter(unittest.TestCase):
         self.assertEqual(QgsRasterFileWriter.driverForExtension('.tif'), 'GTiff')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('img'), 'HFA')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('.vrt'), 'VRT')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('.jpg'), 'JPEG')
+        self.assertEqual(QgsRasterFileWriter.driverForExtension('asc'), 'AAIGrid')
         self.assertEqual(QgsRasterFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsRasterFileWriter.driverForExtension(''), '')
+
+    def testExtensionsForFormat(self):
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('not format'), [])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GTiff'), ['tiff', 'tif'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('GPKG'), ['gpkg'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('JPEG'), ['jpg', 'jpeg'])
+        self.assertCountEqual(QgsRasterFileWriter.extensionsForFormat('AAIGrid'), ['asc'])
+
+    def testSupportedFiltersAndFormat(self):
+        # test with formats in recommended order
+        formats = QgsRasterFileWriter.supportedFiltersAndFormats(QgsRasterFileWriter.SortRecommended)
+        self.assertEqual(formats[0].filterString, 'GeoTIFF (*.tif *.TIF *.tiff *.TIFF)')
+        self.assertEqual(formats[0].driverName, 'GTiff')
+        self.assertTrue('netCDF' in [f.driverName for f in formats])
+
+        # alphabetical sorting
+        formats2 = QgsRasterFileWriter.supportedFiltersAndFormats(QgsRasterFileWriter.RasterFormatOptions())
+        self.assertTrue(formats2[0].driverName < formats2[1].driverName)
+        self.assertCountEqual([f.driverName for f in formats], [f.driverName for f in formats2])
+        self.assertNotEqual(formats2[0].driverName, 'GTiff')
+
+    def testSupportedFormatExtensions(self):
+        formats = QgsRasterFileWriter.supportedFormatExtensions()
+        self.assertTrue('tif' in formats)
+        self.assertFalse('exe' in formats)
+        self.assertEqual(formats[0], 'tif')
+        self.assertTrue('nc' in formats)
+
+        # alphabetical sorting
+        formats2 = QgsRasterFileWriter.supportedFormatExtensions(QgsRasterFileWriter.RasterFormatOptions())
+        self.assertTrue(formats2[1] < formats2[2])
+        self.assertCountEqual(formats, formats2)
+        self.assertNotEqual(formats2[0], 'tif')
+
+    def testImportIntoGpkg(self):
+        # init target file
+        test_gpkg = tempfile.mktemp(suffix='.gpkg', dir=self.testDataDir)
+        gdal.GetDriverByName('GPKG').Create(test_gpkg, 1, 1, 1)
+        source = QgsRasterLayer(os.path.join(self.testDataDir, 'raster', 'band3_byte_noct_epsg4326.tif'), 'my', 'gdal')
+        self.assertTrue(source.isValid())
+        provider = source.dataProvider()
+        fw = QgsRasterFileWriter(test_gpkg)
+        fw.setOutputFormat('gpkg')
+        fw.setCreateOptions(['RASTER_TABLE=imported_table', 'APPEND_SUBDATASET=YES'])
+
+        pipe = QgsRasterPipe()
+        self.assertTrue(pipe.set(provider.clone()))
+
+        projector = QgsRasterProjector()
+        projector.setCrs(provider.crs(), provider.crs())
+        self.assertTrue(pipe.insert(2, projector))
+
+        self.assertEqual(fw.writeRaster(pipe,
+                                        provider.xSize(),
+                                        provider.ySize(),
+                                        provider.extent(),
+                                        provider.crs()), 0)
+
+        # Check that the test geopackage contains the raster layer and compare
+        rlayer = QgsRasterLayer('GPKG:%s:imported_table' % test_gpkg)
+        self.assertTrue(rlayer.isValid())
+        out_provider = rlayer.dataProvider()
+        self.assertEqual(provider.block(1, provider.extent(), source.width(), source.height()).data(),
+                         out_provider.block(1, out_provider.extent(), rlayer.width(), rlayer.height()).data())
+
+        # remove result file
+        os.unlink(test_gpkg)
 
 
 if __name__ == '__main__':

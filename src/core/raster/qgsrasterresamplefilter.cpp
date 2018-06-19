@@ -34,7 +34,6 @@
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )
-  , mMaxOversampling( 2.0 )
 {
 }
 

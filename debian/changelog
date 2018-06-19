@@ -1,10 +1,22 @@
-qgis (2.99.0) UNRELEASED; urgency=medium
+qgis (3.1.0) UNRELEASED; urgency=medium
+
+  * New development version 3.1 after branch of 3.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Feb 2018 13:10:59 +0100
+
+qgis (3.0.0) unstable; urgency=medium
+
+  * Release of 3.0.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Feb 2018 13:10:59 +0100
+
+qgis (2.99.0) unstable; urgency=medium
 
   * New development version 2.999 after branch of 2.16
   * move to qt5/python3/ninja
   * drop trusty support (libqca-2-dev missing)
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 07 Nov 2016 12:14:47 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Feb 2018 13:09:53 +0100
 
 qgis (2.16.0) unstable; urgency=medium
 

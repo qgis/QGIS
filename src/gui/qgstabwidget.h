@@ -19,7 +19,8 @@
 #include <QTabWidget>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * The QgsTabWidget class is the same as the QTabWidget but with additional methods to
  * temporarily hide/show tabs.
  *
@@ -75,7 +76,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * \since QGIS 3.0
      */
-    virtual void tabInserted( int index ) override;
+    void tabInserted( int index ) override;
 
     /**
      * Is called internally whenever a tab has been removed.
@@ -84,7 +85,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * \since QGIS 3.0
      */
-    virtual void tabRemoved( int index ) override;
+    void tabRemoved( int index ) override;
 
   private:
     void synchronizeIndexes();
@@ -92,30 +93,25 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
     struct TabInformation
     {
       TabInformation( QWidget *wdg, const QString &lbl )
-        : sourceIndex( -1 )
-        , widget( wdg )
+        : widget( wdg )
         , label( lbl )
-        , visible( true )
       {}
 
-      TabInformation()
-        : sourceIndex( -1 )
-        , widget( nullptr )
-        , visible( true )
-      {}
+      //! Constructor for TabInformation
+      TabInformation() = default;
 
       bool operator ==( const TabInformation &other );
 
-      int sourceIndex;
+      int sourceIndex = -1;
       QWidget *widget = nullptr;
       QString label;
-      bool visible;
+      bool visible = true;
     };
 
     TabInformation tabInfo( QWidget *widget );
 
     QList<TabInformation> mTabs;
-    bool mSetTabVisibleFlag;
+    bool mSetTabVisibleFlag = false;
 };
 
 #endif // QGSTABWIDGET_H

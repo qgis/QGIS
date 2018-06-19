@@ -205,7 +205,7 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), Qgis::Warning );
     return false;
   }
 
@@ -317,7 +317,7 @@ uint qHash( const QgsFeature &key, uint seed )
     hash ^= qHash( attr.toString() );
   }
 
-  hash ^= qHash( key.geometry().exportToWkt() );
+  hash ^= qHash( key.geometry().asWkt() );
   hash ^= qHash( key.id() );
 
   return hash;

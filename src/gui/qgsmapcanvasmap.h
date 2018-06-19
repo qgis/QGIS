@@ -25,7 +25,8 @@ class QgsMapCanvas;
 
 /// @cond PRIVATE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
  *
  * \note This class is not a part of public API
@@ -43,7 +44,7 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     //! \since QGIS 2.4
     QImage contentImage() const { return mImage; }
 
-    virtual void paint( QPainter *painter ) override;
+    void paint( QPainter *painter ) override;
 
     void addPreviewImage( const QImage &image, const QgsRectangle &rect );
 

@@ -84,6 +84,10 @@ const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
 
+const double Qgis::DEFAULT_SNAP_TOLERANCE = 12.0;
+
+const QgsTolerance::UnitType Qgis::DEFAULT_SNAP_UNITS = QgsTolerance::Pixels;
+
 #ifdef Q_OS_WIN
 const double Qgis::UI_SCALE_FACTOR = 1.5;
 #else
@@ -93,15 +97,15 @@ const double Qgis::UI_SCALE_FACTOR = 1;
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toDouble( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toDouble( string, &ok );
 }
 
 int qgsPermissiveToInt( QString string, bool &ok )
 {
   //remove any thousands separators
-  string.remove( QLocale::system().groupSeparator() );
-  return QLocale::system().toInt( string, &ok );
+  string.remove( QLocale().groupSeparator() );
+  return QLocale().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )

@@ -25,11 +25,6 @@ QgsMapToolSvgAnnotation::QgsMapToolSvgAnnotation( QgsMapCanvas *canvas ): QgsMap
 
 }
 
-QgsMapToolSvgAnnotation::~QgsMapToolSvgAnnotation()
-{
-
-}
-
 QgsAnnotation *QgsMapToolSvgAnnotation::createItem() const
 {
   return new QgsSvgAnnotation();

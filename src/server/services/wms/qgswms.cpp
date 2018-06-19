@@ -47,16 +47,16 @@ namespace QgsWms
         , mServerIface( serverIface )
       {}
 
-      QString name()    const { return QStringLiteral( "WMS" ); }
-      QString version() const { return mVersion; }
+      QString name()    const override { return QStringLiteral( "WMS" ); }
+      QString version() const override { return mVersion; }
 
-      bool allowMethod( QgsServerRequest::Method method ) const
+      bool allowMethod( QgsServerRequest::Method method ) const override
       {
         return method == QgsServerRequest::GetMethod;
       }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project )
+                           const QgsProject *project ) override
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -67,7 +67,8 @@ namespace QgsWms
         }
 
         // Set the default version
-        if ( versionString.isEmpty() )
+        const bool valid = versionString.compare( "1.1.1" ) == 0 || versionString.compare( "1.3.0" ) == 0;
+        if ( versionString.isEmpty() || !valid )
         {
           versionString = mVersion;
         }
@@ -156,7 +157,7 @@ namespace QgsWms
 class QgsWmsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( "WMSModule::registerSelf called" );
       registry.registerService( new  QgsWms::Service( "1.3.0", serverIface ) );

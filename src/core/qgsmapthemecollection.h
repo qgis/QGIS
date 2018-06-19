@@ -59,13 +59,14 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     {
       public:
         //! Initialize layer record with a map layer - it will be stored as a weak pointer
-        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): usingCurrentStyle( false ), usingLegendItems( false ), mLayer( l ) {}
+        MapThemeLayerRecord( QgsMapLayer *l = nullptr ): mLayer( l ) {}
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
           return mLayer == other.mLayer &&
                  usingCurrentStyle == other.usingCurrentStyle && currentStyle == other.currentStyle &&
-                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems;
+                 usingLegendItems == other.usingLegendItems && checkedLegendItems == other.checkedLegendItems &&
+                 expandedLegendItems == other.expandedLegendItems && expandedLayerNode == other.expandedLayerNode;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const
         {
@@ -75,17 +76,30 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Returns map layer or null if the layer does not exist anymore
         QgsMapLayer *layer() const { return mLayer; }
 
-        //! Set the map layer for this record
+        //! Sets the map layer for this record
         void setLayer( QgsMapLayer *layer );
 
         //! Whether current style is valid and should be applied
-        bool usingCurrentStyle;
+        bool usingCurrentStyle = false;
         //! Name of the current style of the layer
         QString currentStyle;
         //! Whether checkedLegendItems should be applied
-        bool usingLegendItems;
+        bool usingLegendItems = false;
         //! Rule keys of check legend items in layer tree model
         QSet<QString> checkedLegendItems;
+
+        /**
+         * Rule keys of expanded legend items in layer tree view.
+         * \since QGIS 3.2
+         */
+        QSet<QString> expandedLegendItems;
+
+        /**
+         * Whether the layer's tree node is expanded
+         * (only to be applied if the parent MapThemeRecord has the information about expanded nodes stored)
+         * \since QGIS 3.2
+         */
+        bool expandedLayerNode = false;
       private:
         //! Weak pointer to the layer
         QgsWeakMapLayerPointer mLayer;
@@ -103,7 +117,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
 
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
-          return validLayerRecords() == other.validLayerRecords();
+          return validLayerRecords() == other.validLayerRecords() &&
+                 mHasExpandedStateInfo == other.mHasExpandedStateInfo && mExpandedGroupNodes == other.mExpandedGroupNodes;
         }
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const
         {
@@ -122,13 +137,52 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
         //! Add a new record for a layer.
         void addLayerRecord( const QgsMapThemeCollection::MapThemeLayerRecord &record );
 
-        //! Return set with only records for valid layers
-        //! \note not available in Python bindings
+        /**
+         * Returns set with only records for valid layers
+         * \note not available in Python bindings
+         */
         QHash<QgsMapLayer *, QgsMapThemeCollection::MapThemeLayerRecord> validLayerRecords() const SIP_SKIP;
+
+        /**
+         * Returns whether information about expanded/collapsed state of nodes has been recorded
+         * and thus whether expandedGroupNodes() and expandedLegendItems + expandedLayerNode from layer records are valid.
+         * \since QGIS 3.2
+         */
+        bool hasExpandedStateInfo() const { return mHasExpandedStateInfo; }
+
+        /**
+         * Sets whether the map theme contains valid expanded/collapsed state of nodes
+         * \since QGIS 3.2
+         */
+        void setHasExpandedStateInfo( bool hasInfo ) { mHasExpandedStateInfo = hasInfo; }
+
+        /**
+         * Returns a set of group identifiers for group nodes that should have expanded state (other group nodes should be collapsed).
+         * The returned value is valid only when hasExpandedStateInfo() returns true.
+         * Group identifiers are built using group names, a sub-group name is prepended by parent group's identifier
+         * and a forward slash, e.g. "level1/level2"
+         * \since QGIS 3.2
+         */
+        QSet<QString> expandedGroupNodes() const { return mExpandedGroupNodes; }
+
+        /**
+         * Sets a set of group identifiers for group nodes that should have expanded state. See expandedGroupNodes().
+         * \since QGIS 3.2
+         */
+        void setExpandedGroupNodes( const QSet<QString> &expandedGroupNodes ) { mExpandedGroupNodes = expandedGroupNodes; }
 
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.
         QList<MapThemeLayerRecord> mLayerRecords;
+
+        //! Whether the information about expanded/collapsed state of groups, layers and legend items has been stored
+        bool mHasExpandedStateInfo = false;
+
+        /**
+         * Which groups should be expanded. Each group is identified by its name (sub-groups IDs are prepended with parent
+         * group and forward slash - e.g. "level1/level2/level3").
+         */
+        QSet<QString> mExpandedGroupNodes;
 
         friend class QgsMapThemeCollection;
     };
@@ -198,7 +252,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     QList<QgsMapLayer *> mapThemeVisibleLayers( const QString &name ) const;
 
     /**
-     * Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
+     * Gets layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
      * \since QGIS 3.0
      */
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
@@ -210,7 +264,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      */
     void readXml( const QDomDocument &doc );
 
-    /** Writes the map theme collection state to XML.
+    /**
+     * Writes the map theme collection state to XML.
      * \param doc DOM document
      * \see readXml
      */
@@ -246,8 +301,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
     /**
      * Returns the master layer order (this will always match the project's QgsProject::layerOrder() ).
      * All map themes will maintain the same layer order as the master layer order.
-     * \since QGIS 3.0
      * \see masterVisibleLayers()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterLayerOrder() const;
 
@@ -255,8 +310,8 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * Returns the master list of visible layers. The order of returned layers will always match those
      * of masterLayerOrder(), but the returned layers are filtered to only include those visible
      * in the project's layer tree.
-     * \since QGIS 3.0
      * \see masterLayerOrder()
+     * \since QGIS 3.0
      */
     QList< QgsMapLayer * > masterVisibleLayers() const;
 

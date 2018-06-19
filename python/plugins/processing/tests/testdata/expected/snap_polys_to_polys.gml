@@ -13,7 +13,7 @@
                                                                                                                                                              
   <gml:featureMember>
     <ogr:snap_polys_to_polys fid="polys.0">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-1 -1,3 3,3 3,2 2,2 2,2 2,2 2,-1 -1,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>-1,-1 -1,3 3,3 3,2 2,2 2,-1 -1,-1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>aaaaa</ogr:name>
       <ogr:intval>33</ogr:intval>
       <ogr:floatval>44.123456</ogr:floatval>

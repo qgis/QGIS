@@ -91,6 +91,7 @@ QString QgsDockWidgetPlugin::domXml() const
                   "    <height>500</height>\n"
                   "   </rect>\n"
                   "  </property>\n"
+                  "  <widget class=\"QWidget\" name=\"dockWidgetContents\"/>"
                   " </widget>\n"
                   "</ui>\n" )
          .arg( name() );

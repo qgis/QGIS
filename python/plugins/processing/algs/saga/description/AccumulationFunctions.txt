@@ -1,12 +1,12 @@
 Accumulation Functions
 grid_analysis
-ParameterRaster|SURFACE|Surface|False
-ParameterRaster|INPUT|Input|False
-ParameterRaster|STATE_IN|State t|True
-ParameterRaster|CONTROL|Operation Control|True
-ParameterRaster|CTRL_LINEAR|Linear Flow Control Grid|True
-OutputRaster|FLUX|Flux
-OutputRaster|STATE_OUT|State t + 1
-ParameterSelection|OPERATION|Operation|[0] accuflux;[1] accucapacityflux / state;[2] accufractionflux / state;[3] accuthresholdflux / state;[4] accutriggerflux / state| 0
-ParameterBoolean|LINEAR|Switch to Linear Flow|True
-ParameterNumber|THRES_LINEAR|Threshold Linear Flow|None|None| 0.000000
+QgsProcessingParameterRasterLayer|SURFACE|Surface|None|False
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterLayer|STATE_IN|State t|None|True
+QgsProcessingParameterRasterLayer|CONTROL|Operation Control|None|True
+QgsProcessingParameterRasterLayer|CTRL_LINEAR|Linear Flow Control Grid|None|True
+QgsProcessingParameterRasterDestination|FLUX|Flux
+QgsProcessingParameterRasterDestination|STATE_OUT|State t + 1
+QgsProcessingParameterEnum|OPERATION|Operation|[0] accuflux;[1] accucapacityflux / state;[2] accufractionflux / state;[3] accuthresholdflux / state;[4] accutriggerflux / state|False|0
+QgsProcessingParameterBoolean|LINEAR|Switch to Linear Flow|True
+QgsProcessingParameterNumber|THRES_LINEAR|Threshold Linear Flow|QgsProcessingParameterNumber.Double|0.000000|False|None|None

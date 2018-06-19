@@ -30,7 +30,8 @@ struct QgsRasterViewPort;
 class QgsRasterBlockFeedback;
 class QgsRasterIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The drawing pipe for raster layers.
  */
 class CORE_EXPORT QgsRasterDrawer
@@ -38,7 +39,8 @@ class CORE_EXPORT QgsRasterDrawer
   public:
     QgsRasterDrawer( QgsRasterIterator *iterator );
 
-    /** Draws raster data.
+    /**
+     * Draws raster data.
      * \param p destination QPainter
      * \param viewPort viewport to render
      * \param qgsMapToPixel map to pixel converter
@@ -48,7 +50,8 @@ class CORE_EXPORT QgsRasterDrawer
 
   protected:
 
-    /** Draws raster part
+    /**
+     * Draws raster part
      * \param p the painter to draw to
      * \param viewPort view port to draw to
      * \param img image to draw

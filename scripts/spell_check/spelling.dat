@@ -436,8 +436,10 @@ alternativly:alternatively
 alternitives:alternatives
 altho:although
 althought:although
+altitide:altitude
 altough:although
 alusion:allusion
+alway:always
 alwasy:always
 alwyas:always
 amalgomated:amalgamated
@@ -465,6 +467,7 @@ amung:among
 amunition:ammunition
 an other:another
 analagous:analogous
+analise:analyze
 analitic:analytic
 analogeous:analogous
 analysator:analyzer
@@ -872,6 +875,7 @@ avaluates:evaluates
 avaluating:evaluating
 avaoided:avoided
 avation:aviation
+avdanced:advanced
 avengence:a vengeance
 averageed:averaged
 aviable:available
@@ -1051,6 +1055,7 @@ cacluates:calculates
 cacluating:calculating
 cacluation:calculation
 cacluations:calculations
+caclulating:calculating
 caculate:calculate
 caculated:calculated
 caculater:calculator
@@ -1575,6 +1580,7 @@ conesencus:consensus
 confidental:confidential
 confidentally:confidentially
 confids:confides
+configire:configure
 configration:configuration
 configrations:configurations
 configuation:configuration
@@ -1754,6 +1760,7 @@ conveting:converting
 convets:converts
 conveyer:conveyor
 conviced:convinced
+convience:convenience
 convienient:convenient
 convieniently:conveniently
 convinience:convenience
@@ -1828,6 +1835,7 @@ coult:could
 councellor:councillor
 councellors:councillors
 cound:could
+counding:counting
 counries:countries
 countains:contains
 countires:countries
@@ -1875,9 +1883,14 @@ curch:church
 curcuit:circuit
 curcumstance:circumstance
 curcumstances:circumstances
+curent:current
 curently:currently
 currenly:currently
+currnt:current
 curriculem:curriculum
+customicable:customizable
+customisation:customization
+customise:customize
 cxan:cyan
 cyclinder:cylinder
 cymk:CMYK
@@ -1953,6 +1966,7 @@ defenition:definition
 defenitions:definitions
 defered:deferred
 deffensively:defensively
+defferent:different
 deffine:define
 deffined:defined
 defiend:defined
@@ -2202,6 +2216,7 @@ differents:different
 differnet:different
 differnt:different
 difficulity:difficulty
+diffreent:different
 diffrent:different
 dificulties:difficulties
 dificulty:difficulty
@@ -2288,6 +2303,7 @@ dislay:display
 dislayed:displayed
 dislaying:displaying
 dislays:displays
+dislpay:display
 disobediance:disobedience
 disobediant:disobedient
 disolve:dissolve
@@ -2488,6 +2504,7 @@ eletronic:electronic
 elicided:elicited
 eligable:eligible
 elimentary:elementary
+elimnated:eliminated
 ellected:elected
 elliminate:eliminate
 elliminated:eliminated
@@ -2547,6 +2564,7 @@ empirial:imperial
 emporer:emperor
 emprisoned:imprisoned
 emptry:empty
+empy:empty
 emtied:emptied
 emties:empties
 emtpy:empty
@@ -2966,6 +2984,7 @@ finacial:financial
 finaly:finally
 financialy:financially
 findout:find out
+finnished:finished
 finsih:finish
 finsihed:finished
 finsihes:finishes
@@ -3161,6 +3180,7 @@ genreating:generating
 genric:generic
 geographich:geographic
 geographicial:geographical
+geoemtry:geometry
 geometrician:geometer
 geometricians:geometers
 geomtry:geometry
@@ -3359,6 +3379,7 @@ highligt:highlight
 highligted:highlighted
 highligting:highlighting
 highligts:highlights
+hight:height
 hightlight:highlight
 hightlighted:highlighted
 hightlighting:highlighting
@@ -3450,6 +3471,7 @@ idealogy:ideology
 identicial:identical
 identifer:identifier
 identifers:identifiers
+identation:indentation
 ideosyncratic:idiosyncratic
 idesa:ideas
 idicate:indicate
@@ -3735,6 +3757,8 @@ inflexable:inflexible
 influencial:influential
 influented:influenced
 infomation:information
+inforce:enforce
+inforced:enforced
 informaion:information
 informatiom:information
 informations:information
@@ -3992,6 +4016,7 @@ intutively:intuitively
 inudstry:industry
 inumerable:enumerable
 invaid:invalid
+invalide:invalid
 invaild:invalid
 invalud:invalid
 invarient:invariant
@@ -4008,6 +4033,7 @@ invokved:invoked
 invokves:invokes
 invokving:invoking
 involvment:involvement
+iput:input
 irelevent:irrelevant
 iresistable:irresistible
 iresistably:irresistibly
@@ -4072,6 +4098,7 @@ juducial:judicial
 juristiction:jurisdiction
 juristictions:jurisdictions
 kenrel:kernel
+kepps:keeps
 keyboad:keyboard
 keyboads:keyboards
 keybord:keyboard
@@ -4219,6 +4246,7 @@ lukid:likud
 lveo:love
 lvoe:love
 Lybia:Libya
+mach:match
 machanism:mechanism
 machanisms:mechanisms
 machinary:machinery
@@ -4370,6 +4398,7 @@ meterology:meteorology
 methaphor:metaphor
 methaphors:metaphors
 metres:meters
+mial:mail
 Michagan:Michigan
 micoscopy:microscopy
 microprocesspr:microprocessor:*
@@ -4463,6 +4492,7 @@ mkaes:makes
 mkaing:making
 mkea:make
 mmnemonic:mnemonic
+modeller:modeler
 moderm:modem
 modfied:modified
 modfies:modifies
@@ -4542,6 +4572,8 @@ muscial:musical
 muscician:musician
 muscicians:musicians
 musn't:mustn't
+mustator:mutator
+muste:must
 mutiliated:mutilated
 mutiple:multiple
 mutliple:multiple
@@ -5030,6 +5062,7 @@ percepted:perceived
 percieve:perceive
 percieved:perceived
 perenially:perennially
+perferred:preferred
 perfom:perform
 perfomance:performance
 perfomed:performed
@@ -5145,6 +5178,7 @@ pleaes:please
 pleasent:pleasant
 plebicite:plebiscite
 plesant:pleasant
+pllatforms:platforms
 ploting:plotting
 poenis:penis
 poeoples:peoples
@@ -5532,6 +5566,7 @@ pususading:persuading
 puting:putting:*
 pwoer:power
 pyscic:psychic
+pythin:python
 qgsi:qgis
 qoute:quote
 qouted:quoted
@@ -5874,6 +5909,7 @@ repostiories:repositories
 repostiory:repository
 repport:report
 represantative:representative
+represenation:representation
 representaion:representation
 representaions:representations
 representiative:representative
@@ -6345,6 +6381,7 @@ skiped:skipped
 skiping:skipping
 slashs:slashes
 slaugterhouses:slaughterhouses
+slection:selection
 slighly:slightly
 sligth:slight
 sligthly:slightly
@@ -6617,6 +6654,7 @@ succedes:succeeds
 succeding:succeeding
 succeds:succeeds
 succeedes:succeeds
+succes:success:*
 succesful:successful
 succesfull:successful
 succesfully:successfully
@@ -6835,6 +6873,7 @@ technitian:technician
 technnology:technology
 technolgy:technology
 teh:the
+hte:the
 tehy:they
 telelevision:television
 televsion:television
@@ -6868,6 +6907,12 @@ terriory:territory
 territorist:terrorist
 territoy:territory
 terroist:terrorist
+tesellate:tessellate
+tesselate:tessellate
+tesellation:tessellation
+tesselation:tessellation
+tesellator:tessellator
+tesselator:tessellator
 testiclular:testicular
 testomony:testimony
 texual:textual
@@ -7025,6 +7070,7 @@ transending:transcending
 transesxuals:transsexuals
 transfered:transferred
 transfering:transferring
+transfom:transform
 transformaton:transformation
 transfrom:transform
 transfromation:transformation
@@ -7360,6 +7406,7 @@ variabes:variables
 variantions:variations
 varibale:variable
 varibales:variables
+varible:variable
 varient:variant
 variey:variety
 varing:varying
@@ -7399,6 +7446,7 @@ versitlity:versatility
 verson:version
 versoned:versioned
 versons:versions
+vertexes:vertices
 verticaly:vertically
 verticies:vertices
 veryified:verified
@@ -7509,6 +7557,7 @@ wiew:view
 wih:with
 wihout:without
 wiht:with
+wihtin:within
 wiil:will
 wilcard:wildcard
 wilcards:wildcards
@@ -7550,6 +7599,7 @@ woudn't:wouldn't
 would'nt:wouldn't
 would't:wouldn't
 wouldnt:wouldn't
+wraper:wrapper
 wresters:wrestlers
 wriet:write
 writeable:writable

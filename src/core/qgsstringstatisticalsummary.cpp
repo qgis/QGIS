@@ -40,7 +40,7 @@ void QgsStringStatisticalSummary::reset()
   mCountMissing = 0;
   mMin.clear();
   mMax.clear();
-  mMinLength = INT_MAX;
+  mMinLength = std::numeric_limits<int>::max();
   mMaxLength = 0;
   mSumLengths = 0;
   mMeanLength = 0;

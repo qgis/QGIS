@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
-from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.core import (QgsSettings,
                        QgsProcessing,
@@ -41,8 +40,10 @@ from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
 class MultipleInputDialog(BASE, WIDGET):
@@ -53,11 +54,9 @@ class MultipleInputDialog(BASE, WIDGET):
         self.datatype = datatype
         self.model = None
 
-        self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
-
         self.options = []
         for i, option in enumerate(options):
-            if option is None or isinstance(option, basestring):
+            if option is None or isinstance(option, str):
                 self.options.append((i, option))
             else:
                 self.options.append((option[0], option[1]))
@@ -88,6 +87,8 @@ class MultipleInputDialog(BASE, WIDGET):
         self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
 
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setDragDropMode(QAbstractItemView.InternalMove)
+
         self.populateList()
         self.finished.connect(self.saveWindowGeometry)
 
@@ -101,6 +102,7 @@ class MultipleInputDialog(BASE, WIDGET):
             item.setData(value, Qt.UserRole)
             item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
             item.setCheckable(True)
+            item.setDropEnabled(False)
             self.model.appendRow(item)
 
         # add extra options (e.g. manually added layers)
@@ -112,6 +114,7 @@ class MultipleInputDialog(BASE, WIDGET):
             item.setData(item.text(), Qt.UserRole)
             item.setCheckState(Qt.Checked)
             item.setCheckable(True)
+            item.setDropEnabled(False)
             self.model.appendRow(item)
 
         self.lstLayers.setModel(self.model)
@@ -170,7 +173,7 @@ class MultipleInputDialog(BASE, WIDGET):
         settings = QgsSettings()
         path = str(settings.value('/Processing/LastInputPath'))
 
-        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select file(s)'),
+        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select File(s)'),
                                                             path, filter)
         if ret:
             files = list(ret)
@@ -181,4 +184,5 @@ class MultipleInputDialog(BASE, WIDGET):
                 item.setData(filename, Qt.UserRole)
                 item.setCheckState(Qt.Checked)
                 item.setCheckable(True)
+                item.setDropEnabled(False)
                 self.model.appendRow(item)

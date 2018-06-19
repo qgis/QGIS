@@ -1,4 +1,4 @@
 Fourier Transform (Real, ViGrA)
 imagery_vigra
-ParameterRaster|INPUT|Input|False
-OutputRaster|OUTPUT|Output
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Output

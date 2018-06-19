@@ -17,8 +17,7 @@
 
 QgsCheckboxWidgetWrapper::QgsCheckboxWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mCheckBox( nullptr )
-  , mGroupBox( nullptr )
+
 {
 }
 
@@ -65,9 +64,9 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QAbstractButton::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mCheckBox, &QAbstractButton::toggled, this, [ = ]( bool state ) { emit valueChanged( state ); } );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mGroupBox, &QGroupBox::toggled, this, [ = ]( bool state ) { emit valueChanged( state ); } );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const

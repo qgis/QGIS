@@ -16,22 +16,22 @@
 #ifndef QGSRESIDUALPLOTITEM_H
 #define QGSRESIDUALPLOTITEM_H
 
-#include "qgscomposeritem.h"
+#include "qgslayoutitem.h"
 #include "qgsgcplist.h"
 #include "qgsrectangle.h"
 
-/** A composer item to visualise the distribution of georeference residuals. For the visualisation,
+/**
+ * A composer item to visualise the distribution of georeference residuals. For the visualisation,
 the length of the residual arrows are scaled*/
-class QgsResidualPlotItem: public QgsComposerItem
+class QgsResidualPlotItem: public QgsLayoutItem
 {
     Q_OBJECT
 
   public:
-    explicit QgsResidualPlotItem( QgsComposition *c );
-    ~QgsResidualPlotItem();
+    explicit QgsResidualPlotItem( QgsLayout *layout );
 
     //! \brief Reimplementation of QCanvasItem::paint
-    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     void setGCPList( const QgsGCPList &list ) { mGCPList = list; }
     QgsGCPList GCPList() const { return mGCPList; }
@@ -42,9 +42,7 @@ class QgsResidualPlotItem: public QgsComposerItem
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
-
+    void draw( QgsLayoutItemRenderContext &context ) override;
   private:
     //gcp list
     QgsGCPList mGCPList;
@@ -58,6 +56,26 @@ class QgsResidualPlotItem: public QgsComposerItem
 
     //! Returns distance between two points
     double dist( QPointF p1, QPointF p2 ) const;
+
+    /**
+     * Draws an arrow head on to a QPainter.
+     * \param p destination painter
+     * \param x x-coordinate of arrow center
+     * \param y y-coordinate of arrow center
+     * \param angle angle in degrees which arrow should point toward, measured
+     * clockwise from pointing vertical upward
+     * \param arrowHeadWidth size of arrow head
+     */
+    static void drawArrowHead( QPainter *p, double x, double y, double angle, double arrowHeadWidth );
+
+    /**
+     * Calculates the angle of the line from p1 to p2 (counter clockwise,
+     * starting from a line from north to south)
+     * \param p1 start point of line
+     * \param p2 end point of line
+     * \returns angle in degrees, clockwise from south
+     */
+    static double angle( QPointF p1, QPointF p2 );
 };
 
 #endif // QGSRESIDUALPLOTITEM_H

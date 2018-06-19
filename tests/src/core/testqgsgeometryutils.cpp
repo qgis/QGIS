@@ -19,11 +19,13 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-#include "qgstestutils.h"
 
 class TestQgsGeometryUtils: public QObject
 {
     Q_OBJECT
+  public:
+    QString elemToString( const QDomElement &elem ) const;
+
   private slots:
     void testExtractLinestrings();
     void testCircleClockwise_data();
@@ -34,6 +36,7 @@ class TestQgsGeometryUtils: public QObject
     void testLeftOfLine();
     void testSegmentMidPoint_data();
     void testSegmentMidPoint();
+    void testSegmentMidPointCenter();
     void testCircleLength_data();
     void testCircleLength();
     void testNormalizedAngle_data();
@@ -44,7 +47,6 @@ class TestQgsGeometryUtils: public QObject
     void testLinePerpendicularAngle();
     void testAverageAngle_data();
     void testAverageAngle();
-    void testAdjacentVertices();
     void testDistanceToVertex();
     void testVerticesAtDistance();
     void testCircleCenterRadius_data();
@@ -56,30 +58,49 @@ class TestQgsGeometryUtils: public QObject
     void testCoefficients();
     void testPerpendicularSegment();
     void testClosestPoint();
+    void testlinesIntersection3D();
+    void testSegmentIntersection();
+    void testLineCircleIntersection();
+    void testCircleCircleIntersection();
+    void testTangentPointAndCircle();
+    void testCircleCircleOuterTangents();
+    void testGml();
+    void testInterpolatePointOnLineQgsPoint();
+    void testInterpolatePointOnLine();
+    void testInterpolatePointOnLineByValue();
 };
 
+
+QString TestQgsGeometryUtils::elemToString( const QDomElement &elem ) const
+{
+  QString s;
+  QTextStream stream( &s );
+  elem.save( stream, -1 );
+
+  return s;
+}
 
 void TestQgsGeometryUtils::testExtractLinestrings()
 {
   QgsLineString *outerRing1 = new QgsLineString();
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 *polygon1 = new QgsPolygonV2();
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  QgsPolygon *polygon1 = new QgsPolygon();
   polygon1->setExteriorRing( outerRing1 );
 
   QgsLineString *outerRing2 = new QgsLineString();
-  outerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
-  QgsPolygonV2 *polygon2 = new QgsPolygonV2();
+  outerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 10, 10 ) << QgsPoint( 10, 20 ) << QgsPoint( 20, 20 ) << QgsPoint( 20, 10 ) << QgsPoint( 10, 10 ) );
+  QgsPolygon *polygon2 = new QgsPolygon();
   polygon2->setExteriorRing( outerRing2 );
 
   QgsLineString *innerRing2 = new QgsLineString();
-  innerRing2->setPoints( QList<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
-  polygon2->setInteriorRings( QList<QgsCurve *>() << innerRing2 );
+  innerRing2->setPoints( QVector<QgsPoint>() << QgsPoint( 14, 14 ) << QgsPoint( 14, 16 ) << QgsPoint( 16, 16 ) << QgsPoint( 16, 14 ) << QgsPoint( 14, 14 ) );
+  polygon2->setInteriorRings( QVector<QgsCurve *>() << innerRing2 );
 
-  QgsMultiPolygonV2 mpg;
+  QgsMultiPolygon mpg;
   mpg.addGeometry( polygon1 );
   mpg.addGeometry( polygon2 );
 
-  QList<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
+  QVector<QgsLineString *> linestrings = QgsGeometryUtils::extractLineStrings( &mpg );
   QCOMPARE( linestrings.count(), 3 );
   qDeleteAll( linestrings );
 }
@@ -190,8 +211,35 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
             midPoint, radius, left );
 
   QVERIFY( ok );
-  QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( midPoint.y(), expectedY, 4 * std::numeric_limits<double>::epsilon() );
+}
+
+void TestQgsGeometryUtils::testSegmentMidPointCenter()
+{
+  QgsPoint mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 11, 20 ), QgsPoint( 10, 20 ), false );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 9, 20 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 9.292893, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 19 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 11.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 20 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21 ), QgsPoint( 10, 21 ), QgsPoint( 10, 21 ) );
+  QGSCOMPARENEAR( mid.x(), 10.0, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 21.0, 0.0001 );
+  mid = QgsGeometryUtils::segmentMidPointFromCenter( QgsPoint( 10, 21, 3, 4 ), QgsPoint( 11, 20, 5, 6 ), QgsPoint( 10, 20, 7, 8 ) );
+  QGSCOMPARENEAR( mid.x(), 10.7071, 0.0001 );
+  QGSCOMPARENEAR( mid.y(), 20.7071, 0.0001 );
+  QCOMPARE( mid.z(), 7.0 );
+  QCOMPARE( mid.m(), 8.0 );
 }
 
 void TestQgsGeometryUtils::testCircleLength_data()
@@ -218,7 +266,7 @@ void TestQgsGeometryUtils::testCircleLength()
   QFETCH( double, y3 );
   QFETCH( double, expected );
 
-  QGSCOMPARENEAR( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ), 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expected, QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 ), 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryUtils::testNormalizedAngle_data()
@@ -275,7 +323,7 @@ void TestQgsGeometryUtils::testLineAngle()
 
   double lineAngle = QgsGeometryUtils::lineAngle( x1, y1, x2, y2 ) * 180 / M_PI;
   if ( expected > -99999 )
-    QGSCOMPARENEAR( lineAngle, expected, 4 * DBL_EPSILON );
+    QGSCOMPARENEAR( lineAngle, expected, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryUtils::testLinePerpendicularAngle_data()
@@ -343,32 +391,11 @@ void TestQgsGeometryUtils::testAverageAngle()
   QGSCOMPARENEAR( averageAngle, expected, 0.0000000001 );
 }
 
-void TestQgsGeometryUtils::testAdjacentVertices()
-{
-  // test polygon - should wrap around!
-  QgsLineString *closedRing1 = new QgsLineString();
-  closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
-  QgsPolygonV2 polygon1;
-  polygon1.setExteriorRing( closedRing1 );
-  QgsVertexId previous;
-  QgsVertexId next;
-
-  QgsGeometryUtils::adjacentVertices( polygon1, QgsVertexId( 0, 0, 0 ), previous, next );
-  QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
-  QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
-
-  // test point - both vertices should be invalid
-  QgsPoint point( 1, 2 );
-  QgsGeometryUtils::adjacentVertices( point, QgsVertexId( 0, 0, 0 ), previous, next );
-  QVERIFY( !previous.isValid() );
-  QVERIFY( !next.isValid() );
-}
-
 void TestQgsGeometryUtils::testDistanceToVertex()
 {
   //test with linestring
   QgsLineString *outerRing1 = new QgsLineString();
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 0, 2 ) ), 2.0 );
@@ -378,7 +405,7 @@ void TestQgsGeometryUtils::testDistanceToVertex()
   QCOMPARE( QgsGeometryUtils::distanceToVertex( *outerRing1, QgsVertexId( 0, 1, 1 ) ), -1.0 );
 
   //test with polygon
-  QgsPolygonV2 polygon1;
+  QgsPolygon polygon1;
   polygon1.setExteriorRing( outerRing1 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 0 ) ), 0.0 );
   QCOMPARE( QgsGeometryUtils::distanceToVertex( polygon1, QgsVertexId( 0, 0, 1 ) ), 1.0 );
@@ -402,7 +429,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QgsVertexId next;
   QVERIFY( !QgsGeometryUtils::verticesAtDistance( *outerRing1, .5, previous, next ) );
 
-  outerRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 3, 1 ) );
+  outerRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 3, 1 ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, .5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 1 ) );
@@ -437,7 +464,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
 
   // test closed line
   QgsLineString *closedRing1 = new QgsLineString();
-  closedRing1->setPoints( QList<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
+  closedRing1->setPoints( QVector<QgsPoint>() << QgsPoint( 1, 1 ) << QgsPoint( 1, 2 ) << QgsPoint( 2, 2 ) << QgsPoint( 2, 1 ) << QgsPoint( 1, 1 ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *closedRing1, 0, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 0 ) );
@@ -446,7 +473,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
 
   // test with polygon
-  QgsPolygonV2 polygon1;
+  QgsPolygon polygon1;
   polygon1.setExteriorRing( closedRing1 );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, .5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
@@ -503,9 +530,9 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 
   double radius, centerX, centerY;
   QgsGeometryUtils::circleCenterRadius( QgsPoint( x1, y1 ), QgsPoint( x2, y2 ), QgsPoint( x3, y3 ), radius, centerX, centerY );
-  QGSCOMPARENEAR( expectedRadius, radius, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( expectedCenterX, centerX, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( expectedCenterY, centerY, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( expectedRadius, radius, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( expectedCenterX, centerX, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( expectedCenterY, centerY, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 //QgsGeometryUtils::sqrDistToLine
@@ -668,6 +695,404 @@ void TestQgsGeometryUtils::testClosestPoint()
   QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
   QGSCOMPARENEAR( pt4.m(), 1, 0.0001 );
+}
+
+void TestQgsGeometryUtils::testlinesIntersection3D()
+{
+  QgsVector3D x;
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 2, 1, 10 ), QgsVector3D( 2, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 0, 1, 10 ), QgsVector3D( 0, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 3, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 0, 0, 10 ), QgsVector3D( 5, 0, 10 ), QgsVector3D( 5, 1, 10 ), QgsVector3D( 5, 0, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 5.0, 0.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 1, 10 ), QgsVector3D( 3, 2, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 1, 1, 10 ), QgsVector3D( 2, 2, 10 ), QgsVector3D( 3, 2, 10 ), QgsVector3D( 3, 1, 10 ), x ) );
+  QVERIFY( x == QgsVector3D( 3.0, 3.0, 10.0 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 5, 5, 5 ), QgsVector3D( 0, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 0, 5, 0 ), QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), x ) );
+  QVERIFY( x == QgsVector3D( 2.5, 2.5, 2.5 ) );
+
+  QVERIFY( QgsGeometryUtils::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 5, 5 ), x ) );
+  QVERIFY( x == QgsVector3D( 0.0, 5.0, 5.0 ) );
+
+}
+
+void TestQgsGeometryUtils::testSegmentIntersection()
+{
+  const double epsilon = 1e-8;
+  bool intersection = false, isIntersect = false;
+  QgsPoint inter;
+  // null
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 5, 5 ), QgsPoint( 5, 5 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 5, 5 ), QgsPoint( 5, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  // parallel
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), inter, isIntersect, epsilon, true );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 0, 1 ), QgsPoint( 1, 2 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 1, 1 ), QgsPoint( -1, -1 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 1, 1 ), QgsPoint( 0, 0 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  // contigus
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  // colinear
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 0, 6 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 0, 6 ), inter, isIntersect, epsilon, true );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  // improper
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 1, 5 ), QgsPoint( 0, 2 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 1, 5 ), QgsPoint( 0, 2 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 2 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 2 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 2 ) );
+  // normal
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ), inter, isIntersect, epsilon );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 0 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 0 ) );
+}
+
+void TestQgsGeometryUtils::testLineCircleIntersection()
+{
+  QgsPointXY center = QgsPoint( 2, 2 );
+  double radius = 2.0;
+  QgsPointXY linePoint1 = QgsPoint( 0, 2 );
+  QgsPointXY linePoint2 = QgsPoint( 2, 2 );
+  QgsPointXY intersection = QgsPoint( 3, 3 );
+  bool isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
+  QVERIFY( isIntersection );
+  QVERIFY( intersection == QgsPointXY( 4, 2 ) );
+
+  linePoint1 = QgsPoint( 5, 0 );
+  linePoint2 = QgsPoint( 5, 2 );
+  isIntersection = QgsGeometryUtils::lineCircleIntersection( center, radius, linePoint1, linePoint2, intersection );
+  QVERIFY( !isIntersection );
+}
+
+void TestQgsGeometryUtils::testCircleCircleIntersection()
+{
+  QgsPointXY int1;
+  QgsPointXY int2;
+
+  // no intersections
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 2, 0 ), 0.5, int1, int2 ), 0 );
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 0.5, 0.1 ), 0.2, int1, int2 ), 0 );
+  // one intersection
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 0, 0 ), 1, QgsPointXY( 3, 0 ), 2, int1, int2 ), 1 );
+  QCOMPARE( int1, QgsPointXY( 1, 0 ) );
+  QCOMPARE( int2, QgsPointXY( 1, 0 ) );
+  // two intersections
+  QCOMPARE( QgsGeometryUtils::circleCircleIntersections( QgsPointXY( 5, 3 ), 2, QgsPointXY( 7, -1 ), 4, int1, int2 ), 2 );
+  QGSCOMPARENEAR( int1.x(), 3.8, 0.001 );
+  QGSCOMPARENEAR( int1.y(), 1.4, 0.001 );
+  QGSCOMPARENEAR( int2.x(), 7.0, 0.001 );
+  QGSCOMPARENEAR( int2.y(), 3.0, 0.001 );
+}
+
+void TestQgsGeometryUtils::testTangentPointAndCircle()
+{
+  QgsPointXY t1;
+  QgsPointXY t2;
+  QVERIFY( !QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( 1, 2 ), 4, QgsPointXY( 1, 2 ), t1, t2 ) );
+  QVERIFY( QgsGeometryUtils::tangentPointAndCircle( QgsPointXY( 1, 2 ), 4, QgsPointXY( 8, 4 ), t1, t2 ) );
+  QGSCOMPARENEAR( t1.x(), 4.03, 0.01 );
+  QGSCOMPARENEAR( t1.y(), -0.61, 0.01 );
+  QGSCOMPARENEAR( t2.x(), 2.2, 0.01 );
+  QGSCOMPARENEAR( t2.y(), 5.82, 0.01 );
+}
+
+void TestQgsGeometryUtils::testCircleCircleOuterTangents()
+{
+  QgsPointXY l1p1;
+  QgsPointXY l1p2;
+  QgsPointXY l2p1;
+  QgsPointXY l2p2;
+
+  // no tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 1, 2 ), 4, QgsPointXY( 2, 3 ), 1, l1p1, l1p2, l2p1, l2p2 ), 0 );
+
+  // tangents
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 1, 2 ), 1, QgsPointXY( 10, 3 ), 4, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 0.566, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 2.901, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 8.266, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 6.604, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 0.7749, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+
+  // larger circle first
+  QCOMPARE( QgsGeometryUtils::circleCircleOuterTangents( QgsPointXY( 10, 3 ), 4, QgsPointXY( 1, 2 ), 1, l1p1, l1p2, l2p1, l2p2 ), 2 );
+  QGSCOMPARENEAR( l1p1.x(), 0.566, 0.01 );
+  QGSCOMPARENEAR( l1p1.y(), 2.901, 0.01 );
+  QGSCOMPARENEAR( l1p2.x(), 8.266, 0.01 );
+  QGSCOMPARENEAR( l1p2.y(), 6.604, 0.01 );
+  QGSCOMPARENEAR( l2p1.x(), 0.7749, 0.01 );
+  QGSCOMPARENEAR( l2p1.y(), 1.025, 0.01 );
+  QGSCOMPARENEAR( l2p2.x(), 9.099, 0.01 );
+  QGSCOMPARENEAR( l2p2.y(), -0.897, 0.01 );
+}
+
+void TestQgsGeometryUtils::testGml()
+{
+  QgsPoint point = QgsPoint( 1, 2 );
+  QDomDocument doc;
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ) );
+  QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
+
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
+  QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
+  QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
+}
+
+void TestQgsGeometryUtils::testInterpolatePointOnLineQgsPoint()
+{
+  QgsPoint p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ), 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ), 1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), 1 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 10.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), 0.5 );
+  QCOMPARE( p.x(), -5.0 );
+  QCOMPARE( p.y(), -3.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), 0.2 );
+  QCOMPARE( p.x(), -2.0 );
+  QCOMPARE( p.y(), -1.2 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), 2 );
+  QCOMPARE( p.x(), -20.0 );
+  QCOMPARE( p.y(), -12.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), -1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 6.0 );
+  // with m
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 0, 5, QgsWkbTypes::PointM ), QgsPoint( -10, -6, 0, 10, QgsWkbTypes::PointM ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::PointM );
+  QCOMPARE( p.x(), -4.0 );
+  QCOMPARE( p.y(), -2.4 );
+  QCOMPARE( p.m(), 7.0 );
+  // with z
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 0, QgsWkbTypes::PointZ ), QgsPoint( -10, -6, 10, 0, QgsWkbTypes::PointZ ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZ );
+  QCOMPARE( p.x(), -4.0 );
+  QCOMPARE( p.y(), -2.4 );
+  QCOMPARE( p.z(), 7.0 );
+  // with zm
+  p = QgsGeometryUtils::interpolatePointOnLine( QgsPoint( 0, 0, 5, 10, QgsWkbTypes::PointZM ), QgsPoint( -10, -6, 10, 5, QgsWkbTypes::PointZM ), 0.4 );
+  QCOMPARE( p.wkbType(), QgsWkbTypes::PointZM );
+  QCOMPARE( p.x(), -4.0 );
+  QCOMPARE( p.y(), -2.4 );
+  QCOMPARE( p.z(), 7.0 );
+  QCOMPARE( p.m(), 8.0 );
+}
+
+void TestQgsGeometryUtils::testInterpolatePointOnLine()
+{
+  QgsPointXY p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, 10, 0, 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, 10, 0, 1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, 0, 10, 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, 0, 10, 1 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 10.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, -10, -6, 0.5 );
+  QCOMPARE( p.x(), -5.0 );
+  QCOMPARE( p.y(), -3.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, -10, -6, 0.2 );
+  QCOMPARE( p.x(), -2.0 );
+  QCOMPARE( p.y(), -1.2 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, -10, -6, 2 );
+  QCOMPARE( p.x(), -20.0 );
+  QCOMPARE( p.y(), -12.0 );
+  p = QgsGeometryUtils::interpolatePointOnLine( 0, 0, -10, -6, -1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 6.0 );
+}
+
+void TestQgsGeometryUtils::testInterpolatePointOnLineByValue()
+{
+  QgsPointXY p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 0, 10, 0, 1, 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 0, 10, 0, 1, 1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 5, 0, 10, 15, 5 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 15, 0, 10, 5, 5 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 10.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 3, 2 );
+  QCOMPARE( p.x(), -5.0 );
+  QCOMPARE( p.y(), -3.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 3, 1.4 );
+  QCOMPARE( p.x(), -2.0 );
+  QCOMPARE( p.y(), -1.2 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 3, -10, -6, 1, 2 );
+  QCOMPARE( p.x(), -5.0 );
+  QCOMPARE( p.y(), -3.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 3, -1 );
+  QCOMPARE( p.x(), 10.0 );
+  QCOMPARE( p.y(), 6.0 );
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 3, 5 );
+  QCOMPARE( p.x(), -20.0 );
+  QCOMPARE( p.y(), -12.0 );
+  // v1 == v2, test for no crash
+  p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 1, 1 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

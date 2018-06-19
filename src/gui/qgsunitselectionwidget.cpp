@@ -21,7 +21,6 @@
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )
-  , mBlockSignals( true )
 {
   setupUi( this );
   mComboBoxMinScale->setScale( 10000000.0 );
@@ -125,7 +124,7 @@ QgsMapUnitScale QgsMapUnitScaleWidget::mapUnitScale() const
 
 QgsUnitSelectionWidget::QgsUnitSelectionWidget( QWidget *parent )
   : QWidget( parent )
-  , mCanvas( nullptr )
+
 {
   mMapUnitIdx = -1;
 
@@ -172,7 +171,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   }
   if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
+    mUnitCombo->addItem( tr( "Meters at Scale" ), QgsUnitTypes::RenderMetersInMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
@@ -227,7 +226,7 @@ void QgsUnitSelectionWidget::showDialog()
   if ( panel && panel->dockMode() )
   {
     QgsMapUnitScaleWidget *widget = new QgsMapUnitScaleWidget( panel );
-    widget->setPanelTitle( tr( "Adjust scaling range" ) );
+    widget->setPanelTitle( tr( "Adjust Scaling Range" ) );
     widget->setMapCanvas( mCanvas );
     widget->setMapUnitScale( mMapUnitScale );
     connect( widget, &QgsMapUnitScaleWidget::mapUnitScaleChanged, this, &QgsUnitSelectionWidget::widgetChanged );
@@ -269,7 +268,7 @@ void QgsUnitSelectionWidget::widgetChanged( const QgsMapUnitScale &scale )
 
 QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   : QDialog( parent )
-  , mWidget( nullptr )
+
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsMapUnitScaleWidget();
@@ -279,6 +278,7 @@ QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsMapUnitScaleDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Adjust Scaling Range" ) );
 }
 
 QgsMapUnitScale QgsMapUnitScaleDialog::getMapUnitScale() const

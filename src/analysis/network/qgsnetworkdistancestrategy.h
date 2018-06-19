@@ -19,16 +19,17 @@
 #include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsNetworkDistanceStrategy
- * \since QGIS 3.0
- * \brief Strategy for caclulating edge cost based on its length. Should be
+ * \brief Strategy for calculating edge cost based on its length. Should be
  * used for finding shortest path between two points.
+ * \since QGIS 3.0
  */
 class ANALYSIS_EXPORT QgsNetworkDistanceStrategy : public QgsNetworkStrategy
 {
   public:
-    virtual QVariant cost( double distance, const QgsFeature & ) const override;
+    QVariant cost( double distance, const QgsFeature & ) const override;
 };
 
 #endif // QGSNETWORKDISTANCESTRATEGY_H

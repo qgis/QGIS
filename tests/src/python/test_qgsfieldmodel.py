@@ -14,8 +14,10 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFields, QgsVectorLayer
-from qgis.core import QgsFieldModel
+from qgis.core import (QgsField,
+                       QgsFields,
+                       QgsVectorLayer,
+                       QgsFieldModel)
 from qgis.PyQt.QtCore import QVariant, Qt
 
 from qgis.testing import start_app, unittest
@@ -69,6 +71,28 @@ class TestQgsFieldModel(unittest.TestCase):
         i = m.indexFromName('not a field')
         self.assertFalse(i.isValid())
 
+        # test with alias
+        i = m.indexFromName('text field')
+        self.assertFalse(i.isValid())
+        l.setFieldAlias(0, 'text field')
+        i = m.indexFromName('text field')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 0)
+        i = m.indexFromName('int field')
+        self.assertFalse(i.isValid())
+        l.setFieldAlias(1, 'int field')
+        i = m.indexFromName('int field')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 1)
+
+        # should be case insensitive
+        i = m.indexFromName('FLDTXT')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 0)
+        i = m.indexFromName('FLDINT')
+        self.assertTrue(i.isValid())
+        self.assertEqual(i.row(), 1)
+
         # try with expression
         m.setAllowExpression(True)
         i = m.indexFromName('not a field')
@@ -90,6 +114,8 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.indexFromName('fldtxt').row(), 1)
         self.assertEqual(m.indexFromName('fldint').row(), 2)
         self.assertEqual(m.indexFromName('not a field').row(), 3)
+        self.assertEqual(m.indexFromName('FLDTXT').row(), 1)
+        self.assertEqual(m.indexFromName('FLDINT').row(), 2)
 
     def testIsField(self):
         l, m = create_model()
@@ -220,6 +246,16 @@ class TestQgsFieldModel(unittest.TestCase):
         self.assertEqual(m.data(m.indexFromName('an expression'), Qt.DisplayRole), 'an expression')
         m.setAllowEmptyFieldName(True)
         self.assertFalse(m.data(m.indexFromName(None), Qt.DisplayRole))
+
+    def testFieldTooltip(self):
+        f = QgsField('my_string', QVariant.String, 'string')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_string</b><p>string</p>')
+        f.setAlias('my alias')
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string</p>')
+        f.setLength(20)
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my alias</b> (my_string)<p>string (20)</p>')
+        f = QgsField('my_real', QVariant.Double, 'real', 8, 3)
+        self.assertEqual(QgsFieldModel.fieldToolTip(f), '<b>my_real</b><p>real (8, 3)</p>')
 
 
 if __name__ == '__main__':

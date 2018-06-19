@@ -17,16 +17,49 @@
 
 #include "qgsprocessingregistry.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsprocessingparametertypeimpl.h"
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
-{}
+{
+  addParameterType( new QgsProcessingParameterTypeRasterLayer() );
+  addParameterType( new QgsProcessingParameterTypeVectorLayer() );
+  addParameterType( new QgsProcessingParameterTypeMapLayer() );
+  addParameterType( new QgsProcessingParameterTypeBoolean() );
+  addParameterType( new QgsProcessingParameterTypeExpression() );
+  addParameterType( new QgsProcessingParameterTypeCrs() );
+  addParameterType( new QgsProcessingParameterTypeRange() );
+  addParameterType( new QgsProcessingParameterTypePoint() );
+  addParameterType( new QgsProcessingParameterTypeEnum() );
+  addParameterType( new QgsProcessingParameterTypeExtent() );
+  addParameterType( new QgsProcessingParameterTypeMatrix() );
+  addParameterType( new QgsProcessingParameterTypeFile() ) ;
+  addParameterType( new QgsProcessingParameterTypeField() );
+  addParameterType( new QgsProcessingParameterTypeVectorDestination() );
+  addParameterType( new QgsProcessingParameterTypeRasterDestination() );
+  addParameterType( new QgsProcessingParameterTypeFileDestination() );
+  addParameterType( new QgsProcessingParameterTypeFolderDestination() );
+  addParameterType( new QgsProcessingParameterTypeString() );
+  addParameterType( new QgsProcessingParameterTypeMultipleLayers() );
+  addParameterType( new QgsProcessingParameterTypeFeatureSource() );
+  addParameterType( new QgsProcessingParameterTypeNumber() );
+  addParameterType( new QgsProcessingParameterTypeDistance() );
+  addParameterType( new QgsProcessingParameterTypeBand() );
+  addParameterType( new QgsProcessingParameterTypeFeatureSink() );
+}
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
   Q_FOREACH ( QgsProcessingProvider *p, mProviders )
   {
     removeProvider( p );
+  }
+
+  const auto parameterTypes = mParameterTypes.values();
+
+  for ( QgsProcessingParameterType *type : parameterTypes )
+  {
+    removeParameterType( type );
   }
 }
 
@@ -36,10 +69,18 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
     return false;
 
   if ( mProviders.contains( provider->id() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate provider %1 registered" ).arg( provider->id() ) );
+    delete provider;
     return false;
+  }
 
   if ( !provider->load() )
+  {
+    QgsLogger::warning( QStringLiteral( "Provider %1 cannot load" ).arg( provider->id() ) );
+    delete provider;
     return false;
+  }
 
   provider->setParent( this );
   mProviders[ provider->id()] = provider;
@@ -95,6 +136,15 @@ const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QStrin
       if ( alg->id() == id )
         return alg;
   }
+
+  // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
+  // from the python 'qgis' provider to the c++ 'native' provider without breaking API
+  // or existing models
+  if ( id.startsWith( QStringLiteral( "qgis:" ) ) )
+  {
+    QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
+    return algorithmById( newId );
+  }
   return nullptr;
 }
 
@@ -108,3 +158,38 @@ QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QStrin
   return creation.release();
 }
 
+bool QgsProcessingRegistry::addParameterType( QgsProcessingParameterType *type )
+{
+  if ( !mParameterTypes.contains( type->id() ) )
+  {
+    mParameterTypes.insert( type->id(), type );
+    emit parameterTypeAdded( type );
+    return true;
+  }
+  else
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate parameter type %1 (\"%2\") registered" ).arg( type->id(), type->name() ) );
+
+    if ( mParameterTypes.value( type->id() ) != type )
+      delete type;
+
+    return false;
+  }
+}
+
+void QgsProcessingRegistry::removeParameterType( QgsProcessingParameterType *type )
+{
+  mParameterTypes.remove( type->id() );
+  emit parameterTypeRemoved( type );
+  delete type;
+}
+
+QgsProcessingParameterType *QgsProcessingRegistry::parameterType( const QString &id ) const
+{
+  return mParameterTypes.value( id );
+}
+
+QList<QgsProcessingParameterType *> QgsProcessingRegistry::parameterTypes() const
+{
+  return mParameterTypes.values();
+}

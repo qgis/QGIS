@@ -43,9 +43,25 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void setLayer( QgsMapLayer *layer );
 
+    /**
+     * Deactivate a field from data defined properties and update the
+     * corresponding button.
+     *
+     * \param key The property key to deactivate
+     *
+     * \since QGIS 3.0
+     */
+    void deactivateField( QgsPalLayerSettings::Property key );
+
+  signals:
+
+    void auxiliaryFieldCreated();
+
   public slots:
 
     void updateUi();
+
+    void createAuxiliaryField();
 
   protected:
     void blockInitSignals( bool block );
@@ -61,6 +77,8 @@ class APP_EXPORT QgsLabelingGui : public QgsTextFormatWidget, private QgsExpress
 
     void populateDataDefinedButtons();
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key );
+
+    QMap<QgsPalLayerSettings::Property, QgsPropertyOverrideButton *> mButtons;
 
   private slots:
 

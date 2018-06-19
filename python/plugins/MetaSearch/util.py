@@ -27,6 +27,7 @@
 # avoid PendingDeprecationWarning from PyQt4.uic
 import warnings
 warnings.filterwarnings("ignore", category=PendingDeprecationWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 import configparser
 from gettext import gettext, ngettext

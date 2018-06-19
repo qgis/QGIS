@@ -6,40 +6,49 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>660</width>
-    <height>368</height>
+    <width>717</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>New Item Properties</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="3" column="1">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+  <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+   <item row="4" column="1">
+    <widget class="QgsSymbolButton" name="mSymbolButton">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
-     <property name="sizeHint" stdset="0">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
       <size>
-       <width>20</width>
-       <height>40</height>
+       <width>100</width>
+       <height>0</height>
       </size>
      </property>
-    </spacer>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </item>
-   <item row="2" column="0" colspan="3">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Background</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Page size</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Orientation</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="mWidthLabel">
         <property name="text">
@@ -145,9 +154,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="mPageOrientationComboBox"/>
-      </item>
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="topMargin">
@@ -172,12 +178,93 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QComboBox" name="mPageOrientationComboBox"/>
+        </item>
+        <item>
+         <widget class="QgsPropertyOverrideButton" name="mOrientationDDBtn">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Orientation</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
+   </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="mExcludePageCheckBox">
+       <property name="toolTip">
+        <string>If checked, this page will not be included when exporting the layout</string>
+       </property>
+       <property name="text">
+        <string>Exclude page from exports</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsPropertyOverrideButton" name="mExcludePageDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsRatioLockButton</class>
    <extends>QToolButton</extends>
@@ -185,31 +272,30 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLayoutUnitsComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutunitscombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
+   <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <header>qgssymbolbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mPageSizeComboBox</tabstop>
   <tabstop>mPaperSizeDDBtn</tabstop>
   <tabstop>mPageOrientationComboBox</tabstop>
+  <tabstop>mOrientationDDBtn</tabstop>
   <tabstop>mWidthSpin</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mLockAspectRatio</tabstop>
   <tabstop>mHeightSpin</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
   <tabstop>mSizeUnitsComboBox</tabstop>
+  <tabstop>mExcludePageCheckBox</tabstop>
+  <tabstop>mExcludePageDDBtn</tabstop>
+  <tabstop>mSymbolButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

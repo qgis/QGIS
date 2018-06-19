@@ -45,6 +45,10 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsrasterminmaxwidget.h"
 
+#ifdef HAVE_3D
+#include "qgsvectorlayer3drendererwidget.h"
+#endif
+
 
 QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent )
   : QWidget( parent )
@@ -52,9 +56,6 @@ QgsLayerStylingWidget::QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<
   , mLayerPage( 1 )
   , mMapCanvas( canvas )
   , mBlockAutoApply( false )
-  , mCurrentLayer( nullptr )
-  , mLabelingWidget( nullptr )
-  , mRasterStyleWidget( nullptr )
   , mPageFactories( pages )
 {
   setupUi( this );
@@ -138,7 +139,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   bool sameLayerType = false;
   if ( mCurrentLayer )
   {
-    sameLayerType =  mCurrentLayer->type() == layer->type();
+    sameLayerType = mCurrentLayer->type() == layer->type();
   }
 
   mCurrentLayer = layer;
@@ -161,6 +162,13 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     labelItem->setData( Qt::UserRole, VectorLabeling );
     labelItem->setToolTip( tr( "Labels" ) );
     mOptionsListWidget->addItem( labelItem );
+
+#ifdef HAVE_3D
+    QListWidgetItem *symbol3DItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), QString() );
+    symbol3DItem->setData( Qt::UserRole, Symbology3D );
+    symbol3DItem->setToolTip( tr( "3D View" ) );
+    mOptionsListWidget->addItem( symbol3DItem );
+#endif
   }
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
@@ -168,14 +176,14 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
     symbolItem->setData( Qt::UserRole, Symbology );
     symbolItem->setToolTip( tr( "Symbology" ) );
     mOptionsListWidget->addItem( symbolItem );
-    QListWidgetItem *transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/transparency.png" ) ), QString() );
+    QListWidgetItem *transparencyItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/transparency.svg" ) ), QString() );
     transparencyItem->setToolTip( tr( "Transparency" ) );
     transparencyItem->setData( Qt::UserRole, RasterTransparency );
     mOptionsListWidget->addItem( transparencyItem );
 
     if ( static_cast<QgsRasterLayer *>( layer )->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
     {
-      QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.png" ) ), QString() );
+      QListWidgetItem *histogramItem = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/histogram.svg" ) ), QString() );
       histogramItem->setData( Qt::UserRole, RasterHistogram );
       mOptionsListWidget->addItem( histogramItem );
       histogramItem->setToolTip( tr( "Histogram" ) );
@@ -186,7 +194,7 @@ void QgsLayerStylingWidget::setLayer( QgsMapLayer *layer )
   {
     if ( factory->supportsStyleDock() && factory->supportsLayer( layer ) )
     {
-      QListWidgetItem *item =  new QListWidgetItem( factory->icon(), QString() );
+      QListWidgetItem *item = new QListWidgetItem( factory->icon(), QString() );
       item->setToolTip( factory->title() );
       mOptionsListWidget->addItem( item );
       int row = mOptionsListWidget->row( item );
@@ -321,6 +329,12 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mRasterStyleWidget = widget;
     }
+#ifdef HAVE_3D
+    else if ( QgsVectorLayer3DRendererWidget *widget = qobject_cast<QgsVectorLayer3DRendererWidget *>( current ) )
+    {
+      mVector3DWidget = widget;
+    }
+#endif
 
   }
 
@@ -364,7 +378,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
       {
         if ( !mLabelingWidget )
         {
-          mLabelingWidget = new QgsLabelingWidget( 0, mMapCanvas, mWidgetStack );
+          mLabelingWidget = new QgsLabelingWidget( nullptr, mMapCanvas, mWidgetStack );
           mLabelingWidget->setDockMode( true );
           connect( mLabelingWidget, &QgsLabelingWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
         }
@@ -372,6 +386,20 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
         mWidgetStack->setMainPanel( mLabelingWidget );
         break;
       }
+#ifdef HAVE_3D
+      case 2:  // 3D View
+      {
+        if ( !mVector3DWidget )
+        {
+          mVector3DWidget = new QgsVectorLayer3DRendererWidget( nullptr, mMapCanvas, mWidgetStack );
+          mVector3DWidget->setDockMode( true );
+          connect( mVector3DWidget, &QgsVectorLayer3DRendererWidget::widgetChanged, this, &QgsLayerStylingWidget::autoApply );
+        }
+        mVector3DWidget->setLayer( vlayer );
+        mWidgetStack->setMainPanel( mVector3DWidget );
+        break;
+      }
+#endif
       default:
         break;
     }
@@ -514,14 +542,16 @@ QgsMapLayerStyleCommand::QgsMapLayerStyleCommand( QgsMapLayer *layer, const QStr
 void QgsMapLayerStyleCommand::undo()
 {
   QString error;
-  mLayer->readStyle( mLastState, error, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  mLayer->readStyle( mLastState, error, context );
   mLayer->triggerRepaint();
 }
 
 void QgsMapLayerStyleCommand::redo()
 {
   QString error;
-  mLayer->readStyle( mXml, error, QgsReadWriteContext() );
+  QgsReadWriteContext context = QgsReadWriteContext();
+  mLayer->readStyle( mXml, error, context );
   mLayer->triggerRepaint();
 }
 

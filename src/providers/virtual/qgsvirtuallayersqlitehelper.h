@@ -32,7 +32,7 @@ extern "C"
 class QgsScopedSqlite
 {
   public:
-    QgsScopedSqlite() : db_( nullptr ) {}
+    QgsScopedSqlite() = default;
 
     explicit QgsScopedSqlite( const QString &path, bool withExtension = true );
 
@@ -40,6 +40,7 @@ class QgsScopedSqlite
     QgsScopedSqlite &operator=( QgsScopedSqlite &other );
     ~QgsScopedSqlite();
 
+    bool interrupt();
     sqlite3 *get() const;
     sqlite3 *release();
     void reset( sqlite3 *db );

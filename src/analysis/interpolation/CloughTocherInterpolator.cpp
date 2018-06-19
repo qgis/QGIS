@@ -19,35 +19,10 @@
 #include "MathUtils.h"
 #include "NormVecDecorator.h"
 
-CloughTocherInterpolator::CloughTocherInterpolator()
-  : mTIN( nullptr )
-  , mEdgeTolerance( 0.00001 )
-  , der1X( 0.0 )
-  , der1Y( 0.0 )
-  , der2X( 0.0 )
-  , der2Y( 0.0 )
-  , der3X( 0.0 )
-  , der3Y( 0.0 )
-{
-
-}
-
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )
-  , mEdgeTolerance( 0.00001 )
-  , der1X( 0.0 )
-  , der1Y( 0.0 )
-  , der2X( 0.0 )
-  , der2Y( 0.0 )
-  , der3X( 0.0 )
-  , der3Y( 0.0 )
 {
 
-}
-
-CloughTocherInterpolator::~CloughTocherInterpolator()
-{
-  //nothing to do
 }
 
 void CloughTocherInterpolator::setTriangulation( NormVecDecorator *tin )
@@ -176,81 +151,72 @@ bool CloughTocherInterpolator::calcNormVec( double x, double y, Vector3D *result
   }
 }
 
-bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint *result )
+bool CloughTocherInterpolator::calcPoint( double x, double y, QgsPoint &result )
 {
-  if ( result )
+  init( x, y );
+  //find out, in which subtriangle the point (x,y) is
+  QgsPoint barycoord( 0, 0, 0 );
+  //is the point in the first subtriangle (point1,point2,cp10)?
+  MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
+  if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
   {
-    init( x, y );
-    //find out, in which subtriangle the point (x,y) is
-    QgsPoint barycoord( 0, 0, 0 );
-    //is the point in the first subtriangle (point1,point2,cp10)?
-    MathUtils::calcBarycentricCoordinates( x, y, &point1, &point2, &cp10, &barycoord );
-    if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
-    {
-      double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
-      result->setX( x );
-      result->setY( y );
-      result->setZ( z );
-      return true;
-    }
-    //is the point in the second subtriangle (point2,point3,cp10)?
-    MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
-    if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
-    {
-      double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
-      result->setX( x );
-      result->setY( y );
-      result->setZ( z );
-      return true;
-    }
-    //is the point in the third subtriangle (point3,point1,cp10)?
-    MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
-    if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
-    {
-      double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
-      result->setX( x );
-      result->setY( y );
-      result->setZ( z );
-      return true;
-    }
+    double z = point1.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp1.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp2.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp4.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() );
+    result.setX( x );
+    result.setY( y );
+    result.setZ( z );
+    return true;
+  }
+  //is the point in the second subtriangle (point2,point3,cp10)?
+  MathUtils::calcBarycentricCoordinates( x, y, &point2, &point3, &cp10, &barycoord );
+  if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
+  {
+    double z = cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp8.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp5.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point2.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp13.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp9.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp16.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    result.setX( x );
+    result.setY( y );
+    result.setZ( z );
+    return true;
+  }
+  //is the point in the third subtriangle (point3,point1,cp10)?
+  MathUtils::calcBarycentricCoordinates( x, y, &point3, &point1, &cp10, &barycoord );
+  if ( barycoord.x() >= -mEdgeTolerance && barycoord.x() <= ( 1 + mEdgeTolerance ) && barycoord.y() >= -mEdgeTolerance && barycoord.y() <= ( 1 + mEdgeTolerance ) )
+  {
+    double z = point1.z() * calcBernsteinPoly( 3, 0, 3, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp3.z() * calcBernsteinPoly( 3, 0, 2, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp7.z() * calcBernsteinPoly( 3, 0, 1, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp10.z() * calcBernsteinPoly( 3, 0, 0, 3, barycoord.x(), barycoord.y(), barycoord.z() ) + cp6.z() * calcBernsteinPoly( 3, 1, 2, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp11.z() * calcBernsteinPoly( 3, 1, 1, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + cp12.z() * calcBernsteinPoly( 3, 1, 0, 2, barycoord.x(), barycoord.y(), barycoord.z() ) + cp14.z() * calcBernsteinPoly( 3, 2, 1, 0, barycoord.x(), barycoord.y(), barycoord.z() ) + cp15.z() * calcBernsteinPoly( 3, 2, 0, 1, barycoord.x(), barycoord.y(), barycoord.z() ) + point3.z() * calcBernsteinPoly( 3, 3, 0, 0, barycoord.x(), barycoord.y(), barycoord.z() );
+    result.setX( x );
+    result.setY( y );
+    result.setZ( z );
+    return true;
+  }
 
-    //the point is in none of the subtriangles, test if point has the same position as one of the vertices
-    if ( x == point1.x() && y == point1.y() )
-    {
-      result->setX( x );
-      result->setY( y );
-      result->setZ( point1.z() );
-      return true;
-    }
-    else if ( x == point2.x() && y == point2.y() )
-    {
-      result->setX( x );
-      result->setY( y );
-      result->setZ( point2.z() );
-      return true;
-    }
-    else if ( x == point3.x() && y == point3.y() )
-    {
-      result->setX( x );
-      result->setY( y );
-      result->setZ( point3.z() );
-      return true;
-    }
-    else
-    {
-      result->setX( x );
-      result->setY( y );
-      result->setZ( 0 );
-    }
-
-    return false;
-
+  //the point is in none of the subtriangles, test if point has the same position as one of the vertices
+  if ( x == point1.x() && y == point1.y() )
+  {
+    result.setX( x );
+    result.setY( y );
+    result.setZ( point1.z() );
+    return true;
+  }
+  else if ( x == point2.x() && y == point2.y() )
+  {
+    result.setX( x );
+    result.setY( y );
+    result.setZ( point2.z() );
+    return true;
+  }
+  else if ( x == point3.x() && y == point3.y() )
+  {
+    result.setX( x );
+    result.setY( y );
+    result.setZ( point3.z() );
+    return true;
   }
   else
   {
-    QgsDebugMsg( "warning, null pointer" );
-    return false;
+    result.setX( x );
+    result.setY( y );
+    result.setZ( 0 );
   }
+
+  return false;
 }
 
 void CloughTocherInterpolator::init( double x, double y )//version, which has the unintended breaklines within the macrotriangles
@@ -261,7 +227,7 @@ void CloughTocherInterpolator::init( double x, double y )//version, which has th
 
   if ( mTIN )
   {
-    mTIN->getTriangle( x, y, &point1, &ptn1, &v1, &state1, &point2, &ptn2, &v2, &state2, &point3, &ptn3, &v3, &state3 );
+    mTIN->getTriangle( x, y, point1, ptn1, &v1, &state1, point2, ptn2, &v2, &state2, point3, ptn3, &v3, &state3 );
 
     if ( point1 == lpoint1 && point2 == lpoint2 && point3 == lpoint3 )//if we are in the same triangle as at the last run, we can leave 'init'
     {

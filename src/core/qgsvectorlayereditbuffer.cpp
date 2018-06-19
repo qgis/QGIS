@@ -208,6 +208,23 @@ bool QgsVectorLayerEditBuffer::changeGeometry( QgsFeatureId fid, const QgsGeomet
   return true;
 }
 
+bool QgsVectorLayerEditBuffer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  bool success = true;
+  for ( auto it = newValues.constBegin() ; it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    success &= changeAttributeValue( fid, field, newValue, oldValue );
+  }
+
+  return success;
+}
 
 bool QgsVectorLayerEditBuffer::changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue )
 {
@@ -320,7 +337,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
     {
       if ( provider->doesStrictFeatureTypeCheck() )
       {
-        for ( const auto &f : qgsAsConst( mAddedFeatures ) )
+        for ( const auto &f : qgis::as_const( mAddedFeatures ) )
         {
           if ( ( ! f.hasGeometry() ) ||
                ( f.geometry().wkbType() == provider->wkbType() ) )
@@ -385,7 +402,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
       QString list = "ERROR: Pending attribute deletes:";
       Q_FOREACH ( int idx, mDeletedAttributeIds )
       {
-        list.append( ' ' + L->pendingFields().at( idx ).name() );
+        list.append( ' ' + L->fields().at( idx ).name() );
       }
       commitErrors << list;
 #endif
@@ -529,7 +546,7 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
             list.append( "\n  " + FID_TO_STRING( id ) + '[' );
             Q_FOREACH ( int idx, mChangedAttributeValues[ id ].keys() )
             {
-              list.append( QString( " %1:%2" ).arg( L->pendingFields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
+              list.append( QString( " %1:%2" ).arg( L->fields().at( idx ).name() ).arg( mChangedAttributeValues[id][idx].toString() ) );
             }
             list.append( " ]" );
           }
@@ -619,9 +636,9 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList &commitErrors )
           Q_FOREACH ( QgsFeature f, mAddedFeatures )
           {
             list.append( ' ' + FID_TO_STRING( f.id() ) + '[' );
-            for ( int i = 0; i < L->pendingFields().size(); i++ )
+            for ( int i = 0; i < L->fields().size(); i++ )
             {
-              list.append( QString( " %1:%2" ).arg( L->pendingFields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
+              list.append( QString( " %1:%2" ).arg( L->fields().at( i ).name() ).arg( f.attributes()[i].toString() ) );
             }
             list.append( " ]" );
           }

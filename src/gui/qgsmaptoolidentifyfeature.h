@@ -19,7 +19,8 @@
 #include "qgsmaptoolidentify.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.
  * Once the map tool is enable, user can click on the map canvas to identify a feature.
  * A signal will then be emitted.
@@ -40,14 +41,14 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     //! change the layer used by the map tool to identify
     void setLayer( QgsVectorLayer *vl ) { mLayer = vl; }
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   signals:
     void featureIdentified( const QgsFeature & );
     void featureIdentified( QgsFeatureId );
 
   protected:
-    virtual void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   private:
     QgsMapCanvas *mCanvas = nullptr;

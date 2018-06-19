@@ -35,20 +35,15 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
  */
 class TestQgsShapeburst : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsShapeburst()
-      : mTestHasError( false )
-      , mpPolysLayer()
-      , mShapeburstFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsShapeburst() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -66,7 +61,7 @@ class TestQgsShapeburst : public QObject
     void shapeburstSymbolFromQml();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

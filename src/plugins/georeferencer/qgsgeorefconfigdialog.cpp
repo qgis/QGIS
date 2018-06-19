@@ -23,6 +23,8 @@ QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGeorefConfigDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsGeorefConfigDialog::buttonBox_rejected );
 
   QgsSettings s;
   restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/ConfigWindow/geometry" ) ).toByteArray() );
@@ -75,13 +77,13 @@ void QgsGeorefConfigDialog::changeEvent( QEvent *e )
   }
 }
 
-void QgsGeorefConfigDialog::on_buttonBox_accepted()
+void QgsGeorefConfigDialog::buttonBox_accepted()
 {
   writeSettings();
   accept();
 }
 
-void QgsGeorefConfigDialog::on_buttonBox_rejected()
+void QgsGeorefConfigDialog::buttonBox_rejected()
 {
   reject();
 }

@@ -25,7 +25,8 @@
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsNewMemoryLayerDialog
  */
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
@@ -34,7 +35,8 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   public:
 
-    /** Runs the dialog and creates a new memory layer
+    /**
+     * Runs the dialog and creates a new memory layer
      * \param parent parent widget
      * \param defaultCrs default layer CRS to show in dialog
      * \returns new memory layer
@@ -42,15 +44,15 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog();
+    ~QgsNewMemoryLayerDialog() override;
 
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
 
     /**
      * Sets the \a crs value for the new layer in the dialog.
-     * \since QGIS 3.0
      * \see crs()
+     * \since QGIS 3.0
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
@@ -69,6 +71,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   private slots:
 
+    void geometryTypeChanged( int index );
     void showHelp();
 };
 

@@ -23,7 +23,7 @@ class TestRendererGUI : public QMainWindow
 {
     Q_OBJECT
   public:
-    explicit TestRendererGUI( QWidget *parent = 0 );
+    explicit TestRendererGUI( QWidget *parent = nullptr );
     void loadLayers();
 
   signals:

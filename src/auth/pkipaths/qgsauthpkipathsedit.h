@@ -37,7 +37,6 @@ class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPath
     };
 
     explicit QgsAuthPkiPathsEdit( QWidget *parent = nullptr );
-    virtual ~QgsAuthPkiPathsEdit();
 
     bool validateConfig() override;
 
@@ -52,23 +51,23 @@ class QgsAuthPkiPathsEdit : public QgsAuthMethodEdit, private Ui::QgsAuthPkiPath
 
   private slots:
     void clearPkiMessage( QLineEdit *lineedit );
-    void writePkiMessage( QLineEdit *lineedit, const QString &msg, Validity valid = Unknown );
+    void writePkiMessage( QLineEdit *lineedit, const QString &msg, QgsAuthPkiPathsEdit::Validity valid = Unknown );
 
     void clearPkiPathsCertPath();
     void clearPkiPathsKeyPath();
     void clearPkiPathsKeyPass();
 
-    void on_chkPkiPathsPassShow_stateChanged( int state );
+    void chkPkiPathsPassShow_stateChanged( int state );
 
-    void on_btnPkiPathsCert_clicked();
+    void btnPkiPathsCert_clicked();
 
-    void on_btnPkiPathsKey_clicked();
+    void btnPkiPathsKey_clicked();
 
   private:
     bool validityChange( bool curvalid );
-
+    bool populateCas();
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = false;
 };
 
 #endif // QGSAUTHPKIPATHSEDIT_H

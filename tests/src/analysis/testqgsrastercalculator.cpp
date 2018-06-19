@@ -21,7 +21,6 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgsrastermatrix.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
-#include "qgstestutils.h"
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
@@ -30,10 +29,7 @@ class TestQgsRasterCalculator : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRasterCalculator()
-      : mpLandsatRasterLayer( 0 )
-      , mpLandsatRasterLayer4326( 0 )
-    {}
+    TestQgsRasterCalculator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -203,7 +199,7 @@ void TestQgsRasterCalculator::singleOp()
   QFETCH( double, value );
   QFETCH( double, expected );
 
-  QgsRasterCalcNode node( op, new QgsRasterCalcNode( value ), 0 );
+  QgsRasterCalcNode node( op, new QgsRasterCalcNode( value ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
@@ -229,7 +225,7 @@ void TestQgsRasterCalculator::singleOpMatrices()
 
   QgsRasterMatrix m( 2, 3, d, -1.0 );
 
-  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), 0 );
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( &m ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );
@@ -353,7 +349,7 @@ void TestQgsRasterCalculator::dualOpMatrixMatrix()
 void TestQgsRasterCalculator::rasterRefOp()
 {
   // test single op run on raster ref
-  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( QStringLiteral( "raster" ) ), 0 );
+  QgsRasterCalcNode node( QgsRasterCalcNode::opSIGN, new QgsRasterCalcNode( QStringLiteral( "raster" ) ), nullptr );
 
   QgsRasterMatrix result;
   result.setNodataValue( -9999 );

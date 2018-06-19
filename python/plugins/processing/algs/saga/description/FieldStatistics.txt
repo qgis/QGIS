@@ -1,5 +1,5 @@
 Field Statistics
 table_calculus
-ParameterTable|TABLE|Table|False
-ParameterTable|FIELDS|Attributes|False
-ParameterTable|STATISTICS|Statistics|False
+QgsProcessingParameterFeatureSource|TABLE|Table|5|None|False
+QgsProcessingParameterField|FIELDS|Attributes|None|TABLE|-1|False|True
+QgsProcessingParameterVectorDestination|STATISTICS|Statistics

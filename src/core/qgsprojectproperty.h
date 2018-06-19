@@ -138,8 +138,8 @@ class CORE_EXPORT QgsProjectPropertyValue : public QgsProjectProperty
       : mValue( value )
     {}
 
-    virtual bool isKey() const override { return false; }
-    virtual bool isValue() const override { return true; }
+    bool isKey() const override { return false; }
+    bool isValue() const override { return true; }
     QVariant value() const override { return mValue; }
 
     //value nodes can also be qualified as leaf nodes even though we only count key nodes.
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      * Create a new QgsProjectPropertyKey with the specified identifier.
      */
     QgsProjectPropertyKey( const QString &name = QString() );
-    virtual ~QgsProjectPropertyKey();
+    ~QgsProjectPropertyKey() override;
 
     /**
      * The name of the property is used as identifier.
@@ -198,8 +198,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     /**
      * The name of the property is used as identifier.
      *
-     * \since QGIS 3.0
      * \see name()
+     * \since QGIS 3.0
      */
     void setName( const QString &name );
 
@@ -248,7 +248,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
       return p;
     }
 
-    /** Set the value associated with this key
+    /**
+     * Set the value associated with this key
      *
      * \note that the single value node associated with each key is always
      * stored keyed by the current key name
@@ -272,8 +273,8 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
      */
     bool isEmpty() const { return mProperties.isEmpty(); }
 
-    virtual bool isKey() const override { return true; }
-    virtual bool isValue() const override { return false; }
+    bool isKey() const override { return true; }
+    bool isValue() const override { return false; }
     bool isLeaf() const override;
 
     /**
@@ -283,7 +284,7 @@ class CORE_EXPORT QgsProjectPropertyKey : public QgsProjectProperty
     void entryList( QStringList &entries ) const;
 
     /**
-     * Return any sub-keys contained by this property which themselves contain other keys.
+     * Returns any sub-keys contained by this property which themselves contain other keys.
      * \see entryList()
      */
     void subkeyList( QStringList &entries ) const;

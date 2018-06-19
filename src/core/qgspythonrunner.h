@@ -20,7 +20,8 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
   Utility class for running Python commands from various parts of QGIS.
   There is no direct Python support in the core library, so it is expected
   that application with Python support creates a subclass that implements
@@ -33,7 +34,8 @@ class CORE_EXPORT QgsPythonRunner
 {
   public:
 
-    /** Returns true if the runner has an instance
+    /**
+     * Returns true if the runner has an instance
         (and thus is able to run commands) */
     static bool isValid();
 
@@ -43,7 +45,8 @@ class CORE_EXPORT QgsPythonRunner
     //! Eval a Python statement
     static bool eval( const QString &command, QString &result SIP_OUT );
 
-    /** Assign an instance of Python runner so that run() can be used.
+    /**
+     * Assign an instance of Python runner so that run() can be used.
       This method should be called during app initialization.
       Takes ownership of the object, deletes previous instance. */
     static void setInstance( QgsPythonRunner *runner SIP_TRANSFER );

@@ -28,6 +28,11 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
   public:
     QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout );
 
+  public slots:
+
+    //! Refreshes the gui to reflect the current layout settings
+    void updateGui();
+
   private slots:
 
     void gridResolutionChanged( double d );
@@ -36,6 +41,15 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void gridOffsetYChanged( double d );
     void gridOffsetUnitsChanged( QgsUnitTypes::LayoutUnit unit );
     void snapToleranceChanged( int tolerance );
+    void resizeMarginsChanged();
+    void resizeToContents();
+    void referenceMapChanged( QgsLayoutItem *item );
+    void dpiChanged( int value );
+    void worldFileToggled();
+    void rasterizeToggled();
+    void forceVectorToggled();
+    void variablesChanged();
+    void updateVariables();
 
   private:
 

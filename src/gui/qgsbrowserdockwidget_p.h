@@ -88,10 +88,11 @@ class QgsBrowserPropertiesWidget : public QWidget
     static QgsBrowserPropertiesWidget *createWidget( QgsDataItem *item, QWidget *parent = nullptr );
     //! Stub
     virtual void setItem( QgsDataItem *item ) { Q_UNUSED( item ) }
-    //! Set content widget, usually item paramWidget. Takes ownership.
+    //! Sets content widget, usually item paramWidget. Takes ownership.
     virtual void setWidget( QWidget *widget );
 
-    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+    /**
+     * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
      * \param condensedMode set to true to enable condensed mode
      * \since QGIS 2.10
@@ -112,15 +113,16 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
       * \param parent parent widget
       */
     explicit QgsBrowserLayerProperties( QWidget *parent = nullptr );
-    //! Set item
+    //! Sets item
     void setItem( QgsDataItem *item ) override;
 
-    /** Sets whether the properties widget should display in condensed mode, ie, for display in a dock
+    /**
+     * Sets whether the properties widget should display in condensed mode, ie, for display in a dock
      * widget rather than it's own separate dialog.
      * \param condensedMode set to true to enable condensed mode
      * \since QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) override;
+    void setCondensedMode( bool condensedMode ) override;
 
   private:
     QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
@@ -161,7 +163,7 @@ class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropert
       * \param parent parent widget
       */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
-    ~QgsBrowserPropertiesDialog();
+    ~QgsBrowserPropertiesDialog() override;
 
     //! Create dialog from the given item and add it
     void setItem( QgsDataItem *item );
@@ -212,18 +214,18 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     /**
       * Constructor for QgsBrowserTreeFilterProxyModel
-      * @param parent parent widget
+      * \param parent parent widget
       */
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
-    //! Set the browser model
+    //! Sets the browser model
     void setBrowserModel( QgsBrowserModel *model );
-    //! Get the browser model
+    //! Gets the browser model
     QgsBrowserModel *browserModel() { return mModel; }
-    //! Set the filter syntax
+    //! Sets the filter syntax
     void setFilterSyntax( const QString &syntax );
-    //! Set the filter
+    //! Sets the filter
     void setFilter( const QString &filter );
-    //! Set case sensitivity
+    //! Sets case sensitivity
     void setCaseSensitive( bool caseSensitive );
     //! Update filter
     void updateFilter();

@@ -37,6 +37,11 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
   setupUi( this );
+  connect( GisdbaseBrowse, &QPushButton::clicked, this, &QgsGrassSelect::GisdbaseBrowse_clicked );
+  connect( egisdbase, &QLineEdit::textChanged, this, &QgsGrassSelect::egisdbase_textChanged );
+  connect( elocation, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::elocation_activated );
+  connect( emapset, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::emapset_activated );
+  connect( emap, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::emap_activated );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGrassSelect::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
@@ -97,10 +102,6 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
 
   setLocations();
   adjustSize();
-}
-
-QgsGrassSelect::~QgsGrassSelect()
-{
 }
 
 bool QgsGrassSelect::sFirst = true;
@@ -395,7 +396,7 @@ void QgsGrassSelect::setLayers()
   }
 }
 
-void QgsGrassSelect::on_GisdbaseBrowse_clicked()
+void QgsGrassSelect::GisdbaseBrowse_clicked()
 {
   QString Gisdbase = QFileDialog::getExistingDirectory( this,
                      tr( "Choose existing GISDBASE" ), egisdbase->text() );
@@ -435,7 +436,7 @@ void QgsGrassSelect::accept()
   if ( type != QgsGrassSelect::MapSet && map.isEmpty() )
   {
     QString msg = tr( "Select a map." );
-    QMessageBox::warning( 0, tr( "No map" ), msg );
+    QMessageBox::warning( nullptr, tr( "No map" ), msg );
     return;
   }
 
@@ -443,7 +444,7 @@ void QgsGrassSelect::accept()
   {
     if ( elayer->count() == 0 )
     {
-      QMessageBox::warning( 0, tr( "No layer" ),
+      QMessageBox::warning( nullptr, tr( "No layer" ),
                             tr( "No layers available in this map" ) );
       return;
     }

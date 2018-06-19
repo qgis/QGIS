@@ -44,7 +44,7 @@ class QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayoutNewPageDial
     /**
      * Constructor for QgsLayoutAddPagesDialog.
      */
-    QgsLayoutAddPagesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsLayoutAddPagesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the \a layout associated with the dialog. This allows the dialog

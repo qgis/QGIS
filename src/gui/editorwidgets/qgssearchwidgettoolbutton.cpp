@@ -22,7 +22,7 @@ QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
   , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
   , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
   , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-  , mMenu( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
   setPopupMode( QToolButton::InstantPopup );
@@ -144,7 +144,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
     }
   }
 
-  QAction *clearAction = mMenu->addAction( tr( "Exclude field" ) );
+  QAction *clearAction = mMenu->addAction( tr( "Exclude Field" ) );
   connect( clearAction, &QAction::triggered, this, &QgsSearchWidgetToolButton::setInactive );
   clearAction->setCheckable( true );
   clearAction->setChecked( !fieldActive );

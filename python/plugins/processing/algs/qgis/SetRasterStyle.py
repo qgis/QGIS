@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SelectByLocation.py
+    SetRasterStyle.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtXml import QDomDocument
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFile,
                        QgsProcessingOutputRasterLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -44,8 +45,14 @@ class SetRasterStyle(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
+    def groupId(self):
+        return 'rastertools'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,

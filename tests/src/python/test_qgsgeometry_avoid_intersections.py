@@ -57,7 +57,7 @@ class TestQgsGeometryAvoidIntersections(unittest.TestCase):
             features.append(f)
 
         l.dataProvider().addFeatures(features)
-        assert l.pendingFeatureCount() == 7
+        assert l.featureCount() == 7
 
         # create a geometry and remove its intersections with other geometries
 

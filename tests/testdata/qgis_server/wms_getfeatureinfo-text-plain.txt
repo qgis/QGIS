@@ -8,5 +8,4 @@ Feature 2
 id = '3'
 name = 'three'
 utf8nameè = 'three èé↓'
-geometry = 'Point (913204.9128 5606011.4565)'
 

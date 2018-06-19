@@ -23,8 +23,6 @@
 #include <climits>
 
 QgsPgTableModel::QgsPgTableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -62,7 +60,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     {
       tip = tr( "Specify a geometry type in the '%1' column" ).arg( tr( "Data Type" ) );
     }
-    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN )
+    else if ( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() )
     {
       tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
@@ -72,7 +70,7 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     }
 
     QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select..." ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
+    QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == QgsWkbTypes::Unknown ? tr( "Select…" ) : QgsPostgresConn::displayStringForWkbType( wkbType ) );
     typeItem->setData( wkbType == QgsWkbTypes::Unknown, Qt::UserRole + 1 );
     typeItem->setData( wkbType, Qt::UserRole + 2 );
     if ( wkbType == QgsWkbTypes::Unknown )
@@ -84,17 +82,17 @@ void QgsPgTableModel::addTableEntry( const QgsPostgresLayerProperty &layerProper
     QStandardItem *commentItem = new QStandardItem( layerProperty.tableComment );
     QStandardItem *geomItem  = new QStandardItem( layerProperty.geometryColName );
     QStandardItem *sridItem  = new QStandardItem( wkbType != QgsWkbTypes::NoGeometry ? QString::number( srid ) : QLatin1String( "" ) );
-    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == INT_MIN );
+    sridItem->setEditable( wkbType != QgsWkbTypes::NoGeometry && srid == std::numeric_limits<int>::min() );
     if ( sridItem->isEditable() )
     {
-      sridItem->setText( tr( "Enter..." ) );
+      sridItem->setText( tr( "Enter…" ) );
       sridItem->setFlags( sridItem->flags() | Qt::ItemIsEditable );
     }
 
     QStandardItem *pkItem = new QStandardItem( QLatin1String( "" ) );
     if ( !layerProperty.pkCols.isEmpty() )
     {
-      pkItem->setText( tr( "Select..." ) );
+      pkItem->setText( tr( "Select…" ) );
       pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
     }
     else
@@ -190,7 +188,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
   QString geomName = itemFromIndex( geomSibling )->text();
 
   QList<QStandardItem *> schemaItems = findItems( schemaName, Qt::MatchExactly, DbtmSchema );
-  if ( schemaItems.size() < 1 )
+  if ( schemaItems.empty() )
   {
     return;
   }
@@ -266,7 +264,7 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
       bool ok;
       int srid = idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
-      if ( !ok || srid == INT_MIN )
+      if ( !ok || srid == std::numeric_limits<int>::min() )
         tip = tr( "Enter a SRID into the '%1' column" ).arg( tr( "SRID" ) );
     }
 

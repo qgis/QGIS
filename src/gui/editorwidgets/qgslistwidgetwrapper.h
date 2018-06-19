@@ -23,10 +23,11 @@ SIP_NO_FILE
 
 class QgsListWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a list widget.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
 {
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsListWidgetWrapper : public QgsEditorWidgetWrapper
     void onValueChanged();
 
   private:
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
     QgsListWidget *mWidget = nullptr;
 };

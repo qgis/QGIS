@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDomNode>
 #include <QFileInfo>
 #include <QFile>
 #include <QDir>
@@ -56,7 +55,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
   return loadLayerDefinition( doc, project, rootGroup, errorMessage, context );
 }
 
-bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *project, QgsLayerTreeGroup *rootGroup, QString &errorMessage, QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
 
@@ -141,7 +140,7 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsProject *proj
   bool loadInLegend = true;
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem, context );
     loadInLegend = false;
   }
 
@@ -208,12 +207,17 @@ bool QgsLayerDefinition::exportLayerDefinition( QDomDocument doc, const QList<Qg
     QgsLayerTreeNode *newnode = node->clone();
     root->addChildNode( newnode );
   }
-  root->writeXml( qgiselm );
+  root->writeXml( qgiselm, context );
 
   QDomElement layerselm = doc.createElement( QStringLiteral( "maplayers" ) );
   QList<QgsLayerTreeLayer *> layers = root->findLayers();
   Q_FOREACH ( QgsLayerTreeLayer *layer, layers )
   {
+    if ( ! layer->layer() )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Not a valid map layer: skipping %1" ).arg( layer->name( ) ), 4 );
+      continue;
+    }
     QDomElement layerelm = doc.createElement( QStringLiteral( "maplayer" ) );
     layer->layer()->writeLayerXml( layerelm, doc, context );
     layerselm.appendChild( layerelm );
@@ -238,7 +242,7 @@ QDomDocument QgsLayerDefinition::exportLayerDefinitionLayers( const QList<QgsMap
   return doc;
 }
 
-QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context )
+QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( QDomDocument &document, QgsReadWriteContext &context )
 {
   QList<QgsMapLayer *> layers;
   QDomNodeList layernodes = document.elementsByTagName( QStringLiteral( "maplayer" ) );

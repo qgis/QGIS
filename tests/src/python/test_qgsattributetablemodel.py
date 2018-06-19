@@ -56,7 +56,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
         for i in range(10):
             f = QgsFeature()
             f.setAttributes(["test", i])
-            f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100 * i, 2 ^ i)))
+            f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100 * i, 2 ^ i)))
             features.append(f)
 
         self.assertTrue(pr.addFeatures(features))
@@ -79,7 +79,7 @@ class TestQgsAttributeTableModel(unittest.TestCase):
 
         f = QgsFeature()
         f.setAttributes(["test", 8])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         self.layer.addFeature(f)
 
         self.assertEqual(self.am.rowCount(), 11)

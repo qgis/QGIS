@@ -47,7 +47,7 @@ QgsMapThemes::QgsMapThemes()
 
   mReplaceMenu = new QMenu( tr( "Replace Theme" ) );
   mMenu->addMenu( mReplaceMenu );
-  mActionAddPreset = mMenu->addAction( tr( "Add Theme..." ), this, SLOT( addPreset() ) );
+  mActionAddPreset = mMenu->addAction( tr( "Add Theme…" ), this, SLOT( addPreset() ) );
   mMenuSeparator = mMenu->addSeparator();
 
   mActionRemoveCurrentPreset = mMenu->addAction( tr( "Remove Current Theme" ), this, SLOT( removeCurrentPreset() ) );
@@ -110,7 +110,7 @@ void QgsMapThemes::addPreset()
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
-  dlg.setConflictingNameWarning( tr( "A theme with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -133,8 +133,8 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
-                                   trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
+  int res = QMessageBox::question( mMenu, tr( "Replace Theme" ),
+                                   tr( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
@@ -156,11 +156,15 @@ void QgsMapThemes::applyState( const QString &presetName )
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  Q_FOREACH ( QAction *a, mMenuPresetActions )
+  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
   {
-    if ( a->isChecked() )
+    if ( actionPreset->isChecked() )
     {
-      QgsProject::instance()->mapThemeCollection()->removeMapTheme( a->text() );
+      int res = QMessageBox::question( mMenu, tr( "Remove Theme" ),
+                                       tr( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      if ( res == QMessageBox::Yes )
+        QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
     }
   }

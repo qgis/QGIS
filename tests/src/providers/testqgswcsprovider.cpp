@@ -29,7 +29,8 @@
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsWcsProvider: public QObject

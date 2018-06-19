@@ -27,13 +27,10 @@
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   : QTableView( parent )
-  , mGCPList( nullptr )
   , mGCPListModel( new QgsGCPListModel( this ) )
   , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
   , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
   , mCoordDelegate( new QgsCoordDelegate( this ) )
-  , mPrevRow( 0 )
-  , mPrevColumn( 0 )
 {
   // Create a proxy model, which will handle dynamic sorting
   QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
@@ -197,10 +194,6 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   connect( removeAction, &QAction::triggered, this, &QgsGCPListWidget::removeRow );
   m.addAction( removeAction );
   m.exec( QCursor::pos(), removeAction );
-
-  index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( index );
-  mPrevRow = index.row();
-  mPrevColumn = index.column();
 }
 
 void QgsGCPListWidget::removeRow()
@@ -217,6 +210,8 @@ void QgsGCPListWidget::editCell()
 void QgsGCPListWidget::jumpToPoint()
 {
   QModelIndex index = static_cast<const QSortFilterProxyModel *>( model() )->mapToSource( currentIndex() );
+  mPrevRow = index.row();
+  mPrevColumn = index.column();
   emit jumpToGCP( index.row() );
 }
 

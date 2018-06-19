@@ -110,8 +110,8 @@ void QgsDecorationGrid::projectRead()
   mGridAnnotationPosition = InsideMapFrame; // don't allow outside frame, doesn't make sense
   mGridAnnotationDirection = static_cast< GridAnnotationDirection >( QgsProject::instance()->readNumEntry( mNameConfig,
                              QStringLiteral( "/AnnotationDirection" ), 0 ) );
-  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QLatin1String( "" ) );
-  if ( fontStr != QLatin1String( "" ) )
+  QString fontStr = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/AnnotationFont" ), QString() );
+  if ( !fontStr.isEmpty() )
   {
     mGridAnnotationFont.fromString( fontStr );
   }
@@ -134,7 +134,7 @@ void QgsDecorationGrid::projectRead()
   if ( mLineSymbol )
     setLineSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/LineSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -146,7 +146,7 @@ void QgsDecorationGrid::projectRead()
   if ( mMarkerSymbol )
     setMarkerSymbol( nullptr );
   xml = QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarkerSymbol" ) );
-  if ( xml != QLatin1String( "" ) )
+  if ( !xml.isEmpty() )
   {
     doc.setContent( xml );
     elem = doc.documentElement();
@@ -753,11 +753,9 @@ bool QgsDecorationGrid::isDirty()
 {
   // checks if stored map units is undefined or different from canvas map units
   // or if interval is 0
-  if ( mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
-       mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
-       qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 ) )
-    return true;
-  return false;
+  return mMapUnits == QgsUnitTypes::DistanceUnknownUnit ||
+         mMapUnits != QgisApp::instance()->mapCanvas()->mapSettings().mapUnits() ||
+         qgsDoubleNear( mGridIntervalX, 0.0 ) || qgsDoubleNear( mGridIntervalY, 0.0 );
 }
 
 void QgsDecorationGrid::setDirty( bool dirty )
@@ -787,7 +785,7 @@ bool QgsDecorationGrid::getIntervalFromExtent( double *values, bool useXAxis )
   if ( !qgsDoubleNear( interval, 0.0 ) )
   {
     double interval2 = 0;
-    int factor =  std::pow( 10, std::floor( std::log10( interval ) ) );
+    int factor = std::pow( 10, std::floor( std::log10( interval ) ) );
     if ( factor != 0 )
     {
       interval2 = std::round( interval / factor ) * factor;
@@ -807,18 +805,18 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   QgsMapLayer *layer = QgisApp::instance()->mapCanvas()->currentLayer();
   if ( ! layer )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "No active layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "No active layer" ) );
     return false;
   }
   if ( layer->type() != QgsMapLayer::RasterLayer )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Please select a raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Please select a raster layer." ) );
     return false;
   }
   QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layer );
   if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Invalid raster layer" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Invalid raster layer" ) );
     return false;
   }
   QgsCoordinateReferenceSystem layerCRS = layer->crs();
@@ -828,7 +826,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double *values )
   // TODO calculate transformed values if necessary
   if ( layerCRS != mapCRS )
   {
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Layer CRS must be equal to project CRS" ) );
+    QMessageBox::warning( nullptr, tr( "Get Interval from Layer" ), tr( "Layer CRS must be equal to project CRS." ) );
     return false;
   }
 

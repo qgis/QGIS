@@ -30,8 +30,7 @@
 #include <QMenu>
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
-  : QgsPanelWidget()
-  , mLayer( layer )
+  : mLayer( layer )
   , mStyle( style )
 {
   contextMenu = new QMenu( tr( "Renderer Options" ), this );
@@ -42,18 +41,18 @@ QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
 
   contextMenu->addSeparator();
-  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor() ) );
-  contextMenu->addAction( tr( "Change opacity" ), this, SLOT( changeSymbolOpacity() ) );
-  contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
+  contextMenu->addAction( tr( "Change Color…" ), this, SLOT( changeSymbolColor() ) );
+  contextMenu->addAction( tr( "Change Opacity…" ), this, SLOT( changeSymbolOpacity() ) );
+  contextMenu->addAction( tr( "Change Output Unit…" ), this, SLOT( changeSymbolUnit() ) );
 
   if ( mLayer && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
   {
-    contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
+    contextMenu->addAction( tr( "Change Width…" ), this, SLOT( changeSymbolWidth() ) );
   }
   else if ( mLayer && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
   {
-    contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
-    contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
+    contextMenu->addAction( tr( "Change Size…" ), this, SLOT( changeSymbolSize() ) );
+    contextMenu->addAction( tr( "Change Angle…" ), this, SLOT( changeSymbolAngle() ) );
   }
 }
 
@@ -251,11 +250,20 @@ void QgsRendererWidget::changeSymbolAngle()
 
 void QgsRendererWidget::showSymbolLevelsDialog( QgsFeatureRenderer *r )
 {
-  QgsSymbolLevelsDialog dlg( r->legendSymbolItems(), r->usingSymbolLevels(), this );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( r, r->usingSymbolLevels(), panel );
+    widget->setPanelTitle( tr( "Symbol Levels" ) );
+    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    panel->openPanel( widget );
+    return;
+  }
 
+  QgsSymbolLevelsDialog dlg( r, r->usingSymbolLevels(), panel );
   if ( dlg.exec() )
   {
-    r->setUsingSymbolLevels( dlg.usingLevels() );
     emit widgetChanged();
   }
 }
@@ -280,7 +288,7 @@ QgsDataDefinedSizeLegendWidget *QgsRendererWidget::createDataDefinedSizeLegendWi
   QgsProperty ddSize = symbol->dataDefinedSize();
   if ( !ddSize || !ddSize.isActive() )
   {
-    QMessageBox::warning( this, tr( "Data-defined size legend" ), tr( "Data-defined size is not enabled!" ) );
+    QMessageBox::warning( this, tr( "Data-defined Size Legend" ), tr( "Data-defined size is not enabled!" ) );
     return nullptr;
   }
 

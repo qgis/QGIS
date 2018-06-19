@@ -97,26 +97,26 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 
   QString uriUpdated( uri );
   // HACK sorry...
-  if ( providerKey == "ogr" )
+  if ( providerKey == QLatin1String( "ogr" ) )
   {
     QString layerName;
     if ( options.contains( QStringLiteral( "layerName" ) ) )
       layerName = options.value( QStringLiteral( "layerName" ) ).toString();
     if ( !layerName.isEmpty() )
     {
-      uriUpdated += "|layername=";
+      uriUpdated += QLatin1String( "|layername=" );
       uriUpdated += layerName;
     }
   }
-  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated ) );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsVectorDataProvider *vectorProvider = dynamic_cast< QgsVectorDataProvider * >( pReg->createProvider( providerKey, uriUpdated, providerOptions ) );
   if ( !vectorProvider || !vectorProvider->isValid() || ( vectorProvider->capabilities() & QgsVectorDataProvider::AddFeatures ) == 0 )
   {
     mError = ErrInvalidLayer;
     mErrorMessage = QObject::tr( "Loading of layer failed" );
 
-    if ( vectorProvider )
-      delete vectorProvider;
-
+    delete vectorProvider;
     return;
   }
 
@@ -334,7 +334,11 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
   // Create our transform
   if ( destCRS.isValid() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     ct = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   // Check for failure
   if ( !ct.isValid() )

@@ -137,6 +137,7 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
 {
   updateLabel();
   connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
   if ( mItem.symbol() )
     mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
@@ -175,6 +176,15 @@ QSize QgsSymbolLegendNode::minimumIconSize( QgsRenderContext *context ) const
                   context ).toImage(),
               minSz,
               true ).size();
+  }
+
+  if ( !mTextOnSymbolLabel.isEmpty() && context )
+  {
+    double w = QgsTextRenderer::textWidth( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel );
+    double h = QgsTextRenderer::textHeight( *context, mTextOnSymbolTextFormat, QStringList() << mTextOnSymbolLabel, QgsTextRenderer::Point );
+    int wInt = ceil( w ), hInt = ceil( h );
+    if ( wInt > minSz.width() ) minSz.setWidth( wInt );
+    if ( hInt > minSz.height() ) minSz.setHeight( hInt );
   }
 
   if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
@@ -270,6 +280,17 @@ QVariant QgsSymbolLegendNode::data( int role ) const
       {
         std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
         pix = QgsSymbolLayerUtils::symbolPreviewPixmap( mItem.symbol(), mIconSize, 0, context.get() );
+
+        if ( !mTextOnSymbolLabel.isEmpty() && context )
+        {
+          QPainter painter( &pix );
+          painter.setRenderHint( QPainter::Antialiasing );
+          context->setPainter( &painter );
+          QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context.get() ) );
+          qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
+          QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+                                     QStringList() << mTextOnSymbolLabel, *context.get(), mTextOnSymbolTextFormat );
+        }
       }
       else
       {
@@ -330,6 +351,7 @@ bool QgsSymbolLegendNode::setData( const QVariant &value, int role )
   vlayer->renderer()->checkLegendSymbolItem( mItem.ruleKey(), value == Qt::Checked );
 
   emit dataChanged();
+  vlayer->emitStyleChanged();
 
   vlayer->triggerRepaint();
 
@@ -417,6 +439,15 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     {
       s->drawPreviewIcon( p, QSize( width * dotsPerMM, height * dotsPerMM ), &context );
     }
+
+    if ( !mTextOnSymbolLabel.isEmpty() )
+    {
+      QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( context ) );
+      qreal yBaselineVCenter = ( height * dotsPerMM + fm.ascent() - fm.descent() ) / 2;
+      QgsTextRenderer::drawText( QPointF( width * dotsPerMM / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
+                                 QStringList() << mTextOnSymbolLabel, context, mTextOnSymbolTextFormat );
+    }
+
     p->restore();
   }
 
@@ -444,6 +475,9 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
+  if ( !mLayerNode )
+    return;
+
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
@@ -665,7 +699,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
   painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
-  //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
+  //painter.drawText(0,2*(margin+fontHeight),tr("retrying in 5 seconds…"));
   painter.end();
 
   return image;
@@ -795,6 +829,6 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
       context.reset( new QgsRenderContext );
       context->setScaleFactor( 96 / 25.4 );
     }
-    mImage = mSettings->collapsedLegendImage( *context.get() );
+    mImage = mSettings->collapsedLegendImage( *context );
   }
 }

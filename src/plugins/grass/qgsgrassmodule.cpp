@@ -88,7 +88,6 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
                                 bool direct, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , QgsGrassModuleBase()
-  , mOptions( 0 )
   , mSuccess( false )
   , mDirect( direct )
 {
@@ -96,6 +95,9 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QgsDebugMsg( "called" );
 
   setupUi( this );
+  connect( mRunButton, &QPushButton::clicked, this, &QgsGrassModule::mRunButton_clicked );
+  connect( mCloseButton, &QPushButton::clicked, this, &QgsGrassModule::mCloseButton_clicked );
+  connect( mViewButton, &QPushButton::clicked, this, &QgsGrassModule::mViewButton_clicked );
   // use fixed width font because module's output may be formatted
   mOutputTextBrowser->setStyleSheet( QStringLiteral( "font-family: Monospace; font-size: 9pt;" ) );
   lblModuleName->setText( tr( "Module: %1" ).arg( moduleName ) );
@@ -238,7 +240,7 @@ QgsGrassModule::Description QgsGrassModule::description( QString path )
     QString errmsg = tr( "Cannot read module file (%1)" ).arg( path )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
-    QMessageBox::warning( 0, tr( "Warning" ), errmsg );
+    QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     qFile.close();
     return Description( tr( "Not available, incorrect description (%1)" ).arg( path ) );
   }
@@ -475,7 +477,7 @@ void QgsGrassModule::run()
       {
         err.append( readyErrors.at( i ) + "<br>" );
       }
-      QMessageBox::warning( 0, tr( "Warning" ), err );
+      QMessageBox::warning( nullptr, tr( "Warning" ), err );
       return;
     }
 
@@ -487,7 +489,7 @@ void QgsGrassModule::run()
     {
       if ( !mOptions->inputRegion( &tempWindow, crs, false ) )
       {
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
+        QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot get input region" ) );
         return;
       }
       resetRegion = true;
@@ -516,7 +518,7 @@ void QgsGrassModule::run()
         {
           if ( !mOptions->inputRegion( &tempWindow, crs, true ) )
           {
-            QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot get input region" ) );
+            QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot get input region" ) );
             return;
           }
         }
@@ -530,7 +532,7 @@ void QgsGrassModule::run()
       QStringList outputExists = mOptions->checkOutput();
       if ( outputExists.size() > 0 )
       {
-        QMessageBox::StandardButton ret = QMessageBox::question( 0, QStringLiteral( "Warning" ),
+        QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
                                           tr( "Output %1 exists! Overwrite?" ).arg( outputExists.join( QStringLiteral( "," ) ) ),
                                           QMessageBox::Ok | QMessageBox::Cancel );
 
@@ -645,7 +647,7 @@ void QgsGrassModule::run()
 
     if ( execArguments.size() == 0 )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot find module %1" ).arg( mXName ) );
+      QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot find module %1" ).arg( mXName ) );
       return;
     }
 
@@ -670,7 +672,7 @@ void QgsGrassModule::run()
         }
         else // option
         {
-          QStringList opt = arg.split( "=" );
+          QStringList opt = arg.split( '=' );
           //env = "GIS_OPT_" + opt.takeFirst().toUpper();
           //env += "=" + opt.join( "=" ); // rejoin rest
           environment.insert( "GIS_OPT_" + opt.takeFirst().toUpper(), opt.join( "=" ) );
@@ -719,7 +721,7 @@ void QgsGrassModule::run()
     mProcess.waitForStarted();
     if ( mProcess.state() != QProcess::Running )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot start module: %1" ).arg( mProcess.errorString() ) );
+      QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot start module: %1" ).arg( mProcess.errorString() ) );
       return;
     }
 
@@ -799,7 +801,7 @@ void QgsGrassModule::readStderr()
 
     QString text, html;
     int percent;
-    QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, percent );
+    QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, percent );
     if ( type == QgsGrass::OutputPercent )
     {
       setProgress( percent );
@@ -955,7 +957,7 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment &environment )
   separator = QStringLiteral( ":" );
 #endif
   QString lp = environment.value( pathVariable );
-  lp =  QgsApplication::pluginPath() + separator + lp;
+  lp = QgsApplication::pluginPath() + separator + lp;
   environment.insert( pathVariable, lp );
   QgsDebugMsg( pathVariable + "=" + lp );
 }

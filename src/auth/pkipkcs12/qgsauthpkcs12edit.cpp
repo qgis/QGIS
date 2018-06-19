@@ -31,13 +31,16 @@
 
 QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mValid( 0 )
 {
   setupUi( this );
-}
-
-QgsAuthPkcs12Edit::~QgsAuthPkcs12Edit()
-{
+  connect( lePkcs12KeyPass, &QLineEdit::textChanged, this, &QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged );
+  connect( chkPkcs12PassShow, &QCheckBox::stateChanged, this, &QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged );
+  connect( btnPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  lblCas->hide();
+  twCas->hide();
+  cbAddCas->hide();
+  cbAddRootCa->hide();
 }
 
 bool QgsAuthPkcs12Edit::validateConfig()
@@ -110,14 +113,24 @@ bool QgsAuthPkcs12Edit::validateConfig()
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
                    ( bundlevalid ? Valid : Invalid ) );
 
+  bool showCas( bundlevalid && populateCas() );
+  lblCas->setVisible( showCas );
+  twCas->setVisible( showCas );
+  cbAddCas->setVisible( showCas );
+  cbAddRootCa->setVisible( showCas );
+
   return validityChange( bundlevalid );
 }
+
+
 
 QgsStringMap QgsAuthPkcs12Edit::configMap() const
 {
   QgsStringMap config;
   config.insert( QStringLiteral( "bundlepath" ), lePkcs12Bundle->text() );
   config.insert( QStringLiteral( "bundlepass" ), lePkcs12KeyPass->text() );
+  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
 
   return config;
 }
@@ -129,6 +142,8 @@ void QgsAuthPkcs12Edit::loadConfig( const QgsStringMap &configmap )
   mConfigMap = configmap;
   lePkcs12Bundle->setText( configmap.value( QStringLiteral( "bundlepath" ) ) );
   lePkcs12KeyPass->setText( configmap.value( QStringLiteral( "bundlepass" ) ) );
+  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
 
   validateConfig();
 }
@@ -168,10 +183,7 @@ void QgsAuthPkcs12Edit::writePkiMessage( QLineEdit *lineedit, const QString &msg
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
-      ss = QLatin1String( "" );
       break;
-    default:
-      ss = QLatin1String( "" );
   }
   lineedit->setStyleSheet( ss );
   lineedit->setText( txt );
@@ -192,18 +204,18 @@ void QgsAuthPkcs12Edit::clearPkcs12BundlePass()
   chkPkcs12PassShow->setChecked( false );
 }
 
-void QgsAuthPkcs12Edit::on_lePkcs12KeyPass_textChanged( const QString &pass )
+void QgsAuthPkcs12Edit::lePkcs12KeyPass_textChanged( const QString &pass )
 {
   Q_UNUSED( pass );
   validateConfig();
 }
 
-void QgsAuthPkcs12Edit::on_chkPkcs12PassShow_stateChanged( int state )
+void QgsAuthPkcs12Edit::chkPkcs12PassShow_stateChanged( int state )
 {
   lePkcs12KeyPass->setEchoMode( ( state > 0 ) ? QLineEdit::Normal : QLineEdit::Password );
 }
 
-void QgsAuthPkcs12Edit::on_btnPkcs12Bundle_clicked()
+void QgsAuthPkcs12Edit::btnPkcs12Bundle_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open PKCS#12 Certificate Bundle" ),
                       tr( "PKCS#12 (*.p12 *.pfx)" ) );
@@ -222,4 +234,39 @@ bool QgsAuthPkcs12Edit::validityChange( bool curvalid )
     emit validityChanged( curvalid );
   }
   return curvalid;
+}
+
+bool QgsAuthPkcs12Edit::populateCas()
+{
+  twCas->clear();
+  const QList<QSslCertificate> cas( QgsAuthCertUtils::pkcs12BundleCas( lePkcs12Bundle->text(), lePkcs12KeyPass->text() ) );
+  if ( cas.isEmpty() )
+  {
+    return false;
+  }
+
+  QTreeWidgetItem *prevItem( nullptr );
+  QList<QSslCertificate>::const_iterator it( cas.constEnd() );
+  while ( it != cas.constBegin() )
+  {
+    --it;
+    const QSslCertificate cert = static_cast<QSslCertificate>( *it );
+    QTreeWidgetItem *item;
+
+    if ( prevItem && cert.issuerInfo( QSslCertificate::SubjectInfo::CommonName ).contains( prevItem->text( 0 ) ) )
+    {
+      item = new QTreeWidgetItem( QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+      prevItem->addChild( item );
+    }
+    else
+    {
+      item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+    }
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber( ), cert.expiryDate().toString( Qt::TextDate ) ) );
+    prevItem = item;
+  }
+  twCas->expandAll();
+
+  return true;
 }

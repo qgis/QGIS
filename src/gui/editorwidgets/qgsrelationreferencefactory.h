@@ -25,7 +25,8 @@ SIP_NO_FILE
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceFactory
  * \note not available in Python bindings
  */
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * \returns         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
 
     QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
@@ -61,11 +62,11 @@ class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
      *
      * \returns         A configuration widget
      */
-    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
 
-    virtual QHash<const char *, int> supportedWidgetTypes() override;
+    QHash<const char *, int> supportedWidgetTypes() override;
 
-    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
   private:
     QgsAttributeEditorContext mEditorContext;

@@ -31,7 +31,7 @@
 #include <QFileDialog>
 #include <QImageWriter>
 
-QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, QSet<QString> actionScopes, QgsVectorLayer *layer, QWidget *parent )
+QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsAction::ActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
   , mLayer( layer )
 {
@@ -44,6 +44,8 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsActio
   mIconPreview->setPixmap( QPixmap( iconPath ) );
   mActionText->setText( actionText );
   mCaptureOutput->setChecked( capture );
+  mNotificationMessage->setText( notificationMessage );
+  mIsEnabledOnlyWhenEditable->setChecked( isEnabledOnlyWhenEditable );
 
   init( actionScopes );
 }
@@ -57,7 +59,7 @@ QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( QgsVecto
   QSet<QString> defaultActionScopes;
   defaultActionScopes << QStringLiteral( "Canvas" )
                       << QStringLiteral( "FieldSpecific" )
-                      << QStringLiteral( "AttributeTableRow" )
+                      << QStringLiteral( "Feature" )
                       << QStringLiteral( "FeatureForm" );
 
   init( defaultActionScopes );
@@ -101,6 +103,16 @@ QSet<QString> QgsAttributeActionPropertiesDialog::actionScopes() const
   return actionScopes;
 }
 
+QString QgsAttributeActionPropertiesDialog::notificationMessage() const
+{
+  return mNotificationMessage->text();
+}
+
+bool QgsAttributeActionPropertiesDialog::isEnabledOnlyWhenEditable() const
+{
+  return mIsEnabledOnlyWhenEditable->isChecked();
+}
+
 bool QgsAttributeActionPropertiesDialog::capture() const
 {
   return mCaptureOutput->isChecked();
@@ -118,6 +130,8 @@ QgsExpressionContext QgsAttributeActionPropertiesDialog::createExpressionContext
       context.appendScope( new QgsExpressionContextScope( actionScope.expressionContextScope() ) );
     }
   }
+
+  context << QgsExpressionContextUtils::notificationScope();
 
   return context;
 }
@@ -151,7 +165,7 @@ void QgsAttributeActionPropertiesDialog::chooseIcon()
     formatList << QStringLiteral( "*.%1" ).arg( QString( format ) );
 
   QString filter = tr( "Images( %1 ); All( *.* )" ).arg( formatList.join( QStringLiteral( " " ) ) );
-  QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon..." ), mActionIcon->text(), filter );
+  QString icon = QFileDialog::getOpenFileName( this, tr( "Choose Icon…" ), mActionIcon->text(), filter );
 
   if ( !icon.isNull() )
   {
@@ -186,11 +200,11 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
     QString tooltip = scope.description();
     if ( !variables.empty() )
     {
-      tooltip += "<br><br>";
+      tooltip += QLatin1String( "<br><br>" );
       tooltip += tr( "Additional variables" );
-      tooltip += "<ul><li>";
-      tooltip += variables.join( "</li><li>" );
-      tooltip += "</ul></li>";
+      tooltip += QLatin1String( "<ul><li>" );
+      tooltip += variables.join( QStringLiteral( "</li><li>" ) );
+      tooltip += QLatin1String( "</ul></li>" );
     }
     actionScopeCheckBox->setToolTip( tooltip );
     actionScopeCheckBox->setProperty( "ActionScopeName", scope.id() );
@@ -199,7 +213,7 @@ void QgsAttributeActionPropertiesDialog::init( const QSet<QString> &actionScopes
   }
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( mLayer->crs() );
+  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mFieldExpression->setLayer( mLayer );

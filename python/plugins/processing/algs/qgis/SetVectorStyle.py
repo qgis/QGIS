@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    SelectByLocation.py
+    SetVectorStyle.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -25,7 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterFile,
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingParameterFile,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingOutputVectorLayer)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
@@ -40,8 +41,14 @@ class SetVectorStyle(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general')
 
+    def groupId(self):
+        return 'vectorgeneral'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,

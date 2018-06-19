@@ -17,9 +17,12 @@
 #define QGSAFSSHAREDDATA_H
 
 #include <QObject>
+#include <QMutex>
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
+
+class QgsFeedback;
 
 /**
  * \brief This class holds data, shared between QgsAfsProvider and QgsAfsFeatureIterator
@@ -28,20 +31,26 @@ class QgsAfsSharedData : public QObject
 {
     Q_OBJECT
   public:
-    QgsAfsSharedData();
+    QgsAfsSharedData() = default;
     long featureCount() const { return mObjectIds.size(); }
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const { return mExtent; }
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+    void clearCache();
 
-    bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
+    bool getFeature( QgsFeatureId id, QgsFeature &f, const QgsRectangle &filterRect = QgsRectangle(), QgsFeedback *feedback = nullptr );
+    QgsFeatureIds getFeatureIdsInExtent( const QgsRectangle &extent, QgsFeedback *feedback );
+
+    bool hasCachedAllFeatures() const;
 
   private:
     friend class QgsAfsProvider;
+    QMutex mMutex;
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
     QgsFields mFields;
+    QString mObjectIdFieldName;
     QList<quint32> mObjectIds;
     QMap<QgsFeatureId, QgsFeature> mCache;
     QgsCoordinateReferenceSystem mSourceCRS;

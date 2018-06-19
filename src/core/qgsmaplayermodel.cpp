@@ -24,10 +24,6 @@
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
@@ -35,10 +31,6 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -52,9 +44,10 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  Q_FOREACH ( const QString &key, mLayersChecked.keys() )
+  QMap<QString, Qt::CheckState>::iterator i = mLayersChecked.begin();
+  for ( ; i != mLayersChecked.end(); ++i )
   {
-    mLayersChecked[key] = checkState;
+    *i = checkState;
   }
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
@@ -108,6 +101,11 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
+{
+  return static_cast<QgsMapLayer *>( index.internalPointer() );
+}
+
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
   if ( items == mAdditionalItems )
@@ -156,17 +154,20 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
-  int offset = 0;
-  if ( mAllowEmpty )
-    offset++;
-
-  beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  if ( !layers.empty( ) )
   {
-    mLayers.append( layer );
-    mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    int offset = 0;
+    if ( mAllowEmpty )
+      offset++;
+
+    beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
+    Q_FOREACH ( QgsMapLayer *layer, layers )
+    {
+      mLayers.append( layer );
+      mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    }
+    endInsertRows();
   }
-  endInsertRows();
 }
 
 QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &parent ) const
@@ -290,14 +291,18 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           title = layer->name();
         title = "<b>" + title + "</b>";
         if ( layer->crs().isValid() )
-          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
-
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+          else
+            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+        }
         parts << title;
 
         if ( !layer->abstract().isEmpty() )
           parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( "<br/>" );
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
       return QVariant();
     }
@@ -331,7 +336,7 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   bool isEmpty = index.row() == 0 && mAllowEmpty;
@@ -352,6 +357,11 @@ QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
     case QgsMapLayer::RasterLayer:
     {
       return QgsLayerItem::iconRaster();
+    }
+
+    case QgsMapLayer::MeshLayer:
+    {
+      return QgsLayerItem::iconMesh();
     }
 
     case QgsMapLayer::VectorLayer:

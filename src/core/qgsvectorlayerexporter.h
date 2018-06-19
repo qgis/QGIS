@@ -83,7 +83,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                                     const QString &providerKey,
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage SIP_OUT = 0,
+                                    QString *errorMessage SIP_OUT = nullptr,
                                     const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                     QgsFeedback *feedback = nullptr
                                   );
@@ -133,13 +133,13 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Finalizes the export and closes the new created layer.
      */
-    ~QgsVectorLayerExporter();
+    ~QgsVectorLayerExporter() override;
 
     bool flushBuffer() override;
 
@@ -175,9 +175,9 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
  * QgsTask task which performs a QgsVectorLayerExporter layer export operation as a background
  * task. This can be used to export a vector layer out to a provider without blocking the
  * QGIS interface.
- * \since QGIS 3.0
  * \see QgsVectorFileWriterTask
  * \see QgsRasterFileWriterTask
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
 {
@@ -210,7 +210,7 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
         const QgsCoordinateReferenceSystem &destinationCrs,
         const QMap<QString, QVariant> &options = QMap<QString, QVariant>() ) SIP_FACTORY;
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -227,8 +227,8 @@ class CORE_EXPORT QgsVectorLayerExporterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

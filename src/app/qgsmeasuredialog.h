@@ -26,6 +26,7 @@
 
 class QCloseEvent;
 class QgsMeasureTool;
+class QgsMapCanvas;
 
 class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 {
@@ -34,7 +35,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = nullptr );
 
     //! Save position
     void saveWindowLocation();
@@ -52,7 +53,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void removeLastPoint();
 
   public slots:
-    virtual void reject() override;
+    void reject() override;
 
     //! Reset and start new
     void restart();
@@ -82,7 +83,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! shows/hides table, shows correct units
     void updateUi();
 
-    /** Resets the units combo box to display either distance or area units
+    /**
+     * Resets the units combo box to display either distance or area units
      * \param isArea set to true to populate with areal units, or false to show distance units
      */
     void repopulateComboBoxUnits( bool isArea );
@@ -91,28 +93,30 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
 
     double convertArea( double area, QgsUnitTypes::AreaUnit toUnit ) const;
 
-    double mTotal;
+    double mTotal = 0.0;
 
     //! indicates whether we're measuring distances or areas
-    bool mMeasureArea;
+    bool mMeasureArea = false;
 
     //! Number of decimal places we want.
-    int mDecimalPlaces;
+    int mDecimalPlaces = 3;
 
     //! Current unit for input values
-    QgsUnitTypes::DistanceUnit mCanvasUnits;
+    QgsUnitTypes::DistanceUnit mCanvasUnits = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current unit for distance values
-    QgsUnitTypes::DistanceUnit mDistanceUnits;
+    QgsUnitTypes::DistanceUnit mDistanceUnits  = QgsUnitTypes::DistanceUnknownUnit;
 
     //! Current unit for area values
-    QgsUnitTypes::AreaUnit mAreaUnits;
+    QgsUnitTypes::AreaUnit mAreaUnits  = QgsUnitTypes::AreaUnknownUnit;
 
     //! Our measurement object
     QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
     QgsMeasureTool *mTool = nullptr;
+
+    QgsMapCanvas *mCanvas = nullptr;
 
     QgsPointXY mLastMousePoint;
 

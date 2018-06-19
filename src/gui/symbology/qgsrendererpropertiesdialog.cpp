@@ -86,9 +86,7 @@ QgsRendererPropertiesDialog::QgsRendererPropertiesDialog( QgsVectorLayer *layer,
   : QDialog( parent )
   , mLayer( layer )
   , mStyle( style )
-  , mActiveWidget( nullptr )
-  , mPaintEffect( nullptr )
-  , mMapCanvas( nullptr )
+
 {
   setupUi( this );
   mLayerRenderingGroupBox->setSettingGroup( QStringLiteral( "layerRenderingGroupBox" ) );
@@ -150,27 +148,27 @@ void QgsRendererPropertiesDialog::connectValueChanged( const QList<QWidget *> &w
     {
       connect( w, SIGNAL( opacityChanged( double ) ), this,  slot );
     }
-    else if ( QComboBox *w =  qobject_cast<QComboBox *>( widget ) )
+    else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
       connect( w, SIGNAL( currentIndexChanged( int ) ), this, slot );
     }
-    else if ( QSpinBox *w =  qobject_cast<QSpinBox *>( widget ) )
+    else if ( QSpinBox *w = qobject_cast<QSpinBox *>( widget ) )
     {
       connect( w, SIGNAL( valueChanged( int ) ), this, slot );
     }
-    else if ( QDoubleSpinBox *w =  qobject_cast<QDoubleSpinBox *>( widget ) )
+    else if ( QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( widget ) )
     {
       connect( w, SIGNAL( valueChanged( double ) ), this, slot );
     }
-    else if ( QgsColorButton *w =  qobject_cast<QgsColorButton *>( widget ) )
+    else if ( QgsColorButton *w = qobject_cast<QgsColorButton *>( widget ) )
     {
       connect( w, SIGNAL( colorChanged( QColor ) ), this, slot );
     }
-    else if ( QCheckBox *w =  qobject_cast<QCheckBox *>( widget ) )
+    else if ( QCheckBox *w = qobject_cast<QCheckBox *>( widget ) )
     {
       connect( w, SIGNAL( toggled( bool ) ), this, slot );
     }
-    else if ( QLineEdit *w =  qobject_cast<QLineEdit *>( widget ) )
+    else if ( QLineEdit *w = qobject_cast<QLineEdit *>( widget ) )
     {
       connect( w, SIGNAL( textEdited( QString ) ), this, slot );
       connect( w, SIGNAL( textChanged( QString ) ), this, slot );
@@ -318,7 +316,7 @@ void QgsRendererPropertiesDialog::openPanel( QgsPanelWidget *panel )
     QgsDebugMsg( "DIALOG MODE" );
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

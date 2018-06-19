@@ -39,7 +39,8 @@ class QgsFeatureFilterProvider;
 #ifndef SIP_RUN
 /// @cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Structure keeping low-level rendering job information.
  */
 struct LayerRenderJob
@@ -58,7 +59,8 @@ struct LayerRenderJob
 
 typedef QList<LayerRenderJob> LayerRenderJobs;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Structure keeping low-level label rendering job information.
  */
 struct LabelRenderJob
@@ -85,7 +87,8 @@ struct LabelRenderJob
 ///@endcond PRIVATE
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Abstract base class for map rendering implementations.
  *
  * The API is designed in a way that rendering is done asynchronously, therefore
@@ -116,12 +119,16 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     QgsMapRendererJob( const QgsMapSettings &settings );
 
-    //! Start the rendering job and immediately return.
-    //! Does nothing if the rendering is already in progress.
+    /**
+     * Start the rendering job and immediately return.
+     * Does nothing if the rendering is already in progress.
+     */
     virtual void start() = 0;
 
-    //! Stop the rendering job - does not return until the job has terminated.
-    //! Does nothing if the rendering is not active.
+    /**
+     * Stop the rendering job - does not return until the job has terminated.
+     * Does nothing if the rendering is not active.
+     */
     virtual void cancel() = 0;
 
     /**
@@ -147,22 +154,26 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     virtual bool usedCachedLabels() const = 0;
 
     /**
-     * Get pointer to internal labeling engine (in order to get access to the results).
+     * Gets pointer to internal labeling engine (in order to get access to the results).
      * This should not be used if cached labeling was redrawn - see usedCachedLabels().
      * \see usedCachedLabels()
      */
     virtual QgsLabelingResults *takeLabelingResults() = 0 SIP_TRANSFER;
 
-    //! \since QGIS 3.0
-    //! Set the feature filter provider used by the QgsRenderContext of
-    //! each LayerRenderJob.
-    //! Ownership is not transferred and the provider must not be deleted
-    //! before the render job.
+    /**
+     * Set the feature filter provider used by the QgsRenderContext of
+     * each LayerRenderJob.
+     * Ownership is not transferred and the provider must not be deleted
+     * before the render job.
+     * \since QGIS 3.0
+     */
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f ) { mFeatureFilterProvider = f; }
 
-    //! \since QGIS 3.0
-    //! Returns the feature filter provider used by the QgsRenderContext of
-    //! each LayerRenderJob.
+    /**
+     * Returns the feature filter provider used by the QgsRenderContext of
+     * each LayerRenderJob.
+     * \since QGIS 3.0
+     */
     const QgsFeatureFilterProvider *featureFilterProvider() const { return mFeatureFilterProvider; }
 
     struct Error
@@ -182,15 +193,27 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     Errors errors() const;
 
 
-    //! Assign a cache to be used for reading and storing rendered images of individual layers.
-    //! Does not take ownership of the object.
+    /**
+     * Assign a cache to be used for reading and storing rendered images of individual layers.
+     * Does not take ownership of the object.
+     */
     void setCache( QgsMapRendererCache *cache );
 
-    //! Find out how long it took to finish the job (in milliseconds)
+    /**
+     * Returns the total time it took to finish the job (in milliseconds).
+     * \see perLayerRenderingTime()
+     */
     int renderingTime() const { return mRenderingTime; }
 
     /**
-     * Return map settings with which this job was started.
+     * Returns the render time (in ms) per layer.
+     * \note Not available in Python bindings.
+     * \since QGIS 3.0
+     */
+    QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
+
+    /**
+     * Returns map settings with which this job was started.
      * \returns A QgsMapSettings instance with render settings
      * \since QGIS 2.8
      */
@@ -226,6 +249,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     int mRenderingTime = 0;
 
+    //! Render time (in ms) per layer, by layer ID
+    QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
+
     /**
      * Prepares the cache for storing the result of labeling. Returns false if
      * the render cannot use cached labels and should not cache the result.
@@ -255,8 +281,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     /**
      * Handles clean up tasks for a label job, including deletion of images and storing cached
      * label results.
-     * \since QGIS 3.0
      * \note not available in Python bindings
+     * \since QGIS 3.0
      */
     void cleanupLabelJob( LabelRenderJob &job ) SIP_SKIP;
 
@@ -265,7 +291,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
   private:
 
-    /** Convenience function to project an extent into the layer source
+    /**
+     * Convenience function to project an extent into the layer source
      * CRS, but also split it into two extents if it crosses
      * the +/- 180 degree line. Modifies the given extent to be in the
      * source CRS coordinates, and if it was split, returns true, and
@@ -279,7 +306,8 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Intermediate base class adding functionality that allows client to query the rendered image.
  *  The image can be queried even while the rendering is still in progress to get intermediate result
  *
@@ -292,7 +320,7 @@ class CORE_EXPORT QgsMapRendererQImageJob : public QgsMapRendererJob
   public:
     QgsMapRendererQImageJob( const QgsMapSettings &settings );
 
-    //! Get a preview/resulting image
+    //! Gets a preview/resulting image
     virtual QImage renderedImage() = 0;
 
 };

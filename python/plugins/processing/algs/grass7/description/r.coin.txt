@@ -1,8 +1,8 @@
 r.coin
 Tabulates the mutual occurrence (coincidence) of categories for two raster map layers.
 Raster (r.*)
-ParameterRaster|first|Name of first raster map|False
-ParameterRaster|second|Name of second raster map|False
-ParameterSelection|units|Unit of measure|c;p;x;y;a;h;k;m
-ParameterBoolean|-w|Wide report, 132 columns (default: 80)|False
-OutputHTML|html|Coincidence report
+QgsProcessingParameterRasterLayer|first|Name of first raster map|None|False
+QgsProcessingParameterRasterLayer|second|Name of second raster map|None|False
+QgsProcessingParameterEnum|units|Unit of measure|c;p;x;y;a;h;k;m
+QgsProcessingParameterBoolean|-w|Wide report, 132 columns (default: 80)|False
+QgsProcessingParameterFileDestination|html|Coincidence report|Html files (*.html)|report.html|False

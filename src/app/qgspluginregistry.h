@@ -43,7 +43,7 @@ class APP_EXPORT QgsPluginRegistry
     //! Returns the instance pointer, creating the object on the first call
     static QgsPluginRegistry *instance();
 
-    //! set pointer to qgis interface passed to plugins (used by QgisApp)
+    //! Sets pointer to qgis interface passed to plugins (used by QgisApp)
     void setQgisInterface( QgisInterface *iface );
 
     //! Check whether this module is loaded
@@ -55,7 +55,7 @@ class APP_EXPORT QgsPluginRegistry
     //! Retrieve a pointer to a loaded plugin
     QgisPlugin *plugin( const QString &key );
 
-    //! Return whether the plugin is pythonic
+    //! Returns whether the plugin is pythonic
     bool isPythonPlugin( const QString &key ) const;
 
     //! Add a plugin to the map of loaded plugins
@@ -96,16 +96,18 @@ class APP_EXPORT QgsPluginRegistry
 
   protected:
     //! protected constructor
-    QgsPluginRegistry();
+    QgsPluginRegistry() = default;
 
     //! Try to load and get metadata from c++ plugin, return true on success
     bool checkCppPlugin( const QString &pluginFullPath );
     //! Try to load and get metadata from Python plugin, return true on success
     bool checkPythonPlugin( const QString &packageName );
 
-    //! Check current QGIS version against requested minimal and optionally maximal QGIS version
-    //! if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
-    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = "" ) const;
+    /**
+     * Check current QGIS version against requested minimal and optionally maximal QGIS version
+     * if maxVersion not specified, the default value is assumed: std::floor(minVersion) + 0.99.99
+     */
+    bool checkQgisVersion( const QString &minVersion, const QString &maxVersion = QString() ) const;
 
   private:
     static QgsPluginRegistry *sInstance;
@@ -113,4 +115,7 @@ class APP_EXPORT QgsPluginRegistry
     QgsPythonUtils *mPythonUtils = nullptr;
     QgisInterface *mQgisInterface = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
+
 #endif //QgsPluginRegistry_H

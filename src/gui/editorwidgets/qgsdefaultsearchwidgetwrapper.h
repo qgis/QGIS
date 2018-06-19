@@ -23,7 +23,8 @@
 #include <QCheckBox>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a search widget. Default form is just a QgsLineFilterEdit
  */
 
@@ -31,24 +32,26 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDefaultSearchWidgetWrapper
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     // QgsSearchWidgetWrapper interface
   public:
-    QString expression() override;
+    QString expression() const override;
     bool applyDirectly() override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
-    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
-    virtual void clearWidget() override;
+    void clearWidget() override;
 
-    virtual void setEnabled( bool enabled ) override;
+    void setEnabled( bool enabled ) override;
 
   protected slots:
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &exp ) override;
 
   private slots:
     void setCaseString( int caseSensitiveCheckState );
@@ -60,13 +63,15 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
-    /** Returns a pointer to the line edit part of the widget.
+    /**
+     * Returns a pointer to the line edit part of the widget.
      * \note this method is in place for unit testing only, and is not considered
      * stable API
      */
     QgsFilterLineEdit *lineEdit();
 
-    /** Returns a pointer to the case sensitivity checkbox in the widget.
+    /**
+     * Returns a pointer to the case sensitivity checkbox in the widget.
      * \note this method is in place for unit testing only, and is not considered
      * stable API
      */

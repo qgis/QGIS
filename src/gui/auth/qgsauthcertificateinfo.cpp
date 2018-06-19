@@ -59,27 +59,19 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
   , mTrustCacheRebuilt( false )
   , mDefaultTrustPolicy( QgsAuthCertUtils::DefaultTrust )
   , mCurrentTrustPolicy( QgsAuthCertUtils::DefaultTrust )
-  , mSecGeneral( nullptr )
-  , mSecDetails( nullptr )
-  , mSecPemText( nullptr )
-  , mGrpSubj( nullptr )
-  , mGrpIssu( nullptr )
-  , mGrpCert( nullptr )
-  , mGrpPkey( nullptr )
-  , mGrpExts( nullptr )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
+
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnSaveTrust, &QToolButton::clicked, this, &QgsAuthCertInfo::btnSaveTrust_clicked );
 
     lblError->setHidden( true );
 
@@ -88,14 +80,14 @@ QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert,
     connect( treeHierarchy, &QTreeWidget::currentItemChanged,
              this, &QgsAuthCertInfo::currentCertItemChanged );
 
-    mCaCertsCache = QgsAuthManager::instance()->getCaCertsCache();
+    mCaCertsCache = QgsApplication::authManager()->caCertsCache();
 
     setUpCertDetailsTree();
 
     grpbxTrust->setVisible( mManageTrust );
 
     // trust policy is still queried, even if not managing the policy, so public getter will work
-    mDefaultTrustPolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+    mDefaultTrustPolicy = QgsApplication::authManager()->defaultCertTrustPolicy();
     mCurrentTrustPolicy = QgsAuthCertUtils::DefaultTrust;
 
     bool res;
@@ -163,7 +155,7 @@ bool QgsAuthCertInfo::populateQcaCertCollection()
     }
   }
 
-  if ( mCaCerts.certificates().size() < 1 )
+  if ( mCaCerts.certificates().empty() )
   {
     setupError( tr( "Could not populate QCA certificate collection" ) );
     return false;
@@ -274,7 +266,7 @@ void QgsAuthCertInfo::setCertHierarchy()
       mDefaultItemForeground = item->foreground( 0 );
     }
 
-    decorateCertTreeItem( cert, QgsAuthManager::instance()->getCertificateTrustPolicy( cert ), item );
+    decorateCertTreeItem( cert, QgsApplication::authManager()->certificateTrustPolicy( cert ), item );
 
     item->setFirstColumnSpanned( true );
     if ( !previtem )
@@ -299,11 +291,11 @@ void QgsAuthCertInfo::updateCurrentCertInfo( int chainindx )
 
   if ( !mCurrentQCert.isNull() )
   {
-    QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsAuthManager::instance()->getCertificateTrustPolicy( mCurrentQCert ) );
+    QgsAuthCertUtils::CertTrustPolicy trustpolicy( QgsApplication::authManager()->certificateTrustPolicy( mCurrentQCert ) );
     mCurrentTrustPolicy = trustpolicy;
 
     cmbbxTrust->setTrustPolicy( trustpolicy );
-    if ( !mCurrentQCert.isValid() )
+    if ( !QgsAuthCertUtils::certIsViable( mCurrentQCert ) )
     {
       cmbbxTrust->setDefaultTrustPolicy( QgsAuthCertUtils::Untrusted );
     }
@@ -348,7 +340,7 @@ void QgsAuthCertInfo::setUpCertDetailsTree()
 
   // add details groups
   mGrpSubj = addGroupItem( mSecDetails, tr( "Subject Info" ) );
-  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) ) ;
+  mGrpIssu = addGroupItem( mSecDetails, tr( "Issuer Info" ) );
   mGrpCert = addGroupItem( mSecDetails, tr( "Certificate Info" ) );
   mGrpPkey = addGroupItem( mSecDetails, tr( "Public Key Info" ) );
   mGrpExts = addGroupItem( mSecDetails, tr( "Extensions" ) );
@@ -839,10 +831,10 @@ void QgsAuthCertInfo::populateInfoPemTextSection()
   item->treeWidget()->setItemWidget( item, 0, pte );
 }
 
-void QgsAuthCertInfo::on_btnSaveTrust_clicked()
+void QgsAuthCertInfo::btnSaveTrust_clicked()
 {
   QgsAuthCertUtils::CertTrustPolicy newpolicy( cmbbxTrust->trustPolicy() );
-  if ( !QgsAuthManager::instance()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
+  if ( !QgsApplication::authManager()->storeCertTrustPolicy( mCurrentQCert, newpolicy ) )
   {
     QgsDebugMsg( "Could not set trust policy for certificate" );
   }
@@ -851,9 +843,9 @@ void QgsAuthCertInfo::on_btnSaveTrust_clicked()
   btnSaveTrust->setEnabled( false );
 
   // rebuild trust cache
-  QgsAuthManager::instance()->rebuildCertTrustCache();
+  QgsApplication::authManager()->rebuildCertTrustCache();
   mTrustCacheRebuilt = true;
-  QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+  QgsApplication::authManager()->rebuildTrustedCaCertsCache();
 }
 
 void QgsAuthCertInfo::currentPolicyIndexChanged( int indx )
@@ -888,7 +880,7 @@ void QgsAuthCertInfo::decorateCertTreeItem( const QSslCertificate &cert,
     return;
   }
 
-  if ( !cert.isValid() )
+  if ( !QgsAuthCertUtils::certIsViable( cert ) )
   {
     item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
     return;
@@ -917,7 +909,7 @@ QgsAuthCertInfoDialog::QgsAuthCertInfoDialog( const QSslCertificate &cert,
     QWidget *parent,
     const QList<QSslCertificate> &connectionCAs )
   : QDialog( parent )
-  , mCertInfoWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Certificate Information" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );

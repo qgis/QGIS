@@ -1,9 +1,0 @@
-v.in.ascii
-v.in.ascii.standard - Creates a vector map from an ASCII vector file. 
-Vector (v.*)
-ParameterFile|input|ASCII file to be imported|False|False
-Hardcoded|format=standard
-ParameterString|separator|Field separator|pipe|False|True
-*ParameterBoolean|-z|Create 3D vector map|False
-*ParameterBoolean|-n|Do not expect a header when reading in standard format|False
-OutputVector|output|ASCII Vector

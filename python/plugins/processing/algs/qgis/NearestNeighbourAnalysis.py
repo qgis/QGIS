@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,13 +31,14 @@ import codecs
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsDistanceArea,
                        QgsProject,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsSpatialIndex)
 
@@ -59,10 +58,16 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
     Z_SCORE = 'Z_SCORE'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'neighbour.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmNearestNeighbour.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmNearestNeighbour.svg")
 
     def group(self):
         return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
@@ -72,7 +77,6 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Nearest neighbour')))
 
         self.addOutput(QgsProcessingOutputNumber(self.OBSERVED_MD,
                                                  self.tr('Observed mean distance')))
@@ -92,12 +96,15 @@ class NearestNeighbourAnalysis(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         output_file = self.parameterAsFileOutput(parameters, self.OUTPUT_HTML_FILE, context)
 
         spatialIndex = QgsSpatialIndex(source, feedback)
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(source.sourceCrs())
+        distance.setSourceCrs(source.sourceCrs(), context.transformContext())
         distance.setEllipsoid(context.project().ellipsoid())
 
         sumDist = 0.00

@@ -41,7 +41,7 @@ template <TYPE>
   if ((l = PyList_New(sipCpp->size())) == NULL)
     return NULL;
 
-  const sipMappedType *qvector_qgspoint = sipFindMappedType("QVector<QgsPointXY>");
+  const sipMappedType *qvector_type = sipFindMappedType("QVector<TYPE>");
 
   // Set the list elements.
   for (int i = 0; i < sipCpp->size(); ++i)
@@ -49,7 +49,7 @@ template <TYPE>
     QVector<TYPE> *t = new QVector<TYPE>(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qvector_qgspoint, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qvector_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -62,7 +62,7 @@ template <TYPE>
 %End
 
 %ConvertToTypeCode
-  const sipMappedType *qvector_qgspoint = sipFindMappedType("QVector<QgsPointXY>");
+  const sipMappedType *qvector_type = sipFindMappedType("QVector<TYPE>");
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -71,7 +71,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, SIP_NOT_NONE))
+      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -84,16 +84,16 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<TYPE> *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<TYPE> *t = reinterpret_cast< QVector<TYPE> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseMappedType(t, qvector_qgspoint, state);
+      sipReleaseMappedType(t, qvector_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseMappedType(t, qvector_qgspoint, state);
+    sipReleaseMappedType(t, qvector_type, state);
   }
 
   *sipCppPtr = ql;
@@ -118,7 +118,7 @@ template <TYPE>
   if ((l = PyList_New(sipCpp->size())) == NULL)
     return NULL;
 
-  const sipMappedType *qvector_qgspoint = sipFindMappedType("QVector<QVector<QgsPointXY> >");
+  const sipMappedType *qvector_type = sipFindMappedType("QVector<QVector<TYPE> >");
 
   // Set the list elements.
   for (int i = 0; i < sipCpp->size(); ++i)
@@ -126,7 +126,7 @@ template <TYPE>
     QVector<QVector<TYPE> > *t = new QVector<QVector<TYPE> >(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qvector_qgspoint, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qvector_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -139,7 +139,7 @@ template <TYPE>
 
 %ConvertToTypeCode
 
-  const sipMappedType *qvector_qgspoint = sipFindMappedType("QVector<QVector<QgsPointXY> >");
+  const sipMappedType *qvector_type = sipFindMappedType("QVector<QVector<TYPE> >");
 
   // Check the type if that is all that is required.
   if (sipIsErr == NULL)
@@ -148,7 +148,7 @@ template <TYPE>
       return 0;
 
     for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, SIP_NOT_NONE))
+      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, SIP_NOT_NONE))
         return 0;
 
     return 1;
@@ -161,16 +161,16 @@ template <TYPE>
   {
     int state;
     //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QVector<QVector<TYPE> > *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_qgspoint, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+    QVector<QVector<TYPE> > *t = reinterpret_cast< QVector< QVector<TYPE> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qvector_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
 
     if (*sipIsErr)
     {
-      sipReleaseMappedType(t, qvector_qgspoint, state);
+      sipReleaseMappedType(t, qvector_type, state);
       delete ql;
       return 0;
     }
     ql->append(*t);
-    sipReleaseMappedType(t, qvector_qgspoint, state);
+    sipReleaseMappedType(t, qvector_type, state);
   }
 
   *sipCppPtr = ql;
@@ -202,7 +202,7 @@ template <TYPE>
     QList<TYPE> *t = new QList<TYPE>(sipCpp->at(i));
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromMappedType(t, qlist_type, sipTransferObj)) == NULL)
+    if ((tobj = sipConvertFromNewType(t, qlist_type, NULL)) == NULL)
     {
       Py_DECREF(l);
       delete t;
@@ -251,141 +251,6 @@ template <TYPE>
 
   *sipCppPtr = ql;
   return sipGetState(sipTransferObj);
-%End
-};
-
-
-%MappedType QList< QList<QgsPoint> >
-{
-%TypeHeaderCode
-#include <QList>
-#include "qgspoint.h"
-%End
-
-%ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
-
-  if ((l = PyList_New(sipCpp->size())) == NULL)
-    return NULL;
-
-  const sipMappedType *qlist_type = sipFindMappedType("QList<QgsPoint>");
-
-  // Set the list elements.
-  for (int i = 0; i < sipCpp->size(); ++i)
-  {
-    QList<QgsPoint> *t = new QList<QgsPoint>(sipCpp->at(i));
-    PyObject *tobj;
-
-    if ((tobj = sipConvertFromMappedType(t, qlist_type, sipTransferObj)) == NULL)
-    {
-      Py_DECREF(l);
-      delete t;
-      return NULL;
-    }
-    PyList_SET_ITEM(l, i, tobj);
-  }
-
-  return l;
-%End
-
-%ConvertToTypeCode
-  const sipMappedType *qlist_type = sipFindMappedType("QList<QgsPoint>");
-
-  // Check the type if that is all that is required.
-  if (sipIsErr == NULL)
-  {
-    if (!PyList_Check(sipPy))
-      return 0;
-
-    for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-      if (!sipCanConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, SIP_NOT_NONE))
-        return 0;
-
-    return 1;
-  }
-
-
-  QList< QList<QgsPoint> > *ql = new QList< QList<QgsPoint> >;
-
-  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-  {
-    int state;
-    //TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(PyList_GET_ITEM(sipPy, i), sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-    QList<QgsPoint> *t = reinterpret_cast< QList<QgsPoint> * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-
-    if (*sipIsErr)
-    {
-      sipReleaseMappedType(t, qlist_type, state);
-      delete ql;
-      return 0;
-    }
-    ql->append(*t);
-    sipReleaseMappedType(t, qlist_type, state);
-  }
-
-  *sipCppPtr = ql;
-  return sipGetState(sipTransferObj);
-%End
-};
-
-%MappedType QList< QList< QList<QgsPoint> > >
-{
-%TypeHeaderCode
-#include <QList>
-#include "qgspoint.h"
-%End
-
-%ConvertFromTypeCode
-   PyObject *l;
-   if ((l = PyList_New(sipCpp->size())) == NULL)
-   {
-      return NULL;
-   }
-   const sipMappedType *qlist_type = sipFindMappedType("QList<QList<QgsPoint> >");
-   if(!qlist_type )
-   {
-       Py_DECREF(l); return NULL;
-   }
-
-   for (int i = 0; i < sipCpp->size(); ++i)
-   {
-      QList< QList<QgsPoint> > *t = new QList<QList<QgsPoint> >(sipCpp->at(i));
-      PyObject *tobj;
-      if ((tobj = sipConvertFromMappedType(t, qlist_type, sipTransferObj)) == NULL)
-      {
-        Py_DECREF(l);
-        delete t;
-        return NULL;
-      }
-      PyList_SET_ITEM(l, i, tobj);
-   }
-   return l;
-%End
-%ConvertToTypeCode
-    const sipMappedType *qlist_type = sipFindMappedType("QList<QList<QgsPoint> >");
-   if (sipIsErr == NULL)
-   {
-        return 0;
-   }
-   QList< QList< QList<QgsPoint> > > *ql = new QList< QList< QList<QgsPoint> > >();
-   for( int i = 0;i < PyList_GET_SIZE(sipPy); ++i)
-   {
-       int state;
-       QList<QList<QgsPoint> > *t = reinterpret_cast< QList< QList<QgsPoint> > * >(sipConvertToMappedType(PyList_GET_ITEM(sipPy, i), qlist_type, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-       if( *sipIsErr )
-       {
-           sipReleaseMappedType(t, qlist_type, state);
-           delete ql;
-           return 0;
-       }
-       ql->append( *t );
-       sipReleaseMappedType( t, qlist_type, state );
-   }
-   *sipCppPtr = ql;
-   return sipGetState(sipTransferObj);
-
-
 %End
 };
 
@@ -605,7 +470,7 @@ template<TYPE>
     QMap<int, TYPE> *t = new QMap<int, TYPE>(*it);
 
     PyObject *kobj = PyLong_FromLongLong(it.key());
-    PyObject *tobj = sipConvertFromMappedType(t, qmap2, sipTransferObj);
+    PyObject *tobj = sipConvertFromNewType(t, qmap2, sipTransferObj);
 
     if (kobj == NULL || tobj == NULL || PyDict_SetItem(d, kobj, tobj) < 0)
     {
@@ -802,105 +667,6 @@ template<TYPE>
     return sipGetState(sipTransferObj);
 %End
 };
-
-
-
-
-%MappedType QMap<QString, QVariant::Type>
-{
-%TypeHeaderCode
-#include <QMap>
-%End
-
-%ConvertFromTypeCode
-    // Create the dictionary.
-    PyObject *d = PyDict_New();
-
-    if (!d)
-        return NULL;
-
-    // Set the dictionary elements.
-    QMap<QString, QVariant::Type>::const_iterator i = sipCpp->constBegin();
-
-    while (i != sipCpp->constEnd())
-    {
-        QString *t1 = new QString(i.key());
-
-        PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
-        PyObject *t2obj = PyLong_FromLong( (long) i.value() );
-
-        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
-        {
-            Py_DECREF(d);
-
-	    if (t1obj) {
-	      Py_DECREF(t1obj);
-	    } else {
-	      delete t1;
-	    }
-
-	    if (t2obj) {
-	      Py_DECREF(t2obj);
-	    }
-
-            return NULL;
-        }
-
-        Py_DECREF(t1obj);
-        Py_DECREF(t2obj);
-
-        ++i;
-    }
-
-    return d;
-%End
-
-%ConvertToTypeCode
-    PyObject *t1obj, *t2obj;
-    Py_ssize_t i = 0;
-
-    // Check the type if that is all that is required.
-    if (sipIsErr == NULL)
-    {
-        if (!PyDict_Check(sipPy))
-            return 0;
-
-        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
-        {
-            if (!sipCanConvertToType(t1obj, sipType_QString, SIP_NOT_NONE))
-                return 0;
-        }
-
-        return 1;
-    }
-
-    QMap<QString, QVariant::Type> *qm = new QMap<QString, QVariant::Type>;
-
-    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
-    {
-        int state;
-
-        QString *t1 = reinterpret_cast<QString *>(sipConvertToType(t1obj, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-        QVariant::Type t2 = (QVariant::Type) PyLong_AsLong(t1obj);
-
-        if (*sipIsErr)
-        {
-            sipReleaseType(t1, sipType_QString, state);
-            delete qm;
-            return 0;
-        }
-
-        qm->insert(*t1, t2);
-
-        sipReleaseType(t1, sipType_QString, state);
-    }
-
-    *sipCppPtr = qm;
-
-    return sipGetState(sipTransferObj);
-%End
-};
-
 
 
 %MappedType QMap<QString, int>
@@ -1213,38 +979,42 @@ template<TYPE2>
     if (!d)
         return NULL;
 
-    const sipMappedType *qlist_type = sipFindMappedType("QList<TYPE2>");
-
     // Set the dictionary elements.
     QMap<QString, QList< TYPE2 > >::const_iterator i;
 
     for (i = sipCpp->constBegin(); i != sipCpp->constEnd(); ++i)
     {
         QString *t1 = new QString(i.key());
-
         PyObject *t1obj = sipConvertFromNewType(t1, sipType_QString, sipTransferObj);
 
-        QList< TYPE2 > *t2 = new QList< TYPE2 >( i.value() );
+        // build list for dictionary value
+        QList< TYPE2 > sourceList = i.value();
+        PyObject *t2list = PyList_New( sourceList.size() );
+        if ( t2list )
+        {
+            for ( int j = 0; j < sourceList.size(); j++ )
+            {
+                TYPE2 *t = new TYPE2(sourceList.at(j));
+                PyObject *lobj = sipConvertFromNewType(t, sipType_TYPE2, sipTransferObj);
+                PyList_SetItem( t2list, j, lobj );
+            }
+        }
 
-        PyObject *t2obj = sipConvertFromMappedType(t2, qlist_type, sipTransferObj);
-
-        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        if (t1obj == NULL || t2list == NULL || PyDict_SetItem(d, t1obj, t2list) < 0)
         {
             Py_DECREF(d);
 
             if (t1obj)
                 Py_DECREF(t1obj);
 
-            if (t2obj)
-                Py_DECREF(t2obj);
-            else
-                delete t2;
+            if (t2list)
+                Py_DECREF(t2list);
 
             return NULL;
         }
 
         Py_DECREF(t1obj);
-        Py_DECREF(t2obj);
+        Py_DECREF(t2list);
     }
 
     return d;
@@ -1540,204 +1310,130 @@ template<int, TYPE2*>
 };
 
 
-%MappedType QList < QPair< QString, QList<QString> > >
+template <TYPE>
+%MappedType QMap< QPair< QString, QString>, TYPE >
 {
 %TypeHeaderCode
 #include <QPair>
-#include <QList>
+#include <QMap>
 %End
 
 %ConvertFromTypeCode
 //convert map to a python dictionary
-    PyObject *d;
+  PyObject *d;
 
-    if ((d = PyList_New( sipCpp->size() )) == NULL)
-      return NULL;
+  if ( ( d = PyDict_New() ) == NULL )
+    return NULL;
 
-    for ( int i = 0; i<sipCpp->size(); i++ )
+  for ( auto it = sipCpp->constBegin(); it != sipCpp->constEnd(); ++ it )
+  {
+    PyObject *keyobj;
+    if ( ( keyobj = PyTuple_New( 2 ) ) == NULL )
     {
-      PyObject *p;
-      if ((p = PyList_New(2) ) == NULL)
-      {
-	Py_DECREF(d);
-	return NULL;
-      }
-
-      PyObject *l;
-      if ((l = PyList_New( sipCpp->at(i).second.size() )) == NULL)
-      {
-	Py_DECREF(d);
-	Py_DECREF(p);
-	return NULL;
-      }
-
-      for( int j = 0; j<sipCpp->at(i).second.size(); j++ )
-      {
-        PyObject *t1obj = sipConvertFromNewType(new QString(sipCpp->at(i).second.at(j)), sipType_QString, sipTransferObj);
-        PyList_SetItem( l, j, t1obj);
-      }
-
-      PyObject *t1obj = sipConvertFromNewType(new QString(sipCpp->at(i).first), sipType_QString, sipTransferObj);
-      PyList_SetItem( p, 0, t1obj );
-      PyList_SetItem( p, 1, l);
-
-      PyList_SetItem( d, i, p );
+      Py_DECREF( d );
+      return NULL;
     }
 
-    return d;
-%End
-
-%ConvertToTypeCode
-    Py_ssize_t i = 0;
-
-    QList < QPair< QString, QList<QString> > > *qm = new QList < QPair< QString, QList<QString> > >;
-
-    for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
+    TYPE *t = new TYPE(it.value());
+    PyObject *tobj = sipConvertFromNewType(t, sipType_TYPE, sipTransferObj);
+    if ( tobj == NULL )
     {
-      PyObject *sipPair = PyList_GetItem( sipPy, i );
-      PyObject *sipKey  = PyList_GetItem( sipPair, 0 );
-      PyObject *sipList = PyList_GetItem( sipPair, 1 );
-
-      QList< QString > l;
-      int state;
-      int j;
-      for ( j = 0; j < PyList_GET_SIZE( sipList ); j++ )
-      {
-        PyObject *sipString = PyList_GetItem( sipList, j );
-        QString *t1 = reinterpret_cast<QString *>(sipConvertToType(sipString, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-	l << *t1;
-        sipReleaseType(t1, sipType_QString, state);
-      }
-
-      QString *t1 = reinterpret_cast<QString *>(sipConvertToType(sipKey, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-      qm->append( qMakePair( *t1, l ) );
-      sipReleaseType(t1, sipType_QString, state);
-    }
-
-    *sipCppPtr = qm;
-
-    return sipGetState(sipTransferObj);
-%End
-};
-
-%MappedType QList < QPair< QString, double > >
-{
-%TypeHeaderCode
-#include <QPair>
-#include <QList>
-%End
-
-%ConvertFromTypeCode
-//convert map to a python dictionary
-    PyObject *d;
-
-    if ((d = PyList_New( sipCpp->size() )) == NULL)
-      return NULL;
-
-    for ( int i = 0; i<sipCpp->size(); i++ )
-    {
-      PyObject *p;
-      if ((p = PyList_New(2) ) == NULL)
-      {
         Py_DECREF(d);
+        delete t;
+        return NULL;
+    }
+
+    // build key
+    PyObject *k1obj = sipConvertFromNewType( new QString( it.key().first ), sipType_QString, sipTransferObj );
+    PyTuple_SetItem( keyobj, 0, k1obj );
+    PyObject *k2obj = sipConvertFromNewType( new QString( it.key().second ), sipType_QString, sipTransferObj );
+    PyTuple_SetItem( keyobj, 1, k2obj );
+
+    if(keyobj == NULL || tobj == NULL || PyDict_SetItem(d, keyobj, tobj) < 0)
+    {
+        Py_DECREF(d);
+
+        if (keyobj)
+        {
+            Py_DECREF(keyobj);
+        }
+
+        if (tobj)
+        {
+            Py_DECREF(tobj);
+        }
         return NULL;
       }
 
-      PyObject *t1obj = sipConvertFromNewType(new QString(sipCpp->at(i).first), sipType_QString, sipTransferObj);
-      PyObject *t2obj = PyFloat_FromDouble( (double) sipCpp->at(i).second );
-      PyList_SetItem( p, 0, t1obj );
-      PyList_SetItem( p, 1, t2obj );
+    Py_DECREF(keyobj);
+    Py_DECREF(tobj);
+  }
 
-      PyList_SetItem( d, i, p );
-    }
-
-    return d;
+  return d;
 %End
 
 %ConvertToTypeCode
-    Py_ssize_t i = 0;
+  Py_ssize_t i = 0;
+  PyObject *kobj, *tobj;
 
-    QList < QPair< QString, double > > *qm = new QList< QPair< QString, double > >;
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+  {
+      if (!PyDict_Check(sipPy))
+          return 0;
 
-    for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
-    {
-          int state;
+      while (PyDict_Next(sipPy, &i, &kobj, &tobj))
+          if (!sipCanConvertToType(tobj, sipType_TYPE, SIP_NOT_NONE))
+              return 0;
 
-      PyObject *sipPair = PyList_GetItem( sipPy, i );
-      PyObject *sipString = PyList_GetItem( sipPair, 0 );
-      PyObject *sipDouble = PyList_GetItem( sipPair, 1 );
+      return 1;
+  }
 
-      QString *t1 = reinterpret_cast<QString *>(sipConvertToType(sipString, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-      double value = PyFloat_AsDouble(sipDouble);
-      qm->append( qMakePair( *t1, value ) );
-      sipReleaseType(t1, sipType_QString, state);
-    }
+  PyObject *t1obj, *t2obj;
+  QMap< QPair< QString, QString>, TYPE > *qm = new QMap< QPair< QString, QString>, TYPE >;
 
-    *sipCppPtr = qm;
-
-    return sipGetState(sipTransferObj);
-%End
-};
-
-%MappedType QList < QPair< QgsVectorLayer *, int > >
-{
-%TypeHeaderCode
-#include <QPair>
-#include <QList>
-%End
-
-%ConvertFromTypeCode
-//convert map to a python dictionary
-    PyObject *d;
-
-    if ((d = PyList_New( sipCpp->size() )) == NULL)
-      return NULL;
-
-    for ( int i = 0; i<sipCpp->size(); i++ )
-    {
-      PyObject *p;
-      if ((p = PyList_New(2) ) == NULL)
+  int state;
+  while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+  {
+      PyObject *sipKeyFirst  = PyTuple_GetItem( t1obj, 0 );
+      PyObject *sipKeySecond = PyTuple_GetItem( t1obj, 1 );
+      QString *k1 = reinterpret_cast<QString *>(sipConvertToType(sipKeyFirst, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
       {
-	Py_DECREF(d);
-	return NULL;
+          sipReleaseType(k1, sipType_QString, state);
+          delete qm;
+          return 0;
       }
 
-      PyObject *t1obj = sipConvertFromNewType(sipCpp->at(i).first, sipType_QgsVectorLayer, sipTransferObj);
-      PyObject *t2obj = PyLong_FromLong( (long) sipCpp->at(i).second );
-      PyList_SetItem( p, 0, t1obj );
-      PyList_SetItem( p, 1, t2obj );
+      QString *k2 = reinterpret_cast<QString *>(sipConvertToType(sipKeySecond, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
+      {
+          sipReleaseType(k1, sipType_QString, state);
+          sipReleaseType(k2, sipType_QString, state);
+          delete qm;
+          return 0;
+      }
 
-      PyList_SetItem( d, i, p );
-    }
+      TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(t2obj, sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
+      {
+          sipReleaseType(t, sipType_TYPE, state);
 
-    return d;
-%End
+          delete qm;
+          return 0;
+      }
 
-%ConvertToTypeCode
-    Py_ssize_t i = 0;
+      qm->insert( qMakePair( *k1,*k2 ), *t );
+      sipReleaseType(k1, sipType_QString, state);
+      sipReleaseType(k2, sipType_QString, state);
+      sipReleaseType(t, sipType_TYPE, state);
+  }
 
-    QList < QPair< QgsVectorLayer *, int > > *qm = new QList< QPair< QgsVectorLayer *, int > >;
+  *sipCppPtr = qm;
 
-    for ( i = 0; i < PyList_GET_SIZE(sipPy); i++ )
-    {
-	  int state;
-
-      PyObject *sipPair = PyList_GetItem( sipPy, i );
-      PyObject *sipLayer = PyList_GetItem( sipPair, 0 );
-      PyObject *sipIdx = PyList_GetItem( sipPair, 1 );
-
-      QgsVectorLayer *t1 = reinterpret_cast<QgsVectorLayer *>(sipConvertToType(sipLayer, sipType_QgsVectorLayer, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-      int idx = PyLong_AsLongLong(sipIdx);
-      qm->append( qMakePair<QgsVectorLayer *, int>( t1, idx ) );
-      sipReleaseType(t1, sipType_QgsVectorLayer, state);
-    }
-
-    *sipCppPtr = qm;
-
-    return sipGetState(sipTransferObj);
+  return sipGetState( sipTransferObj );
 %End
 };
-
 
 template <TYPE>
 %MappedType QVector< TYPE* >
@@ -1763,9 +1459,7 @@ template <TYPE>
         {
             Py_DECREF(l);
 
-            if (tobj)
-                Py_DECREF(tobj);
-            else
+            if (!tobj)
                 delete t;
 
             return NULL;
@@ -1839,8 +1533,6 @@ template <TYPE>
 
         PyObject *keyobj = PyLong_FromLong(it.key());
         PyObject *pyOobj = sipConvertFromType(oobj, sipType_QgsFeature, sipTransferObj);
-        PyDict_SetItem(d, keyobj, pyOobj);
-
         if(pyOobj == NULL || keyobj == NULL || PyDict_SetItem(d, keyobj, pyOobj) < 0)
         {
             Py_DECREF(d);
@@ -1848,6 +1540,10 @@ template <TYPE>
             if (pyOobj)
             {
                 Py_DECREF(pyOobj);
+            }
+            else
+            {
+                delete oobj;
             }
 
             if (keyobj)
@@ -2013,7 +1709,11 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   {
     sWatchDog = true;
     PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
-    *objp = PyObject_Call(( PyObject * )sipTypeAsPyTypeObject( sipType_QVariant ), PyTuple_Pack( 1, vartype ), nullptr );
+    PyObject *args = PyTuple_Pack( 1, vartype );
+    PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+    *objp = PyObject_Call(( PyObject * )typeObj, args, nullptr );
+    Py_DECREF(args);
+    Py_DECREF(vartype);
     sWatchDog = false;
     return true;
   }
@@ -2023,6 +1723,67 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   }
 }
 %End
+
+// Mapped type for QList<QgsWkbTypes::GeometryType>.
+%MappedType QList<QgsWkbTypes::GeometryType>
+{
+%TypeHeaderCode
+#include <qgswkbtypes.h>
+%End
+
+%ConvertFromTypeCode
+    // Create the list.
+    PyObject *l;
+
+    if ((l = PyList_New(sipCpp->size())) == NULL)
+        return NULL;
+
+    // Set the list elements.
+    for (int i = 0; i < sipCpp->size(); ++i)
+    {
+       QgsWkbTypes::GeometryType e = sipCpp->at(i);
+        PyObject *eobj;
+
+        if ((eobj = sipConvertFromEnum(e, sipType_QgsWkbTypes_GeometryType)) == NULL)
+        {
+            Py_DECREF(l);
+
+            return NULL;
+        }
+
+        PyList_SET_ITEM(l, i, eobj);
+    }
+
+    return l;
+%End
+
+%ConvertToTypeCode
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyList_Check(sipPy))
+            return 0;
+
+        for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+            if (PyObject_TypeCheck(PyList_GET_ITEM(sipPy, i), sipTypeAsPyTypeObject(sipType_QgsWkbTypes_GeometryType)))
+                return 0;
+
+        return 1;
+    }
+
+    QList<QgsWkbTypes::GeometryType> *ql = new QList<QgsWkbTypes::GeometryType>;
+
+    for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+    {
+        long l = SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
+        ql->append(static_cast<QgsWkbTypes::GeometryType>(l));
+    }
+
+    *sipCppPtr = ql;
+
+    return sipGetState(sipTransferObj);
+%End
+};
 
 %PostInitialisationCode  //#spellok
 

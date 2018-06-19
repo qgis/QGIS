@@ -41,7 +41,8 @@ class QgsVectorLayerTools;
 % End
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationEditorWidget
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     //! Define the view mode for the dual view
     void setViewMode( QgsDualView::ViewMode mode );
 
-    //! Get the view mode for the dual view
+    //! Gets the view mode for the dual view
     QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
@@ -145,18 +146,23 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void updateButtons();
 
     void addFeature();
+    void duplicateFeature();
     void linkFeature();
-    void deleteFeature();
-    void unlinkFeature();
+    void deleteFeature( QgsFeatureId featureid = QgsFeatureId() );
+    void deleteSelectedFeatures();
+    void unlinkFeature( QgsFeatureId featureid = QgsFeatureId() );
+    void unlinkSelectedFeatures();
+    void zoomToSelectedFeatures();
     void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
+    void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
 
   private:
     void updateUi();
 
     QgsDualView *mDualView = nullptr;
-    QgsDualView::ViewMode mViewMode;
+    QgsDualView::ViewMode mViewMode = QgsDualView::AttributeEditor;
     QgsGenericFeatureSelectionManager *mFeatureSelectionMgr = nullptr;
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
@@ -166,16 +172,32 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mToggleEditingButton = nullptr;
     QToolButton *mSaveEditsButton = nullptr;
     QToolButton *mAddFeatureButton = nullptr;
+    QToolButton *mDuplicateFeatureButton = nullptr;
     QToolButton *mDeleteFeatureButton = nullptr;
     QToolButton *mLinkFeatureButton = nullptr;
     QToolButton *mUnlinkFeatureButton = nullptr;
+    QToolButton *mZoomToFeatureButton = nullptr;
     QToolButton *mFormViewButton = nullptr;
     QToolButton *mTableViewButton = nullptr;
     QGridLayout *mRelationLayout = nullptr;
     QButtonGroup *mViewModeButtonGroup = nullptr;
 
-    bool mShowLabel;
-    bool mVisible;
+    bool mShowLabel = true;
+    bool mVisible = false;
+
+    /**
+     * Deletes the features
+     * \param featureids features to delete
+     * \since QGIS 3.00
+     */
+    void deleteFeatures( const QgsFeatureIds &featureids );
+
+    /**
+     * Unlinks the features
+     * \param featureids features to unlink
+     * \since QGIS 3.00
+     */
+    void unlinkFeatures( const QgsFeatureIds &featureids );
 };
 
 #endif // QGSRELATIONEDITOR_H

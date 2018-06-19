@@ -35,7 +35,8 @@ class QStringList;
 class QTableWidgetItem;
 class QPushButton;
 
-/** \class QgsSpatiaLiteSourceSelect
+/**
+ * \class QgsSpatiaLiteSourceSelect
  * \brief Dialog to create connections and add tables from SpatiaLite.
  *
  * This dialog allows the user to define and save connection information
@@ -54,7 +55,7 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     //! Constructor
     QgsSpatiaLiteSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsSpatiaLiteSourceSelect();
+    ~QgsSpatiaLiteSourceSelect() override;
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
@@ -69,27 +70,28 @@ class QgsSpatiaLiteSourceSelect: public QgsAbstractDataSourceWidget, private Ui:
     //! Triggered when the provider's connections need to be refreshed
     void refresh() override;
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
-    void on_btnConnect_clicked();
+    void btnConnect_clicked();
     void buildQuery();
     void addButtonClicked() override;
     void updateStatistics();
     //! Opens the create connection dialog to build a new connection
-    void on_btnNew_clicked();
+    void btnNew_clicked();
     //! Deletes the selected connection
-    void on_btnDelete_clicked();
-    void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString &text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
-    void on_cbxAllowGeometrylessTables_stateChanged( int );
+    void btnDelete_clicked();
+    void mSearchGroupBox_toggled( bool );
+    void mSearchTableEdit_textChanged( const QString &text );
+    void mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void mSearchModeComboBox_currentIndexChanged( const QString &text );
+    void cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex &index );
-    void on_cmbConnections_activated( int );
+    void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
-    void on_mTablesTreeView_clicked( const QModelIndex &index );
-    void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void mTablesTreeView_clicked( const QModelIndex &index );
+    void mTablesTreeView_doubleClicked( const QModelIndex &index );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );

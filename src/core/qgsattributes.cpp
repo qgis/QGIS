@@ -29,3 +29,11 @@ QgsAttributeMap QgsAttributes::toMap() const
   }
   return map;
 }
+
+uint qHash( const QgsAttributes &attributes )
+{
+  if ( attributes.isEmpty() )
+    return -1;
+  else
+    return qHash( attributes.at( 0 ) );
+}

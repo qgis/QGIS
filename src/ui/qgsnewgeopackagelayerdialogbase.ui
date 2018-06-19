@@ -65,21 +65,8 @@
         <height>663</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_5">
-       <item row="8" column="0">
-        <widget class="QCheckBox" name="mCheckBoxCreateSpatialIndex">
-         <property name="toolTip">
-          <string>Add an integer id field as the primary key for the new layer</string>
-         </property>
-         <property name="text">
-          <string>Create a spatial index</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-       </item>
-       <item row="9" column="0">
+      <layout class="QGridLayout" name="gridLayout_51">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>New field</string>
@@ -93,6 +80,12 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mFieldLengthLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Maximum length</string>
             </property>
@@ -154,41 +147,12 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="4" column="2">
-          <widget class="QLineEdit" name="mLayerIdentifierEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Human-readable identifier (e.g. short name) for the layer content&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="8" column="2">
-          <widget class="QLineEdit" name="mGeometryColumnEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the geometry column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>geometry</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2">
+         <item row="0" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QLineEdit" name="mDatabaseEdit">
+            <widget class="QgsFileWidget" name="mDatabase">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -200,29 +164,9 @@
              </property>
             </widget>
            </item>
-           <item>
-            <widget class="QToolButton" name="mSelectDatabaseButton">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select an existing or create a new database&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>…</string>
-             </property>
-            </widget>
-           </item>
           </layout>
          </item>
-         <item row="5" column="0">
-          <widget class="QLabel" name="mLayerDescriptionLabel">
-           <property name="text">
-            <string>Layer description</string>
-           </property>
-           <property name="buddy">
-            <cstring>mLayerIdentifierEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="mGeometryTypeLabel">
            <property name="enabled">
             <bool>true</bool>
@@ -232,17 +176,7 @@
            </property>
           </widget>
          </item>
-         <item row="8" column="0">
-          <widget class="QLabel" name="mGeometryColumnLabel">
-           <property name="text">
-            <string>Geometry column</string>
-           </property>
-           <property name="buddy">
-            <cstring>mGeometryColumnEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="mTableNameEdit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -255,20 +189,7 @@
            </property>
           </widget>
          </item>
-         <item row="5" column="2">
-          <widget class="QLineEdit" name="mLayerDescriptionEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Human-readable description for the layer content&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="mDatabaseLabel">
            <property name="enabled">
             <bool>true</bool>
@@ -278,7 +199,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="mTableNameLabel">
            <property name="text">
             <string>Table name</string>
@@ -288,17 +209,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="0">
-          <widget class="QLabel" name="mLayerIdentifierLabel">
-           <property name="text">
-            <string>Layer identifier</string>
-           </property>
-           <property name="buddy">
-            <cstring>mLayerIdentifierEdit</cstring>
-           </property>
-          </widget>
-         </item>
-         <item row="7" column="2">
+         <item row="2" column="1">
           <widget class="QComboBox" name="mGeometryTypeBox">
            <property name="enabled">
             <bool>true</bool>
@@ -314,35 +225,47 @@
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QLabel" name="mFeatureIdLabel">
-           <property name="text">
-            <string>Feature id column</string>
-           </property>
-           <property name="buddy">
-            <cstring>mGeometryColumnEdit</cstring>
-           </property>
-          </widget>
+         <item row="3" column="1">
+          <layout class="QHBoxLayout" name="horizontalZMLayout">
+           <item>
+            <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+             <property name="text">
+              <string>Include Z dimension</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+             <property name="text">
+              <string>Include M values</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
          </item>
-         <item row="6" column="2">
-          <widget class="QLineEdit" name="mFeatureIdColumnEdit">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the feature id column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-           <property name="text">
-            <string>fid</string>
+         <item row="4" column="1">
+          <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+           <property name="focusPolicy">
+            <enum>Qt::StrongFocus</enum>
            </property>
           </widget>
          </item>
         </layout>
        </item>
-       <item row="10" column="0">
+       <item row="4" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Fields list</string>
@@ -421,30 +344,119 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
-         <property name="focusPolicy">
-          <enum>Qt::StrongFocus</enum>
+       <item row="5" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox" native="true">
+         <property name="title" stdset="0">
+          <string>Advanced options</string>
          </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="0">
+           <widget class="QLabel" name="mLayerIdentifierLabel">
+            <property name="text">
+             <string>Layer identifier</string>
+            </property>
+            <property name="buddy">
+             <cstring>mLayerIdentifierEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QLineEdit" name="mLayerIdentifierEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Human-readable identifier (e.g. short name) for the layer content&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mLayerDescriptionLabel">
+            <property name="text">
+             <string>Layer description</string>
+            </property>
+            <property name="buddy">
+             <cstring>mLayerIdentifierEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="mLayerDescriptionEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Human-readable description for the layer content&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mFeatureIdLabel">
+            <property name="text">
+             <string>Feature id column</string>
+            </property>
+            <property name="buddy">
+             <cstring>mGeometryColumnEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLineEdit" name="mFeatureIdColumnEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the feature id column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mGeometryColumnLabel">
+            <property name="text">
+             <string>Geometry column</string>
+            </property>
+            <property name="buddy">
+             <cstring>mGeometryColumnEdit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLineEdit" name="mGeometryColumnEdit">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the geometry column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
+           <widget class="QCheckBox" name="mCheckBoxCreateSpatialIndex">
+            <property name="toolTip">
+             <string>Create a spatial index for this layer</string>
+            </property>
+            <property name="text">
+             <string>Create a spatial index</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item row="3" column="0">
-        <layout class="QHBoxLayout" name="horizontalZMLayout">
-         <item>
-          <widget class="QCheckBox" name="mGeometryWithZCheckBox">
-           <property name="text">
-            <string>Geometries with Z coordinate</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="mGeometryWithMCheckBox">
-           <property name="text">
-            <string>Geometries with M coordinate</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
@@ -466,25 +478,31 @@
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mDatabaseEdit</tabstop>
-  <tabstop>mSelectDatabaseButton</tabstop>
   <tabstop>mTableNameEdit</tabstop>
-  <tabstop>mLayerIdentifierEdit</tabstop>
-  <tabstop>mLayerDescriptionEdit</tabstop>
-  <tabstop>mFeatureIdColumnEdit</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
-  <tabstop>mGeometryColumnEdit</tabstop>
+  <tabstop>mGeometryWithZCheckBox</tabstop>
+  <tabstop>mGeometryWithMCheckBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mCheckBoxCreateSpatialIndex</tabstop>
   <tabstop>mFieldNameEdit</tabstop>
   <tabstop>mFieldTypeBox</tabstop>
   <tabstop>mFieldLengthEdit</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
+  <tabstop>mLayerIdentifierEdit</tabstop>
+  <tabstop>mLayerDescriptionEdit</tabstop>
+  <tabstop>mFeatureIdColumnEdit</tabstop>
+  <tabstop>mGeometryColumnEdit</tabstop>
+  <tabstop>mCheckBoxCreateSpatialIndex</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

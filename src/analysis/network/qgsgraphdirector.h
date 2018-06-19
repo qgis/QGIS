@@ -56,7 +56,10 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
 
-    virtual ~QgsGraphDirector() { }
+    ~QgsGraphDirector() override
+    {
+      qDeleteAll( mStrategies );
+    }
 
     /**
      * Make a graph using QgsGraphBuilder

@@ -26,7 +26,8 @@
 
 class QgsVectorLayer;
 
-/** \class QgsOrganizeTableColumnsDialog
+/**
+ * \class QgsOrganizeTableColumnsDialog
  * \ingroup gui
  * Dialog for organising (hiding and reordering) columns in the attributes table.
  * \since QGIS 2.16
@@ -45,10 +46,10 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    ~QgsOrganizeTableColumnsDialog();
+    ~QgsOrganizeTableColumnsDialog() override;
 
     /**
-     * Get the updated configuration
+     * Gets the updated configuration
      */
     QgsAttributeTableConfig config() const;
 

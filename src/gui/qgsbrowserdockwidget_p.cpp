@@ -19,6 +19,8 @@
  ***************************************************************************/
 #include "qgsbrowserdockwidget_p.h"
 
+#include <memory>
+
 #include <QAbstractTextDocumentLayout>
 #include <QHeaderView>
 #include <QTreeView>
@@ -35,7 +37,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-
+#include "qgsmeshlayer.h"
 
 #include <QDragEnterEvent>
 
@@ -143,7 +145,7 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
   {
     QgsDebugMsg( "creating raster layer" );
     // should copy code from addLayer() to split uri ?
-    QgsRasterLayer *layer = new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() );
+    std::unique_ptr<QgsRasterLayer> layer( new QgsRasterLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
     if ( layer )
     {
       if ( layer->isValid() )
@@ -151,13 +153,25 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
-      delete layer;
+    }
+  }
+  else if ( type == QgsMapLayer::MeshLayer )
+  {
+    QgsDebugMsg( "creating mesh layer" );
+    std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( layerItem->uri(), layerItem->uri(), layerItem->providerKey() ) );
+    if ( layer )
+    {
+      if ( layer->isValid() )
+      {
+        layerCrs = layer->crs();
+        layerMetadata = layer->htmlMetadata();
+      }
     }
   }
   else if ( type == QgsMapLayer::VectorLayer )
   {
     QgsDebugMsg( "creating vector layer" );
-    QgsVectorLayer *layer = new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() );
+    std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( layerItem->uri(), layerItem->name(), layerItem->providerKey() ) );
     if ( layer )
     {
       if ( layer->isValid() )
@@ -165,7 +179,6 @@ void QgsBrowserLayerProperties::setItem( QgsDataItem *item )
         layerCrs = layer->crs();
         layerMetadata = layer->htmlMetadata();
       }
-      delete layer;
     }
   }
   else if ( type == QgsMapLayer::PluginLayer )
@@ -220,7 +233,7 @@ void QgsBrowserLayerProperties::setCondensedMode( bool condensedMode )
 
 QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget *parent )
   : QgsBrowserPropertiesWidget( parent )
-  , mDirectoryWidget( nullptr )
+
 {
   setupUi( this );
 
@@ -234,14 +247,13 @@ void QgsBrowserDirectoryProperties::setItem( QgsDataItem *item )
   if ( !item )
     return;
 
-  mPathLabel->setText( directoryItem->dirPath() );
+  mPathLabel->setText( QDir::toNativeSeparators( directoryItem->dirPath() ) );
   mDirectoryWidget = new QgsDirectoryParamWidget( directoryItem->dirPath(), this );
   mLayout->addWidget( mDirectoryWidget );
 }
 
 QgsBrowserPropertiesDialog::QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent )
   : QDialog( parent )
-  , mPropertiesWidget( nullptr )
   , mSettingsSection( settingsSection )
 {
   setupUi( this );
@@ -336,11 +348,13 @@ void QgsDockBrowserTreeView::dropEvent( QDropEvent *e )
 
 QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-  , mModel( nullptr )
   , mPatternSyntax( QStringLiteral( "normal" ) )
   , mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );
+  setSortRole( QgsBrowserModel::SortRole );
+  setSortCaseSensitivity( Qt::CaseInsensitive );
+  sort( 0 );
 }
 
 void QgsBrowserTreeFilterProxyModel::setBrowserModel( QgsBrowserModel *model )

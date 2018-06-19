@@ -37,8 +37,8 @@ class QgsDb2GeometryColumns // clazy:exclude=rule-of-three
 
     bool isActive();
     void close();
-    int  open();
-    int  open( const QString &schemaName, const QString &tableName );
+    QString open();
+    QString open( const QString &schemaName, const QString &tableName );
     bool populateLayerProperty( QgsDb2LayerProperty &layer );
     int  db2Environment();
 

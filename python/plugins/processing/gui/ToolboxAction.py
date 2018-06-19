@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,7 +30,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 
 
-class ToolboxAction(object):
+class ToolboxAction:
 
     def setData(self, toolbox):
         self.toolbox = toolbox
@@ -43,8 +42,3 @@ class ToolboxAction(object):
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
-
-    def trAction(self, string, context=''):
-        if context == '':
-            context = self.__class__.__name__
-        return string, QCoreApplication.translate(context, string)

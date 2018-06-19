@@ -27,6 +27,10 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, mValueColumn, &QgsFieldComboBox::setLayer );
   connect( mEditExpression, &QAbstractButton::clicked, this, &QgsValueRelationConfigDlg::editExpression );
 
+  mNofColumns->setMinimum( 1 );
+  mNofColumns->setMaximum( 10 );
+  mNofColumns->setValue( 1 );
+
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
   connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
@@ -35,6 +39,14 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mUseCompleter, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
+  connect( mAllowMulti, &QAbstractButton::toggled, this, [ = ]( bool checked )
+  {
+    label_nofColumns->setEnabled( checked );
+    mNofColumns->setEnabled( checked );
+  }
+         );
+
+  connect( mNofColumns, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
 }
 
 QVariantMap QgsValueRelationConfigDlg::config()
@@ -45,6 +57,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
   cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
   cfg.insert( QStringLiteral( "AllowMulti" ), mAllowMulti->isChecked() );
+  cfg.insert( QStringLiteral( "NofColumns" ), mNofColumns->value() );
   cfg.insert( QStringLiteral( "AllowNull" ), mAllowNull->isChecked() );
   cfg.insert( QStringLiteral( "OrderByValue" ), mOrderByValue->isChecked() );
   cfg.insert( QStringLiteral( "FilterExpression" ), mFilterExpression->toPlainText() );
@@ -60,6 +73,12 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mKeyColumn->setField( config.value( QStringLiteral( "Key" ) ).toString() );
   mValueColumn->setField( config.value( QStringLiteral( "Value" ) ).toString() );
   mAllowMulti->setChecked( config.value( QStringLiteral( "AllowMulti" ) ).toBool() );
+  mNofColumns->setValue( config.value( QStringLiteral( "NofColumns" ), 1 ).toInt() );
+  if ( !mAllowMulti->isChecked() )
+  {
+    label_nofColumns->setEnabled( false );
+    mNofColumns->setEnabled( false );
+  }
   mAllowNull->setChecked( config.value( QStringLiteral( "AllowNull" ) ).toBool() );
   mOrderByValue->setChecked( config.value( QStringLiteral( "OrderByValue" ) ).toBool() );
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
@@ -73,6 +92,7 @@ void QgsValueRelationConfigDlg::editExpression()
     return;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
+  context << QgsExpressionContextUtils::formScope( );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );

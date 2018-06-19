@@ -24,6 +24,11 @@
 #include "qgsfeaturestore.h"
 #include "qgsgeometry.h"
 
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
+
 #include <cstring>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -119,8 +124,8 @@ void QgsAmsLegendFetcher::handleFinished()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAmsProvider::QgsAmsProvider( const QString &uri )
-  : QgsRasterDataProvider( uri ), mValid( false )
+QgsAmsProvider::QgsAmsProvider( const QString &uri, const ProviderOptions &options )
+  : QgsRasterDataProvider( uri, options )
 {
   mLegendFetcher = new QgsAmsLegendFetcher( this );
 
@@ -204,36 +209,41 @@ void QgsAmsProvider::reloadData()
 
 QgsRasterInterface *QgsAmsProvider::clone() const
 {
-  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri() );
+  QgsDataProvider::ProviderOptions options;
+  QgsAmsProvider *provider = new QgsAmsProvider( dataSourceUri(), options );
   provider->copyBaseSettings( *this );
   return provider;
 }
 
 static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
 {
-  QString result = QStringLiteral( "<table>" );
+  QString result;
   if ( !title.isEmpty() )
   {
-    result += QStringLiteral( "<tr><td class=\"glossy\" colspan=\"2\">%1</td></tr>" ).arg( title );
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>" ).arg( title );
   }
-  foreach ( const QString &key, variantMap.keys() )
+  else
   {
-    QVariantMap childMap = variantMap[key].toMap();
+    result += QStringLiteral( "<tr><td>" );
+  }
+  for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
+  {
+    QVariantMap childMap = it.value().toMap();
     if ( childMap.isEmpty() )
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, variantMap[key].toString() );
+      result += QStringLiteral( "%1:%2</td></tr>" ).arg( it.key(), it.value().toString() );
     }
     else
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( key, dumpVariantMap( childMap ) );
+      result += QStringLiteral( "%1:<table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
     }
   }
-  result += QLatin1String( "</table>" );
   return result;
 }
 
-QString QgsAmsProvider::metadata()
+QString QgsAmsProvider::htmlMetadata()
 {
+  // This must return the content of a HTML table starting by tr and ending by tr
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
@@ -342,7 +352,6 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
     }
   }
-  return;
 }
 
 QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle * /*visibleExtent*/ )
@@ -394,12 +403,12 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   {
     foreach ( const QVariant &result, queryResults )
     {
-      QVariantMap resultMap = result.toMap();
+      const QVariantMap resultMap = result.toMap();
       QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
       QString valueStr;
-      foreach ( const QString &attribute, attributesMap.keys() )
+      for ( auto it = attributesMap.constBegin(); it != attributesMap.constEnd(); ++it )
       {
-        valueStr += QStringLiteral( "%1 = %2\n" ).arg( attribute, attributesMap[attribute].toString() );
+        valueStr += QStringLiteral( "%1 = %2\n" ).arg( it.key(), it.value().toString() );
       }
       entries.insert( entries.size(), valueStr );
     }
@@ -408,20 +417,20 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   {
     foreach ( const QVariant &result, queryResults )
     {
-      QVariantMap resultMap = result.toMap();
+      const QVariantMap resultMap = result.toMap();
 
       QgsFields fields;
-      QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
+      const QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
       QgsAttributes featureAttributes;
-      foreach ( const QString &attribute, attributesMap.keys() )
+      for ( auto it = attributesMap.constBegin(); it != attributesMap.constEnd(); ++it )
       {
-        fields.append( QgsField( attribute, QVariant::String, QStringLiteral( "string" ) ) );
-        featureAttributes.append( attributesMap[attribute].toString() );
+        fields.append( QgsField( it.key(), QVariant::String, QStringLiteral( "string" ) ) );
+        featureAttributes.append( it.value().toString() );
       }
       QgsCoordinateReferenceSystem crs;
-      QgsAbstractGeometry *geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
+      std::unique_ptr< QgsAbstractGeometry > geometry = QgsArcGisRestUtils::parseEsriGeoJSON( resultMap[QStringLiteral( "geometry" )].toMap(), resultMap[QStringLiteral( "geometryType" )].toString(), false, false, &crs );
       QgsFeature feature( fields );
-      feature.setGeometry( QgsGeometry( geometry ) );
+      feature.setGeometry( QgsGeometry( std::move( geometry ) ) );
       feature.setAttributes( featureAttributes );
       feature.setValid( true );
       QgsFeatureStore store( fields, crs );
@@ -449,3 +458,32 @@ void QgsAmsProvider::readBlock( int /*bandNo*/, const QgsRectangle &viewExtent, 
   }
   std::memcpy( data, mCachedImage.constBits(), mCachedImage.bytesPerLine() * mCachedImage.height() );
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for AMS layers source select
+class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsAmsSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsAmsSourceSelectProvider;
+
+  return providers;
+}
+#endif

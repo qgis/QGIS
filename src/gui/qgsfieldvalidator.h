@@ -26,7 +26,8 @@
 #include "qgsfields.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFieldValidator
  */
 class GUI_EXPORT QgsFieldValidator : public QValidator
@@ -35,10 +36,10 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
 
   public:
     QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat = "yyyy-MM-dd" );
-    ~QgsFieldValidator();
+    ~QgsFieldValidator() override;
 
-    virtual State validate( QString &s SIP_CONSTRAINED, int &i SIP_INOUT ) const override;
-    virtual void fixup( QString &s SIP_CONSTRAINED ) const override;
+    State validate( QString &s SIP_CONSTRAINED SIP_INOUT, int &i SIP_INOUT ) const override;
+    void fixup( QString &s SIP_CONSTRAINED ) const override;
 
     QString dateFormat() const { return mDateFormat; }
 
@@ -52,5 +53,7 @@ class GUI_EXPORT QgsFieldValidator : public QValidator
     QString mDefaultValue;
     QString mDateFormat;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSFIELDVALIDATOR_H

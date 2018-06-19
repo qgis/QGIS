@@ -43,17 +43,6 @@ class QgsServiceNativeModuleEntry
     unloadHook_t *mUnloadHook = nullptr;
 };
 
-//! Constructor
-QgsServiceNativeLoader::QgsServiceNativeLoader()
-{
-}
-
-//! Destructor
-QgsServiceNativeLoader::~QgsServiceNativeLoader()
-{
-
-}
-
 void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
     QgsServerInterface *serverIface )
 {

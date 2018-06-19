@@ -22,12 +22,6 @@
 #include "qgsserverexception.h"
 
 
-//! constructor
-QgsServerResponse::QgsServerResponse()
-{
-}
-
-
 void QgsServerResponse::write( const QString &data )
 {
   QIODevice *iodev = io();

@@ -33,21 +33,25 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     Q_OBJECT
 
   public:
-    //! Constructor
+
+    /**
+     * Constructor for QgsDecorationNorthArrow, with the specified \a parent object.
+     */
     QgsDecorationNorthArrow( QObject *parent = nullptr );
 
-    virtual ~QgsDecorationNorthArrow();
-
   public slots:
-    //! set values on the gui when a project is read or the gui first loaded
+    //! Sets values on the gui when a project is read or the gui first loaded
     void projectRead() override;
-    //! save values to the project
+    //! Save values to the project
     void saveToProject() override;
 
     //! Show the dialog box
     void run() override;
-    //! draw some arbitrary text to the screen
+    //! Draw some arbitrary text to the screen
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
+
+    //! Returns the north arrow SVG path
+    QString svgPath();
 
   private:
 
@@ -58,15 +62,19 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
     QColor mColor;
     //! The north arrow outline color
     QColor mOutlineColor;
+    //! The north arrow size in millimeter
+    double mSize = 16.0;
+    //! Custom north arrow svg path
+    QString mSvgPath;
 
     // The amount of rotation for the north arrow
-    int mRotationInt;
+    int mRotationInt = 0;
 
     //! enable or disable the automatic setting of the arrow direction
-    bool mAutomatic;
+    bool mAutomatic = true;
     //! margin values
-    int mMarginHorizontal;
-    int mMarginVertical;
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationNorthArrowDialog;
 };

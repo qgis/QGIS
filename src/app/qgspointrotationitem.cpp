@@ -25,19 +25,10 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   //setup font
   mFont.setPointSize( 12 );
   mFont.setBold( true );
-}
 
-QgsPointRotationItem::QgsPointRotationItem()
-  : QgsMapCanvasItem( nullptr )
-  , mOrientation( Clockwise )
-  , mRotation( 0.0 )
-{
-
-}
-
-QgsPointRotationItem::~QgsPointRotationItem()
-{
-
+  QImage im( 24, 24, QImage::Format_ARGB32 );
+  im.fill( Qt::transparent );
+  setSymbol( im );
 }
 
 void QgsPointRotationItem::paint( QPainter *painter )

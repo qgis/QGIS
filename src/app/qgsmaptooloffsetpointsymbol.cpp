@@ -24,6 +24,7 @@
 #include "qgssymbollayer.h"
 #include "qgisapp.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
@@ -31,7 +32,6 @@
 QgsMapToolOffsetPointSymbol::QgsMapToolOffsetPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
   , mOffsetting( false )
-  , mOffsetItem( nullptr )
   , mSymbolRotation( 0.0 )
 {}
 
@@ -114,7 +114,7 @@ bool QgsMapToolOffsetPointSymbol::checkSymbolCompatibility( QgsMarkerSymbol *mar
 
 void QgsMapToolOffsetPointSymbol::noCompatibleSymbols()
 {
-  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), QgsMessageBar::CRITICAL );
+  emit messageEmitted( tr( "The selected point does not have an offset attribute set." ), Qgis::Critical );
 }
 
 void QgsMapToolOffsetPointSymbol::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -229,15 +229,15 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
   switch ( unit )
   {
     case QgsUnitTypes::RenderMillimeters:
-      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderPoints:
-      factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 2.83464567 * 25.4 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderInches:
-      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel() ;
+      factor = 1.0 / mCanvas->mapSettings().outputDpi() / mCanvas->mapSettings().mapUnitsPerPixel();
       break;
 
     case QgsUnitTypes::RenderPixels:
@@ -251,7 +251,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
     case QgsUnitTypes::RenderMetersInMapUnits:
     {
       QgsDistanceArea distanceArea;
-      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
+      distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
       distanceArea.setEllipsoid( mCanvas->mapSettings().ellipsoid() );
       // factor=1.0 / 1 meter in MapUnits
       factor = 1.0 / distanceArea.measureLineProjected( startPoint );

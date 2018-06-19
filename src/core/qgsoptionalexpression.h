@@ -44,7 +44,7 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
      * Construct a default optional expression.
      * It will be disabled and with an empty expression.
      */
-    QgsOptionalExpression();
+    QgsOptionalExpression() = default;
 
     /**
      * Construct an optional expression with the provided expression.
@@ -77,8 +77,10 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
 };
 
 
-#if defined(Q_OS_WIN)
+#if defined(_MSC_VER)
+#ifndef SIP_RUN
 template CORE_EXPORT QgsOptional<QgsExpression>;
+#endif
 #endif
 
 

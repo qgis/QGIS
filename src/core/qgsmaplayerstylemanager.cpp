@@ -16,14 +16,13 @@
 #include "qgsmaplayerstylemanager.h"
 
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
 
 #include <QDomElement>
 #include <QTextStream>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer *layer )
   : mLayer( layer )
-  , mOverriddenOriginalStyle( nullptr )
+
 {
   reset();
 }
@@ -224,12 +223,13 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   return true;
 }
 
+bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
+{
+  return styleName == defaultStyleName();
+}
+
 
 // -----
-
-QgsMapLayerStyle::QgsMapLayerStyle()
-{
-}
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
@@ -269,6 +269,11 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer *layer )
 
 void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
 {
+  if ( !isValid() )
+  {
+    return;
+  }
+
   QDomDocument doc( QStringLiteral( "qgis" ) );
   if ( !doc.setContent( mXmlData ) )
   {

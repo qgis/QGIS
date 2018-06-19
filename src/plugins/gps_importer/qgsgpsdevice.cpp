@@ -17,7 +17,7 @@
 #include "qgsgpsdevice.h"
 
 
-QgsGPSDevice::QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
+QgsGpsDevice::QgsGpsDevice( const QString &wptDlCmd, const QString &wptUlCmd,
                             const QString &rteDlCmd, const QString &rteUlCmd,
                             const QString &trkDlCmd, const QString &trkUlCmd )
 {
@@ -36,7 +36,7 @@ QgsGPSDevice::QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
 }
 
 
-QStringList QgsGPSDevice::importCommand( const QString &babel,
+QStringList QgsGpsDevice::importCommand( const QString &babel,
     const QString &type,
     const QString &in,
     const QString &out ) const
@@ -68,7 +68,7 @@ QStringList QgsGPSDevice::importCommand( const QString &babel,
 }
 
 
-QStringList QgsGPSDevice::exportCommand( const QString &babel,
+QStringList QgsGpsDevice::exportCommand( const QString &babel,
     const QString &type,
     const QString &in,
     const QString &out ) const

@@ -35,7 +35,7 @@ class QgsGeoPackageRasterWriter
       ErrUserCanceled, //!< User canceled the export
     };
 
-    QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri sourceUri, const QString destinationPath );
+    QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath );
     WriterError writeRaster( QgsFeedback *feedback, QString *errorMessage );
     const QString outputUrl() const { return mOutputUrl; }
 

@@ -1,7 +1,7 @@
 r.topmodel
 r.topmodel.topidxstats - Builds a TOPMODEL topographic index statistics file.
 Raster (r.*)
-ParameterRaster|topidx|Name of input topographic index raster map|False
-ParameterNumber|ntopidxclasses|Number of topographic index classes|0|None|30|True
+QgsProcessingParameterRasterLayer|topidx|Name of input topographic index raster map|None|False
+QgsProcessingParameterNumber|ntopidxclasses|Number of topographic index classes|QgsProcessingParameterNumber.Integer|30|True|1|None
 Hardcoded|-p
-OutputFile|outtopidxstats|TOPMODEL topographic index statistics file
+QgsProcessingParameterFileDestination|outtopidxstats|TOPMODEL topographic index statistics file|Txt files (*.txt)|None|False

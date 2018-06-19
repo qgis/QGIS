@@ -215,7 +215,7 @@ tests:
         type: vector
 
   - name: Delete Holes
-    algorithm: qgis:deleteholes
+    algorithm: native:deleteholes
     params:
     - name: polys.gml
       type: vector
@@ -339,6 +339,18 @@ tests:
         name: expected/multipolys_densify.gml
         type: vector
 
+  - algorithm: qgis:densifygeometriesgivenaninterval
+    name: Densify polygons by interval
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERVAL: 1.0
+    results:
+      OUTPUT:
+        name: expected/densify_by_interval_polys.gml
+        type: vector
+
   - name: Polygons to Lines
     algorithm: qgis:polygonstolines
     params:
@@ -402,57 +414,41 @@ tests:
           - 'Mean length: 3.0'
           - 'NULL \(missing\) values: 1'
 
-#  # Split lines with lines considers two cases
-#  # case 1: two different layers
-#  - algorithm: qgis:splitlineswithlines
-#    name: Split lines with lines
-#    params:
-#      INPUT_A:
-#        name: lines.gml
-#        type: vector
-#      INPUT_B:
-#        name: custom/lines2.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/lines_split_with_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-#  # case 2 split line layer with iself
-#  - algorithm: qgis:splitlineswithlines
-#    name: Split lines with same lines
-#    params:
-#      INPUT_A:
-#        name: custom/lines2.gml
-#        type: vector
-#      INPUT_B:
-#        name: custom/lines2.gml
-#        type: vector
-#    results:
-#      OUTPUT:
-#        name: expected/lines_split_with_same_lines.gml
-#        type: vector
-#        compare:
-#          geometry:
-#            precision: 7
-#
-
   - algorithm: qgis:listuniquevalues
     name: Unique values
     params:
       INPUT:
         name: points.gml
         type: vector
-      FIELD_NAME: id2
+      FIELDS: id2
     results:
       OUTPUT:
         name: expected/unique_values.gml
         type: vector
+        pk:
+        - id2
 
-  - algorithm: qgis:addautoincrementalfield
+  - algorithm: qgis:listuniquevalues
+    name: Unique values (multiple fields)
+    params:
+      FIELDS:
+      - name
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/unique_values_multiple.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - name
+        - intval
+
+  - algorithm: native:addautoincrementalfield
     name: Add autoincremental field
     params:
       INPUT:
@@ -461,6 +457,64 @@ tests:
     results:
       OUTPUT:
         name: expected/autoincrement_field.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add autoincremental field with start value
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      START: 10
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_start.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add autoincremental field with name
+    params:
+      FIELD_NAME: my_field
+      INPUT:
+        name: points.gml
+        type: vector
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_field_field_name.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (grouped)
+    params:
+      FIELD_NAME: AUTO
+      GROUP_FIELDS:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      START: 6
+    results:
+      OUTPUT:
+        name: expected/autoincrement_grouped.gml
+        type: vector
+
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (with sorting)
+    params:
+      FIELD_NAME: AUTO
+      INPUT:
+        name: points.gml
+        type: vector
+      SORT_ASCENDING: true
+      SORT_EXPRESSION: 99-id
+      SORT_NULLS_FIRST: false
+      START: 0
+    results:
+      OUTPUT:
+        name: expected/autoincrement_sort.gml
         type: vector
 
   - algorithm: native:dissolve
@@ -530,7 +584,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Basic polygon buffer
     params:
       DISSOLVE: 'False'
@@ -547,7 +601,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Polygon buffer with dissolve
     params:
       DISSOLVE: 'True'
@@ -588,7 +642,23 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:mergelines
+  - algorithm: qgis:rectanglesovalsdiamondsvariable
+    name: Rectangles ovals diamonds variable
+    params:
+      HEIGHT: id
+      INPUT:
+        name: points.gml
+        type: vector
+      ROTATION: id2
+      SEGMENTS: 1
+      SHAPE: 0
+      WIDTH: id
+    results:
+      OUTPUT:
+        name: expected/rectanglesovalsdiamondsvariable.gml
+        type: vector
+
+  - algorithm: native:mergelines
     name: Merge lines algorithm
     params:
       INPUT:
@@ -598,6 +668,67 @@ tests:
       OUTPUT:
         name: expected/merge_lines.gml
         type: vector
+
+  - algorithm: native:mergevectorlayers
+    name: Merge points
+    params:
+      LAYERS:
+        params:
+        - name: custom/points.shp
+          type: vector
+        - name: custom/pointszm.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_points.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons
+    params:
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons with CRS
+    params:
+      CRS: EPSG:3785
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys_crs.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            layer: skip
+            path: skip
+          geometry:
+            precision: 0
 
   - algorithm: native:multiparttosingleparts
     name: Multiparts to singleparts
@@ -610,7 +741,7 @@ tests:
         name: expected/multi_to_single.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for lines
     params:
       INPUT:
@@ -621,7 +752,7 @@ tests:
         name: expected/lines_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multilines
     params:
       INPUT:
@@ -632,7 +763,7 @@ tests:
         name: expected/multiline_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multipolygons
     params:
       INPUT:
@@ -643,7 +774,7 @@ tests:
         name: expected/multipoly_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for points
     params:
       INPUT:
@@ -654,7 +785,7 @@ tests:
         name: expected/point_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for polygons
     params:
       INPUT:
@@ -665,7 +796,7 @@ tests:
         name: expected/poly_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundingboxes
+  - algorithm: native:boundingboxes
     name: Bounding boxes for multipoints
     params:
       INPUT:
@@ -676,7 +807,7 @@ tests:
         name: expected/multipoint_bounds.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Polygon boundary
     params:
       INPUT:
@@ -687,7 +818,7 @@ tests:
         name: expected/poly_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Multipoly boundary
     params:
       INPUT:
@@ -698,7 +829,7 @@ tests:
         name: expected/multipoly_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Line boundary
     params:
       INPUT:
@@ -709,7 +840,7 @@ tests:
         name: expected/lines_boundary.gml
         type: vector
 
-  - algorithm: qgis:boundary
+  - algorithm: native:boundary
     name: Multiline boundary
     params:
       INPUT:
@@ -744,7 +875,7 @@ tests:
         name: expected/set_z_value.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop M Value
     params:
       INPUT:
@@ -757,7 +888,7 @@ tests:
         name: expected/m_dropped.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop Z Value
     params:
       INPUT:
@@ -770,7 +901,7 @@ tests:
         name: expected/z_dropped.shp
         type: vector
 
-  - algorithm: qgis:dropmzvalues
+  - algorithm: native:dropmzvalues
     name: Drop ZM Value
     params:
       INPUT:
@@ -783,7 +914,7 @@ tests:
         name: expected/zm_dropped.shp
         type: vector
 
-  - algorithm: qgis:pointonsurface
+  - algorithm: native:pointonsurface
     name: Point on polygon surface
     params:
       INPUT:
@@ -792,6 +923,18 @@ tests:
     results:
       OUTPUT:
         name: expected/point_on_poly.gml
+        type: vector
+
+  - algorithm: native:pointonsurface
+    name: Point on all parts of multi polygon surface
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      ALL_PARTS: true
+    results:
+      OUTPUT:
+        name: expected/point_on_multipoly.gml
         type: vector
 
   - algorithm: qgis:pointonsurface
@@ -920,7 +1063,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using bevel
     params:
       DISSOLVE: false
@@ -937,7 +1080,7 @@ tests:
         name: expected/buffer_polys_bevel.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using miter
     params:
       DISSOLVE: false
@@ -954,7 +1097,7 @@ tests:
         name: expected/buffer_polys_miter.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines
     params:
       DISSOLVE: false
@@ -974,7 +1117,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (flat)
     params:
       DISSOLVE: false
@@ -994,7 +1137,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (square)
     params:
       DISSOLVE: false
@@ -1071,6 +1214,18 @@ tests:
             precision: 7
 
   - algorithm: native:centroids
+    name: Centroid (multipolygons)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+      ALL_PARTS: true
+    results:
+      OUTPUT:
+        name: expected/centroid_multipoly_all_parts.gml
+        type: vector
+
+  - algorithm: native:centroids
     name: Centroid (points)
     params:
       INPUT:
@@ -1098,7 +1253,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:translategeometry
+  - algorithm: native:translategeometry
     name: Lines translated
     params:
       DELTA_X: 0.1
@@ -1109,6 +1264,21 @@ tests:
     results:
       OUTPUT:
         name: expected/lines_translated.gml
+        type: vector
+
+  - algorithm: native:translategeometry
+    name: Translate Z/M
+    params:
+      DELTA_M: 4.0
+      DELTA_X: 0.0
+      DELTA_Y: 0.0
+      DELTA_Z: 3.0
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/translate_z_m.shp
         type: vector
 
   - algorithm: qgis:singlesidedbuffer
@@ -1165,8 +1335,8 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-  - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multipolygons
     params:
       INPUT:
         name: multipolys.gml
@@ -1175,9 +1345,15 @@ tests:
       OUTPUT:
         name: expected/extract_nodes_multipolys.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 7
+            angle:
+              precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from polygons
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from polygons
     params:
       INPUT:
         name: polys.gml
@@ -1186,9 +1362,15 @@ tests:
       OUTPUT:
         name: expected/extract_nodes_polys.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 7
+            angle:
+              precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from multilines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multilines
     params:
       INPUT:
         name: multilines.gml
@@ -1197,9 +1379,15 @@ tests:
       OUTPUT:
         name: expected/extract_nodes_multilines.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 7
+            angle:
+              precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from lines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from lines
     params:
       INPUT:
         name: lines.gml
@@ -1208,8 +1396,14 @@ tests:
       OUTPUT:
         name: expected/extract_nodes_lines.gml
         type: vector
+        compare:
+          fields:
+            distance:
+              precision: 7
+            angle:
+              precision: 7
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (lines)
     params:
       INPUT:
@@ -1221,7 +1415,7 @@ tests:
         name: expected/simplify_lines.gml
         type: vector
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (multilines)
     params:
       INPUT:
@@ -1233,7 +1427,7 @@ tests:
         name: expected/simplify_multilines.gml
         type: vector
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (visval)
     params:
       INPUT:
@@ -1249,7 +1443,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:simplifygeometries
+  - algorithm: native:simplifygeometries
     name: Simplify (grid)
     params:
       INPUT:
@@ -1265,7 +1459,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:smoothgeometry
+  - algorithm: native:smoothgeometry
     name: Smooth (lines)
     params:
       INPUT:
@@ -1279,7 +1473,7 @@ tests:
         name: expected/smoothed_lines.gml
         type: vector
 
-  - algorithm: qgis:smoothgeometry
+  - algorithm: native:smoothgeometry
     name: Smooth (lines, with max angle)
     params:
       INPUT:
@@ -1303,6 +1497,30 @@ tests:
     results:
       OUTPUT:
         name: expected/add_geometry_pointz.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export line info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_line_info.gml
+        type: vector
+
+  - algorithm: qgis:exportaddgeometrycolumns
+    name: Export multiline info
+    params:
+      CALC_METHOD: 0
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/export_multiline_info.gml
         type: vector
 
   - algorithm: qgis:texttofloat
@@ -1387,6 +1605,7 @@ tests:
         - 58365b3715b925d6286e7f082ebd9c2a20f09fa1c922176d3f238002
         - 75cca4c1a870a1e21185a2d85b33b6d9958a69fc6ebb04e4d6ceb8a3
         - c05cd8dbfb00200a3803dcdc74ad177588eb8379867c4046463f73f1
+        - 8f59f545b5df01f213b7a2233eb364d05b5801676d1f4285ad1225a1
         type: rasterhash
 
   - algorithm: qgis:relief
@@ -1433,39 +1652,63 @@ tests:
       NUMBER: 3.0
     results:
       OUTPUT:
-        hash: e453e9e36ce314d5197963ac27872a0cc3dfe43764ed586a334c66f0
+        hash: 56172fe81f40efba9fadcaeccdbab247e99c8725990a94d9609769f6
         type: rasterhash
 
-  # Case 1: Keep all fields
-  - algorithm: qgis:lineintersections
-    name: Line Intersection Keep All Fields from Both
+  - algorithm: native:lineintersections
+    name: Line intersections all fields
     params:
       INPUT:
-        name: lines.gml
+        name: custom/line_intersection1.gml
         type: vector
       INTERSECT:
-        name: simplify_lines.gml
+        name: custom/line_intersection2.gml
         type: vector
     results:
       OUTPUT:
-        name: expected/line_intersection.gml
+        name: expected/line_intersection_all_fields.gml
         type: vector
+        pk:
+        - name
+        - name_2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
 
-  # Case 2: Keep fid field from both layers
-  - algorithm: qgis:lineintersections
-    name: Line Intersection Keep fid from Both
+  - algorithm: native:lineintersections
+    name: Line intersections some fields
     params:
-      INPUT_FIELDS: fid
-      INTERSECT_FIELDS: fid
       INPUT:
-        name: lines.gml
+        name: custom/line_intersection1.gml
+        type: vector
+      INPUT_FIELDS:
+      - name
+      INTERSECT:
+        name: custom/line_intersection2.gml
+        type: vector
+      INTERSECT_FIELDS:
+      - name
+    results:
+      OUTPUT:
+        name: expected/line_intersection_partial_fields.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:lineintersections
+    name: Line intersections with geometry collection
+    params:
+      INPUT:
+        name: custom/line_intersection_collection1.gml
         type: vector
       INTERSECT:
-        name: simplify_lines.gml
+        name: custom/line_intersection_collection2.gml
         type: vector
     results:
       OUTPUT:
-        name: expected/line_intersection.gml
+        name: expected/line_intersection_collection.gml
         type: vector
 
   - algorithm: qgis:sumlinelengths
@@ -1498,52 +1741,52 @@ tests:
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using attribute
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,False,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       ROWS: 300
     results:
       OUTPUT:
-        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        hash:
+        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:idwinterpolation
     name: IDW interpolation using Z value
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       DISTANCE_COEFFICIENT: 2.0
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,True,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       ROWS: 300
     results:
       OUTPUT:
-        hash: 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        hash:
+        - 56d2671d50444f8571affba3f9e585830b82af5e380394178f521065
+        - 2ae62aca803e6864ac75e47b4357292b0637d811cb510ed19471f422
         type: rasterhash
 
   - algorithm: qgis:tininterpolation
     name: TIN interpolation using attribute
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,False,1,0
+        name: pointsz.gml::~::0::~::1::~::0
         type: interpolation
       METHOD: '0'
       ROWS: 300
     results:
       OUTPUT:
-        hash: 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        hash:
+        - 87f40be6ec08f3fcbb5707762de71f6be35bb265c61f594335562a26
+        - a31f0faf918ebe0902e5c9c5c8cf606d30f52eb4094bf24e4f8ac67a
         type: rasterhash
       #TRIANGULATION_FILE:
       #  name: expected/triangulation.gml
@@ -1552,18 +1795,18 @@ tests:
   - algorithm: qgis:tininterpolation
     name: TIN interpolation using Z value
     params:
-      CELLSIZE_X: 0.02667
-      CELLSIZE_Y: 0.02667
       COLUMNS: 300
       EXTENT: 0, 8, -5, 3
       INTERPOLATION_DATA:
-        name: pointsz.gml,True,-1,0
+        name: pointsz.gml::~::1::~::-1::~::0
         type: interpolation
       METHOD: '1'
       ROWS: 300
     results:
       OUTPUT:
-        hash: 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        hash:
+        - 5e14dd0b879884b8b8da56c082947dad681feb4e9f1137f5cda126f8
+        - b8389559d6a85e7a672d72254228473fae71af2d89e5a5dd73d1b0d7
         type: rasterhash
       #TRIANULATION_FILE:
       #  name: expected/triangulation.gml
@@ -1620,13 +1863,13 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes lines
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices lines
     params:
       INPUT:
         name: lines.gml
         type: vector
-      NODES: 0,-1,2,-2
+      VERTICES: 0,-1,2,-2
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_lines.gml
@@ -1635,13 +1878,13 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes polygons
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices polygons
     params:
       INPUT:
         name: polys.gml
         type: vector
-      NODES: 0,-1,5,-5
+      VERTICES: 0,-1,5,-5
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_polys.gml
@@ -1937,24 +2180,7 @@ tests:
         name: expected/create_points.gml
         type: vector
 
-  - algorithm: qgis:splitwithlines
-    name: Split lines with lines (new alg)
-    params:
-      INPUT:
-        name: lines.gml
-        type: vector
-      LINES:
-        name: custom/lines2.gml
-        type: vector
-    results:
-      OUTPUT:
-        name: expected/split_lines_with_lines.gml
-        type: vector
-        compare:
-          geometry:
-            precision: 7
-
-  - algorithm: qgis:splitwithlines
+  - algorithm: native:splitwithlines
     name: Split poly with lines
     params:
       INPUT:
@@ -1965,13 +2191,15 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_polys_with_lines.gml
+        name: expected/split_polys_with_lines.shp
         type: vector
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
-  - algorithm: qgis:splitwithlines
+  - algorithm: native:splitwithlines
     name: Split lines with same lines
     params:
       INPUT:
@@ -1982,13 +2210,56 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_lines_with_lines_same.gml
+        name: expected/split_lines_with_same2.shp
         type: vector
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
-  - algorithm: qgis:dropgeometries
+  # Split lines with lines considers two cases
+  # case 1: two different layers
+  - algorithm: native:splitwithlines
+    name: Split lines with lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+      LINES:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+
+  # case 2 split line layer with iself
+  - algorithm: native:splitwithlines
+    name: Split lines with same lines
+    params:
+      INPUT:
+        name: custom/lines2.gml
+        type: vector
+      LINES:
+        name: custom/lines2.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/split_lines_with_lines_same.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+
+  - algorithm: native:dropgeometries
     name: Drop geometries
     params:
       INPUT:
@@ -1999,12 +2270,13 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
+      TYPE: '1'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2014,13 +2286,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangles)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2030,13 +2302,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2046,13 +2318,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VSPACING: 5.0
     results:
       OUTPUT:
@@ -2062,13 +2334,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
+      TYPE: '1'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2076,14 +2349,14 @@ tests:
         name: expected/grid_lines_overlay.gml
         type: vector
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangle with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2094,14 +2367,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2112,14 +2385,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VOVERLAY: 1.0
       VSPACING: 5.0
     results:
@@ -2130,7 +2403,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:deleteholes
+  - algorithm: native:deleteholes
     name: Delete holes (no min)
     params:
       INPUT:
@@ -2142,7 +2415,7 @@ tests:
         name: expected/removed_holes.gml
         type: vector
 
-  - algorithm: qgis:deleteholes
+  - algorithm: native:deleteholes
     name: Delete holes (with min)
     params:
       INPUT:
@@ -2241,10 +2514,9 @@ tests:
         hash: fe6e018be13c5a3c17f3f4d0f0dc7686c628cb440b74c4642aa0c939
         type: rasterhash
 
-  - algorithm: qgis:orientedminimumboundingbox
+  - algorithm: native:orientedminimumboundingbox
     name: Oriented minimum bounding box polys
     params:
-      BY_FEATURE: true
       INPUT:
         name: custom/oriented_bbox.gml
         type: vector
@@ -2317,6 +2589,38 @@ tests:
         name: expected/refactorfields.gml
         type: vector
 
+  - algorithm: qgis:refactorfields
+    name: Refactor fields, empty expression
+    params:
+      FIELDS_MAPPING:
+      - expression: '"fid"'
+        length: 0
+        name: fid
+        precision: 0
+        type: 10
+      - expression: '"id"'
+        length: 0
+        name: id
+        precision: 0
+        type: 2
+      - expression: '"id2"'
+        length: 0
+        name: id2
+        precision: 0
+        type: 2
+      - expression: ''
+        length: 0
+        name: no_exp
+        precision: 0
+        type: 10
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/refactor_fields_null.gml
+        type: vector
+
   - algorithm: native:reprojectlayer
     name: reproject vector layer
     params:
@@ -2371,7 +2675,7 @@ tests:
             fid: skip
 
 
-  - algorithm: qgis:adduniquevalueindexfield
+  - algorithm: native:adduniquevalueindexfield
     name: add unique field based on another field
     params:
       FIELD: id2
@@ -2382,6 +2686,24 @@ tests:
       OUTPUT:
         name: expected/add_unique_field.gml
         type: vector
+
+  - algorithm: native:adduniquevalueindexfield
+    name: Add unique field summary
+    params:
+      FIELD: id2
+      FIELD_NAME: classes
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      SUMMARY_OUTPUT:
+        name: expected/add_unique_field_summary.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - id2
 
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
@@ -2394,7 +2716,7 @@ tests:
         name: expected/lines_to_polygon.gml
         type: vector
 
-  - algorithm: qgis:snappointstogrid
+  - algorithm: native:snappointstogrid
     name: Gridify polys
     params:
       INPUT:
@@ -2407,7 +2729,7 @@ tests:
         name: expected/gridify_polys.gml
         type: vector
 
-  - algorithm: qgis:snappointstogrid
+  - algorithm: native:snappointstogrid
     name: Gridify lines
     params:
       INPUT:
@@ -2452,7 +2774,7 @@ tests:
         name: expected/hub_distance_lines.gml
         type: vector
 
-  - algorithm: qgis:hublines
+  - algorithm: native:hublines
     name: Hub lines
     params:
       HUBS:
@@ -2466,6 +2788,67 @@ tests:
     results:
       OUTPUT:
         name: expected/hub_lines.gml
+        type: vector
+
+  - algorithm: native:hublines
+    name: Hub lines (with polygons)
+    params:
+      HUBS:
+        name: dissolve_polys.gml
+        type: vector
+      HUB_FIELD: intval
+      SPOKES:
+        name: points.gml
+        type: vector
+      SPOKE_FIELD: id
+    results:
+      OUTPUT:
+        name: expected/hub_lines_to_poly.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: native:hublines
+    name: Hub lines ( with z )
+    params:
+      HUBS:
+        name: multipoints.gml
+        type: vector
+      HUB_FIELD: d
+      SPOKES:
+        name: pointsz.gml
+        type: vector
+      SPOKE_FIELD: elev
+    results:
+      OUTPUT:
+        name: expected/hub_lines_multi_to_z.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: native:hublines
+    name: Hub lines subset of fields
+    params:
+      HUBS:
+        name: points.gml
+        type: vector
+      HUB_FIELD: id
+      HUB_FIELDS:
+      - id
+      - id2
+      SPOKES:
+        name: custom/spoke_points.gml
+        type: vector
+      SPOKE_FIELD: id
+      SPOKE_FIELDS:
+      - name
+    results:
+      OUTPUT:
+        name: expected/hub_lines_field_subset.gml
         type: vector
 
   - algorithm: qgis:pointstopath
@@ -2495,8 +2878,8 @@ tests:
         - expected/points_to_path_grouped2.gml
         type: vector
 
-  - algorithm: qgis:joinattributestable
-    name: join the attribute table by common field
+  - algorithm: native:joinattributestable
+    name: join the attribute table by common field (one-to-one)
     params:
       INPUT:
         name: points.gml
@@ -2511,86 +2894,390 @@ tests:
         name: expected/join_attribute_table.gml
         type: vector
 
-  - algorithm: qgis:convexhull
-    name: Simple convex hull
+  - algorithm: native:joinattributestable
+    name: Join with prefix
     params:
+      DISCARD_NONMATCHING: false
+      FIELD: id
+      FIELD_2: ID
       INPUT:
-        name: custom/points_hull.gml
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: vector
+      METHOD: 1
+      PREFIX: j_
+    results:
+      OUTPUT:
+        name: expected/join_attributes_with_prefix.gml
+        type: vector
+
+  - algorithm: native:joinattributestable
+    name: join the attribute table by common field, discard non matching (one-to-one)
+    params:
+      METHOD: 1
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table2.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+      DISCARD_NONMATCHING: true
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table_discard_nonmatching.gml
+        type: vector
+
+  - algorithm: native:joinattributestable
+    name: join the attribute table by common field (one-to-many)
+    params:
+      METHOD: 0
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
+        type: table
+      FIELD: id
+      FIELD_2: ID
+    results:
+      OUTPUT:
+        name: expected/join_attribute_table_all_match.gml
+        type: vector
+
+  - algorithm: native:joinattributestable
+    name: Join attributes table with subset of fields
+    params:
+      FIELD: id
+      FIELDS_TO_COPY:
+      - NUM_A
+      FIELD_2: ID
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_2:
+        name: table.dbf
         type: vector
     results:
       OUTPUT:
-        name: expected/convex_hull.gml
+        name: expected/join_attribute_table_subset.gml
         type: vector
 
-  - algorithm: qgis:convexhull
-    name: Convex hull based on field attribute
+  - algorithm: qgis:shortestpathpointtopoint
+    name: Shortest path (point to point, shortest route)
     params:
-      FIELD: hull
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003712.4162500285,6222484.5571899945 [EPSG:32733]
       INPUT:
-        name: custom/points_hull.gml
+        name: roads.gml
         type: vector
+      START_POINT: 1000997.5971978485,6220343.83965781 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
     results:
       OUTPUT:
-        name: expected/convex_hull_fields.gml
+        name: expected/shortest.gml
         type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
 
-#  # These tests dissabled because algs require access to iface which
-#  # is not available in the test suite.
-#  #- algorithm: qgis:shortestpathpointtopoint
-#  #  name: Shortest path (point to point, shortest route)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 5.0
-#  #    END_POINT: 1003534.816864,6222363.591221
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    START_POINT: 1000943.661493,6220332.253368
-#  #    STRATEGY: '0'
-#  #    TOLERANCE: 0.0
-#  #  results:
-#  #    OUTPUT_LAYER:
-#  #      name: expected/shortest.gml
-#  #      type: vector
-#  #
-#  #- algorithm: qgis:shortestpathpointtopoint
-#  #  name: Shortest path (point to point, fastest route)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 60.0
-#  #    END_POINT: 1003534.816864,6222363.591221
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    SPEED_FIELD: SPEED
-#  #    START_POINT: 1000943.661493,6220332.253368
-#  #    STRATEGY: '1'
-#  #    TOLERANCE: 0.0
-#  #  results:
-#  #    OUTPUT_LAYER:
-#  #      name: expected/fastest.gml
-#  #      type: vector
-#  #
-#  #- algorithm: qgis:serviceareafrompoint
-#  #  name: Service area (from point, shortest)
-#  #  params:
-#  #    DEFAULT_DIRECTION: '2'
-#  #    DEFAULT_SPEED: 5.0
-#  #    INPUT_VECTOR:
-#  #      name: roads.gml
-#  #      type: vector
-#  #    START_POINT: 1002660.341692,6222015.780774
-#  #    STRATEGY: '0'
-#  #    TOLERANCE: 0.0
-#  #    TRAVEL_COST: 700.0
-#  #  results:
-#  #    OUTPUT_POINTS:
-#  #      name: expected/servicearea_nodes.gml
-#  #      type: vector
-#  #    OUTPUT_POLYGON:
-#  #      name: expected/servicearea_bounds.gml
-#  #      type: vector
-#
+  - algorithm: qgis:shortestpathpointtopoint
+    name: Shortest path (point to point, fastest route)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1003731.877318503,6222474.826655758 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      SPEED_FIELD: SPEED
+      START_POINT: 1000997.5971978485,6220324.378589335 [EPSG:32733]
+      STRATEGY: 1
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/fastest.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:shortestpathlayertopoint
+    name: Shortest path layer to point
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINT: 1004160.8843928401,6223198.426763908 [EPSG:32733]
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_layer_to_point.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:shortestpathpointtolayer
+    name: Shortest path point to layer
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      END_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1001285.5030045575,6219636.580449594 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/shortest_path_point_to_layer.shp
+        type: vector
+        compare:
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area (from point, shortest)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1002465.0089601517,6221875.432489508 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area (from point, shortest, no bounds)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1002465.0089601517,6221875.432489508
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_no_bounds.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:serviceareafrompoint
+    name: Service area from point, output lines
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINT: 1003654.8065293541,6222397.723338357 [EPSG:32733]
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 400.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_lines.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+
+  - algorithm: qgis:serviceareafromlayer
+    name: Service area from layer
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_from_layer.shp
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+        - d
+        - type
+
+  - algorithm: qgis:serviceareafromlayer
+    name: Service area from layer no bounds
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 700.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT:
+        name: expected/service_area_from_layer_no_bounds.shp
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+        - d
+        - type
+
+  - algorithm: qgis:serviceareafromlayer
+    name: Service area from layer (lines)
+    params:
+      DEFAULT_DIRECTION: 2
+      DEFAULT_SPEED: 5.0
+      INCLUDE_BOUNDS: false
+      INPUT:
+        name: roads.gml
+        type: vector
+      START_POINTS:
+        name: custom/route_points.gml
+        type: vector
+      STRATEGY: 0
+      TOLERANCE: 0.0
+      TRAVEL_COST: 500.0
+      VALUE_BACKWARD: ''
+      VALUE_BOTH: ''
+      VALUE_FORWARD: ''
+    results:
+      OUTPUT_LINES:
+        name: expected/service_area_from_layer_lines.shp
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            cost:
+              precision: 2
+            start: skip
+            end: skip
+        pk:
+        - d
+        - type
+
   - algorithm: qgis:createattributeindex
     name: Create attribute index
     params:
@@ -2696,7 +3383,7 @@ tests:
         name: expected/points_along_lines.gml
         type: vector
 
-  - algorithm: qgis:meancoordinates
+  - algorithm: native:meancoordinates
     name: standard mean coordinates
     params:
       INPUT:
@@ -2707,7 +3394,54 @@ tests:
         name: expected/mean_coordinates.gml
         type: vector
 
-  - algorithm: qgis:singlepartstomultipart
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, multiple grouped
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      UID: id2
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates_unique_grouped.gml
+        type: vector
+        pk: id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, unique field
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      UID: id
+    results:
+      OUTPUT:
+        name: expected/mean_coordinates_unique_grouped_2.gml
+        type: vector
+        pk: id
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:meancoordinates
+    name: Mean coordinates, weighted
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      WEIGHT: id
+    results:
+      OUTPUT:
+        name: expected/unique_coordinates_weight.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:collect
     name: single part to multipart
     params:
       FIELD: id
@@ -2736,24 +3470,48 @@ tests:
           fields:
             fid: skip
 
-#  - algorithm: qgis:zonalstatistics
-#    name: simple zonal statistics
-#    params:
-#      COLUMN_PREFIX: _
-#      GLOBAL_EXTENT: false
-#      INPUT_RASTER:
-#        name: dem.tif
-#        type: raster
-#      INPUT_VECTOR:
-#        name: custom/polygon_mask.gml
-#        type: vector
-#      RASTER_BAND: 1
-#    results:
-#      OUTPUT_LAYER:
-#        name: expected/zonal_statistics.gml
-#        type: vector
+  - algorithm: qgis:zonalstatistics
+    name: simple zonal statistics
+    params:
+      COLUMN_PREFIX: _
+      INPUT_RASTER:
+        name: dem.tif
+        type: raster
+      INPUT_VECTOR:
+        name: custom/zonal_stats.shp
+        type: vector
+        in_place: true
+      RASTER_BAND: 1
+      STATS:
+      - 0
+      - 1
+      - 2
+    results:
+      INPUT_VECTOR:
+        name: expected/zonal_stats.shp
+        type: vector
+        in_place_result: true
+        compare:
+          geometry:
+            precision: 5
 
-  - algorithm: qgis:fixgeometries
+  - algorithm: qgis:zonalhistogram
+    name: zonal histogram
+    params:
+      COLUMN_PREFIX: HISTO_
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_VECTOR:
+        name: zones.gml
+        type: vector
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/zones_histogram.gml
+        type: vector
+
+  - algorithm: native:fixgeometries
     name: Fix geometries
     params:
       INPUT:
@@ -2800,7 +3558,7 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode lines
     params:
       INPUT:
@@ -2814,7 +3572,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:explodelines
+  - algorithm: native:explodelines
     name: Explode multilines
     params:
       INPUT:
@@ -2827,6 +3585,17 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:explodelines
+    name: Explode compound curves
+    params:
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings_with_line
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/explode_compound_curve.shp
+        type: vector
 
   - algorithm: qgis:findprojection
     name: Find projection
@@ -2944,13 +3713,14 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
       EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
       HOVERLAY: 0.0
       HSPACING: 0.1
+      TYPE: '1'
       VOVERLAY: 0.0
       VSPACING: 0.1
     results:
@@ -2994,38 +3764,91 @@ tests:
         name: expected/convert_poly_nodes.gml
         type: vector
 
-#  # - algorithm: qgis:extractbylocation
-#  #   name: polygon intersecting points
-#  #   params:
-#  #     INPUT:
-#  #       name: polys.gml
-#  #       type: vector
-#  #     INTERSECT:
-#  #       name: custom/points.shp
-#  #       type: vector
-#  #     PRECISION: 0.0
-#  #     PREDICATE: '[''intersects'']'
-#  #   results:
-#  #     OUTPUT:
-#  #       name: expected/extract_by_location_intersection.gml
-#  #       type: vector
-#  #
-#  # - algorithm: qgis:extractbylocation
-#  #   name: points within polygons
-#  #   params:
-#  #     INPUT:
-#  #       name: custom/points.shp
-#  #       type: vector
-#  #     INTERSECT:
-#  #       name: polys.gml
-#  #       type: vector
-#  #     PRECISION: 0.0
-#  #     PREDICATE: '[''within'']'
-#  #   results:
-#  #     OUTPUT:
-#  #       name: expected/extract_by_location_within.gml
-#  #       type: vector
-#
+  - algorithm: native:extractbylocation
+    name: polygon intersecting points
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERSECT:
+        name: custom/points.shp
+        type: vector
+      PREDICATE: 0
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_intersection.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:extractbylocation
+    name: points within polygons
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      INTERSECT:
+        name: polys.gml
+        type: vector
+      PREDICATE: 6
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_within.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:extractbylocation
+    name: Polygons containing points
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+      INTERSECT:
+        name: custom/points.shp
+        type: vector
+      PREDICATE:
+      - 1
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_contains.gml
+        type: vector
+
+  - algorithm: native:extractbylocation
+    name: Extract by location (disjoint)
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      INTERSECT:
+        name: polys.gml
+        type: vector
+      PREDICATE:
+      - 2
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_disjoint.gml
+        type: vector
+
+  - algorithm: native:extractbylocation
+    name: Extract by location (touches)
+    params:
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      INTERSECT:
+        name: polys.gml
+        type: vector
+      PREDICATE:
+      - 4
+    results:
+      OUTPUT:
+        name: expected/extract_by_location_touches.gml
+        type: vector
+
+
   - algorithm: qgis:addfieldtoattributestable
     name: add float field
     params:
@@ -3041,36 +3864,36 @@ tests:
         name: expected/add_field.gml
         type: vector
 
-#  - algorithm: qgis:randompointsinextent
-#    name: Random point in extent, don't check result
-#    params:
-#      CRS: EPSG:4326
-#      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
-#      MIN_DISTANCE: 0.0
-#      POINT_NUMBER: 5
-#    results: {}
-
-  - algorithm: script:selectbyattribute
-    name: Select by attribute
+  - algorithm: native:orderbyexpression
+    name: Order by expression
     params:
-      INPUT_LAYER:
-        name: points.gml
+      ASCENDING: true
+      EXPRESSION: intval
+      INPUT:
+        name: polys.gml
         type: vector
+      NULLS_FIRST: false
     results:
-      OUTPUT_LAYER:
-        name: expected/selected_points.gml
+      OUTPUT:
+        name: expected/order_by_expression.gml
         type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 4
 
-  - algorithm: script:selectbyexpression
-    name: Select by expression
+  - algorithm: qgis:randompointsinextent
+    name: Random point in extent, don't check result
     params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
+      TARGET_CRS: EPSG:4326
+      EXTENT: 3.9821361058601132,4.01984877126654,0.9948015122873343,1.0305293005671075
+      MIN_DISTANCE: 0.0
+      POINTS_NUMBER: 5
     results:
-      OUTPUT_LAYER:
-        name: expected/select_by_expression.gml
+      OUTPUT:
+        compare: false
         type: vector
+        name: randompointsinextent.gml
 
   - algorithm: qgis:randomextract
     name: Random extract by number
@@ -3135,6 +3958,55 @@ tests:
           - 'Mean value: 147.17197994967066'
           - 'Standard deviation: 43.9618116337985'
           - 'Sum of the squares: 252304334.52061242'
+
+  - algorithm: qgis:rasterlayeruniquevaluesreport
+    name: Raster layer unique values report
+    params:
+      INPUT:
+        name: raster.tif
+        type: raster
+      BAND: 1
+    results:
+      OUTPUT_HTML_FILE:
+        name: raster_unique_values_count.html
+        type: regex
+        rules:
+          - 'Total pixel count: 224'
+          - 'NODATA pixel count: 104'
+          - '826</td><td>4</td><td>411.2757251916548'
+          - '837</td><td>6</td><td>616.9135877874822'
+          - '843</td><td>6</td><td>616.9135877874822'
+          - '845</td><td>4</td><td>411.2757251916548'
+          - '851</td><td>9</td><td>925.3703816812233'
+          - '853</td><td>6</td><td>616.9135877874822'
+          - '859</td><td>10</td><td>1028.189312979137'
+          - '861</td><td>4</td><td>411.2757251916548'
+          - '864</td><td>6</td><td>616.9135877874822'
+          - '866</td><td>9</td><td>925.3703816812233'
+          - '868</td><td>6</td><td>616.9135877874822'
+          - '872</td><td>4</td><td>411.2757251916548'
+          - '873</td><td>9</td><td>925.3703816812233'
+          - '878</td><td>6</td><td>616.9135877874822'
+          - '880</td><td>6</td><td>616.9135877874822'
+          - '881</td><td>6</td><td>616.9135877874822'
+          - '890</td><td>13</td><td>1336.646106872878'
+          - '899</td><td>6</td><td>616.9135877874822'
+
+  - algorithm: native:rasterlayeruniquevaluesreport
+    name: Raster layer unique values report (table)
+    params:
+      BAND: 1
+      INPUT:
+        name: raster.tif
+        type: raster
+    results:
+      OUTPUT_TABLE:
+        name: expected/raster_layer_unique_values.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 2
 
   - algorithm: qgis:pointsdisplacement
     name: Point displacement
@@ -3229,7 +4101,7 @@ tests:
         name: expected/execute_sql.gml
         type: vector
 
-  - algorithm: qgis:polygonfromrasterextent
+  - algorithm: qgis:polygonfromlayerextent
     name: Polygon from raster extent
     params:
       INPUT:
@@ -3240,7 +4112,7 @@ tests:
         name: expected/raster_extent.gml
         type: vector
 
-  - algorithm: qgis:minimalenclosingcircle
+  - algorithm: native:minimumenclosingcircle
     name: Minimal enclosing circle each features
     params:
       BY_FEATURE: true
@@ -3255,17 +4127,1526 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:minimalenclosingcircle
-    name: Minimal enclosing circle all features
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, no field)
     params:
-      BY_FEATURE: false
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (hull, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 3
+    results:
+      OUTPUT:
+        name: expected/mbg_hull_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (circle, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 2
+    results:
+      OUTPUT:
+        name: expected/mbg_circle_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (oriented rect, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 1
+    results:
+      OUTPUT:
+        name: expected/mbg_rect_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, field)
+    params:
+      FIELD: name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_field.gml
+        type: vector
+        pk: name
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: qgis:minimumboundinggeometry
+    name: Minimum enclosing geom (envelope, no field)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      TYPE: 0
+    results:
+      OUTPUT:
+        name: expected/mbg_env_nofield.gml
+        type: vector
+        compare:
+          geometry:
+            precision: 7
+          fields:
+            fid: skip
+            id: skip
+
+  - algorithm: native:convexhull
+    name: Convex hull by feature
+    params:
       INPUT:
         name: custom/oriented_bbox.gml
         type: vector
     results:
       OUTPUT:
-        name: expected/enclosing_circles_all.gml
+        name: expected/convex_hull_by_feature.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines
+    params:
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_lines.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart lines points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_points.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart polygons
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_polys.gml
+        type: vector
+
+  - algorithm: native:promotetomulti
+    name: Promote to multipart (already multipart)
+    params:
+      INPUT:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/promote_multipart_already_multi.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_all.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      FIELD:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_one_field.gml
+        type: vector
+
+  - algorithm: native:collect
+    name: Test (native:collect)
+    params:
+      FIELD:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/collect_two_fields.gml
+        type: vector
+
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (float field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_float.gml
+        type: vector
+        pk: name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (string field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: name
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_string.gml
+        type: vector
+        pk: intval
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (two category fields)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      VALUES_FIELD_NAME: floatval
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_two_fields.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (no value field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_no_value.gml
+        type: vector
+        pk:
+          - intval
+          - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:statisticsbycategories
+    name: Stats by cat (date field)
+    params:
+      CATEGORIES_FIELD_NAME:
+      - date
+      INPUT:
+        name: custom/datetimes.tab
+        type: vector
+      VALUES_FIELD_NAME: date
+    results:
+      OUTPUT:
+        name: expected/stats_by_cat_date.gml
+        type: vector
+        pk: date
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects)
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location with prefix
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+      PREFIX: j_
+    results:
+      OUTPUT:
+        name: expected/join_by_location_prefix.gml
+        type: vector
+        pk:
+        - name
+        - j_id
+        - j_id2
+        compare:
+          fields:
+            fid: skip
+            j_fid: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), discard no match
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), first match only
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 1
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_first_only.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+            id: skip # cant check these - order of match is not predictable
+            id2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), first match only, discard no match
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: expected/join_by_location_intersect_first_only.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 1
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_first_only_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+            id: skip # cant check these - order of match is not predictable
+            id2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (intersects), subset of fields
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      METHOD: 0
+      PREDICATE:
+      - 0
+    results:
+      OUTPUT:
+        name: expected/join_by_location_intersect_subset_fields.gml
+        type: vector
+        pk:
+        - name
+        - id
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinattributesbylocation
+    name: Join by location (touches)
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      METHOD: 0
+      PREDICATE:
+      - 3
+    results:
+      OUTPUT:
+        name: expected/join_by_location_touches.gml
+        type: vector
+        pk:
+        - name
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+            fid_2: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), intersects
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_intersect.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), intersects, discard no matching
+    params:
+      DISCARD_NONMATCHING: true
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_intersect_discardnomatch.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), subset of stats
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      - id2
+      PREDICATE:
+      - 0
+      SUMMARIES:
+      - 0
+      - 2
+      - 5
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_subset_stats.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by location (summary), touching
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points.shp
+        type: vector
+      JOIN_FIELDS:
+      - id
+      PREDICATE:
+      - 3
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_touches.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by Location (summary), string field
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: custom/points.shp
+        type: vector
+      JOIN:
+        name: polys.gml
+        type: vector
+      JOIN_FIELDS:
+      - name
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_string.gml
+        type: vector
+        pk:
+        - id
+        - id2
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:joinbylocationsummary
+    name: Join by Location (summary), date
+    params:
+      DISCARD_NONMATCHING: false
+      INPUT:
+        name: polys.gml
+        type: vector
+      JOIN:
+        name: custom/points_with_date.shp
+        type: vector
+      JOIN_FIELDS:
+      - date
+      PREDICATE:
+      - 0
+      SUMMARIES: []
+    results:
+      OUTPUT:
+        name: expected/join_by_location_summary_date.gml
+        type: vector
+        pk:
+        - name
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:extractbyextent
+    name: Extract by extent
+    params:
+      CLIP: false
+      EXTENT: -1.1650000000000003,4.775,-2.444285714285715,3.4171428571428573
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_by_extent.gml
+        type: vector
+
+  - algorithm: native:extractbyextent
+    name: Extract by extent (clipped)
+    params:
+      CLIP: true
+      EXTENT: -1.1650000000000003,4.775,-2.444285714285715,3.4171428571428573
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/extract_by_extent_clip.gml
+        type: vector
+
+  - algorithm: native:assignprojection
+    name: Assign projection
+    params:
+      CRS: EPSG:4283
+      INPUT:
+        name: custom/points.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/assign_projection.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single left 90.0 1m
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 0
+    results:
+      OUTPUT:
+        name: expected/transect_single_left_1.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single right 90.0 0.5m
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_right_05.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single both 90.0 5m
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      LENGTH: 5
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_single_both_5.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single both 30.0 2m
+    params:
+      ANGLE: 30.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      LENGTH: 2.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_single_both_2_30.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi left 90.0 1m
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 0
+    results:
+      OUTPUT:
+        name: expected/transect_multi_left_1.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi right 90.0 0.5m
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_right_05.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi both 90.0 5m
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      LENGTH: 5
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_multi_both_5.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi both 30.0 2m
+    params:
+      ANGLE: 30.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      LENGTH: 2.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_multi_both_2_30.gml
+        type: vector
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix.gml
         type: vector
         compare:
-          geometry:
-            precision: 7
+          fields:
+            fid: skip
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, nearest 3 points
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 3
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_nearest3.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:distancematrix
+    name: Linear (N*k x 3) distance matrix, different layers
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 0
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        pk:
+        - InputID
+        - TargetID
+        name: expected/linear_matrix_diff.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: qgis:distancematrix
+    name: Standard (N x T) distance matrix
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 1
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/standard_matrix.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
+  - algorithm: qgis:distancematrix
+    name: Summary distance matrix (mean, std. dev., min, max)
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 2
+      NEAREST_POINTS: 0
+      TARGET:
+        name: points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/summary_matrix.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
+  - algorithm: qgis:distancematrix
+    name: Summary matrix different layers
+    params:
+      INPUT:
+        name: points.gml
+        type: vector
+      INPUT_FIELD: fid
+      MATRIX_TYPE: 2
+      NEAREST_POINTS: 0
+      TARGET:
+        name: custom/spoke_points.gml
+        type: vector
+      TARGET_FIELD: fid
+    results:
+      OUTPUT:
+        name: expected/summary_matrix_diff_layers.gml
+        type: vector
+        compare:
+          fields:
+            __all__:
+              precision: 7
+
+  - algorithm: native:projectpointcartesian
+    name: Project points cartesian
+    params:
+      BEARING: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_points.gml
+        type: vector
+
+  - algorithm: native:projectpointcartesian
+    name: Project multipoints cartesian
+    params:
+      BEARING: -90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_multipoints.gml
+        type: vector
+
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from lines
+    params:
+      INPUT:
+        name: custom/line_duplicate_nodes.gml
+        type: vector
+      TOLERANCE: 1.0e-06
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/removed_duplicated_nodes_line.gml
+        type: vector
+
+  - algorithm: qgis:keepnbiggestparts
+    name: Keep N biggest parts
+    params:
+      PARTS: 1
+      POLYGONS:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/biggest_parts.gml
+        type: vector
+
+  - algorithm: native:multiringconstantbuffer
+    name: Multi-ring buffer with points
+    params:
+      DISTANCE: 0.05
+      INPUT:
+        name: points.gml
+        type: vector
+      RINGS: 3
+    results:
+      OUTPUT:
+        name: expected/multiring_buffer.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxangle
+    name: Segmentize by angle
+    params:
+      ANGLE: 20.0
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_angle.gml
+        type: vector
+
+  - algorithm: native:segmentizebymaxdistance
+    name: Segmentize by distance
+    params:
+      DISTANCE: 0.2
+      INPUT:
+        name: custom/circular_strings.gpkg|layername=circular_strings
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/segmentize_by_distance.gml
+        type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around centroid
+    params:
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_centroid.gml
+        type: vector
+
+  - algorithm: native:rotatefeatures
+    name: Rotate around point
+    params:
+      ANCHOR: 2.3,3 [EPSG:4326]
+      ANGLE: 25.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/rotate_around_point.gml
+        type: vector
+
+  - algorithm: native:importphotos
+    name: Import photos
+    params:
+      FOLDER:
+        name: custom/photos
+        type: file
+      RECURSIVE: false
+    results:
+      INVALID:
+        name: expected/import_photos_invalid.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+      OUTPUT:
+        name: expected/import_photos.gml
+        type: vector
+        compare:
+          fields:
+            photo: skip
+            directory: skip
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.3)
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_03.gml
+        type: vector
+
+  - algorithm: qgis:concavehull
+    name: Concave Hull - Points (0.7)
+    params:
+      ALPHA: 0.7
+      HOLES: true
+      INPUT:
+        name: points.gml
+        type: vector
+      NO_MULTIGEOMETRY: false
+    results:
+      OUTPUT:
+        name: expected/concave_hull_points_07.gml
+        type: vector
+
+  - algorithm: native:swapxy
+    name: Swap XY coordinates
+    params:
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/swap_xy.gml
+        type: vector
+
+  - algorithm: model:filtertest
+    name: Test (model:filtertest)
+    params:
+      layer:
+        name: points.gml
+        type: vector
+    results:
+      native:filter_1:OUTPUT_small:
+        name: expected/filter_points_small.gml
+        type: vector
+      native:filter_1:OUTPUT_big:
+        name: expected/filter_points_big.gml
+        type: vector
+
+  - algorithm: native:intersection
+    name: Test Intersection (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:intersection
+    name: Test Intersection (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/intersection3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:wedgebuffers
+    name: Wedge buffers
+    params:
+      AZIMUTH: 90.0
+      INNER_RADIUS: 0.5
+      INPUT:
+        name: points.gml
+        type: vector
+      OUTER_RADIUS: 1.0
+      WIDTH: 45.0
+    results:
+      OUTPUT:
+        name: expected/wedge_buffers.gml
+        type: vector
+
+  - algorithm: native:difference
+    name: Test Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_a_b.gml
+        type: vector
+        pk: id_a
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:difference
+    name: Test Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference1_b_a.gml
+        type: vector
+        pk: id_b
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference A - B (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_a_b.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+  - algorithm: native:symmetricaldifference
+    name: Test Symmetrical Difference B - A (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_b.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_a.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/symmetrical_difference1_b_a.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union of single layer
+    params:
+      INPUT:
+        name: custom/overlay0.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union0.gml
+        type: vector
+        compare:
+          unordered: true
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (basic)
+    params:
+      INPUT:
+        name: custom/overlay1_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay1_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union1.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:union
+    name: Test Union (geom types)
+    params:
+      INPUT:
+        name: custom/overlay3_a.geojson
+        type: vector
+      OVERLAY:
+        name: custom/overlay3_b.geojson
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/union3.gml
+        type: vector
+        pk: [id_a, id_b]
+        compare:
+          fields:
+            fid: skip
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (lines)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_line.gml
+        type: vector
+
+  - algorithm: native:taperedbuffer
+    name: Tapered buffers (multiline)
+    params:
+      END_WIDTH: 0.8
+      INPUT:
+        name: multilines.gml
+        type: vector
+      SEGMENTS: 3
+      START_WIDTH: 0.4
+    results:
+      OUTPUT:
+        name: expected/tapered_buffer_multiline.gml
+        type: vector
+
+  - algorithm: native:bufferbym
+    name: Variable width buffer by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      SEGMENTS: 3
+    results:
+      OUTPUT:
+        name: expected/variable_width_buffer_by_m.gml
+        type: vector
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 850
+      - 3
+      - 850
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table min <=
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 1
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+      - 843
+      - 1000
+      - 4
+    results:
+      OUTPUT:
+        hash: f055b582e4e5abcfa9cce6a69ceb7fac54791ad0d980003f1a23f4b1
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use original
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: 4398ddc5d24b3bf968d9a6e0fbd800344b20880a57915bd50a90e1ba
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table use nodata
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: true
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - 1
+      - 843
+      - 3
+    results:
+      OUTPUT:
+        hash: cea558f7e99a0564fef92a96cd8d6b59707d019f1751cb600ab00850
+        type: rasterhash
+
+  - algorithm: native:reclassifybytable
+    name: Reclassify by table infinite ranges
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      TABLE:
+      - ''
+      - 850
+      - 3
+      - 850
+      - ''
+      - 4
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer
+    params:
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+  - algorithm: native:reclassifybylayer
+    name: Reclassify by layer with nulls
+    params:
+      DATA_TYPE: 5
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      INPUT_TABLE:
+        name: custom/reclassify_layer_nulls.gml
+        type: vector
+      MAX_FIELD: max
+      MIN_FIELD: min
+      NODATA_FOR_MISSING: false
+      NO_DATA: -9999.0
+      RANGE_BOUNDARIES: 0
+      RASTER_BAND: 1
+      VALUE_FIELD: value
+    results:
+      OUTPUT:
+        hash: c29d14f71e8686f7445d53be646fce84702644f159fd0164ac38e861
+        type: rasterhash
+
+
+
+# See ../README.md for a description of the file format

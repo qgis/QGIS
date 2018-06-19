@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EquivalentNumField.py
+    VectorLayerHistogram.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -47,6 +47,9 @@ class VectorLayerHistogram(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
+    def groupId(self):
+        return 'graphics'
+
     def __init__(self):
         super().__init__()
 
@@ -60,7 +63,6 @@ class VectorLayerHistogram(QgisAlgorithm):
                                                        self.tr('number of bins'), minValue=2, defaultValue=10))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Histogram')))
 
     def name(self):
         return 'vectorlayerhistogram'
@@ -70,6 +72,9 @@ class VectorLayerHistogram(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         fieldname = self.parameterAsString(parameters, self.FIELD, context)
         bins = self.parameterAsInt(parameters, self.BINS, context)
 

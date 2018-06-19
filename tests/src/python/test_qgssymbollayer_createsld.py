@@ -315,6 +315,7 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         symbol = QgsSVGFillSymbolLayer('test/star.svg', 10, 45)
         symbol.setSvgFillColor(QColor('blue'))
         symbol.setSvgStrokeWidth(3)
+        symbol.setSvgStrokeColor(QColor('black'))
         symbol.setOutputUnit(QgsUnitTypes.RenderPixels)
         symbol.subSymbol().setWidth(10)
 
@@ -915,8 +916,9 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.loadStyleWithCustomProperties(layer, "polygonLabel")
         settings = layer.labeling().settings()
         settings.scaleVisibility = True
-        settings.minimumScale = 1000000
-        settings.maximumScale = 10000000
+        # Careful: min scale -> large scale denomin
+        settings.minimumScale = 10000000
+        settings.maximumScale = 1000000
         layer.setLabeling(QgsVectorLayerSimpleLabeling(settings))
 
         dom, root = self.layerToSld(layer)
@@ -1017,6 +1019,39 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
                 self.assertEqual("36 36", self.assertVendorOption(ts, 'graphic-margin').text())
         else:
             self.assertIsNone(self.assertVendorOption(ts, 'graphic-margin', True))
+
+    def testRuleBasedLabels(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+        self.loadStyleWithCustomProperties(layer, "ruleLabel")
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based labeling: " + dom.toString())
+
+        # three rules, one with the point symbol, one with the first rule based label,
+        # one with the second rule based label
+        rule1 = self.getRule(root, 0)
+        self.assertElement(rule1, 'se:PointSymbolizer', 0)
+
+        rule2 = self.getRule(root, 1)
+        self.assertScaleDenominator(root, '100000', '10000000', 1)
+        tsRule2 = self.assertElement(rule2, 'se:TextSymbolizer', 0)
+        gt = rule2.elementsByTagName("Filter").item(0).firstChild()
+        self.assertEqual("ogc:PropertyIsGreaterThan", gt.nodeName())
+        gtProperty = gt.toElement().firstChild()
+        self.assertEqual("ogc:PropertyName", gtProperty.nodeName())
+        self.assertEqual("POP_MAX", gtProperty.toElement().text())
+        gtValue = gt.childNodes().item(1)
+        self.assertEqual("1000000", gtValue.toElement().text())
+
+        rule3 = self.getRule(root, 2)
+        tsRule3 = self.assertElement(rule3, 'se:TextSymbolizer', 0)
+        lt = rule3.elementsByTagName("Filter").item(0).firstChild()
+        self.assertEqual("ogc:PropertyIsLessThan", lt.nodeName())
+        ltProperty = lt.toElement().firstChild()
+        self.assertEqual("ogc:PropertyName", ltProperty.nodeName())
+        self.assertEqual("POP_MAX", ltProperty.toElement().text())
+        ltValue = gt.childNodes().item(1)
+        self.assertEqual("1000000", gtValue.toElement().text())
 
     def updateLinePlacementProperties(self, layer, linePlacement, distance, repeat, maxAngleInternal=25, maxAngleExternal=-25):
         settings = layer.labeling().settings()
@@ -1124,6 +1159,10 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
         self.assertTrue(node.isElement(), 'Found node but it''s not an element')
         return node.toElement()
 
+    def getRule(self, root, ruleIndex):
+        rule = self.assertElement(root, 'se:Rule', ruleIndex)
+        return rule
+
     def getTextSymbolizer(self, root, ruleIndex, textSymbolizerIndex):
         rule = self.assertElement(root, 'se:Rule', ruleIndex)
         textSymbolizer = self.assertElement(rule, 'se:TextSymbolizer', textSymbolizerIndex)
@@ -1155,6 +1194,23 @@ class TestQgsSymbolLayerCreateSld(unittest.TestCase):
             return None
         else:
             self.fail('Could not find a se:VendorOption named ' + expectedName + ' in ' + container.nodeName())
+
+    def testRuleBaseEmptyFilter(self):
+        layer = QgsVectorLayer("Point", "addfeat", "memory")
+
+        mFilePath = QDir.toNativeSeparators('%s/symbol_layer/%s.qml' % (unitTestDataPath(), "categorizedEmptyValue"))
+        status = layer.loadNamedStyle(mFilePath)  # NOQA
+
+        dom, root = self.layerToSld(layer)
+        # print("Rule based, with last rule checking against empty value:" + dom.toString())
+
+        # get the third rule
+        rule = root.elementsByTagName('se:Rule').item(2).toElement()
+        filter = rule.elementsByTagName('Filter').item(0).toElement()
+        filter = filter.firstChild().toElement()
+        self.assertEqual("ogc:Or", filter.nodeName())
+        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsEqualTo').size())
+        self.assertEqual(1, filter.elementsByTagName('ogc:PropertyIsNull').size())
 
     def assertScaleDenominator(self, root, expectedMinScale, expectedMaxScale, index=0):
         rule = root.elementsByTagName('se:Rule').item(index).toElement()

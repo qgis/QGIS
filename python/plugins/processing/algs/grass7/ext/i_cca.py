@@ -25,34 +25,21 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import multipleOutputDir, verifyRasterNum, regroupRasters
-from processing.core.parameters import getParameterFromString
+from .i import verifyRasterNum, regroupRasters, importSigFile
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return verifyRasterNum(alg, 'input', 2, 8)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return verifyRasterNum(alg, parameters, context, 'input', 2, 8)
 
 
-def processCommand(alg, parameters):
-    # Remove output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
-    # Create output parameter
-    param = getParameterFromString("ParameterString|output|output basename|None|False|False")
-    param.value = alg.getTempFilename()
-    alg.addParameter(param)
-
+def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
-    regroupRasters(alg, parameters, 'input', 'group', 'subgroup', {'signature': 'sig'})
+    group, subgroup = regroupRasters(alg, parameters, context,
+                                     'input', 'group', 'subgroup')
 
-    # re-add output
-    alg.addOutput(output)
+    signatureFile = alg.parameterAsString(parameters, 'signature', context)
+    shortSigFile = importSigFile(alg, group, subgroup, signatureFile)
+    parameters['signature'] = shortSigFile
 
-
-def processOutputs(alg):
-    param = alg.getParameterFromName('output')
-    multipleOutputDir(alg, 'output', param.value)
-
-    # Delete output parameter
-    alg.parameters.remove(param)
+    # Handle other parameters
+    alg.processCommand(parameters, context, feedback)

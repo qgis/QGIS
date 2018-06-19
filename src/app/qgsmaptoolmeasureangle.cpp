@@ -23,14 +23,14 @@
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgssettings.h"
+#include "qgssnapindicator.h"
 
 #include <QMouseEvent>
 #include <cmath>
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mRubberBand( nullptr )
-  , mResultDisplay( nullptr )
+  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
   mToolName = tr( "Measure angle" );
 
@@ -45,12 +45,14 @@ QgsMapToolMeasureAngle::~QgsMapToolMeasureAngle()
 
 void QgsMapToolMeasureAngle::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  if ( !mRubberBand || mAnglePoints.size() < 1 || mAnglePoints.size() > 2 )
+  QgsPointXY point = e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
+  if ( !mRubberBand || mAnglePoints.empty() || mAnglePoints.size() > 2 )
   {
     return;
   }
 
-  QgsPointXY point = snapPoint( e->pos() );
   mRubberBand->movePoint( point );
   if ( mAnglePoints.size() == 2 )
   {
@@ -90,7 +92,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
     mAnglePoints.clear();
   }
 
-  if ( mAnglePoints.size() < 1 )
+  if ( mAnglePoints.empty() )
   {
     if ( !mResultDisplay )
     {
@@ -104,7 +106,7 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( mAnglePoints.size() < 3 )
   {
-    QgsPointXY newPoint = snapPoint( e->pos() );
+    QgsPointXY newPoint = e->snapPoint();
     mAnglePoints.push_back( newPoint );
     mRubberBand->addPoint( newPoint );
   }
@@ -126,6 +128,8 @@ void QgsMapToolMeasureAngle::activate()
 
 void QgsMapToolMeasureAngle::deactivate()
 {
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
   stopMeasuring();
   QgsMapTool::deactivate();
 }
@@ -141,12 +145,6 @@ void QgsMapToolMeasureAngle::createRubberBand()
   int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
-}
-
-QgsPointXY QgsMapToolMeasureAngle::snapPoint( QPoint p )
-{
-  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
-  return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
 }
 
 void QgsMapToolMeasureAngle::updateSettings()
@@ -183,6 +181,6 @@ void QgsMapToolMeasureAngle::updateSettings()
 void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QString ellipsoidId = QgsProject::instance()->ellipsoid();
-  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs() );
+  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
   mDa.setEllipsoid( ellipsoidId );
 }

@@ -209,15 +209,15 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
     normalizedCoords[i] = QgsPointXY( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
-  normalizeMatrix[0] =   D;
+  normalizeMatrix[0] = D;
   normalizeMatrix[1] = 0.0;
   normalizeMatrix[2] = -cogX * D;
   normalizeMatrix[3] = 0.0;
-  normalizeMatrix[4] =   D;
+  normalizeMatrix[4] = D;
   normalizeMatrix[5] = -cogY * D;
   normalizeMatrix[6] = 0.0;
   normalizeMatrix[7] = 0.0;
-  normalizeMatrix[8] =   1.0;
+  normalizeMatrix[8] = 1.0;
 
   denormalizeMatrix[0] = OOD;
   denormalizeMatrix[1] = 0.0;
@@ -227,7 +227,7 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   denormalizeMatrix[5] = cogY;
   denormalizeMatrix[6] = 0.0;
   denormalizeMatrix[7] = 0.0;
-  denormalizeMatrix[8] =  1.0;
+  denormalizeMatrix[8] = 1.0;
 }
 
 // Fits a homography to the given corresponding points, and

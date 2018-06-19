@@ -25,16 +25,14 @@
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
   , mChecked( checked )
-  , mParent( nullptr )
   , mExpanded( true )
 {
 }
 
 QgsLayerTreeNode::QgsLayerTreeNode( const QgsLayerTreeNode &other )
-  : QObject()
+  : QObject( nullptr )
   , mNodeType( other.mNodeType )
   , mChecked( other.mChecked )
-  , mParent( nullptr )
   , mExpanded( other.mExpanded )
   , mProperties( other.mProperties )
 {
@@ -49,20 +47,26 @@ QgsLayerTreeNode::~QgsLayerTreeNode()
   qDeleteAll( mChildren );
 }
 
-QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element )
+QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTreeNode *node = nullptr;
   if ( element.tagName() == QLatin1String( "layer-tree-group" ) )
-    node = QgsLayerTreeGroup::readXml( element );
+    node = QgsLayerTreeGroup::readXml( element, context );
   else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
-    node = QgsLayerTreeLayer::readXml( element );
+    node = QgsLayerTreeLayer::readXml( element, context );
 
   return node;
 }
 
 QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsProject *project )
 {
-  QgsLayerTreeNode *node = readXml( element );
+  QgsReadWriteContext context;
+  QgsPathResolver resolver;
+  if ( project )
+    resolver = project->pathResolver();
+  context.setPathResolver( resolver );
+
+  QgsLayerTreeNode *node = readXml( element, context );
   if ( node )
     node->resolveReferences( project );
   return node;

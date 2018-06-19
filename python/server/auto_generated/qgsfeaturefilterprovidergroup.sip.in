@@ -1,0 +1,64 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfeaturefilterprovidergroup.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
+{
+%Docstring
+A filter filter provider grouping several filter providers.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsfeaturefilterprovidergroup.h"
+%End
+  public:
+    QgsFeatureFilterProviderGroup();
+%Docstring
+Constructor
+%End
+
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
+%Docstring
+Filter the features of the layer
+
+:param layer: the layer to control
+:param filterFeatures: the request to fill
+%End
+
+    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+
+%Docstring
+Returns a clone of the object
+
+:return: A clone
+%End
+
+    QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
+%Docstring
+Add another filter provider to the group
+
+:param provider: The provider to add
+
+:return: itself
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsfeaturefilterprovidergroup.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

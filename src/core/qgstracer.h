@@ -29,7 +29,8 @@ class QgsVectorLayer;
 
 struct QgsTracerGraph;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Utility class that construct a planar graph from the input vector
  * layers and provides shortest path search for tracing of existing
  * features.
@@ -40,41 +41,82 @@ class CORE_EXPORT QgsTracer : public QObject
 {
     Q_OBJECT
   public:
-    QgsTracer();
-    ~QgsTracer();
 
-    //! Get layers used for tracing
+    /**
+     * Constructor for QgsTracer.
+     */
+    QgsTracer();
+    ~QgsTracer() override;
+
+    //! Gets layers used for tracing
     QList<QgsVectorLayer *> layers() const { return mLayers; }
-    //! Set layers used for tracing
+    //! Sets layers used for tracing
     void setLayers( const QList<QgsVectorLayer *> &layers );
 
-    //! Get CRS used for tracing
+    /**
+     * Returns the CRS used for tracing.
+     * \see setDestinationCrs()
+     */
     QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
-    //! Set CRS used for tracing
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 
-    //! Get extent to which graph's features will be limited (empty extent means no limit)
+    /**
+     * Sets the \a crs and transform \a context used for tracing.
+     * \see destinationCrs()
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+
+    //! Gets extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
-    //! Set extent to which graph's features will be limited (empty extent means no limit)
+    //! Sets extent to which graph's features will be limited (empty extent means no limit)
     void setExtent( const QgsRectangle &extent );
 
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    /**
+     * Gets offset in map units that should be applied to the traced paths returned from findShortestPath().
+     * Positive offset for right side, negative offset for left side.
+     * \since QGIS 3.0
+     */
+    double offset() const { return mOffset; }
+
+    /**
+     * Set offset in map units that should be applied to the traced paths returned from findShortestPath().
+     * Positive offset for right side, negative offset for left side.
+     * \since QGIS 3.0
+     */
+    void setOffset( double offset );
+
+    /**
+     * Gets extra parameters for offset curve algorithm (used when offset is non-zero)
+     * \since QGIS 3.0
+     */
+    void offsetParameters( int &quadSegments SIP_OUT, int &joinStyle SIP_OUT, double &miterLimit SIP_OUT );
+
+    /**
+     * Set extra parameters for offset curve algorithm (used when offset is non-zero)
+     * \since QGIS 3.0
+     */
+    void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
+
+    //! Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
     int maxFeatureCount() const { return mMaxFeatureCount; }
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    //! Gets maximum possible number of features in graph. If the number is exceeded, graph is not created.
     void setMaxFeatureCount( int count ) { mMaxFeatureCount = count; }
 
-    //! Build the internal data structures. This may take some time
-    //! depending on how big the input layers are. It is not necessary
-    //! to call this method explicitly - it will be called by findShortestPath()
-    //! if necessary.
+    /**
+     * Build the internal data structures. This may take some time
+     * depending on how big the input layers are. It is not necessary
+     * to call this method explicitly - it will be called by findShortestPath()
+     * if necessary.
+     */
     bool init();
 
     //! Whether the internal data structures have been initialized
-    bool isInitialized() const { return mGraph != nullptr; }
+    bool isInitialized() const { return static_cast< bool >( mGraph ); }
 
-    //! Whether there was an error during graph creation due to noding exception,
-    //! indicating some input data topology problems
-    //! \since QGIS 2.16
+    /**
+     * Whether there was an error during graph creation due to noding exception,
+     * indicating some input data topology problems
+     * \since QGIS 2.16
+     */
     bool hasTopologyProblem() const { return mHasTopologyProblem; }
 
     //! Possible errors that may happen when calling findShortestPath()
@@ -87,18 +129,23 @@ class CORE_EXPORT QgsTracer : public QObject
       ErrNoPath,             //!< Points are not connected in the graph
     };
 
-    //! Given two points, find the shortest path and return points on the way.
-    //! The optional "error" argument may receive error code (PathError enum) if it is not null
-    //! \returns array of points - trace of linestrings of other features (empty array one error)
+    /**
+     * Given two points, find the shortest path and return points on the way.
+     * The optional "error" argument may receive error code (PathError enum) if it is not null
+     * \returns array of points - trace of linestrings of other features (empty array one error)
+     */
     QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error SIP_OUT = nullptr );
 
     //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
     bool isPointSnapped( const QgsPointXY &pt );
 
   protected:
-    //! Allows derived classes to setup the settings just before the tracer is initialized.
-    //! This allows the configuration to be set in a lazy way only when it is really necessary.
-    //! Default implementation does nothing.
+
+    /**
+     * Allows derived classes to setup the settings just before the tracer is initialized.
+     * This allows the configuration to be set in a lazy way only when it is really necessary.
+     * Default implementation does nothing.
+     */
     virtual void configure() {}
 
   protected slots:
@@ -121,14 +168,31 @@ class CORE_EXPORT QgsTracer : public QObject
     QList<QgsVectorLayer *> mLayers;
     //! Destination CRS in which graph is built and tracing done
     QgsCoordinateReferenceSystem mCRS;
+    //! Coordinate transform context
+    QgsCoordinateTransformContext mTransformContext;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
-    //! Limit of how many features can be in the graph (0 means no limit).
-    //! This is to avoid possibly long graph preparation for complicated layers
-    int mMaxFeatureCount;
-    //! A flag indicating that there was an error during graph creation
-    //! due to noding exception, indicating some input data topology problems
-    bool mHasTopologyProblem;
+
+    //! Offset in map units that should be applied to the traced paths
+    double mOffset = 0;
+    //! Offset parameter: Number of segments (approximation of circle quarter) when using round join style
+    int mOffsetSegments = 8;
+    //! Offset parameter: Join style (1 = round, 2 = miter, 3 = bevel)
+    int mOffsetJoinStyle = 2;
+    //! Offset parameter: Limit for miter join style
+    double mOffsetMiterLimit = 5.;
+
+    /**
+     * Limit of how many features can be in the graph (0 means no limit).
+     * This is to avoid possibly long graph preparation for complicated layers
+     */
+    int mMaxFeatureCount = 0;
+
+    /**
+     * A flag indicating that there was an error during graph creation
+     * due to noding exception, indicating some input data topology problems
+     */
+    bool mHasTopologyProblem = false;
 };
 
 

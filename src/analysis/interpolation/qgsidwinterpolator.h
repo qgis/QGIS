@@ -21,31 +21,50 @@
 #include "qgsinterpolator.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsIDWInterpolator
+ * Inverse distance weight interpolator.
  */
 class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
 {
   public:
+
+    /**
+     * Constructor for QgsIDWInterpolator, with the specified \a layerData sources.
+     */
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
-    /** Calculates interpolation value for map coordinates x, y
-       \param x x-coordinate (in map units)
-       \param y y-coordinate (in map units)
-       \param result out: interpolation result
-       \returns 0 in case of success*/
-    int interpolatePoint( double x, double y, double &result ) override;
+    int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) override;
 
-    void setDistanceCoefficient( double p ) {mDistanceCoefficient = p;}
+    /**
+     * Sets the distance \a coefficient, the parameter that sets how the values are
+     * weighted with distance. Smaller values mean sharper peaks at the data points.
+     *
+     * Point values are weighted by 1 / ( distance ^ coefficient ).
+     *
+     * \see distanceCoefficient()
+     * \since QGIS 3.0
+    */
+    void setDistanceCoefficient( double coefficient ) { mDistanceCoefficient = coefficient;}
+
+    /**
+     * Returns the distance coefficient, the parameter that sets how the values are
+     * weighted with distance. Smaller values mean sharper peaks at the data points.
+     * The default is a coefficient of 2.
+     *
+     * Point values are weighted by 1 / ( distance ^ coefficient ).
+     *
+     * \see setDistanceCoefficient()
+     * \since QGIS 3.0
+    */
+    double distanceCoefficient() const { return mDistanceCoefficient; }
 
   private:
 
-    QgsIDWInterpolator(); //forbidden
+    QgsIDWInterpolator() = delete;
 
-    /** The parameter that sets how the values are weighted with distance.
-       Smaller values mean sharper peaks at the data points. The default is a
-       value of 2*/
-    double mDistanceCoefficient;
+    double mDistanceCoefficient = 2.0;
 };
 
 #endif

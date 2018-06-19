@@ -33,12 +33,12 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
 
   public:
     QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &decoration, QWidget *parent = nullptr );
-    ~QgsDecorationLayoutExtentDialog();
+    ~QgsDecorationLayoutExtentDialog() override;
 
   private slots:
     void apply();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
     void showHelp();
 
 

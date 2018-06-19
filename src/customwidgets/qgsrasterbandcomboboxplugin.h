@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsRasterBandComboBoxPlugin : public QObject, public 
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsRasterBandComboBoxPlugin( QObject *parent = 0 );
+    explicit QgsRasterBandComboBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

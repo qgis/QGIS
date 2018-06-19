@@ -28,14 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
 from qgis.analysis import QgsRuggednessFilter
 from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools.dataobjects import exportRasterLayer
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -51,6 +49,9 @@ class Ruggedness(QgisAlgorithm):
 
     def group(self):
         return self.tr('Raster terrain analysis')
+
+    def groupId(self):
+        return 'rasterterrainanalysis'
 
     def __init__(self):
         super().__init__()
@@ -71,7 +72,7 @@ class Ruggedness(QgisAlgorithm):
         return self.tr('Ruggedness index')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        inputFile = self.parameterAsRasterLayer(parameters, self.INPUT, context).source()
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)

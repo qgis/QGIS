@@ -413,7 +413,7 @@ QSizeF QgsTextBackgroundSettings::size() const
   return d->size;
 }
 
-void QgsTextBackgroundSettings::setSize( const QSizeF &size )
+void QgsTextBackgroundSettings::setSize( QSizeF size )
 {
   d->size = size;
 }
@@ -463,7 +463,7 @@ QPointF QgsTextBackgroundSettings::offset() const
   return d->offset;
 }
 
-void QgsTextBackgroundSettings::setOffset( const QPointF &offset )
+void QgsTextBackgroundSettings::setOffset( QPointF offset )
 {
   d->offset = offset;
 }
@@ -493,7 +493,7 @@ QSizeF QgsTextBackgroundSettings::radii() const
   return d->radii;
 }
 
-void QgsTextBackgroundSettings::setRadii( const QSizeF &radii )
+void QgsTextBackgroundSettings::setRadii( QSizeF radii )
 {
   d->radii = radii;
 }
@@ -1143,7 +1143,7 @@ void QgsTextShadowSettings::readXml( const QDomElement &elem )
 {
   QDomElement shadowElem = elem.firstChildElement( QStringLiteral( "shadow" ) );
   d->enabled = shadowElem.attribute( QStringLiteral( "shadowDraw" ), QStringLiteral( "0" ) ).toInt();
-  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest ;
+  d->shadowUnder = static_cast< ShadowPlacement >( shadowElem.attribute( QStringLiteral( "shadowUnder" ), QString::number( ShadowLowest ) ).toUInt() );//ShadowLowest;
   d->offsetAngle = shadowElem.attribute( QStringLiteral( "shadowOffsetAngle" ), QStringLiteral( "135" ) ).toInt();
   d->offsetDist = shadowElem.attribute( QStringLiteral( "shadowOffsetDist" ), QStringLiteral( "1" ) ).toDouble();
 
@@ -1233,7 +1233,6 @@ QDomElement QgsTextShadowSettings::writeXml( QDomDocument &doc ) const
 //
 
 QgsTextFormat::QgsTextFormat()
-  : mTextFontFound( true )
 {
   d = new QgsTextSettingsPrivate();
 }
@@ -1609,6 +1608,55 @@ QMimeData *QgsTextFormat::toMimeData() const
   return mimeData;
 }
 
+QgsTextFormat QgsTextFormat::fromQFont( const QFont &font )
+{
+  QgsTextFormat format;
+  format.setFont( font );
+  if ( font.pointSizeF() > 0 )
+  {
+    format.setSize( font.pointSizeF() );
+    format.setSizeUnit( QgsUnitTypes::RenderPoints );
+  }
+  else if ( font.pixelSize() > 0 )
+  {
+    format.setSize( font.pixelSize() );
+    format.setSizeUnit( QgsUnitTypes::RenderPixels );
+  }
+
+  return format;
+}
+
+QFont QgsTextFormat::toQFont() const
+{
+  QFont f = font();
+  switch ( sizeUnit() )
+  {
+    case QgsUnitTypes::RenderPoints:
+      f.setPointSizeF( size() );
+      break;
+
+    case QgsUnitTypes::RenderMillimeters:
+      f.setPointSizeF( size() * 2.83464567 );
+      break;
+
+    case QgsUnitTypes::RenderInches:
+      f.setPointSizeF( size() * 72 );
+      break;
+
+    case QgsUnitTypes::RenderPixels:
+      f.setPixelSize( static_cast< int >( std::round( size() ) ) );
+      break;
+
+    case QgsUnitTypes::RenderMapUnits:
+    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderUnknownUnit:
+    case QgsUnitTypes::RenderPercentage:
+      // no meaning here
+      break;
+  }
+  return f;
+}
+
 QgsTextFormat QgsTextFormat::fromMimeData( const QMimeData *data, bool *ok )
 {
   if ( ok )
@@ -1677,7 +1725,7 @@ void QgsTextRenderer::drawText( const QRectF &rect, double rotation, QgsTextRend
   drawPart( rect, rotation, alignment, textLines, context, tmpFormat, Text, drawAsOutlines );
 }
 
-void QgsTextRenderer::drawText( const QPointF &point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
+void QgsTextRenderer::drawText( QPointF point, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, bool drawAsOutlines )
 {
   QgsTextFormat tmpFormat = updateShadowPosition( format );
 
@@ -1780,7 +1828,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
   }
 }
 
-void QgsTextRenderer::drawPart( const QPointF &origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
+void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer::HAlignment alignment, const QStringList &textLines, QgsRenderContext &context, const QgsTextFormat &format, QgsTextRenderer::TextPart part, bool drawAsOutlines )
 {
   if ( !context.painter() )
   {
@@ -1823,6 +1871,11 @@ void QgsTextRenderer::drawPart( const QPointF &origin, double rotation, QgsTextR
       break;
     }
   }
+}
+
+QFontMetricsF QgsTextRenderer::fontMetrics( QgsRenderContext &context, const QgsTextFormat &format )
+{
+  return QFontMetricsF( format.scaledFont( context ), context.painter() ? context.painter()->device() : nullptr );
 }
 
 void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRenderer::Component &component, const QgsTextFormat &format )
@@ -1898,35 +1951,35 @@ void QgsTextRenderer::drawBuffer( QgsRenderContext &context, const QgsTextRender
   p->restore();
 }
 
-double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fm )
+double QgsTextRenderer::textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, QFontMetricsF *fontMetrics )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fm )
+  if ( !fontMetrics )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.get();
+    fontMetrics = newFm.get();
   }
 
   double maxWidth = 0;
   Q_FOREACH ( const QString &line, textLines )
   {
-    maxWidth = std::max( maxWidth, fm->width( line ) );
+    maxWidth = std::max( maxWidth, fontMetrics->width( line ) );
   }
   return maxWidth;
 }
 
-double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fm )
+double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode, QFontMetricsF *fontMetrics )
 {
   //calculate max width of text lines
   std::unique_ptr< QFontMetricsF > newFm;
-  if ( !fm )
+  if ( !fontMetrics )
   {
     newFm.reset( new QFontMetricsF( format.scaledFont( context ) ) );
-    fm = newFm.get();
+    fontMetrics = newFm.get();
   }
 
-  double labelHeight = fm->ascent() + fm->descent(); // ignore +1 for baseline
+  double labelHeight = fontMetrics->ascent() + fontMetrics->descent(); // ignore +1 for baseline
 
   switch ( mode )
   {
@@ -1939,7 +1992,7 @@ double QgsTextRenderer::textHeight( const QgsRenderContext &context, const QgsTe
     case Rect:
     case Point:
       // standard rendering - designed to exactly replicate QPainter's drawText method
-      return labelHeight + ( textLines.size() - 1 ) * fm->lineSpacing() * format.lineHeight();
+      return labelHeight + ( textLines.size() - 1 ) * fontMetrics->lineSpacing() * format.lineHeight();
   }
 
   return 0;

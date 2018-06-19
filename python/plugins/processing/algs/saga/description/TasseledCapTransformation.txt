@@ -1,11 +1,11 @@
 Tasseled Cap Transformation
 imagery_tools
-ParameterRaster|BLUE|Blue (TM 1)|True
-ParameterRaster|RED|Red (TM 2)|False
-ParameterRaster|GREEN|Green (TM 3)|False
-ParameterRaster|NIR|Near Infrared (TM 4)|False
-ParameterRaster|MIR1|Mid Infrared (TM 5)|False
-ParameterRaster|MIR2|Mid Infrared (TM 7)|False
-OutputRaster|BRIGHTNESS|Brightness
-OutputRaster|GREENNESS|Greenness
-OutputRaster|WETNESS|Wetness
+QgsProcessingParameterRasterLayer|BLUE|Blue (TM 1)|None|True
+QgsProcessingParameterRasterLayer|RED|Red (TM 2)|None|False
+QgsProcessingParameterRasterLayer|GREEN|Green (TM 3)|None|False
+QgsProcessingParameterRasterLayer|NIR|Near Infrared (TM 4)|None|False
+QgsProcessingParameterRasterLayer|MIR1|Mid Infrared (TM 5)|None|False
+QgsProcessingParameterRasterLayer|MIR2|Mid Infrared (TM 7)|None|False
+QgsProcessingParameterRasterDestination|BRIGHTNESS|Brightness
+QgsProcessingParameterRasterDestination|GREENNESS|Greenness
+QgsProcessingParameterRasterDestination|WETNESS|Wetness

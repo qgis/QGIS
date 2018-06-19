@@ -23,7 +23,8 @@
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsPgTableModel : public QStandardItemModel
@@ -64,7 +65,7 @@ class QgsPgTableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 
 #endif // QGSPGTABLEMODEL_H

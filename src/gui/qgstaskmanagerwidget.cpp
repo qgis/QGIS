@@ -33,6 +33,7 @@
 
 QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent )
   : QWidget( parent )
+  , mManager( manager )
 {
   Q_ASSERT( manager );
 
@@ -45,11 +46,16 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setHeaderHidden( true );
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  mTreeView->setColumnWidth( 2, 28 );
+  int progressColWidth = fontMetrics().width( "X" ) * 10 * Qgis::UI_SCALE_FACTOR;
+  mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
+  int statusColWidth = fontMetrics().width( "X" ) * 2 * Qgis::UI_SCALE_FACTOR;
+  mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   mTreeView->header()->setStretchLastSection( false );
-  mTreeView->header()->setResizeMode( 0, QHeaderView::Stretch );
+  mTreeView->header()->setSectionResizeMode( QgsTaskManagerModel::Description, QHeaderView::Stretch );
+
+  connect( mTreeView, &QTreeView::clicked, this, &QgsTaskManagerWidget::clicked );
 
   vLayout->addWidget( mTreeView );
 
@@ -92,6 +98,15 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
     connect( statusWidget, &QgsTaskStatusWidget::cancelClicked, task, &QgsTask::cancel );
     mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Status ), statusWidget );
   }
+}
+
+void QgsTaskManagerWidget::clicked( const QModelIndex &index )
+{
+  QgsTask *task = mModel->indexToTask( index );
+  if ( !task )
+    return;
+
+  mManager->triggerTask( task );
 }
 
 ///@cond PRIVATE
@@ -369,7 +384,6 @@ QgsTaskStatusWidget::QgsTaskStatusWidget( QWidget *parent, QgsTask::TaskStatus s
   : QWidget( parent )
   , mCanCancel( canCancel )
   , mStatus( status )
-  , mInside( false )
 {
   setMouseTracking( true );
 }
@@ -392,26 +406,26 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( "/mTaskCancel.svg" );
+    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( "/mTaskQueued.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( "/mTaskOnHold.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( "/mTaskRunning.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( "/mTaskComplete.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( "/mTaskTerminated.svg" );
+        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
         break;
     }
   }
@@ -470,7 +484,9 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 {
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
-  setMinimumSize( 350, 270 );
+  int minWidth = fontMetrics().width( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR;
+  int minHeight = fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR;
+  setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
                  "border-top-right-radius: 8px; background-color: rgb(0, 0, 0, 70%); }" );
@@ -479,7 +495,6 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
 
 QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *manager, QWidget *parent )
   : QToolButton( parent )
-  , mProgressBar( nullptr )
   , mManager( manager )
 {
   setAutoRaise( true );
@@ -508,7 +523,7 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-  int width = 100;
+  int width = fontMetrics().width( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR;
   int height = QToolButton::sizeHint().height();
   return QSize( width, height );
 }

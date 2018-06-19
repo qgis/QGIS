@@ -37,7 +37,6 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     Q_OBJECT
   public:
     QgsCustomizationDialog( QWidget *parent, QSettings *settings );
-    ~QgsCustomizationDialog();
 
     // get item by path
     QTreeWidgetItem *item( const QString &path, QTreeWidgetItem *widgetItem = nullptr );
@@ -84,16 +83,16 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
     void reset();
 
     // Save to settings to file
-    void on_actionSave_triggered( bool checked );
+    void actionSave_triggered( bool checked );
 
     // Load settings from file
-    void on_actionLoad_triggered( bool checked );
+    void actionLoad_triggered( bool checked );
 
-    void on_actionExpandAll_triggered( bool checked );
-    void on_actionCollapseAll_triggered( bool checked );
-    void on_actionSelectAll_triggered( bool checked );
+    void actionExpandAll_triggered( bool checked );
+    void actionCollapseAll_triggered( bool checked );
+    void actionSelectAll_triggered( bool checked );
 
-    void on_mCustomizationEnabledCheckBox_toggled( bool checked );
+    void mCustomizationEnabledCheckBox_toggled( bool checked );
 
   private:
     void init();
@@ -115,6 +114,7 @@ class APP_EXPORT QgsCustomization : public QObject
       User      = 1, // Set by user
       Default   = 2  // Default customization loaded and set
     };
+    Q_ENUM( Status )
 
     //! Returns the instance pointer, creating the object on the first call
     static QgsCustomization *instance();
@@ -148,10 +148,10 @@ class APP_EXPORT QgsCustomization : public QObject
 
   protected:
     QgsCustomization();
-    ~QgsCustomization();
+    ~QgsCustomization() override = default;
     QgsCustomizationDialog *pDialog = nullptr;
 
-    bool mEnabled;
+    bool mEnabled = false;
     QSettings *mSettings = nullptr;
     QString mStatusPath;
 

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 cd $(git rev-parse --show-toplevel)
 
 export PATH=$PATH:$PWD/scripts
@@ -22,7 +22,7 @@ ASTYLEDIFF=/tmp/astyle.diff
 if [[ ! -z  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
   # if on a PR, just analyze the changed files
   echo "TRAVIS PR BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
-  FILES=$(git diff --diff-filter=AM --name-only $(git merge-base HEAD master) | tr '\n' ' ' )
+  FILES=$(git diff --diff-filter=AM --name-only $(git merge-base HEAD ${TRAVIS_BRANCH}) | tr '\n' ' ' )
 elif [[ ! -z  $TRAVIS_COMMIT_RANGE  ]]; then
   echo "TRAVIS COMMIT RANGE: $TRAVIS_COMMIT_RANGE"
   FILES=$(git diff --diff-filter=AM --name-only ${TRAVIS_COMMIT_RANGE/.../..} | tr '\n' ' ' )
@@ -36,7 +36,7 @@ for f in $FILES; do
 
 	echo "Checking $f" >>/tmp/ctest-important.log
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|scripts/customwidget_template*)
+	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|src/3d/poly2tri/*|scripts/customwidget_template*)
 		echo "$f skipped"
 		continue
 		;;

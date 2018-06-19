@@ -29,6 +29,8 @@ from qgis.analysis import (QgsGeometrySnapper,
                            QgsInternalGeometrySnapper)
 from qgis.core import (QgsFeatureSink,
                        QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber,
@@ -48,6 +50,9 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -58,11 +63,13 @@ class SnapGeometriesToLayer(QgisAlgorithm):
                                                                QgsProcessing.TypeVectorLine,
                                                                QgsProcessing.TypeVectorPolygon]))
 
-        self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.TOLERANCE, self.tr('Tolerance (layer units)'), parentParameterName=self.INPUT,
+                                                         minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
 
-        self.modes = [self.tr('Prefer aligning nodes'),
-                      self.tr('Prefer closest point'),
+        self.modes = [self.tr('Prefer aligning nodes, insert extra vertices where required'),
+                      self.tr('Prefer closest point, insert extra vertices where required'),
+                      self.tr('Prefer aligning nodes, don\'t insert new vertices'),
+                      self.tr('Prefer closest point, don\'t insert new vertices'),
                       self.tr('Move end points only, prefer aligning nodes'),
                       self.tr('Move end points only, prefer closest point'),
                       self.tr('Snap end points to end points only')]
@@ -81,13 +88,20 @@ class SnapGeometriesToLayer(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         reference_source = self.parameterAsSource(parameters, self.REFERENCE_LAYER, context)
+        if reference_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.REFERENCE_LAYER))
+
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
         mode = self.parameterAsEnum(parameters, self.BEHAVIOR, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

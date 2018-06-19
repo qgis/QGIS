@@ -20,10 +20,6 @@ CoordinateCaptureGui::CoordinateCaptureGui( QWidget *parent, Qt::WindowFlags fl 
 {
 }
 
-CoordinateCaptureGui::~CoordinateCaptureGui()
-{
-}
-
 void CoordinateCaptureGui::on_buttonBox_accepted()
 {
   //close the dialog

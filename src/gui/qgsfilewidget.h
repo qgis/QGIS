@@ -28,7 +28,8 @@ class QHBoxLayout;
 #include "qgis.h"
 #include "qgsfilterlineedit.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
@@ -64,6 +65,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       GetFile, //! Select a single file
       GetDirectory, //! Select a directory
       GetMultipleFiles, //! Select multiple files
+      SaveFile, //! Select a single new or pre-existing file
     };
 
     /**
@@ -85,7 +87,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \brief Returns the current file path(s)
      * when multiple files are selected, they are quoted and separated
      * by a single space (for example: '"/path/foo" "path/bar"')
-     * \see filePaths
+     * \see splitFilePaths()
      */
     QString filePath();
 
@@ -118,6 +120,28 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * \param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
      */
     void setFilter( const QString &filter );
+
+    /**
+     * Sets the selected filter when the file dialog opens.
+     */
+    void setSelectedFilter( const QString &selectedFilter ) { mSelectedFilter = selectedFilter; }
+
+    /**
+     * Returns the selected filter from the last opened file dialog.
+     */
+    QString selectedFilter() const { return mSelectedFilter; }
+
+    /**
+     * Sets whether a confirmation to overwrite an existing file will appear.
+     * By default, a confirmation will appear.
+     * \param confirmOverwrite If set to true, an overwrite confirmation will be shown
+     */
+    void setConfirmOverwrite( bool confirmOverwrite ) { mConfirmOverwrite = confirmOverwrite; }
+
+    /**
+     * Returns whether a confirmation will be shown when overwriting an existing file
+     */
+    bool confirmOverwrite() const { return mConfirmOverwrite; }
 
     //! determines if the tool button is shown
     bool fileWidgetButtonVisible() const;
@@ -154,7 +178,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * the appearance and behavior of the line edit portion of the widget.
      * \since QGIS 3.0
      */
-    QLineEdit *lineEdit();
+    QgsFilterLineEdit *lineEdit();
 
   signals:
     //! emitted as soon as the current file or directory is changed
@@ -166,14 +190,16 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   private:
     QString mFilePath;
-    bool mButtonVisible;
-    bool mUseLink;
-    bool mFullUrl;
+    bool mButtonVisible = true;
+    bool mUseLink = false;
+    bool mFullUrl = false;
     QString mDialogTitle;
     QString mFilter;
+    QString mSelectedFilter;
     QString mDefaultRoot;
-    StorageMode mStorageMode;
-    RelativeStorage mRelativeStorage;
+    bool mConfirmOverwrite = true;
+    StorageMode mStorageMode = GetFile;
+    RelativeStorage mRelativeStorage = Absolute;
 
     QLabel *mLinkLabel = nullptr;
     QgsFileDropEdit *mLineEdit = nullptr;
@@ -195,7 +221,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
 #ifndef SIP_RUN
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A line edit for capturing file names that can have files dropped onto
  * it via drag & drop.
  *
@@ -208,7 +235,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
     Q_OBJECT
 
   public:
-    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
 
@@ -216,14 +243,14 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   protected:
 
-    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
-    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
-    virtual void paintEvent( QPaintEvent *e ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
   private:
 
-    //! Return file name if object meets drop criteria.
+    //! Returns file name if object meets drop criteria.
     QString acceptableFilePath( QDropEvent *event ) const;
 
     QStringList mAcceptableExtensions;

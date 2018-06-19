@@ -45,11 +45,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mInterruptionChecker( context )
   , mLayer( layer )
   , mFields( layer->fields() )
-  , mRenderer( nullptr )
   , mLabeling( false )
   , mDiagrams( false )
-  , mLabelProvider( nullptr )
-  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -274,7 +271,7 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         break;
       }
 
-      if ( !fet.hasGeometry() )
+      if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );
@@ -335,7 +332,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -483,7 +480,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
 {
   if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
-    if ( layer->labeling() )
+    if ( layer->labelsEnabled() )
     {
       mLabelProvider = layer->labeling()->provider( layer );
       if ( mLabelProvider )
@@ -552,10 +549,16 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer *layer, QSet<QStrin
 QgsVectorLayerRendererInterruptionChecker::QgsVectorLayerRendererInterruptionChecker
 ( const QgsRenderContext &context )
   : mContext( context )
+  , mTimer( new QTimer( this ) )
 {
-}
+  connect( mTimer, &QTimer::timeout, this, [ = ]
+  {
+    if ( mContext.renderingStopped() )
+    {
+      mTimer->stop();
+      cancel();
+    }
+  } );
+  mTimer->start( 50 );
 
-bool QgsVectorLayerRendererInterruptionChecker::mustStop() const
-{
-  return mContext.renderingStopped();
 }

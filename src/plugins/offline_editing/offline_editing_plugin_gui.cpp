@@ -30,7 +30,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
@@ -38,29 +37,59 @@ QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObjec
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
 }
 
-QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
+int QgsSelectLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
+  return QgsLayerTreeModel::columnCount( parent ) + 1;
 }
+
 
 QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
-  if ( role == Qt::CheckStateRole )
+  QgsLayerTreeNode *node = index2node( index );
+  if ( index.column() == 0 )
   {
-    QgsLayerTreeNode *node = index2node( index );
-    if ( QgsLayerTree::isLayer( node ) )
+    if ( role == Qt::CheckStateRole )
+    {
+      if ( QgsLayerTree::isLayer( node ) )
+      {
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        return nodeLayer->isVisible() ? Qt::Checked : Qt::Unchecked;
+      }
+      else if ( QgsLayerTree::isGroup( node ) )
+      {
+        QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+        return nodeGroup->isVisible() ? Qt::Checked : Qt::Unchecked;
+      }
+      else
+      {
+        return QVariant();
+      }
+    }
+  }
+  else
+  {
+    if ( QgsLayerTree::isLayer( node ) && index.column() > 0 )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      return nodeLayer->isVisible();
+      if ( nodeLayer->layer()->dataProvider()->name() == QStringLiteral( "WFS" ) )
+      {
+        switch ( role )
+        {
+          case Qt::ToolTipRole:
+            return tr( "The source of this layer is a <b>WFS</b> server.<br>"
+                       "Some WFS layers are not suitable for offline<br>"
+                       "editing due to unstable primary keys<br>"
+                       "please check with your system administrator<br>"
+                       "if this WFS layer can be used for offline<br>"
+                       "editing." );
+            break;
+          case Qt::DecorationRole:
+            return QgsApplication::getThemeIcon( "/mIconWarning.svg" );
+            break;
+        }
+      }
     }
-    else if ( QgsLayerTree::isGroup( node ) )
-    {
-      QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
-      return nodeGroup->isVisible();
-    }
-    else
-    {
-      return QVariant();
-    }
+    return QVariant();
   }
   return QgsLayerTreeModel::data( index, role );
 }
@@ -70,6 +99,9 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mBrowseButton, &QPushButton::clicked, this, &QgsOfflineEditingPluginGui::mBrowseButton_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOfflineEditingPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOfflineEditingPluginGui::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOfflineEditingPluginGui::showHelp );
 
   restoreState();
@@ -80,6 +112,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
+  mLayerTree->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::deSelectAll );
@@ -88,8 +121,8 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), mOfflineDataPath );
+  settings.setValue( QStringLiteral( "OfflineEditing/geometry" ), saveGeometry(), QgsSettings::Section::Plugins );
+  settings.setValue( QStringLiteral( "OfflineEditing/offline_data_path" ), mOfflineDataPath, QgsSettings::Section::Plugins );
 }
 
 QString QgsOfflineEditingPluginGui::offlineDataPath()
@@ -112,7 +145,7 @@ bool QgsOfflineEditingPluginGui::onlySelected() const
   return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
-void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
+void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Select target database for offline data" ),
@@ -132,7 +165,7 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
   }
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
+void QgsOfflineEditingPluginGui::buttonBox_accepted()
 {
   if ( QFile( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) ).exists() )
   {
@@ -160,7 +193,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   accept();
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
+void QgsOfflineEditingPluginGui::buttonBox_rejected()
 {
   reject();
 }
@@ -173,8 +206,8 @@ void QgsOfflineEditingPluginGui::showHelp()
 void QgsOfflineEditingPluginGui::restoreState()
 {
   QgsSettings settings;
-  mOfflineDataPath = settings.value( QStringLiteral( "Plugin-OfflineEditing/offline_data_path" ), QDir::homePath() ).toString();
-  restoreGeometry( settings.value( QStringLiteral( "Plugin-OfflineEditing/geometry" ) ).toByteArray() );
+  mOfflineDataPath = settings.value( QStringLiteral( "OfflineEditing/offline_data_path" ), QDir::homePath(), QgsSettings::Section::Plugins ).toString();
+  restoreGeometry( settings.value( QStringLiteral( "OfflineEditing/geometry" ), QgsSettings::Section::Plugins ).toByteArray() );
 }
 
 void QgsOfflineEditingPluginGui::selectAll()

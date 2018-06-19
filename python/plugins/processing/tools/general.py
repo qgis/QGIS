@@ -26,10 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
+import configparser
 
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
@@ -40,8 +37,9 @@ from qgis.core import (QgsApplication,
                        QgsProcessingOutputLayerDefinition,
                        QgsProject)
 from processing.core.Processing import Processing
-from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from qgis.utils import iface
 
 
 def algorithmHelp(id):
@@ -51,19 +49,31 @@ def algorithmHelp(id):
     alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
         print('{} ({})\n'.format(alg.displayName(), alg.id()))
-        print(alg.shortHelpString())
+        if alg.shortDescription():
+            print(alg.shortDescription() + '\n')
+        if alg.shortHelpString():
+            print(alg.shortHelpString() + '\n')
         print('\n----------------')
         print('Input parameters')
         print('----------------')
         for p in alg.parameterDefinitions():
-            print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
-            if p.description():
-                print('\t' + p.description())
+            print('\n{}: {}'.format(p.name(), p.description()))
+
+            print('\n\tParameter type:\t{}'.format(p.__class__.__name__))
 
             if isinstance(p, QgsProcessingParameterEnum):
                 opts = []
                 for i, o in enumerate(p.options()):
-                    opts.append('\t\t{} - {}'.format(i, o))
+                    opts.append('\t\t- {}: {}'.format(i, o))
+                print('\n\tAvailable values:\n{}'.format('\n'.join(opts)))
+
+            parameter_type = QgsApplication.processingRegistry().parameterType(p.type())
+            accepted_types = parameter_type.acceptedPythonTypes() if parameter_type is not None else []
+            if accepted_types:
+                opts = []
+                for t in accepted_types:
+                    opts.append('\t\t- {}'.format(t))
+                print('\n\tAccepted data types:')
                 print('\n'.join(opts))
 
         print('\n----------------')
@@ -109,3 +119,53 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
                 parameters[param.name()] = p
 
     return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)
+
+
+def createAlgorithmDialog(algOrName, parameters={}):
+    """Creates and returns an algorithm dialog for the specified algorithm, prepopulated
+    with a given set of parameters. It is the caller's responsibility to execute
+    and delete this dialog.
+    """
+    if isinstance(algOrName, QgsProcessingAlgorithm):
+        alg = algOrName
+    else:
+        alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
+
+    if alg is None:
+        return False
+
+    dlg = alg.createCustomParametersWidget(iface.mainWindow())
+
+    if not dlg:
+        dlg = AlgorithmDialog(alg)
+
+    dlg.setParameters(parameters)
+
+    return dlg
+
+
+def execAlgorithmDialog(algOrName, parameters={}):
+    """Executes an algorithm dialog for the specified algorithm, prepopulated
+    with a given set of parameters.
+
+    Returns the algorithm's results.
+    """
+    dlg = createAlgorithmDialog(algOrName, parameters)
+    if dlg is None:
+        return {}
+
+    canvas = iface.mapCanvas()
+    prevMapTool = canvas.mapTool()
+    dlg.show()
+    dlg.exec_()
+    if canvas.mapTool() != prevMapTool:
+        try:
+            canvas.mapTool().reset()
+        except:
+            pass
+        canvas.setMapTool(prevMapTool)
+
+    results = dlg.results()
+    # make sure the dialog is destroyed and not only hidden on pressing Esc
+    dlg.close()
+    return results

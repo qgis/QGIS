@@ -1,5 +1,5 @@
 Thiessen Polygons
 shapes_points
-ParameterVector|POINTS|Points|-1|False
-OutputVector|POLYGONS|Polygons
-ParameterNumber|FRAME|Frame Size| 0.000000|None| 10.000000
+QgsProcessingParameterFeatureSource|POINTS|Points|-1|None|False
+QgsProcessingParameterVectorDestination|POLYGONS|Polygons
+QgsProcessingParameterNumber|FRAME|Frame Size|QgsProcessingParameterNumber.Double|10.000000|False|0.000000|None

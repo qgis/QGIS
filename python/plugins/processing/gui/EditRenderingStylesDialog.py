@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -39,8 +39,11 @@ from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgRenderingStyles.ui'))
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgRenderingStyles.ui'))
 
 
 class EditRenderingStylesDialog(BASE, WIDGET):

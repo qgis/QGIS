@@ -44,10 +44,6 @@ QgsWCSSourceSelect::QgsWCSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWCSSourceSelect::showHelp );
 }
 
-QgsWCSSourceSelect::~QgsWCSSourceSelect()
-{
-}
-
 void QgsWCSSourceSelect::populateLayerList()
 {
 
@@ -91,7 +87,7 @@ void QgsWCSSourceSelect::populateLayerList()
     lItem->setData( 0, Qt::UserRole + 1, "" );
 
     // Make only leaves selectable
-    if ( !coverageParents.keys( coverage->orderId ).isEmpty() )
+    if ( coverageParents.contains( coverage->orderId ) )
     {
       lItem->setFlags( Qt::ItemIsEnabled );
     }
@@ -155,7 +151,7 @@ void QgsWCSSourceSelect::addButtonClicked()
 }
 
 
-void QgsWCSSourceSelect::on_mLayersTreeWidget_itemSelectionChanged()
+void QgsWCSSourceSelect::mLayersTreeWidget_itemSelectionChanged()
 {
 
   QString identifier = selectedIdentifier();
@@ -196,13 +192,13 @@ QList<QgsWCSSourceSelect::SupportedFormat> QgsWCSSourceSelect::providerFormats()
 {
   QList<SupportedFormat> formats;
 
-  QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
-  Q_FOREACH ( const QString &mime, mimes.keys() )
+  const QMap<QString, QString> mimes = QgsWcsProvider::supportedMimes();
+  for ( auto it = mimes.constBegin(); it != mimes.constEnd(); ++it )
   {
-    SupportedFormat format = { mime, mimes.value( mime ) };
+    SupportedFormat format = { it.key(), it.value() };
 
     // prefer tiff
-    if ( mime == QLatin1String( "image/tiff" ) )
+    if ( it.key() == QLatin1String( "image/tiff" ) )
     {
       formats.prepend( format );
     }

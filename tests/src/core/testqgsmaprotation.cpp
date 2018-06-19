@@ -34,7 +34,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
 class TestQgsMapRotation : public QObject
@@ -42,15 +43,11 @@ class TestQgsMapRotation : public QObject
     Q_OBJECT
   public:
     TestQgsMapRotation()
-      : mRasterLayer( 0 )
-      , mPointsLayer( 0 )
-      , mLinesLayer( 0 )
-      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
 
-    ~TestQgsMapRotation();
+    ~TestQgsMapRotation() override;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -112,10 +109,7 @@ void TestQgsMapRotation::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMapRotation::~TestQgsMapRotation()
-{
-
-}
+TestQgsMapRotation::~TestQgsMapRotation() = default;
 
 //runs after all tests
 void TestQgsMapRotation::cleanupTestCase()
@@ -213,6 +207,7 @@ void TestQgsMapRotation::linesLayer()
   format.setSize( 16 );
   palSettings.setFormat( format );
   mLinesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( palSettings ) );
+  mLinesLayer->setLabelsEnabled( true );
 
   QVERIFY( success );
   mMapSettings->setExtent( mLinesLayer->extent() ); //QgsRectangle(-150,-150,150,150) );

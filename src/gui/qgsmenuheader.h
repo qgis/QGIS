@@ -22,11 +22,12 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMenuHeader
  * Custom widget for displaying subheaders within a QMenu in a standard style.
- * \since QGIS 3.0
  * \see QgsMenuHeaderWidgetAction()
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMenuHeader : public QWidget
 {
@@ -39,8 +40,8 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
      */
     explicit QgsMenuHeader( const QString &text, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QSize minimumSizeHint() const override;
-    virtual QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
   protected:
 
@@ -54,11 +55,12 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
 
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsMenuHeaderWidgetAction
  * Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
- * \since QGIS 3.0
  * \see QgsMenuHeader()
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMenuHeaderWidgetAction: public QWidgetAction
 {

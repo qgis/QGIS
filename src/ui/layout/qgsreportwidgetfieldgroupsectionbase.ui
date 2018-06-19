@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsReportWidgetFieldGroupSectionBase</class>
+ <widget class="QWidget" name="QgsReportWidgetFieldGroupSectionBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>277</width>
+    <height>415</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Layout Manager</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="1">
+      <widget class="QPushButton" name="mButtonEditHeader">
+       <property name="toolTip">
+        <string>Edit the field group header layout</string>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1" colspan="2">
+      <widget class="QCheckBox" name="mSortAscendingCheckBox">
+       <property name="toolTip">
+        <string>Sort features ascendingly by field value</string>
+       </property>
+       <property name="text">
+        <string>Sort ascending</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QPushButton" name="mButtonEditFooter">
+       <property name="toolTip">
+        <string>Edit the field group footer layout</string>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <widget class="QCheckBox" name="mCheckShowFooter">
+       <property name="toolTip">
+        <string>Include a footer layout after the last matching feature</string>
+       </property>
+       <property name="text">
+        <string>Include footer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QgsFieldComboBox" name="mFieldComboBox">
+       <property name="toolTip">
+        <string>Source field to iterate over</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="3">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mCheckHeaderAlwaysVisible">
+         <property name="toolTip">
+          <string>If unchecked, the header will only be shown when at least one matching feature is found</string>
+         </property>
+         <property name="text">
+          <string>Show header when no matching
+features are found</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QgsMapLayerComboBox" name="mLayerComboBox">
+       <property name="toolTip">
+        <string>Source layer to iterate over</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="mCheckShowHeader">
+       <property name="toolTip">
+        <string>Include a header layout before the first matching feature</string>
+       </property>
+       <property name="text">
+        <string>Include header</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="2">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="mCheckShowBody">
+       <property name="toolTip">
+        <string>Include a separate layout for every matching feature found</string>
+       </property>
+       <property name="text">
+        <string>Include body</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QPushButton" name="mButtonEditBody">
+       <property name="toolTip">
+        <string>Edit the field group body layout</string>
+       </property>
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" colspan="3">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="mCheckFooterAlwaysVisible">
+         <property name="toolTip">
+          <string>If unchecked, the footer will only be shown when at least one matching feature is found</string>
+         </property>
+         <property name="text">
+          <string>Show footer when no matching
+features are found</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapLayerComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsfieldcombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mCheckShowHeader</tabstop>
+  <tabstop>mButtonEditHeader</tabstop>
+  <tabstop>mCheckHeaderAlwaysVisible</tabstop>
+  <tabstop>mLayerComboBox</tabstop>
+  <tabstop>mFieldComboBox</tabstop>
+  <tabstop>mSortAscendingCheckBox</tabstop>
+  <tabstop>mCheckShowBody</tabstop>
+  <tabstop>mButtonEditBody</tabstop>
+  <tabstop>mCheckShowFooter</tabstop>
+  <tabstop>mButtonEditFooter</tabstop>
+  <tabstop>mCheckFooterAlwaysVisible</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

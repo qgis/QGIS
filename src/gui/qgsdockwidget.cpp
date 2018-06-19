@@ -21,14 +21,12 @@
 
 QgsDockWidget::QgsDockWidget( QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
 
 QgsDockWidget::QgsDockWidget( const QString &title, QWidget *parent, Qt::WindowFlags flags )
   : QDockWidget( title, parent, flags )
-  , mVisibleAndActive( false )
 {
   connect( this, &QDockWidget::visibilityChanged, this, &QgsDockWidget::handleVisibilityChanged );
 }
@@ -37,9 +35,6 @@ void QgsDockWidget::setUserVisible( bool visible )
 {
   if ( visible )
   {
-    if ( mVisibleAndActive )
-      return;
-
     show();
     raise();
   }
@@ -50,6 +45,11 @@ void QgsDockWidget::setUserVisible( bool visible )
 
     hide();
   }
+}
+
+void QgsDockWidget::toggleUserVisible()
+{
+  setUserVisible( !isUserVisible() );
 }
 
 bool QgsDockWidget::isUserVisible() const

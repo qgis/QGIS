@@ -115,11 +115,11 @@ class TestQgsSipCoverage(unittest.TestCase):
 
         self.assertEqual(missing_class_count, 0, """\n\nFAIL: new unbound classes have been introduced, please add SIP bindings for these classes
 If these classes are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the CLASS Doxygen comments""")
+"\\note not available in Python bindings" to the CLASS Doxygen comments""")
 
         self.assertEqual(missing_member_count, 0, """\n\nFAIL: new unbound members have been introduced, please add SIP bindings for these members
 If these members are not suitable for the Python bindings, please add the Doxygen tag
-"@note not available in Python bindings" to the MEMBER Doxygen comments""")
+"\\note not available in Python bindings" to the MEMBER Doxygen comments""")
 
 
 if __name__ == '__main__':

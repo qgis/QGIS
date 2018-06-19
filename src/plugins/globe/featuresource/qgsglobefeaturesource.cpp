@@ -12,6 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 
@@ -27,32 +28,48 @@
 #include "qgsglobefeaturesource.h"
 
 
-QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options ) :
-  mOptions( options ),
-  mLayer( 0 ),
-  mProfile( 0 )
+QgsGlobeFeatureSource::QgsGlobeFeatureSource( const QgsGlobeFeatureOptions &options )
+  : mOptions( options )
+  , mLayer( 0 )
+#if OSGEARTH_VERSION_LESS_THAN(2, 8, 0)
+  , mProfile( 0 )
+#endif
 {
 }
 
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+osgEarth::Status QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
+{
+#else
 void QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
 {
+#endif
   Q_UNUSED( dbOptions )
   mLayer = mOptions.layer();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
-  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, const QgsGeometry & ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry ) ) );
 
   // create the profile
   osgEarth::SpatialReference *ref = osgEarth::SpatialReference::create( mLayer->crs().toWkt().toStdString() );
   if ( 0 == ref )
   {
     std::cout << "Cannot find the spatial reference" << std::endl;
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+    return osgEarth::Status( osgEarth::Status::ConfigurationError );
+#else
     return;
+#endif
   }
   QgsRectangle ext = mLayer->extent();
   osgEarth::GeoExtent geoext( ref, ext.xMinimum(), ext.yMinimum(), ext.xMaximum(), ext.yMaximum() );
+  mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->fields() );
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+  setFeatureProfile( new osgEarth::Features::FeatureProfile( geoext ) );
+  return osgEarth::Status( osgEarth::Status::NoError );
+#else
   mProfile = new osgEarth::Features::FeatureProfile( geoext );
-  mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->pendingFields() );
+#endif
 }
 
 osgEarth::Features::FeatureCursor *QgsGlobeFeatureSource::createFeatureCursor( const osgEarth::Symbology::Query &query )
@@ -122,7 +139,7 @@ void QgsGlobeFeatureSource::attributeValueChanged( const QgsFeatureId &featureId
   if ( it != mFeatures.end() )
   {
     osgEarth::Features::Feature *feature = it->second.get();
-    QgsGlobeFeatureUtils::setFeatureField( feature, mLayer->pendingFields().at( idx ), value );
+    QgsGlobeFeatureUtils::setFeatureField( feature, mLayer->fields().at( idx ), value );
   }
 }
 
@@ -145,7 +162,7 @@ class QgsGlobeFeatureSourceFactory : public osgEarth::Features::FeatureSourceDri
       supportsExtension( "osgearth_feature_qgis", "QGIS feature driver for osgEarth" );
     }
 
-    virtual osgDB::ReaderWriter::ReadResult readObject( const std::string &file_name, const osgDB::Options *options ) const override
+    osgDB::ReaderWriter::ReadResult readObject( const std::string &file_name, const osgDB::Options *options ) const override
     {
       // this function seems to be called for every plugin
       // we declare supporting the special extension "osgearth_feature_qgis"

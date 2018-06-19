@@ -66,6 +66,17 @@ QgsScopedSqlite::~QgsScopedSqlite()
 
 sqlite3 *QgsScopedSqlite::get() const { return db_; }
 
+bool QgsScopedSqlite::interrupt()
+{
+  bool rc = false;
+  if ( db_ )
+  {
+    sqlite3_interrupt( db_ );
+    rc = true;
+  }
+  return rc;
+}
+
 sqlite3 *QgsScopedSqlite::release()
 {
   sqlite3 *pp = db_;
@@ -89,14 +100,13 @@ namespace Sqlite
 {
   Query::Query( sqlite3 *db, const QString &q )
     : db_( db )
-    , stmt_( nullptr )
     , nBind_( 1 )
   {
     QByteArray ba( q.toUtf8() );
     int r = sqlite3_prepare_v2( db, ba.constData(), ba.size(), &stmt_, nullptr );
     if ( r )
     {
-      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q ).arg( sqlite3_errmsg( db ) );
+      QString err = QStringLiteral( "Query preparation error on %1: %2" ).arg( q, sqlite3_errmsg( db ) );
       throw std::runtime_error( err.toUtf8().constData() );
     }
   }

@@ -26,8 +26,8 @@
 
 /**
  * Represents a component of a model algorithm.
- * \since QGIS 3.0
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelComponent
 {
@@ -55,7 +55,7 @@ class CORE_EXPORT QgsProcessingModelComponent
      * Sets the \a position of the model component within the graphical modeler.
      * \see position()
      */
-    void setPosition( const QPointF &position );
+    void setPosition( QPointF position );
 
   protected:
 

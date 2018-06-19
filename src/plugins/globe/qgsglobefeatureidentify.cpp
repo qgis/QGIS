@@ -14,13 +14,11 @@
  ***************************************************************************/
 
 #include "qgsglobefeatureidentify.h"
-
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include <qgsrubberband.h>
-#include <qgsvectorlayer.h>
-#include <qgslogger.h>
-
+#include "qgsrubberband.h"
+#include "qgsvectorlayer.h"
+#include "qgslogger.h"
 #include "featuresource/qgsglobefeaturesource.h"
 
 #include <osg/ValueObject>

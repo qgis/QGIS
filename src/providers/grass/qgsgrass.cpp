@@ -257,11 +257,6 @@ bool QgsGrassObject::operator==( const QgsGrassObject &other ) const
          && mName == other.mName && mType == other.mType;
 }
 
-QgsGrass::QgsGrass()
-  : mMapsetSearchPathWatcher( 0 )
-{
-}
-
 QString QgsGrass::pathSeparator()
 {
 #ifdef Q_OS_WIN
@@ -680,7 +675,7 @@ void QgsGrass::loadMapsetSearchPath()
   G_TRY
   {
     QgsGrass::setMapset( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset() );
-    const char *mapset = 0;
+    const char *mapset = nullptr;
     G_reset_mapsets();
     for ( int i = 0; ( mapset = G_get_mapset_name( i ) ); i++ )
     {
@@ -708,7 +703,7 @@ void QgsGrass::setMapsetSearchPathWatcher()
   if ( mMapsetSearchPathWatcher )
   {
     delete mMapsetSearchPathWatcher;
-    mMapsetSearchPathWatcher = 0;
+    mMapsetSearchPathWatcher = nullptr;
   }
   if ( !activeMode() )
   {
@@ -942,7 +937,7 @@ QString QgsGrass::openMapset( const QString &gisdbase,
   }
 
   // Create GISRC file
-  QString globalGisrc =  QDir::home().path() + "/.grassrc6";
+  QString globalGisrc = QDir::home().path() + "/.grassrc6";
   sGisrc = sTmp + "/gisrc";
 
   QgsDebugMsg( QString( "globalGisrc = %1" ).arg( globalGisrc ) );
@@ -1347,7 +1342,7 @@ QStringList QgsGrass::vectorLayers( const QString &gisdbase, const QString &loca
 
   // TODO: add option in GUI to set listTopoLayers
   QgsSettings settings;
-  bool listTopoLayers =  settings.value( QStringLiteral( "GRASS/showTopoLayers" ), false ).toBool();
+  bool listTopoLayers = settings.value( QStringLiteral( "GRASS/showTopoLayers" ), false ).toBool();
   if ( listTopoLayers )
   {
     // add topology layers
@@ -1520,7 +1515,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
           fullName = fullName.trimmed();
           if ( !fullName.isEmpty() )
           {
-            QStringList nameMapset = fullName.split( QStringLiteral( "@" ) );
+            QStringList nameMapset = fullName.split( '@' );
             if ( nameMapset.value( 1 ) == mapsetObject.mapset() || nameMapset.value( 1 ).isEmpty() )
             {
               list << nameMapset.value( 0 );
@@ -1805,7 +1800,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
       return false;
     }
 
-    struct Map_info *Map = 0;
+    struct Map_info *Map = nullptr;
     int level = -1;
     G_TRY
     {
@@ -2063,7 +2058,7 @@ QString QgsGrass::getInfo( const QString  &info, const QString  &gisdbase,
     arguments.append( QStringLiteral( "cols=%1" ).arg( sampleCols ) );
   }
 
-  //QByteArray data =  runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
+  //QByteArray data = runModule( gisdbase, location, mapset, cmd, arguments, timeOut );
   // Run module with empty mapset so that it tries to find a mapset owned by user
   QByteArray data = runModule( gisdbase, location, QLatin1String( "" ), cmd, arguments, timeOut );
   QgsDebugMsg( data );
@@ -2138,7 +2133,7 @@ QgsRectangle QgsGrass::extent( const QString &gisdbase, const QString &location,
   try
   {
     QString str = getInfo( QStringLiteral( "window" ), gisdbase, location, mapset, map, type );
-    QStringList list = str.split( QStringLiteral( "," ) );
+    QStringList list = str.split( ',' );
     if ( list.size() != 4 )
     {
       throw QgsGrass::Exception( "Cannot parse GRASS map extent: " + str );
@@ -2162,7 +2157,7 @@ void QgsGrass::size( const QString &gisdbase, const QString &location, const QSt
   try
   {
     QString str = getInfo( QStringLiteral( "size" ), gisdbase, location, mapset, map, QgsGrassObject::Raster );
-    QStringList list = str.split( QStringLiteral( "," ) );
+    QStringList list = str.split( ',' );
     if ( list.size() != 2 )
     {
       throw QgsGrass::Exception( "Cannot parse GRASS map size: " + str );
@@ -2255,7 +2250,7 @@ QMap<QString, QString> QgsGrass::query( const QString &gisdbase, const QString &
   try
   {
     QString str = getInfo( QStringLiteral( "query" ), gisdbase, location, mapset, map, type, x, y );
-    QStringList list = str.trimmed().split( QStringLiteral( ":" ) );
+    QStringList list = str.trimmed().split( ':' );
     if ( list.size() == 2 )
     {
       result[list[0]] = list[1];
@@ -2263,14 +2258,14 @@ QMap<QString, QString> QgsGrass::query( const QString &gisdbase, const QString &
   }
   catch ( QgsGrass::Exception &e )
   {
-    warning( tr( "Cannot query raster " ) + "\n" + e.what() );
+    warning( tr( "Cannot query raster\n%1" ).arg( e.what() ) );
   }
   return result;
 }
 
 void QgsGrass::renameObject( const QgsGrassObject &object, const QString &newName )
 {
-  QString cmd =  gisbase() + "/bin/g.rename";
+  QString cmd = gisbase() + "/bin/g.rename";
   QStringList arguments;
 
   arguments << object.elementShort() + "=" + object.name() + "," + newName;
@@ -2326,7 +2321,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject &object )
   }
   catch ( QgsGrass::Exception &e )
   {
-    warning( tr( "Cannot delete" ) + " " + object.elementName() + " " + object.name() + ": " + e.what() );
+    warning( tr( "Cannot delete %1 %2: %3" ).arg( object.elementName(), object.name(), e.what() ) );
     return false;
   }
   return true;
@@ -2335,7 +2330,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject &object )
 bool QgsGrass::deleteObjectDialog( const QgsGrassObject &object )
 {
 
-  return QMessageBox::question( 0, QObject::tr( "Delete confirmation" ),
+  return QMessageBox::question( nullptr, QObject::tr( "Delete confirmation" ),
                                 QObject::tr( "Are you sure you want to delete %1 %2?" ).arg( object.elementName(), object.name() ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes;
 }
@@ -2345,7 +2340,7 @@ void QgsGrass::createVectorMap( const QgsGrassObject &object, QString &error )
 
   QgsGrass::setMapset( object );
 
-  struct Map_info *Map = 0;
+  struct Map_info *Map = nullptr;
   QgsGrass::lock();
   G_TRY
   {
@@ -2417,7 +2412,7 @@ void QgsGrass::createTable( dbDriver *driver, const QString &tableName, const Qg
   db_free_string( &dbstr );
   if ( result != DB_OK )
   {
-    throw QgsGrass::Exception( QObject::tr( "Cannot create table" ) + ": " + QString::fromLatin1( db_get_error_msg() ) );
+    throw QgsGrass::Exception( QObject::tr( "Cannot create table: %1" ).arg( QString::fromLatin1( db_get_error_msg() ) ) );
   }
 }
 
@@ -2816,7 +2811,7 @@ void QgsGrass::warning( const QString &message )
 {
   if ( !sMute )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
+    QMessageBox::warning( nullptr, QObject::tr( "Warning" ), message );
   }
   else
   {
@@ -2864,7 +2859,7 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   QgsDebugMsg( QString( "free map = %1" ).arg( ( quint64 )map ) );
   qgsFree( map );
-  map = 0;
+  map = nullptr;
 }
 
 void QgsGrass::sleep( int ms )
@@ -2929,7 +2924,7 @@ QgsGrass::ModuleOutput QgsGrass::parseModuleOutput( const QString &input, QStrin
   {
     text = rxerror.cap( 1 );
     QString img = QgsApplication::pkgDataPath() + "/themes/default/grass/grass_module_error.png";
-    html =  "<img src=\"" + img + "\">" + text;
+    html = "<img src=\"" + img + "\">" + text;
     return OutputError;
   }
   else if ( rxend.indexIn( input ) != -1 )

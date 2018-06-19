@@ -31,19 +31,9 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="leFilename">
+       <widget class="QgsFileWidget" name="mFilename">
         <property name="enabled">
          <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="browseFilename">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Browse</string>
         </property>
        </widget>
       </item>
@@ -57,7 +47,7 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2" colspan="2">
+      <item row="0" column="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
       </item>
       <item row="1" column="0">
@@ -66,11 +56,11 @@
          <string>File name</string>
         </property>
         <property name="buddy">
-         <cstring>leFilename</cstring>
+         <cstring>mFilename</cstring>
         </property>
        </widget>
       </item>
-      <item row="3" column="2" colspan="2">
+      <item row="3" column="2">
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
         <property name="focusPolicy">
          <enum>Qt::StrongFocus</enum>
@@ -83,11 +73,11 @@
          <string>Layer name</string>
         </property>
         <property name="buddy">
-         <cstring>leFilename</cstring>
+         <cstring>leLayername</cstring>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" colspan="2">
+      <item row="2" column="2">
        <widget class="QLineEdit" name="leLayername">
         <property name="enabled">
          <bool>false</bool>
@@ -468,11 +458,16 @@
    <extends>QWidget</extends>
    <header>qgsscalewidget.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mFormatComboBox</tabstop>
-  <tabstop>leFilename</tabstop>
-  <tabstop>browseFilename</tabstop>
+  <tabstop>mFilename</tabstop>
   <tabstop>leLayername</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>

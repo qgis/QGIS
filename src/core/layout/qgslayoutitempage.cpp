@@ -19,27 +19,41 @@
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
-  : QgsLayoutItem( layout )
+  : QgsLayoutItem( layout, false )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  // use a hidden pen to specify the amount the page "bleeds" outside it's scene bounds,
-  // (it's a lot easier than reimplementing boundingRect() just to handle this)
-  QPen shadowPen( QBrush( Qt::transparent ), layout->pageCollection()->pageShadowWidth() * 2 );
-  setPen( shadowPen );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  {
+    mBoundingRect = QRectF();
+    prepareGeometryChange();
+  } );
 
   QFont font;
   QFontMetrics fm( font );
-  mMaximumShadowWidth = fm.width( "X" );
+  mMaximumShadowWidth = fm.width( QStringLiteral( "X" ) );
 
   mGrid.reset( new QgsLayoutItemPageGrid( pos().x(), pos().y(), rect().width(), rect().height(), mLayout ) );
   mGrid->setParentItem( this );
+}
+
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemPage( layout );
+}
+
+int QgsLayoutItemPage::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPage;
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -110,13 +124,55 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   return Landscape;
 }
 
-void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
+QRectF QgsLayoutItemPage::boundingRect() const
 {
-  QgsLayoutItem::attemptResize( size );
+  if ( mBoundingRect.isNull() )
+  {
+    double shadowWidth = mLayout->pageCollection()->pageShadowWidth();
+    mBoundingRect = rect();
+    mBoundingRect.adjust( 0, 0, shadowWidth, shadowWidth );
+  }
+  return mBoundingRect;
+}
+
+void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesFrame )
+{
+  QgsLayoutItem::attemptResize( size, includesFrame );
   //update size of attached grid to reflect new page size and position
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
 
   mLayout->guides().update();
+}
+
+///@cond PRIVATE
+class QgsLayoutItemPageUndoCommand: public QgsLayoutItemUndoCommand
+{
+  public:
+
+    QgsLayoutItemPageUndoCommand( QgsLayoutItemPage *page, const QString &text, int id = 0, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr )
+      : QgsLayoutItemUndoCommand( page, text, id, parent )
+    {}
+
+    void restoreState( QDomDocument &stateDoc ) override
+    {
+      QgsLayoutItemUndoCommand::restoreState( stateDoc );
+      layout()->pageCollection()->reflow();
+    }
+
+  protected:
+
+    QgsLayoutItem *recreateItem( int, QgsLayout *layout ) override
+    {
+      QgsLayoutItemPage *page = new QgsLayoutItemPage( layout );
+      layout->pageCollection()->addPage( page );
+      return page;
+    }
+};
+///@endcond
+
+QgsAbstractLayoutUndoCommand *QgsLayoutItemPage::createCommand( const QString &text, int id, QUndoCommand *parent )
+{
+  return new QgsLayoutItemPageUndoCommand( this, text, id, parent );
 }
 
 void QgsLayoutItemPage::redraw()
@@ -125,24 +181,22 @@ void QgsLayoutItemPage::redraw()
   mGrid->update();
 }
 
-void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
+void QgsLayoutItemPage::draw( QgsLayoutItemRenderContext &context )
 {
-  if ( !context.painter() || !mLayout /*|| !mLayout->pagesVisible() */ )
+  if ( !context.renderContext().painter() || !mLayout || !mLayout->renderContext().pagesVisible() )
   {
     return;
   }
 
-  double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
+  double scale = context.renderContext().convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
 
   QgsExpressionContext expressionContext = createExpressionContext();
-  context.setExpressionContext( expressionContext );
+  context.renderContext().setExpressionContext( expressionContext );
 
-  QPainter *painter = context.painter();
+  QPainter *painter = context.renderContext().painter();
   painter->save();
 
-#if 0 //TODO
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
-#endif
+  if ( mLayout->renderContext().isPreviewRender() )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -166,26 +220,35 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   }
 
   std::unique_ptr< QgsFillSymbol > symbol( mLayout->pageCollection()->pageStyleSymbol()->clone() );
-  symbol->startRender( context );
+  symbol->startRender( context.renderContext() );
 
   //get max bleed from symbol
-  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context );
+  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( symbol.get(), context.renderContext() );
 
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  maxBleedPixels--;
+  if ( !mLayout->renderContext().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+  {
+    maxBleedPixels = std::floor( maxBleedPixels - 2 );
+  }
 
+  // round up
   QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                     ( rect().width() * scale - 2 * maxBleedPixels ), ( rect().height() * scale - 2 * maxBleedPixels ) ) );
+                                     std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
   QList<QPolygonF> rings; //empty list
 
-  symbol->renderPolygon( pagePolygon, &rings, nullptr, context );
-  symbol->stopRender( context );
+  symbol->renderPolygon( pagePolygon, &rings, nullptr, context.renderContext() );
+  symbol->stopRender( context.renderContext() );
 
   painter->restore();
 }
 
+void QgsLayoutItemPage::drawFrame( QgsRenderContext & )
+{}
+
+void QgsLayoutItemPage::drawBackground( QgsRenderContext & )
+{}
 
 //
 // QgsLayoutItemPageGrid
@@ -213,7 +276,10 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   if ( !mLayout )
     return;
 
-  const QgsLayoutContext &context = mLayout->context();
+  if ( !mLayout->renderContext().isPreviewRender() )
+    return;
+
+  const QgsLayoutRenderContext &context = mLayout->renderContext();
   const QgsLayoutGridSettings &grid = mLayout->gridSettings();
 
   if ( !context.gridVisible() || grid.resolution().length() <= 0 )
@@ -263,7 +329,7 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
       {
         //dots are actually drawn as tiny crosses a few pixels across
         //set halfCrossLength to equivalent of 1 pixel
-        halfCrossLength = 1 / itemStyle->matrix.m11();
+        halfCrossLength = 1 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
       }
       else
       {

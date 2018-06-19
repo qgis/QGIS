@@ -26,9 +26,7 @@
 
 QgsExternalResourceWidgetWrapper::QgsExternalResourceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mLineEdit( nullptr )
-  , mLabel( nullptr )
-  , mQgsWidget( nullptr )
+
 {
 }
 
@@ -95,7 +93,7 @@ void QgsExternalResourceWidgetWrapper::setFeature( const QgsFeature &feature )
     }
     if ( mPropertyCollection.isActive( QgsEditorWidgetWrapper::DocumentViewerContent ) )
     {
-      QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, "NoContent", &ok );
+      QString dvcString = mPropertyCollection.valueAsString( QgsEditorWidgetWrapper::DocumentViewerContent, expressionContext, QStringLiteral( "NoContent" ), &ok );
       if ( ok )
       {
         QgsExternalResourceWidget::DocumentViewerContent dvc;
@@ -156,7 +154,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
       mQgsWidget->fileWidget()->setFullUrl( cfg.value( QStringLiteral( "FullUrl" ) ).toBool() );
     }
 
-    mPropertyCollection.loadVariant( cfg.value( "PropertyCollection" ), propertyDefinitions() );
+    mPropertyCollection.loadVariant( cfg.value( QStringLiteral( "PropertyCollection" ) ), propertyDefinitions() );
     if ( !mPropertyCollection.isActive( QgsWidgetWrapper::RootPath ) )
     {
       mQgsWidget->setDefaultRoot( cfg.value( QStringLiteral( "DefaultRoot" ) ).toString() );
@@ -188,7 +186,7 @@ void QgsExternalResourceWidgetWrapper::initWidget( QWidget *editor )
   }
 
   if ( mLineEdit )
-    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
 
 }
 
@@ -208,8 +206,8 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
 
   if ( mLabel )
   {
-    mLabel->setText( value.toString() ) ;
-    valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    mLabel->setText( value.toString() );
+    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )
@@ -235,23 +233,30 @@ void QgsExternalResourceWidgetWrapper::setEnabled( bool enabled )
     mQgsWidget->setReadOnly( !enabled );
 }
 
-void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
+void QgsExternalResourceWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( mLineEdit )
   {
-    switch ( status )
+    if ( !constraintResultVisible() )
     {
-      case ConstraintResultPass:
-        mLineEdit->setStyleSheet( QString() );
-        break;
+      widget()->setStyleSheet( QString() );
+    }
+    else
+    {
+      switch ( constraintResult() )
+      {
+        case ConstraintResultPass:
+          mLineEdit->setStyleSheet( QString() );
+          break;
 
-      case ConstraintResultFailHard:
-        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
-        break;
+        case ConstraintResultFailHard:
+          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #dd7777; }" ) );
+          break;
 
-      case ConstraintResultFailSoft:
-        mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
-        break;
+        case ConstraintResultFailSoft:
+          mLineEdit->setStyleSheet( QStringLiteral( "QgsFilterLineEdit { background-color: #ffd85d; }" ) );
+          break;
+      }
     }
   }
 }

@@ -25,7 +25,8 @@
 
 class QFont;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \namespace QgsGuiUtils
  * The QgsGuiUtils namespace contains constants and helper functions used throughout the QGIS GUI.
  * \note not available in Python bindings
@@ -50,7 +51,7 @@ namespace QgsGuiUtils
    * Qt::WindowMaximizeButtonHint is included but will be ignored if
    * the dialog is a fixed size and does not have a size grip.
    */
-  static const Qt::WindowFlags ModalDialogFlags = 0;
+  static const Qt::WindowFlags ModalDialogFlags = nullptr;
 
   /**
    * Minimum magnification level allowed in map canvases.
@@ -94,7 +95,8 @@ namespace QgsGuiUtils
       QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
       bool cancelAll = false );
 
-  /** A helper function to get an image name from the user. It will nicely
+  /**
+   * A helper function to get an image name from the user. It will nicely
    * provide filters with all available writable image formats.
    * \param parent widget that should act as the parent for the file dialog
    * \param message the message to display to the user
@@ -134,6 +136,63 @@ namespace QgsGuiUtils
    * \returns QFont the selected fon
    */
   QFont GUI_EXPORT getFont( bool &ok, const QFont &initial, const QString &title = QString() );
+
+  /**
+   * Restore the wigget geometry from settings. Will use the objetName() of the widget  and if empty, or keyName is set, will
+   * use keyName to save state into settings.
+   * \param widget The widget to restore.
+   * \param keyName Override for objectName() if needed.
+   * \return True if the geometry was restored.
+   */
+  bool GUI_EXPORT restoreGeometry( QWidget *widget, const QString &keyName = QString() );
+
+  /**
+   * Save the wigget geometry into settings. Will use the objectName() of the widget  and if empty, or keyName is set, will
+   * use keyName to save state into settings.
+   * \param widget The widget to save.
+   * \param keyName Override for objectName() if needed.
+   */
+  void GUI_EXPORT saveGeometry( QWidget *widget, const QString &keyName = QString() );
+
+  /**
+   * Creates a key for the given widget that can be used to store related data in settings.
+   * Will use objectName() or class name if objectName() is not set. Can be overridden using \a keyName.
+   * \param widget The widget to make the key from.
+   * \param keyName Override for objectName() if needed. If not set will use objectName()
+   * \return A key name that can be used for the widget in settings.
+   */
+  QString createWidgetKey( QWidget *widget, const QString &keyName = QString() );
 }
+
+/**
+ * Temporarily sets a cursor override for the QApplication for the lifetime of the object.
+ *
+ * When the object is deleted, the cursor override is removed.
+ *
+ * \ingroup gui
+ * \since QGIS 3.2
+ */
+class GUI_EXPORT QgsTemporaryCursorOverride
+{
+  public:
+
+    /**
+     * Constructor for QgsTemporaryCursorOverride. Sets the application override
+     * cursor to \a cursor.
+     */
+    QgsTemporaryCursorOverride( const QCursor &cursor );
+
+    ~QgsTemporaryCursorOverride();
+
+    /**
+     * Releases the cursor override early (i.e. before this object is destroyed).
+     */
+    void release();
+
+  private:
+
+    bool mHasOverride = true;
+
+};
 
 #endif // QGSGUIUTILS_H

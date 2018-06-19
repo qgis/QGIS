@@ -25,17 +25,11 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name, const Flags &flags )
-  : QObject()
-  , mFlags( flags )
+QgsTask::QgsTask( const QString &name, Flags flags )
+  : mFlags( flags )
   , mDescription( name )
-  , mStatus( Queued )
-  , mOverallStatus( Queued )
-  , mProgress( 0.0 )
-  , mTotalProgress( 0.0 )
-  , mShouldTerminate( false )
-  , mStartCount( 0 )
-{}
+{
+}
 
 QgsTask::~QgsTask()
 {
@@ -49,6 +43,7 @@ QgsTask::~QgsTask()
 
 void QgsTask::start()
 {
+  mNotFinishedMutex.lock();
   mStartCount++;
   Q_ASSERT( mStartCount == 1 );
 
@@ -142,26 +137,19 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
   return _qgis_listQPointerToRaw( mDependentLayers );
 }
 
-bool QgsTask::waitForFinished( int timeout )
+bool QgsTask::waitForFinished( unsigned long timeout )
 {
-  QEventLoop loop;
   bool rv = true;
-
-  connect( this, &QgsTask::taskCompleted, &loop, &QEventLoop::quit );
-  connect( this, &QgsTask::taskTerminated, &loop, &QEventLoop::quit );
-  QTimer timer;
-
-  if ( timeout != -1 )
+  if ( mOverallStatus == Complete || mOverallStatus == Terminated )
   {
-    timer.start( timeout );
-    connect( &timer, &QTimer::timeout, [&rv]() { rv = false; } );
-    connect( &timer, &QTimer::timeout, &loop, &QEventLoop::quit );
+    rv = true;
   }
-
-  if ( status() == QgsTask::Complete || status() == QgsTask::Terminated )
-    return true;
-  loop.exec();
-
+  else
+  {
+    if ( timeout == 0 )
+      timeout = ULONG_MAX;
+    rv = mTaskFinished.wait( &mNotFinishedMutex, timeout );
+  }
   return rv;
 }
 
@@ -224,8 +212,11 @@ void QgsTask::setProgress( double progress )
     progress = ( progress + totalProgress ) / ( mSubTasks.count() + 1 );
   }
 
+  // avoid flooding with too many events
+  if ( static_cast< int >( mTotalProgress  * 10 ) != static_cast< int >( progress * 10 ) )
+    emit progressChanged( progress );
+
   mTotalProgress = progress;
-  emit progressChanged( mTotalProgress );
 }
 
 void QgsTask::completed()
@@ -249,9 +240,13 @@ void QgsTask::processSubTasksForCompletion()
   if ( mStatus == Complete && subTasksCompleted )
   {
     mOverallStatus = Complete;
+
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Complete )
   {
@@ -275,8 +270,12 @@ void QgsTask::processSubTasksForTermination()
   if ( mStatus == Terminated && subTasksTerminated && mOverallStatus != Terminated )
   {
     mOverallStatus = Terminated;
+
     emit statusChanged( Terminated );
     emit taskTerminated();
+    mTaskFinished.wakeAll();
+    mNotFinishedMutex.unlock();
+    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
@@ -323,8 +322,7 @@ class QgsTaskRunnableWrapper : public QRunnable
   public:
 
     explicit QgsTaskRunnableWrapper( QgsTask *task )
-      : QRunnable()
-      , mTask( task )
+      : mTask( task )
     {
       setAutoDelete( true );
     }
@@ -352,7 +350,6 @@ class QgsTaskRunnableWrapper : public QRunnable
 QgsTaskManager::QgsTaskManager( QObject *parent )
   : QObject( parent )
   , mTaskMutex( new QMutex( QMutex::Recursive ) )
-  , mNextTaskId( 0 )
 {
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
            this, &QgsTaskManager::layersWillBeRemoved );
@@ -393,6 +390,9 @@ long QgsTaskManager::addTask( const QgsTaskManager::TaskDefinition &definition, 
 
 long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bool isSubTask, int priority )
 {
+  if ( !task )
+    return 0;
+
   long taskId = mNextTaskId++;
 
   mTaskMutex->lock();
@@ -613,6 +613,12 @@ int QgsTaskManager::countActiveTasks() const
   return tasks.intersect( mParentTasks ).count();
 }
 
+void QgsTaskManager::triggerTask( QgsTask *task )
+{
+  if ( task )
+    emit taskTriggered( task );
+}
+
 void QgsTaskManager::taskProgressChanged( double progress )
 {
   QgsTask *task = qobject_cast< QgsTask * >( sender() );
@@ -644,7 +650,8 @@ void QgsTaskManager::taskStatusChanged( int status )
   mTaskMutex->lock();
   QgsTaskRunnableWrapper *runnable = mTasks.value( id ).runnable;
   mTaskMutex->unlock();
-  QThreadPool::globalInstance()->cancel( runnable );
+  if ( runnable )
+    QThreadPool::globalInstance()->cancel( runnable );
 #endif
 
   if ( status == QgsTask::Terminated || status == QgsTask::Complete )
@@ -748,7 +755,8 @@ bool QgsTaskManager::cleanupAndDeleteTask( QgsTask *task )
   else
   {
 #if QT_VERSION >= 0x050500
-    QThreadPool::globalInstance()->cancel( runnable );
+    if ( runnable )
+      QThreadPool::globalInstance()->cancel( runnable );
 #endif
     if ( isParent )
     {
@@ -780,6 +788,7 @@ void QgsTaskManager::processQueue()
     QgsTask *task = it.value().task;
     if ( task && task->mStatus == QgsTask::Queued && dependenciesSatisfied( it.key() ) && it.value().added.testAndSetRelaxed( 0, 1 ) )
     {
+      it.value().createRunnable();
       QThreadPool::globalInstance()->start( it.value().runnable, it.value().priority );
     }
 
@@ -834,5 +843,10 @@ QgsTaskManager::TaskInfo::TaskInfo( QgsTask *task, int priority )
   : task( task )
   , added( 0 )
   , priority( priority )
-  , runnable( new QgsTaskRunnableWrapper( task ) )
 {}
+
+void QgsTaskManager::TaskInfo::createRunnable()
+{
+  Q_ASSERT( !runnable );
+  runnable = new QgsTaskRunnableWrapper( task ); // auto deleted
+}

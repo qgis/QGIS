@@ -1,0 +1,233 @@
+<!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
+<qgis projectname="" version="2.99.0-Master">
+  <title></title>
+  <autotransaction active="0"/>
+  <evaluateDefaultValues active="0"/>
+  <trust active="0"/>
+  <layer-tree-group>
+    <customproperties/>
+    <layer-tree-layer name="public_geo_gemeinden" source="contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?" checked="Qt::Checked" id="public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf" providerKey="wms" expanded="1">
+      <customproperties/>
+    </layer-tree-layer>
+    <custom-order enabled="0">
+      <item>public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf</item>
+    </custom-order>
+  </layer-tree-group>
+  <snapping-settings mode="2" unit="2" type="1" tolerance="0" intersection-snapping="0" enabled="0">
+    <individual-layer-settings/>
+  </snapping-settings>
+  <relations/>
+  <mapcanvas annotationsVisible="1" name="theMapCanvas">
+    <units>meters</units>
+    <extent>
+      <xmin>579802.48401871393434703</xmin>
+      <ymin>212161.34098994615487754</ymin>
+      <xmax>658127.75694178068079054</xmax>
+      <ymax>262982.96596132020931691</ymax>
+    </extent>
+    <rotation>0</rotation>
+    <destinationsrs>
+      <spatialrefsys>
+        <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs</proj4>
+        <srsid>1919</srsid>
+        <srid>21781</srid>
+        <authid>EPSG:21781</authid>
+        <description>CH1903 / LV03</description>
+        <projectionacronym>somerc</projectionacronym>
+        <ellipsoidacronym>bessel</ellipsoidacronym>
+        <geographicflag>false</geographicflag>
+      </spatialrefsys>
+    </destinationsrs>
+    <rendermaptile>0</rendermaptile>
+    <layer_coordinate_transform_info>
+      <layer_coordinate_transform destAuthId="EPSG:21781" srcAuthId="EPSG:21781" layerid="public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf" destDatumTransform="-1" srcDatumTransform="-1"/>
+    </layer_coordinate_transform_info>
+  </mapcanvas>
+  <legend updateDrawingOrder="true">
+    <legendlayer showFeatureCount="0" open="true" name="public_geo_gemeinden" checked="Qt::Checked" drawingOrder="-1">
+      <filegroup hidden="false" open="true">
+        <legendlayerfile visible="1" isInOverview="0" layerid="public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf"/>
+      </filegroup>
+    </legendlayer>
+  </legend>
+  <mapViewDocks/>
+  <projectlayers>
+    <maplayer autoRefreshEnabled="0" refreshOnNotifyMessage="" refreshOnNotifyEnabled="0" type="raster" minScale="1e+08" maxScale="0" hasScaleBasedVisibilityFlag="0" autoRefreshTime="0">
+      <extent>
+        <xmin>592500</xmin>
+        <ymin>213535</ymin>
+        <xmax>645119</xmax>
+        <ymax>261499</ymax>
+      </extent>
+      <id>public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf</id>
+      <datasource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</datasource>
+      <keywordList>
+        <value></value>
+      </keywordList>
+      <layername>public_geo_gemeinden</layername>
+      <srs>
+        <spatialrefsys>
+          <proj4>+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs</proj4>
+          <srsid>1919</srsid>
+          <srid>21781</srid>
+          <authid>EPSG:21781</authid>
+          <description>CH1903 / LV03</description>
+          <projectionacronym>somerc</projectionacronym>
+          <ellipsoidacronym>bessel</ellipsoidacronym>
+          <geographicflag>false</geographicflag>
+        </spatialrefsys>
+      </srs>
+      <resourceMetadata>
+        <identifier></identifier>
+        <parentidentifier></parentidentifier>
+        <language></language>
+        <type></type>
+        <title></title>
+        <abstract></abstract>
+        <fees></fees>
+        <encoding></encoding>
+        <crs>
+          <spatialrefsys>
+            <proj4></proj4>
+            <srsid>0</srsid>
+            <srid>0</srid>
+            <authid></authid>
+            <description></description>
+            <projectionacronym></projectionacronym>
+            <ellipsoidacronym></ellipsoidacronym>
+            <geographicflag>false</geographicflag>
+          </spatialrefsys>
+        </crs>
+        <extent/>
+        <links/>
+      </resourceMetadata>
+      <customproperties>
+        <property key="WMSBackgroundLayer" value="true"/>
+        <property key="WMSPrintLayer" value="contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?"/>
+        <property key="WMSPublishDataSourceUrl" value="true"/>
+        <property key="embeddedWidgets/count" value="0"/>
+        <property key="identify/format" value="Html"/>
+      </customproperties>
+      <provider>wms</provider>
+      <noData>
+        <noDataList useSrcNoData="0" bandNo="1"/>
+      </noData>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
+      </map-layer-style-manager>
+      <pipe>
+        <rasterrenderer band="1" type="singlebandcolordata" opacity="1" alphaBand="-1">
+          <rasterTransparency/>
+          <minMaxOrigin>
+            <limits>None</limits>
+            <extent>WholeRaster</extent>
+            <statAccuracy>Estimated</statAccuracy>
+            <cumulativeCutLower>0.02</cumulativeCutLower>
+            <cumulativeCutUpper>0.98</cumulativeCutUpper>
+            <stdDevFactor>2</stdDevFactor>
+          </minMaxOrigin>
+        </rasterrenderer>
+        <brightnesscontrast brightness="0" contrast="0"/>
+        <huesaturation grayscaleMode="0" colorizeRed="255" colorizeStrength="100" colorizeGreen="128" colorizeOn="0" colorizeBlue="128" saturation="0"/>
+        <rasterresampler maxOversampling="2"/>
+      </pipe>
+      <blendMode>0</blendMode>
+    </maplayer>
+  </projectlayers>
+  <layerorder>
+    <layer id="public_geo_gemeinden_4c81fe5f_5d18_4eb4_bd9c_c3c249bf28cf"/>
+  </layerorder>
+  <properties>
+    <WMSSegmentizeFeatureInfoGeometry type="bool">false</WMSSegmentizeFeatureInfoGeometry>
+    <WFSTLayers>
+      <Delete type="QStringList"/>
+      <Update type="QStringList"/>
+      <Insert type="QStringList"/>
+    </WFSTLayers>
+    <WMSServiceTitle type="QString"></WMSServiceTitle>
+    <WCSUrl type="QString"></WCSUrl>
+    <DefaultStyles>
+      <Opacity type="double">1</Opacity>
+      <Marker type="QString"></Marker>
+      <Fill type="QString"></Fill>
+      <RandomColors type="bool">true</RandomColors>
+      <ColorRamp type="QString"></ColorRamp>
+      <Line type="QString"></Line>
+    </DefaultStyles>
+    <Gui>
+      <CanvasColorGreenPart type="int">255</CanvasColorGreenPart>
+      <SelectionColorGreenPart type="int">255</SelectionColorGreenPart>
+      <CanvasColorRedPart type="int">255</CanvasColorRedPart>
+      <SelectionColorRedPart type="int">255</SelectionColorRedPart>
+      <SelectionColorBluePart type="int">0</SelectionColorBluePart>
+      <SelectionColorAlphaPart type="int">255</SelectionColorAlphaPart>
+      <CanvasColorBluePart type="int">255</CanvasColorBluePart>
+    </Gui>
+    <WMSContactMail type="QString"></WMSContactMail>
+    <Macros>
+      <pythonCode type="QString"></pythonCode>
+    </Macros>
+    <WMSKeywordList type="QStringList">
+      <value></value>
+    </WMSKeywordList>
+    <WMSServiceAbstract type="QString"></WMSServiceAbstract>
+    <WMSRequestDefinedDataSources type="bool">false</WMSRequestDefinedDataSources>
+    <WMSImageQuality type="int">90</WMSImageQuality>
+    <WFSUrl type="QString"></WFSUrl>
+    <WMSPrecision type="QString">8</WMSPrecision>
+    <WCSLayers type="QStringList"/>
+    <Measurement>
+      <AreaUnits type="QString">m2</AreaUnits>
+      <DistanceUnits type="QString">meters</DistanceUnits>
+    </Measurement>
+    <WMSContactOrganization type="QString"></WMSContactOrganization>
+    <WMSContactPosition type="QString"></WMSContactPosition>
+    <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
+    <WMSUrl type="QString">?*****</WMSUrl>
+    <WMSContactPhone type="QString"></WMSContactPhone>
+    <Measure>
+      <Ellipsoid type="QString">NONE</Ellipsoid>
+    </Measure>
+    <PAL>
+      <SearchMethod type="int">0</SearchMethod>
+      <ShowingPartialsLabels type="bool">true</ShowingPartialsLabels>
+      <CandidatesPolygon type="int">30</CandidatesPolygon>
+      <DrawRectOnly type="bool">false</DrawRectOnly>
+      <CandidatesLine type="int">50</CandidatesLine>
+      <CandidatesPoint type="int">16</CandidatesPoint>
+      <DrawOutlineLabels type="bool">true</DrawOutlineLabels>
+      <ShowingCandidates type="bool">false</ShowingCandidates>
+      <ShowingAllLabels type="bool">false</ShowingAllLabels>
+    </PAL>
+    <Identify>
+      <disabledLayers type="QStringList"/>
+    </Identify>
+    <WFSLayers type="QStringList"/>
+    <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
+    <Paths>
+      <Absolute type="bool">false</Absolute>
+    </Paths>
+    <WMSOnlineResource type="QString"></WMSOnlineResource>
+    <WMSFees type="QString">conditions unknown</WMSFees>
+    <WMSAccessConstraints type="QString">None</WMSAccessConstraints>
+    <WMSUseLayerIDs type="bool">false</WMSUseLayerIDs>
+    <SpatialRefSys>
+      <ProjectionsEnabled type="int">1</ProjectionsEnabled>
+      <ProjectCRSProj4String type="QString">+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel +towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs</ProjectCRSProj4String>
+      <ProjectCrs type="QString">EPSG:21781</ProjectCrs>
+      <ProjectCRSID type="int">1919</ProjectCRSID>
+    </SpatialRefSys>
+    <PositionPrecision>
+      <Automatic type="bool">true</Automatic>
+      <DecimalPlaces type="int">2</DecimalPlaces>
+      <DegreeFormat type="QString">MU</DegreeFormat>
+    </PositionPrecision>
+    <WMSContactPerson type="QString"></WMSContactPerson>
+    <Legend>
+      <filterByMap type="bool">false</filterByMap>
+    </Legend>
+  </properties>
+  <visibility-presets/>
+  <Annotations/>
+  <Layouts/>
+</qgis>

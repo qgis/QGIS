@@ -45,7 +45,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      * Use the one provided by `QgsApplication::fieldFormatterRegistry()` instead.
      */
     explicit QgsFieldFormatterRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsFieldFormatterRegistry();
+    ~QgsFieldFormatterRegistry() override;
 
     /**
      * They will take precedence in order of adding them.
@@ -67,7 +67,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
     void removeFieldFormatter( const QString &id );
 
     /**
-     * Get a field formatter by its id. If there is no such id registered,
+     * Gets a field formatter by its id. If there is no such id registered,
      * a default QgsFallbackFieldFormatter with a null id will be returned instead.
      */
     QgsFieldFormatter *fieldFormatter( const QString &id ) const;

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Mathieu Pellerin'
 __date__ = 'October 2016'
@@ -27,6 +26,7 @@ __copyright__ = '(C) 2016, Mathieu Pellerin'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterString)
@@ -43,12 +43,15 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def groupId(self):
+        return 'database'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), [], False, False))
-        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), '', True))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File Database'), optional=False))
+        self.addParameter(QgsProcessingParameterString(self.SQL, self.tr('SQL query'), multiLine=True))
 
     def name(self):
         return 'spatialiteexecutesql'
@@ -56,12 +59,17 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     def displayName(self):
         return self.tr('SpatiaLite execute SQL')
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def processAlgorithm(self, parameters, context, feedback):
         database = self.parameterAsVectorLayer(parameters, self.DATABASE, context)
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
-            if '|layerid' in databaseuri:
+            if '|layername' in databaseuri:
+                databaseuri = databaseuri[:databaseuri.find('|layername')]
+            elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)

@@ -43,9 +43,7 @@ const QString QgsMapRendererJob::LABEL_CACHE_ID = QStringLiteral( "_labels_" );
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings &settings )
   : mSettings( settings )
-  , mCache( nullptr )
-  , mRenderingTime( 0 )
-  , mFeatureFilterProvider( nullptr )
+
 {
 }
 
@@ -66,6 +64,17 @@ void QgsMapRendererJob::setCache( QgsMapRendererCache *cache )
   mCache = cache;
 }
 
+QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
+{
+  QHash<QgsMapLayer *, int> result;
+  for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
+  {
+    if ( it.key() )
+      result.insert( it.key(), it.value() );
+  }
+  return result;
+}
+
 const QgsMapSettings &QgsMapRendererJob::mapSettings() const
 {
   return mSettings;
@@ -82,7 +91,7 @@ bool QgsMapRendererJob::prepareLabelCache() const
     QgsVectorLayer *vl = const_cast< QgsVectorLayer * >( qobject_cast<const QgsVectorLayer *>( ml ) );
     if ( vl && QgsPalLabeling::staticWillUseLayer( vl ) )
       labeledLayers << vl;
-    if ( vl && vl->labeling() && vl->labeling()->requiresAdvancedEffects() )
+    if ( vl && vl->labelsEnabled() && vl->labeling()->requiresAdvancedEffects() )
     {
       canCache = false;
       break;
@@ -158,11 +167,11 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
         QgsPointXY ur = ct.transform( extent.xMaximum(), extent.yMaximum(),
                                       QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsg( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ) );
+        QgsDebugMsgLevel( QString( "in:%1 (ll:%2 ur:%3)" ).arg( extent.toString(), ll.toString(), ur.toString() ), 4 );
 
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
 
-        QgsDebugMsg( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ) );
+        QgsDebugMsgLevel( QString( "out:%1 (w:%2 h:%3)" ).arg( extent.toString() ).arg( extent.width() ).arg( extent.height() ), 4 );
 
         if ( ll.x() > ur.x() )
         {
@@ -186,12 +195,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
     {
       if ( ct.destinationCrs().isGeographic() &&
            ( extent.xMinimum() <= -180 || extent.xMaximum() >= 180 ||
-             extent.yMinimum() <=  -90 || extent.yMaximum() >=  90 ) )
+             extent.yMinimum() <= -90 || extent.yMaximum() >= 90 ) )
         // Use unlimited rectangle because otherwise we may end up transforming wrong coordinates.
         // E.g. longitude -200 to +160 would be understood as +40 to +160 due to periodicity.
         // We could try to clamp coords to (-180,180) for lon resp. (-90,90) for lat,
         // but this seems like a safer choice.
-        extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
+        extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
       else
         extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
@@ -200,14 +209,12 @@ bool QgsMapRendererJob::reprojectToLayerExtent( const QgsMapLayer *ml, const Qgs
   {
     Q_UNUSED( cse );
     QgsDebugMsg( "Transform error caught" );
-    extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
-    r2     = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
+    extent = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
+    r2     = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
   }
 
   return split;
 }
-
-
 
 LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEngine *labelingEngine2 )
 {
@@ -221,7 +228,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
   {
     bool cacheValid = mCache->init( mSettings.visibleExtent(), mSettings.scale() );
     Q_UNUSED( cacheValid );
-    QgsDebugMsg( QString( "CACHE VALID: %1" ).arg( cacheValid ) );
+    QgsDebugMsgLevel( QString( "CACHE VALID: %1" ).arg( cacheValid ), 4 );
   }
 
   bool requiresLabelRedraw = !( mCache && mCache->hasCacheImage( LABEL_CACHE_ID ) );
@@ -276,12 +283,6 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     LayerRenderJob &job = layerJobs.last();
     job.cached = false;
     job.img = nullptr;
-    job.blendMode = ml->blendMode();
-    job.opacity = 1.0;
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml ) )
-    {
-      job.opacity = vl->opacity();
-    }
     job.layer = ml;
     job.renderingTime = -1;
 
@@ -294,6 +295,17 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
 
     if ( mFeatureFilterProvider )
       job.context.setFeatureFilterProvider( mFeatureFilterProvider );
+
+    QgsMapLayerStyleOverride styleOverride( ml );
+    if ( mSettings.layerStyleOverrides().contains( ml->id() ) )
+      styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
+
+    job.blendMode = ml->blendMode();
+    job.opacity = 1.0;
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml ) )
+    {
+      job.opacity = vl->opacity();
+    }
 
     // if we can use the cache, let's do it and avoid rendering!
     if ( mCache && mCache->hasCacheImage( ml->id() ) )
@@ -330,15 +342,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       job.context.setPainter( mypPainter );
     }
 
-    bool hasStyleOverride = mSettings.layerStyleOverrides().contains( ml->id() );
-    if ( hasStyleOverride )
-      ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
-
+    QTime layerTime;
+    layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
-
-    if ( hasStyleOverride )
-      ml->styleManager()->restoreOverrideStyle();
-
+    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
   } // while (li.hasPrevious())
 
   return layerJobs;
@@ -414,8 +421,10 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
       delete job.renderer;
       job.renderer = nullptr;
     }
-  }
 
+    if ( job.layer )
+      mPerLayerRenderingTime.insert( job.layer, job.renderingTime );
+  }
 
   jobs.clear();
 }

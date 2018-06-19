@@ -69,6 +69,8 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     Q_DECLARE_TR_FUNCTIONS( QgsExpressionNode );
 
   public:
+
+    //! Known node types.
     enum NodeType
     {
       ntUnaryOperator, //!< \see QgsExpression::Node::NodeUnaryOperator
@@ -81,14 +83,17 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     };
 
 
-    //! Named node
-    //! \since QGIS 2.16
-    //! \ingroup core
+    /**
+     * Named node
+     * \ingroup core
+     * \since QGIS 2.16
+     */
     struct NamedNode
     {
       public:
 
-        /** Constructor for NamedNode
+        /**
+         * Constructor for NamedNode
          * \param name node name
          * \param node node
          */
@@ -104,7 +109,9 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         QgsExpressionNode *node = nullptr;
     };
 
-    /** \ingroup core
+    /**
+     * A list of expression nodes.
+     * \ingroup core
      */
     class CORE_EXPORT NodeList
     {
@@ -113,38 +120,47 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
         //! Takes ownership of the provided node
         void append( QgsExpressionNode *node SIP_TRANSFER ) { mList.append( node ); mNameList.append( QString() ); }
 
-        /** Adds a named node. Takes ownership of the provided node.
+        /**
+         * Adds a named node. Takes ownership of the provided node.
          * \since QGIS 2.16
         */
         void append( QgsExpressionNode::NamedNode *node SIP_TRANSFER );
 
-        /** Returns the number of nodes in the list.
+        /**
+         * Returns the number of nodes in the list.
          */
         int count() const { return mList.count(); }
 
-        //! Returns true if list contains any named nodes
-        //! \since QGIS 2.16
+        /**
+         * Returns true if list contains any named nodes
+         * \since QGIS 2.16
+         */
         bool hasNamedNodes() const { return mHasNamedNodes; }
 
         /**
-         * Get a list of all the nodes.
+         * Gets a list of all the nodes.
          */
         QList<QgsExpressionNode *> list() { return mList; }
 
         /**
-         * Get the node at position i in the list.
+         * Gets the node at position i in the list.
          *
          * \since QGIS 3.0
          */
         QgsExpressionNode *at( int i ) { return mList.at( i ); }
 
-        //! Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
-        //! \since QGIS 2.16
+        /**
+         * Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
+         * \since QGIS 2.16
+         */
         QStringList names() const { return mNameList; }
 
         //! Creates a deep copy of this list. Ownership is transferred to the caller
         QgsExpressionNode::NodeList *clone() const SIP_FACTORY;
 
+        /**
+         * Returns a string dump of the expression node.
+         */
         virtual QString dump() const;
 
       private:
@@ -159,7 +175,7 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual ~QgsExpressionNode() = default;
 
     /**
-     * Get the type of this node.
+     * Gets the type of this node.
      *
      * \returns The type of this node
      */
@@ -202,9 +218,22 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
     virtual QSet<QString> referencedColumns() const = 0;
 
     /**
-     * Return a set of all variables which are used in this expression.
+     * Returns a set of all variables which are used in this expression.
      */
     virtual QSet<QString> referencedVariables() const = 0;
+
+    /**
+     * Returns a set of all functions which are used in this expression.
+     */
+    virtual QSet<QString> referencedFunctions() const = 0;
+
+    /**
+     * Returns a list of all nodes which are used in this expression.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 3.2
+     */
+    virtual QList<const QgsExpressionNode *> nodes( ) const = 0; SIP_SKIP
 
     /**
      * Abstract virtual method which returns if the geometry is required to evaluate
@@ -236,6 +265,33 @@ class CORE_EXPORT QgsExpressionNode SIP_ABSTRACT
      */
     bool prepare( QgsExpression *parent, const QgsExpressionContext *context );
 
+    /**
+     * First line in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserFirstLine = 0;
+
+    /**
+     * First column in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserFirstColumn = 0;
+
+    /**
+     * Last line in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserLastLine = 0;
+
+    /**
+     * Last column in the parser this node was found.
+     * \note This might not be complete for all nodes. Currently
+     * only \see QgsExpressionNode has this complete
+     */
+    int parserLastColumn = 0;
 
   protected:
 

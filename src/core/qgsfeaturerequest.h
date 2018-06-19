@@ -29,7 +29,8 @@
 
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class wraps a request for features to a vector layer (or directly its vector data provider).
  * The request may apply a filter to fetch only a particular subset of features. Currently supported filters:
  * - no filter - all features are returned
@@ -48,20 +49,25 @@
  * - SimplifyMethod for geometries to fetch
  *
  * The options may be chained, e.g.:
- *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest::ExactIntersect)
+ *
+ * \code{.py}
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
+ * \endcode
  *
  * Examples:
- * - fetch all features:
- *     QgsFeatureRequest()
- * - fetch all features, only one attribute
- *     QgsFeatureRequest().setSubsetOfAttributes(QStringList("myfield"), provider->fieldMap())
- * - fetch all features, without geometries
- *     QgsFeatureRequest().setFlags(QgsFeatureRequest::NoGeometry)
- * - fetch only features from particular extent
- *     QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
- * - fetch only one feature
- *     QgsFeatureRequest().setFilterFid(45)
  *
+ * \code{.py}
+ *   # fetch all features:
+ *   QgsFeatureRequest()
+ *   # fetch all features, only one attribute
+ *   QgsFeatureRequest().setSubsetOfAttributes(['myfield'], layer.fields())
+ *   # fetch all features, without geometries
+ *   QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+ *   # fetch only features from particular extent
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
+ *   # fetch only one feature
+ *   QgsFeatureRequest().setFilterFid(45)
+ * \endcode
  */
 class CORE_EXPORT QgsFeatureRequest
 {
@@ -94,7 +100,8 @@ class CORE_EXPORT QgsFeatureRequest
       GeometryAbortOnInvalid = 2, //!< Close iterator on encountering any features with invalid geometry. This requires a slow geometry validity check for every feature.
     };
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * The OrderByClause class represents an order by clause for a QgsFeatureRequest.
      *
      * It can be a simple field or an expression. Multiple order by clauses can be added to
@@ -209,7 +216,8 @@ class CORE_EXPORT QgsFeatureRequest
     };
 
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Represents a list of OrderByClauses, with the most important first and the least
      * important last.
      *
@@ -222,9 +230,7 @@ class CORE_EXPORT QgsFeatureRequest
         /**
          * Create a new empty order by
          */
-        CORE_EXPORT OrderBy()
-          : QList<QgsFeatureRequest::OrderByClause>()
-        {}
+        CORE_EXPORT OrderBy();
 
         /**
          * Create a new order by from a list of clauses
@@ -232,7 +238,7 @@ class CORE_EXPORT QgsFeatureRequest
         CORE_EXPORT OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other );
 
         /**
-         * Get a copy as a list of OrderByClauses
+         * Gets a copy as a list of OrderByClauses
          *
          * This is only required in Python where the inheritance
          * is not properly propagated and this makes it usable.
@@ -289,7 +295,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
 
     /**
-     * Return the filter type which is currently set on this request
+     * Returns the filter type which is currently set on this request
      *
      * \returns Filter type
      */
@@ -318,14 +324,14 @@ class CORE_EXPORT QgsFeatureRequest
      */
     const QgsRectangle &filterRect() const { return mFilterRect; }
 
-    //! Set feature ID that should be fetched.
+    //! Sets feature ID that should be fetched.
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
-    //! Get the feature ID that should be fetched.
+    //! Gets the feature ID that should be fetched.
     QgsFeatureId filterFid() const { return mFilterFid; }
 
-    //! Set feature IDs that should be fetched.
+    //! Sets feature IDs that should be fetched.
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
-    //! Get feature IDs that should be fetched.
+    //! Gets feature IDs that should be fetched.
     const QgsFeatureIds &filterFids() const { return mFilterFids; }
 
     /**
@@ -348,11 +354,11 @@ class CORE_EXPORT QgsFeatureRequest
      * Sets a callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
      * called using the feature with invalid geometry as a parameter.
-     * \since QGIS 3.0
      * \see invalidGeometryCallback()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback );
+    QgsFeatureRequest &setInvalidGeometryCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -374,43 +380,48 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering an invalid geometry and
      * invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
 
-    /** Set the filter expression. {\see QgsExpression}
+    /**
+     * Set the filter expression. {\see QgsExpression}
      * \param expression expression string
      * \see filterExpression
      * \see setExpressionContext
      */
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 
-    /** Returns the filter expression if set.
+    /**
+     * Returns the filter expression if set.
      * \see setFilterExpression
      * \see expressionContext
      */
     QgsExpression *filterExpression() const { return mFilterExpression.get(); }
 
-    /** Modifies the existing filter expression to add an additional expression filter. The
+    /**
+     * Modifies the existing filter expression to add an additional expression filter. The
      * filter expressions are combined using AND, so only features matching both
      * the existing expression and the additional expression will be returned.
      * \since QGIS 2.14
      */
     QgsFeatureRequest &combineFilterExpression( const QString &expression );
 
-    /** Returns the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
+    /**
+     * Returns the expression context used to evaluate filter expressions.
      * \see setExpressionContext
      * \see filterExpression
+     * \since QGIS 2.12
      */
     QgsExpressionContext *expressionContext() { return &mExpressionContext; }
 
-    /** Sets the expression context used to evaluate filter expressions.
-     * \since QGIS 2.12
+    /**
+     * Sets the expression context used to evaluate filter expressions.
      * \see expressionContext
      * \see setFilterExpression
+     * \since QGIS 2.12
      */
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 
@@ -422,7 +433,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \since QGIS 2.12
      */
-    QgsFeatureRequest &disableFilter() { mFilter = FilterNone; return *this; }
+    QgsFeatureRequest &disableFilter() { mFilter = FilterNone; mFilterExpression.reset(); return *this; }
 
     /**
      * Adds a new OrderByClause, appending it as the least important one.
@@ -449,7 +460,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsFeatureRequest &addOrderBy( const QString &expression, bool ascending, bool nullsfirst );
 
     /**
-     * Return a list of order by clauses specified for this feature request.
+     * Returns a list of order by clauses specified for this feature request.
      *
      * \since QGIS 2.14
      */
@@ -462,44 +473,53 @@ class CORE_EXPORT QgsFeatureRequest
      */
     QgsFeatureRequest &setOrderBy( const OrderBy &orderBy );
 
-    /** Set the maximum number of features to request.
+    /**
+     * Set the maximum number of features to request.
      * \param limit maximum number of features, or -1 to request all features.
      * \see limit()
      * \since QGIS 2.14
      */
     QgsFeatureRequest &setLimit( long limit );
 
-    /** Returns the maximum number of features to request, or -1 if no limit set.
+    /**
+     * Returns the maximum number of features to request, or -1 if no limit set.
      * \see setLimit
      * \since QGIS 2.14
      */
     long limit() const { return mLimit; }
 
-    //! Set flags that affect how features will be fetched
+    //! Sets flags that affect how features will be fetched
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
     const Flags &flags() const { return mFlags; }
 
-    //! Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
-    //! To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+    /**
+     * Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
+     * To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
+     */
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 
     /**
-     * Return the subset of attributes which at least need to be fetched
+     * Returns the subset of attributes which at least need to be fetched
      * \returns A list of attributes to be fetched
      */
     QgsAttributeList subsetOfAttributes() const { return mAttrs; }
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 
-    //! Set a subset of attributes by names that will be fetched
+    //! Sets a subset of attributes by names that will be fetched
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 
-    //! Set a simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+    /**
+     * Set a simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
-    //! Get simplification method for geometries that will be fetched
-    //! \since QGIS 2.2
+
+    /**
+     * Gets simplification method for geometries that will be fetched
+     * \since QGIS 2.2
+     */
     const QgsSimplifyMethod &simplifyMethod() const { return mSimplifyMethod; }
 
     /**
@@ -507,9 +527,19 @@ class CORE_EXPORT QgsFeatureRequest
      * or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
      * and all features will be left with their original geometry.
      * \see setDestinationCrs()
+     * \see transformContext()
      * \since QGIS 3.0
      */
     QgsCoordinateReferenceSystem destinationCrs() const;
+
+    /**
+     * Returns the transform context, for use when a destinationCrs() has been set
+     * and reprojection is required
+     * \see setDestinationCrs()
+     * \see destinationCrs()
+     * \since QGIS 3.0
+     */
+    QgsCoordinateTransformContext transformContext() const;
 
     /**
      * Sets the destination \a crs for feature's geometries. If set, all
@@ -534,18 +564,18 @@ class CORE_EXPORT QgsFeatureRequest
      * \see destinationCrs()
      * \since QGIS 3.0
      */
-    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     /**
      * Sets a callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set. This function will be
      * called using the feature which encountered the transform error as a parameter.
-     * \since QGIS 3.0
      * \see transformErrorCallback()
      * \see setDestinationCrs()
+     * \since QGIS 3.0
      */
 #ifndef SIP_RUN
-    QgsFeatureRequest &setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback );
+    QgsFeatureRequest &setTransformErrorCallback( const std::function< void( const QgsFeature & )> &callback );
 #else
     QgsFeatureRequest &setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -567,10 +597,10 @@ class CORE_EXPORT QgsFeatureRequest
     /**
      * Returns the callback function to use when encountering a transform error when iterating
      * features and a destinationCrs() is set.
-     * \since QGIS 3.0
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      * \see destinationCrs()
+     * \since QGIS 3.0
      */
     std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 
@@ -585,6 +615,26 @@ class CORE_EXPORT QgsFeatureRequest
      * \since QGIS 2.1
      */
     bool acceptFeature( const QgsFeature &feature );
+
+    /**
+     * The timeout for how long we should wait for a connection if none is available from the pool
+     * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
+     */
+    int connectionTimeout() const;
+
+    /**
+     * The timeout for how long we should wait for a connection if none is available from the pool
+     * at this moment. A negative value (which is set by default) will wait forever.
+     *
+     * \note Only works if the provider supports this option.
+     *
+     * \since QGIS 3.0
+     */
+    void setConnectionTimeout( int connectionTimeout );
 
   protected:
     FilterType mFilter = FilterNone;
@@ -602,6 +652,8 @@ class CORE_EXPORT QgsFeatureRequest
     std::function< void( const QgsFeature & ) > mInvalidGeometryCallback;
     std::function< void( const QgsFeature & ) > mTransformErrorCallback;
     QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateTransformContext mTransformContext;
+    int mConnectionTimeout = -1;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
@@ -610,7 +662,8 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
 class QgsFeatureIterator;
 class QgsAbstractFeatureIterator;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class that can be used for any class that is capable of returning features
  * \since QGIS 2.4
  */
@@ -620,7 +673,7 @@ class CORE_EXPORT QgsAbstractFeatureSource
     virtual ~QgsAbstractFeatureSource();
 
     /**
-     * Get an iterator for features matching the specified request
+     * Gets an iterator for features matching the specified request
      * \param request The request
      * \returns A feature iterator
      */

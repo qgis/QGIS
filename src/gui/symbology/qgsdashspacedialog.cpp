@@ -31,6 +31,8 @@ QString iconPath( const QString &iconFile )
 QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  connect( mAddButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mAddButton_clicked );
+  connect( mRemoveButton, &QPushButton::clicked, this, &QgsDashSpaceDialog::mRemoveButton_clicked );
 
   mAddButton->setIcon( QIcon( iconPath( "symbologyAdd.svg" ) ) );
   mRemoveButton->setIcon( QIcon( iconPath( "symbologyRemove.svg" ) ) );
@@ -50,7 +52,7 @@ QgsDashSpaceDialog::QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent
   }
 }
 
-void QgsDashSpaceDialog::on_mAddButton_clicked()
+void QgsDashSpaceDialog::mAddButton_clicked()
 {
   //add new (default) item
   QTreeWidgetItem *entry = new QTreeWidgetItem();
@@ -60,7 +62,7 @@ void QgsDashSpaceDialog::on_mAddButton_clicked()
   mDashSpaceTreeWidget->addTopLevelItem( entry );
 }
 
-void QgsDashSpaceDialog::on_mRemoveButton_clicked()
+void QgsDashSpaceDialog::mRemoveButton_clicked()
 {
   //get active item
   QTreeWidgetItem *currentItem = mDashSpaceTreeWidget->currentItem();

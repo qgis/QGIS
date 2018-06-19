@@ -39,31 +39,28 @@
 #include <climits>
 #include <cfloat>
 
-QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
-  : QDialog()
+QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QWidget( parent )
   , mLayer( vl )
   , mFieldIdx( fieldIdx )
 {
   setupUi( this );
-  setWindowTitle( tr( "Edit Widget Properties - %1 (%2)" ).arg( vl->fields().at( fieldIdx ).name(), vl->name() ) );
+
+  if ( fieldIdx < 0 )
+    return;
 
   QMapIterator<QString, QgsEditorWidgetFactory *> it( QgsGui::editorWidgetRegistry()->factories() );
+  QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
   while ( it.hasNext() )
   {
     it.next();
-    QListWidgetItem *item = new QListWidgetItem( selectionListWidget );
-    item->setText( it.value()->name() );
-    item->setData( Qt::UserRole, it.key() );
+    mWidgetTypeComboBox->addItem( it.value()->name(), it.key() );
+    QStandardItem *item = widgetTypeModel->item( mWidgetTypeComboBox->count() - 1 );
     if ( !it.value()->supportsField( vl, fieldIdx ) )
       item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-    selectionListWidget->addItem( item );
   }
 
-  // Set required list width based on content + twice the border width
-  selectionListWidget->setMinimumWidth( selectionListWidget->sizeHintForColumn( 0 )
-                                        + 2 );
-  selectionListWidget->setMaximumWidth( selectionListWidget->sizeHintForColumn( 0 )
-                                        + 2 );
+  connect( mWidgetTypeComboBox, static_cast< void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAttributeTypeDialog::onCurrentWidgetChanged );
 
   if ( vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginJoin ||
        vl->fields().fieldOrigin( fieldIdx ) == QgsFields::OriginExpression )
@@ -93,7 +90,6 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsAttributeTypeDialog/geometry" ) ).toByteArray() );
 
   constraintExpressionWidget->setLayer( vl );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAttributeTypeDialog::showHelp );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -106,7 +102,7 @@ QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
 
 const QString QgsAttributeTypeDialog::editorWidgetType()
 {
-  QListWidgetItem *item = selectionListWidget->currentItem();
+  QStandardItem *item = currentItem();
   if ( item )
   {
     return item->data( Qt::UserRole ).toString();
@@ -119,7 +115,7 @@ const QString QgsAttributeTypeDialog::editorWidgetType()
 
 const QString QgsAttributeTypeDialog::editorWidgetText()
 {
-  QListWidgetItem *item = selectionListWidget->currentItem();
+  QStandardItem *item = currentItem();
   if ( item )
   {
     return item->text();
@@ -132,11 +128,11 @@ const QString QgsAttributeTypeDialog::editorWidgetText()
 
 const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
 {
-  QListWidgetItem *item = selectionListWidget->currentItem();
+  QStandardItem *item = currentItem();
   if ( item )
   {
     QString widgetType = item->data( Qt::UserRole ).toString();
-    QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets[ widgetType ];
+    QgsEditorConfigWidget *cfgWdg = mEditorConfigWidgets.value( widgetType );
     if ( cfgWdg )
     {
       return cfgWdg->config();
@@ -148,17 +144,10 @@ const QVariantMap QgsAttributeTypeDialog::editorWidgetConfig()
 
 void QgsAttributeTypeDialog::setEditorWidgetType( const QString &type )
 {
-  for ( int i = 0; i < selectionListWidget->count(); i++ )
-  {
-    QListWidgetItem *item = selectionListWidget->item( i );
-    if ( item->data( Qt::UserRole ).toString() == type )
-    {
-      selectionListWidget->setCurrentItem( item );
-      break;
-    }
-  }
 
-  if ( mEditorConfigWidgets.contains( type ) )
+  mWidgetTypeComboBox->setCurrentIndex( mWidgetTypeComboBox->findData( type ) );
+
+  if ( mEditorConfigWidgets.contains( type ) && mEditorConfigWidgets.value( type ) /* may be a null pointer */ )
   {
     stackedWidget->setCurrentWidget( mEditorConfigWidgets[type] );
   }
@@ -296,6 +285,12 @@ void QgsAttributeTypeDialog::setDefaultValueExpression( const QString &expressio
   mExpressionWidget->setExpression( expression );
 }
 
+int QgsAttributeTypeDialog::fieldIdx() const
+{
+  return mFieldIdx;
+}
+
+
 QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
 {
   QgsExpressionContext context;
@@ -308,6 +303,25 @@ QgsExpressionContext QgsAttributeTypeDialog::createExpressionContext() const
   return context;
 }
 
+void QgsAttributeTypeDialog::onCurrentWidgetChanged( int index )
+{
+  Q_UNUSED( index )
+  QStandardItem *item = currentItem();
+  const QString editType = item ? item->data( Qt::UserRole ).toString() : QString();
+
+  setEditorWidgetType( editType );
+}
+
+bool QgsAttributeTypeDialog::applyDefaultValueOnUpdate() const
+{
+  return mApplyDefaultValueOnUpdateCheckBox->isChecked();
+}
+
+void QgsAttributeTypeDialog::setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate )
+{
+  mApplyDefaultValueOnUpdateCheckBox->setChecked( applyDefaultValueOnUpdate );
+}
+
 QString QgsAttributeTypeDialog::constraintExpression() const
 {
   return constraintExpressionWidget->asExpression();
@@ -318,16 +332,24 @@ void QgsAttributeTypeDialog::setFieldEditable( bool editable )
   isFieldEditableCheckBox->setChecked( editable );
 }
 
+void QgsAttributeTypeDialog::setAlias( const QString &alias )
+{
+  leAlias->setText( alias );
+}
+
+QString QgsAttributeTypeDialog::alias() const
+{
+  return leAlias->text();
+}
+
+void QgsAttributeTypeDialog::setComment( const QString &comment )
+{
+  laComment->setText( comment );
+}
+
 void QgsAttributeTypeDialog::setLabelOnTop( bool onTop )
 {
   labelOnTopCheckBox->setChecked( onTop );
-}
-
-void QgsAttributeTypeDialog::on_selectionListWidget_currentRowChanged( int index )
-{
-  const QString editType = selectionListWidget->item( index )->data( Qt::UserRole ).toString();
-
-  setEditorWidgetType( editType );
 }
 
 void QgsAttributeTypeDialog::defaultExpressionChanged()
@@ -373,7 +395,8 @@ void QgsAttributeTypeDialog::defaultExpressionChanged()
   mDefaultPreviewLabel->setText( "<i>" + previewText + "</i>" );
 }
 
-void QgsAttributeTypeDialog::showHelp()
+QStandardItem *QgsAttributeTypeDialog::currentItem() const
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+  QStandardItemModel *widgetTypeModel = qobject_cast<QStandardItemModel *>( mWidgetTypeComboBox->model() );
+  return widgetTypeModel->item( mWidgetTypeComboBox->currentIndex() );
 }

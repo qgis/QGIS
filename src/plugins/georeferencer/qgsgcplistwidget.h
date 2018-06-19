@@ -69,8 +69,8 @@ class QgsGCPListWidget : public QTableView
     QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
     QgsCoordDelegate         *mCoordDelegate = nullptr;
 
-    int mPrevRow;
-    int mPrevColumn;
+    int mPrevRow = 0;
+    int mPrevColumn = 0;
 };
 
 #endif

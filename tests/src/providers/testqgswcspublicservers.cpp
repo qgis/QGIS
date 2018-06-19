@@ -21,9 +21,6 @@
 #include <QString>
 #include <QStringList>
 #include <QTextStream>
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QScriptValueIterator>
 
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
@@ -121,56 +118,52 @@ void TestQgsWcsPublicServers::init()
     QString data = file.readAll();
     //QgsDebugMsg("servers: \n"  + str );
     file.close();
-    QScriptEngine engine;
-    QScriptValue result = engine.evaluate( data );
+    QJsonDocument doc = QJsonDocument::fromJson( data.toUtf8() );
+    const QJsonObject result = doc.object();
 
-    QScriptValueIterator serverIt( result );
-    while ( serverIt.hasNext() )
+    QJsonObject::ConstIterator serverIt = result.constBegin();
+    for ( ; serverIt != result.constEnd(); serverIt++ )
     {
-      serverIt.next();
-      QScriptValue serverValue = serverIt.value();
+      const QJsonObject serverObject = serverIt.value().toObject();
+      const QString serverUrl = serverObject.value( QLatin1String( "url" ) ).toString();
 
-      QString serverUrl = serverValue.property( QStringLiteral( "url" ) ).toString();
       QgsDebugMsg( "serverUrl: " + serverUrl );
 
       Server server( serverUrl );
-      server.description = serverValue.property( QStringLiteral( "description" ) ).toString();
+      server.description = serverObject.value( QLatin1String( "description" ) ).toString();
 
-      QScriptValueIterator paramsIt( serverValue.property( QStringLiteral( "params" ) ) );
-      while ( paramsIt.hasNext() )
+      const QJsonObject serverParams = serverObject.value( QLatin1String( "params" ) ).toObject();
+      QJsonObject::ConstIterator paramsIt = serverParams.constBegin();
+      for ( ; paramsIt != serverParams.constEnd(); paramsIt++ )
       {
-        paramsIt.next();
         QgsDebugMsg( QString( "params value: %1" ).arg( paramsIt.value().toString() ) );
-        server.params.insert( paramsIt.name(), paramsIt.value().toString() );
+        server.params.insert( paramsIt.key(), paramsIt.value().toString() );
       }
 
-      QScriptValue issuesValue = serverValue.property( QStringLiteral( "issues" ) );
+      QJsonObject issuesObject = serverObject.value( QLatin1String( "issues" ) ).toObject();
 
-      QScriptValueIterator issuesIt( issuesValue );
-      while ( issuesIt.hasNext() )
+      QJsonObject::ConstIterator issuesIt = issuesObject.constBegin();
+      for ( ; issuesIt != issuesObject.constEnd(); ++issuesIt )
       {
-        issuesIt.next();
-        QScriptValue issueValue = issuesIt.value();
+        QJsonObject issueObject = issuesIt.value().toObject();
 
-        QString description = issueValue.property( QStringLiteral( "description" ) ).toString();
+        QString description = issueObject.value( QLatin1String( "description" ) ).toString();
         QgsDebugMsg( "description: " + description );
         Issue issue( description );
 
-        issue.offender = issueValue.property( QStringLiteral( "offender" ) ).toString();
+        issue.offender = issueObject.value( QLatin1String( "offender" ) ).toString();
 
-        QScriptValue coveragesValue = issueValue.property( QStringLiteral( "coverages" ) );
-        QScriptValueIterator coveragesIt( coveragesValue );
-        while ( coveragesIt.hasNext() )
+        QJsonObject coveragesObject = issueObject.value( QLatin1String( "coverages" ) ).toObject();
+        QJsonObject::ConstIterator coverageIt = coveragesObject.constBegin();
+        for ( ; coverageIt != coveragesObject.constEnd(); ++coverageIt )
         {
-          coveragesIt.next();
-          issue.coverages << coveragesIt.value().toString();
+          issue.coverages << coverageIt.value().toString();
         }
 
-        QScriptValue versionsValue = issueValue.property( QStringLiteral( "versions" ) );
-        QScriptValueIterator versionsIt( versionsValue );
-        while ( versionsIt.hasNext() )
+        QJsonObject versionsObject = issueObject.value( QLatin1String( "versions" ) ).toObject();
+        QJsonObject::ConstIterator versionsIt = versionsObject.constBegin();
+        for ( ; versionsIt != versionsObject.constEnd(); ++versionsIt )
         {
-          versionsIt.next();
           issue.versions << versionsIt.value().toString();
         }
 
@@ -347,7 +340,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLog << QStringLiteral( "totalCoverages:%1" ).arg( myCoverages.size() );
 
       int myCoverageCount = 0;
-      int myStep = myCoverages.size() / qMin( mMaxCoverages, myCoverages.size() );
+      int myStep = myCoverages.size() / std::min( mMaxCoverages, myCoverages.size() );
       int myStepCount = -1;
       bool myCoverageFound = false;
       Q_FOREACH ( QgsWcsCoverageSummary myCoverage, myCoverages )
@@ -884,16 +877,16 @@ int main( int argc, char *argv[] )
   int optionChar;
   static struct option long_options[] =
   {
-    {"help",     no_argument,       0, 'h'},
-    {"server",   required_argument, 0, 's'},
-    {"coverage", required_argument, 0, 'c'},
-    {"num",      required_argument, 0, 'n'},
-    {"version",  required_argument, 0, 'v'},
-    {"force",    no_argument,       0, 'f'},
-    {0, 0, 0, 0}
+    {"help",     no_argument,       nullptr, 'h'},
+    {"server",   required_argument, nullptr, 's'},
+    {"coverage", required_argument, nullptr, 'c'},
+    {"num",      required_argument, nullptr, 'n'},
+    {"version",  required_argument, nullptr, 'v'},
+    {"force",    no_argument,       nullptr, 'f'},
+    {nullptr, 0, nullptr, 0}
   };
 
-  while ( 1 )
+  while ( true )
   {
     /* getopt_long stores the option index here. */
     int option_index = 0;
@@ -909,7 +902,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )

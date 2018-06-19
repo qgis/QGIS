@@ -23,7 +23,9 @@
 #include "qgsrastertransparency.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
-
+#include "qgsrasterfilewriter.h"
+#include "cpl_string.h"
+#include "qgsproject.h"
 #include <gdal.h>
 
 #include <QFileDialog>
@@ -42,6 +44,21 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   , mResolutionState( OriginalResolution )
 {
   setupUi( this );
+  connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
+  connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );
+  connect( mOriginalResolutionPushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalResolutionPushButton_clicked );
+  connect( mXResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mXResolutionLineEdit_textEdited );
+  connect( mYResolutionLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mYResolutionLineEdit_textEdited );
+  connect( mOriginalSizePushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalSizePushButton_clicked );
+  connect( mColumnsLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mColumnsLineEdit_textEdited );
+  connect( mRowsLineEdit, &QLineEdit::textEdited, this, &QgsRasterLayerSaveAsDialog::mRowsLineEdit_textEdited );
+  connect( mAddNoDataManuallyToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked );
+  connect( mLoadTransparentNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked );
+  connect( mRemoveSelectedNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mRemoveSelectedNoDataToolButton_clicked );
+  connect( mRemoveAllNoDataToolButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mRemoveAllNoDataToolButton_clicked );
+  connect( mTileModeCheckBox, &QCheckBox::toggled, this, &QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled );
+  connect( mPyramidsGroupBox, &QgsCollapsibleGroupBox::toggled, this, &QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled );
   mAddNoDataManuallyToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
   mLoadTransparentNoDataToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mRemoveSelectedNoDataToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
@@ -51,19 +68,13 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   mNoDataTableWidget->setHorizontalHeaderItem( 0, new QTableWidgetItem( tr( "From" ) ) );
   mNoDataTableWidget->setHorizontalHeaderItem( 1, new QTableWidgetItem( tr( "To" ) ) );
 
-  on_mRawModeRadioButton_toggled( true );
+  mRawModeRadioButton_toggled( true );
 
   setValidators();
 
   toggleResolutionSize();
 
-  //only one hardcoded format at the moment
-  QStringList myFormats;
-  myFormats << QStringLiteral( "GTiff" );
-  Q_FOREACH ( const QString &myFormat, myFormats )
-  {
-    mFormatComboBox->addItem( myFormat );
-  }
+  insertAvailableOutputFormats();
 
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
@@ -87,7 +98,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     mCreateOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == QLatin1String( "gdal" ) )
     {
-      mCreateOptionsWidget->setFormat( myFormats[0] );
+      mCreateOptionsWidget->setFormat( mFormatComboBox->currentData().toString() );
     }
     mCreateOptionsWidget->setRasterLayer( mRasterLayer );
     mCreateOptionsWidget->update();
@@ -146,6 +157,130 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
 
   recalcResolutionSize();
+
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ) ).toByteArray() );
+
+  if ( mTileModeCheckBox->isChecked() )
+  {
+    mFilename->setStorageMode( QgsFileWidget::GetDirectory );
+    mFilename->setDialogTitle( tr( "Select output directory" ) );
+  }
+  else
+  {
+    mFilename->setStorageMode( QgsFileWidget::SaveFile );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
+  }
+  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( filePath );
+    settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), tmplFileInfo.absolutePath() );
+
+    if ( mTileModeCheckBox->isChecked() )
+    {
+      QString fileName = filePath;
+      Q_FOREVER
+      {
+        // TODO: would not it be better to select .vrt file instead of directory?
+        //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
+        if ( fileName.isEmpty() )
+          break; // canceled
+
+        // Check if directory is empty
+        QDir dir( fileName );
+        QString baseName = QFileInfo( fileName ).baseName();
+        QStringList filters;
+        filters << QStringLiteral( "%1.*" ).arg( baseName );
+        QStringList files = dir.entryList( filters );
+        if ( files.isEmpty() )
+          break;
+
+        if ( QMessageBox::warning( this, tr( "Save Raster Layer" ),
+                                   tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
+                                   QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+          break;
+
+        fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), tmplFileInfo.absolutePath() );
+      }
+    }
+
+    QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
+    if ( !okButton )
+    {
+      return;
+    }
+    okButton->setEnabled( tmplFileInfo.absoluteDir().exists() );
+  } );
+}
+
+QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ), saveGeometry() );
+}
+
+void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
+{
+  GDALAllRegister();
+
+  int nDrivers = GDALGetDriverCount();
+  QMap< int, QPair< QString, QString > > topPriorityDrivers;
+  QMap< QString, QString > lowPriorityDrivers;
+
+  for ( int i = 0; i < nDrivers; ++i )
+  {
+    GDALDriverH driver = GDALGetDriver( i );
+    if ( driver )
+    {
+      char **driverMetadata = GDALGetMetadata( driver, nullptr );
+
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      {
+        QString driverShortName = GDALGetDriverShortName( driver );
+        QString driverLongName = GDALGetDriverLongName( driver );
+        if ( driverShortName == QLatin1String( "MEM" ) )
+        {
+          // in memory rasters are not (yet) supported because the GDAL dataset handle
+          // would need to be passed directly to QgsRasterLayer (it is not possible to
+          // close it in raster calculator and reopen the dataset again in raster layer)
+          continue;
+        }
+        else if ( driverShortName == QLatin1String( "VRT" ) )
+        {
+          // skip GDAL vrt driver, since we handle that format manually
+          continue;
+        }
+        else if ( driverShortName == QStringLiteral( "GTiff" ) )
+        {
+          // always list geotiff first
+          topPriorityDrivers.insert( 1, qMakePair( driverLongName, driverShortName ) );
+        }
+        else if ( driverShortName == QStringLiteral( "GPKG" ) )
+        {
+          // and gpkg second
+          topPriorityDrivers.insert( 2, qMakePair( driverLongName, driverShortName ) );
+        }
+        else
+        {
+          lowPriorityDrivers.insert( driverLongName, driverShortName );
+        }
+      }
+    }
+  }
+
+  // will be sorted by priority, so that geotiff and geopackage are listed first
+  for ( auto priorityDriversIt = topPriorityDrivers.constBegin(); priorityDriversIt != topPriorityDrivers.constEnd(); ++priorityDriversIt )
+  {
+    mFormatComboBox->addItem( priorityDriversIt.value().first, priorityDriversIt.value().second );
+  }
+  // will be sorted by driver name
+  for ( auto lowPriorityDriversIt = lowPriorityDrivers.constBegin(); lowPriorityDriversIt != lowPriorityDrivers.constEnd(); ++lowPriorityDriversIt )
+  {
+    mFormatComboBox->addItem( lowPriorityDriversIt.key(), lowPriorityDriversIt.value() );
+  }
+
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -158,78 +293,26 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mBrowseButton_clicked()
-{
-  QString fileName;
-
-  QgsSettings settings;
-  QString dirName = mSaveAsLineEdit->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : mSaveAsLineEdit->text();
-
-  if ( mTileModeCheckBox->isChecked() )
-  {
-    Q_FOREVER
-    {
-      // TODO: would not it be better to select .vrt file instead of directory?
-      fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), dirName );
-      //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
-
-      if ( fileName.isEmpty() )
-        break; // canceled
-
-      // Check if directory is empty
-      QDir dir( fileName );
-      QString baseName = QFileInfo( fileName ).baseName();
-      QStringList filters;
-      filters << QStringLiteral( "%1.*" ).arg( baseName );
-      QStringList files = dir.entryList( filters );
-      if ( files.isEmpty() )
-        break;
-
-      if ( QMessageBox::warning( this, tr( "Warning" ),
-                                 tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
-                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
-        break;
-
-      fileName = QLatin1String( "" );
-    }
-  }
-  else
-  {
-    fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
-
-    // ensure the user never omits the extension from the file name
-    if ( !fileName.isEmpty() && !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
-    {
-      fileName += QLatin1String( ".tif" );
-    }
-  }
-
-  if ( !fileName.isEmpty() )
-  {
-    mSaveAsLineEdit->setText( fileName );
-  }
-}
-
-void QgsRasterLayerSaveAsDialog::on_mSaveAsLineEdit_textChanged( const QString &text )
-{
-  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  if ( !okButton )
-  {
-    return;
-  }
-
-  okButton->setEnabled( QFileInfo( text ).absoluteDir().exists() );
-}
-
-
-void QgsRasterLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( const QString &text )
+void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QString & )
 {
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
   {
-    mCreateOptionsWidget->setFormat( text );
+    mCreateOptionsWidget->setFormat( outputFormat() );
     mCreateOptionsWidget->update();
   }
+
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+  QString filter;
+  if ( extensions.empty() )
+    filter = tr( "All files (*.*)" );
+  else
+  {
+    filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
+             extensions.join( QStringLiteral( " *." ) ),
+             tr( "All files (*.*)" ) );
+  }
+  mFilename->setFilter( filter );
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const
@@ -274,12 +357,27 @@ bool QgsRasterLayerSaveAsDialog::addToCanvas() const
 
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
-  return mSaveAsLineEdit->text();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+  QString defaultExt;
+  if ( !extensions.empty() )
+  {
+    defaultExt = extensions.at( 0 );
+  }
+
+  // ensure the user never omits the extension from the file name
+  QString fileName = mFilename->filePath();
+  QFileInfo fi( fileName );
+  if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+  {
+    fileName += '.' + defaultExt;
+  }
+
+  return fileName;
 }
 
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
 {
-  return mFormatComboBox->currentText();
+  return mFormatComboBox->currentData().toString();
 }
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
@@ -301,8 +399,7 @@ void QgsRasterLayerSaveAsDialog::hideFormat()
 void QgsRasterLayerSaveAsDialog::hideOutput()
 {
   mSaveAsLabel->hide();
-  mSaveAsLineEdit->hide();
-  mBrowseButton->hide();
+  mFilename->hide();
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
   {
@@ -352,12 +449,12 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
     // TODO: consider more precise resolution calculation
 
     QgsPointXY center = outputRectangle().center();
-    QgsCoordinateTransform ct( srcCrs, outputCrs() );
+    QgsCoordinateTransform ct( srcCrs, outputCrs(), QgsProject::instance() );
     QgsPointXY srsCenter = ct.transform( center, QgsCoordinateTransform::ReverseTransform );
 
     QgsRectangle srcExtent( srsCenter.x() - xRes / 2, srsCenter.y() - yRes / 2, srsCenter.x() + xRes / 2, srsCenter.y() + yRes / 2 );
 
-    QgsRectangle extent =  ct.transform( srcExtent );
+    QgsRectangle extent = ct.transform( srcExtent );
     xRes = extent.width();
     yRes = extent.height();
   }
@@ -368,8 +465,8 @@ void QgsRasterLayerSaveAsDialog::setResolution( double xRes, double yRes, const 
 void QgsRasterLayerSaveAsDialog::recalcSize()
 {
   QgsRectangle extent = outputRectangle();
-  int xSize =  xResolution() != 0 ? static_cast<int>( std::round( extent.width() / xResolution() ) ) : 0;
-  int ySize =  yResolution() != 0 ? static_cast<int>( std::round( extent.height() / yResolution() ) ) : 0;
+  int xSize = xResolution() != 0 ? static_cast<int>( std::round( extent.width() / xResolution() ) ) : 0;
+  int ySize = yResolution() != 0 ? static_cast<int>( std::round( extent.height() / yResolution() ) ) : 0;
   mColumnsLineEdit->setText( QString::number( xSize ) );
   mRowsLineEdit->setText( QString::number( ySize ) );
   updateResolutionStateMsg();
@@ -472,17 +569,17 @@ QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
   return RawDataMode;
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRawModeRadioButton_toggled( bool checked )
+void QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled( bool checked )
 {
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mAddNoDataManuallyToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mAddNoDataManuallyToolButton_clicked()
 {
   addNoDataRow( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mLoadTransparentNoDataToolButton_clicked()
 {
   if ( !mRasterLayer->renderer() ) return;
   const QgsRasterTransparency *rasterTransparency = mRasterLayer->renderer()->rasterTransparency();
@@ -501,12 +598,12 @@ void QgsRasterLayerSaveAsDialog::on_mLoadTransparentNoDataToolButton_clicked()
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRemoveSelectedNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mRemoveSelectedNoDataToolButton_clicked()
 {
   mNoDataTableWidget->removeRow( mNoDataTableWidget->currentRow() );
 }
 
-void QgsRasterLayerSaveAsDialog::on_mRemoveAllNoDataToolButton_clicked()
+void QgsRasterLayerSaveAsDialog::mRemoveAllNoDataToolButton_clicked()
 {
   while ( mNoDataTableWidget->rowCount() > 0 )
   {
@@ -561,9 +658,9 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   if ( !lineEdit ) return;
   int row = -1;
   int column = -1;
-  for ( int r = 0 ; r < mNoDataTableWidget->rowCount(); r++ )
+  for ( int r = 0; r < mNoDataTableWidget->rowCount(); r++ )
   {
-    for ( int c = 0 ; c < mNoDataTableWidget->columnCount(); c++ )
+    for ( int c = 0; c < mNoDataTableWidget->columnCount(); c++ )
     {
       if ( mNoDataTableWidget->cellWidget( r, c ) == sender() )
       {
@@ -593,7 +690,7 @@ void QgsRasterLayerSaveAsDialog::noDataCellTextEdited( const QString &text )
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
+void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 {
   if ( toggled )
   {
@@ -613,14 +710,18 @@ void QgsRasterLayerSaveAsDialog::on_mTileModeCheckBox_toggled( bool toggled )
 
     // Show / hide tile options
     mTilesGroupBox->show();
+    mFilename->setStorageMode( QgsFileWidget::GetDirectory );
+    mFilename->setDialogTitle( tr( "Select output directory" ) );
   }
   else
   {
     mTilesGroupBox->hide();
+    mFilename->setStorageMode( QgsFileWidget::SaveFile );
+    mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
 }
 
-void QgsRasterLayerSaveAsDialog::on_mPyramidsGroupBox_toggled( bool toggled )
+void QgsRasterLayerSaveAsDialog::mPyramidsGroupBox_toggled( bool toggled )
 {
   Q_UNUSED( toggled );
   populatePyramidsLevels();
@@ -698,7 +799,7 @@ QgsRasterRangeList QgsRasterLayerSaveAsDialog::noData() const
 
   int rows = mNoDataTableWidget->rowCount();
   noDataList.reserve( rows );
-  for ( int r = 0 ; r < rows; r++ )
+  for ( int r = 0; r < rows; r++ )
   {
     QgsRasterRange noData( noDataCellValue( r, 0 ), noDataCellValue( r, 1 ) );
     noDataList.append( noData );

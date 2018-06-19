@@ -28,7 +28,7 @@
        <enum>QAbstractItemView::SelectItems</enum>
       </property>
       <property name="columnCount">
-       <number>3</number>
+       <number>2</number>
       </property>
       <attribute name="headerVisible">
        <bool>true</bool>
@@ -41,11 +41,6 @@
       <column>
        <property name="text">
         <string notr="true">2</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string notr="true">3</string>
        </property>
       </column>
      </widget>

@@ -1,13 +1,13 @@
 v.kernel
 v.kernel.rast - Generates a raster density map from vector points map.
 Vector (v.*)
-ParameterVector|input|Name of input vector map with training points|0|False
-ParameterNumber|radius|Kernel radius in map units|0.0|None|10.0|False
-ParameterNumber|dsize|Discretization error in map units|0.0|None|0.0|True
-ParameterNumber|segmax|Maximum length of segment on network|0.0|None|100.0|True
-ParameterNumber|distmax|Maximum distance from point to network|0.0|None|100.0|True
-ParameterNumber|multiplier|Multiply the density result by this number|0.0|None|1.0|True
-ParameterSelection|node|Node method|none;split|0
-ParameterSelection|kernel|Kernel function|cosine;gaussian;epanechnikov;quartic;triangular;triweight;uniform|1
-*ParameterBoolean|-o|Try to calculate an optimal radius with given 'radius' taken as maximum (experimental)|False
-OutputRaster|output|Kernel
+QgsProcessingParameterFeatureSource|input|Name of input vector map with training points|0|None|False
+QgsProcessingParameterNumber|radius|Kernel radius in map units|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
+QgsProcessingParameterNumber|dsize|Discretization error in map units|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|segmax|Maximum length of segment on network|QgsProcessingParameterNumber.Double|100.0|True|0.0|None
+QgsProcessingParameterNumber|distmax|Maximum distance from point to network|QgsProcessingParameterNumber.Double|100.0|True|0.0|None
+QgsProcessingParameterNumber|multiplier|Multiply the density result by this number|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterEnum|node|Node method|none;split|False|0|False
+QgsProcessingParameterEnum|kernel|Kernel function|uniform;triangular;epanechnikov;quartic;triweight;gaussian;cosine|False|5|True
+*QgsProcessingParameterBoolean|-o|Try to calculate an optimal radius with given 'radius' taken as maximum (experimental)|False
+QgsProcessingParameterRasterDestination|output|Kernel

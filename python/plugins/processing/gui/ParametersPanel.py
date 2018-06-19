@@ -30,6 +30,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
+
+from functools import partial
 
 from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterExtent,
@@ -39,20 +42,24 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorDestination)
+                       QgsProcessingParameterVectorDestination,
+                       QgsProject)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
-                                 QLabel, QCheckBox)
+                                 QLabel, QCheckBox, QSizePolicy)
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
 from processing.gui.wrappers import WidgetWrapperFactory
 
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
+pluginPath = os.path.split(os.path.dirname(__file__))[0]\
+
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'widgetParametersPanel.ui'))
 
 
 class ParametersPanel(BASE, WIDGET):
@@ -65,6 +72,7 @@ class ParametersPanel(BASE, WIDGET):
 
         self.grpAdvanced.hide()
 
+        self.scrollAreaWidgetContents.setContentsMargins(4, 4, 4, 4)
         self.layoutMain = self.scrollAreaWidgetContents.layout()
         self.layoutAdvanced = self.grpAdvanced.layout()
 
@@ -72,12 +80,14 @@ class ParametersPanel(BASE, WIDGET):
         self.alg = alg
         self.wrappers = {}
         self.outputWidgets = {}
-        self.labels = {}
         self.checkBoxes = {}
         self.dependentItems = {}
         self.iterateButtons = {}
 
         self.initWidgets()
+
+        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
@@ -103,14 +113,6 @@ class ParametersPanel(BASE, WIDGET):
             if param.isDestination():
                 continue
             else:
-                desc = param.description()
-                if isinstance(param, QgsProcessingParameterExtent):
-                    desc += self.tr(' (xmin, xmax, ymin, ymax)')
-                if isinstance(param, QgsProcessingParameterPoint):
-                    desc += self.tr(' (x, y)')
-                if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                    desc += self.tr(' [optional]')
-
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
                 widget = wrapper.widget
@@ -118,12 +120,13 @@ class ParametersPanel(BASE, WIDGET):
                 if widget is not None:
                     if isinstance(param, QgsProcessingParameterFeatureSource):
                         layout = QHBoxLayout()
-                        layout.setSpacing(2)
+                        layout.setSpacing(6)
                         layout.setMargin(0)
                         layout.addWidget(widget)
                         button = QToolButton()
                         icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                         button.setIcon(icon)
+                        button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
                         button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
                         button.setCheckable(True)
                         layout.addWidget(button)
@@ -133,23 +136,23 @@ class ParametersPanel(BASE, WIDGET):
                         widget = QWidget()
                         widget.setLayout(layout)
 
-                    widget.setToolTip(self.formatParameterTooltip(param))
+                    widget.setToolTip(param.toolTip())
 
-                    if type(widget) is QCheckBox:
-                        # checkbox widget - so description is embedded in widget rather than a separate
-                        # label
-                        widget.setText(desc)
-                    else:
-                        label = QLabel(desc)
-                        # label.setToolTip(tooltip)
-                        self.labels[param.name()] = label
-
+                    if wrapper.label is not None:
                         if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
-                            self.layoutAdvanced.addWidget(label)
+                            self.layoutAdvanced.addWidget(wrapper.label)
                         else:
                             self.layoutMain.insertWidget(
-                                self.layoutMain.count() - 2, label)
-
+                                self.layoutMain.count() - 2, wrapper.label)
+                    else:
+                        desc = param.description()
+                        if isinstance(param, QgsProcessingParameterExtent):
+                            desc += self.tr(' (xmin, xmax, ymin, ymax)')
+                        if isinstance(param, QgsProcessingParameterPoint):
+                            desc += self.tr(' (x, y)')
+                        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                            desc += self.tr(' [optional]')
+                        widget.setText(desc)
                     if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                         self.layoutAdvanced.addWidget(widget)
                     else:
@@ -166,16 +169,38 @@ class ParametersPanel(BASE, WIDGET):
             self.layoutMain.insertWidget(self.layoutMain.count() - 1, widget)
             if isinstance(output, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                 check = QCheckBox()
-                check.setText(self.tr('Open output file after running algorithm'))
-                check.setChecked(True)
+                check.setText(QCoreApplication.translate('ParametersPanel', 'Open output file after running algorithm'))
+
+                def skipOutputChanged(checkbox, skipped):
+                    checkbox.setEnabled(not skipped)
+                    if skipped:
+                        checkbox.setChecked(False)
+                check.setChecked(not widget.outputIsSkipped())
+                check.setEnabled(not widget.outputIsSkipped())
+                widget.skipOutputChanged.connect(partial(skipOutputChanged, check))
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 
-            widget.setToolTip(self.formatParameterTooltip(param))
+            widget.setToolTip(param.toolTip())
             self.outputWidgets[output.name()] = widget
 
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
+
+    def setParameters(self, parameters):
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            if not param.name() in parameters:
+                continue
+
+            if not param.isDestination():
+                wrapper = self.wrappers[param.name()]
+                wrapper.setValue(parameters[param.name()])
+            else:
+                dest_widget = self.outputWidgets[param.name()]
+                dest_widget.setValue(parameters[param.name()])
 
     def buttonToggled(self, value):
         if value:

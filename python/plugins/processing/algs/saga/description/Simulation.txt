@@ -1,16 +1,16 @@
 Simulation
 sim_fire_spreading
-ParameterRaster|DEM|DEM|False
-ParameterRaster|FUEL|Fuel Model|False
-ParameterRaster|WINDSPD|Wind Speed|False
-ParameterRaster|WINDDIR|Wind Direction|False
-ParameterRaster|M1H|Dead Fuel Moisture 1H|False
-ParameterRaster|M10H|Dead Fuel Moisture 10H|False
-ParameterRaster|M100H|Dead Fuel Moisture 100H|False
-ParameterRaster|MHERB|Herbaceous Fuel Moisture|False
-ParameterRaster|MWOOD|Wood Fuel Moisture|False
-ParameterRaster|IGNITION|Ignition Points|False
-ParameterBoolean|UPDATEVIEW     |Update View|True
-OutputRaster|TIME|Time
-OutputRaster|FLAME|Flame Length
-OutputRaster|INTENSITY|Intensity
+QgsProcessingParameterRasterLayer|DEM|DEM|None|False
+QgsProcessingParameterRasterLayer|FUEL|Fuel Model|None|False
+QgsProcessingParameterRasterLayer|WINDSPD|Wind Speed|None|False
+QgsProcessingParameterRasterLayer|WINDDIR|Wind Direction|None|False
+QgsProcessingParameterRasterLayer|M1H|Dead Fuel Moisture 1H|None|False
+QgsProcessingParameterRasterLayer|M10H|Dead Fuel Moisture 10H|None|False
+QgsProcessingParameterRasterLayer|M100H|Dead Fuel Moisture 100H|None|False
+QgsProcessingParameterRasterLayer|MHERB|Herbaceous Fuel Moisture|None|False
+QgsProcessingParameterRasterLayer|MWOOD|Wood Fuel Moisture|None|False
+QgsProcessingParameterRasterLayer|IGNITION|Ignition Points|None|False
+QgsProcessingParameterBoolean|UPDATEVIEW     |Update View|True
+QgsProcessingParameterRasterDestination|TIME|Time
+QgsProcessingParameterRasterDestination|FLAME|Flame Length
+QgsProcessingParameterRasterDestination|INTENSITY|Intensity

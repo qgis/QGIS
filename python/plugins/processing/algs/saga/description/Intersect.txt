@@ -1,6 +1,7 @@
 Intersect
 shapes_polygons
-ParameterVector|A|Layer A|-1|False
-ParameterVector|B|Layer B|-1|False
-OutputVector|RESULT|Intersect
-ParameterBoolean|SPLIT|Split Parts|True
+QgsProcessingParameterFeatureSource|A|Layer A|2|None|False
+QgsProcessingParameterFeatureSource|B|Layer B|2|None|False
+QgsProcessingParameterBoolean|SPLIT|Split Parts|True
+QgsProcessingParameterVectorDestination|RESULT|Intersect
+

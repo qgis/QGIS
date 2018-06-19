@@ -1,0 +1,66 @@
+<Composer>
+ <Composition alignmentSnap="1" resizeToContentsMarginLeft="0" paperWidth="210" generateWorldFile="0" printAsRaster="0" name="2x portrait" guidesVisible="1" snapTolerancePixels="5" snapGridOffsetX="0" worldFileMap="" smartGuides="1" showPages="1" resizeToContentsMarginBottom="0" resizeToContentsMarginTop="0" printResolution="300" numPages="2" gridVisible="0" snapGridResolution="10" paperHeight="297" snapGridOffsetY="0" snapping="0" resizeToContentsMarginRight="0">
+  <symbol type="fill" alpha="1" clip_to_extent="1" name="">
+   <layer locked="0" enabled="1" pass="0" class="SimpleFill">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="77,175,74,255" k="color"/>
+    <prop v="bevel" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="56,128,54,255" k="outline_color"/>
+    <prop v="solid" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <ComposerLabel marginX="1" marginY="1" labelText="Page2" halign="8" valign="32" htmlState="0">
+   <LabelFont description="Ubuntu Condensed,20,-1,5,50,0,0,0,0,0,Regular" style="Regular"/>
+   <FontColor blue="240" red="255" green="245"/>
+   <ComposerItem opacity="1" id="" frameJoinStyle="miter" zValue="2" uuid="{0756f1d5-0f31-48d0-b45b-7711f1b68a06}" lastValidViewScaleFactor="-1" frame="false" itemRotation="0" y="338.748" positionLock="false" x="105" positionMode="0" width="95.2518" page="2" visibility="1" height="42.4805" pagex="105" outlineWidth="0.3" background="false" pagey="31.748" excludeFromExports="0" blendMode="0">
+    <FrameColor blue="0" alpha="255" red="0" green="0"/>
+    <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <ComposerLabel marginX="1" marginY="1" labelText="Page1" halign="8" valign="32" htmlState="0">
+   <LabelFont description="Ubuntu,20,-1,5,57,1,0,0,0,0,Medium Italic" style="Medium Italic"/>
+   <FontColor blue="240" red="255" green="245"/>
+   <ComposerItem opacity="1" id="" frameJoinStyle="miter" zValue="1" uuid="{e9247f41-6af7-4deb-8143-f1d8d5b508c3}" lastValidViewScaleFactor="-1" frame="false" itemRotation="0" y="43.4292" positionLock="false" x="22.0869" positionMode="0" width="95.2518" page="1" visibility="1" height="42.4805" pagex="22.0869" outlineWidth="0.3" background="false" pagey="43.4292" excludeFromExports="0" blendMode="0">
+    <FrameColor blue="0" alpha="255" red="0" green="0"/>
+    <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerLabel>
+  <dataDefinedProperties>
+   <Option type="Map">
+    <Option type="QString" name="name" value=""/>
+    <Option name="properties"/>
+    <Option type="QString" name="type" value="collection"/>
+   </Option>
+  </dataDefinedProperties>
+  <customproperties/>
+ </Composition>
+</Composer>

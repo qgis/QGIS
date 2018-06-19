@@ -33,7 +33,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
   public:
     explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   protected:
     QgsDataSourceUri mUri;
@@ -62,22 +62,22 @@ class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
   public:
     QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsOracleFeatureIterator();
+    ~QgsOracleFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    bool openQuery( QString whereClause, QVariantList args, bool showLog = true );
+    bool openQuery( const QString &whereClause, const QVariantList &args, bool showLog = true );
 
     QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
-    bool mRewind;
-    bool mExpressionCompiled;
-    bool mFetchGeometry;
+    bool mRewind = false;
+    bool mExpressionCompiled = false;
+    bool mFetchGeometry = false;
     QgsAttributeList mAttributeList;
     QString mSql;
     QVariantList mArgs;

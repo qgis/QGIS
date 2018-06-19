@@ -55,6 +55,11 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
+  , mTransformContext( rh.mTransformContext )
+  , mPathResolver( rh.mPathResolver )
+#ifdef QGISDEBUG
+  , mHasTransformContext( rh.mHasTransformContext )
+#endif
 {
 }
 
@@ -77,6 +82,12 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
   mDistanceArea = rh.mDistanceArea;
+  mTransformContext = rh.mTransformContext;
+  mPathResolver = rh.mPathResolver;
+#ifdef QGISDEBUG
+  mHasTransformContext = rh.mHasTransformContext;
+#endif
+
   return *this;
 }
 
@@ -93,6 +104,23 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
   return context;
+}
+
+QgsCoordinateTransformContext QgsRenderContext::transformContext() const
+{
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+  return mTransformContext;
+}
+
+void QgsRenderContext::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
 }
 
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
@@ -134,13 +162,16 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
+  ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
   ctx.setSegmentationTolerance( mapSettings.segmentationTolerance() );
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
-  ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
+  ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs(), mapSettings.transformContext() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  ctx.setTransformContext( mapSettings.transformContext() );
+  ctx.setPathResolver( mapSettings.pathResolver() );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );
@@ -297,7 +328,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     case QgsUnitTypes::RenderMapUnits:
     {
       // check scale
-      double minSizeMU = -DBL_MAX;
+      double minSizeMU = std::numeric_limits<double>::lowest();
       if ( scale.minSizeMMEnabled )
       {
         minSizeMU = scale.minSizeMM * mScaleFactor * mup;
@@ -308,7 +339,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
       }
       size = std::max( size, minSizeMU );
 
-      double maxSizeMU = DBL_MAX;
+      double maxSizeMU = std::numeric_limits<double>::max();
       if ( scale.maxSizeMMEnabled )
       {
         maxSizeMU = scale.maxSizeMM * mScaleFactor * mup;

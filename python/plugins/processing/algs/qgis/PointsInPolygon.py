@@ -30,12 +30,14 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsGeometry,
+from qgis.core import (QgsApplication,
+                       QgsGeometry,
                        QgsFeatureSink,
                        QgsFeatureRequest,
                        QgsFeature,
                        QgsField,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterString,
@@ -56,10 +58,16 @@ class PointsInPolygon(QgisAlgorithm):
     CLASSFIELD = 'CLASSFIELD'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sum_points.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSumPoints.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSumPoints.svg")
 
     def group(self):
         return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
@@ -88,7 +96,12 @@ class PointsInPolygon(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         poly_source = self.parameterAsSource(parameters, self.POLYGONS, context)
+        if poly_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POLYGONS))
+
         point_source = self.parameterAsSource(parameters, self.POINTS, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.POINTS))
 
         weight_field = self.parameterAsString(parameters, self.WEIGHT, context)
         weight_field_index = -1
@@ -109,9 +122,11 @@ class PointsInPolygon(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         point_attribute_indices = []
         if weight_field_index >= 0:
@@ -129,7 +144,7 @@ class PointsInPolygon(QgisAlgorithm):
             output_feature = QgsFeature()
             if polygon_feature.hasGeometry():
                 geom = polygon_feature.geometry()
-                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
                 engine.prepareGeometry()
 
                 count = 0
@@ -137,13 +152,13 @@ class PointsInPolygon(QgisAlgorithm):
 
                 points = spatialIndex.intersects(geom.boundingBox())
                 if len(points) > 0:
-                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs())
+                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
                     request.setSubsetOfAttributes(point_attribute_indices)
                     for point_feature in point_source.getFeatures(request):
                         if feedback.isCanceled():
                             break
 
-                        if engine.contains(point_feature.geometry().geometry()):
+                        if engine.contains(point_feature.geometry().constGet()):
                             if weight_field_index >= 0:
                                 weight = point_feature.attributes()[weight_field_index]
                                 try:

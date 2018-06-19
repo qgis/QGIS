@@ -26,7 +26,7 @@ from builtins import range
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QRegExp
+from qgis.PyQt.QtCore import QRegExp, QFile
 from qgis.core import Qgis, QgsCredentials, QgsDataSourceUri
 
 from ..connector import DBConnector
@@ -66,6 +66,7 @@ class PostGisDBConnector(DBConnector):
         try:
             self.connection = psycopg2.connect(expandedConnInfo)
         except self.connection_error_types() as e:
+            # get credentials if cached or asking to the user no more than 3 times
             err = str(e)
             uri = self.uri()
             conninfo = uri.connectionInfo(False)
@@ -88,44 +89,13 @@ class PostGisDBConnector(DBConnector):
                 except self.connection_error_types() as e:
                     if i == 2:
                         raise ConnectionError(e)
-
                     err = str(e)
                 finally:
-                    # remove certs (if any) of the expanded connectionInfo
-                    expandedUri = QgsDataSourceUri(newExpandedConnInfo)
-
-                    sslCertFile = expandedUri.param("sslcert")
-                    if sslCertFile:
-                        sslCertFile = sslCertFile.replace("'", "")
-                        os.remove(sslCertFile)
-
-                    sslKeyFile = expandedUri.param("sslkey")
-                    if sslKeyFile:
-                        sslKeyFile = sslKeyFile.replace("'", "")
-                        os.remove(sslKeyFile)
-
-                    sslCAFile = expandedUri.param("sslrootcert")
-                    if sslCAFile:
-                        sslCAFile = sslCAFile.replace("'", "")
-                        os.remove(sslCAFile)
+                    # clear certs for each time trying to connect
+                    self._clearSslTempCertsIfAny(newExpandedConnInfo)
         finally:
-            # remove certs (if any) of the expanded connectionInfo
-            expandedUri = QgsDataSourceUri(expandedConnInfo)
-
-            sslCertFile = expandedUri.param("sslcert")
-            if sslCertFile:
-                sslCertFile = sslCertFile.replace("'", "")
-                os.remove(sslCertFile)
-
-            sslKeyFile = expandedUri.param("sslkey")
-            if sslKeyFile:
-                sslKeyFile = sslKeyFile.replace("'", "")
-                os.remove(sslKeyFile)
-
-            sslCAFile = expandedUri.param("sslrootcert")
-            if sslCAFile:
-                sslCAFile = sslCAFile.replace("'", "")
-                os.remove(sslCAFile)
+            # clear certs of the first connection try
+            self._clearSslTempCertsIfAny(expandedConnInfo)
 
         self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 
@@ -140,6 +110,33 @@ class PostGisDBConnector(DBConnector):
 
     def _connectionInfo(self):
         return str(self.uri().connectionInfo(True))
+
+    def _clearSslTempCertsIfAny(self, connectionInfo):
+        # remove certs (if any) of the connectionInfo
+        expandedUri = QgsDataSourceUri(connectionInfo)
+
+        def removeCert(certFile):
+            certFile = certFile.replace("'", "")
+            file = QFile(certFile)
+            # set permission to allow removing on Win.
+            # On linux and Mac if file is set with QFile::>ReadUser
+            # does not create problem removing certs
+            if not file.setPermissions(QFile.WriteOwner):
+                raise Exception('Cannot change permissions on {}: error code: {}'.format(file.fileName(), file.error()))
+            if not file.remove():
+                raise Exception('Cannot remove {}: error code: {}'.format(file.fileName(), file.error()))
+
+        sslCertFile = expandedUri.param("sslcert")
+        if sslCertFile:
+            removeCert(sslCertFile)
+
+        sslKeyFile = expandedUri.param("sslkey")
+        if sslKeyFile:
+            removeCert(sslKeyFile)
+
+        sslCAFile = expandedUri.param("sslrootcert")
+        if sslCAFile:
+            removeCert(sslCAFile)
 
     def _checkSpatial(self):
         """ check whether postgis_version is present in catalog """
@@ -157,7 +154,7 @@ class PostGisDBConnector(DBConnector):
 
     def _checkGeometryColumnsTable(self):
         c = self._execute(None,
-                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'geometry_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_geometry_columns = (res is not None and len(res) != 0)
@@ -173,7 +170,7 @@ class PostGisDBConnector(DBConnector):
 
     def _checkRasterColumnsTable(self):
         c = self._execute(None,
-                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm')")
+                          u"SELECT relkind = 'v' OR relkind = 'm' FROM pg_class WHERE relname = 'raster_columns' AND relkind IN ('v', 'r', 'm', 'p')")
         res = self._fetchone(c)
         self._close_cursor(c)
         self.has_raster_columns = (res is not None and len(res) != 0)
@@ -185,6 +182,10 @@ class PostGisDBConnector(DBConnector):
             # find out whether has privileges to access geometry_columns table
             self.has_raster_columns_access = self.getTablePrivileges('raster_columns')[0]
         return self.has_raster_columns
+
+    def cancel(self):
+        if self.connection:
+            self.connection.cancel()
 
     def getInfo(self):
         c = self._execute(None, u"SELECT version()")
@@ -322,7 +323,7 @@ class PostGisDBConnector(DBConnector):
                                                 pg_catalog.obj_description(cla.oid)
                                         FROM pg_class AS cla
                                         JOIN pg_namespace AS nsp ON nsp.oid = cla.relnamespace
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname"""
 
         c = self._execute(None, sql)
@@ -389,7 +390,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + geometry_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -461,7 +462,7 @@ class PostGisDBConnector(DBConnector):
 
                                         """ + raster_column_from + """
 
-                                        WHERE cla.relkind IN ('v', 'r', 'm') """ + schema_where + """
+                                        WHERE cla.relkind IN ('v', 'r', 'm', 'p') """ + schema_where + """
                                         ORDER BY nsp.nspname, cla.relname, att.attname"""
 
         items = []
@@ -849,7 +850,7 @@ class PostGisDBConnector(DBConnector):
         if self.isGeometryColumn(table, column):
             # use PostGIS function to delete geometry column correctly
             schema, tablename = self.getSchemaTableName(table)
-            schema_part = u"%s, " % self._quote_unicode(schema) if schema else ""
+            schema_part = u"%s, " % self.quoteString(schema) if schema else ""
             sql = u"SELECT DropGeometryColumn(%s%s, %s)" % (
                 schema_part, self.quoteString(tablename), self.quoteString(column))
         else:
@@ -971,7 +972,7 @@ class PostGisDBConnector(DBConnector):
     def deleteSpatialIndex(self, table, geom_column='geom'):
         schema, tablename = self.getSchemaTableName(table)
         idx_name = self.quoteId(u"sidx_%s_%s" % (tablename, geom_column))
-        return self.dropTableIndex(table, idx_name)
+        return self.deleteTableIndex(table, idx_name)
 
     def execution_error_types(self):
         return psycopg2.Error, psycopg2.ProgrammingError, psycopg2.Warning
@@ -1019,7 +1020,7 @@ class PostGisDBConnector(DBConnector):
         # get schemas, tables and field names
         items = []
         sql = u"""SELECT nspname FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema'
-UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm')
+UNION SELECT relname FROM pg_class WHERE relkind IN ('v', 'r', 'm', 'p')
 UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
         c = self._execute(None, sql)
         for row in self._fetchall(c):

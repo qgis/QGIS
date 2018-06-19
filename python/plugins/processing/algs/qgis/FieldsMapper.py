@@ -30,8 +30,13 @@ from qgis.core import (
     QgsExpression,
     QgsField,
     QgsFields,
+    QgsProcessing,
     QgsProcessingException,
-    QgsProcessingParameterDefinition)
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterType,
+    NULL)
+
+from PyQt5.QtCore import QCoreApplication
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -45,50 +50,15 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
+    def tags(self):
+        return self.tr('attributes,table').split(',')
+
     def initParameters(self, config=None):
-
-        class ParameterFieldsMapping(QgsProcessingParameterDefinition):
-
-            def __init__(self, name, description, parentLayerParameterName='INPUT'):
-                super().__init__(name, description)
-                self._parentLayerParameter = parentLayerParameterName
-
-            def clone(self):
-                copy = ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
-                return copy
-
-            def type(self):
-                return 'fields_mapping'
-
-            def checkValueIsAcceptable(self, value, context=None):
-                if not isinstance(value, list):
-                    return False
-                for field_def in value:
-                    if not isinstance(field_def, dict):
-                        return False
-                    if not field_def.get('name', False):
-                        return False
-                    if not field_def.get('type', False):
-                        return False
-                    if not field_def.get('expression', False):
-                        return False
-                return True
-
-            def valueAsPythonString(self, value, context):
-                return str(value)
-
-            def asScriptCode(self):
-                raise NotImplementedError()
-
-            @classmethod
-            def fromScriptCode(cls, name, description, isOptional, definition):
-                raise NotImplementedError()
-
-            def parentLayerParameter(self):
-                return self._parentLayerParameter
-
-        fields_mapping = ParameterFieldsMapping(self.FIELDS_MAPPING,
-                                                description=self.tr('Fields mapping'))
+        fields_mapping = FieldsMapper.ParameterFieldsMapping(self.FIELDS_MAPPING,
+                                                             description=self.tr('Fields mapping'))
         fields_mapping.setMetadata({
             'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'
         })
@@ -103,19 +73,28 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Refactored')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
+
     def parameterAsFieldsMapping(self, parameters, name, context):
         return parameters[name]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, 'INPUT', context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, 'INPUT'))
+
         mapping = self.parameterAsFieldsMapping(parameters, self.FIELDS_MAPPING, context)
 
         self.fields = QgsFields()
         self.expressions = []
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
+
+        # create an expression context using thread safe processing context
+        self.expr_context = self.createExpressionContext(parameters, context, source)
 
         for field_def in mapping:
             self.fields.append(QgsField(name=field_def['name'],
@@ -123,41 +102,111 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
                                         typeName="",
                                         len=field_def.get('length', 0),
                                         prec=field_def.get('precision', 0)))
-            expression = QgsExpression(field_def['expression'])
-            expression.setGeomCalculator(da)
-            expression.setDistanceUnits(context.project().distanceUnits())
-            expression.setAreaUnits(context.project().areaUnits())
-            if expression.hasParserError():
-                raise QgsProcessingException(
-                    self.tr(u'Parser error in expression "{}": {}')
-                    .format(str(expression.expression()),
-                            str(expression.parserErrorString())))
-            self.expressions.append(expression)
+            if field_def['expression']:
+                expression = QgsExpression(field_def['expression'])
+                expression.setGeomCalculator(da)
+                expression.setDistanceUnits(context.project().distanceUnits())
+                expression.setAreaUnits(context.project().areaUnits())
+                if expression.hasParserError():
+                    feedback.reportError(
+                        self.tr(u'Parser error in expression "{}": {}')
+                        .format(expression.expression(),
+                                expression.parserErrorString()))
+                    return False
+                self.expressions.append(expression)
+            else:
+                self.expressions.append(None)
         return True
 
     def outputFields(self, inputFields):
         return self.fields
 
     def processAlgorithm(self, parameters, context, feeback):
-        # create an expression context using thead safe processing context
-        self.expr_context = self.createExpressionContext(parameters, context)
         for expression in self.expressions:
-            expression.prepare(self.expr_context)
+            if expression is not None:
+                expression.prepare(self.expr_context)
         self._row_number = 0
         return super().processAlgorithm(parameters, context, feeback)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = []
         for expression in self.expressions:
-            self.expr_context.setFeature(feature)
-            self.expr_context.lastScope().setVariable("row_number", self._row_number)
-            value = expression.evaluate(self.expr_context)
-            if expression.hasEvalError():
-                raise QgsProcessingException(
-                    self.tr(u'Evaluation error in expression "{}": {}')
-                        .format(str(expression.expression()),
-                                str(expression.parserErrorString())))
-            attributes.append(value)
+            if expression is not None:
+                self.expr_context.setFeature(feature)
+                self.expr_context.lastScope().setVariable("row_number", self._row_number)
+                value = expression.evaluate(self.expr_context)
+                if expression.hasEvalError():
+                    raise QgsProcessingException(
+                        self.tr(u'Evaluation error in expression "{}": {}')
+                            .format(expression.expression(),
+                                    expression.evalErrorString()))
+                attributes.append(value)
+            else:
+                attributes.append(NULL)
         feature.setAttributes(attributes)
         self._row_number += 1
-        return feature
+        return [feature]
+
+    class ParameterFieldsMappingType(QgsProcessingParameterType):
+
+        def __init__(self):
+            super().__init__()
+
+        def create(self, name):
+            return FieldsMapper.ParameterFieldsMapping(name)
+
+        def metadata(self):
+            return {'widget_wrapper': 'processing.algs.qgis.ui.FieldsMappingPanel.FieldsMappingWidgetWrapper'}
+
+        def name(self):
+            return QCoreApplication.translate('Processing', 'Fields Mapper')
+
+        def id(self):
+            return 'fields_mapping'
+
+        def description(self):
+            return QCoreApplication.translate('Processing', 'A mapping of field names to field type definitions and expressions. Used for the refactor fields algorithm.')
+
+    class ParameterFieldsMapping(QgsProcessingParameterDefinition):
+
+        def __init__(self, name, description='', parentLayerParameterName='INPUT'):
+            super().__init__(name, description)
+            self._parentLayerParameter = parentLayerParameterName
+
+        def clone(self):
+            copy = FieldsMapper.ParameterFieldsMapping(self.name(), self.description(), self._parentLayerParameter)
+            return copy
+
+        def type(self):
+            return self.typeName()
+
+        @staticmethod
+        def typeName():
+            return 'fields_mapping'
+
+        def checkValueIsAcceptable(self, value, context=None):
+            if not isinstance(value, list):
+                return False
+            for field_def in value:
+                if not isinstance(field_def, dict):
+                    return False
+                if 'name' not in field_def.keys():
+                    return False
+                if 'type' not in field_def.keys():
+                    return False
+                if 'expression' not in field_def.keys():
+                    return False
+            return True
+
+        def valueAsPythonString(self, value, context):
+            return str(value)
+
+        def asScriptCode(self):
+            raise NotImplementedError()
+
+        @classmethod
+        def fromScriptCode(cls, name, description, isOptional, definition):
+            raise NotImplementedError()
+
+        def parentLayerParameter(self):
+            return self._parentLayerParameter

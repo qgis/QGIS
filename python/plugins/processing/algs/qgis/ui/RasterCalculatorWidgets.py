@@ -1,21 +1,51 @@
-from qgis.core import (QgsProcessingUtils,
-                       QgsProcessingParameterDefinition,
-                       QgsProject)
-from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
-from processing.tools import dataobjects
-from processing.tools.system import userFolder
-from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
-from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
-                                 QComboBox, QSpacerItem, QSizePolicy)
-from qgis.PyQt.QtGui import QTextCursor
-from processing.core.outputs import OutputRaster
-from processing.core.parameters import ParameterRaster
-from processing.gui.wrappers import InvalidParameterValue
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    RasterCalculatorWidgets.py
+    ---------------------
+    Date                 : November 2016
+    Copyright            : (C) 2016 by Victor Olaya
+    Email                : volayaf at gmail dot com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Victor Olaya'
+__date__ = 'November 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
+# This will get replaced with a git SHA1 when you do a git archive
+__revision__ = '$Format:%H$'
+
 import os
-from qgis.PyQt import uic
 from functools import partial
 import re
 import json
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtGui import QTextCursor
+from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
+                                 QComboBox, QSpacerItem, QSizePolicy)
+
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProject)
+
+from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
+from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
+from processing.tools import dataobjects
+from processing.tools.system import userFolder
+
+
+from processing.gui.wrappers import InvalidParameterValue
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
@@ -85,7 +115,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ExpressionWidget.ui'))
+    os.path.join(pluginPath, 'RasterCalculatorWidget.ui'))
 
 
 class ExpressionWidget(BASE, WIDGET):
@@ -99,7 +129,7 @@ class ExpressionWidget(BASE, WIDGET):
         self.setList(options)
 
         def doubleClicked(item):
-            self.text.insertPlainText(self.options[item.text()])
+            self.text.insertPlainText('"{}"'.format(self.options[item.text()]))
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):
@@ -183,7 +213,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()
         else:
-            layers = self.dialog.getAvailableValuesOfType(ParameterRaster, OutputRaster)
+            layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
             options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(lyr) for lyr in layers}
             return self._panel(options)
 

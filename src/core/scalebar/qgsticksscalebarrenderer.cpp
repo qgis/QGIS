@@ -16,7 +16,7 @@
 
 #include "qgsticksscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgscomposerutils.h"
+#include "qgslayoututils.h"
 #include <QPainter>
 
 QString QgsTicksScaleBarRenderer::name() const
@@ -40,30 +40,36 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
 
   QPainter *painter = context.painter();
 
-  double barTopPosition = QgsComposerUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace();
-  double middlePosition = barTopPosition + settings.height() / 2.0;
-  double bottomPosition = barTopPosition + settings.height();
+  double scaledLabelBarSpace = context.convertToPainterUnits( settings.labelBarSpace(), QgsUnitTypes::RenderMillimeters );
+  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
+  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, settings.textFormat() );
+  double barTopPosition = fontMetrics.ascent() + scaledLabelBarSpace + scaledBoxContentSpace;
+  double middlePosition = barTopPosition + context.convertToPainterUnits( settings.height() / 2.0, QgsUnitTypes::RenderMillimeters );
+  double bottomPosition = barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters );
 
-  double xOffset = firstLabelXOffset( settings );
+  double xOffset = firstLabelXOffset( settings, context );
 
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
 
-  painter->setPen( settings.pen() );
+  QPen pen = settings.pen();
+  pen.setWidthF( context.convertToPainterUnits( pen.widthF(), QgsUnitTypes::RenderMillimeters ) );
+  painter->setPen( pen );
 
   QList<double> positions = segmentPositions( scaleContext, settings );
 
   for ( int i = 0; i < positions.size(); ++i )
   {
-    painter->drawLine( QLineF( positions.at( i ) + xOffset, barTopPosition,
-                               positions.at( i ) + xOffset, barTopPosition + settings.height() ) );
+    painter->drawLine( QLineF( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset, barTopPosition,
+                               context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
+                               barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters ) ) );
   }
 
   //draw last tick and horizontal line
   if ( !positions.isEmpty() )
   {
-    double lastTickPositionX = positions.at( positions.size() - 1 ) + scaleContext.segmentWidth + xOffset;
+    double lastTickPositionX = context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset;
     double verticalPos = 0.0;
     switch ( mTickPosition )
     {
@@ -78,9 +84,10 @@ void QgsTicksScaleBarRenderer::draw( QgsRenderContext &context, const QgsScaleBa
         break;
     }
     //horizontal line
-    painter->drawLine( QLineF( xOffset + positions.at( 0 ), verticalPos, lastTickPositionX, verticalPos ) );
+    painter->drawLine( QLineF( xOffset + context.convertToPainterUnits( positions.at( 0 ), QgsUnitTypes::RenderMillimeters ),
+                               verticalPos, lastTickPositionX, verticalPos ) );
     //last vertical line
-    painter->drawLine( QLineF( lastTickPositionX, barTopPosition, lastTickPositionX, barTopPosition + settings.height() ) );
+    painter->drawLine( QLineF( lastTickPositionX, barTopPosition, lastTickPositionX, barTopPosition + context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters ) ) );
   }
 
   painter->restore();

@@ -34,9 +34,9 @@ class QgsDb2Provider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    explicit QgsDb2Provider( const QString &uri = QString() );
+    explicit QgsDb2Provider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
-    virtual ~QgsDb2Provider();
+    ~QgsDb2Provider() override;
 
     /**
      * Returns a QSqlDatabase object that can connect to DB2 for LUW or z/OS.
@@ -50,13 +50,13 @@ class QgsDb2Provider : public QgsVectorDataProvider
 
     static bool openDatabase( QSqlDatabase db );
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    virtual QgsWkbTypes::Type wkbType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
-    virtual long featureCount() const override;
+    long featureCount() const override;
 
     /**
      * Update the extent for this layer.
@@ -64,32 +64,32 @@ class QgsDb2Provider : public QgsVectorDataProvider
     void updateStatistics() const;
 
 
-    virtual QgsFields fields() const override;
+    QgsFields fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
-    virtual bool isValid() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
     QString subsetString() const override;
 
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
-    virtual QString name() const override;
+    QString name() const override;
 
-    virtual QString description() const override;
+    QString description() const override;
 
     QgsAttributeList pkAttributeIndexes() const override;
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
 
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
 
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
     //! Import a vector layer into the database
     static QgsVectorLayerExporter::ExportError createEmptyLayer(
@@ -125,8 +125,8 @@ class QgsDb2Provider : public QgsVectorDataProvider
     bool mValid;
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
-    long mNumberFeatures;
-    int mFidColIdx;
+    long mNumberFeatures = 0;
+    int mFidColIdx = -1;
     QString mFidColName;
     QString mExtents;
     mutable long mSRId;
@@ -135,7 +135,7 @@ class QgsDb2Provider : public QgsVectorDataProvider
     mutable QString mGeometryColName, mGeometryColType;
     QString mLastError; //string containing the last reported error message
     mutable QgsCoordinateReferenceSystem mCrs; //coordinate reference system
-    QgsWkbTypes::Type mWkbType;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
     QSqlQuery mQuery; //current SQL query
     QString mConnInfo; // full connection information
     QString mSchemaName, mTableName; //current layer schema/name

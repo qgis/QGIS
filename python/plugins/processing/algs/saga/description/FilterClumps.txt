@@ -1,5 +1,5 @@
 Filter Clumps
 grid_filter
-ParameterRaster|GRID|Input Grid|False
-ParameterNumber|THRESHOLD|Min. Size|1.0|None|10
-OutputRaster|OUTPUT|Filtered Grid
+QgsProcessingParameterRasterLayer|GRID|Input Grid|None|False
+QgsProcessingParameterNumber|THRESHOLD|Min. Size|QgsProcessingParameterNumber.Integer|10|False|1.0|None
+QgsProcessingParameterRasterDestination|OUTPUT|Filtered Grid

@@ -52,6 +52,8 @@ class DoxygenParser():
         self.documentable_members = 0
         self.documented_members = 0
         self.undocumented_members = {}
+        self.noncompliant_members = {}
+        self.broken_links = {}
         self.bindable_members = []
         self.groups = {}
         self.classes_missing_group = []
@@ -120,6 +122,13 @@ class DoxygenParser():
                 return True
         return False
 
+    @staticmethod
+    def standardize_signature(signature):
+        """
+        Standardizes a method's signature for comparison
+        """
+        return signature.lower().replace('* >', '*>').replace('< ', '<')
+
     def parseFile(self, f):
         """ Parses a single Doxygen XML file
             :param f: XML file path
@@ -133,7 +142,7 @@ class DoxygenParser():
                 if event == 'end' and elem.tag == 'compounddef':
                     if self.elemIsPublicClass(elem):
                         # store documentation status
-                        members, documented, undocumented, bindable, has_brief_description, found_version_added = self.parseClassElem(elem)
+                        members, documented, undocumented, noncompliant, bindable, has_brief_description, found_version_added, broken_links = self.parseClassElem(elem)
                         documentable_members += members
                         documented_members += documented
                         class_name = elem.find('compoundname').text
@@ -153,13 +162,19 @@ class DoxygenParser():
                         unacceptable_undocumented = undocumented - set(acceptable_missing)
 
                         # do a case insensitive check too
-                        unacceptable_undocumented_insensitive = set([u.lower() for u in undocumented]) - set([u.lower() for u in acceptable_missing])
+                        unacceptable_undocumented_insensitive = set([DoxygenParser.standardize_signature(u) for u in undocumented]) - set([DoxygenParser.standardize_signature(u) for u in acceptable_missing])
 
                         if len(unacceptable_undocumented_insensitive) > 0:
                             self.undocumented_members[class_name] = {}
                             self.undocumented_members[class_name]['documented'] = documented
                             self.undocumented_members[class_name]['members'] = members
                             self.undocumented_members[class_name]['missing_members'] = unacceptable_undocumented
+
+                        if len(noncompliant) > 0:
+                            self.noncompliant_members[class_name] = noncompliant
+
+                        if broken_links:
+                            self.broken_links[class_name] = broken_links
 
                         # store bindable members
                         if self.classElemIsBindable(elem):
@@ -217,7 +232,9 @@ class DoxygenParser():
         documentable_members = 0
         documented_members = 0
         undocumented_members = set()
+        noncompliant_members = []
         bindable_members = []
+        broken_links = {}
         # loop through all members
         for m in e.getiterator('memberdef'):
             signature = self.memberSignature(m)
@@ -231,8 +248,16 @@ class DoxygenParser():
                 documentable_members += 1
                 if self.memberIsDocumented(m):
                     documented_members += 1
+                    error = self.memberDocIsNonCompliant(m)
+                    if error:
+                        noncompliant_members.append({m.find('name').text: error})
                 else:
                     undocumented_members.add(signature)
+
+                broken_see_also_links = self.checkForBrokenSeeAlsoLinks(m)
+                if broken_see_also_links:
+                    broken_links[m.find('name').text] = broken_see_also_links
+
         # test for brief description
         d = e.find('briefdescription')
         has_brief_description = False
@@ -252,7 +277,7 @@ class DoxygenParser():
             if found_version_added:
                 break
 
-        return documentable_members, documented_members, undocumented_members, bindable_members, has_brief_description, found_version_added
+        return documentable_members, documented_members, undocumented_members, noncompliant_members, bindable_members, has_brief_description, found_version_added, broken_links
 
     def memberSignature(self, elem):
         """ Returns the signature for a member
@@ -261,9 +286,12 @@ class DoxygenParser():
         a = elem.find('argsstring')
         try:
             if a is not None:
-                return elem.find('name').text + a.text
+                signature = elem.find('name').text + a.text
             else:
-                return elem.find('name').text
+                signature = elem.find('name').text
+            if signature.endswith('= default'):
+                signature = signature[:-len('= default')]
+            return signature.strip()
         except:
             return None
 
@@ -499,17 +527,24 @@ class DoxygenParser():
             pass
 
         doxy_deprecated = False
+        has_description = True
         try:
             for p in member_elem.find('detaileddescription').getiterator('para'):
                 for s in p.getiterator('xrefsect'):
                     if s.find('xreftitle') is not None and 'Deprecated' in s.find('xreftitle').text:
                         doxy_deprecated = True
+                        if s.find('xrefdescription') is None or s.find('xrefdescription').find('para') is None:
+                            has_description = False
                         break
         except:
             assert 0, member_elem.find('definition').text
 
         if not decl_deprecated and not doxy_deprecated:
             return False
+
+        if doxy_deprecated and not has_description:
+            assert has_description, 'Error: Missing description for deprecated method {}'.format(
+                member_elem.find('definition').text)
 
         # only functions for now, but in future this should also apply for enums and variables
         if member_elem.get('kind') in ('function', 'variable'):
@@ -527,3 +562,46 @@ class DoxygenParser():
             if doc is not None and list(doc):
                 return True
         return False
+
+    def memberDocIsNonCompliant(self, member_elem):
+        """ Tests whether an member's documentation is non-compliant
+            :param member_elem: XML element for a class member
+        """
+        for doc_type in ['briefdescription']:
+            doc = member_elem.find(doc_type)
+            if doc is not None:
+                for para in doc.getiterator('para'):
+                    if not para.text:
+                        continue
+                    if para.text.strip().lower().startswith('getter'):
+                        return 'Use "Returns the..." instead of "getter"'
+                    if para.text.strip().lower().startswith('get '):
+                        return 'Use "Gets..." (or better, "Returns ...") instead of "get ..."'
+                    elif para.text.strip().lower().startswith('setter'):
+                        return 'Use "Sets the..." instead of "setter"'
+                    elif para.text.strip().lower().startswith('mutator'):
+                        return 'Use "Sets the..." instead of "mutator for..."'
+                    elif para.text.strip().lower().startswith('accessor'):
+                        return 'Use "Returns the..." instead of "accessor for..."'
+                    elif para.text.strip().lower().startswith('return '):
+                        return 'Use "Returns the..." instead of "return ..."'
+                    #elif para.text.strip().lower().startswith('set '):
+                    #    return 'Use "Sets the..." instead of "set ..."'
+        return False
+
+    def checkForBrokenSeeAlsoLinks(self, elem):
+        """
+        Checks for any broken 'see also' links
+        """
+        broken = []
+        detailed_sec = elem.find('detaileddescription')
+        for p in detailed_sec.getiterator('para'):
+            for s in p.getiterator('simplesect'):
+                if s.get('kind') != 'see':
+                    continue
+
+                para = s.getchildren()[0]
+                if para.find('ref') is None and para.text and (not para.text.startswith('Q') or para.text.startswith('Qgs')):
+                    broken.append(para.text)
+
+        return broken

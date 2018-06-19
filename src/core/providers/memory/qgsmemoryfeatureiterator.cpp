@@ -30,7 +30,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -39,20 +39,20 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    mSubsetExpression = new QgsExpression( mSource->mSubsetString );
+    mSubsetExpression = qgis::make_unique< QgsExpression >( mSource->mSubsetString );
     mSubsetExpression->prepare( &mSource->mExpressionContext );
   }
 
   if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     mSelectRectGeom = QgsGeometry::fromRect( mFilterRect );
-    mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.geometry() ) );
+    mSelectRectEngine.reset( QgsGeometry::createGeometryEngine( mSelectRectGeom.constGet() ) );
     mSelectRectEngine->prepareGeometry();
   }
 
@@ -82,10 +82,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
 QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
 {
   close();
-
-  delete mSubsetExpression;
 }
-
 
 bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature &feature )
 {
@@ -111,7 +108,7 @@ bool QgsMemoryFeatureIterator::nextFeatureUsingList( QgsFeature &feature )
     if ( !mFilterRect.isNull() && mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
       // do exact check in case we're doing intersection
-      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().geometry() ) )
+      if ( mSource->mFeatures.value( *mFeatureIdListIterator ).hasGeometry() && mSelectRectEngine->intersects( mSource->mFeatures.value( *mFeatureIdListIterator ).geometry().constGet() ) )
         hasFeature = true;
     }
     else
@@ -166,7 +163,7 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature &feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( mSelectIterator->geometry().geometry() ) )
+        if ( mSelectIterator->hasGeometry() && mSelectRectEngine->intersects( mSelectIterator->geometry().constGet() ) )
           hasFeature = true;
       }
       else
@@ -234,7 +231,7 @@ bool QgsMemoryFeatureIterator::close()
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   : mFields( p->mFields )
   , mFeatures( p->mFeatures )
-  , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : nullptr )  // just shallow copy
+  , mSpatialIndex( p->mSpatialIndex ? qgis::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // just shallow copy
   , mSubsetString( p->mSubsetString )
   , mCrs( p->mCrs )
 {

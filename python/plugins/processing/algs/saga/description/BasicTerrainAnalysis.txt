@@ -1,20 +1,20 @@
 Basic Terrain Analysis
 ta_compound
-ParameterRaster|ELEVATION|Elevation|False
-OutputRaster|SHADE|Analytical Hillshading
-OutputRaster|SLOPE|Slope
-OutputRaster|ASPECT|Aspect
-OutputRaster|HCURV|Plan Curvature
-OutputRaster|VCURV|Profile Curvature
-OutputRaster|CONVERGENCE|Convergence Index
-OutputRaster|SINKS|Closed Depressions
-OutputRaster|FLOW|Total Catchment Area
-OutputRaster|WETNESS|Topographic Wetness Index
-OutputRaster|LSFACTOR|LS-Factor
-OutputVector|CHANNELS|Channel Network
-OutputVector|BASINS|Drainage Basins
-OutputRaster|CHNL_BASE|Channel Network Base Level
-OutputRaster|CHNL_DIST|Channel Network Distance
-OutputRaster|VALL_DEPTH|Valley Depth
-OutputRaster|RSP|Relative Slope Position
-ParameterNumber|THRESHOLD|Channel Density| 1|None| 5
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterRasterDestination|SHADE|Analytical Hillshading
+QgsProcessingParameterRasterDestination|SLOPE|Slope
+QgsProcessingParameterRasterDestination|ASPECT|Aspect
+QgsProcessingParameterRasterDestination|HCURV|Plan Curvature
+QgsProcessingParameterRasterDestination|VCURV|Profile Curvature
+QgsProcessingParameterRasterDestination|CONVERGENCE|Convergence Index
+QgsProcessingParameterRasterDestination|SINKS|Closed Depressions
+QgsProcessingParameterRasterDestination|FLOW|Total Catchment Area
+QgsProcessingParameterRasterDestination|WETNESS|Topographic Wetness Index
+QgsProcessingParameterRasterDestination|LSFACTOR|LS-Factor
+QgsProcessingParameterVectorDestination|CHANNELS|Channel Network
+QgsProcessingParameterVectorDestination|BASINS|Drainage Basins
+QgsProcessingParameterRasterDestination|CHNL_BASE|Channel Network Base Level
+QgsProcessingParameterRasterDestination|CHNL_DIST|Channel Network Distance
+QgsProcessingParameterRasterDestination|VALL_DEPTH|Valley Depth
+QgsProcessingParameterRasterDestination|RSP|Relative Slope Position
+QgsProcessingParameterNumber|THRESHOLD|Channel Density|QgsProcessingParameterNumber.Integer|5|False|1|None

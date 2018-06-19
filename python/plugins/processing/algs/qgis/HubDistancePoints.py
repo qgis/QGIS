@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -63,6 +62,9 @@ class HubDistancePoints(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -96,7 +98,13 @@ class HubDistancePoints(QgisAlgorithm):
                 self.tr('Same layer given for both hubs and spokes'))
 
         point_source = self.parameterAsSource(parameters, self.INPUT, context)
+        if point_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
+        if hub_source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.HUBS))
+
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
@@ -107,11 +115,13 @@ class HubDistancePoints(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, point_source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs())))
+        index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(point_source.sourceCrs())
+        distance.setSourceCrs(point_source.sourceCrs(), context.transformContext())
         distance.setEllipsoid(context.project().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file
@@ -128,7 +138,7 @@ class HubDistancePoints(QgisAlgorithm):
             src = f.geometry().boundingBox().center()
 
             neighbors = index.nearestNeighbor(src, 1)
-            ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs())))
+            ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 
@@ -144,7 +154,7 @@ class HubDistancePoints(QgisAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            feat.setGeometry(QgsGeometry.fromPoint(src))
+            feat.setGeometry(QgsGeometry.fromPointXY(src))
 
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

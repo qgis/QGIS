@@ -1,14 +1,14 @@
 Channel Network
 ta_channels
-ParameterRaster|ELEVATION|Elevation|False
-ParameterRaster|SINKROUTE|Flow Direction|True
-ParameterRaster|INIT_GRID|Initiation Grid|False
-ParameterSelection|INIT_METHOD|Initiation Type|[0] Less than;[1] Equals;[2] Greater than
-ParameterNumber|INIT_VALUE|Initiation Threshold|None|None|0.0
-ParameterRaster|DIV_GRID|Divergence|True
-ParameterNumber|DIV_CELLS|Tracing: Max. Divergence|None|None|10
-ParameterRaster|TRACE_WEIGHT|Tracing: Weight|True
-ParameterNumber|MINLEN|Min. Segment Length|0.0|None|10
-OutputRaster|CHNLNTWRK|Channel Network
-OutputRaster|CHNLROUTE|Channel Direction
-OutputVector|SHAPES|Channel Network
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterRasterLayer|SINKROUTE|Flow Direction|None|True
+QgsProcessingParameterRasterLayer|INIT_GRID|Initiation Grid|None|False
+QgsProcessingParameterEnum|INIT_METHOD|Initiation Type|[0] Less than;[1] Equals;[2] Greater than
+QgsProcessingParameterNumber|INIT_VALUE|Initiation Threshold|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterRasterLayer|DIV_GRID|Divergence|None|True
+QgsProcessingParameterNumber|DIV_CELLS|Tracing: Max. Divergence|QgsProcessingParameterNumber.Integer|10|False|None|None
+QgsProcessingParameterRasterLayer|TRACE_WEIGHT|Tracing: Weight|None|True
+QgsProcessingParameterNumber|MINLEN|Min. Segment Length|QgsProcessingParameterNumber.Integer|10|False|0.0|None
+QgsProcessingParameterRasterDestination|CHNLNTWRK|Channel Network
+QgsProcessingParameterRasterDestination|CHNLROUTE|Channel Direction
+QgsProcessingParameterVectorDestination|SHAPES|Channel Network

@@ -67,7 +67,8 @@ QgsCptCityArchive::QgsCptCityArchive( const QString &archiveName, const QString 
   QgsCptCitySelectionItem *selItem = nullptr;
   QDir seldir( mBaseDir + '/' + "selections" );
   QgsDebugMsg( "populating selection from " + seldir.path() );
-  Q_FOREACH ( const QString &selfile, seldir.entryList( QStringList( "*.xml" ), QDir::Files ) )
+  const QStringList fileList = seldir.entryList( QStringList() << QStringLiteral( "*.xml" ), QDir::Files );
+  for ( const QString &selfile : fileList )
   {
     QgsDebugMsg( "file= " + seldir.path() + '/' + selfile );
     selItem = new QgsCptCitySelectionItem( nullptr, QFileInfo( selfile ).baseName(),
@@ -139,7 +140,7 @@ QString QgsCptCityArchive::findFileName( const QString &target, const QString &s
 {
   // QgsDebugMsg( "target= " + target +  " startDir= " + startDir +  " baseDir= " + baseDir );
 
-  if ( startDir == QLatin1String( "" ) || ! startDir.startsWith( baseDir ) )
+  if ( startDir.isEmpty() || ! startDir.startsWith( baseDir ) )
     return QString();
 
   QDir dir = QDir( startDir );
@@ -460,7 +461,8 @@ void QgsCptCityArchive::initArchives( bool loadAll )
   if ( loadAll )
   {
     QDir dir( baseDir );
-    Q_FOREACH ( const QString &entry, dir.entryList( QStringList( "cpt-city*" ), QDir::Dirs ) )
+    const QStringList fileList = dir.entryList( QStringList() << QStringLiteral( "cpt-city*" ), QDir::Dirs );
+    for ( const QString &entry : fileList )
     {
       if ( QFile::exists( baseDir + '/' + entry + "/VERSION.xml" ) )
         archivesMap[ entry ] = baseDir + '/' + entry;
@@ -496,9 +498,12 @@ void QgsCptCityArchive::clearArchives()
 QgsCptCityDataItem::QgsCptCityDataItem( QgsCptCityDataItem::Type type, QgsCptCityDataItem *parent,
                                         const QString &name, const QString &path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
-  : QObject()
-  , mType( type ), mParent( parent ), mPopulated( false )
-  , mName( name ), mPath( path ), mValid( true )
+  : mType( type )
+  , mParent( parent )
+  , mPopulated( false )
+  , mName( name )
+  , mPath( path )
+  , mValid( true )
 {
 }
 
@@ -749,7 +754,7 @@ void QgsCptCityColorRampItem::init()
   }
   else
   {
-    mInfo = QLatin1String( "" );
+    mInfo.clear();
   }
 
 }
@@ -795,7 +800,7 @@ QIcon QgsCptCityColorRampItem::icon( QSize size )
     QPixmap blankPixmap( size );
     blankPixmap.fill( Qt::white );
     icon = QIcon( blankPixmap );
-    mInfo = QLatin1String( "" );
+    mInfo.clear();
   }
 
   mIcons.append( icon );
@@ -875,7 +880,7 @@ QgsCptCityDirectoryItem::QgsCptCityDirectoryItem( QgsCptCityDataItem *parent,
   }
 
   // parse DESC.xml to get mInfo
-  mInfo = QLatin1String( "" );
+  mInfo.clear();
   QString fileName = QgsCptCityArchive::defaultBaseDir() + '/' +
                      mPath + '/' + "DESC.xml";
   QgsStringMap descMap = QgsCptCityArchive::description( fileName );
@@ -942,7 +947,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     // QgsDebugMsg("=============");
     // QgsDebugMsg("scheme = "+schemeName);
     curName = schemeName;
-    curVariant = QLatin1String( "" );
+    curVariant.clear();
 
     // find if name ends with 1-3 digit number
     // TODO need to detect if ends with b/c also
@@ -970,13 +975,13 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
       curVariant = curSep + curVariant;
     }
 
-    if ( prevName == QLatin1String( "" ) )
+    if ( prevName.isEmpty() )
       prevName = curName;
 
     // add element, unless it is empty, or a variant of last element
     prevAdd = false;
     curAdd = false;
-    if ( curName == QLatin1String( "" ) )
+    if ( curName.isEmpty() )
       curName = QStringLiteral( "__empty__" );
     // if current is a variant of last, don't add previous and append current variant
     if ( curName == prevName )
@@ -988,7 +993,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     else
     {
-      if ( prevName != QLatin1String( "" ) )
+      if ( !prevName.isEmpty() )
       {
         prevAdd = true;
       }
@@ -1029,7 +1034,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     if ( curAdd )
     {
-      if ( curVariant != QLatin1String( "" ) )
+      if ( !curVariant.isEmpty() )
         curName += curVariant;
       schemeNames << curName;
       mRampsMap[ mPath + '/' + curName ] = QStringList();
@@ -1038,7 +1043,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     if ( prevAdd || curAdd )
     {
       prevName = curName;
-      if ( curVariant != QLatin1String( "" ) )
+      if ( !curVariant.isEmpty() )
         listVariant << curVariant;
     }
 

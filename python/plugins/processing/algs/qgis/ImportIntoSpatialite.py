@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
+                       QgsProcessingAlgorithm,
                        QgsVectorLayerExporter,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
@@ -57,14 +58,17 @@ class ImportIntoSpatialite(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def groupId(self):
+        return 'database'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import')))
-        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), [], False, False))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), optional=False))
         self.addParameter(QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
-        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), None, self.INPUT, QgsProcessingParameterField.Any, False, True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN, self.tr('Geometry column'), 'geom'))
         self.addParameter(QgsProcessingParameterString(self.ENCODING, self.tr('Encoding'), 'UTF-8', optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE, self.tr('Overwrite'), True))
@@ -72,6 +76,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
         self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def name(self):
         return 'importintospatialite'
@@ -84,7 +91,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
-            if '|layerid' in databaseuri:
+            if '|layername' in databaseuri:
+                databaseuri = databaseuri[:databaseuri.find('|layername')]
+            elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)
@@ -98,6 +107,8 @@ class ImportIntoSpatialite(QgisAlgorithm):
         encoding = self.parameterAsString(parameters, self.ENCODING, context)
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         table = self.parameterAsString(parameters, self.TABLENAME, context)
         if table:

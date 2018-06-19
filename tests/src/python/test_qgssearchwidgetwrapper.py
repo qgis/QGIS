@@ -87,9 +87,13 @@ class PyQgsDefaultSearchWidgetWrapper(unittest.TestCase):
         case_sensitive.setChecked(False)
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.Contains), '"fldtxt" ILIKE \'%test%\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.DoesNotContain), 'NOT ("fldtxt" ILIKE \'%test%\')')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.StartsWith), '"fldtxt" ILIKE \'test%\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EndsWith), '"fldtxt" ILIKE \'%test\'')
         case_sensitive.setChecked(True)
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.Contains), '"fldtxt" LIKE \'%test%\'')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.DoesNotContain), 'NOT ("fldtxt" LIKE \'%test%\')')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.StartsWith), '"fldtxt" LIKE \'test%\'')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EndsWith), '"fldtxt" LIKE \'%test\'')
         case_sensitive.setChecked(False)
 
         # numeric field
@@ -130,16 +134,16 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test", "memory")
 
         w = QgsValueMapSearchWidgetWrapper(layer, 0)
-        config = {"val1": 1,
-                  "val2": 200}
+        config = {"map": [{"val1": 1},
+                          {"val2": 200}]}
         w.setConfig(config)
         c = w.widget()
 
         # first, set it to the "select value" item
         c.setCurrentIndex(0)
 
-        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '')
-        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '')
 

@@ -39,15 +39,15 @@ class QgsLayerTreeOpacityWidget : public QWidget
   public:
     QgsLayerTreeOpacityWidget( QgsMapLayer *layer );
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
     class Provider : public QgsLayerTreeEmbeddedWidgetProvider
     {
       public:
-        virtual QString id() const override;
-        virtual QString name() const override;
-        virtual QgsLayerTreeOpacityWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
-        virtual bool supportsLayer( QgsMapLayer *layer ) override;
+        QString id() const override;
+        QString name() const override;
+        QgsLayerTreeOpacityWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) override;
+        bool supportsLayer( QgsMapLayer *layer ) override;
     };
 
   public slots:

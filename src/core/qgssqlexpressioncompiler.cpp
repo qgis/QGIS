@@ -38,6 +38,18 @@ QString QgsSqlExpressionCompiler::result()
   return mResult;
 }
 
+bool QgsSqlExpressionCompiler::opIsStringComparison( QgsExpressionNodeBinaryOperator::BinaryOperator op )
+{
+  if ( op == QgsExpressionNodeBinaryOperator::BinaryOperator::boILike ||
+       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boLike ||
+       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotILike ||
+       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boNotLike ||
+       op == QgsExpressionNodeBinaryOperator::BinaryOperator::boRegexp )
+    return true;
+  else
+    return false;
+}
+
 QString QgsSqlExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
   QString quoted = identifier;
@@ -61,7 +73,7 @@ QString QgsSqlExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
       return value.toString();
 
     case QVariant::Bool:
-      return value.toBool() ? "TRUE" : "FALSE";
+      return value.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
 
     default:
     case QVariant::String:
@@ -253,6 +265,9 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       QString left;
       Result lr( compileNode( n->opLeft(), left ) );
 
+      if ( opIsStringComparison( n ->op() ) )
+        left = castToText( left );
+
       QString right;
       Result rr( compileNode( n->opRight(), right ) );
 
@@ -344,7 +359,7 @@ QgsSqlExpressionCompiler::Result QgsSqlExpressionCompiler::compileNode( const Qg
       if ( rn != Complete && rn != Partial )
         return rn;
 
-      result = QStringLiteral( "%1 %2IN (%3)" ).arg( nd, n->isNotIn() ? "NOT " : "", list.join( QStringLiteral( "," ) ) );
+      result = QStringLiteral( "%1 %2IN (%3)" ).arg( nd, n->isNotIn() ? QStringLiteral( "NOT " ) : QString(), list.join( ',' ) );
       return ( inResult == Partial || rn == Partial ) ? Partial : Complete;
     }
 
@@ -407,6 +422,11 @@ QString QgsSqlExpressionCompiler::castToReal( const QString &value ) const
 {
   Q_UNUSED( value );
   return QString();
+}
+
+QString QgsSqlExpressionCompiler::castToText( const QString &value ) const
+{
+  return value;
 }
 
 QString QgsSqlExpressionCompiler::castToInt( const QString &value ) const

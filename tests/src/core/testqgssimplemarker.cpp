@@ -35,7 +35,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for simple marker symbol types.
  */
 class TestQgsSimpleMarkerSymbol : public QObject
@@ -43,13 +44,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     Q_OBJECT
 
   public:
-    TestQgsSimpleMarkerSymbol()
-      : mTestHasError( false )
-      , mpPointsLayer( 0 )
-      , mSimpleMarkerLayer( 0 )
-      , mMarkerSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsSimpleMarkerSymbol() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -68,7 +63,7 @@ class TestQgsSimpleMarkerSymbol : public QObject
     void colors();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
 
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

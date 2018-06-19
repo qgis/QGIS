@@ -37,7 +37,8 @@ extern "C"
 #include <grass/gis.h>
 }
 
-/** \class QgsGrassRegion
+/**
+ * \class QgsGrassRegion
  *  \brief GRASS attributes.
  *
  */
@@ -48,10 +49,10 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgisInterface *iface,
-                    QWidget *parent = 0, Qt::WindowFlags f = 0 );
+                    QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassRegion();
+    ~QgsGrassRegion() override;
 
   public slots:
     void buttonClicked( QAbstractButton *button );
@@ -84,7 +85,7 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
     //! Called when the capture finished to refresh the mWindow values
     void onCaptureFinished();
 
-    void on_mDrawButton_clicked();
+    void mDrawButton_clicked();
 
     void canvasMapToolSet( QgsMapTool *tool );
   private:
@@ -135,7 +136,7 @@ class QgsGrassRegionEdit : public QgsMapTool
   public:
     explicit QgsGrassRegionEdit( QgsMapCanvas * );
 
-    ~QgsGrassRegionEdit();
+    ~QgsGrassRegionEdit() override;
 
     //! mouse pressed in map canvas
     void canvasPressEvent( QgsMapMouseEvent * ) override;
@@ -150,7 +151,7 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! called when map tool is about to get inactive
     void deactivate() override;
 
-    //! get the rectangle
+    //! Gets the rectangle
     QgsRectangle getRegion();
 
     //! refresh the rectangle displayed in canvas

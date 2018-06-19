@@ -17,7 +17,7 @@
 # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
 # and then again with no specified paths to search the default
 # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
-# searching for the same item do nothing. 
+# searching for the same item do nothing.
 FIND_PATH(EXPAT_INCLUDE_DIR expat.h
   "$ENV{LIB_DIR}/include/"
   "$ENV{LIB_DIR}/include/expat"
@@ -26,7 +26,7 @@ FIND_PATH(EXPAT_INCLUDE_DIR expat.h
   )
 FIND_PATH(EXPAT_INCLUDE_DIR expat.h)
 #libexpat needed for msvc version
-FIND_LIBRARY(EXPAT_LIBRARY NAMES expat libexpat PATHS 
+FIND_LIBRARY(EXPAT_LIBRARY NAMES expat libexpat PATHS
   "$ENV{LIB_DIR}/lib"
   c:/msys/local/lib
   NO_DEFAULT_PATH

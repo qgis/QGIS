@@ -1,7 +1,0 @@
-v.net
-v.net.nodes - Creates points for each network arcs
-Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-Hardcoded|operation=nodes
-*ParameterBoolean|-c|Assign unique categories to new points (for operation 'nodes')|False
-OutputVector|output|Nodes

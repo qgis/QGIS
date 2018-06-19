@@ -30,7 +30,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsSettings,
+from qgis.core import (QgsApplication,
+                       QgsSettings,
                        QgsGeometry,
                        QgsFeature,
                        QgsField,
@@ -39,12 +40,12 @@ from qgis.core import (QgsSettings,
                        QgsWkbTypes,
                        QgsFields,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingFeatureSource,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingOutputNumber
-                       )
+                       QgsProcessingOutputNumber)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 settings_method_key = "/qgis/digitizing/validate_geometries"
@@ -63,10 +64,19 @@ class CheckValidity(QgisAlgorithm):
     ERROR_COUNT = 'ERROR_COUNT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'check_geometry.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmCheckGeometry.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmCheckGeometry.svg")
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
+
+    def tags(self):
+        return self.tr('valid,invalid,detect').split(',')
 
     def __init__(self):
         super().__init__()
@@ -79,7 +89,12 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
-                                                     self.tr('Method'), self.methods))
+                                                     self.tr('Method'), self.methods, defaultValue=2))
+        self.parameterDefinition(self.METHOD).setMetadata({
+            'widget_wrapper': {
+                'class': 'processing.gui.wrappers.EnumWidgetWrapper',
+                'useCheckBoxes': True,
+                'columns': 3}})
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.VALID_OUTPUT, self.tr('Valid output'), QgsProcessing.TypeVectorAnyGeometry, '', True))
         self.addOutput(QgsProcessingOutputNumber(self.VALID_COUNT, self.tr('Count of valid features')))
@@ -111,6 +126,8 @@ class CheckValidity(QgisAlgorithm):
 
     def doCheck(self, method, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT_LAYER, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT_LAYER))
 
         (valid_output_sink, valid_output_dest_id) = self.parameterAsSink(parameters, self.VALID_OUTPUT, context,
                                                                          source.fields(), source.wkbType(), source.sourceCrs())
@@ -147,7 +164,7 @@ class CheckValidity(QgisAlgorithm):
                     reasons = []
                     for error in errors:
                         errFeat = QgsFeature()
-                        error_geom = QgsGeometry.fromPoint(error.where())
+                        error_geom = QgsGeometry.fromPointXY(error.where())
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
                         if error_output_sink:

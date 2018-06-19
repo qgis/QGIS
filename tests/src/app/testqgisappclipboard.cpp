@@ -31,7 +31,8 @@
 #include "qgspoint.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
 class TestQgisAppClipboard : public QObject
@@ -59,11 +60,7 @@ class TestQgisAppClipboard : public QObject
     QString mTestDataDir;
 };
 
-TestQgisAppClipboard::TestQgisAppClipboard()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgisAppClipboard::TestQgisAppClipboard() = default;
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()
@@ -106,7 +103,7 @@ void TestQgisAppClipboard::copyPaste()
 
     // copy all features to clipboard
     inputLayer->selectAll();
-    mQgisApp->editCopy( inputLayer );
+    mQgisApp->copySelectionToClipboard( inputLayer );
 
     QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
@@ -143,17 +140,22 @@ void TestQgisAppClipboard::copyToText()
 
   // attributes only
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesOnly );
   QString result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "int_field\tstring_field\n9\tval\n19\tval2" ) );
 
   // attributes with WKT
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKT );
   result = mQgisApp->clipboard()->generateClipboardText();
   QCOMPARE( result, QString( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t9\tval\nPoint (7 8)\t19\tval2" ) );
 
+  // HTML test
+  mQgisApp->clipboard()->replaceWithCopyOf( feats );
+  result = mQgisApp->clipboard()->data( "text/html" );
+  QCOMPARE( result, QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>wkt_geom</td><td>int_field</td><td>string_field</td></tr><tr><td>Point (5 6)</td><td>9</td><td>val</td></tr><tr><td>Point (7 8)</td><td>19</td><td>val2</td></tr></table></body></html>" ) );
+
   // GeoJSON
-  settings.setValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
+  settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   result = mQgisApp->clipboard()->generateClipboardText();
   QString expected = "{ \"type\": \"FeatureCollection\",\n    \"features\":[\n"
                      "{\n   \"type\":\"Feature\",\n"
@@ -208,14 +210,14 @@ void TestQgisAppClipboard::pasteWkt()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPoint * >( features.at( 1 ).geometry().geometry() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
@@ -227,15 +229,15 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( features.length(), 2 );
 
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
-  point = dynamic_cast< QgsPoint * >( features.at( 1 ).geometry().geometry() );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
+  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
@@ -254,9 +256,9 @@ void TestQgisAppClipboard::pasteGeoJson()
   QgsFeatureList features = mQgisApp->clipboard()->copyOf( fields );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -265,7 +267,7 @@ void TestQgisAppClipboard::pasteGeoJson()
 void TestQgisAppClipboard::retrieveFields()
 {
   //empty string
-  mQgisApp->clipboard()->setText( QLatin1String( "" ) );
+  mQgisApp->clipboard()->setText( QString() );
 
   QgsFields fields = mQgisApp->clipboard()->fields();
   QCOMPARE( fields.count(), 0 );

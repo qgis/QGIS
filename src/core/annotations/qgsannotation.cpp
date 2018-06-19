@@ -174,7 +174,7 @@ void QgsAnnotation::updateBalloon()
   segmentList << segment( 3 );
 
   //find  closest edge / closest edge point
-  double minEdgeDist = DBL_MAX;
+  double minEdgeDist = std::numeric_limits<double>::max();
   int minEdgeIndex = -1;
   QLineF minEdge;
   QgsPointXY minEdgePoint;

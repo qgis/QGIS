@@ -18,54 +18,9 @@
 #include "qgslayermetadata.h"
 #include "qgsmaplayer.h"
 
-QString QgsLayerMetadata::identifier() const
+QgsLayerMetadata *QgsLayerMetadata::clone() const
 {
-  return mIdentifier;
-}
-
-void QgsLayerMetadata::setIdentifier( const QString &identifier )
-{
-  mIdentifier = identifier;
-}
-
-QString QgsLayerMetadata::parentIdentifier() const
-{
-  return mParentIdentifier;
-}
-
-void QgsLayerMetadata::setParentIdentifier( const QString &parentIdentifier )
-{
-  mParentIdentifier = parentIdentifier;
-}
-
-QString QgsLayerMetadata::type() const
-{
-  return mType;
-}
-
-void QgsLayerMetadata::setType( const QString &type )
-{
-  mType = type;
-}
-
-QString QgsLayerMetadata::title() const
-{
-  return mTitle;
-}
-
-void QgsLayerMetadata::setTitle( const QString &title )
-{
-  mTitle = title;
-}
-
-QString QgsLayerMetadata::abstract() const
-{
-  return mAbstract;
-}
-
-void QgsLayerMetadata::setAbstract( const QString &abstract )
-{
-  mAbstract = abstract;
+  return new QgsLayerMetadata( *this );
 }
 
 QString QgsLayerMetadata::fees() const
@@ -76,6 +31,11 @@ QString QgsLayerMetadata::fees() const
 void QgsLayerMetadata::setFees( const QString &fees )
 {
   mFees = fees;
+}
+
+void QgsLayerMetadata::addConstraint( const QgsLayerMetadata::Constraint &constraint )
+{
+  mConstraints << constraint;
 }
 
 QList<QgsLayerMetadata::Constraint> QgsLayerMetadata::constraints() const
@@ -108,21 +68,6 @@ void QgsLayerMetadata::setLicenses( const QStringList &licenses )
   mLicenses = licenses;
 }
 
-QStringList QgsLayerMetadata::history() const
-{
-  return mHistory;
-}
-
-void QgsLayerMetadata::setHistory( const QStringList &history )
-{
-  mHistory = history;
-}
-
-void QgsLayerMetadata::addHistoryItem( const QString &text )
-{
-  mHistory << text;
-}
-
 QString QgsLayerMetadata::encoding() const
 {
   return mEncoding;
@@ -141,93 +86,6 @@ QgsCoordinateReferenceSystem QgsLayerMetadata::crs() const
 void QgsLayerMetadata::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
-}
-
-QMap<QString, QStringList> QgsLayerMetadata::keywords() const
-{
-  return mKeywords;
-}
-
-void QgsLayerMetadata::setKeywords( const QMap<QString, QStringList> &keywords )
-{
-  mKeywords = keywords;
-}
-
-void QgsLayerMetadata::addKeywords( const QString &vocabulary, const QStringList &keywords )
-{
-  mKeywords.insert( vocabulary, keywords );
-}
-
-bool QgsLayerMetadata::removeKeywords( const QString &vocabulary )
-{
-  return mKeywords.remove( vocabulary );
-}
-
-QStringList QgsLayerMetadata::keywordVocabularies() const
-{
-  return mKeywords.keys();
-}
-
-QStringList QgsLayerMetadata::keywords( const QString &vocabulary ) const
-{
-  return mKeywords.value( vocabulary );
-}
-
-QStringList QgsLayerMetadata::categories() const
-{
-  if ( mKeywords.contains( "gmd:topicCategory" ) )
-  {
-    return mKeywords.value( "gmd:topicCategory" );
-  }
-  else
-  {
-    return QStringList();
-  }
-}
-
-void QgsLayerMetadata::setCategories( const QStringList &category )
-{
-  mKeywords.insert( "gmd:topicCategory", category );
-}
-
-QList<QgsLayerMetadata::Contact> QgsLayerMetadata::contacts() const
-{
-  return mContacts;
-}
-
-void QgsLayerMetadata::setContacts( const QList<Contact> &contacts )
-{
-  mContacts = contacts;
-}
-
-void QgsLayerMetadata::addContact( const QgsLayerMetadata::Contact &contact )
-{
-  mContacts << contact;
-}
-
-QList<QgsLayerMetadata::Link> QgsLayerMetadata::links() const
-{
-  return mLinks;
-}
-
-void QgsLayerMetadata::setLinks( const QList<QgsLayerMetadata::Link> &links )
-{
-  mLinks = links;
-}
-
-void QgsLayerMetadata::addLink( const QgsLayerMetadata::Link &link )
-{
-  mLinks << link;
-}
-
-QString QgsLayerMetadata::language() const
-{
-  return mLanguage;
-}
-
-void QgsLayerMetadata::setLanguage( const QString &language )
-{
-  mLanguage = language;
 }
 
 void QgsLayerMetadata::saveToLayer( QgsMapLayer *layer ) const
@@ -268,9 +126,219 @@ void QgsLayerMetadata::readFromLayer( const QgsMapLayer *layer )
   mCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsAuthId );
   mExtent = layer->customProperty( QStringLiteral( "metadata/extent" ) ).value<Extent>();
   mConstraints = layer->customProperty( QStringLiteral( "metadata/constraints" ) ).value<ConstraintList>();
-  mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<KeywordMap>();
-  mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<ContactList>();
-  mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<LinkList>();
+  mKeywords = layer->customProperty( QStringLiteral( "metadata/keywords" ) ).value<QgsAbstractMetadataBase::KeywordMap>();
+  mContacts = layer->customProperty( QStringLiteral( "metadata/contacts" ) ).value<QgsAbstractMetadataBase::ContactList>();
+  mLinks = layer->customProperty( QStringLiteral( "metadata/links" ) ).value<QgsAbstractMetadataBase::LinkList>();
+}
+
+bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
+{
+  QgsAbstractMetadataBase::readMetadataXml( metadataElement );
+
+  QDomNode mnl;
+  QDomElement mne;
+
+  // set fees
+  mnl = metadataElement.namedItem( QStringLiteral( "fees" ) );
+  mFees = mnl.toElement().text();
+
+  // constraints
+  QDomNodeList constraintsList = metadataElement.elementsByTagName( QStringLiteral( "constraints" ) );
+  mConstraints.clear();
+  for ( int i = 0; i < constraintsList.size(); i++ )
+  {
+    mnl = constraintsList.at( i );
+    mne = mnl.toElement();
+    addConstraint( QgsLayerMetadata::Constraint( mne.text(), mne.attribute( QStringLiteral( "type" ) ) ) );
+  }
+
+  // rights
+  QDomNodeList rightsNodeList = metadataElement.elementsByTagName( QStringLiteral( "rights" ) );
+  QStringList rightsList;
+  for ( int i = 0; i < rightsNodeList.size(); i++ )
+  {
+    mnl = rightsNodeList.at( i );
+    mne = mnl.toElement();
+    rightsList.append( mne.text() );
+  }
+  setRights( rightsList );
+
+  // licenses
+  QDomNodeList licensesNodeList = metadataElement.elementsByTagName( QStringLiteral( "license" ) );
+  QStringList licensesList;
+  for ( int i = 0; i < licensesNodeList.size(); i++ )
+  {
+    mnl = licensesNodeList.at( i );
+    mne = mnl.toElement();
+    licensesList.append( mne.text() );
+  }
+  setLicenses( licensesList );
+
+  // encoding
+  mnl = metadataElement.namedItem( QStringLiteral( "encoding" ) );
+  mEncoding = mnl.toElement().text();
+
+  // crs
+  mnl = metadataElement.namedItem( QStringLiteral( "crs" ) );
+  if ( !mCrs.readXml( mnl ) )
+    mCrs = QgsCoordinateReferenceSystem();
+
+  // extent
+  mnl = metadataElement.namedItem( QStringLiteral( "extent" ) );
+  QgsLayerMetadata::Extent metadataExtent;
+
+  // spatial extent
+  QDomNodeList spatialList = mnl.toElement().elementsByTagName( QStringLiteral( "spatial" ) );
+  QList< QgsLayerMetadata::SpatialExtent > metadataSpatialExtents;
+  for ( int i = 0; i < spatialList.size(); i++ )
+  {
+    mnl = spatialList.at( i );
+    mne = mnl.toElement();
+    QgsLayerMetadata::SpatialExtent se = QgsLayerMetadata::SpatialExtent();
+    se.extentCrs = QgsCoordinateReferenceSystem( mne.attribute( QStringLiteral( "crs" ) ) );
+    se.bounds = QgsBox3d();
+    se.bounds.setXMinimum( mne.attribute( QStringLiteral( "minx" ) ).toDouble() );
+    se.bounds.setYMinimum( mne.attribute( QStringLiteral( "miny" ) ).toDouble() );
+    se.bounds.setZMinimum( mne.attribute( QStringLiteral( "minz" ) ).toDouble() );
+    se.bounds.setXMaximum( mne.attribute( QStringLiteral( "maxx" ) ).toDouble() );
+    se.bounds.setYMaximum( mne.attribute( QStringLiteral( "maxy" ) ).toDouble() );
+    se.bounds.setZMaximum( mne.attribute( QStringLiteral( "maxz" ) ).toDouble() );
+    metadataSpatialExtents.append( se );
+  }
+  metadataExtent.setSpatialExtents( metadataSpatialExtents );
+
+  // temporal extent
+  mnl = metadataElement.namedItem( QStringLiteral( "extent" ) );
+  QDomNodeList temporalList = mnl.toElement().elementsByTagName( QStringLiteral( "temporal" ) );
+  QList<QgsDateTimeRange> metadataDates;
+  for ( int j = 0; j < temporalList.size(); j++ )
+  {
+    mnl = temporalList.at( j );
+    QDomNodeList instantList = mnl.toElement().elementsByTagName( QStringLiteral( "instant" ) );
+    for ( int i = 0; i < instantList.size(); i++ )
+    {
+      mnl = instantList.at( i );
+      QDateTime d = QDateTime().fromString( mnl.toElement().text(), Qt::ISODate );
+      QgsDateTimeRange date = QgsDateTimeRange( d, d );
+      metadataDates << date;
+    }
+    QDomNodeList periodList = mnl.toElement().elementsByTagName( QStringLiteral( "period" ) );
+    for ( int i = 0; i < periodList.size(); i++ )
+    {
+      QDomNode begin = periodList.at( i ).namedItem( QStringLiteral( "start" ) );
+      QDomNode end = periodList.at( i ).namedItem( QStringLiteral( "end" ) );
+      QDateTime beginDate = QDateTime().fromString( begin.toElement().text(), Qt::ISODate );
+      QDateTime endDate = QDateTime().fromString( end.toElement().text(), Qt::ISODate );
+      QgsDateTimeRange date = QgsDateTimeRange( beginDate, endDate );
+      metadataDates << date;
+    }
+  }
+  metadataExtent.setTemporalExtents( metadataDates );
+  setExtent( metadataExtent );
+
+  return true;
+}
+
+bool QgsLayerMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const
+{
+  QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document );
+
+  // fees
+  QDomElement fees = document.createElement( QStringLiteral( "fees" ) );
+  QDomText feesText = document.createTextNode( mFees );
+  fees.appendChild( feesText );
+  metadataElement.appendChild( fees );
+
+  // constraints
+  for ( const QgsLayerMetadata::Constraint &constraint : mConstraints )
+  {
+    QDomElement constraintElement = document.createElement( QStringLiteral( "constraints" ) );
+    constraintElement.setAttribute( QStringLiteral( "type" ), constraint.type );
+    QDomText constraintText = document.createTextNode( constraint.constraint );
+    constraintElement.appendChild( constraintText );
+    metadataElement.appendChild( constraintElement );
+  }
+
+  // rights
+  for ( const QString &right : mRights )
+  {
+    QDomElement rightElement = document.createElement( QStringLiteral( "rights" ) );
+    QDomText rightText = document.createTextNode( right );
+    rightElement.appendChild( rightText );
+    metadataElement.appendChild( rightElement );
+  }
+
+  // license
+  for ( const QString &license : mLicenses )
+  {
+    QDomElement licenseElement = document.createElement( QStringLiteral( "license" ) );
+    QDomText licenseText = document.createTextNode( license );
+    licenseElement.appendChild( licenseText );
+    metadataElement.appendChild( licenseElement );
+  }
+
+  // encoding
+  QDomElement encoding = document.createElement( QStringLiteral( "encoding" ) );
+  QDomText encodingText = document.createTextNode( mEncoding );
+  encoding.appendChild( encodingText );
+  metadataElement.appendChild( encoding );
+
+  // crs
+  QDomElement crsElement = document.createElement( QStringLiteral( "crs" ) );
+  mCrs.writeXml( crsElement, document );
+  metadataElement.appendChild( crsElement );
+
+  // extent
+  QDomElement extentElement = document.createElement( QStringLiteral( "extent" ) );
+
+  // spatial extents
+  const QList< QgsLayerMetadata::SpatialExtent > sExtents = extent().spatialExtents();
+  for ( const QgsLayerMetadata::SpatialExtent &spatialExtent : sExtents )
+  {
+    QDomElement spatialElement = document.createElement( QStringLiteral( "spatial" ) );
+    // Dimensions fixed in the XSD
+    spatialElement.setAttribute( QStringLiteral( "dimensions" ), QStringLiteral( "2" ) );
+    spatialElement.setAttribute( QStringLiteral( "crs" ), spatialExtent.extentCrs.authid() );
+    spatialElement.setAttribute( QStringLiteral( "minx" ), qgsDoubleToString( spatialExtent.bounds.xMinimum() ) );
+    spatialElement.setAttribute( QStringLiteral( "miny" ), qgsDoubleToString( spatialExtent.bounds.yMinimum() ) );
+    spatialElement.setAttribute( QStringLiteral( "minz" ), qgsDoubleToString( spatialExtent.bounds.zMinimum() ) );
+    spatialElement.setAttribute( QStringLiteral( "maxx" ), qgsDoubleToString( spatialExtent.bounds.xMaximum() ) );
+    spatialElement.setAttribute( QStringLiteral( "maxy" ), qgsDoubleToString( spatialExtent.bounds.yMaximum() ) );
+    spatialElement.setAttribute( QStringLiteral( "maxz" ), qgsDoubleToString( spatialExtent.bounds.zMaximum() ) );
+    extentElement.appendChild( spatialElement );
+  }
+
+  // temporal extents
+  const QList< QgsDateTimeRange > tExtents = extent().temporalExtents();
+  for ( const QgsDateTimeRange &temporalExtent : tExtents )
+  {
+    QDomElement temporalElement = document.createElement( QStringLiteral( "temporal" ) );
+    if ( temporalExtent.isInstant() )
+    {
+      QDomElement instantElement = document.createElement( QStringLiteral( "instant" ) );
+      QDomText instantText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      instantElement.appendChild( instantText );
+      temporalElement.appendChild( instantElement );
+    }
+    else
+    {
+      QDomElement periodElement = document.createElement( QStringLiteral( "period" ) );
+      QDomElement startElement = document.createElement( QStringLiteral( "start" ) );
+      QDomElement endElement = document.createElement( QStringLiteral( "end" ) );
+      QDomText startText = document.createTextNode( temporalExtent.begin().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      QDomText endText = document.createTextNode( temporalExtent.end().toTimeSpec( Qt::OffsetFromUTC ).toString( Qt::ISODate ) );
+      startElement.appendChild( startText );
+      endElement.appendChild( endText );
+      periodElement.appendChild( startElement );
+      periodElement.appendChild( endElement );
+      temporalElement.appendChild( periodElement );
+    }
+    extentElement.appendChild( temporalElement );
+  }
+
+  metadataElement.appendChild( extentElement );
+
+  return true;
 }
 
 const QgsLayerMetadata::Extent &QgsLayerMetadata::extent() const
@@ -306,4 +374,32 @@ QList<QgsDateTimeRange> QgsLayerMetadata::Extent::temporalExtents() const
 void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange> &temporalExtents )
 {
   mTemporalExtents = temporalExtents;
+}
+
+bool QgsLayerMetadata::Extent::operator==( const QgsLayerMetadata::Extent &other ) const
+{
+  return mSpatialExtents == other.mSpatialExtents && mTemporalExtents == other.mTemporalExtents;
+}
+
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &other )  const
+{
+  return equals( other ) &&
+         mFees == other.mFees &&
+         mConstraints == other.mConstraints &&
+         mRights == other.mRights &&
+         mLicenses == other.mLicenses &&
+         mEncoding == other.mEncoding &&
+         mCrs == other.mCrs &&
+         mExtent == other.mExtent;
+}
+
+bool QgsLayerMetadata::SpatialExtent::operator==( const QgsLayerMetadata::SpatialExtent &other ) const
+{
+  return extentCrs == other.extentCrs &&
+         bounds == other.bounds;
+}
+
+bool QgsLayerMetadata::Constraint::operator==( const QgsLayerMetadata::Constraint &other ) const
+{
+  return type == other.type && constraint == other.constraint;
 }

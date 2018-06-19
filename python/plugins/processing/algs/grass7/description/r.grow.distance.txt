@@ -1,7 +1,9 @@
 r.grow.distance
 Generates a raster layer of distance to features in input layer.
 Raster (r.*)
-ParameterRaster|input|Input input raster layer|False
-ParameterSelection|metric|Metric|euclidean;squared;maximum;manhattan
-OutputRaster|distance|Distance
-OutputRaster|value|Value of nearest cell
+QgsProcessingParameterRasterLayer|input|Input input raster layer|None|False
+QgsProcessingParameterEnum|metric|Metric|euclidean;squared;maximum;manhattan|False|0|True
+*QgsProcessingParameterBoolean|-m|Output distances in meters instead of map units|False
+*QgsProcessingParameterBoolean|-|Calculate distance to nearest NULL cell|False
+QgsProcessingParameterRasterDestination|distance|Distance
+QgsProcessingParameterRasterDestination|value|Value of nearest cell

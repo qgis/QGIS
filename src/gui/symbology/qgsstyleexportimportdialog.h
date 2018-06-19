@@ -33,7 +33,8 @@
 class QgsStyle;
 class QgsStyleGroupSelectionDialog;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleExportImportDialog
  */
 class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsStyleExportImportDialogBase
@@ -50,7 +51,7 @@ class GUI_EXPORT QgsStyleExportImportDialog : public QDialog, private Ui::QgsSty
     // constructor
     // mode argument must be 0 for saving and 1 for loading
     QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Mode mode = Export );
-    ~QgsStyleExportImportDialog();
+    ~QgsStyleExportImportDialog() override;
 
     /**
      * \brief selectSymbols select symbols by name

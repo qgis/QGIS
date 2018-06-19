@@ -52,6 +52,14 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertEqual(box.yMaximum(), 11.0)
         self.assertEqual(box.zMaximum(), 12.0)
 
+        box = QgsBox3d(QgsRectangle(5, 6, 11, 13))
+        self.assertEqual(box.xMinimum(), 5.0)
+        self.assertEqual(box.yMinimum(), 6.0)
+        self.assertEqual(box.zMinimum(), 0.0)
+        self.assertEqual(box.xMaximum(), 11.0)
+        self.assertEqual(box.yMaximum(), 13.0)
+        self.assertEqual(box.zMaximum(), 0.0)
+
     def testSetters(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 10.0, 11.0, 12.0)
 
@@ -155,7 +163,7 @@ class TestQgsBox3d(unittest.TestCase):
         rect = box.toRectangle()
         self.assertEqual(rect, QgsRectangle(5, 6, 11, 13))
 
-    def is2d(self):
+    def testIs2d(self):
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
         self.assertFalse(box.is2d())
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 7.0)
@@ -164,6 +172,17 @@ class TestQgsBox3d(unittest.TestCase):
         self.assertTrue(box.is2d())
         box = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, -7.0)
         self.assertTrue(box.is2d())
+
+    def testEquality(self):
+        box1 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        box2 = QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 15.0)
+        self.assertEqual(box1, box2)
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 11.0, 13.0, 14.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 11.0, 41.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 7.0, 12.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 6.0, 17.0, 11.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(5.0, 16.0, 7.0, 11.0, 13.0, 15.0))
+        self.assertNotEqual(box1, QgsBox3d(52.0, 6.0, 7.0, 11.0, 13.0, 15.0))
 
 
 if __name__ == '__main__':

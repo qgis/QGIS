@@ -22,7 +22,7 @@
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )
-  , mConn( nullptr )
+
 {
 
 }
@@ -57,23 +57,43 @@ bool QgsPostgresTransaction::rollbackTransaction( QString &error )
   return false;
 }
 
-bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg )
+bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, bool isDirty, const QString &name )
 {
   if ( !mConn )
   {
     return false;
   }
 
+  QString err;
+  if ( isDirty )
+  {
+    createSavepoint( err );
+  }
+
   QgsDebugMsg( QString( "Transaction sql: %1" ).arg( sql ) );
   mConn->lock();
   QgsPostgresResult r( mConn->PQexec( sql, true ) );
   mConn->unlock();
-  if ( r.PQresultStatus() != PGRES_COMMAND_OK )
+  if ( r.PQresultStatus() == PGRES_BAD_RESPONSE ||
+       r.PQresultStatus() == PGRES_FATAL_ERROR )
   {
     errorMsg = QStringLiteral( "Status %1 (%2)" ).arg( r.PQresultStatus() ).arg( r.PQresultErrorMessage() );
     QgsDebugMsg( errorMsg );
+
+    if ( isDirty )
+    {
+      rollbackToSavepoint( savePoints().last(), err );
+    }
+
     return false;
   }
+
+  if ( isDirty )
+  {
+    dirtyLastSavePoint();
+    emit dirtied( sql, name );
+  }
+
   QgsDebugMsg( QString( "Status %1 (OK)" ).arg( r.PQresultStatus() ) );
   return true;
 }

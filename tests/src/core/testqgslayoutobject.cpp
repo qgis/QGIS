@@ -20,6 +20,7 @@
 #include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgsprintlayout.h"
 
 class TestQgsLayoutObject: public QObject
 {
@@ -46,7 +47,7 @@ class TestQgsLayoutObject: public QObject
 
 void TestQgsLayoutObject::initTestCase()
 {
-  mReport = "<h1>Layout Object Tests</h1>\n";
+  mReport = QStringLiteral( "<h1>Layout Object Tests</h1>\n" );
 }
 
 void TestQgsLayoutObject::cleanupTestCase()
@@ -125,9 +126,9 @@ void TestQgsLayoutObject::customProperties()
 void TestQgsLayoutObject::context()
 {
   QgsProject p;
-  p.setTitle( "my title" );
-  QgsLayout l( &p );
-  l.setName( "my layout" );
+  p.setTitle( QStringLiteral( "my title" ) );
+  QgsPrintLayout l( &p );
+  l.setName( QStringLiteral( "my layout" ) );
 
   QgsLayoutObject *object = new QgsLayoutObject( nullptr );
   // no crash
@@ -152,21 +153,21 @@ void TestQgsLayoutObject::writeReadXml()
   QDomImplementation DomImplementation;
   QDomDocumentType documentType =
     DomImplementation.createDocumentType(
-      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   //test writing with no parent node
-  QDomElement rootNode = doc.createElement( "qgis" );
+  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
   QDomElement noNode;
   QCOMPARE( object->writeObjectPropertiesToElement( noNode, doc, QgsReadWriteContext() ), false );
 
   //test writing with node
-  QDomElement layoutObjectElem = doc.createElement( "item" );
+  QDomElement layoutObjectElem = doc.createElement( QStringLiteral( "item" ) );
   rootNode.appendChild( layoutObjectElem );
   QVERIFY( object->writeObjectPropertiesToElement( layoutObjectElem, doc, QgsReadWriteContext() ) );
 
   //check if object node was written
-  QDomNodeList evalNodeList = rootNode.elementsByTagName( "LayoutObject" );
+  QDomNodeList evalNodeList = rootNode.elementsByTagName( QStringLiteral( "LayoutObject" ) );
   QCOMPARE( evalNodeList.count(), 1 );
 
   //test reading node
@@ -176,7 +177,7 @@ void TestQgsLayoutObject::writeReadXml()
   QCOMPARE( readObject->readObjectPropertiesFromElement( noNode, doc, QgsReadWriteContext() ), false );
 
   //test node with no layout object child
-  QDomElement badLayoutObjectElem = doc.createElement( "item" );
+  QDomElement badLayoutObjectElem = doc.createElement( QStringLiteral( "item" ) );
   rootNode.appendChild( badLayoutObjectElem );
   QCOMPARE( readObject->readObjectPropertiesFromElement( badLayoutObjectElem, doc, QgsReadWriteContext() ), false );
 

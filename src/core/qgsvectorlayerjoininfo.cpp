@@ -68,3 +68,50 @@ QgsFeature QgsVectorLayerJoinInfo::extractJoinedFeature( const QgsFeature &featu
 
   return joinFeature;
 }
+
+QStringList QgsVectorLayerJoinInfo::joinFieldNamesSubset( const QgsVectorLayerJoinInfo &info, bool blacklisted )
+{
+  QStringList fieldNames;
+
+  if ( blacklisted && !info.joinFieldNamesBlackList().isEmpty() )
+  {
+    QStringList *lst = info.joinFieldNamesSubset();
+    if ( lst )
+    {
+      for ( const QString &s : qgis::as_const( *lst ) )
+      {
+        if ( !info.joinFieldNamesBlackList().contains( s ) )
+          fieldNames.append( s );
+      }
+    }
+    else
+    {
+      for ( const QgsField &f : info.joinLayer()->fields() )
+      {
+        if ( !info.joinFieldNamesBlackList().contains( f.name() )
+             && f.name() != info.joinFieldName() )
+          fieldNames.append( f.name() );
+      }
+    }
+  }
+  else
+  {
+    QStringList *lst = info.joinFieldNamesSubset();
+    if ( lst )
+    {
+      fieldNames = *lst;
+    }
+  }
+
+  return fieldNames;
+}
+
+bool QgsVectorLayerJoinInfo::hasSubset( bool blacklisted ) const
+{
+  bool subset = joinFieldNamesSubset();
+
+  if ( blacklisted )
+    subset |= !joinFieldNamesBlackList().isEmpty();
+
+  return subset;
+}

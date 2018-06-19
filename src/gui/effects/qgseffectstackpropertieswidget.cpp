@@ -96,7 +96,7 @@ class EffectItem : public QStandardItem
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
   : QgsPanelWidget( parent )
   , mStack( stack )
-  , mPreviewPicture( nullptr )
+
 {
 
 // TODO
@@ -363,7 +363,7 @@ void QgsEffectStackPropertiesWidget::changeEffect( QgsPaintEffect *newEffect )
 
 QgsEffectStackPropertiesDialog::QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent, Qt::WindowFlags f )
   : QgsDialog( parent, f, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
-  , mPropertiesWidget( nullptr )
+
 {
   setWindowTitle( tr( "Effect Properties" ) );
   mPropertiesWidget = new QgsEffectStackPropertiesWidget( stack, this );
@@ -386,13 +386,11 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPaintEffect *effect )
   : QgsPanelWidget( parent )
-  , mEnabledCheckBox( nullptr )
-  , mButton( nullptr )
-  , mPreviewPicture( nullptr )
+
 {
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
+  layout->setSpacing( 6 );
   setLayout( layout );
 
   mEnabledCheckBox = new QCheckBox( this );
@@ -401,7 +399,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPaintEffects.svg" ) ) );
-  mButton->setToolTip( tr( "Customise effects" ) );
+  mButton->setToolTip( tr( "Customize effects" ) );
   layout->addWidget( mButton );
 
   setFocusPolicy( Qt::StrongFocus );

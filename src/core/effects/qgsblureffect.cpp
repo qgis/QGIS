@@ -26,15 +26,6 @@ QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
   return newEffect;
 }
 
-QgsBlurEffect::QgsBlurEffect()
-  : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mBlurMethod( StackBlur )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-{
-
-}
-
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )
@@ -80,7 +71,7 @@ void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
 QgsStringMap QgsBlurEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( static_cast< int >( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast< int >( mBlendMode ) ) );
   props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );

@@ -22,14 +22,15 @@
 #include "qgsrectangle.h"
 #include "qgspoint.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A 3-dimensional box composed of x, y, z coordinates.
  *
  * A box composed of x/y/z minimum and maximum values. It is often used to return the 3D
  * extent of a geometry or collection of geometries.
  *
- * \since QGIS 3.0
  * \see QgsRectangle
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsBox3d
 {
@@ -45,6 +46,12 @@ class CORE_EXPORT QgsBox3d
      * The box is normalized after construction.
      */
     QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
+
+    /**
+     * Constructs a QgsBox3D from a rectangle.
+     * Z Minimum and Z Maximum are set to 0.0.
+     */
+    QgsBox3d( const QgsRectangle &rect );
 
     /**
      * Sets the minimum \a x value.
@@ -194,6 +201,8 @@ class CORE_EXPORT QgsBox3d
      * Converts the box to a 2D rectangle.
      */
     QgsRectangle toRectangle() const { return mBounds2d; }
+
+    bool operator==( const QgsBox3d &other ) const;
 
   private:
 

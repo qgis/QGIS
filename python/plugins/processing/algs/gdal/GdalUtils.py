@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,13 +29,16 @@ import os
 import subprocess
 import platform
 import re
+import warnings
 
 import psycopg2
 
-from osgeo import gdal
-from osgeo import ogr
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    from osgeo import ogr
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -50,17 +50,20 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import isWindows, isMac
 
 try:
-    from osgeo import gdal  # NOQA
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        from osgeo import gdal  # NOQA
 
     gdalAvailable = True
 except:
     gdalAvailable = False
 
 
-class GdalUtils(object):
+class GdalUtils:
     GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
+    supportedOutputRasters = None
 
     @staticmethod
     def runGdal(commands, feedback=None):
@@ -86,7 +89,7 @@ class GdalUtils(object):
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsMessageLog.logMessage(fused_command, 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
         feedback.pushInfo('GDAL command:')
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo('GDAL command output:')
@@ -113,10 +116,10 @@ class GdalUtils(object):
                     retry_count += 1
                 else:
                     raise IOError(
-                        e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
+                        str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
                             len(loglines), u'\n'.join(loglines[-10:])))
 
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
             GdalUtils.consoleOutput = loglines
 
     @staticmethod
@@ -135,7 +138,10 @@ class GdalUtils(object):
             gdal.AllRegister()
 
         GdalUtils.supportedRasters = {}
+        GdalUtils.supportedOutputRasters = {}
         GdalUtils.supportedRasters['GTiff'] = ['tif']
+        GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
             if driver is None:
@@ -146,22 +152,44 @@ class GdalUtils(object):
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            # ===================================================================
-            # if gdal.DCAP_CREATE not in metadata \
-            #         or metadata[gdal.DCAP_CREATE] != 'YES':
-            #     continue
-            # ===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
+                    # Only creatable rasters can be referenced in output rasters
+                    if ((gdal.DCAP_CREATE in metadata
+                         and metadata[gdal.DCAP_CREATE] == 'YES')
+                        or (gdal.DCAP_CREATECOPY in metadata
+                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                        GdalUtils.supportedOutputRasters[shortName] = extensions
 
         return GdalUtils.supportedRasters
+
+    @staticmethod
+    def getSupportedOutputRasters():
+        if not gdalAvailable:
+            return {}
+
+        if GdalUtils.supportedOutputRasters is not None:
+            return GdalUtils.supportedOutputRasters
+        else:
+            GdalUtils.getSupportedRasters()
+
+        return GdalUtils.supportedOutputRasters
 
     @staticmethod
     def getSupportedRasterExtensions():
         allexts = ['tif']
         for exts in list(GdalUtils.getSupportedRasters().values()):
+            for ext in exts:
+                if ext not in allexts and ext != '':
+                    allexts.append(ext)
+        return allexts
+
+    @staticmethod
+    def getSupportedOutputRasterExtensions():
+        allexts = ['tif']
+        for exts in list(GdalUtils.getSupportedOutputRasters().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
@@ -174,9 +202,9 @@ class GdalUtils(object):
             return 'ESRI Shapefile'
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        for k, v in list(formats.items()):
-            if ext in k:
-                return v
+        for format in formats:
+            if ext in format.filterString:
+                return format.driverName
         return 'ESRI Shapefile'
 
     @staticmethod
@@ -248,7 +276,7 @@ class GdalUtils(object):
         if layer is None:
             path, ext = os.path.splitext(uri)
             format = QgsVectorFileWriter.driverForExtension(ext)
-            return '"' + uri + '"', '"' + format + '"'
+            return uri, '"' + format + '"'
 
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
@@ -320,12 +348,13 @@ class GdalUtils(object):
             path, ext = os.path.splitext(ogrstr)
             format = QgsVectorFileWriter.driverForExtension(ext)
 
-        return '"' + ogrstr + '"', '"' + format + '"'
+        return ogrstr, '"' + format + '"'
 
     @staticmethod
     def ogrLayerName(uri):
-        if os.path.isfile(uri):
-            return os.path.basename(os.path.splitext(uri)[0])
+        uri = uri.strip('"')
+        #if os.path.isfile(uri):
+        #    return os.path.basename(os.path.splitext(uri)[0])
 
         if ' table=' in uri:
             # table="schema"."table"
@@ -364,3 +393,39 @@ class GdalUtils(object):
         name = ly.GetName()
         ds = None
         return name
+
+    @staticmethod
+    def parseCreationOptions(value):
+        parts = value.split('|')
+        options = []
+        for p in parts:
+            options.extend(['-co', p])
+        return options
+
+    @staticmethod
+    def writeLayerParameterToTextFile(filename, alg, parameters, parameter_name, context, quote=True, executing=False):
+        listFile = os.path.join(QgsProcessingUtils.tempFolder(), filename)
+        with open(listFile, 'w') as f:
+            if executing:
+                layers = []
+                for l in alg.parameterAsLayerList(parameters, parameter_name, context):
+                    if quote:
+                        layers.append('"' + l.source() + '"')
+                    else:
+                        layers.append(l.source())
+                f.write('\n'.join(layers))
+        return listFile
+
+    @staticmethod
+    def gdal_crs_string(crs):
+        """
+        Converts a QgsCoordinateReferenceSystem to a string understandable
+        by GDAL
+        :param crs: crs to convert
+        :return: gdal friendly string
+        """
+        if crs.authid().upper().startswith('EPSG:'):
+            return crs.authid()
+
+        # fallback to proj4 string
+        return crs.toProj4()

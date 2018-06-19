@@ -44,6 +44,9 @@
        </property>
        <item>
         <widget class="QToolButton" name="btnAddConfig">
+         <property name="toolTip">
+          <string>Add new authentication configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -55,6 +58,9 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnRemoveConfig">
+         <property name="toolTip">
+          <string>Remove selected authentication configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -66,12 +72,15 @@
        </item>
        <item>
         <widget class="QToolButton" name="btnEditConfig">
+         <property name="toolTip">
+          <string>Edit selected authentication configuration</string>
+         </property>
          <property name="text">
           <string/>
          </property>
          <property name="icon">
           <iconset resource="../../../images/images.qrc">
-           <normaloff>:/images/themes/default/symbologyEdit.png</normaloff>:/images/themes/default/symbologyEdit.png</iconset>
+           <normaloff>:/images/themes/default/symbologyEdit.svg</normaloff>:/images/themes/default/symbologyEdit.svg</iconset>
          </property>
         </widget>
        </item>

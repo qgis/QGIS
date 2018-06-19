@@ -38,13 +38,20 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
   public:
     QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Returns the labeling gui widget or a nullptr if none.
+     *
+     * \since QGIS 3.0
+     */
+    QgsLabelingGui *labelingGui();
+
   public slots:
     void setLayer( QgsMapLayer *layer );
     //! save config to layer
     void writeSettingsToLayer();
 
     //! Saves the labeling configuration and immediately updates the map canvas to reflect the changes
-    void apply();
+    void apply() override;
 
     //! reload the settings shown in the dialog from the current layer
     void adaptToLayer();
@@ -52,7 +59,8 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void resetSettings();
 
   signals:
-    void widgetChanged();
+
+    void auxiliaryFieldCreated();
 
   protected slots:
     void labelModeChanged( int index );
@@ -65,6 +73,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QWidget *mWidget = nullptr;
     std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
+    bool mOldLabelsEnabled = false;
 };
 
 #endif // QGSLABELINGWIDGET_H

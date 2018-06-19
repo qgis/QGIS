@@ -26,7 +26,8 @@
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool that emits an extent from a rectangle drawn onto the map canvas.
  * \since QGIS 3.0
  */
@@ -39,25 +40,28 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     //! constructor
     QgsMapToolExtent( QgsMapCanvas *canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void activate() override;
-    virtual void deactivate() override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void activate() override;
+    void deactivate() override;
 
-    /** Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+    /**
+     * Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
      * To unset a fixed aspect ratio, set the width and height to zero.
      * \param ratio aspect ratio's width and height
      * */
     void setRatio( QSize ratio ) { mRatio = ratio; }
 
-    /** Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+    /**
+     * Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
      * If the aspect ratio isn't fixed, the width and height will be set to zero.
      * */
     QSize ratio() const { return mRatio; }
 
-    /** Returns the current extent drawn onto the canvas.
+    /**
+     * Returns the current extent drawn onto the canvas.
      */
     QgsRectangle extent() const;
 

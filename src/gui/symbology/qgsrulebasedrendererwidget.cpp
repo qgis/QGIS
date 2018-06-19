@@ -71,7 +71,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsRuleBasedRendererModel( mRenderer );
+  mModel = new QgsRuleBasedRendererModel( mRenderer, viewRules );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this ); // for model validity checking
 #endif
@@ -84,15 +84,15 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   viewRules->addAction( mCopyAction );
   viewRules->addAction( mPasteAction );
 
-  mRefineMenu = new QMenu( tr( "Refine current rule" ), btnRefineRule );
-  mRefineMenu->addAction( tr( "Add scales to rule" ), this, SLOT( refineRuleScales() ) );
-  mRefineMenu->addAction( tr( "Add categories to rule" ), this, SLOT( refineRuleCategories() ) );
-  mRefineMenu->addAction( tr( "Add ranges to rule" ), this, SLOT( refineRuleRanges() ) );
+  mRefineMenu = new QMenu( tr( "Refine Current Rule" ), btnRefineRule );
+  mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, SLOT( refineRuleScales() ) );
+  mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, SLOT( refineRuleCategories() ) );
+  mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, SLOT( refineRuleRanges() ) );
   btnRefineRule->setMenu( mRefineMenu );
   contextMenu->addMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
-  btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
+  btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
   connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index ) > ( &QgsRuleBasedRendererWidget::editRule ) );
@@ -181,12 +181,25 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
     return;
 
   QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
 
-  QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
-  widget->setPanelTitle( tr( "Edit rule" ) );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
-  openPanel( widget );
+  if ( panel && panel->dockMode() )
+  {
+    QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );//panel?
+    widget->setPanelTitle( tr( "Edit Rule" ) );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
+    openPanel( widget );
+    return;
+  }
+
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mContext );
+  if ( dlg.exec() )
+  {
+    mModel->updateRule( index.parent(), index.row() );
+    mModel->clearFeatureCounts();
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::removeRule()
@@ -260,7 +273,7 @@ void QgsRuleBasedRendererWidget::refineRuleScales()
 void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 {
   QgsCategorizedSymbolRendererWidget *w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add categories to rules" ) );
+  w->setPanelTitle( tr( "Add Categories to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -269,7 +282,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 void QgsRuleBasedRendererWidget::refineRuleRangesGui()
 {
   QgsGraduatedSymbolRendererWidget *w = new QgsGraduatedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add ranges to rules" ) );
+  w->setPanelTitle( tr( "Add Ranges to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleRangesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -284,13 +297,13 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     // If any of the rules don't have a symbol let the user know and exit.
     if ( !initialRule->symbol() )
     {
-      QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
+      QMessageBox::warning( this, tr( "Scale Refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
       return;
     }
   }
 
   QString txt = QInputDialog::getText( this,
-                                       tr( "Scale refinement" ),
+                                       tr( "Scale Refinement" ),
                                        tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
   if ( txt.isEmpty() )
     return;
@@ -303,7 +316,7 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     if ( ok )
       scales.append( scale );
     else
-      QMessageBox::information( this, tr( "Error" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
+      QMessageBox::information( this, tr( "Scale Refinement" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
   }
 
   Q_FOREACH ( const QModelIndex &index, indexList )
@@ -329,10 +342,10 @@ QList<QgsSymbol *> QgsRuleBasedRendererWidget::selectedSymbols()
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRenderer::Rule *parentRule = mModel->ruleForIndex( parent );
-    QgsRuleBasedRenderer::RuleList &children = parentRule->children();
+    const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      symbolList.append( children[row]->symbol() );
+      symbolList.append( children.at( row )->symbol() );
     }
   }
 
@@ -347,10 +360,10 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRendererWidget::selectedRules()
   {
     QModelIndex parent = range.parent();
     QgsRuleBasedRenderer::Rule *parentRule = mModel->ruleForIndex( parent );
-    QgsRuleBasedRenderer::RuleList &children = parentRule->children();
+    const QgsRuleBasedRenderer::RuleList &children = parentRule->children();
     for ( int row = range.top(); row <= range.bottom(); row++ )
     {
-      rl.append( children[row]->clone() );
+      rl.append( children.at( row )->clone() );
     }
   }
   return rl;
@@ -396,10 +409,24 @@ void QgsRuleBasedRendererWidget::keyPressEvent( QKeyEvent *event )
 
 void QgsRuleBasedRendererWidget::setRenderingOrder()
 {
-  QgsSymbolLevelsDialog dlg( mRenderer->legendSymbolItems(), true, this );
-  dlg.setForceOrderingEnabled( true );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer, true, panel );
+    widget->setForceOrderingEnabled( true );
+    widget->setPanelTitle( tr( "Symbol Levels" ) );
+    connect( widget, &QgsPanelWidget::widgetChanged, widget, &QgsSymbolLevelsWidget::apply );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
+    panel->openPanel( widget );
+    return;
+  }
 
-  dlg.exec();
+  QgsSymbolLevelsDialog dlg( mRenderer, true, panel );
+  dlg.setForceOrderingEnabled( true );
+  if ( dlg.exec() )
+  {
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int newSize )
@@ -602,14 +629,14 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   : QgsPanelWidget( parent )
   , mRule( rule )
   , mLayer( layer )
-  , mSymbolSelector( nullptr )
-  , mSymbol( nullptr )
   , mContext( context )
 {
   setupUi( this );
   layout()->setMargin( 0 );
   layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mElseRadio->setChecked( mRule->isElse() );
+  mFilterRadio->setChecked( !mRule->isElse() );
   editFilter->setText( mRule->filterExpression() );
   editFilter->setToolTip( mRule->filterExpression() );
   editLabel->setText( mRule->label() );
@@ -652,7 +679,11 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
+
+#include "qgsvscrollarea.h"
 
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
   : QDialog( parent )
@@ -661,16 +692,21 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
-  this->setLayout( new QVBoxLayout() );
 
-  buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  layout->addWidget( scrollArea );
+
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   mPropsWidget = new QgsRendererRulePropsWidget( rule, layer, style, this, context );
 
-  this->layout()->addWidget( mPropsWidget );
-  this->layout()->addWidget( buttonBox );
+  scrollArea->setWidget( mPropsWidget );
+  layout->addWidget( buttonBox );
+  this->setWindowTitle( "Edit Rule" );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRendererRulePropsDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
@@ -698,6 +734,11 @@ void QgsRendererRulePropsDialog::accept()
   QDialog::accept();
 }
 
+void QgsRendererRulePropsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-rendering" ) );
+}
+
 
 void QgsRendererRulePropsWidget::buildExpression()
 {
@@ -717,10 +758,13 @@ void QgsRendererRulePropsWidget::buildExpression()
 
 void QgsRendererRulePropsWidget::testFilter()
 {
+  if ( !mFilterRadio->isChecked() )
+    return;
+
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Error" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
@@ -734,7 +778,7 @@ void QgsRendererRulePropsWidget::testFilter()
 
   if ( !filter.prepare( &context ) )
   {
-    QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ), filter.evalErrorString() );
     return;
   }
 
@@ -756,12 +800,13 @@ void QgsRendererRulePropsWidget::testFilter()
 
   QApplication::restoreOverrideCursor();
 
-  QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
+  QMessageBox::information( this, tr( "Test Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
 void QgsRendererRulePropsWidget::apply()
 {
-  mRule->setFilterExpression( editFilter->text() );
+  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  mRule->setFilterExpression( filter );
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
   // caution: rule uses scale denom, scale widget uses true scales
@@ -787,8 +832,9 @@ void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
 
 /////
 
-QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r )
-  : mR( r )
+QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent )
+  : QAbstractItemModel( parent )
+  , mR( renderer )
 {
 }
 
@@ -851,10 +897,11 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
               QString tip = QStringLiteral( "<p style='margin:0px;'><ul>" );
-              Q_FOREACH ( QgsRuleBasedRenderer::Rule *duplicateRule, mFeatureCountMap[rule].duplicateCountMap.keys() )
+              const auto duplicateMap = mFeatureCountMap[rule].duplicateCountMap;
+              for ( auto it = duplicateMap.constBegin(); it != duplicateMap.constEnd(); ++it )
               {
-                QString label = duplicateRule->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
-                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( mFeatureCountMap[rule].duplicateCountMap[duplicateRule] ).arg( label );
+                QString label = it.key()->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
+                tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( it.value() ).arg( label );
               }
               tip += QLatin1String( "</ul>" );
               return tip;

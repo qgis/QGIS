@@ -125,10 +125,6 @@ License: public-domain
  is used when saving/restoring a QGIS project.
  This file is in the public domain
 
-Files: python/ext-libs/pyspatialite/*
-Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
-License: Zlib
-
 Files: python/plugins/processing/modeler/ModelerArrowItem.py
  src/app/qgssettingstree.cpp
  src/app/qgssettingstree.h
@@ -170,9 +166,9 @@ Comment: Voronoi diagram calculator/ Delaunay triangulator
  Steve Fortune's homepage: http://netlib.bell-labs.com/cm/cs/who/sjf/index.html
 License: GPL-2+
 
-Files: src/app/gps/qwtpolar-0.1/*
- src/app/gps/qwtpolar-1.0/*
- src/app/gps/qwtpolar-1.1.1/*
+Files: external//qwtpolar-0.1/*
+ external//qwtpolar-1.0/*
+ external//qwtpolar-1.1.1/*
 Copyright: 2008, Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
@@ -189,23 +185,23 @@ Comment: Artistic Style is maintained and updated by Jim Pattee.
  The original author was Tal Davidson, Israel.
 License: LGPL-2.1+
 
-Files: src/core/gps/config.h
- src/core/gps/context.c
- src/core/gps/context.h
- src/core/gps/gmath.c
- src/core/gps/gmath.h
- src/core/gps/info.c
- src/core/gps/info.h
- src/core/gps/nmeatime.h
- src/core/gps/parse.c
- src/core/gps/parse.h
- src/core/gps/parser.h
- src/core/gps/sentence.c
- src/core/gps/sentence.h
- src/core/gps/time.c
- src/core/gps/tok.c
- src/core/gps/tok.h
- src/core/gps/units.h
+Files: external/nmea/config.h
+ external/nmea/context.c
+ external/nmea/context.h
+ external/nmea/gmath.c
+ external/nmea/gmath.h
+ external/nmea/info.c
+ external/nmea/info.h
+ external/nmea/nmeatime.h
+ external/nmea/parse.c
+ external/nmea/parse.h
+ external/nmea/parser.h
+ external/nmea/sentence.c
+ external/nmea/sentence.h
+ external/nmea/time.c
+ external/nmea/tok.c
+ external/nmea/tok.h
+ external/nmea/units.h
 Copyright: Tim <xtimor@gmail.com>
 License: LGPL-2+
 

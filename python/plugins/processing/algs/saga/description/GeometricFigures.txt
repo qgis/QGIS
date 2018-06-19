@@ -1,7 +1,7 @@
 Geometric Figures
 grid_calculus
-ParameterNumber|CELL_COUNT|Cell Count|None|None|0
-ParameterNumber|CELL_SIZE|Cell Size|None|None|0
-ParameterSelection|FIGURE|Figure|[0] Cone (up);[1] Cone (down);[2] Plane
-ParameterNumber|PLANE|Direction of Plane [Degree]|None|None|0
-OutputRaster|RESULT|Result
+QgsProcessingParameterNumber|CELL_COUNT|Cell Count|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterNumber|CELL_SIZE|Cell Size|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterEnum|FIGURE|Figure|[0] Cone (up);[1] Cone (down);[2] Plane
+QgsProcessingParameterNumber|PLANE|Direction of Plane [Degree]|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterRasterDestination|RESULT|Result

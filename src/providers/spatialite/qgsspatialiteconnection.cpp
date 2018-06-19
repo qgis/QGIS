@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
-#include "qgsslconnect.h"
 #include "qgssettings.h"
 #include "qgslogger.h"
+#include "qgsspatialiteutils.h"
 
 #include <QFileInfo>
 #include <cstdlib> // atoi
@@ -65,86 +65,40 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
   if ( !fi.exists() )
     return NotExists;
 
-  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( !handle )
+  spatialite_database_unique_ptr database;
+  int ret = database.open( fi.canonicalFilePath() );
+  if ( ret )
     return FailedToOpen;
 
-  int ret = checkHasMetadataTables( handle );
+  ret = checkHasMetadataTables( database.get() );
   if ( !mErrorMsg.isNull() || ret == LayoutUnknown )
   {
     // unexpected error; invalid SpatiaLite DB
     return FailedToCheckMetadata;
   }
 
-  bool recentVersion = false;
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
-  recentVersion = true;
-#endif
-
-  if ( ret == LayoutCurrent && !recentVersion )
-  {
-    // obsolete library version
-    mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );
-    return FailedToCheckMetadata;
-  }
-
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
-  // using v.4.0 Abstract Interface
-  if ( !getTableInfoAbstractInterface( handle, loadGeometrylessTables ) )
-#else
-  // obsolete library: still using the traditional approach
-  if ( !getTableInfo( handle, loadGeometrylessTables ) )
-#endif
+  if ( !getTableInfoAbstractInterface( database.get(), loadGeometrylessTables ) )
   {
     return FailedToGetTables;
   }
-  closeSpatiaLiteDb( handle );
 
   return NoError;
 }
 
 bool QgsSpatiaLiteConnection::updateStatistics()
 {
-#ifdef SPATIALITE_VERSION_GE_4_0_0
   QFileInfo fi( mPath );
   if ( !fi.exists() )
     return false;
 
-  sqlite3 *handle = openSpatiaLiteDb( fi.canonicalFilePath() );
-  if ( !handle )
+  spatialite_database_unique_ptr database;
+  int ret = database.open( fi.canonicalFilePath() );
+  if ( ret )
     return false;
 
-  bool ret = update_layer_statistics( handle, nullptr, nullptr );
-
-  closeSpatiaLiteDb( handle );
+  ret = update_layer_statistics( database.get(), nullptr, nullptr );
 
   return ret;
-#else
-  return false;
-#endif
-}
-
-sqlite3 *QgsSpatiaLiteConnection::openSpatiaLiteDb( const QString &path )
-{
-  sqlite3 *handle = nullptr;
-  int ret;
-  // trying to open the SQLite DB
-  ret = QgsSLConnect::sqlite3_open_v2( path.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
-  if ( ret )
-  {
-    // failure
-    mErrorMsg = sqlite3_errmsg( handle );
-    return nullptr;
-  }
-  return handle;
-}
-
-void QgsSpatiaLiteConnection::closeSpatiaLiteDb( sqlite3 *handle )
-{
-  if ( handle )
-    QgsSLConnect::sqlite3_close( handle );
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
@@ -264,8 +218,6 @@ error:
   return false;
 }
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables )
 {
   int ret;
@@ -286,7 +238,23 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
     return false;
   }
 
-// attempting to load the VectorLayersList
+  // List of system tables not to be shown if geometryless tables are requested
+  QStringList ignoreTableNames;
+  ignoreTableNames << QStringLiteral( "SpatialIndex" ) << QStringLiteral( "geom_cols_ref_sys" ) << QStringLiteral( "geometry_columns" )
+                   << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns" ) << QStringLiteral( "virts_geometry_columns" )
+                   << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" ) << QStringLiteral( "spatial_ref_sys_aux" )
+                   << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
+                   << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
+                   << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "symbol_bitmaps" )
+                   << QStringLiteral( "project_defs" ) << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
+                   << QStringLiteral( "spatialite_history" ) << QStringLiteral( "geometry_columns_field_infos" ) << QStringLiteral( "geometry_columns_statistics" )
+                   << QStringLiteral( "geometry_columns_time" ) << QStringLiteral( "sql_statements_log" ) << QStringLiteral( "vector_layers" )
+                   << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" ) << QStringLiteral( "vector_layers_statistics" )
+                   << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
+                   << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
+                   << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
+                   << QStringLiteral( "ElementaryGeometries" );
+  // attempting to load the VectorLayersList
   list = gaiaGetVectorLayersList( handle, nullptr, nullptr, GAIA_VECTORS_LIST_FAST );
   if ( list )
   {
@@ -305,7 +273,12 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       }
 
       QString tableName = QString::fromUtf8( lyr->TableName );
+      ignoreTableNames << tableName;
       QString column = QString::fromUtf8( lyr->GeometryName );
+      ignoreTableNames << QStringLiteral( "idx_%1_%2" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_node" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_parent" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_rowid" ).arg( tableName, column );
       QString type = tr( "UNKNOWN" );
       switch ( lyr->GeometryType )
       {
@@ -357,7 +330,8 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       for ( i = 1; i <= rows; i++ )
       {
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
+        if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
+          mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
       }
     }
     sqlite3_free_table( results );
@@ -375,7 +349,6 @@ error:
   }
   return false;
 }
-#endif
 
 bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometrylessTables )
 {
@@ -721,8 +694,6 @@ skip:
 
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 {
-  sqlite3 *sqlite_handle = nullptr;
-
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
 
   if ( shared && sHandles.contains( dbPath ) )
@@ -733,29 +704,29 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   }
 
   QgsDebugMsg( QString( "New sqlite connection for " ) + dbPath );
-  if ( QgsSLConnect::sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
+  spatialite_database_unique_ptr database;
+  if ( database.open_v2( dbPath, shared ? SQLITE_OPEN_READWRITE : SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX, nullptr ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n%2" )
                  .arg( dbPath,
-                       QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) ) );
+                       QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
   }
 
   // checking the DB for sanity
-  if ( !checkMetadata( sqlite_handle ) )
+  if ( !checkMetadata( database.get() ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
-    QgsSLConnect::sqlite3_close( sqlite_handle );
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, nullptr );
+  ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
-  QgsSqliteHandle *handle = new QgsSqliteHandle( sqlite_handle, dbPath, shared );
+  QgsSqliteHandle *handle = new QgsSqliteHandle( std::move( database ), dbPath, shared );
   if ( shared )
     sHandles.insert( dbPath, handle );
 
@@ -767,7 +738,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
   if ( handle->ref == -1 )
   {
     // not shared
-    handle->sqliteClose();
     delete handle;
   }
   else
@@ -781,7 +751,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
     if ( --i.value()->ref == 0 )
     {
-      i.value()->sqliteClose();
       delete i.value();
       sHandles.remove( i.key() );
     }
@@ -792,22 +761,6 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
 void QgsSqliteHandle::closeAll()
 {
-  QMap < QString, QgsSqliteHandle * >::iterator i;
-  for ( i = sHandles.begin(); i != sHandles.end(); ++i )
-  {
-    i.value()->sqliteClose();
-    delete i.value();
-  }
-
+  qDeleteAll( sHandles );
   sHandles.clear();
 }
-
-void QgsSqliteHandle::sqliteClose()
-{
-  if ( sqlite_handle )
-  {
-    QgsSLConnect::sqlite3_close( sqlite_handle );
-    sqlite_handle = nullptr;
-  }
-}
-

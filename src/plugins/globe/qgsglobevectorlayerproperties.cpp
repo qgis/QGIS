@@ -97,15 +97,11 @@ QgsGlobeVectorLayerPropertiesPage::QgsGlobeVectorLayerPropertiesPage( QgsVectorL
   checkBoxExtrusionFlatten->setChecked( layerConfig->extrusionFlatten );
   spinBoxExtrusionWallGradient->setValue( layerConfig->extrusionWallGradient );
 
-#if OSGEARTH_VERSION_LESS_THAN(2, 7, 0)
+#if OSGEARTH_VERSION_LESS_THAN(2, 7, 0) || OSGEARTH_VERSION_GREATER_THAN(2, 9, 0)
   groupBoxLabelingEnabled->setChecked( layerConfig->labelingEnabled );
   checkBoxLabelingDeclutter->setChecked( layerConfig->labelingDeclutter );
 #else
-#ifdef _MSC_VER
-#pragma message("TODO: labeling broken with osgEarth 2.7")
-#else
-#warning "TODO: labeling broken with osgEarth 2.7"
-#endif
+  // labeling broken with osgEarth 2.8
   groupBoxLabelingEnabled->setChecked( false );
   checkBoxLabelingDeclutter->setChecked( false );
   groupBoxLabelingEnabled->setVisible( false );

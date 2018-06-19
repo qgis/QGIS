@@ -25,7 +25,8 @@ class NormVecDecorator;
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.
  * \note Not available in Python bindings
 */
@@ -35,7 +36,7 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Association with a triangulation object
     NormVecDecorator *mTIN = nullptr;
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
-    double mEdgeTolerance;
+    double mEdgeTolerance = 0.00001;
     //! First point of the triangle in x-,y-,z-coordinates
     QgsPoint point1 = QgsPoint( 0, 0, 0 );
     //! Second point of the triangle in x-,y-,z-coordinates
@@ -75,17 +76,17 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     //! Control point 16
     QgsPoint cp16 = QgsPoint( 0, 0, 0 );
     //! Derivative in x-direction at point1
-    double der1X;
+    double der1X = 0.0;
     //! Derivative in y-direction at point1
-    double der1Y;
+    double der1Y = 0.0;
     //! Derivative in x-direction at point2
-    double der2X;
+    double der2X = 0.0;
     //! Derivative in y-direction at point2
-    double der2Y;
+    double der2Y = 0.0;
     //! Derivative in x-direction at point3
-    double der3X;
+    double der3X = 0.0;
     //! Derivative in y-direction at point3
-    double der3Y;
+    double der3Y = 0.0;
     //! Stores point1 of the last run
     QgsPoint lpoint1 = QgsPoint( 0, 0, 0 );
     //! Stores point2 of the last run
@@ -99,14 +100,14 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 
   public:
     //! Standard constructor
-    CloughTocherInterpolator();
+    CloughTocherInterpolator() = default;
+
     //! Constructor with a pointer to the triangulation as argument
     CloughTocherInterpolator( NormVecDecorator *tin );
-    virtual ~CloughTocherInterpolator();
+
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
-    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
-    //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
+    bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     virtual void setTriangulation( NormVecDecorator *tin );
 };
 

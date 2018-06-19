@@ -22,13 +22,16 @@
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog for building expression strings
   * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
   */
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
     Q_OBJECT
+
+    Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
 
   public:
     QgsExpressionBuilderDialog( QgsVectorLayer *layer,
@@ -44,14 +47,31 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     QString expressionText();
 
-    /** Returns the expression context for the dialog. The context is used for the expression
+    /**
+     * The set expected format string. This is pure text format and no expression validation
+     * is done against it.
+     * \returns The expected value format.
+     */
+    QString expectedOutputFormat();
+
+    /**
+     * The set expected format string. This is pure text format and no expression validation
+     * is done against it.
+     * \param expected The expected value format for the expression.
+     * \note Only a UI hint and not used for expression validation.
+     */
+    void setExpectedOutputFormat( const QString &expected );
+
+    /**
+     * Returns the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \see setExpressionContext
      * \since QGIS 2.12
      */
     QgsExpressionContext expressionContext() const;
 
-    /** Sets the expression context for the dialog. The context is used for the expression
+    /**
+     * Sets the expression context for the dialog. The context is used for the expression
      * preview result and for populating the list of available functions and variables.
      * \param context expression context
      * \see expressionContext
@@ -62,6 +82,32 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea &da );
 
+    /**
+     * Allow accepting invalid expressions. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    bool allowEvalErrors() const;
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void setAllowEvalErrors( bool allowEvalErrors );
+
+  signals:
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void allowEvalErrorsChanged();
+
   protected:
 
     /**
@@ -70,16 +116,20 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      *
      * \param r result value (unused)
      */
-    virtual void done( int r ) override;
+    void done( int r ) override;
 
-    virtual void accept() override;
+    void accept() override;
 
   private:
     QString mRecentKey;
+    bool mAllowEvalErrors = false;
 
   private slots:
     void showHelp();
+    void syncOkButtonEnabledState();
 
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -20,7 +20,7 @@
 
 QgsEnumerationWidgetWrapper::QgsEnumerationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
+
 {
 }
 
@@ -62,7 +62,7 @@ void QgsEnumerationWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( s, s );
     }
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 

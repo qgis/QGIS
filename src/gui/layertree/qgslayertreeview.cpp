@@ -26,11 +26,13 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
+#include "qgslayertreeviewindicator.h"
+#include "qgslayertreeviewitemdelegate.h"
+
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mDefaultActions( nullptr )
-  , mMenuProvider( nullptr )
+
 {
   setHeaderHidden( true );
 
@@ -42,6 +44,10 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
 
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
+
+  // we need a custom item delegate in order to draw indicators
+  setItemDelegate( new QgsLayerTreeViewItemDelegate( this ) );
+  setStyle( new QgsLayerTreeViewProxyStyle( this ) );
 
   connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
   connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
@@ -63,6 +69,7 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( model );
 
   connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
+  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsLayerTreeView::onCustomPropertyChanged );
 
   connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayerTreeView::onCurrentChanged );
 
@@ -238,6 +245,22 @@ void QgsLayerTreeView::onExpandedChanged( QgsLayerTreeNode *node, bool expanded 
     setExpanded( idx, expanded );
 }
 
+void QgsLayerTreeView::onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
+{
+  if ( key != QStringLiteral( "expandedLegendNodes" ) || !QgsLayerTree::isLayer( node ) )
+    return;
+
+  QSet<QString> expandedLegendNodes = node->customProperty( QStringLiteral( "expandedLegendNodes" ) ).toStringList().toSet();
+
+  const QList<QgsLayerTreeModelLegendNode *> legendNodes = layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( node ), true );
+  for ( QgsLayerTreeModelLegendNode *legendNode : legendNodes )
+  {
+    QString key = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    if ( !key.isEmpty() )
+      setExpanded( layerTreeModel()->legendNode2index( legendNode ), expandedLegendNodes.contains( key ) );
+  }
+}
+
 void QgsLayerTreeView::onModelReset()
 {
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
@@ -333,6 +356,28 @@ QList<QgsMapLayer *> QgsLayerTreeView::selectedLayers() const
   return list;
 }
 
+void QgsLayerTreeView::addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
+{
+  if ( !mIndicators[node].contains( indicator ) )
+    mIndicators[node].append( indicator );
+}
+
+void QgsLayerTreeView::removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator )
+{
+  mIndicators[node].removeOne( indicator );
+}
+
+QList<QgsLayerTreeViewIndicator *> QgsLayerTreeView::indicators( QgsLayerTreeNode *node ) const
+{
+  return mIndicators.value( node );
+}
+
+///@cond PRIVATE
+QStringList QgsLayerTreeView::viewOnlyCustomProperties()
+{
+  return QStringList() << QStringLiteral( "expandedLegendNodes" );
+}
+///@endcond
 
 void QgsLayerTreeView::refreshLayerSymbology( const QString &layerId )
 {
@@ -356,7 +401,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
         lst << parentKey;
     }
   }
-  nodeLayer->setCustomProperty( "expandedLegendNodes", lst );
+  nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
 }
 
 
@@ -389,6 +434,10 @@ void QgsLayerTreeView::collapseAllNodes()
 
 void QgsLayerTreeView::mouseReleaseEvent( QMouseEvent *event )
 {
+  // we need to keep last mouse position in order to know whether to emit an indicator's clicked() signal
+  // (the item delegate needs to know which indicator has been clicked)
+  mLastReleaseMousePos = event->pos();
+
   const QgsLayerTreeModel::Flags oldFlags = layerTreeModel()->flags();
   if ( event->modifiers() & Qt::ControlModifier )
     layerTreeModel()->setFlags( oldFlags | QgsLayerTreeModel::ActionHierarchical );

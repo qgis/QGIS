@@ -15,7 +15,6 @@
 
 #include "qgslayoutviewtooladditem.h"
 #include "qgsapplication.h"
-#include "qgscursors.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
@@ -26,6 +25,7 @@
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
+#include "qgslayoutundostack.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>
@@ -35,13 +35,12 @@ QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )
 {
   setFlags( QgsLayoutViewTool::FlagSnaps );
-  QPixmap crosshairQPixmap = QPixmap( ( const char ** )( cross_hair_cursor ) );
-  setCursor( QCursor( crosshairQPixmap, 8, 8 ) );
+  setCursor( Qt::CrossCursor );
 }
 
-void QgsLayoutViewToolAddItem::setItemType( int itemType )
+void QgsLayoutViewToolAddItem::setItemMetadataId( int metadataId )
 {
-  mItemType = itemType;
+  mItemMetadataId = metadataId;
 }
 
 void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event )
@@ -54,9 +53,13 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
 
   mDrawing = true;
   mMousePressStartPos = event->pos();
-  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemType, view() ) );
+  mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
+    connect( mRubberBand.get(), &QgsLayoutViewRubberBand::sizeChanged, this, [ = ]( const QString & size )
+    {
+      view()->pushStatusMessage( size );
+    } );
     mRubberBand->start( event->snappedPoint(), event->modifiers() );
   }
 }
@@ -84,7 +87,23 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
-  QgsLayoutItem *item = QgsApplication::layoutItemRegistry()->createItem( mItemType, layout() );
+  QString undoText;
+  if ( QgsLayoutItemAbstractGuiMetadata *metadata = QgsGui::layoutItemGuiRegistry()->itemMetadata( mItemMetadataId ) )
+  {
+    undoText = tr( "Create %1" ).arg( metadata->visibleName() );
+  }
+  else
+  {
+    undoText = tr( "Create Item" );
+  }
+  layout()->undoStack()->beginMacro( undoText );
+
+  QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
+  if ( !item )
+  {
+    layout()->undoStack()->endMacro();
+    return;
+  }
 
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
@@ -97,11 +116,12 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
     {
       item->setReferencePoint( dlg.referencePoint() );
       item->attemptResize( dlg.itemSize() );
-      item->attemptMove( dlg.itemPosition() );
+      item->attemptMove( dlg.itemPosition(), true, false, dlg.page() );
     }
     else
     {
       delete item;
+      layout()->undoStack()->endMacro();
       return;
     }
   }
@@ -115,9 +135,18 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   QgsSettings settings;
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
   settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
-  settings.setValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), static_cast< int >( item->sizeWithUnits().units() ) );
+  settings.setEnumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), item->sizeWithUnits().units() );
 
-  layout()->addLayoutItem( item );
+  QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
+
+  // it's possible (in certain circumstances, e.g. when adding frame items) that this item
+  // has already been added to the layout
+  if ( item->scene() != layout() )
+    layout()->addLayoutItem( item );
+  layout()->setSelectedItem( item );
+
+  layout()->undoStack()->endMacro();
+  emit createdItem();
 }
 
 void QgsLayoutViewToolAddItem::deactivate()
@@ -131,7 +160,7 @@ void QgsLayoutViewToolAddItem::deactivate()
   QgsLayoutViewTool::deactivate();
 }
 
-int QgsLayoutViewToolAddItem::itemType() const
+int QgsLayoutViewToolAddItem::itemMetadataId() const
 {
-  return mItemType;
+  return mItemMetadataId;
 }

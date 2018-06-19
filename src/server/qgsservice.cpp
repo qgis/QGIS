@@ -21,8 +21,5 @@
 
 
 //! Constructor
-QgsService::QgsService()
-{
-
-}
+QgsService::QgsService() = default;
 

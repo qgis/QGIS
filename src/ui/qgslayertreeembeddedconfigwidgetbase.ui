@@ -48,6 +48,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mBtnAdd">
+       <property name="toolTip">
+        <string>Add  selected widgets</string>
+       </property>
        <property name="text">
         <string>-&gt;</string>
        </property>
@@ -59,6 +62,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mBtnRemove">
+       <property name="toolTip">
+        <string>Remove selected widgets</string>
+       </property>
        <property name="text">
         <string>&lt;-</string>
        </property>

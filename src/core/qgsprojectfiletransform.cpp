@@ -340,7 +340,9 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
+      QgsVectorLayer::LayerOptions options;
+      options.loadDefaultStyle = false;
+      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, options );
       if ( !layer->isValid() )
       {
         delete layer;
@@ -623,115 +625,119 @@ void QgsProjectFileTransform::transform2990()
 {
   // transform OTF off to "no projection" for project
   QDomElement propsElem = mDom.firstChildElement( QStringLiteral( "qgis" ) ).toElement().firstChildElement( QStringLiteral( "properties" ) );
-  QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
-  QDomElement srsElem;
-  QDomElement projElem;
-  if ( srsNodes.count() > 0 )
+  if ( !propsElem.isNull() )
   {
-    srsElem = srsNodes.at( 0 ).toElement();
-    QDomNodeList projNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
-    if ( projNodes.count() == 0 )
+    QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+    QDomElement srsElem;
+    QDomElement projElem;
+    if ( srsNodes.count() > 0 )
     {
+      srsElem = srsNodes.at( 0 ).toElement();
+      QDomNodeList projNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+      if ( projNodes.count() == 0 )
+      {
+        projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
+        projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+        QDomText projText = mDom.createTextNode( QStringLiteral( "0" ) );
+        projElem.appendChild( projText );
+        srsElem.appendChild( projElem );
+      }
+    }
+    else
+    {
+      srsElem = mDom.createElement( QStringLiteral( "SpatialRefSys" ) );
       projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
       projElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
       QDomText projText = mDom.createTextNode( QStringLiteral( "0" ) );
       projElem.appendChild( projText );
       srsElem.appendChild( projElem );
-    }
-  }
-  else
-  {
-    srsElem = mDom.createElement( QStringLiteral( "SpatialRefSys" ) );
-    projElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
-    projElem.setAttribute( "type", "int" );
-    QDomText projText = mDom.createTextNode( QStringLiteral( "0" ) );
-    projElem.appendChild( projText );
-    srsElem.appendChild( projElem );
-    propsElem.appendChild( srsElem );
-  }
-  // transform map canvas CRS to project CRS - this is because project CRS was inconsistently used
-  // prior to 3.0. In >= 3.0 main canvas CRS is forced to match project CRS, so we need to make
-  // sure we can read the project CRS correctly
-  QDomNodeList canvasNodes = mDom.elementsByTagName( QStringLiteral( "mapcanvas" ) );
-  if ( canvasNodes.count() > 0 )
-  {
-    QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
-    QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
-    if ( canvasSrsNodes.count() > 0 )
-    {
-      QDomElement canvasSrsElem = canvasSrsNodes.at( 0 ).toElement();
-      QString proj;
-      QString authid;
-      QString srsid;
-
-      QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( QStringLiteral( "proj4" ) );
-      if ( proj4Nodes.count() > 0 )
-      {
-        QDomElement proj4Node = proj4Nodes.at( 0 ).toElement();
-        proj = proj4Node.text();
-      }
-      QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "authid" ) );
-      if ( authidNodes.count() > 0 )
-      {
-        QDomElement authidNode = authidNodes.at( 0 ).toElement();
-        authid = authidNode.text();
-      }
-      QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "srsid" ) );
-      if ( srsidNodes.count() > 0 )
-      {
-        QDomElement srsidNode = srsidNodes.at( 0 ).toElement();
-        srsid = srsidNode.text();
-      }
-
-      // clear existing project CRS nodes
-      QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSProj4String" ) );
-      for ( int i = oldProjectProj4Nodes.count(); i >= 0; --i )
-      {
-        srsElem.removeChild( oldProjectProj4Nodes.at( i ) );
-      }
-      QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCrs" ) );
-      for ( int i = oldProjectCrsNodes.count(); i >= 0; --i )
-      {
-        srsElem.removeChild( oldProjectCrsNodes.at( i ) );
-      }
-      QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSID" ) );
-      for ( int i = oldProjectCrsIdNodes.count(); i >= 0; --i )
-      {
-        srsElem.removeChild( oldProjectCrsIdNodes.at( i ) );
-      }
-      QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
-      for ( int i = projectionsEnabledNodes.count(); i >= 0; --i )
-      {
-        srsElem.removeChild( projectionsEnabledNodes.at( i ) );
-      }
-
-      QDomElement proj4Elem = mDom.createElement( QStringLiteral( "ProjectCRSProj4String" ) );
-      proj4Elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
-      QDomText proj4Text = mDom.createTextNode( proj );
-      proj4Elem.appendChild( proj4Text );
-      QDomElement projectCrsElem = mDom.createElement( QStringLiteral( "ProjectCrs" ) );
-      projectCrsElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
-      QDomText projectCrsText = mDom.createTextNode( authid );
-      projectCrsElem.appendChild( projectCrsText );
-      QDomElement projectCrsIdElem = mDom.createElement( QStringLiteral( "ProjectCRSID" ) );
-      projectCrsIdElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      QDomText srsidText = mDom.createTextNode( srsid );
-      projectCrsIdElem.appendChild( srsidText );
-      QDomElement projectionsEnabledElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
-      projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
-      QDomText projectionsEnabledText = mDom.createTextNode( QStringLiteral( "1" ) );
-      projectionsEnabledElem.appendChild( projectionsEnabledText );
-      srsElem.appendChild( proj4Elem );
-      srsElem.appendChild( projectCrsElem );
-      srsElem.appendChild( projectCrsIdElem );
-      srsElem.appendChild( projectionsEnabledElem );
-
-      QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
-      for ( int i = srsNodes.count(); i >= 0; --i )
-      {
-        propsElem.removeChild( srsNodes.at( i ) );
-      }
       propsElem.appendChild( srsElem );
+    }
+
+    // transform map canvas CRS to project CRS - this is because project CRS was inconsistently used
+    // prior to 3.0. In >= 3.0 main canvas CRS is forced to match project CRS, so we need to make
+    // sure we can read the project CRS correctly
+    QDomNodeList canvasNodes = mDom.elementsByTagName( QStringLiteral( "mapcanvas" ) );
+    if ( canvasNodes.count() > 0 )
+    {
+      QDomElement canvasElem = canvasNodes.at( 0 ).toElement();
+      QDomNodeList canvasSrsNodes = canvasElem.elementsByTagName( QStringLiteral( "spatialrefsys" ) );
+      if ( canvasSrsNodes.count() > 0 )
+      {
+        QDomElement canvasSrsElem = canvasSrsNodes.at( 0 ).toElement();
+        QString proj;
+        QString authid;
+        QString srsid;
+
+        QDomNodeList proj4Nodes = canvasSrsElem.elementsByTagName( QStringLiteral( "proj4" ) );
+        if ( proj4Nodes.count() > 0 )
+        {
+          QDomElement proj4Node = proj4Nodes.at( 0 ).toElement();
+          proj = proj4Node.text();
+        }
+        QDomNodeList authidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "authid" ) );
+        if ( authidNodes.count() > 0 )
+        {
+          QDomElement authidNode = authidNodes.at( 0 ).toElement();
+          authid = authidNode.text();
+        }
+        QDomNodeList srsidNodes = canvasSrsElem.elementsByTagName( QStringLiteral( "srsid" ) );
+        if ( srsidNodes.count() > 0 )
+        {
+          QDomElement srsidNode = srsidNodes.at( 0 ).toElement();
+          srsid = srsidNode.text();
+        }
+
+        // clear existing project CRS nodes
+        QDomNodeList oldProjectProj4Nodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSProj4String" ) );
+        for ( int i = oldProjectProj4Nodes.count(); i >= 0; --i )
+        {
+          srsElem.removeChild( oldProjectProj4Nodes.at( i ) );
+        }
+        QDomNodeList oldProjectCrsNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCrs" ) );
+        for ( int i = oldProjectCrsNodes.count(); i >= 0; --i )
+        {
+          srsElem.removeChild( oldProjectCrsNodes.at( i ) );
+        }
+        QDomNodeList oldProjectCrsIdNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectCRSID" ) );
+        for ( int i = oldProjectCrsIdNodes.count(); i >= 0; --i )
+        {
+          srsElem.removeChild( oldProjectCrsIdNodes.at( i ) );
+        }
+        QDomNodeList projectionsEnabledNodes = srsElem.elementsByTagName( QStringLiteral( "ProjectionsEnabled" ) );
+        for ( int i = projectionsEnabledNodes.count(); i >= 0; --i )
+        {
+          srsElem.removeChild( projectionsEnabledNodes.at( i ) );
+        }
+
+        QDomElement proj4Elem = mDom.createElement( QStringLiteral( "ProjectCRSProj4String" ) );
+        proj4Elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
+        QDomText proj4Text = mDom.createTextNode( proj );
+        proj4Elem.appendChild( proj4Text );
+        QDomElement projectCrsElem = mDom.createElement( QStringLiteral( "ProjectCrs" ) );
+        projectCrsElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "QString" ) );
+        QDomText projectCrsText = mDom.createTextNode( authid );
+        projectCrsElem.appendChild( projectCrsText );
+        QDomElement projectCrsIdElem = mDom.createElement( QStringLiteral( "ProjectCRSID" ) );
+        projectCrsIdElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+        QDomText srsidText = mDom.createTextNode( srsid );
+        projectCrsIdElem.appendChild( srsidText );
+        QDomElement projectionsEnabledElem = mDom.createElement( QStringLiteral( "ProjectionsEnabled" ) );
+        projectionsEnabledElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "int" ) );
+        QDomText projectionsEnabledText = mDom.createTextNode( QStringLiteral( "1" ) );
+        projectionsEnabledElem.appendChild( projectionsEnabledText );
+        srsElem.appendChild( proj4Elem );
+        srsElem.appendChild( projectCrsElem );
+        srsElem.appendChild( projectCrsIdElem );
+        srsElem.appendChild( projectionsEnabledElem );
+
+        QDomNodeList srsNodes = propsElem.elementsByTagName( QStringLiteral( "SpatialRefSys" ) );
+        for ( int i = srsNodes.count(); i >= 0; --i )
+        {
+          propsElem.removeChild( srsNodes.at( i ) );
+        }
+        propsElem.appendChild( srsElem );
+      }
     }
   }
 
@@ -761,14 +767,14 @@ void QgsProjectFileTransform::transform2990()
       QString name = editTypeElement.attribute( QStringLiteral( "name" ) );
       fieldElement.setAttribute( QStringLiteral( "name" ), name );
       QDomElement constraintExpressionElem = mDom.createElement( QStringLiteral( "constraint" ) );
-      constraintExpressionElem.setAttribute( "field", name );
+      constraintExpressionElem.setAttribute( QStringLiteral( "field" ), name );
       constraintExpressionsElem.appendChild( constraintExpressionElem );
 
       QDomElement editWidgetElement = mDom.createElement( QStringLiteral( "editWidget" ) );
       fieldElement.appendChild( editWidgetElement );
 
       QString ewv2Type = editTypeElement.attribute( QStringLiteral( "widgetv2type" ) );
-      editWidgetElement.setAttribute( "type", ewv2Type );
+      editWidgetElement.setAttribute( QStringLiteral( "type" ), ewv2Type );
 
       QDomElement ewv2CfgElem = editTypeElement.namedItem( QStringLiteral( "widgetv2config" ) ).toElement();
 
@@ -797,11 +803,11 @@ void QgsProjectFileTransform::transform2990()
           }
           else if ( configAttr.name() == QStringLiteral( "constraint" ) )
           {
-            constraintExpressionElem.setAttribute( "exp", configAttr.value() );
+            constraintExpressionElem.setAttribute( QStringLiteral( "exp" ), configAttr.value() );
           }
           else if ( configAttr.name() == QStringLiteral( "constraintDescription" ) )
           {
-            constraintExpressionElem.setAttribute( "desc", configAttr.value() );
+            constraintExpressionElem.setAttribute( QStringLiteral( "desc" ), configAttr.value() );
           }
           else
           {
@@ -822,7 +828,7 @@ void QgsProjectFileTransform::transform2990()
         }
         else if ( ewv2Type == QStringLiteral( "Photo" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewer" ), 1 );
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
@@ -831,13 +837,13 @@ void QgsProjectFileTransform::transform2990()
         }
         else if ( ewv2Type == QStringLiteral( "FileName" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "RelativeStorage" ), 1 );
         }
         else if ( ewv2Type == QStringLiteral( "WebView" ) )
         {
-          editWidgetElement.setAttribute( "type", QStringLiteral( "ExternalResource" ) );
+          editWidgetElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "ExternalResource" ) );
 
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerHeight" ), editWidgetConfiguration.value( QStringLiteral( "Height" ) ) );
           editWidgetConfiguration.insert( QStringLiteral( "DocumentViewerWidth" ), editWidgetConfiguration.value( QStringLiteral( "Width" ) ) );
@@ -865,7 +871,7 @@ void QgsProjectFileTransform::convertRasterProperties( QDomDocument &doc, QDomNo
     QDomElement noDataRangeList = doc.createElement( QStringLiteral( "noDataRangeList" ) );
     noDataRangeList.setAttribute( QStringLiteral( "bandNo" ), 1 );
 
-    QDomElement noDataRange =  doc.createElement( QStringLiteral( "noDataRange" ) );
+    QDomElement noDataRange = doc.createElement( QStringLiteral( "noDataRange" ) );
     noDataRange.setAttribute( QStringLiteral( "min" ), noDataElement.text() );
     noDataRange.setAttribute( QStringLiteral( "max" ), noDataElement.text() );
     noDataRangeList.appendChild( noDataRange );

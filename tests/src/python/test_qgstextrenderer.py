@@ -29,7 +29,7 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsRectangle,
                        QgsRenderChecker,
                        QgsBlurEffect)
-from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen)
+from qgis.PyQt.QtGui import (QColor, QPainter, QFont, QImage, QBrush, QPen, QFontMetricsF)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF, QRectF, QDir)
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.testing import unittest, start_app
@@ -391,6 +391,74 @@ class PyQgsTextRenderer(unittest.TestCase):
         elem.setAttribute('fontFamily', font.family())
         f.readXml(parent, QgsReadWriteContext())
         self.assertTrue(f.fontFound())
+
+    def testFromQFont(self):
+        qfont = getTestFont()
+        qfont.setPointSizeF(16.5)
+        qfont.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+
+        format = QgsTextFormat.fromQFont(qfont)
+        self.assertEqual(format.font().family(), qfont.family())
+        self.assertEqual(format.font().letterSpacing(), 3.0)
+        self.assertEqual(format.size(), 16.5)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPoints)
+
+        qfont.setPixelSize(12)
+        format = QgsTextFormat.fromQFont(qfont)
+        self.assertEqual(format.size(), 12.0)
+        self.assertEqual(format.sizeUnit(), QgsUnitTypes.RenderPixels)
+
+    def testToQFont(self):
+        s = QgsTextFormat()
+        f = getTestFont()
+        f.setLetterSpacing(QFont.AbsoluteSpacing, 3)
+        s.setFont(f)
+        s.setNamedStyle('Italic')
+        s.setSize(5.5)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        qfont = s.toQFont()
+        self.assertEqual(qfont.family(), f.family())
+        self.assertEqual(qfont.pointSizeF(), 5.5)
+        self.assertEqual(qfont.letterSpacing(), 3.0)
+
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderPixels)
+        qfont = s.toQFont()
+        self.assertEqual(qfont.pixelSize(), 5)
+
+        s.setSize(5)
+        s.setSizeUnit(QgsUnitTypes.RenderMillimeters)
+        qfont = s.toQFont()
+        self.assertAlmostEqual(qfont.pointSizeF(), 14.17, 2)
+
+        s.setSizeUnit(QgsUnitTypes.RenderInches)
+        qfont = s.toQFont()
+        self.assertAlmostEqual(qfont.pointSizeF(), 360.0, 2)
+
+    def testFontMetrics(self):
+        """
+        Test calculating font metrics from scaled text formats
+        """
+        s = QgsTextFormat()
+        f = getTestFont()
+        s.setFont(f)
+        s.setSize(12)
+        s.setSizeUnit(QgsUnitTypes.RenderPoints)
+
+        string = 'xxxxxxxxxxxxxxxxxxxxxx'
+
+        image = QImage(400, 400, QImage.Format_RGB32)
+        painter = QPainter(image)
+        context = QgsRenderContext.fromQPainter(painter)
+        context.setScaleFactor(1)
+        metrics = QgsTextRenderer.fontMetrics(context, s)
+        context.setScaleFactor(2)
+        metrics2 = QgsTextRenderer.fontMetrics(context, s)
+        painter.end()
+
+        self.assertAlmostEqual(metrics.width(string), 51.9, 1)
+        self.assertAlmostEqual(metrics2.width(string), 104.15, 1)
 
     def imageCheck(self, name, reference_image, image):
         self.report += "<h2>Render {}</h2>\n".format(name)

@@ -35,7 +35,8 @@ class QMenu;
 class QProgressDialog;
 class QgsAttributeTableConfig;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief
  * Provides a table view of features of a QgsVectorLayer.
  *
@@ -48,7 +49,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsAttributeTableView
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
@@ -68,7 +71,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * \returns Returns always false, so the event gets processed
      */
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
     /**
      * Set the attribute table config which should be used to control
@@ -138,7 +141,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      */
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 
-    /** Emitted when a column in the view has been resized.
+    /**
+     * Emitted when a column in the view has been resized.
      * \param column column index (starts at 0)
      * \param width new width in pixel
      * \since QGIS 2.16
@@ -150,7 +154,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
-    virtual void selectAll() override;
+    void selectAll() override;
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 
@@ -172,8 +176,8 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsAttributeTableDelegate *mTableDelegate = nullptr;
     QMenu *mActionPopup = nullptr;
-    int mRowSectionAnchor;
-    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag;
+    int mRowSectionAnchor = 0;
+    QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
     QMap< QModelIndex, QWidget * > mActionWidgets;
 };
 

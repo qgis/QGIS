@@ -28,7 +28,8 @@ class QgsMapLayer;
 class QgsProject;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Listens to the updates in map layer registry and does changes in layer tree.
  *
  * When connected to a layer tree, any layers added to the map layer registry
@@ -53,13 +54,18 @@ class CORE_EXPORT QgsLayerTreeRegistryBridge : public QObject
     void setNewLayersVisible( bool enabled ) { mNewLayersVisible = enabled; }
     bool newLayersVisible() const { return mNewLayersVisible; }
 
-    //! Set where the new layers should be inserted - can be used to follow current selection.
-    //! By default it is root group with zero index.
+    /**
+     * Set where the new layers should be inserted - can be used to follow current selection.
+     * By default it is root group with zero index.
+     */
     void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
 
   signals:
-    //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
-    //! \since QGIS 2.6
+
+    /**
+     * Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
+     * \since QGIS 2.6
+     */
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 
   protected slots:

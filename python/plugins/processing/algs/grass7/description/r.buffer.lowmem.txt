@@ -1,8 +1,8 @@
 r.buffer.lowmem
 Creates a raster map layer showing buffer zones surrounding cells that contain non-NULL category values (low-memory alternative).
 Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterString|distances|Distance zone(s) (e.g. 100,200,300)|None|False|False
-ParameterSelection|units|Units of distance|meters;kilometers;feet;miles;nautmiles|False
-ParameterBoolean|-z|Ignore zero (0) data cells instead of NULL cells|False
-OutputRaster|output|Buffer
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterString|distances|Distance zone(s) (e.g. 100,200,300)|None|False|False
+QgsProcessingParameterEnum|units|Units of distance|meters;kilometers;feet;miles;nautmiles|False|0|False
+QgsProcessingParameterBoolean|-z|Ignore zero (0) data cells instead of NULL cells|False
+QgsProcessingParameterRasterDestination|output|Buffer

@@ -29,7 +29,7 @@ namespace QgsWfs
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.0.0" );
+    return QStringLiteral( "1.1.0" );
   }
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
@@ -58,11 +58,44 @@ namespace QgsWfs
     return  href;
   }
 
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem )
+  QString layerTypeName( const QgsMapLayer *layer )
+  {
+    QString name = layer->name();
+    if ( !layer->shortName().isEmpty() )
+      name = layer->shortName();
+    name = name.replace( ' ', '_' );
+    return name;
+  }
+
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName )
+  {
+    QStringList layerIds = QgsServerProjectUtils::wfsLayerIds( *project );
+    for ( const QString &layerId : layerIds )
+    {
+      QgsMapLayer *layer = project->mapLayer( layerId );
+      if ( !layer )
+      {
+        continue;
+      }
+      if ( layer->type() != QgsMapLayer::LayerType::VectorLayer )
+      {
+        continue;
+      }
+
+      if ( layerTypeName( layer ) == typeName )
+      {
+        return qobject_cast<QgsVectorLayer *>( layer );
+      }
+    }
+    return nullptr;
+  }
+
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project )
   {
     QgsFeatureRequest request;
 
     QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
+    QDomNodeList goidNodes = filterElem.elementsByTagName( QStringLiteral( "GmlObjectId" ) );
     if ( !fidNodes.isEmpty() )
     {
       QgsFeatureIds fids;
@@ -91,7 +124,42 @@ namespace QgsWfs
       }
       else
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element corrcetly parse against typeName '%1'" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
+      }
+      request.setFlags( QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    else if ( !goidNodes.isEmpty() )
+    {
+      QgsFeatureIds fids;
+      QDomElement goidElem;
+      for ( int f = 0; f < goidNodes.size(); f++ )
+      {
+        goidElem = goidNodes.at( f ).toElement();
+        if ( !goidElem.hasAttribute( QStringLiteral( "id" ) ) && !goidElem.hasAttribute( QStringLiteral( "gml:id" ) ) )
+        {
+          throw QgsRequestNotWellFormedException( "GmlObjectId element without gml:id attribute" );
+        }
+
+        QString fid = goidElem.attribute( QStringLiteral( "id" ) );
+        if ( fid.isEmpty() )
+          fid = goidElem.attribute( QStringLiteral( "gml:id" ) );
+        if ( fid.contains( QLatin1String( "." ) ) )
+        {
+          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+            continue;
+          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        }
+        fids.insert( fid.toInt() );
+      }
+
+      if ( !fids.isEmpty() )
+      {
+        request.setFilterFids( fids );
+      }
+      else
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;
@@ -117,9 +185,55 @@ namespace QgsWfs
       request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
       return request;
     }
+    // Apply BBOX through filterRect even inside an And to use spatial index
+    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) &&
+              !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
+    {
+      QDomElement childElem = filterElem.firstChildElement().firstChildElement();
+      while ( !childElem.isNull() )
+      {
+        QDomElement childFilterElement = filterElem.ownerDocument().createElement( QLatin1String( "Filter" ) );
+        childFilterElement.appendChild( childElem.cloneNode( true ) );
+        QgsFeatureRequest childRequest = parseFilterElement( typeName, childFilterElement );
+        if ( childElem.tagName() == QLatin1String( "BBOX" ) )
+        {
+          if ( request.filterRect().isEmpty() )
+          {
+            request.setFilterRect( childRequest.filterRect() );
+          }
+          else
+          {
+            request.setFilterRect( request.filterRect().intersect( childRequest.filterRect() ) );
+          }
+        }
+        else
+        {
+          if ( !request.filterExpression() )
+          {
+            request.setFilterExpression( childRequest.filterExpression()->expression() );
+          }
+          else
+          {
+            QgsExpressionNode *opLeft = request.filterExpression()->rootNode()->clone();
+            QgsExpressionNode *opRight = childRequest.filterExpression()->rootNode()->clone();
+            std::unique_ptr<QgsExpressionNodeBinaryOperator> node = qgis::make_unique<QgsExpressionNodeBinaryOperator>( QgsExpressionNodeBinaryOperator::boAnd, opLeft, opRight );
+            QgsExpression expr( node->dump() );
+            request.setFilterExpression( expr );
+          }
+        }
+        childElem = childElem.nextSiblingElement();
+      }
+      request.setFlags( QgsFeatureRequest::ExactIntersect | QgsFeatureRequest::NoFlags );
+      return request;
+    }
     else
     {
-      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+      QgsVectorLayer *layer = nullptr;
+      if ( project != nullptr )
+      {
+        layer = layerByTypeName( project, typeName );
+      }
+      std::shared_ptr<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem, layer ) );
       if ( filter )
       {
         if ( filter->hasParserError() )

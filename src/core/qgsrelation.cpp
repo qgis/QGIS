@@ -21,13 +21,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsRelation::QgsRelation()
-  : mReferencingLayer( nullptr )
-  , mReferencedLayer( nullptr )
-  , mValid( false )
-{
-}
-
 QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();
@@ -43,6 +36,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
+  QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
@@ -73,6 +67,14 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   relation.mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.mRelationId = id;
   relation.mRelationName = name;
+  if ( strength == "Composition" )
+  {
+    relation.mRelationStrength = RelationStrength::Composition;
+  }
+  else
+  {
+    relation.mRelationStrength = RelationStrength::Association;
+  }
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -97,6 +99,14 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), mRelationName );
   elem.setAttribute( QStringLiteral( "referencingLayer" ), mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), mReferencedLayerId );
+  if ( mRelationStrength == RelationStrength::Composition )
+  {
+    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Composition" ) );
+  }
+  else
+  {
+    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Association" ) );
+  }
 
   Q_FOREACH ( const FieldPair &fields, mFieldPairs )
   {
@@ -119,6 +129,12 @@ void QgsRelation::setId( const QString &id )
 void QgsRelation::setName( const QString &name )
 {
   mRelationName = name;
+}
+
+
+void QgsRelation::setStrength( RelationStrength strength )
+{
+  mRelationStrength = strength;
 }
 
 void QgsRelation::setReferencingLayer( const QString &id )
@@ -211,6 +227,11 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
 QString QgsRelation::name() const
 {
   return mRelationName;
+}
+
+QgsRelation::RelationStrength QgsRelation::strength() const
+{
+  return mRelationStrength;
 }
 
 QString QgsRelation::id() const
@@ -324,19 +345,19 @@ void QgsRelation::updateRelationStatus()
   {
     if ( !mReferencedLayer )
     {
-      QgsDebugMsg( QString( "Invalid relation: referenced layer does not exist. ID: %1" ).arg( mReferencedLayerId ) );
+      QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referenced layer does not exist. ID: %1" ).arg( mReferencedLayerId ), 4 );
       mValid = false;
     }
     else if ( !mReferencingLayer )
     {
-      QgsDebugMsg( QString( "Invalid relation: referencing layer does not exist. ID: %2" ).arg( mReferencingLayerId ) );
+      QgsDebugMsgLevel( QStringLiteral( "Invalid relation: referencing layer does not exist. ID: %2" ).arg( mReferencingLayerId ), 4 );
       mValid = false;
     }
     else
     {
       if ( mFieldPairs.count() < 1 )
       {
-        QgsDebugMsg( "Invalid relation: no pair of field is specified." );
+        QgsDebugMsgLevel( "Invalid relation: no pair of field is specified.", 4 );
         mValid = false;
       }
 
@@ -344,13 +365,13 @@ void QgsRelation::updateRelationStatus()
       {
         if ( -1 == mReferencingLayer->fields().lookupField( fieldPair.first ) )
         {
-          QgsDebugMsg( QString( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( fieldPair.first, mReferencingLayer->name() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencing layer %2" ).arg( fieldPair.first, mReferencingLayer->name() ) );
           mValid = false;
           break;
         }
         else if ( -1 == mReferencedLayer->fields().lookupField( fieldPair.second ) )
         {
-          QgsDebugMsg( QString( "Invalid relation: field %1 does not exist in referencedg layer %2" ).arg( fieldPair.second, mReferencedLayer->name() ) );
+          QgsDebugMsg( QStringLiteral( "Invalid relation: field %1 does not exist in referencedg layer %2" ).arg( fieldPair.second, mReferencedLayer->name() ) );
           mValid = false;
           break;
         }

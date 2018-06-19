@@ -37,7 +37,8 @@
 namespace QgsWfs
 {
 
-  /** Return the highest version supported by this implementation
+  /**
+   * Returns the highest version supported by this implementation
    */
   QString implementationVersion();
 
@@ -46,15 +47,29 @@ namespace QgsWfs
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
-  /** Transform a Filter element to a feature request
+  /**
+   * Returns typename from vector layer
    */
-  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem );
+  QString layerTypeName( const QgsMapLayer *layer );
+
+  /**
+   * Retrieve a layer by typename
+   */
+  QgsVectorLayer *layerByTypeName( const QgsProject *project, const QString &typeName );
+
+  /**
+   * Transform a Filter element to a feature request
+   */
+  QgsFeatureRequest parseFilterElement( const QString &typeName, QDomElement &filterElem, const QgsProject *project = nullptr );
 
   // Define namespaces used in WFS documents
   const QString WFS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wfs" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OGC_NAMESPACE = QStringLiteral( "http://www.opengis.net/ogc" );
   const QString QGS_NAMESPACE = QStringLiteral( "http://www.qgis.org/gml" );
+
+  // Define clean tagName regExp
+  const QRegExp cleanTagNameRegExp( "(?![\\w\\d\\.-])." );
 
 } // namespace QgsWfs
 

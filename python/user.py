@@ -29,7 +29,7 @@ import glob
 import traceback
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsApplication, QgsMessageLog
+from qgis.core import Qgis, QgsApplication, QgsMessageLog
 
 
 def load_user_expressions(path):
@@ -50,7 +50,7 @@ def load_user_expressions(path):
             error = traceback.format_exc()
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
-            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, QgsMessageLog.WARNING)
+            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.Warning)
 
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")

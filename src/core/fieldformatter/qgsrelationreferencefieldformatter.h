@@ -36,11 +36,11 @@ class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
       */
     QgsRelationReferenceFieldFormatter() = default;
 
-    virtual QString id() const override;
+    QString id() const override;
 
-    virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+    QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 
-    virtual QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
+    QVariant sortValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 };
 
 #endif // QGSRELATIONREFERENCEFIELDKIT_H

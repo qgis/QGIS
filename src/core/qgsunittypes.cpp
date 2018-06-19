@@ -649,27 +649,27 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::AreaUnit unit )
   switch ( unit )
   {
     case AreaSquareMeters:
-      return QObject::trUtf8( "m²", "area" );
+      return QObject::tr( "m²", "area" );
     case AreaSquareKilometers:
-      return QObject::trUtf8( "km²", "area" );
+      return QObject::tr( "km²", "area" );
     case AreaSquareFeet:
-      return QObject::trUtf8( "ft²", "area" );
+      return QObject::tr( "ft²", "area" );
     case AreaSquareYards:
-      return QObject::trUtf8( "yd²", "area" );
+      return QObject::tr( "yd²", "area" );
     case AreaSquareMiles:
-      return QObject::trUtf8( "mi²", "area" );
+      return QObject::tr( "mi²", "area" );
     case AreaHectares:
-      return QObject::trUtf8( "ha", "area" );
+      return QObject::tr( "ha", "area" );
     case AreaAcres:
-      return QObject::trUtf8( "ac²", "area" );
+      return QObject::tr( "ac²", "area" );
     case AreaSquareNauticalMiles:
-      return QObject::trUtf8( "NM²", "area" );
+      return QObject::tr( "NM²", "area" );
     case AreaSquareDegrees:
-      return QObject::trUtf8( "deg²", "area" );
+      return QObject::tr( "deg²", "area" );
     case AreaSquareCentimeters:
-      return QObject::trUtf8( "cm²", "area" );
+      return QObject::tr( "cm²", "area" );
     case AreaSquareMillimeters:
-      return QObject::trUtf8( "mm²", "area" );
+      return QObject::tr( "mm²", "area" );
     case AreaUnknownUnit:
       return QString();
   }
@@ -770,7 +770,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return 1.0;
         case AreaSquareFeet:
-          return KM2_TO_M2 / FT2_TO_M2 ;
+          return KM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return KM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:
@@ -1032,7 +1032,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return MM2_TO_M2 / KM2_TO_M2;
         case AreaSquareFeet:
-          return MM2_TO_M2 / FT2_TO_M2 ;
+          return MM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return MM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:
@@ -1064,7 +1064,7 @@ double QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsU
         case AreaSquareKilometers:
           return CM2_TO_M2 / KM2_TO_M2;
         case AreaSquareFeet:
-          return CM2_TO_M2 / FT2_TO_M2 ;
+          return CM2_TO_M2 / FT2_TO_M2;
         case AreaSquareYards:
           return CM2_TO_M2 / YD2_TO_M2;
         case AreaSquareMiles:
@@ -1346,22 +1346,22 @@ QString QgsUnitTypes::formatAngle( double angle, int decimals, QgsUnitTypes::Ang
   switch ( unit )
   {
     case AngleDegrees:
-      unitLabel = QObject::trUtf8( "°", "angle" );
+      unitLabel = QObject::tr( "°", "angle" );
       break;
     case AngleRadians:
-      unitLabel = QObject::trUtf8( " rad", "angle" );
+      unitLabel = QObject::tr( " rad", "angle" );
       break;
     case AngleGon:
-      unitLabel = QObject::trUtf8( " gon", "angle" );
+      unitLabel = QObject::tr( " gon", "angle" );
       break;
     case AngleMinutesOfArc:
-      unitLabel = QObject::trUtf8( "′", "angle minutes" );
+      unitLabel = QObject::tr( "′", "angle minutes" );
       break;
     case AngleSecondsOfArc:
-      unitLabel = QObject::trUtf8( "″", "angle seconds" );
+      unitLabel = QObject::tr( "″", "angle seconds" );
       break;
     case AngleTurn:
-      unitLabel = QObject::trUtf8( " tr", "angle turn" );
+      unitLabel = QObject::tr( " tr", "angle turn" );
       break;
     case AngleUnknownUnit:
       break;
@@ -1761,7 +1761,7 @@ QString QgsUnitTypes::toString( QgsUnitTypes::RenderUnit unit )
       return QObject::tr( "millimeters", "render" );
 
     case RenderMetersInMapUnits:
-      return QObject::tr( "meters (at map scale)", "render" );
+      return QObject::tr( "meters at scale", "render" );
 
     case RenderMapUnits:
       return QObject::tr( "map units", "render" );
@@ -1875,7 +1875,7 @@ QString QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::LayoutUnit unit )
     case LayoutMeters:
       return QObject::tr( "m" );
     case LayoutInches:
-      return QObject::tr( "in" );
+      return QObject::tr( "in", "unit inch" );
     case LayoutFeet:
       return QObject::tr( "ft" );
     case LayoutPoints:

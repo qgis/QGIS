@@ -34,10 +34,11 @@ class QgsRasterLayerRenderer;
 
 ///@cond PRIVATE
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Specific internal feedback class to provide preview of raster layer rendering.
- * \since QGIS 3.0
  * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
 {
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
     explicit QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r );
 
     //! when notified of new data in data provider it launches a preview draw of the raster
-    virtual void onNewData() override;
+    void onNewData() override;
   private:
     QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
     int mMinimalPreviewInterval;  //!< In milliseconds
@@ -57,21 +58,22 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
 
 ///@endcond
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of threaded rendering for raster layers.
  *
- * \since QGIS 2.4
  * \note not available in Python bindings
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
   public:
     QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
-    ~QgsRasterLayerRenderer();
+    ~QgsRasterLayerRenderer() override;
 
-    virtual bool render() override;
+    bool render() override;
 
-    virtual QgsFeedback *feedback() const override;
+    QgsFeedback *feedback() const override;
 
   private:
 

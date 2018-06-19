@@ -27,8 +27,8 @@
 
 /**
  * Represents an input parameter used by the model.
- * \since QGIS 3.0
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelParameter : public QgsProcessingModelComponent
 {

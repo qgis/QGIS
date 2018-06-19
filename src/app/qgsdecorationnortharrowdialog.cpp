@@ -14,8 +14,11 @@
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
 #include "qgshelp.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgssymbollayerutils.h"
 #include "qgssvgcache.h"
+#include "qgssvgselectorwidget.h"
 
 #include <QPainter>
 #include <cmath>
@@ -28,6 +31,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationNorthArrowDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationNorthArrowDialog::buttonBox_rejected );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
@@ -36,9 +41,24 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationNorthArrowDialog::showHelp );
 
+  spinSize->setValue( mDeco.mSize );
+
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
   spinAngle->setValue( mDeco.mRotationInt );
+
+  // automatic
+  cboxAutomatic->setChecked( mDeco.mAutomatic );
+  spinAngle->setEnabled( !mDeco.mAutomatic );
+  sliderRotation->setEnabled( !mDeco.mAutomatic );
+
+  connect( cboxAutomatic, &QAbstractButton::toggled, [ = ]( bool checked )
+  {
+    spinAngle->setEnabled( !checked );
+    sliderRotation->setEnabled( !checked );
+  } );
+  connect( spinAngle, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsDecorationNorthArrowDialog::spinAngle_valueChanged );
+  connect( sliderRotation, &QSlider::valueChanged, this, &QgsDecorationNorthArrowDialog::sliderRotation_valueChanged );
 
   // placement
   cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
@@ -54,19 +74,31 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   // enabled
   grpEnable->setChecked( mDeco.enabled() );
 
-  // automatic
-  cboxAutomatic->setChecked( mDeco.mAutomatic );
+  mSvgPathLineEdit->setText( mDeco.mSvgPath );
+  connect( mSvgPathLineEdit, &QLineEdit::textChanged, this, &QgsDecorationNorthArrowDialog::updateSvgPath );
+  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [ = ]
+  {
+    QgsSvgSelectorDialog svgDlg( this );
+    svgDlg.setWindowTitle( tr( "Select SVG file" ) );
+    svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
+    if ( svgDlg.exec() == QDialog::Accepted )
+    {
+      QString svgPath = svgDlg.svgSelector()->currentSvgPath();
+      if ( !svgPath.isEmpty() )
+      {
+        updateSvgPath( svgPath );
+      }
+    }
+  } );
 
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
-
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
-
   connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
 
@@ -84,27 +116,27 @@ void QgsDecorationNorthArrowDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
+void QgsDecorationNorthArrowDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
+void QgsDecorationNorthArrowDialog::buttonBox_rejected()
 {
   reject();
 }
 
 
-void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int spinAngle )
+void QgsDecorationNorthArrowDialog::spinAngle_valueChanged( int spinAngle )
 {
-  Q_UNUSED( spinAngle );
+  sliderRotation->setValue( spinAngle );
+  drawNorthArrow();
 }
 
-void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int rotationValue )
+void QgsDecorationNorthArrowDialog::sliderRotation_valueChanged( int rotationValue )
 {
-  Q_UNUSED( rotationValue );
-
+  spinAngle->setValue( rotationValue );
   drawNorthArrow();
 }
 
@@ -112,6 +144,7 @@ void QgsDecorationNorthArrowDialog::apply()
 {
   mDeco.mColor = pbnChangeColor->color();
   mDeco.mOutlineColor = pbnChangeOutlineColor->color();
+  mDeco.mSize = spinSize->value();
   mDeco.mRotationInt = sliderRotation->value();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
@@ -122,19 +155,47 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.update();
 }
 
+void QgsDecorationNorthArrowDialog::updateSvgPath( const QString &svgPath )
+{
+  if ( mSvgPathLineEdit->text() != svgPath )
+  {
+    mSvgPathLineEdit->setText( svgPath );
+  }
+  mDeco.mSvgPath = svgPath;
+
+  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
+  bool validSvg = QFileInfo::exists( resolvedPath );
+
+  // draw red text for path field if invalid (path can't be resolved)
+  mSvgPathLineEdit->setStyleSheet( QString( !validSvg ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
+  mSvgPathLineEdit->setToolTip( !validSvg ? tr( "File not found" ) : resolvedPath );
+
+  drawNorthArrow();
+}
+
 void QgsDecorationNorthArrowDialog::drawNorthArrow()
 {
   int rotation = spinAngle->value();
-
-  QSize size( 64, 64 );
+  double maxLength = 64;
   QSvgRenderer svg;
 
-  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), pbnChangeColor->color(), pbnChangeOutlineColor->color(), 1.0, 1.0 );
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( mDeco.svgPath(), maxLength, pbnChangeColor->color(), pbnChangeOutlineColor->color(), 1.0, 1.0 );
   svg.load( svgContent );
 
   if ( svg.isValid() )
   {
-    QPixmap  myPainterPixmap( size.height(), size.width() );
+    QSize size( maxLength, maxLength );
+    QRectF viewBox = svg.viewBoxF();
+    if ( viewBox.height() > viewBox.width() )
+    {
+      size.setWidth( maxLength * viewBox.width() / viewBox.height() );
+    }
+    else
+    {
+      size.setHeight( maxLength * viewBox.height() / viewBox.width() );
+    }
+
+    QPixmap  myPainterPixmap( maxLength, maxLength );
     myPainterPixmap.fill();
 
     QPainter myQPainter;
@@ -146,7 +207,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
-    //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
+    myQPainter.translate( ( maxLength - size.width() ) / 2, ( maxLength - size.height() ) / 2 );
 
     //rotate the canvas
     myQPainter.rotate( rotation );

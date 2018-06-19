@@ -29,7 +29,8 @@ class QgsDistanceArea;
 class QgsExpressionContextGenerator;
 class QgsCodeEditorSQL;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsExpressionLineEdit
  * \brief The QgsExpressionLineEdit widget includes a line edit for entering expressions
  * together with a button to open the expression creation dialog.
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
      * Constructor for QgsExpressionLineEdit.
      * \param parent parent widget
      */
-    explicit QgsExpressionLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsExpressionLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the title used in the expression builder dialog
@@ -103,7 +104,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
       * Returns true if the current expression is valid.
       * \param expressionError will be set to any generated error message if specified
       */
-    bool isValidExpression( QString *expressionError SIP_OUT = 0 ) const;
+    bool isValidExpression( QString *expressionError SIP_OUT = nullptr ) const;
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -115,7 +116,8 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
 
   signals:
 
-    /** Emitted when the expression is changed.
+    /**
+     * Emitted when the expression is changed.
      * \param expression new expression
      */
     void expressionChanged( const QString &expression );

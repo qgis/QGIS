@@ -1,31 +1,31 @@
 Fuzzy Landform Element Classification
 ta_morphometry
-ParameterRaster|SLOPE|Slope|False
-ParameterRaster|MINCURV|Minimum Curvature|False
-ParameterRaster|MAXCURV|Maximum Curvature|False
-ParameterRaster|PCURV|Profile Curvature|False
-ParameterRaster|TCURV|Tangential Curvature|False
-OutputRaster|PLAIN|Plain
-OutputRaster|PIT|Pit
-OutputRaster|PEAK|Peak
-OutputRaster|RIDGE|Ridge
-OutputRaster|CHANNEL|Channel
-OutputRaster|SADDLE|Saddle
-OutputRaster|BSLOPE|Back Slope
-OutputRaster|FSLOPE|Foot Slope
-OutputRaster|SSLOPE|Shoulder Slope
-OutputRaster|HOLLOW|Hollow
-OutputRaster|FHOLLOW|Foot Hollow
-OutputRaster|SHOLLOW|Shoulder Hollow
-OutputRaster|SPUR|Spur
-OutputRaster|FSPUR|Foot Spur
-OutputRaster|SSPUR|Shoulder Spur
-OutputRaster|FORM|Landform
-OutputRaster|MEM|Maximum Membership
-OutputRaster|ENTROPY|Entropy
-OutputRaster|CI|Confusion Index
-ParameterSelection|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians| 0
-ParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|None|None|None
-ParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|None|None|None
-ParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|None|None|None
-ParameterNumber|T_CURVE_MAX|Curvature Thresholds [1 / m] (Max)|None|None|None
+QgsProcessingParameterRasterLayer|SLOPE|Slope|None|False
+QgsProcessingParameterRasterLayer|MINCURV|Minimum Curvature|None|False
+QgsProcessingParameterRasterLayer|MAXCURV|Maximum Curvature|None|False
+QgsProcessingParameterRasterLayer|PCURV|Profile Curvature|None|False
+QgsProcessingParameterRasterLayer|TCURV|Tangential Curvature|None|False
+QgsProcessingParameterRasterDestination|PLAIN|Plain
+QgsProcessingParameterRasterDestination|PIT|Pit
+QgsProcessingParameterRasterDestination|PEAK|Peak
+QgsProcessingParameterRasterDestination|RIDGE|Ridge
+QgsProcessingParameterRasterDestination|CHANNEL|Channel
+QgsProcessingParameterRasterDestination|SADDLE|Saddle
+QgsProcessingParameterRasterDestination|BSLOPE|Back Slope
+QgsProcessingParameterRasterDestination|FSLOPE|Foot Slope
+QgsProcessingParameterRasterDestination|SSLOPE|Shoulder Slope
+QgsProcessingParameterRasterDestination|HOLLOW|Hollow
+QgsProcessingParameterRasterDestination|FHOLLOW|Foot Hollow
+QgsProcessingParameterRasterDestination|SHOLLOW|Shoulder Hollow
+QgsProcessingParameterRasterDestination|SPUR|Spur
+QgsProcessingParameterRasterDestination|FSPUR|Foot Spur
+QgsProcessingParameterRasterDestination|SSPUR|Shoulder Spur
+QgsProcessingParameterRasterDestination|FORM|Landform
+QgsProcessingParameterRasterDestination|MEM|Maximum Membership
+QgsProcessingParameterRasterDestination|ENTROPY|Entropy
+QgsProcessingParameterRasterDestination|CI|Confusion Index
+QgsProcessingParameterEnum|SLOPETODEG|Slope Grid Units|[0] degree;[1] radians|False|0
+QgsProcessingParameterNumber|T_SLOPE_MIN|Slope Thresholds [Degree] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_SLOPE_MAX|Slope Thresholds [Degree] (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_CURVE_MIN|Curvature Thresholds [1 / m] (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|T_CURVE_MAX|Curvature Thresholds [1 / m] (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None

@@ -74,7 +74,7 @@ class QgsGlobeFeatureOptions : public osgEarth::Features::FeatureSourceOptions /
     }
 
     osgEarth::optional<std::string> mLayerId;
-    QgsVectorLayer       *mLayer = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 };
 
 #endif // QGSGLOBEFEATUREOPTIONS_H

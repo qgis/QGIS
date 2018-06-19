@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Processing results viewer</string>
+   <string>Results Viewer</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -45,7 +45,7 @@
         </property>
        </column>
       </widget>
-      <widget class="QTextEdit" name="txtDescription"/>
+      <widget class="QTextBrowser" name="txtDescription"/>
      </widget>
     </item>
    </layout>

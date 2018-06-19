@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -27,18 +26,24 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import shutil
-import inspect
 import os
 import sys
 
 from qgis.core import (QgsApplication,
-                       QgsProcessingUtils)
-from qgis.gui import QgsOptionsWidgetFactory
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir
+                       QgsProcessingUtils,
+                       QgsProcessingModelAlgorithm,
+                       QgsDataItemProvider,
+                       QgsDataProvider,
+                       QgsDataItem,
+                       QgsMimeDataUtils)
+from qgis.gui import (QgsOptionsWidgetFactory,
+                      QgsCustomDropHandler)
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QDir, QFileInfo
 from qgis.PyQt.QtWidgets import QMenu, QAction
-from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from processing.core.Processing import Processing
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
@@ -49,9 +54,7 @@ from processing.tools.system import tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.ProcessingResults import resultsList
 
-cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
+pluginPath = os.path.dirname(__file__)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
@@ -66,13 +69,103 @@ class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
         return ConfigOptionsPage(parent)
 
 
-class ProcessingPlugin(object):
+class ProcessingDropHandler(QgsCustomDropHandler):
+
+    def handleFileDrop(self, file):
+        if not file.lower().endswith('.model3'):
+            return False
+        self.runAlg(file)
+
+    @staticmethod
+    def runAlg(file):
+        alg = QgsProcessingModelAlgorithm()
+        if not alg.fromFile(file):
+            return False
+
+        alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
+        dlg = AlgorithmDialog(alg)
+        dlg.show()
+        return True
+
+    def customUriProviderKey(self):
+        return 'processing'
+
+    def handleCustomUriDrop(self, uri):
+        path = uri.uri
+        self.runAlg(path)
+
+
+class ProcessingModelItem(QgsDataItem):
+
+    def __init__(self, parent, name, path):
+        super(ProcessingModelItem, self).__init__(QgsDataItem.Custom, parent, name, path)
+        self.setState(QgsDataItem.Populated)  # no children
+        self.setIconName(":/images/themes/default/processingModel.svg")
+        self.setToolTip(QDir.toNativeSeparators(path))
+
+    def hasDragEnabled(self):
+        return True
+
+    def handleDoubleClick(self):
+        self.runModel()
+        return True
+
+    def mimeUri(self):
+        u = QgsMimeDataUtils.Uri()
+        u.layerType = "custom"
+        u.providerKey = "processing"
+        u.name = self.name()
+        u.uri = self.path()
+        return u
+
+    def runModel(self):
+        ProcessingDropHandler.runAlg(self.path())
+
+    def editModel(self):
+        dlg = ModelerDialog()
+        dlg.loadModel(self.path())
+        dlg.show()
+
+    def actions(self, parent):
+        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), parent)
+        run_model_action.triggered.connect(self.runModel)
+        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), parent)
+        edit_model_action.triggered.connect(self.editModel)
+        return [run_model_action, edit_model_action]
+
+
+class ProcessingDataItemProvider(QgsDataItemProvider):
+
+    def __init__(self):
+        super(ProcessingDataItemProvider, self).__init__()
+
+    def name(self):
+        return 'processing'
+
+    def capabilities(self):
+        return QgsDataProvider.File
+
+    def createDataItem(self, path, parentItem):
+        file_info = QFileInfo(path)
+
+        if file_info.suffix().lower() == 'model3':
+            alg = QgsProcessingModelAlgorithm()
+            if alg.fromFile(path):
+                return ProcessingModelItem(parentItem, alg.name(), path)
+        return None
+
+
+class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface
         self.options_factory = ProcessingOptionsFactory()
         self.options_factory.setTitle(self.tr('Processing'))
         iface.registerOptionsWidgetFactory(self.options_factory)
+        self.drop_handler = ProcessingDropHandler()
+        iface.registerCustomDropHandler(self.drop_handler)
+        self.item_provider = ProcessingDataItemProvider()
+        QgsApplication.dataItemProviderRegistry().addProvider(self.item_provider)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
         Processing.initialize()
@@ -81,48 +174,64 @@ class ProcessingPlugin(object):
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
+        self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
         self.resultsDock.hide()
 
-        resultsList.resultAdded.connect(self.resultsDock.fillTree)
-
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
         self.menu.setTitle(self.tr('Pro&cessing'))
 
-        self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction = QAction(self.tr('&Toolbox'), self.iface.mainWindow())
+        self.toolboxAction.setCheckable(True)
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
             QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
-        self.toolboxAction.setText(self.tr('&Toolbox'))
-        self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
+        self.iface.registerMainWindowAction(self.toolboxAction,
+                                            QKeySequence('Ctrl+Alt+T').toString(QKeySequence.NativeText))
+        self.toolboxAction.toggled.connect(self.openToolbox)
+        self.iface.attributesToolBar().insertAction(self.iface.actionOpenStatisticalSummary(), self.toolboxAction)
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
-            self.tr('Graphical &Modeler...'), self.iface.mainWindow())
+            QCoreApplication.translate('ProcessingPlugin', 'Graphical &Modeler…'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
-        self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
+        self.iface.registerMainWindowAction(self.modelerAction,
+                                            QKeySequence('Ctrl+Alt+M').toString(QKeySequence.NativeText))
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
-            self.tr('&History...'), self.iface.mainWindow())
+            QIcon(os.path.join(pluginPath, 'images', 'history.svg')),
+            QCoreApplication.translate('ProcessingPlugin', '&History…'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
-        self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
+        self.iface.registerMainWindowAction(self.historyAction,
+                                            QKeySequence('Ctrl+Alt+H').toString(QKeySequence.NativeText))
         self.menu.addAction(self.historyAction)
+        self.toolbox.processingToolbar.addAction(self.historyAction)
 
-        self.resultsAction = self.resultsDock.toggleViewAction()
-        self.resultsAction.setObjectName('resultsAction')
-        self.resultsAction.setIcon(
-            QgsApplication.getThemeIcon("/processingResult.svg"))
-        self.resultsAction.setText(self.tr('&Results Viewer'))
-        self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
+        self.resultsAction = QAction(
+            QgsApplication.getThemeIcon("/processingResult.svg"),
+            self.tr('&Results Viewer'), self.iface.mainWindow())
+        self.resultsAction.setCheckable(True)
+        self.iface.registerMainWindowAction(self.resultsAction,
+                                            QKeySequence('Ctrl+Alt+R').toString(QKeySequence.NativeText))
+
         self.menu.addAction(self.resultsAction)
+        self.toolbox.processingToolbar.addAction(self.resultsAction)
+        self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
+        self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
+
+        self.optionsAction = QAction(
+            QgsApplication.getThemeIcon("/mActionOptions.svg"),
+            self.tr('Options'), self.iface.mainWindow())
+        self.optionsAction.setObjectName('optionsAction')
+        self.optionsAction.triggered.connect(self.openProcessingOptions)
+        self.toolbox.processingToolbar.addAction(self.optionsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
@@ -133,13 +242,18 @@ class ProcessingPlugin(object):
         initializeMenus()
         createMenus()
 
+    def openProcessingOptions(self):
+        self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
+
     def unload(self):
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
+        self.iface.attributesToolBar().removeAction(self.toolboxAction)
 
         self.resultsDock.setVisible(False)
         self.iface.removeDockWidget(self.resultsDock)
 
+        self.toolbox.deleteLater()
         self.menu.deleteLater()
 
         # delete temporary output files
@@ -159,15 +273,17 @@ class ProcessingPlugin(object):
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
         self.iface.deregisterLocatorFilter(self.locator_filter)
+        self.iface.unregisterCustomDropHandler(self.drop_handler)
+        QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
 
         removeMenus()
         Processing.deinitialize()
 
-    def openToolbox(self):
-        if self.toolbox.isVisible():
-            self.toolbox.hide()
-        else:
-            self.toolbox.show()
+    def openToolbox(self, show):
+        self.toolbox.setUserVisible(show)
+
+    def toolboxVisibilityChanged(self, visible):
+        self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
         dlg = ModelerDialog()

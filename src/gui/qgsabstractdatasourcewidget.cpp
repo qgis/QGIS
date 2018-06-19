@@ -38,26 +38,20 @@ const QgsMapCanvas *QgsAbstractDataSourceWidget::mapCanvas() const
 void QgsAbstractDataSourceWidget::setupButtons( QDialogButtonBox *buttonBox )
 {
 
-  if ( mWidgetMode == QgsProviderRegistry::WidgetMode::None )
-  {
-    QPushButton *closeButton = new QPushButton( tr( "&Close" ) );
-    buttonBox->addButton( closeButton, QDialogButtonBox::ApplyRole );
-    connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::addButtonClicked );
-  }
-
-  mAddButton = new QPushButton( tr( "&Add" ) );
+  buttonBox->setStandardButtons( QDialogButtonBox::Apply | QDialogButtonBox::Close | QDialogButtonBox::Help );
+#ifdef Q_OS_MACX
+  buttonBox->setStyleSheet( "* { button-layout: 2 }" );
+#endif
+  mAddButton = buttonBox->button( QDialogButtonBox::Apply );
+  mAddButton->setText( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ApplyRole );
   connect( mAddButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::addButtonClicked );
   connect( this, &QgsAbstractDataSourceWidget::enableButtons, mAddButton, &QPushButton::setEnabled );
 
-  QPushButton *okButton = new QPushButton( tr( "&Ok" ) );
-  okButton->setToolTip( tr( "Add selected layers to map and close this dialog" ) );
-  okButton->setEnabled( false );
-  buttonBox->addButton( okButton, QDialogButtonBox::AcceptRole );
-  connect( okButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::okButtonClicked );
-  connect( this, &QgsAbstractDataSourceWidget::enableButtons, okButton, &QPushButton::setEnabled );
+  QPushButton *closeButton = buttonBox->button( QDialogButtonBox::Close );
+  closeButton->setToolTip( tr( "Close this dialog without adding any layer" ) );
+  connect( closeButton, &QPushButton::clicked, this, &QgsAbstractDataSourceWidget::reject );
 
 }
 
@@ -67,8 +61,3 @@ void QgsAbstractDataSourceWidget::setMapCanvas( const QgsMapCanvas *mapCanvas )
   mMapCanvas = mapCanvas;
 }
 
-void QgsAbstractDataSourceWidget::okButtonClicked()
-{
-  addButtonClicked();
-  emit accepted();
-}

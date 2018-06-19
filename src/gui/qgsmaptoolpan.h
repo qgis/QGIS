@@ -21,7 +21,8 @@
 class QgsMapCanvas;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A map tool for panning the map.
  * \see QgsMapTool
  */
@@ -32,16 +33,16 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
   public:
     //! constructor
     QgsMapToolPan( QgsMapCanvas *canvas );
-    ~QgsMapToolPan();
+    ~QgsMapToolPan() override;
 
     void activate() override;
     void deactivate() override;
 
-    virtual Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
+    Flags flags() const override { return QgsMapTool::Transient | QgsMapTool::AllowZoomRect; }
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
     bool gestureEvent( QGestureEvent *e ) override;
 
   private:

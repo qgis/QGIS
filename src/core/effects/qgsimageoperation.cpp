@@ -43,7 +43,7 @@ void QgsImageOperation::runPixelOperation( QImage &image, PixelOperation &operat
   else
   {
     //large image, multithread operation
-    QgsImageOperation::ProcessBlockUsingPixelOperation<PixelOperation> blockOp( operation ) ;
+    QgsImageOperation::ProcessBlockUsingPixelOperation<PixelOperation> blockOp( operation );
     runBlockOperationInThreads( image, blockOp, QgsImageOperation::ByRow );
   }
 }
@@ -109,7 +109,7 @@ void QgsImageOperation::runLineOperation( QImage &image, LineOperation &operatio
   else
   {
     //large image, multithread operation
-    QgsImageOperation::ProcessBlockUsingLineOperation<LineOperation> blockOp( operation ) ;
+    QgsImageOperation::ProcessBlockUsingLineOperation<LineOperation> blockOp( operation );
     runBlockOperationInThreads( image, blockOp, operation.direction() );
   }
 }

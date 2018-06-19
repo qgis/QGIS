@@ -27,7 +27,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import pyqtWrapperType, Qt, QDir, QFile, QIODevice, QPointF, QSize
+from distutils.version import StrictVersion
+from qgis.PyQt.Qt import PYQT_VERSION_STR
+from qgis.PyQt.QtCore import Qt, QObject, QDir, QFile, QIODevice, QPointF, QSize
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 
@@ -81,6 +83,12 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
+if StrictVersion(PYQT_VERSION_STR) < StrictVersion('5.7'):
+    from qgis.PyQt.QtCore import pyqtWrapperType
+    EXPECTED_TYPE = pyqtWrapperType
+else:
+    EXPECTED_TYPE = type(QObject)
+
 
 class TestQgsSymbolLayer(unittest.TestCase):
 
@@ -107,193 +115,169 @@ class TestQgsSymbolLayer(unittest.TestCase):
     def testBinding(self):
         """Test python bindings existence."""
         mType = type(QgsSymbolLayer)
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsGradientFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsLinePatternFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsPointPatternFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsImageFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsPointPatternFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsGradientFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsShapeburstFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsSVGFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsCentroidFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsRasterFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsSimpleFillSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsLineSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsMarkerLineSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsArrowSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsSimpleLineSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsMarkerSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsEllipseSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsFontMarkerSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsSimpleMarkerSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsFilledMarkerSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsSvgMarkerSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
         try:
             mType = type(QgsVectorFieldSymbolLayer)
         except:
             mType = None
-        mExpectedType = pyqtWrapperType
-        mMessage = 'Expected "%s" got "%s"' % (mExpectedType, mType)
-        assert mExpectedType == mType, mMessage
+        mMessage = 'Expected "%s" got "%s"' % (EXPECTED_TYPE, mType)
+        assert EXPECTED_TYPE == mType, mMessage
 
     def testGettersSetters(self):
         """ test base class getters/setters """
@@ -380,9 +364,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        extent = geom.geometry().boundingBox()
+        extent = geom.constGet().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())
@@ -445,9 +429,9 @@ class TestQgsSymbolLayer(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(geom)
 
-        extent = geom.geometry().boundingBox()
+        extent = geom.constGet().boundingBox()
         # buffer extent by 10%
-        extent = extent.buffer((extent.height() + extent.width()) / 20.0)
+        extent = extent.buffered((extent.height() + extent.width()) / 20.0)
 
         ms.setExtent(extent)
         ms.setOutputSize(image.size())

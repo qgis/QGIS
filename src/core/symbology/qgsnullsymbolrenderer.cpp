@@ -25,17 +25,17 @@ QgsNullSymbolRenderer::QgsNullSymbolRenderer()
 {
 }
 
-QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsNullSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
 
-QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsNullSymbolRenderer::originalSymbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return nullptr;
 }
 
-bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsNullSymbolRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   //render selected features or features being edited only
   if ( !selected && !drawVertexMarker )
@@ -60,21 +60,17 @@ bool QgsNullSymbolRenderer::renderFeature( QgsFeature &feature, QgsRenderContext
   return true;
 }
 
-void QgsNullSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
-{
-  Q_UNUSED( context );
-  Q_UNUSED( fields );
-}
-
 void QgsNullSymbolRenderer::stopRender( QgsRenderContext &context )
 {
-  if ( mSymbol.get() )
+  QgsFeatureRenderer::stopRender( context );
+
+  if ( mSymbol )
   {
     mSymbol->stopRender( context );
   }
 }
 
-bool QgsNullSymbolRenderer::willRenderFeature( QgsFeature &, QgsRenderContext & )
+bool QgsNullSymbolRenderer::willRenderFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   //return true for every feature - so they are still selectable
   return true;
@@ -96,7 +92,7 @@ QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
   return r;
 }
 
-QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & )
+QgsSymbolList QgsNullSymbolRenderer::symbols( QgsRenderContext & ) const
 {
   return QgsSymbolList();
 }

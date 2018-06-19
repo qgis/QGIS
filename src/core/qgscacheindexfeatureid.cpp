@@ -19,8 +19,7 @@
 #include "qgsvectorlayercache.h"
 
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
-  : QgsAbstractCacheIndex()
-  , C( cachedVectorLayer )
+  : C( cachedVectorLayer )
 {
 
 }

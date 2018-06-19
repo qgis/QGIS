@@ -143,7 +143,7 @@ void QgsPgSourceSelectDelegate::setEditorData( QWidget *editor, const QModelInde
     bool ok;
     value.toInt( &ok );
     if ( index.column() == QgsPgTableModel::DbtmSrid && !ok )
-      value = QLatin1String( "" );
+      value.clear();
 
     le->setText( value );
   }
@@ -159,7 +159,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsPgTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsPostgresConn::displayStringForWkbType( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::DbtmPkCol )
@@ -173,7 +173,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select..." ) : cols.join( QStringLiteral( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QStringLiteral( ", " ) ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -185,7 +185,7 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
     if ( index.column() == QgsPgTableModel::DbtmSrid && value.isEmpty() )
     {
-      value = tr( "Enter..." );
+      value = tr( "Enter…" );
     }
 
     model->setData( index, value );
@@ -194,10 +194,22 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mColumnTypeThread( nullptr )
-  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsPgSourceSelect::btnConnect_clicked );
+  connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsPgSourceSelect::cbxAllowGeometrylessTables_stateChanged );
+  connect( btnNew, &QPushButton::clicked, this, &QgsPgSourceSelect::btnNew_clicked );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsPgSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsPgSourceSelect::btnDelete_clicked );
+  connect( btnSave, &QPushButton::clicked, this, &QgsPgSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsPgSourceSelect::btnLoad_clicked );
+  connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsPgSourceSelect::mSearchGroupBox_toggled );
+  connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsPgSourceSelect::mSearchTableEdit_textChanged );
+  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPgSourceSelect::cmbConnections_currentIndexChanged );
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsPgSourceSelect::mTablesTreeView_clicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsPgSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPgSourceSelect::showHelp );
 
@@ -276,7 +288,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsPr
 }
 //! Autoconnected SLOTS *
 // Slot for adding a new connection
-void QgsPgSourceSelect::on_btnNew_clicked()
+void QgsPgSourceSelect::btnNew_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this );
   if ( nc->exec() )
@@ -287,11 +299,11 @@ void QgsPgSourceSelect::on_btnNew_clicked()
   delete nc;
 }
 // Slot for deleting an existing connection
-void QgsPgSourceSelect::on_btnDelete_clicked()
+void QgsPgSourceSelect::btnDelete_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   QgsPostgresConn::deleteConnection( cmbConnections->currentText() );
@@ -300,15 +312,15 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   emit connectionsChanged();
 }
 
-void QgsPgSourceSelect::on_btnSave_clicked()
+void QgsPgSourceSelect::btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::PostGIS );
   dlg.exec();
 }
 
-void QgsPgSourceSelect::on_btnLoad_clicked()
+void QgsPgSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -321,7 +333,7 @@ void QgsPgSourceSelect::on_btnLoad_clicked()
 }
 
 // Slot for editing a connection
-void QgsPgSourceSelect::on_btnEdit_clicked()
+void QgsPgSourceSelect::btnEdit_clicked()
 {
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
@@ -335,7 +347,7 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 //! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
+void QgsPgSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
 {
   // Remember which database was selected.
   QgsPostgresConn::setSelectedConnection( text );
@@ -345,9 +357,9 @@ void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString &te
   cbxAllowGeometrylessTables->blockSignals( false );
 }
 
-void QgsPgSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
+void QgsPgSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
-  on_btnConnect_clicked();
+  btnConnect_clicked();
 }
 
 void QgsPgSourceSelect::buildQuery()
@@ -355,12 +367,12 @@ void QgsPgSourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsPgSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsPgSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsPgSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addPostgisDC" ), false ).toBool() )
@@ -373,15 +385,15 @@ void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &ind
   }
 }
 
-void QgsPgSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+void QgsPgSourceSelect::mSearchGroupBox_toggled( bool checked )
 {
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
+void QgsPgSourceSelect::mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -393,7 +405,7 @@ void QgsPgSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
   }
 }
 
-void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
+void QgsPgSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -433,10 +445,10 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   }
 }
 
-void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
+void QgsPgSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
-  on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
+  mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
 void QgsPgSourceSelect::setLayerType( const QgsPostgresLayerProperty &layerProperty )
@@ -509,7 +521,7 @@ void QgsPgSourceSelect::addButtonClicked()
   }
 }
 
-void QgsPgSourceSelect::on_btnConnect_clicked()
+void QgsPgSourceSelect::btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( true );
 
@@ -622,7 +634,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
 
 QString QgsPgSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = QgsPostgresConn::quotedIdentifier( schema ) + '.';
   full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;

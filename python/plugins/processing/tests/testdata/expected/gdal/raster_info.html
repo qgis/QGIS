@@ -1,37 +1,26 @@
 <pre>Driver: GTiff/GeoTIFF
-Files: /home/alex/devel/cpp/qgis/python/plugins/processing/tests/testdata/raster.tif
-Size is 16, 14
+Files: /home/alex/devel/qgis/python/plugins/processing/tests/testdata/dem.tif
+       /home/alex/devel/qgis/python/plugins/processing/tests/testdata/dem.tif.aux.xml
+Size is 373, 350
 Coordinate System is:
-PROJCS["ED50 / UTM zone 30N",
-    GEOGCS["ED50",
-        DATUM["European_Datum_1950",
-            SPHEROID["International 1924",6378388,297.0000000000014,
-                AUTHORITY["EPSG","7022"]],
-            AUTHORITY["EPSG","6230"]],
-        PRIMEM["Greenwich",0],
-        UNIT["degree",0.0174532925199433],
-        AUTHORITY["EPSG","4230"]],
-    PROJECTION["Transverse_Mercator"],
-    PARAMETER["latitude_of_origin",0],
-    PARAMETER["central_meridian",-3],
-    PARAMETER["scale_factor",0.9996],
-    PARAMETER["false_easting",500000],
-    PARAMETER["false_northing",0],
-    UNIT["metre",1,
-        AUTHORITY["EPSG","9001"]],
-    AUTHORITY["EPSG","23030"]]
-Origin = (270736.067325068172067,4459029.574521748349071)
-Pixel Size = (10.236696404106624,-10.044151671496886)
-Metadata:
-  AREA_OR_POINT=Area
-Image Structure Metadata:
-  INTERLEAVE=BAND
+GEOGCS["WGS 84",
+    DATUM["WGS_1984",
+        SPHEROID["WGS 84",6378137,298.257223563,
+            AUTHORITY["EPSG","7030"]],
+        AUTHORITY["EPSG","6326"]],
+    PRIMEM["Greenwich",0],
+    UNIT["degree",0.0174532925199433],
+    AUTHORITY["EPSG","4326"]]
+Origin = (18.666297944200000,45.811701437600000)
+Pixel Size = (0.000100000000000,-0.000100000000000)
 Corner Coordinates:
-Upper Left  (  270736.067, 4459029.575) (  5d41'43.48"W, 40d14'58.76"N)
-Lower Left  (  270736.067, 4458888.956) (  5d41'43.30"W, 40d14'54.20"N)
-Upper Right (  270899.854, 4459029.575) (  5d41'36.56"W, 40d14'58.92"N)
-Lower Right (  270899.854, 4458888.956) (  5d41'36.38"W, 40d14'54.37"N)
-Center      (  270817.961, 4458959.265) (  5d41'39.93"W, 40d14'56.56"N)
-Band 1 Block=16x14 Type=Float32, ColorInterp=Gray
-  NoData Value=-32768
+Upper Left  (  18.6662979,  45.8117014) ( 18d39'58.67"E, 45d48'42.13"N)
+Lower Left  (  18.6662979,  45.7767014) ( 18d39'58.67"E, 45d46'36.13"N)
+Upper Right (  18.7035979,  45.8117014) ( 18d42'12.95"E, 45d48'42.13"N)
+Lower Right (  18.7035979,  45.7767014) ( 18d42'12.95"E, 45d46'36.13"N)
+Center      (  18.6849479,  45.7942014) ( 18d41' 5.81"E, 45d47'39.13"N)
+Band 1 Block=373x5 Type=Float32, ColorInterp=Gray
+  Min=85.000 Max=243.000 
+  Minimum=85.000, Maximum=243.000, Mean=147.172, StdDev=43.962
+  NoData Value=-99999
 </pre>

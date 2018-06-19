@@ -39,6 +39,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/gui
   ${CMAKE_SOURCE_DIR}/src/gui/auth
 
@@ -53,7 +55,6 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${POSTGRES_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
 )
 
@@ -72,8 +73,9 @@ ADD_LIBRARY(virtuallayerprovider MODULE
 
 TARGET_LINK_LIBRARIES( virtuallayerprovider
   qgis_core
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
   ${SQLITE3_LIBRARY}
   ${SPATIALITE_LIBRARY}
 )

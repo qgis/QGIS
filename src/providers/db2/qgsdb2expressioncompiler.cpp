@@ -30,13 +30,13 @@ QgsDb2ExpressionCompiler::QgsDb2ExpressionCompiler( QgsDb2FeatureSource *source 
 QString nodeType( const QgsExpressionNode *node )
 {
   QString opString = QStringLiteral( "?" );
-  if ( node->nodeType() == QgsExpressionNode::ntUnaryOperator ) opString =  QStringLiteral( "ntUnaryOperator" );
-  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator ) opString =  QStringLiteral( "ntBinaryOperator" );
-  if ( node->nodeType() == QgsExpressionNode::ntInOperator ) opString =  QStringLiteral( "ntInOperator" );
-  if ( node->nodeType() == QgsExpressionNode::ntFunction ) opString =  QStringLiteral( "ntFunction" );
-  if ( node->nodeType() == QgsExpressionNode::ntLiteral ) opString =  QStringLiteral( "ntLiteral" );
-  if ( node->nodeType() == QgsExpressionNode::ntColumnRef ) opString =  QStringLiteral( "ntColumnRef" );
-  if ( node->nodeType() == QgsExpressionNode::ntCondition ) opString =  QStringLiteral( "ntCondition" );
+  if ( node->nodeType() == QgsExpressionNode::ntUnaryOperator ) opString = QStringLiteral( "ntUnaryOperator" );
+  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator ) opString = QStringLiteral( "ntBinaryOperator" );
+  if ( node->nodeType() == QgsExpressionNode::ntInOperator ) opString = QStringLiteral( "ntInOperator" );
+  if ( node->nodeType() == QgsExpressionNode::ntFunction ) opString = QStringLiteral( "ntFunction" );
+  if ( node->nodeType() == QgsExpressionNode::ntLiteral ) opString = QStringLiteral( "ntLiteral" );
+  if ( node->nodeType() == QgsExpressionNode::ntColumnRef ) opString = QStringLiteral( "ntColumnRef" );
+  if ( node->nodeType() == QgsExpressionNode::ntCondition ) opString = QStringLiteral( "ntCondition" );
   QString result = QStringLiteral( "%1 - " ).arg( node->nodeType() ) + opString;
   return result;
 
@@ -114,7 +114,7 @@ QgsSqlExpressionCompiler::Result QgsDb2ExpressionCompiler::compileNode( const Qg
         rr = compileNode( n->operand(), result );
         if ( "NULL" == result.toUpper() )
         {
-          result = QLatin1String( "" );
+          result.clear();
           return Fail;
         }
 

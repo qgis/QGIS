@@ -24,30 +24,9 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
-QgsPaintEffect::QgsPaintEffect()
-  : mEnabled( true )
-  , mDrawMode( ModifyAndRender )
-  , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
-  , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
-{
-
-}
-
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )
-  , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
-  , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
 {
 
 }
@@ -247,13 +226,6 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 // QgsDrawSourceEffect
 //
 
-QgsDrawSourceEffect::QgsDrawSourceEffect()
-  : QgsPaintEffect()
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-{
-
-}
-
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
   QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
@@ -335,7 +307,7 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 
 QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
-  , mEffect( nullptr )
+
 {
   mPainter = renderContext.painter();
   mPainter->save();

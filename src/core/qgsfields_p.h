@@ -38,7 +38,7 @@
  * See details in QEP #17
  ****************************************************************************/
 
-class CORE_EXPORT QgsFieldsPrivate : public QSharedData
+class QgsFieldsPrivate : public QSharedData
 {
   public:
 

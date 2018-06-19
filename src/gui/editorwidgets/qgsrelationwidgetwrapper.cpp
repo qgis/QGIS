@@ -25,7 +25,7 @@
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
   , mRelation( relation )
-  , mWidget( nullptr )
+
 {
 }
 
@@ -44,6 +44,11 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 {
   if ( mWidget )
     mWidget->setVisible( visible );
+}
+
+QgsRelation QgsRelationWidgetWrapper::relation() const
+{
+  return mRelation;
 }
 
 bool QgsRelationWidgetWrapper::showUnlinkButton() const

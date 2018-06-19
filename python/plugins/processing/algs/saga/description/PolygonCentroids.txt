@@ -1,5 +1,5 @@
 Polygon Centroids
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterBoolean|METHOD         |Centroids for each part|True
-OutputVector|CENTROIDS|Centroids
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
+QgsProcessingParameterBoolean|METHOD         |Centroids for each part|True
+QgsProcessingParameterVectorDestination|CENTROIDS|Centroids

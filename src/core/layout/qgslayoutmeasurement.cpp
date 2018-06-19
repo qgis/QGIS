@@ -42,7 +42,7 @@ QgsLayoutMeasurement QgsLayoutMeasurement::decodeMeasurement( const QString &str
 
 bool QgsLayoutMeasurement::operator==( const QgsLayoutMeasurement &other ) const
 {
-  return other.units() == mUnits && other.length() == mLength;
+  return other.units() == mUnits && qgsDoubleNear( other.length(), mLength );
 }
 
 bool QgsLayoutMeasurement::operator!=( const QgsLayoutMeasurement &other ) const

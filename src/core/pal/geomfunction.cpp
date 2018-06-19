@@ -322,7 +322,7 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
   if ( !geom )
     return false;
 
-  GEOSContextHandle_t geosctxt = geosContext();
+  GEOSContextHandle_t geosctxt = QgsGeos::getGEOSHandler();
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosctxt, 5, 2 );
 
   GEOSCoordSeq_setX_r( geosctxt, coord, 0, x );
@@ -356,9 +356,8 @@ bool GeomFunction::containsCandidate( const GEOSPreparedGeometry *geom, double x
 
   try
   {
-    GEOSGeometry *bboxGeos = GEOSGeom_createLinearRing_r( geosctxt, coord );
-    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos ) == 1 );
-    GEOSGeom_destroy_r( geosctxt, bboxGeos );
+    geos::unique_ptr bboxGeos( GEOSGeom_createLinearRing_r( geosctxt, coord ) );
+    bool result = ( GEOSPreparedContainsProperly_r( geosctxt, geom, bboxGeos.get() ) == 1 );
     return result;
   }
   catch ( GEOSException &e )

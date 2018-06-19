@@ -33,6 +33,11 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationGridDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationGridDialog::buttonBox_rejected );
+  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged );
+  connect( mPbtnUpdateFromExtents, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked );
+  connect( mPbtnUpdateFromLayer, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
 
   mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
@@ -163,7 +168,7 @@ void QgsDecorationGridDialog::showHelp()
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#grid" ) );
 }
 
-void QgsDecorationGridDialog::on_buttonBox_accepted()
+void QgsDecorationGridDialog::buttonBox_accepted()
 {
   updateDecoFromGui();
   // mDeco.update();
@@ -177,24 +182,24 @@ void QgsDecorationGridDialog::apply()
   //accept();
 }
 
-void QgsDecorationGridDialog::on_buttonBox_rejected()
+void QgsDecorationGridDialog::buttonBox_rejected()
 {
   reject();
 }
 
-void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int index )
+void QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged( int index )
 {
   mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
   // mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
   mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
 }
 
-void QgsDecorationGridDialog::on_mPbtnUpdateFromExtents_clicked()
+void QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked()
 {
   updateInterval( true );
 }
 
-void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
+void QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked()
 {
   double values[4];
   if ( mDeco.getIntervalFromCurrentLayer( values ) )

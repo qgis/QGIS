@@ -28,6 +28,7 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QFile>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -108,26 +109,24 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
       continue;
     }
 
-    sqlite3 *database = nullptr;
-    const char *tail = nullptr;
-    sqlite3_stmt *statement = nullptr;
+    sqlite3_database_unique_ptr database;
+    sqlite3_statement_unique_ptr statement;
 
     //check the db is available
-    int result = openDatabase( db, &database );
+    int result = openDatabase( db, database );
     if ( result != SQLITE_OK )
     {
       QgsDebugMsg( "failed : " + db + " could not be opened!" );
       continue;
     }
 
-    QString sql = "select srs_id from tbl_srs";
-    ( void )sqlite3_prepare( database, sql.toUtf8(),
-                             sql.toUtf8().length(),
-                             &statement, &tail );
+    QString sql = QStringLiteral( "select srs_id from tbl_srs" );
+    int rc;
+    statement = database.prepare( sql, rc );
     while ( true )
     {
       // this one is an infinitive loop, intended to fetch any row
-      int ret = sqlite3_step( statement );
+      int ret = statement.step();
 
       if ( ret == SQLITE_DONE )
       {
@@ -137,17 +136,14 @@ QList<long> QgsCoordinateReferenceSystem::validSrsIds()
 
       if ( ret == SQLITE_ROW )
       {
-        results.append( sqlite3_column_int( statement, 0 ) );
+        results.append( statement.columnAsInt64( 0 ) );
       }
       else
       {
-        QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( database ) ), QObject::tr( "SpatiaLite" ) );
+        QgsMessageLog::logMessage( QObject::tr( "SQLite error: %2\nSQL: %1" ).arg( sql, sqlite3_errmsg( database.get() ) ), QObject::tr( "SpatiaLite" ) );
         break;
       }
     }
-
-    sqlite3_finalize( statement );
-    sqlite3_close( database );
   }
   std::sort( results.begin(), results.end() );
   return results;
@@ -225,26 +221,28 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   sCrsStringLock.unlock();
 
   bool result = false;
-  QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
-  if ( reCrsId.indexIn( definition ) == 0 )
+  QRegularExpression reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpressionMatch match = reCrsId.match( definition );
+  if ( match.capturedStart() == 0 )
   {
-    QString authName = reCrsId.cap( 1 ).toLower();
+    QString authName = match.captured( 1 ).toLower();
     CrsType type = InternalCrsId;
     if ( authName == QLatin1String( "epsg" ) )
       type = EpsgCrsId;
     if ( authName == QLatin1String( "postgis" ) )
       type = PostgisCrsId;
-    long id = reCrsId.cap( 2 ).toLong();
+    long id = match.captured( 2 ).toLong();
     result = createFromId( id, type );
   }
   else
   {
-    QRegExp reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", Qt::CaseInsensitive );
-    if ( reCrsStr.indexIn( definition ) == 0 )
+    QRegularExpression reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    match = reCrsStr.match( definition );
+    if ( match.capturedStart() == 0 )
     {
-      if ( reCrsStr.cap( 1 ).toLower() == QLatin1String( "proj4" ) )
+      if ( match.captured( 1 ).toLower() == QLatin1String( "proj4" ) )
       {
-        result = createFromProj4( reCrsStr.cap( 2 ) );
+        result = createFromProj4( match.captured( 2 ) );
         //TODO: createFromProj4 used to save to the user database any new CRS
         // this behavior was changed in order to separate creation and saving.
         // Not sure if it necessary to save it here, should be checked by someone
@@ -259,7 +257,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       }
       else
       {
-        result = createFromWkt( reCrsStr.cap( 2 ) );
+        result = createFromWkt( match.captured( 2 ) );
       }
     }
   }
@@ -476,15 +474,13 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
     return d->mIsValid;
   }
 
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   int           myResult;
   //check the db is available
-  myResult = openDatabase( db, &myDatabase );
+  myResult = openDatabase( db, database );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( "failed : " + db + " could not be opened!" );
     return d->mIsValid;
   }
 
@@ -503,22 +499,18 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   QString mySql = "select srs_id,description,projection_acronym,"
                   "ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo "
                   "from tbl_srs where " + expression + '=' + quotedValue( value ) + " order by deprecated";
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(),
-                              mySql.toUtf8().length(),
-                              &myPreparedStatement, &myTail );
+  statement = database.prepare( mySql, myResult );
   // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+  if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
   {
-    d->mSrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text(
-                                     myPreparedStatement, 0 ) ) ).toLong();
-    d->mDescription = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text(
-                                           myPreparedStatement, 1 ) ) );
-    d->mProjectionAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 2 ) ) );
-    d->mEllipsoidAcronym = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 3 ) ) );
-    d->mProj4 = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 4 ) ) );
-    d->mSRID = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 5 ) ) ).toLong() ;
-    d->mAuthId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 6 ) ) );
-    d->mIsGeographic = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 7 ) ) ).toInt() != 0;
+    d->mSrsId = statement.columnAsText( 0 ).toLong();
+    d->mDescription = statement.columnAsText( 1 );
+    d->mProjectionAcronym = statement.columnAsText( 2 );
+    d->mEllipsoidAcronym = statement.columnAsText( 3 );
+    d->mProj4 = statement.columnAsText( 4 );
+    d->mSRID = statement.columnAsText( 5 ).toLong();
+    d->mAuthId = statement.columnAsText( 6 );
+    d->mIsGeographic = statement.columnAsText( 7 ).toInt() != 0;
     d->mAxisInvertedDirty = true;
 
     if ( d->mSrsId >= USER_CRS_START_ID && d->mAuthId.isEmpty() )
@@ -542,8 +534,6 @@ bool QgsCoordinateReferenceSystem::loadFromDatabase( const QString &db, const QS
   {
     QgsDebugMsgLevel( "failed : " + mySql, 4 );
   }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
   return d->mIsValid;
 }
 
@@ -884,9 +874,8 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   QgsCoordinateReferenceSystem::RecordMap myMap;
   QString myFieldName;
   QString myFieldValue;
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   int           myResult;
 
   // Get the full path name to the sqlite3 spatial reference database.
@@ -899,25 +888,25 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   }
 
   //check the db is available
-  myResult = openDatabase( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, database );
   if ( myResult != SQLITE_OK )
   {
     return myMap;
   }
 
-  myResult = sqlite3_prepare( myDatabase, sql.toUtf8(), sql.toUtf8().length(), &myPreparedStatement, &myTail );
+  statement = database.prepare( sql, myResult );
   // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+  if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
   {
-    int myColumnCount = sqlite3_column_count( myPreparedStatement );
+    int myColumnCount = statement.columnCount();
     //loop through each column in the record adding its expression name and value to the map
     for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
     {
-      myFieldName = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_name( myPreparedStatement, myColNo ) ) );
-      myFieldValue = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, myColNo ) ) );
+      myFieldName = statement.columnName( myColNo );
+      myFieldValue = statement.columnAsText( myColNo );
       myMap[myFieldName] = myFieldValue;
     }
-    if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+    if ( statement.step() != SQLITE_DONE )
     {
       QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
       myMap.clear();
@@ -930,9 +919,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
   if ( myMap.empty() )
   {
-    sqlite3_finalize( myPreparedStatement );
-    sqlite3_close( myDatabase );
-
     myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile( myDatabaseFileName );
@@ -943,26 +929,26 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
 
     //check the db is available
-    myResult = openDatabase( myDatabaseFileName, &myDatabase );
+    myResult = openDatabase( myDatabaseFileName, database );
     if ( myResult != SQLITE_OK )
     {
       return myMap;
     }
 
-    myResult = sqlite3_prepare( myDatabase, sql.toUtf8(), sql.toUtf8().length(), &myPreparedStatement, &myTail );
+    statement = database.prepare( sql, myResult );
     // XXX Need to free memory from the error msg if one is set
-    if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
     {
-      int myColumnCount = sqlite3_column_count( myPreparedStatement );
+      int myColumnCount = statement.columnCount();
       //loop through each column in the record adding its field name and value to the map
       for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
       {
-        myFieldName = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_name( myPreparedStatement, myColNo ) ) );
-        myFieldValue = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, myColNo ) ) );
+        myFieldName = statement.columnName( myColNo );
+        myFieldValue = statement.columnAsText( myColNo );
         myMap[myFieldName] = myFieldValue;
       }
 
-      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+      if ( statement.step() != SQLITE_DONE )
       {
         QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
         myMap.clear();
@@ -973,9 +959,6 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
       QgsDebugMsgLevel( "failed :  " + sql, 4 );
     }
   }
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
-
   return myMap;
 }
 
@@ -1059,6 +1042,48 @@ QgsUnitTypes::DistanceUnit QgsCoordinateReferenceSystem::mapUnits() const
     return QgsUnitTypes::DistanceUnknownUnit;
 
   return d->mMapUnits;
+}
+
+QgsRectangle QgsCoordinateReferenceSystem::bounds() const
+{
+  if ( !d->mIsValid )
+    return QgsRectangle();
+
+  //check the db is available
+  QString databaseFileName = QgsApplication::srsDatabaseFilePath();
+
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+
+  int result = openDatabase( databaseFileName, database );
+  if ( result != SQLITE_OK )
+  {
+    return QgsRectangle();
+  }
+
+  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_bounds "
+                                "where srid=%1" )
+                .arg( d->mSRID );
+  statement = database.prepare( sql, result );
+
+  QgsRectangle rect;
+  if ( result == SQLITE_OK )
+  {
+    if ( statement.step() == SQLITE_ROW )
+    {
+      double west = statement.columnAsDouble( 0 );
+      double north = statement.columnAsDouble( 1 );
+      double east = statement.columnAsDouble( 2 );
+      double south = statement.columnAsDouble( 3 );
+
+      rect.setXMinimum( west );
+      rect.setYMinimum( south );
+      rect.setXMaximum( east );
+      rect.setYMaximum( north );
+    }
+  }
+
+  return rect;
 }
 
 
@@ -1201,10 +1226,9 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
     return 0;
   }
 
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  int           myResult;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+  int myResult;
 
   // Set up the query to retrieve the projection information
   // needed to populate the list
@@ -1216,67 +1240,54 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   QString myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
 
   //check the db is available
-  myResult = openDatabase( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, database );
   if ( myResult != SQLITE_OK )
   {
     return 0;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-// XXX Need to free memory from the error msg if one is set
+  statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
 
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    while ( statement.step() == SQLITE_ROW )
     {
-      QString mySrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
+      QString mySrsId = statement.columnAsText( 0 );
+      QString myProj4String = statement.columnAsText( 1 );
       if ( toProj4() == myProj4String.trimmed() )
       {
-        // close the sqlite3 statement
-        sqlite3_finalize( myPreparedStatement );
-        sqlite3_close( myDatabase );
         return mySrsId.toLong();
       }
     }
   }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
+
   //
   // Try the users db now
   //
 
   myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   //check the db is available
-  myResult = openDatabase( myDatabaseFileName, &myDatabase );
+  myResult = openDatabase( myDatabaseFileName, database );
   if ( myResult != SQLITE_OK )
   {
     return 0;
   }
 
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-// XXX Need to free memory from the error msg if one is set
+  statement = database.prepare( mySql, myResult );
+
   if ( myResult == SQLITE_OK )
   {
-
-    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    while ( statement.step() == SQLITE_ROW )
     {
-      QString mySrsId = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      QString myProj4String = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 1 ) ) );
+      QString mySrsId = statement.columnAsText( 0 );
+      QString myProj4String = statement.columnAsText( 1 );
       if ( toProj4() == myProj4String.trimmed() )
       {
-        // close the sqlite3 statement
-        sqlite3_finalize( myPreparedStatement );
-        sqlite3_close( myDatabase );
         return mySrsId.toLong();
       }
     }
   }
 
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
   return 0;
 }
 
@@ -1386,9 +1397,6 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
 
         //make sure the map units have been set
         setMapUnits();
-
-        //@TODO this srs needs to be validated!!!
-        d->mIsValid = true; //shamelessly hard coded for now
       }
       //TODO: createFromProj4 used to save to the user database any new CRS
       // this behavior was changed in order to separate creation and saving.
@@ -1406,8 +1414,8 @@ bool QgsCoordinateReferenceSystem::readXml( const QDomNode &node )
   }
   else
   {
-    // Return default CRS if none was found in the XML.
-    createFromId( GEOCRS_ID, InternalCrsId );
+    // Return empty CRS if none was found in the XML.
+    d = new QgsCoordinateReferenceSystemPrivate();
     result = false;
   }
   return result;
@@ -1473,7 +1481,6 @@ bool QgsCoordinateReferenceSystem::writeXml( QDomNode &node, QDomDocument &doc )
 //this is a static method! NOTE I've made it private for now to reduce API clutter TS
 QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
 {
-
   QString myDatabaseFileName;
   QString myProjString;
   QString mySql = QStringLiteral( "select parameters from tbl_srs where srs_id = %1 order by deprecated" ).arg( srsId );
@@ -1498,52 +1505,47 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int srsId )
     myDatabaseFileName = QgsApplication::srsDatabaseFilePath();
   }
 
-  sqlite3 *db = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+
   int rc;
-  rc = openDatabase( myDatabaseFileName, &db );
+  rc = openDatabase( myDatabaseFileName, database );
   if ( rc )
   {
     return QString();
   }
-  // prepare the sql statement
-  const char *pzTail = nullptr;
-  sqlite3_stmt *ppStmt = nullptr;
 
-  rc = sqlite3_prepare( db, mySql.toUtf8(), mySql.toUtf8().length(), &ppStmt, &pzTail );
-  // XXX Need to free memory from the error msg if one is set
+  statement = database.prepare( mySql, rc );
 
   if ( rc == SQLITE_OK )
   {
-    if ( sqlite3_step( ppStmt ) == SQLITE_ROW )
+    if ( statement.step() == SQLITE_ROW )
     {
-      myProjString = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+      myProjString = statement.columnAsText( 0 );
     }
   }
-  // close the statement
-  sqlite3_finalize( ppStmt );
-  // close the database
-  sqlite3_close( db );
 
-  //Q_ASSERT(myProjString.length() > 0);
   return myProjString;
 }
 
-int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3 **db, bool readonly )
+int QgsCoordinateReferenceSystem::openDatabase( const QString &path, sqlite3_database_unique_ptr &database, bool readonly )
 {
-  int myResult = readonly
-                 ? sqlite3_open_v2( path.toUtf8().data(), db, SQLITE_OPEN_READONLY, nullptr )
-                 : sqlite3_open( path.toUtf8().data(), db );
+  int myResult;
+  if ( readonly )
+    myResult = database.open_v2( path, SQLITE_OPEN_READONLY, nullptr );
+  else
+    myResult = database.open( path );
 
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( "Can't open database: " + QString( sqlite3_errmsg( *db ) ) );
+    QgsDebugMsg( "Can't open database: " + database.errorMessage() );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     // ... unfortunately it happens on Windows
     QgsMessageLog::logMessage( QObject::tr( "Could not open CRS database %1\nError(%2): %3" )
                                .arg( path )
                                .arg( myResult )
-                               .arg( sqlite3_errmsg( *db ) ), QObject::tr( "CRS" ) );
+                               .arg( database.errorMessage() ), QObject::tr( "CRS" ) );
   }
   return myResult;
 }
@@ -1594,12 +1596,12 @@ QString QgsCoordinateReferenceSystem::validationHint()
 /// Copied from QgsCustomProjectionDialog ///
 /// Please refactor into SQL handler !!!  ///
 
-bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
+long QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 {
   if ( !d->mIsValid )
   {
     QgsDebugMsgLevel( "Can't save an invalid CRS!", 4 );
-    return false;
+    return -1;
   }
 
   QString mySql;
@@ -1633,28 +1635,30 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
             + ',' + quotedValue( toProj4() )
             + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   int           myResult;
   //check the db is available
-  myResult = sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase );
+  myResult = database.open( QgsApplication::qgisUserDatabaseFilePath() );
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open or create database %1: %2" )
                  .arg( QgsApplication::qgisUserDatabaseFilePath(),
-                       sqlite3_errmsg( myDatabase ) ) );
+                       database.errorMessage() ) );
     return false;
   }
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  statement = database.prepare( mySql, myResult );
 
-  qint64 return_id;
-  if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
+  qint64 returnId;
+  if ( myResult == SQLITE_OK && statement.step() == SQLITE_DONE )
   {
     QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
-    return_id = sqlite3_last_insert_rowid( myDatabase );
-    setInternalId( return_id );
+    returnId = sqlite3_last_insert_rowid( database.get() );
+    setInternalId( returnId );
+    if ( authid().isEmpty() )
+      setAuthId( QStringLiteral( "USER:%1" ).arg( returnId ) );
+    setDescription( name );
 
     //We add the just created user CRS to the list of recently used CRS
     QgsSettings settings;
@@ -1670,39 +1674,36 @@ bool QgsCoordinateReferenceSystem::saveAsUserCrs( const QString &name )
 
   }
   else
-    return_id = -1;
-  return return_id;
+    returnId = -1;
+
+  invalidateCache();
+  return returnId;
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()
 {
-  sqlite3      *myDatabase = nullptr;
-  const char   *myTail = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   int           myResult;
   long          myRecordCount = 0;
   //check the db is available
-  myResult = sqlite3_open_v2( QgsApplication::qgisUserDatabaseFilePath().toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = database.open_v2( QgsApplication::qgisUserDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
     return 0;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = QStringLiteral( "select count(*) from tbl_srs" );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
+  statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
-    if ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    if ( statement.step() == SQLITE_ROW )
     {
-      QString myRecordCountString = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      QString myRecordCountString = statement.columnAsText( 0 );
       myRecordCount = myRecordCountString.toLong();
     }
   }
-  // close the sqlite3 statement
-  sqlite3_finalize( myPreparedStatement );
-  sqlite3_close( myDatabase );
   return myRecordCount;
 }
 
@@ -1732,7 +1733,7 @@ bool QgsCoordinateReferenceSystem::loadWkts( QHash<int, QString> &wkts, const ch
     if ( line.isNull() )
       break;
 
-    if ( line.startsWith( '#' ) )
+    if ( line.trimmed().isEmpty() || line.startsWith( '#' ) )
     {
       continue;
     }
@@ -1784,14 +1785,23 @@ bool QgsCoordinateReferenceSystem::loadIds( QHash<int, QString> &wkts )
       if ( line.isNull() )
         break;
 
+      if ( line.trimmed().isEmpty() )
+        continue;
+
       int pos = line.indexOf( ',' );
       if ( pos < 0 )
+      {
+        qWarning( "No id found in: %s", qPrintable( line ) );
         continue;
+      }
 
       bool ok;
       int epsg = line.leftRef( pos ).toInt( &ok );
       if ( !ok )
+      {
+        qWarning( "No valid id found in: %s", qPrintable( line ) );
         continue;
+      }
 
       // some CRS are known to fail (see http://trac.osgeo.org/gdal/ticket/2900)
       if ( epsg == 2218 || epsg == 2221 || epsg == 2296 || epsg == 2297 || epsg == 2298 || epsg == 2299 || epsg == 2300 || epsg == 2301 || epsg == 2302 ||
@@ -1843,29 +1853,28 @@ int QgsCoordinateReferenceSystem::syncDatabase()
 
   QgsDebugMsgLevel( QStringLiteral( "Load srs db from: %1" ).arg( QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData() ), 4 );
 
-  sqlite3 *database = nullptr;
-  if ( sqlite3_open( dbFilePath.toUtf8().constData(), &database ) != SQLITE_OK )
+  sqlite3_database_unique_ptr database;
+  if ( database.open( dbFilePath ) != SQLITE_OK )
   {
-    qCritical( "Could not open database: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    QgsDebugMsg( QStringLiteral( "Could not open database: %1 (%2)\n" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     return -1;
   }
 
-  if ( sqlite3_exec( database, "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
+  if ( sqlite3_exec( database.get(), "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
-    sqlite3_close( database );
+    QgsDebugMsg( QStringLiteral( "Could not begin transaction: %1 (%2)\n" ).arg( QgsApplication::srsDatabaseFilePath(), database.errorMessage() ) );
     return -1;
   }
 
   // fix up database, if not done already //
-  if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
-    ( void )sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
+  if ( sqlite3_exec( database.get(), "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
+    ( void )sqlite3_exec( database.get(), "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
 
-  ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
+  ( void )sqlite3_exec( database.get(), "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", nullptr, nullptr, nullptr );
 
   OGRSpatialReferenceH crs = nullptr;
-  const char *tail = nullptr;
-  sqlite3_stmt *select = nullptr;
+  sqlite3_statement_unique_ptr statement;
+  int result;
   char *errMsg = nullptr;
 
   QString proj4;
@@ -1904,41 +1913,54 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     if ( proj4.isEmpty() )
       continue;
 
-    sql = QStringLiteral( "SELECT parameters,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
-    if ( sqlite3_prepare( database, sql.toLatin1(), sql.size(), &select, &tail ) != SQLITE_OK )
+    QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) :
+                  OSRIsGeocentric( crs ) ? OSRGetAttrValue( crs, "GEOCCS", 0 ) :
+                  OSRGetAttrValue( crs, "PROJCS", 0 ) );
+    if ( name.isEmpty() )
+      name = QObject::tr( "Imported from GDAL" );
+
+    bool deprecated = name.contains( QLatin1Literal( "(deprecated)" ) );
+
+    sql = QStringLiteral( "SELECT parameters,description,deprecated,noupdate FROM tbl_srs WHERE auth_name='EPSG' AND auth_id='%1'" ).arg( it.key() );
+    statement = database.prepare( sql, result );
+    if ( result != SQLITE_OK )
     {
-      qCritical( "Could not prepare: %s [%s]\n", sql.toLatin1().constData(), sqlite3_errmsg( database ) );
-      sqlite3_finalize( select );
+      QgsDebugMsg( QStringLiteral( "Could not prepare: %1 [%2]\n" ).arg( sql, database.errorMessage() ) );
       continue;
     }
 
     QString srsProj4;
-    if ( sqlite3_step( select ) == SQLITE_ROW )
+    QString srsDesc;
+    bool srsDeprecated;
+    if ( statement.step() == SQLITE_ROW )
     {
-      srsProj4 = reinterpret_cast< const char * >( sqlite3_column_text( select, 0 ) );
+      srsProj4 = statement.columnAsText( 0 );
+      srsDesc = statement.columnAsText( 1 );
+      srsDeprecated = statement.columnAsText( 2 ).toInt() != 0;
 
-      if ( QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( select, 1 ) ) ).toInt() != 0 )
+      if ( statement.columnAsText( 3 ).toInt() != 0 )
       {
-        sqlite3_finalize( select );
         continue;
       }
     }
 
-    sqlite3_finalize( select );
-
-    if ( !srsProj4.isEmpty() )
+    if ( !srsProj4.isEmpty() || !srsDesc.isEmpty() )
     {
-      if ( proj4 != srsProj4 )
+      if ( proj4 != srsProj4 || name != srsDesc || deprecated != srsDeprecated )
       {
         errMsg = nullptr;
-        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name='EPSG' AND auth_id=%2" ).arg( quotedValue( proj4 ) ).arg( it.key() );
+        sql = QStringLiteral( "UPDATE tbl_srs SET parameters=%1,description=%2,deprecated=%3 WHERE auth_name='EPSG' AND auth_id=%4" )
+              .arg( quotedValue( proj4 ) )
+              .arg( quotedValue( name ) )
+              .arg( deprecated ? 1 : 0 )
+              .arg( it.key() );
 
-        if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
+        if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
         {
-          qCritical( "Could not execute: %s [%s/%s]\n",
-                     sql.toLocal8Bit().constData(),
-                     sqlite3_errmsg( database ),
-                     errMsg ? errMsg : "(unknown error)" );
+          QgsDebugMsg( QStringLiteral( "Could not execute: %1 [%2/%3]\n" ).arg(
+                         sql,
+                         database.errorMessage(),
+                         errMsg ? errMsg : "(unknown error)" ) );
           if ( errMsg )
             sqlite3_free( errMsg );
           errors++;
@@ -1965,20 +1987,17 @@ int QgsCoordinateReferenceSystem::syncDatabase()
         ellps = ellipseRegExp.cap( 1 );
       }
 
-      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
-      if ( name.isEmpty() )
-        name = QObject::tr( "Imported from GDAL" );
-
-      sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,0)" )
+      sql = QStringLiteral( "INSERT INTO tbl_srs(description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) VALUES (%1,%2,%3,%4,%5,'EPSG',%5,%6,%7)" )
             .arg( quotedValue( name ),
                   quotedValue( projRegExp.cap( 1 ) ),
                   quotedValue( ellps ),
                   quotedValue( proj4 ) )
             .arg( it.key() )
-            .arg( OSRIsGeographic( crs ) );
+            .arg( OSRIsGeographic( crs ) )
+            .arg( deprecated ? 1 : 0 );
 
       errMsg = nullptr;
-      if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
+      if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
       {
         inserted++;
       }
@@ -1986,7 +2005,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
       {
         qCritical( "Could not execute: %s [%s/%s]\n",
                    sql.toLocal8Bit().constData(),
-                   sqlite3_errmsg( database ),
+                   sqlite3_errmsg( database.get() ),
                    errMsg ? errMsg : "(unknown error)" );
         errors++;
 
@@ -2010,35 +2029,36 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   }
   sql += QLatin1String( ") AND NOT noupdate" );
 
-  if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, nullptr ) == SQLITE_OK )
+  if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr ) == SQLITE_OK )
   {
-    deleted = sqlite3_changes( database );
+    deleted = sqlite3_changes( database.get() );
   }
   else
   {
     errors++;
     qCritical( "Could not execute: %s [%s]\n",
                sql.toLocal8Bit().constData(),
-               sqlite3_errmsg( database ) );
+               sqlite3_errmsg( database.get() ) );
   }
 
   projCtx pContext = pj_ctx_alloc();
 
 #if !defined(PJ_VERSION) || PJ_VERSION!=470
   sql = QStringLiteral( "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name<>'EPSG' AND NOT deprecated AND NOT noupdate" );
-  if ( sqlite3_prepare( database, sql.toLatin1(), sql.size(), &select, &tail ) == SQLITE_OK )
+  statement = database.prepare( sql, result );
+  if ( result == SQLITE_OK )
   {
-    while ( sqlite3_step( select ) == SQLITE_ROW )
+    while ( statement.step()  == SQLITE_ROW )
     {
-      const char *auth_name = reinterpret_cast< const char * >( sqlite3_column_text( select, 0 ) );
-      const char *auth_id   = reinterpret_cast< const char * >( sqlite3_column_text( select, 1 ) );
-      const char *params    = reinterpret_cast< const char * >( sqlite3_column_text( select, 2 ) );
+      QString auth_name = statement.columnAsText( 0 );
+      QString auth_id   = statement.columnAsText( 1 );
+      QString params    = statement.columnAsText( 2 );
 
-      QString input = QStringLiteral( "+init=%1:%2" ).arg( QString( auth_name ).toLower(), auth_id );
+      QString input = QStringLiteral( "+init=%1:%2" ).arg( auth_name.toLower(), auth_id );
       projPJ pj = pj_init_plus_ctx( pContext, input.toLatin1() );
       if ( !pj )
       {
-        input = QStringLiteral( "+init=%1:%2" ).arg( QString( auth_name ).toUpper(), auth_id );
+        input = QStringLiteral( "+init=%1:%2" ).arg( auth_name.toUpper(), auth_id );
         pj = pj_init_plus_ctx( pContext, input.toLatin1() );
       }
 
@@ -2064,7 +2084,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                         quotedValue( auth_name ),
                         quotedValue( auth_id ) );
 
-            if ( sqlite3_exec( database, sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
+            if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) == SQLITE_OK )
             {
               updated++;
             }
@@ -2072,7 +2092,7 @@ int QgsCoordinateReferenceSystem::syncDatabase()
             {
               qCritical( "Could not execute: %s [%s/%s]\n",
                          sql.toLocal8Bit().constData(),
-                         sqlite3_errmsg( database ),
+                         sqlite3_errmsg( database.get() ),
                          errMsg ? errMsg : "(unknown error)" );
               if ( errMsg )
                 sqlite3_free( errMsg );
@@ -2096,23 +2116,22 @@ int QgsCoordinateReferenceSystem::syncDatabase()
   else
   {
     errors++;
-    qCritical( "Could not execute: %s [%s]\n",
-               sql.toLocal8Bit().constData(),
-               sqlite3_errmsg( database ) );
+    QgsDebugMsg( QStringLiteral( "Could not execute: %1 [%2]\n" ).arg(
+                   sql,
+                   sqlite3_errmsg( database.get() ) ) );
   }
-  sqlite3_finalize( select );
 #endif
 
   pj_ctx_free( pContext );
 
-  if ( sqlite3_exec( database, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
+  if ( sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
-    sqlite3_close( database );
+    QgsDebugMsg( QStringLiteral( "Could not commit transaction: %1 [%2]\n" ).arg(
+                   QgsApplication::srsDatabaseFilePath(),
+                   sqlite3_errmsg( database.get() ) )
+               );
     return -1;
   }
-
-  sqlite3_close( database );
 
   QgsDebugMsgLevel( QStringLiteral( "CRS update (inserted:%1 updated:%2 deleted:%3 errors:%4)" ).arg( QString::number( inserted ), QString::number( updated ), QString::number( deleted ), QString::number( errors ) ), 4 );
 
@@ -2226,18 +2245,17 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
   Q_ASSERT( idxry >= 0 );
   Q_ASSERT( idxrz >= 0 );
 
-  sqlite3 *db = nullptr;
-  int openResult = sqlite3_open( dbPath.toUtf8().constData(), &db );
+  sqlite3_database_unique_ptr database;
+  int openResult = database.open( dbPath );
   if ( openResult != SQLITE_OK )
   {
     fclose( fp );
     return false;
   }
 
-  if ( sqlite3_exec( db, "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
+  if ( sqlite3_exec( database.get(), "BEGIN TRANSACTION", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
-    sqlite3_close( db );
+    qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database.get() ) );
     fclose( fp );
     return false;
   }
@@ -2285,18 +2303,18 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
     }
 
     //entry already in db?
-    sqlite3_stmt *stmt = nullptr;
+    sqlite3_statement_unique_ptr statement;
     QString cOpCode;
     QString sql = QStringLiteral( "SELECT coord_op_code FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( v[ idxid ] );
-    int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
+    int prepareRes;
+    statement = database.prepare( sql, prepareRes );
     if ( prepareRes != SQLITE_OK )
       continue;
 
-    if ( sqlite3_step( stmt ) == SQLITE_ROW )
+    if ( statement.step() == SQLITE_ROW )
     {
-      cOpCode = reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) );
+      cOpCode = statement.columnAsText( 0 );
     }
-    sqlite3_finalize( stmt );
 
     sql = cOpCode.isEmpty() ? insert : update;
     for ( int i = 0; i < v.size(); i++ )
@@ -2304,20 +2322,19 @@ bool QgsCoordinateReferenceSystem::syncDatumTransform( const QString &dbPath )
       sql = sql.arg( v[i] );
     }
 
-    if ( sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr ) != SQLITE_OK )
+    if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr ) != SQLITE_OK )
     {
       qCritical( "SQL: %s", sql.toUtf8().constData() );
-      qCritical( "Error: %s", sqlite3_errmsg( db ) );
+      qCritical( "Error: %s", sqlite3_errmsg( database.get() ) );
     }
   }
 
-  if ( sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
+  if ( sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr ) != SQLITE_OK )
   {
-    qCritical( "Could not commit transaction: %s [%s]\n", QgsApplication::srsDatabaseFilePath().toLocal8Bit().constData(), sqlite3_errmsg( db ) );
+    QgsDebugMsg( QStringLiteral( "Could not commit transaction: %1 [%2]\n" ).arg( QgsApplication::srsDatabaseFilePath(), sqlite3_errmsg( database.get() ) ) );
     return false;
   }
 
-  sqlite3_close( db );
   return true;
 }
 

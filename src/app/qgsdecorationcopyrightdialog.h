@@ -26,13 +26,13 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
 
   public:
     QgsDecorationCopyrightDialog( QgsDecorationCopyright &deco, QWidget *parent = nullptr );
-    ~QgsDecorationCopyrightDialog();
+    ~QgsDecorationCopyrightDialog() override;
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void mInsertExpressionButton_clicked();
     void showHelp();
-    void on_pbnColorChooser_colorChanged( const QColor &c );
     void apply();
 
   protected:

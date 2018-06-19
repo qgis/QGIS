@@ -92,12 +92,12 @@ public:
     /** Enables recording of character positions at which new lines are added.  See linePositions() */
     void setRecordLinePositions(bool record);
 
-    virtual void begin(QTextStream* output);
-    virtual void end();
+    void begin(QTextStream* output) override;
+    void end() override;
 
-    virtual void decodeLine(const Character* const characters,
+    void decodeLine(const Character* const characters,
                             int count,
-                            LineProperty properties);
+                            LineProperty properties) override;
 
 
 private:
@@ -125,12 +125,12 @@ public:
      */
     void setColorTable( const ColorEntry* table );
 
-    virtual void decodeLine(const Character* const characters,
+    void decodeLine(const Character* const characters,
                             int count,
-                            LineProperty properties);
+                            LineProperty properties) override;
 
-    virtual void begin(QTextStream* output);
-    virtual void end();
+    void begin(QTextStream* output) override;
+    void end() override;
 
 private:
     void openSpan(QString& text , const QString& style);

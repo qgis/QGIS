@@ -28,11 +28,11 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterField,
                        QgsProcessingUtils,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml)
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import vector
 
@@ -46,6 +46,9 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
     def group(self):
         return self.tr('Graphics')
+
+    def groupId(self):
+        return 'graphics'
 
     def __init__(self):
         super().__init__()
@@ -63,7 +66,6 @@ class VectorLayerScatterplot(QgisAlgorithm):
                                                       type=QgsProcessingParameterField.Numeric))
 
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Scatterplot'), self.tr('HTML files (*.html)')))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Scatterplot')))
 
     def name(self):
         return 'vectorlayerscatterplot'
@@ -73,6 +75,9 @@ class VectorLayerScatterplot(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         xfieldname = self.parameterAsString(parameters, self.XFIELD, context)
         yfieldname = self.parameterAsString(parameters, self.YFIELD, context)
 

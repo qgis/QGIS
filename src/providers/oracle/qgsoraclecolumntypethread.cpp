@@ -21,12 +21,11 @@ email                : jef at norbit dot de
 
 #include <QMetaType>
 
-QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
-  : QThread()
-  , mName( name )
+QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( const QString &name, const QString &limitToSchema, bool useEstimatedMetadata, bool allowGeometrylessTables )
+  : mName( name )
+  , mSchema( limitToSchema )
   , mUseEstimatedMetadata( useEstimatedMetadata )
   , mAllowGeometrylessTables( allowGeometrylessTables )
-  , mStopped( false )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }
@@ -49,9 +48,10 @@ void QgsOracleColumnTypeThread::run()
     return;
   }
 
-  emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
+  emit progressMessage( tr( "Retrieving tables of %1…" ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
   if ( !conn->supportedLayers( layerProperties,
+                               mSchema,
                                QgsOracleConn::geometryColumnsOnly( mName ),
                                QgsOracleConn::userTablesOnly( mName ),
                                mAllowGeometrylessTables ) ||
@@ -69,10 +69,10 @@ void QgsOracleColumnTypeThread::run()
     if ( !mStopped )
     {
       emit progress( i++, n );
-      emit progressMessage( tr( "Scanning column %1.%2.%3..." )
-                            .arg( layerProperty.ownerName )
-                            .arg( layerProperty.tableName )
-                            .arg( layerProperty.geometryColName ) );
+      emit progressMessage( tr( "Scanning column %1.%2.%3…" )
+                            .arg( layerProperty.ownerName,
+                                  layerProperty.tableName,
+                                  layerProperty.geometryColName ) );
       conn->retrieveLayerTypes( layerProperty, mUseEstimatedMetadata, QgsOracleConn::onlyExistingTypes( mName ) );
     }
 

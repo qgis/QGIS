@@ -24,17 +24,8 @@ start_app()
 
 class TestQgsRectangle(unittest.TestCase):
 
-    # Because isEmpty() is not returning expected result in 9b0fee3
-
-    @unittest.expectedFailure
     def testCtor(self):
         rect = QgsRectangle(5.0, 5.0, 10.0, 10.0)
-
-        myExpectedResult = True
-        myResult = rect.isEmpty()
-        myMessage = ('Expected: %s Got: %s' % (myExpectedResult, myResult))
-        assert rect.isEmpty(), myMessage
-
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (5.0, rect.xMinimum()))
         assert rect.xMinimum() == 5.0, myMessage
@@ -204,9 +195,18 @@ class TestQgsRectangle(unittest.TestCase):
 
     def testToString(self):
         """Test the different string representations"""
+        self.assertEqual(QgsRectangle().toString(), 'Empty')
         rect = QgsRectangle(0, 0.1, 0.2, 0.3)
         myExpectedString = '0.0000000000000000,0.1000000000000000 : 0.2000000000000000,0.3000000000000000'
         myString = rect.toString()
+        myMessage = ('Expected: %s\nGot: %s\n' %
+                     (myExpectedString, myString))
+        assert myString == myExpectedString, myMessage
+
+        # can't test the actual result here, because floating point inaccuracies mean the result is unpredictable
+        # at this precision
+        self.assertEqual(len(rect.toString(20)), 93)
+
         myMessage = ('Expected: %s\nGot: %s\n' %
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
@@ -242,6 +242,11 @@ class TestQgsRectangle(unittest.TestCase):
                      (myExpectedString, myString))
         assert myString == myExpectedString, myMessage
 
+    def testAsPolygon(self):
+        """Test string representation as polygon"""
+        self.assertEqual(QgsRectangle().asPolygon(), '0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000, 0.00000000 0.00000000')
+        self.assertEqual(QgsRectangle(0, 0.1, 0.2, 0.3).asPolygon(), '0.00000000 0.10000000, 0.00000000 0.30000000, 0.20000000 0.30000000, 0.20000000 0.10000000, 0.00000000 0.10000000')
+
     def testToBox3d(self):
         rect = QgsRectangle(0, 0.1, 0.2, 0.3)
         box = rect.toBox3d(0.4, 0.5)
@@ -260,6 +265,14 @@ class TestQgsRectangle(unittest.TestCase):
         # Subtracting the center point, so it becomes zero.
         rect1 -= rect1.center() - QgsPointXY(0, 0)
         assert rect1.center() == QgsPointXY(0, 0)
+
+    def testInvert(self):
+        rect = QgsRectangle(0, 0.1, 0.2, 0.3)
+        rect.invert()
+        self.assertEqual(rect.xMinimum(), 0.1)
+        self.assertEqual(rect.yMinimum(), 0)
+        self.assertEqual(rect.xMaximum(), 0.3)
+        self.assertEqual(rect.yMaximum(), 0.2)
 
 
 if __name__ == '__main__':

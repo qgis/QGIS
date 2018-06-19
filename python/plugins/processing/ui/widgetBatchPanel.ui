@@ -120,6 +120,13 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0" colspan="6">
+    <widget class="QCheckBox" name="checkLoadLayersOnCompletion">
+     <property name="text">
+      <string>Load layers on completion</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

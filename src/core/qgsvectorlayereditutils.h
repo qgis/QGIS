@@ -24,7 +24,8 @@
 
 class QgsCurve;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVectorLayerEditUtils
  */
 class CORE_EXPORT QgsVectorLayerEditUtils
@@ -77,7 +78,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
      */
-    QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -92,8 +93,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -104,8 +104,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      *
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -117,8 +116,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds a new part polygon to a multipart feature
      *
-     * \return
-     * - QgsGeometry::Success
+     * \returns - QgsGeometry::Success
      * - QgsGeometry::AddPartSelectedGeometryNotFound
      * - QgsGeometry::AddPartNotMultiGeometry
      * - QgsGeometry::InvalidBaseGeometry
@@ -141,8 +139,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Splits parts cut by the given line
      * \param splitLine line that splits the layer feature parts
      * \param topologicalEditing true if topological editing is enabled
-     * \return
-     *  - QgsGeometry::InvalidBaseGeometry
+     * \returns  - QgsGeometry::InvalidBaseGeometry
      *  - QgsGeometry::Success
      *  - QgsGeometry::InvalidInput
      *  - QgsGeometry::NothingHappened if a selection is present but no feature has been split
@@ -150,23 +147,22 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  - QgsGeometry::GeometryEngineError
      *  - QgsGeometry::SplitCannotSplitPoint
      */
-    QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
      * \param splitLine line that splits the layer features
      * \param topologicalEditing true if topological editing is enabled
-     * \return
-     *  0 in case of success,
+     * \returns 0 in case of success,
      *  4 if there is a selection but no feature split
      */
-    QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
+     * \return 0 in case of success
      * \note geom is not going to be modified by the function
-     * \returns 0 in case of success
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 
@@ -176,7 +172,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
-     * \returns 0 in case of success
+     * \return 0 in case of success
      */
     int addTopologicalPoints( const QgsPointXY &p );
 
@@ -186,7 +182,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Little helper function that gives bounding box from a list of points.
      * \returns True in case of success
      */
-    bool boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+    bool boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 
     QgsVectorLayer *mLayer = nullptr;
 };

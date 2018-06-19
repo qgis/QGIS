@@ -13,32 +13,27 @@
 #                                                                         #
 ###########################################################################
 
-export PYTHONPATH=${HOME}/osgeo4travis/lib/python3.3/site-packages/
-export PATH=${HOME}/osgeo4travis/bin:${HOME}/osgeo4travis/sbin:${HOME}/OTB-5.6.0-Linux64/bin:${PATH}
-export LD_LIBRARY_PATH=${HOME}/osgeo4travis/lib
-export CTEST_PARALLEL_LEVEL=1
-export CCACHE_TEMPDIR=/tmp
-ccache -M 500M
-ccache -z
+set -e
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $(git rev-parse --show-toplevel)/.ci/travis/scripts/travis_envvar_helper.sh
 
-# Set OTB application path (installed in before_install.sh script)
-export OTB_APPLICATION_PATH=${HOME}/OTB-5.6.0-Linux64/lib/otb/applications
-export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+DOCKER_QGIS_IMAGE_BUILD_PUSH=$(create_qgis_image)
 
-export CTEST_BUILD_COMMAND="/usr/bin/make -j3 -i -k"
+mkdir -p $CCACHE_DIR
 
-# This works around an issue where travis would timeout on master because
-# when make is run inside ctest no output is generated. At the current time
-# nobody know why, but at least this workaround gets travis results for master
-# back. Better approaches VERY welcome.
-if [[ ${TRAVIS_PULL_REQUEST} == "false" ]];
-then
-    pushd build
-    $CTEST_BUILD_COMMAND
-    popd
+if [[ $DOCKER_QGIS_IMAGE_BUILD_PUSH =~ true ]]; then
+  DIR=$(git rev-parse --show-toplevel)/.docker
+  pushd ${DIR}
+  echo "${bold}Building QGIS Docker image '${DOCKER_TAG}'...${endbold}"
+  docker build --build-arg CACHE_DIR=/root/.ccache \
+               --build-arg DOCKER_TAG=${DOCKER_TAG} \
+               --cache-from "qgis/qgis:${DOCKER_TAG}" \
+               -t "qgis/qgis:${DOCKER_TAG}" \
+               -f qgis.dockerfile ..
+  echo "${bold}Pushing image to docker hub...${endbold}"
+  docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  docker push "qgis/qgis:${DOCKER_TAG}"
+  popd
+else
+  docker-compose -f $DOCKER_COMPOSE run --rm qgis-deps
 fi
-
-python ${TRAVIS_BUILD_DIR}/.ci/travis/scripts/ctest2travis.py \
-  xvfb-run ctest -V -E "$(cat ${DIR}/blacklist.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)" -S ${DIR}/../travis.ctest --output-on-failure

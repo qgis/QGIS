@@ -11,18 +11,91 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Script editor</string>
+   <string>Processing Script Editor</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <widget class="ScriptEdit" name="editor"/>
     </item>
+    <item row="1" column="0">
+     <widget class="QWidget" name="searchWidget" native="true">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>5</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>5</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chkCaseSensitive">
+         <property name="text">
+          <string>Case sensitive</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="chkWholeWord">
+         <property name="text">
+          <string>Whole word</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4" colspan="2">
+        <widget class="QPushButton" name="btnReplace">
+         <property name="text">
+          <string>Replace</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Find what:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Replace with:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="leReplaceText"/>
+       </item>
+       <item row="0" column="4" colspan="2">
+        <widget class="QPushButton" name="btnFind">
+         <property name="text">
+          <string>Find</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QLineEdit" name="leFindText"/>
+       </item>
+       <item row="0" column="1" rowspan="2">
+        <widget class="Line" name="line_8">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -34,8 +107,6 @@
    <addaction name="actionSaveScript"/>
    <addaction name="actionSaveScriptAs"/>
    <addaction name="separator"/>
-   <addaction name="actionEditScriptHelp"/>
-   <addaction name="separator"/>
    <addaction name="actionRunScript"/>
    <addaction name="separator"/>
    <addaction name="actionCut"/>
@@ -45,15 +116,17 @@
    <addaction name="actionUndo"/>
    <addaction name="actionRedo"/>
    <addaction name="separator"/>
+   <addaction name="actionFindReplace"/>
+   <addaction name="separator"/>
    <addaction name="actionIncreaseFontSize"/>
    <addaction name="actionDecreaseFontSize"/>
   </widget>
   <action name="actionOpenScript">
    <property name="text">
-    <string>Open script...</string>
+    <string>Open Script…</string>
    </property>
    <property name="toolTip">
-    <string>Open script</string>
+    <string>Open Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -61,10 +134,10 @@
   </action>
   <action name="actionSaveScript">
    <property name="text">
-    <string>Save script...</string>
+    <string>Save Script…</string>
    </property>
    <property name="toolTip">
-    <string>Save script...</string>
+    <string>Save Script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -72,29 +145,21 @@
   </action>
   <action name="actionSaveScriptAs">
    <property name="text">
-    <string>Save script as...</string>
+    <string>Save Script as…</string>
    </property>
    <property name="toolTip">
-    <string>Save script as...</string>
+    <string>Save Script as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionEditScriptHelp">
-   <property name="text">
-    <string>Edit script help</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit script help</string>
-   </property>
-  </action>
   <action name="actionRunScript">
    <property name="text">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="toolTip">
-    <string>Run script</string>
+    <string>Run Script</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -157,18 +222,29 @@
   </action>
   <action name="actionIncreaseFontSize">
    <property name="text">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Increase font size</string>
+    <string>Increase Font Size</string>
    </property>
   </action>
   <action name="actionDecreaseFontSize">
    <property name="text">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
    </property>
    <property name="toolTip">
-    <string>Decrease font size</string>
+    <string>Decrease Font Size</string>
+   </property>
+  </action>
+  <action name="actionFindReplace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+   <property name="text">
+    <string>Find &amp;&amp; &amp;Replace</string>
    </property>
   </action>
  </widget>
@@ -176,7 +252,7 @@
   <customwidget>
    <class>ScriptEdit</class>
    <extends>QTextEdit</extends>
-   <header>processing.gui.ScriptEdit</header>
+   <header location="global">processing.script.ScriptEdit</header>
   </customwidget>
  </customwidgets>
  <resources/>

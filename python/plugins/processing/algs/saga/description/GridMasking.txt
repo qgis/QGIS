@@ -1,6 +1,6 @@
 Grid Masking
 grid_tools
-ParameterRaster|GRID|Grid|False
-ParameterRaster|MASK|Mask|False
-OutputRaster|MASKED|Masked Grid
+QgsProcessingParameterRasterLayer|GRID|Grid|None|False
+QgsProcessingParameterRasterLayer|MASK|Mask|None|False
+QgsProcessingParameterRasterDestination|MASKED|Masked Grid
 AllowUnmatching

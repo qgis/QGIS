@@ -1,10 +1,13 @@
 v.net.components
 Computes strongly and weakly connected components in the network.
 Vector (v.*)
-ParameterVector|input|Input vector line layer (network)|1|False
-ParameterSelection|method|Type of components|weak;strong|0|False
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterBoolean|-a|Add points on nodes|True|True
-OutputVector|output|Network_Components_Line
-OutputVector|output_point|Network_Components_Point
+QgsProcessingParameterFeatureSource|input|Input vector line layer (network)|1|None|False
+QgsProcessingParameterFeatureSource|points|Centers point layer (nodes)|0|None|True
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|True|0.0|None
+QgsProcessingParameterEnum|method|Type of components|weak;strong|False|0|False
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
+*QgsProcessingParameterBoolean|-a|Add points on nodes|True|True
+QgsProcessingParameterVectorDestination|output|Network_Components_Line
+QgsProcessingParameterVectorDestination|output_point|Network_Components_Point

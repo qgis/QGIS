@@ -26,7 +26,8 @@
 #include "qgis_gui.h"
 #include "qgis.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic dialog with layout and button box
  */
 class GUI_EXPORT QgsDialog : public QDialog

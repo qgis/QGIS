@@ -32,11 +32,11 @@
 /**
  * \ingroup analysis
  * \class QgsNetworkStrategy
- * \since QGIS 3.0
  * \brief QgsNetworkStrategy defines strategy used for calculation of the edge cost. For example it can
  * take into account travel distance, amount of time or money. Currently there are two strategies
  * implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
  * QgsNetworkStrategy implemented using "strategy" design pattern.
+ * \since QGIS 3.0
  */
 
 class ANALYSIS_EXPORT QgsNetworkStrategy
@@ -58,16 +58,15 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
     /**
      * Default constructor
      */
-    QgsNetworkStrategy() {}
+    QgsNetworkStrategy() = default;
 
     virtual ~QgsNetworkStrategy() = default;
 
     /**
-     * Returns list of the source layer attributes needed for cost calculation.
-     * This method called by QgsGraphDirector.
-     * \returns list of required attributes
+     * Returns a list of the source layer attributes needed for cost calculation.
+     * This is method called by QgsGraphDirector.
      */
-    virtual QgsAttributeList requiredAttributes() const { return QgsAttributeList(); }
+    virtual QSet< int > requiredAttributes() const { return QSet< int >(); }
 
     /**
      * Returns edge cost

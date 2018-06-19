@@ -30,14 +30,16 @@ class CustomActionRegistry : public QgsMapLayerActionRegistry
     Q_OBJECT
 
   public:
-    CustomActionRegistry();
+
+    CustomActionRegistry() = default;
     // remove all actions
     void clear() { mMapLayerActionList.clear(); }
 };
 ///\endcond
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsIdentifyMenu class builds a menu to be used with identify results (\see QgsMapToolIdentify).
  * It is customizable and can display attribute actions (\see QgsAction) as well as map layer actions (\see QgsMapLayerAction).
  * It can also embed custom map layer actions, defined for this menu exclusively.
@@ -57,29 +59,19 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     struct ActionData
     {
-      ActionData()
-        : mIsValid( false )
-        , mAllResults( false )
-        , mIsExternalAction( false )
-        , mLayer( nullptr )
-        , mFeatureId( 0 )
-        , mLevel( LayerLevel )
-        , mMapLayerAction( nullptr )
-      {}
+      //! Constructor for ActionData
+      ActionData() = default;
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )
         : mIsValid( true )
         , mAllResults( !layer )
         , mIsExternalAction( nullptr != mapLayerAction )
         , mLayer( layer )
-        , mFeatureId( 0 )
-        , mLevel( LayerLevel )
         , mMapLayerAction( mapLayerAction )
       {}
 
       ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = nullptr )
         : mIsValid( true )
-        , mAllResults( false )
         , mIsExternalAction( nullptr != mapLayerAction )
         , mLayer( layer )
         , mFeatureId( fid )
@@ -87,12 +79,12 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
         , mMapLayerAction( mapLayerAction )
       {}
 
-      bool mIsValid;
-      bool mAllResults;
-      bool mIsExternalAction;
+      bool mIsValid = false;
+      bool mAllResults = false;
+      bool mIsExternalAction = false;
       QgsMapLayer *mLayer = nullptr;
-      QgsFeatureId mFeatureId;
-      QgsIdentifyMenu::MenuLevel mLevel;
+      QgsFeatureId mFeatureId = 0;
+      QgsIdentifyMenu::MenuLevel mLevel = LayerLevel;
       QgsMapLayerAction *mMapLayerAction = nullptr;
     };
 
@@ -101,7 +93,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 
-    ~QgsIdentifyMenu();
+    ~QgsIdentifyMenu() override;
 
     //! define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
     void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
@@ -110,6 +102,20 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     //! define if the menu will be shown with a single idetify result
     void setExecWithSingleResult( bool execWithSingleResult ) { mExecWithSingleResult = execWithSingleResult;}
     bool execWithSingleResult() { return mExecWithSingleResult;}
+
+    /**
+     * Sets an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
 
     /**
      * \brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
@@ -127,13 +133,17 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     void setResultsIfExternalAction( bool resultsIfExternalAction ) {mResultsIfExternalAction = resultsIfExternalAction;}
     bool resultsIfExternalAction() {return mResultsIfExternalAction;}
 
-    //! Defines the maximum number of layers displayed in the menu (default is 10).
-    //! \note 0 is unlimited.
+    /**
+     * Defines the maximum number of layers displayed in the menu (default is 10).
+     * \note 0 is unlimited.
+     */
     void setMaxLayerDisplay( int maxLayerDisplay );
     int maxLayerDisplay() {return mMaxLayerDisplay;}
 
-    //! Defines the maximum number of features displayed in the menu for vector layers (default is 10).
-    //! \note 0 is unlimited.
+    /**
+     * Defines the maximum number of features displayed in the menu for vector layers (default is 10).
+     * \note 0 is unlimited.
+     */
     void setMaxFeatureDisplay( int maxFeatureDisplay );
     int maxFeatureDisplay() {return mMaxFeatureDisplay;}
 
@@ -151,7 +161,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent *e ) override;
 
   private slots:
     void handleMenuHover();
@@ -164,11 +174,13 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     //! adds a raster layer in the menu being built
     void addRasterLayer( QgsMapLayer *layer );
 
-    //! adds a vector layer and its results in the menu being built
-    //! if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+    /**
+     * adds a vector layer and its results in the menu being built
+     * if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
+     */
     void addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapToolIdentify::IdentifyResult> &results, bool singleLayer = false );
 
-    //! get the lists of results corresponding to an action in the menu
+    //! Gets the lists of results corresponding to an action in the menu
     QList<QgsMapToolIdentify::IdentifyResult> results( QAction *action, bool &externalAction );
 
     QgsMapCanvas *mCanvas = nullptr;
@@ -179,6 +191,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool mResultsIfExternalAction;
     int mMaxLayerDisplay;
     int mMaxFeatureDisplay;
+
+    QgsExpressionContextScope mExpressionContextScope;
 
     // name of the action to be displayed for feature default action, if other actions are shown
     QString mDefaultActionName;

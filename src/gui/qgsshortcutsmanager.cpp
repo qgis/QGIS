@@ -38,7 +38,7 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
     QList< QAction * > actions = object->findChildren< QAction * >();
     Q_FOREACH ( QAction *a, actions )
     {
-      registerAction( a, a->shortcut() );
+      registerAction( a, a->shortcut().toString( QKeySequence::NativeText ) );
     }
   }
   else
@@ -47,7 +47,7 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
     {
       if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
-        registerAction( a, a->shortcut() );
+        registerAction( a, a->shortcut().toString( QKeySequence::NativeText ) );
       }
     }
   }
@@ -60,7 +60,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
     QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
     Q_FOREACH ( QShortcut *s, shortcuts )
     {
-      registerShortcut( s, s->key() );
+      registerShortcut( s, s->key().toString( QKeySequence::NativeText ) );
     }
   }
   else
@@ -69,7 +69,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
     {
       if ( QShortcut *s = qobject_cast<QShortcut *>( child ) )
       {
-        registerShortcut( s, s->key() );
+        registerShortcut( s, s->key().toString( QKeySequence::NativeText ) );
       }
     }
   }
@@ -77,6 +77,9 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
 
 bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaultSequence )
 {
+  if ( mActions.contains( action ) )
+    return false; // already registered
+
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
   if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
@@ -307,7 +310,7 @@ void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &s
   QString current = action->toolTip();
   // Remove the old shortcut.
   QRegExp rx( "\\(.*\\)" );
-  current.replace( rx, "" );
+  current.replace( rx, QLatin1String( "" ) );
 
   if ( !sequence.isEmpty() )
   {

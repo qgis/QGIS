@@ -59,7 +59,7 @@ QColor QgsMapToolEdit::digitizingFillColor()
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_red" ), 255 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_green" ), 0 ).toInt(),
     settings.value( QStringLiteral( "qgis/digitizing/fill_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/fill_color_alpha" ), 30 ).toInt() / 255.0;
   fillColor.setAlphaF( myAlpha );
   return fillColor;
 }
@@ -92,7 +92,7 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
+int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
 {
   if ( !mCanvas )
   {
@@ -107,7 +107,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
     return 2;
   }
 
-  QList<QgsPointXY>::const_iterator list_it = geom.constBegin();
+  QVector<QgsPointXY>::const_iterator list_it = geom.constBegin();
   for ( ; list_it != geom.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
@@ -122,7 +122,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   QColor color( settings.value( QStringLiteral( "qgis/digitizing/line_color_red" ), 255 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_green" ), 0 ).toInt(),
                 settings.value( QStringLiteral( "qgis/digitizing/line_color_blue" ), 0 ).toInt() );
-  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0 ;
+  double myAlpha = settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha" ), 200 ).toInt() / 255.0;
   if ( alternativeBand )
   {
     myAlpha = myAlpha * settings.value( QStringLiteral( "qgis/digitizing/line_color_alpha_scale" ), 0.75 ).toDouble();
@@ -131,6 +131,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   color.setAlphaF( myAlpha );
   rb->setStrokeColor( color );
   rb->setFillColor( color );
+  rb->setStrokeWidth( digitizingStrokeWidth() );
   rb->show();
   return rb;
 }

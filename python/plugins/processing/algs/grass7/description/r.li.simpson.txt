@@ -1,7 +1,7 @@
 r.li.simpson
 Calculates Simpson's diversity index on a raster map
 Raster (r.*)
-ParameterRaster|input|Name of input raster map|False
-ParameterString|config_txt|Landscape structure configuration|None|True|True
-ParameterFile|config|Landscape structure configuration file|False|True
-OutputRaster|output|Simpson
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
+QgsProcessingParameterFile|config|Landscape structure configuration file|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterRasterDestination|output|Simpson

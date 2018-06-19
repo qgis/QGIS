@@ -27,7 +27,8 @@
 class QgsPointXY;
 class QPoint;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Perform transforms between map coordinates and device coordinates.
   *
   * This class can convert device coordinates to map coordinates and vice versa.
@@ -54,7 +55,8 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsMapToPixel( double mapUnitsPerPixel );
 
-    /** Returns a new QgsMapToPixel created using a specified \a scale and distance unit.
+    /**
+     * Returns a new QgsMapToPixel created using a specified \a scale and distance unit.
      * \param scale map scale denominator, e.g. 1000.0 for a 1:1000 map.
      * \param dpi screen DPI
      * \param mapUnits map units
@@ -135,18 +137,18 @@ class CORE_EXPORT QgsMapToPixel
      */
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 
-    //! Return current map units per pixel
+    //! Returns current map units per pixel
     double mapUnitsPerPixel() const;
 
     /**
-     * Return current map width in pixels
+     * Returns current map width in pixels
      * The information is only known if setRotation was used
      * \since QGIS 2.8
      */
     int mapWidth() const;
 
     /**
-     * Return current map height in pixels
+     * Returns current map height in pixels
      * \since QGIS 2.8
      */
     int mapHeight() const;
@@ -161,7 +163,7 @@ class CORE_EXPORT QgsMapToPixel
     void setMapRotation( double degrees, double cx, double cy );
 
     /**
-     * Return current map rotation in degrees
+     * Returns current map rotation in degrees
      * \since QGIS 2.8
      */
     double mapRotation() const;
@@ -183,27 +185,29 @@ class CORE_EXPORT QgsMapToPixel
 
     QTransform transform() const;
 
-    /** Returns the center x-coordinate for the transform.
+    /**
+     * Returns the center x-coordinate for the transform.
      * \see yCenter()
      * \since QGIS 3.0
      */
     double xCenter() const { return mXCenter; }
 
-    /** Returns the center y-coordinate for the transform.
+    /**
+     * Returns the center y-coordinate for the transform.
      * \see xCenter()
      * \since QGIS 3.0
      */
     double yCenter() const { return mYCenter; }
 
   private:
-    double mMapUnitsPerPixel;
-    int mWidth;
-    int mHeight;
-    double mRotation;
-    double mXCenter;
-    double mYCenter;
-    double xMin;
-    double yMin;
+    double mMapUnitsPerPixel = 1;
+    int mWidth = 1;
+    int mHeight = 1;
+    double mRotation = 0.0;
+    double mXCenter = 0.5;
+    double mYCenter = 0.5;
+    double xMin = 0;
+    double yMin = 0;
     QTransform mMatrix;
 
     bool updateMatrix();

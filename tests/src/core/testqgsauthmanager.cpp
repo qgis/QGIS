@@ -29,7 +29,8 @@
 #include "qgsauthconfig.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthManager
  */
 class TestQgsAuthManager: public QObject
@@ -89,7 +90,7 @@ void TestQgsAuthManager::initTestCase()
   // init app and auth manager
   QgsApplication::init();
   QgsApplication::initQgis();
-  QVERIFY2( !QgsAuthManager::instance()->isDisabled(),
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
             "Authentication system is DISABLED" );
 
   QString mySettings = QgsApplication::showSettings();
@@ -97,15 +98,15 @@ void TestQgsAuthManager::initTestCase()
   mReport += "<p>" + mySettings + "</p>\n";
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
-  QString db1( QFileInfo( QgsAuthManager::instance()->authenticationDatabasePath() ).canonicalFilePath() );
+  QString db1( QFileInfo( QgsApplication::authManager()->authenticationDatabasePath() ).canonicalFilePath() );
   QString db2( QFileInfo( mTempDir + "/qgis-auth.db" ).canonicalFilePath() );
   QVERIFY2( db1 == db2, "Auth db temp path does not match db path of manager" );
 
   // verify master pass can be set manually
   // (this also creates a fresh password hash in the new temp database)
-  QVERIFY2( QgsAuthManager::instance()->setMasterPassword( mPass, true ),
+  QVERIFY2( QgsApplication::authManager()->setMasterPassword( mPass, true ),
             "Master password could not be set" );
-  QVERIFY2( QgsAuthManager::instance()->masterPasswordIsSet(),
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
             "Auth master password not set from passed string" );
 
   // create QGIS_AUTH_PASSWORD_FILE file
@@ -125,11 +126,11 @@ void TestQgsAuthManager::initTestCase()
   // QTest::qSleep( 3000 );
   QgsApplication::init();
   QgsApplication::initQgis();
-  QVERIFY2( !QgsAuthManager::instance()->isDisabled(),
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
             "Authentication system is DISABLED" );
 
   // verify QGIS_AUTH_PASSWORD_FILE worked, when compared against hash in db
-  QVERIFY2( QgsAuthManager::instance()->masterPasswordIsSet(),
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
             "Auth master password not set from QGIS_AUTH_PASSWORD_FILE" );
 
   // all tests should now have a valid qgis-auth.db and stored/set master password
@@ -190,7 +191,7 @@ void TestQgsAuthManager::testMasterPassword()
 {
   // password is already stored/set in initTestCase()
   // NOTE: leave it in the same state when done with this test
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager *authm = QgsApplication::authManager();
 
   QVERIFY( authm->masterPasswordIsSet() );
   QVERIFY( authm->masterPasswordHashInDatabase() );
@@ -208,7 +209,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == true );
+  QVERIFY( spyargs.at( 0 ).toBool() );
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
@@ -217,7 +218,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == false );
+  QVERIFY( !spyargs.at( 0 ).toBool() );
 
   authm->clearMasterPassword();
   QVERIFY( !authm->masterPasswordIsSet() );
@@ -226,7 +227,7 @@ void TestQgsAuthManager::testMasterPassword()
   QCOMPARE( spy.count(), 1 );
   spyargs = spy.takeFirst();
   QVERIFY( spyargs.at( 0 ).type() == QVariant::Bool );
-  QVERIFY( spyargs.at( 0 ).toBool() == true );
+  QVERIFY( spyargs.at( 0 ).toBool() );
 }
 
 void TestQgsAuthManager::testAuthConfigs()
@@ -234,7 +235,7 @@ void TestQgsAuthManager::testAuthConfigs()
   QList<QgsAuthMethodConfig> configs( registerAuthConfigs() );
   QVERIFY( !configs.isEmpty() );
 
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager *authm = QgsApplication::authManager();
 
   // test storing/loading/updating
   Q_FOREACH ( QgsAuthMethodConfig config, configs )
@@ -349,7 +350,7 @@ void TestQgsAuthManager::testAuthMethods()
   QList<QgsAuthMethodConfig> configs( registerAuthConfigs() );
   QVERIFY( !configs.isEmpty() );
 
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager *authm = QgsApplication::authManager();
 
   Q_FOREACH ( QgsAuthMethodConfig config, configs )
   {
@@ -418,14 +419,14 @@ QList<QgsAuthMethodConfig> TestQgsAuthManager::registerAuthConfigs()
 
 void TestQgsAuthManager::doSync()
 {
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager *authm = QgsApplication::authManager();
   QVERIFY( authm->passwordHelperSync() );
 }
 
 void TestQgsAuthManager::testPasswordHelper()
 {
 
-  QgsAuthManager *authm = QgsAuthManager::instance();
+  QgsAuthManager *authm = QgsApplication::authManager();
   authm->clearMasterPassword();
 
   QgsSettings settings;

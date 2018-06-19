@@ -49,13 +49,15 @@
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char *name, Qt::WindowFlags f )
   : QgsDockWidget( parent, f )
-  , mModulesListModel( 0 )
-  , mModelProxy( 0 )
 {
   Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassTools()" );
   setupUi( this );
-  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.png" ) ), tr( "Close mapset" ), this );
+  connect( mFilterInput, &QLineEdit::textChanged, this, &QgsGrassTools::mFilterInput_textChanged );
+  connect( mDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mDebugButton_clicked );
+  connect( mCloseDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mCloseDebugButton_clicked );
+  connect( mViewModeButton, &QToolButton::clicked, this, &QgsGrassTools::mViewModeButton_clicked );
+  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.svg" ) ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, &QAbstractButton::clicked, this, &QgsGrassTools::closeMapset );
 
@@ -163,7 +165,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   }
 
 #ifdef HAVE_POSIX_OPENPT
-  QgsGrassShell *sh = 0;
+  QgsGrassShell *sh = nullptr;
 #endif
 
   QWidget *m = nullptr;
@@ -218,7 +220,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
   if ( !pixmap.isNull() )
   {
-    // Icon size in QT4 does not seem to be variable
+    // Icon size in QT does not seem to be variable
     // -> reset the width to max icon width
     if ( mTabWidget->iconSize().width() < pixmap.width() )
     {
@@ -269,12 +271,12 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
 
   if ( !file.exists() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
     return false;
   }
   if ( ! file.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
     return false;
   }
 
@@ -286,7 +288,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
     QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
-    QMessageBox::warning( 0, tr( "Warning" ), errmsg );
+    QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     file.close();
     return false;
   }
@@ -304,7 +306,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   QDomElement modulesElem = modulesNode.toElement();
 
   // Go through the sections and modules and add them to the list view
-  addModules( 0, modulesElem, treeModel, modulesListModel, false );
+  addModules( nullptr, modulesElem, treeModel, modulesListModel, false );
   if ( direct )
   {
     removeEmptyItems( treeModel );
@@ -546,7 +548,7 @@ void QgsGrassTools::closeTools()
 //
 // Helper function for Tim's experimental model list
 //
-void QgsGrassTools::on_mFilterInput_textChanged( QString text )
+void QgsGrassTools::mFilterInput_textChanged( QString text )
 {
   QgsDebugMsg( "GRASS modules filter changed to :" + text );
   mTreeModelProxy->setFilter( text );
@@ -585,7 +587,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     }
     QModelIndex modelIndex = proxyModel->mapToSource( index );
 
-    QStandardItemModel *model = 0;
+    QStandardItemModel *model = nullptr;
     if ( proxyModel == mTreeModelProxy )
     {
       model = mTreeModel;
@@ -604,7 +606,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
   }
 }
 
-void QgsGrassTools::on_mDebugButton_clicked()
+void QgsGrassTools::mDebugButton_clicked()
 {
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -668,31 +670,30 @@ int QgsGrassTools::debug( QStandardItem *item )
   }
 }
 
-void QgsGrassTools::on_mCloseDebugButton_clicked()
+void QgsGrassTools::mCloseDebugButton_clicked()
 {
   QgsGrass::instance()->setModulesDebug( false );
 }
 
 
-void QgsGrassTools::on_mViewModeButton_clicked()
+void QgsGrassTools::mViewModeButton_clicked()
 {
   if ( mTreeView->isHidden() )
   {
     mListView->hide();
     mTreeView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconListView.png" ) ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconListView.svg" ) ) );
   }
   else
   {
     mTreeView->hide();
     mListView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconTreeView.png" ) ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconTreeView.svg" ) ) );
   }
 }
 
 QgsGrassToolsTreeFilterProxyModel::QgsGrassToolsTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
-  , mModel( 0 )
 {
   setDynamicSortFilter( true );
   mRegExp.setPatternSyntax( QRegExp::Wildcard );

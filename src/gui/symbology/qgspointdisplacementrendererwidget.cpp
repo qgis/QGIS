@@ -32,7 +32,7 @@ QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *l
 
 QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   if ( !layer )
   {
@@ -40,7 +40,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   //the renderer only applies to point vector layers
-  if ( layer->wkbType() != QgsWkbTypes::Point && layer->wkbType()  != QgsWkbTypes::Point25D )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) != QgsWkbTypes::PointGeometry || QgsWkbTypes::isMultiType( layer->wkbType() ) )
   {
     //setup blank dialog
     mRenderer = nullptr;
@@ -48,6 +48,17 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     return;
   }
   setupUi( this );
+  connect( mLabelFieldComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged );
+  connect( mRendererComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mRendererComboBox_currentIndexChanged );
+  connect( mPlacementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointDisplacementRendererWidget::mPlacementComboBox_currentIndexChanged );
+  connect( mCircleWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mCircleWidthSpinBox_valueChanged );
+  connect( mCircleColorButton, &QgsColorButton::colorChanged, this, &QgsPointDisplacementRendererWidget::mCircleColorButton_colorChanged );
+  connect( mDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mDistanceSpinBox_valueChanged );
+  connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointDisplacementRendererWidget::mDistanceUnitWidget_changed );
+  connect( mLabelColorButton, &QgsColorButton::colorChanged, this, &QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged );
+  connect( mCircleModificationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointDisplacementRendererWidget::mCircleModificationSpinBox_valueChanged );
+  connect( mScaleDependentLabelsCheckBox, &QCheckBox::stateChanged, this, &QgsPointDisplacementRendererWidget::mScaleDependentLabelsCheckBox_stateChanged );
+  connect( mRendererSettingsButton, &QPushButton::clicked, this, &QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mLabelFontButton->setMode( QgsFontButton::ModeQFont );
@@ -68,6 +79,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
 
   mPlacementComboBox->addItem( tr( "Ring" ), QgsPointDisplacementRenderer::Ring );
   mPlacementComboBox->addItem( tr( "Concentric rings" ), QgsPointDisplacementRenderer::ConcentricRings );
+  mPlacementComboBox->addItem( tr( "Grid" ), QgsPointDisplacementRenderer::Grid );
 
   //insert attributes into combo box
   if ( layer )
@@ -147,7 +159,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
     if ( rendererIndex != -1 )
     {
       mRendererComboBox->setCurrentIndex( rendererIndex );
-      on_mRendererComboBox_currentIndexChanged( rendererIndex );
+      mRendererComboBox_currentIndexChanged( rendererIndex );
     }
   }
 
@@ -204,7 +216,7 @@ QgsExpressionContext QgsPointDisplacementRendererWidget::createExpressionContext
   return context;
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChanged( const QString &text )
+void QgsPointDisplacementRendererWidget::mLabelFieldComboBox_currentIndexChanged( const QString &text )
 {
   if ( mRenderer )
   {
@@ -220,7 +232,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFieldComboBox_currentIndexChan
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
+void QgsPointDisplacementRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
@@ -234,7 +246,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererComboBox_currentIndexChange
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChanged( int index )
+void QgsPointDisplacementRendererWidget::mPlacementComboBox_currentIndexChanged( int index )
 {
   if ( !mRenderer )
     return;
@@ -243,7 +255,7 @@ void QgsPointDisplacementRendererWidget::on_mPlacementComboBox_currentIndexChang
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
+void QgsPointDisplacementRendererWidget::mRendererSettingsButton_clicked()
 {
   if ( !mRenderer )
     return;
@@ -252,7 +264,7 @@ void QgsPointDisplacementRendererWidget::on_mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget *w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
-    w->setPanelTitle( tr( "Renderer settings" ) );
+    w->setPanelTitle( tr( "Renderer Settings" ) );
 
     QgsSymbolWidgetContext context = mContext;
 
@@ -280,7 +292,7 @@ void QgsPointDisplacementRendererWidget::labelFontChanged()
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( double d )
+void QgsPointDisplacementRendererWidget::mCircleWidthSpinBox_valueChanged( double d )
 {
   if ( mRenderer )
   {
@@ -289,7 +301,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleWidthSpinBox_valueChanged( do
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( const QColor &newColor )
+void QgsPointDisplacementRendererWidget::mCircleColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mRenderer )
   {
@@ -300,7 +312,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleColorButton_colorChanged( con
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( const QColor &newColor )
+void QgsPointDisplacementRendererWidget::mLabelColorButton_colorChanged( const QColor &newColor )
 {
   if ( !mRenderer )
   {
@@ -311,7 +323,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelColorButton_colorChanged( cons
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChanged( double d )
+void QgsPointDisplacementRendererWidget::mCircleModificationSpinBox_valueChanged( double d )
 {
   if ( !mRenderer )
   {
@@ -322,7 +334,7 @@ void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChan
   emit widgetChanged();
 }
 
-void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
+void QgsPointDisplacementRendererWidget::mDistanceSpinBox_valueChanged( double d )
 {
   if ( mRenderer )
   {
@@ -331,7 +343,7 @@ void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( doubl
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mDistanceUnitWidget_changed()
+void QgsPointDisplacementRendererWidget::mDistanceUnitWidget_changed()
 {
   if ( mRenderer )
   {
@@ -341,7 +353,7 @@ void QgsPointDisplacementRendererWidget::on_mDistanceUnitWidget_changed()
   }
 }
 
-void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateChanged( int state )
+void QgsPointDisplacementRendererWidget::mScaleDependentLabelsCheckBox_stateChanged( int state )
 {
   if ( state == Qt::Unchecked )
   {
@@ -400,7 +412,7 @@ void QgsPointDisplacementRendererWidget::updateRendererFromWidget()
 
 void QgsPointDisplacementRendererWidget::setupBlankUi( const QString &layerName )
 {
-  QLabel *label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point displacement renderer" ).arg( layerName ), this );
+  QLabel *label = new QLabel( tr( "The point displacement renderer only applies to (single) point layers. \n'%1' is not a (single) point layer and cannot be displayed by the point displacement renderer." ).arg( layerName ), this );
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( label );

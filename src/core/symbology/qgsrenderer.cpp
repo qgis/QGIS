@@ -60,7 +60,6 @@ QgsFeatureRenderer::QgsFeatureRenderer( const QString &type )
   , mUsingSymbolLevels( false )
   , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
   , mCurrentVertexMarkerSize( 3 )
-  , mPaintEffect( nullptr )
   , mForceRaster( false )
   , mOrderByEnabled( false )
 {
@@ -78,16 +77,37 @@ QgsFeatureRenderer *QgsFeatureRenderer::defaultRenderer( QgsWkbTypes::GeometryTy
   return new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( geomType ) );
 }
 
-QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsFeatureRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   return symbolForFeature( feature, context );
 }
 
-QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsFeatureRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
   return QSet< QString >();
+}
+
+void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
+{
+#ifdef QGISDEBUG
+  if ( !mThread )
+  {
+    mThread = QThread::currentThread();
+  }
+  else
+  {
+    Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
+  }
+#endif
+}
+
+void QgsFeatureRenderer::stopRender( QgsRenderContext & )
+{
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
+#endif
 }
 
 bool QgsFeatureRenderer::filterNeedsGeometry() const
@@ -95,8 +115,12 @@ bool QgsFeatureRenderer::filterNeedsGeometry() const
   return false;
 }
 
-bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsFeatureRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::renderFeature", "renderFeature called in a different thread - use a cloned renderer instead" );
+#endif
+
   QgsSymbol *symbol = symbolForFeature( feature, context );
   if ( !symbol )
     return false;
@@ -105,7 +129,7 @@ bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   return true;
 }
 
-void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+void QgsFeatureRenderer::renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   symbol->renderFeature( feature, context, layer, selected, drawVertexMarker, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
 }
@@ -113,6 +137,12 @@ void QgsFeatureRenderer::renderFeatureWithSymbol( QgsFeature &feature, QgsSymbol
 QString QgsFeatureRenderer::dump() const
 {
   return QStringLiteral( "UNKNOWN RENDERER\n" );
+}
+
+QgsSymbolList QgsFeatureRenderer::symbols( QgsRenderContext &context ) const
+{
+  Q_UNUSED( context );
+  return QgsSymbolList();
 }
 
 QgsFeatureRenderer *QgsFeatureRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
@@ -155,7 +185,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
   Q_UNUSED( context );
   // create empty renderer element
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -166,7 +196,7 @@ QDomElement QgsFeatureRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
   return rendererElem;
 }
 
@@ -193,47 +223,51 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     return nullptr;
   }
 
+  // create empty FeatureTypeStyle element to merge Rule's from all FeatureTypeStyle's
+  QDomElement mergedFeatTypeStyle = featTypeStyleElem.cloneNode( false ).toElement();
+
   // use the RuleRenderer when more rules are present or the rule
   // has filters or min/max scale denominators set,
   // otherwise use the SingleSymbol renderer
   bool needRuleRenderer = false;
   int ruleCount = 0;
 
-  QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
-  while ( !ruleElem.isNull() )
+  while ( !featTypeStyleElem.isNull() )
   {
-    ruleCount++;
-
-    // more rules present, use the RuleRenderer
-    if ( ruleCount > 1 )
+    QDomElement ruleElem = featTypeStyleElem.firstChildElement( QStringLiteral( "Rule" ) );
+    while ( !ruleElem.isNull() )
     {
-      QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
-      needRuleRenderer = true;
-      break;
-    }
+      ruleCount++;
 
-    QDomElement ruleChildElem = ruleElem.firstChildElement();
-    while ( !ruleChildElem.isNull() )
-    {
-      // rule has filter or min/max scale denominator, use the RuleRenderer
-      if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
-           ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
-           ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+      // append a clone of all Rules to the merged FeatureTypeStyle element
+      mergedFeatTypeStyle.appendChild( ruleElem.cloneNode().toElement() );
+      // more rules present, use the RuleRenderer
+
+      if ( ruleCount > 1 )
       {
-        QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+        QgsDebugMsg( "more Rule elements found: need a RuleRenderer" );
         needRuleRenderer = true;
-        break;
       }
 
-      ruleChildElem = ruleChildElem.nextSiblingElement();
-    }
+      QDomElement ruleChildElem = ruleElem.firstChildElement();
+      while ( !ruleChildElem.isNull() )
+      {
+        // rule has filter or min/max scale denominator, use the RuleRenderer
+        if ( ruleChildElem.localName() == QLatin1String( "Filter" ) ||
+             ruleChildElem.localName() == QLatin1String( "MinScaleDenominator" ) ||
+             ruleChildElem.localName() == QLatin1String( "MaxScaleDenominator" ) )
+        {
+          QgsDebugMsg( "Filter or Min/MaxScaleDenominator element found: need a RuleRenderer" );
+          needRuleRenderer = true;
+          break;
+        }
 
-    if ( needRuleRenderer )
-    {
-      break;
-    }
+        ruleChildElem = ruleChildElem.nextSiblingElement();
+      }
 
-    ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+      ruleElem = ruleElem.nextSiblingElement( QStringLiteral( "Rule" ) );
+    }
+    featTypeStyleElem = featTypeStyleElem.nextSiblingElement( QStringLiteral( "FeatureTypeStyle" ) );
   }
 
   QString rendererType;
@@ -255,7 +289,7 @@ QgsFeatureRenderer *QgsFeatureRenderer::loadSld( const QDomNode &node, QgsWkbTyp
     return nullptr;
   }
 
-  QgsFeatureRenderer *r = m->createRendererFromSld( featTypeStyleElem, geomType );
+  QgsFeatureRenderer *r = m->createRendererFromSld( mergedFeatTypeStyle, geomType );
   return r;
 }
 
@@ -308,9 +342,9 @@ void QgsFeatureRenderer::setVertexMarkerAppearance( int type, int size )
   mCurrentVertexMarkerSize = size;
 }
 
-bool QgsFeatureRenderer::willRenderFeature( QgsFeature &feat, QgsRenderContext &context )
+bool QgsFeatureRenderer::willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
-  return nullptr != symbolForFeature( feat, context );
+  return nullptr != symbolForFeature( feature, context );
 }
 
 void QgsFeatureRenderer::renderVertexMarker( QPointF pt, QgsRenderContext &context )
@@ -341,18 +375,24 @@ void QgsFeatureRenderer::renderVertexMarkerPolygon( QPolygonF &pts, QList<QPolyg
   }
 }
 
-QgsSymbolList QgsFeatureRenderer::symbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
-  QgsSymbol *s = symbolForFeature( feat, context );
+  QgsSymbol *s = symbolForFeature( feature, context );
   if ( s ) lst.append( s );
   return lst;
 }
 
-QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context )
+void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
+{
+  Q_UNUSED( extent );
+  Q_UNUSED( context );
+}
+
+QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   QgsSymbolList lst;
-  QgsSymbol *s = originalSymbolForFeature( feat, context );
+  QgsSymbol *s = originalSymbolForFeature( feature, context );
   if ( s ) lst.append( s );
   return lst;
 }
@@ -386,6 +426,16 @@ bool QgsFeatureRenderer::orderByEnabled() const
 void QgsFeatureRenderer::setOrderByEnabled( bool enabled )
 {
   mOrderByEnabled = enabled;
+}
+
+void QgsFeatureRenderer::setEmbeddedRenderer( QgsFeatureRenderer *subRenderer )
+{
+  delete subRenderer;
+}
+
+const QgsFeatureRenderer *QgsFeatureRenderer::embeddedRenderer() const
+{
+  return nullptr;
 }
 
 void QgsFeatureRenderer::convertSymbolSizeScale( QgsSymbol *symbol, QgsSymbol::ScaleMethod method, const QString &field )

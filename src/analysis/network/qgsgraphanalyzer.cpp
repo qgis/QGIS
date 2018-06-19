@@ -24,6 +24,12 @@
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int criterionNum, QVector<int> *resultTree, QVector<double> *resultCost )
 {
+  if ( startPointIdx < 0 || startPointIdx >= source->vertexCount() )
+  {
+    // invalid start point
+    return;
+  }
+
   QVector< double > *result = nullptr;
   if ( resultCost )
   {
@@ -59,21 +65,20 @@ void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int 
     not_begin.erase( it );
 
     // edge index list
-    QgsGraphEdgeIds l = source->vertex( curVertex ).outEdges();
-    QgsGraphEdgeIds::iterator arcIt;
-    for ( arcIt = l.begin(); arcIt != l.end(); ++arcIt )
+    const QgsGraphEdgeIds &outgoingEdges = source->vertex( curVertex ).outgoingEdges();
+    for ( int edgeId : outgoingEdges )
     {
-      const QgsGraphEdge arc = source->edge( *arcIt );
+      const QgsGraphEdge &arc = source->edge( edgeId );
       double cost = arc.cost( criterionNum ).toDouble() + curCost;
 
-      if ( cost < ( *result )[ arc.inVertex()] )
+      if ( cost < ( *result )[ arc.toVertex()] )
       {
-        ( *result )[ arc.inVertex()] = cost;
+        ( *result )[ arc.toVertex()] = cost;
         if ( resultTree )
         {
-          ( *resultTree )[ arc.inVertex()] = *arcIt;
+          ( *resultTree )[ arc.toVertex()] = edgeId;
         }
-        not_begin.insert( cost, arc.inVertex() );
+        not_begin.insert( cost, arc.toVertex() );
       }
     }
   }
@@ -111,7 +116,7 @@ QgsGraph *QgsGraphAnalyzer::shortestTree( const QgsGraph *source, int startVerte
     {
       const QgsGraphEdge &arc = source->edge( tree[i] );
 
-      treeResult->addEdge( source2result[ arc.outVertex()], source2result[ arc.inVertex()],
+      treeResult->addEdge( source2result[ arc.fromVertex()], source2result[ arc.toVertex()],
                            arc.strategies() );
     }
   }

@@ -36,68 +36,63 @@ from .GdalUtils import GdalUtils
 from .AssignProjection import AssignProjection
 from .aspect import aspect
 from .buildvrt import buildvrt
+from .ClipRasterByExtent import ClipRasterByExtent
+from .ClipRasterByMask import ClipRasterByMask
 from .ColorRelief import ColorRelief
-from .information import information
+from .contour import contour
+from .fillnodata import fillnodata
+from .gdalinfo import gdalinfo
+from .gdal2tiles import gdal2tiles
+from .gdal2xyz import gdal2xyz
+from .gdaladdo import gdaladdo
+from .gdalcalc import gdalcalc
+from .gdaltindex import gdaltindex
+from .GridAverage import GridAverage
+from .GridDataMetrics import GridDataMetrics
+from .GridInverseDistance import GridInverseDistance
+from .GridInverseDistanceNearestNeighbor import GridInverseDistanceNearestNeighbor
+from .GridLinear import GridLinear
+from .GridNearestNeighbor import GridNearestNeighbor
+from .hillshade import hillshade
+from .merge import merge
+from .nearblack import nearblack
+from .pct2rgb import pct2rgb
+from .polygonize import polygonize
+from .proximity import proximity
+from .rasterize import rasterize
+from .retile import retile
 from .rgb2pct import rgb2pct
+from .roughness import roughness
+from .sieve import sieve
+from .slope import slope
 from .translate import translate
+from .tpi import tpi
 from .tri import tri
 from .warp import warp
-from .nearblack import nearblack
 
-# from .pct2rgb import pct2rgb
-# from .merge import merge
-# from .polygonize import polygonize
-# from .gdaladdo import gdaladdo
-# from .ClipByExtent import ClipByExtent
-# from .ClipByMask import ClipByMask
-# from .contour import contour
-# from .rasterize import rasterize
-# from .proximity import proximity
-# from .sieve import sieve
-# from .fillnodata import fillnodata
 # from .extractprojection import ExtractProjection
-# from .gdal2xyz import gdal2xyz
-from .hillshade import hillshade
-# from .slope import slope
-# from .tpi import tpi
-# from .roughness import roughness
-# from .GridInvDist import GridInvDist
-# from .GridAverage import GridAverage
-# from .GridNearest import GridNearest
-# from .GridDataMetrics import GridDataMetrics
-# from .gdaltindex import gdaltindex
-# from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
-# from .retile import retile
-# from .gdal2tiles import gdal2tiles
 
-from .ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
-from .ogr2ogrtopostgis import Ogr2OgrToPostGis
+from .Buffer import Buffer
+from .ClipVectorByExtent import ClipVectorByExtent
+from .ClipVectorByMask import ClipVectorByMask
+from .Dissolve import Dissolve
+from .ExecuteSql import ExecuteSql
+from .OffsetCurve import OffsetCurve
+from .ogr2ogr import ogr2ogr
+from .ogrinfo import ogrinfo
+from .OgrToPostGis import OgrToPostGis
+from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
+from .OneSideBuffer import OneSideBuffer
+from .PointsAlongLines import PointsAlongLines
 
-# from .ogr2ogr import Ogr2Ogr
-# from .ogr2ogrclip import Ogr2OgrClip
-# from .ogr2ogrclipextent import Ogr2OgrClipExtent
-# from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
-# from .ogr2ogrbuffer import Ogr2OgrBuffer
-# from .ogr2ogrdissolve import Ogr2OgrDissolve
-# from .onesidebuffer import OneSideBuffer
-# from .offsetcurve import OffsetCurve
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
-# from .ogrinfo import OgrInfo
-# from .ogrsql import OgrSql
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
 class GdalAlgorithmProvider(QgsProcessingProvider):
-
-    """This provider incorporates GDAL-based algorithms into the
-    Processing framework.
-
-    Algorithms are called directly using the command line interface.
-    They implemented individually extending GeoAlgorithm class.
-    """
 
     def __init__(self):
         super().__init__()
@@ -127,6 +122,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
         ProcessingConfig.setSettingValue('ACTIVATE_GDAL', active)
 
     def name(self):
+        return 'GDAL'
+
+    def longName(self):
         version = GdalUtils.readableVersion()
         return 'GDAL ({})'.format(version)
 
@@ -144,59 +142,68 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             AssignProjection(),
             aspect(),
             buildvrt(),
+            ClipRasterByExtent(),
+            ClipRasterByMask(),
             ColorRelief(),
-            information(),
+            contour(),
+            fillnodata(),
+            gdalinfo(),
+            gdal2tiles(),
+            gdal2xyz(),
+            gdaladdo(),
+            gdalcalc(),
+            gdaltindex(),
+            GridAverage(),
+            GridDataMetrics(),
+            GridInverseDistance(),
+            GridInverseDistanceNearestNeighbor(),
+            GridLinear(),
+            GridNearestNeighbor(),
+            hillshade(),
+            merge(),
             nearblack(),
+            pct2rgb(),
+            polygonize(),
+            proximity(),
+            rasterize(),
+            retile(),
             rgb2pct(),
+            roughness(),
+            sieve(),
+            slope(),
             translate(),
+            tpi(),
             tri(),
             warp(),
-            # pct2rgb(),
-            # merge(),
-            # polygonize(),
-            # gdaladdo(),
-            # ClipByExtent(),
-            # ClipByMask(),
-            # contour(),
             # rasterize(),
-            # proximity(),
-            # sieve(),
-            # fillnodata(),
             # ExtractProjection(),
-            # gdal2xyz(),
-            hillshade(),
-            # slope(),
-            # tpi(),
-            # roughness(),
-            # GridInvDist(),
-            # GridAverage(),
-            # GridNearest(),
-            # GridDataMetrics(),
-            # gdaltindex(),
-            # gdalcalc(),
             # rasterize_over(),
-            # retile(),
-            # gdal2tiles(),
             # ----- OGR tools -----
-            Ogr2OgrPointsOnLines(),
-            Ogr2OgrToPostGis(),
-            # OgrInfo(),
-            # Ogr2Ogr(),
-            # Ogr2OgrClip(),
-            # Ogr2OgrClipExtent(),
-            # Ogr2OgrToPostGisList(),
-            # Ogr2OgrBuffer(),
-            # Ogr2OgrDissolve(),
-            # OneSideBuffer(),
-            # OffsetCurve(),
+            Buffer(),
+            ClipVectorByExtent(),
+            ClipVectorByMask(),
+            Dissolve(),
+            ExecuteSql(),
+            OffsetCurve(),
+            ogr2ogr(),
+            ogrinfo(),
+            OgrToPostGis(),
+            Ogr2OgrToPostGisList(),
+            OneSideBuffer(),
+            PointsAlongLines(),
             # Ogr2OgrTableToPostGisList(),
-            # OgrSql(),
         ]
         for a in self.algs:
             self.addAlgorithm(a)
 
     def supportedOutputRasterLayerExtensions(self):
         return GdalUtils.getSupportedRasterExtensions()
+
+    def supportsNonFileBasedOutput(self):
+        """
+        GDAL Provider doesn't support non file based outputs
+        """
+        return False
 
     def tr(self, string, context=''):
         if context == '':

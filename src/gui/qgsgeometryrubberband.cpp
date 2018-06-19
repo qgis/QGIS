@@ -22,7 +22,7 @@
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
-  mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+  mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
@@ -157,5 +157,5 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   qreal scale = mMapCanvas->mapUnitsPerPixel();
   qreal s = ( mIconSize - 1 ) / 2.0 * scale;
   qreal p = mPen.width() * scale;
-  return mGeometry->boundingBox().buffer( s + p );
+  return mGeometry->boundingBox().buffered( s + p );
 }

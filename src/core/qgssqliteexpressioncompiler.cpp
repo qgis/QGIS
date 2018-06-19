@@ -111,4 +111,9 @@ QString QgsSQLiteExpressionCompiler::castToInt( const QString &value ) const
   return QStringLiteral( "CAST((%1) AS INTEGER)" ).arg( value );
 }
 
+QString QgsSQLiteExpressionCompiler::castToText( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS TEXT)" ).arg( value );
+}
+
 ///@endcond

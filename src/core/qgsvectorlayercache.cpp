@@ -443,13 +443,8 @@ bool QgsVectorLayerCache::checkInformationCovered( const QgsFeatureRequest &feat
   }
 
   // If the request needs geometry but we don't cache this...
-  if ( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
-       && !mCacheGeometry )
-  {
-    return false;
-  }
-
-  return true;
+  return !( !featureRequest.flags().testFlag( QgsFeatureRequest::NoGeometry )
+            && !mCacheGeometry );
 }
 
 void QgsVectorLayerCache::connectJoinedLayers() const

@@ -28,5 +28,5 @@ __revision__ = '$Format:%H$'
 from .i import verifyRasterNum
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return verifyRasterNum(alg, 'input', 2)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return verifyRasterNum(alg, parameters, context, 'input', 2)

@@ -1,10 +1,10 @@
 {
   "name": "shortest_line",
   "type": "function",
-  "description": "Returns the shortest line joining geometry 1 to geometry 2. The resultant line will start at geometry 1 and end at geometry 2.",
+  "description": "Returns the shortest line joining geometry1 to geometry2. The resultant line will start at geometry1 and end at geometry2.",
   "arguments": [
-    {"arg":"geometry 1","description":"geometry to find shortest line from"},
-    {"arg":"geometry 2","description":"geometry to find shortest line to"}
+    {"arg":"geometry1","description":"geometry to find shortest line from"},
+    {"arg":"geometry2","description":"geometry to find shortest line to"}
   ],
   "examples": [
     {

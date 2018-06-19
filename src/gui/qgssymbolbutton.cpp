@@ -45,7 +45,7 @@ QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
 
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = fontMetrics().height() * 1.4;
+  int fontHeight = Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4;
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
@@ -307,14 +307,14 @@ void QgsSymbolButton::prepareMenu()
   //menu is opened, otherwise color schemes like the recent color scheme grid are meaningless
   mMenu->clear();
 
-  QAction *configureAction = new QAction( tr( "Configure symbol..." ), this );
+  QAction *configureAction = new QAction( tr( "Configure Symbol…" ), this );
   mMenu->addAction( configureAction );
   connect( configureAction, &QAction::triggered, this, &QgsSymbolButton::showSettingsDialog );
 
-  QAction *copySymbolAction = new QAction( tr( "Copy symbol" ), this );
+  QAction *copySymbolAction = new QAction( tr( "Copy Symbol" ), this );
   mMenu->addAction( copySymbolAction );
   connect( copySymbolAction, &QAction::triggered, this, &QgsSymbolButton::copySymbol );
-  QAction *pasteSymbolAction = new QAction( tr( "Paste symbol" ), this );
+  QAction *pasteSymbolAction = new QAction( tr( "Paste Symbol" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting symbols is possible
   std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
@@ -369,11 +369,11 @@ void QgsSymbolButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+  QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
   mMenu->addAction( copyColorAction );
   connect( copyColorAction, &QAction::triggered, this, &QgsSymbolButton::copyColor );
 
-  QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+  QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QColor clipColor;

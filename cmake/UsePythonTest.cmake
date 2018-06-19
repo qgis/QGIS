@@ -62,11 +62,12 @@ MESSAGE(\"export LD_LIBRARY_PATH=\$ENV{LD_LIBRARY_PATH}\")
 ")
   ENDFOREACH(_in)
 
+  SET (PYTHON_TEST_WRAPPER "" CACHE STRING "Wrapper command for python tests (e.g. `timeout -sSIGSEGV 55s` to segfault after 55 seconds)")
   FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
 MESSAGE(\"export PYTHONPATH=\$ENV{PYTHONPATH}\")
-MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
+MESSAGE(STATUS \"Running ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
-  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
+  COMMAND ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
   RESULT_VARIABLE import_res
 )
 # Pass the output back to ctest

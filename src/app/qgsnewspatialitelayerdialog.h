@@ -37,24 +37,26 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
 
   public:
     QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
-    ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_pbnFindSRID_clicked();
-    void on_toolButtonNewDatabase_clicked();
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mGeometryTypeBox_currentIndexChanged( int index );
+    void mTypeBox_currentIndexChanged( int index );
+    void pbnFindSRID_clicked();
+    void toolButtonNewDatabase_clicked();
     void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     //! Returns the selected geometry type
     QString selectedType() const;
+    //! Returns the selected Z dimension and/or M measurement
+    QString selectedZM() const;
 
     //! Create a new database
     bool createDb();

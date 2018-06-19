@@ -1,0 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdetaileditemdelegate.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsDetailedItemDelegate : QAbstractItemDelegate
+{
+%Docstring
+A custom model/view delegate that can display an icon, heading
+and detail sections.
+
+.. seealso:: :py:func:`also`
+%End
+
+%TypeHeaderCode
+#include "qgsdetaileditemdelegate.h"
+%End
+  public:
+
+    QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDetailedItemDelegate
+%End
+    ~QgsDetailedItemDelegate();
+     virtual void paint( QPainter *painter,
+                const QStyleOptionViewItem &option,
+                const QModelIndex &index ) const;
+%Docstring
+Reimplement for parent class
+%End
+     virtual QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const;
+%Docstring
+Reimplement for parent class
+%End
+
+    void setVerticalSpacing( int value );
+
+    int verticalSpacing() const;
+
+    void setHorizontalSpacing( int value );
+
+    int horizontalSpacing() const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdetaileditemdelegate.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

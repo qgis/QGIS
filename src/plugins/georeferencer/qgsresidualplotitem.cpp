@@ -15,19 +15,16 @@
 
 #include "qgsresidualplotitem.h"
 #include "qgsgeorefdatapoint.h"
-#include "qgscomposerutils.h"
+#include "qgslayoututils.h"
 #include <QPainter>
 #include <cfloat>
 #include <cmath>
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
+QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
+  : QgsLayoutItem( layout )
+  , mConvertScaleToMapUnits( false )
 {
-
-}
-
-QgsResidualPlotItem::~QgsResidualPlotItem()
-{
-
+  setBackgroundEnabled( false );
 }
 
 void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -48,7 +45,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QBrush disabledBrush( QColor( 255, 255, 255, 127 ) );
 
   //draw all points and collect minimal mm/pixel ratio
-  double minMMPixelRatio = DBL_MAX;
+  double minMMPixelRatio = std::numeric_limits<double>::max();
   double mmPixelRatio = 1;
 
   painter->setRenderHint( QPainter::Antialiasing, true );
@@ -71,7 +68,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
       painter->setBrush( disabledBrush );
     }
     painter->drawRect( QRectF( gcpItemMMX - 0.5, gcpItemMMY - 0.5, 1, 1 ) );
-    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number( ( *gcpIt )->id() ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number( ( *gcpIt )->id() ), QFont() );
 
     mmPixelRatio = maxMMToPixelRatioForGCP( *gcpIt, gcpItemMMX, gcpItemMMY );
     if ( mmPixelRatio < minMMPixelRatio )
@@ -100,7 +97,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
     QPointF p2( gcpItemMMX + ( *gcpIt )->residual().x() * minMMPixelRatio, gcpItemMMY + ( *gcpIt )->residual().y() * minMMPixelRatio );
     painter->drawLine( p1, p2 );
     painter->setBrush( QBrush( painter->pen().color() ) );
-    QgsComposerUtils::drawArrowHead( painter, p2.x(), p2.y(), QgsComposerUtils::angle( p1, p2 ), 1 );
+    drawArrowHead( painter, p2.x(), p2.y(), angle( p1, p2 ), 1 );
   }
 
   //draw scale bar
@@ -135,18 +132,27 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
   }
 
-  drawFrame( painter );
-  if ( isSelected() )
+  if ( frameEnabled() )
   {
-    drawSelectionBoxes( painter );
+    painter->save();
+    painter->setPen( pen() );
+    painter->setBrush( Qt::NoBrush );
+    painter->setRenderHint( QPainter::Antialiasing, true );
+    painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
+    painter->restore();
   }
+}
+
+void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
+{
+
 }
 
 double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
@@ -157,8 +163,8 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   }
 
   //calculate intersections with upper / lower frame edge depending on the residual y sign
-  double upDownDist = DBL_MAX; //distance to frame intersection with lower or upper frame
-  double leftRightDist = DBL_MAX; //distance to frame intersection with left or right frame
+  double upDownDist = std::numeric_limits<double>::max(); //distance to frame intersection with lower or upper frame
+  double leftRightDist = std::numeric_limits<double>::max(); //distance to frame intersection with left or right frame
 
   QPointF residual = p->residual();
   QLineF residualLine( pixelXMM, pixelYMM, pixelXMM + residual.x(), pixelYMM + residual.y() );
@@ -210,23 +216,65 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   }
 }
 
-bool QgsResidualPlotItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
-{
-  Q_UNUSED( elem );
-  Q_UNUSED( doc );
-  return false;
-}
-
-bool QgsResidualPlotItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
-{
-  Q_UNUSED( itemElem );
-  Q_UNUSED( doc );
-  return false;
-}
-
 double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();
   return std::sqrt( dx * dx + dy * dy );
+}
+
+void QgsResidualPlotItem::drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth )
+{
+  if ( !p )
+  {
+    return;
+  }
+
+  double angleRad = angle / 180.0 * M_PI;
+  QPointF middlePoint( x, y );
+  //rotate both arrow points
+  QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
+  QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
+
+  QPointF p1Rotated, p2Rotated;
+  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -std::sin( angleRad ) );
+  p1Rotated.setY( p1.x() * std::sin( angleRad ) + p1.y() * std::cos( angleRad ) );
+  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -std::sin( angleRad ) );
+  p2Rotated.setY( p2.x() * std::sin( angleRad ) + p2.y() * std::cos( angleRad ) );
+
+  QPolygonF arrowHeadPoly;
+  arrowHeadPoly << middlePoint;
+  arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
+  arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
+
+  p->save();
+
+  QPen arrowPen = p->pen();
+  arrowPen.setJoinStyle( Qt::RoundJoin );
+  QBrush arrowBrush = p->brush();
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->setPen( arrowPen );
+  p->setBrush( arrowBrush );
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->drawPolygon( arrowHeadPoly );
+
+  p->restore();
+}
+
+double QgsResidualPlotItem::angle( QPointF p1, QPointF p2 )
+{
+  double xDiff = p2.x() - p1.x();
+  double yDiff = p2.y() - p1.y();
+  double length = std::sqrt( xDiff * xDiff + yDiff * yDiff );
+  if ( length <= 0 )
+  {
+    return 0;
+  }
+
+  double angle = std::acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
+  if ( xDiff < 0 )
+  {
+    return ( 360 - angle );
+  }
+  return angle;
 }

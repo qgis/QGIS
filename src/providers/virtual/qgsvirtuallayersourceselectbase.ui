@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Create a virtual layer</string>
+   <string>Create a Virtual Layer</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

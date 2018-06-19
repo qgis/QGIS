@@ -1,0 +1,8 @@
+r.out.pov
+Converts a raster map layer into a height-field file for POV-Ray
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterNumber|hftype|Height-field type (0=actual heights 1=normalized)|QgsProcessingParameterNumber.Integer|0|True|0|1
+QgsProcessingParameterNumber|bias|Elevation bias|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|scale|Vertical scaling factor|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterFileDestination|output|Name of output povray file (TGA height field file)|Povray files (*.pov)|None|False

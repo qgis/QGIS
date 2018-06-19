@@ -55,29 +55,20 @@ static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PluginType type_ = QgisPlugin::UI;
 static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
 
-
-/**
- * Constructor for the plugin. The plugin is passed a pointer to the main app
- * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
- * @param _qI Pointer to the QGIS interface object
- */
-QgsGPSPlugin::QgsGPSPlugin( QgisInterface *qgisInterFace )
+QgsGpsPlugin::QgsGpsPlugin( QgisInterface *qgisInterFace )
   : QgisPlugin( name_, description_, category_, version_, type_ )
   , mQGisInterface( qgisInterFace )
-  , mQActionPointer( nullptr )
-  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
 
-QgsGPSPlugin::~QgsGPSPlugin()
+QgsGpsPlugin::~QgsGpsPlugin()
 {
   // delete all our babel formats
   BabelMap::iterator iter;
   for ( iter = mImporters.begin(); iter != mImporters.end(); ++iter )
     delete iter->second;
-  std::map<QString, QgsGPSDevice *>::iterator iter2;
+  std::map<QString, QgsGpsDevice *>::iterator iter2;
   for ( iter2 = mDevices.begin(); iter2 != mDevices.end(); ++iter2 )
     delete iter2->second;
 }
@@ -85,7 +76,7 @@ QgsGPSPlugin::~QgsGPSPlugin()
 /*
  * Initialize the GUI interface for the plugin
  */
-void QgsGPSPlugin::initGui()
+void QgsGpsPlugin::initGui()
 {
   delete mQActionPointer;
   delete mCreateGPXAction;
@@ -99,26 +90,26 @@ void QgsGPSPlugin::initGui()
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
-  connect( mQActionPointer, &QAction::triggered, this, &QgsGPSPlugin::run );
-  connect( mCreateGPXAction, &QAction::triggered, this, &QgsGPSPlugin::createGPX );
+  connect( mQActionPointer, &QAction::triggered, this, &QgsGpsPlugin::run );
+  connect( mCreateGPXAction, &QAction::triggered, this, &QgsGpsPlugin::createGPX );
 
   mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
   mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
-  mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->addPluginToVectorMenu( QString(), mQActionPointer );
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGPSPlugin::setCurrentTheme );
+  connect( mQGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGpsPlugin::setCurrentTheme );
 }
 
 //method defined in interface
-void QgsGPSPlugin::help()
+void QgsGpsPlugin::help()
 {
   //implement me!
 }
 
 // Slot called when the menu item is activated
-void QgsGPSPlugin::run()
+void QgsGpsPlugin::run()
 {
   // find all GPX layers
   std::vector<QgsVectorLayer *> gpxLayers;
@@ -135,35 +126,35 @@ void QgsGPSPlugin::run()
     }
   }
 
-  QgsGPSPluginGui *myPluginGui =
-    new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
+  QgsGpsPluginGui *myPluginGui =
+    new QgsGpsPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
                          QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, &QgsGPSPluginGui::drawVectorLayer,
-           this, &QgsGPSPlugin::drawVectorLayer );
-  connect( myPluginGui, &QgsGPSPluginGui::loadGPXFile,
-           this, &QgsGPSPlugin::loadGPXFile );
-  connect( myPluginGui, &QgsGPSPluginGui::importGPSFile,
-           this, &QgsGPSPlugin::importGPSFile );
-  connect( myPluginGui, &QgsGPSPluginGui::convertGPSFile,
-           this, &QgsGPSPlugin::convertGPSFile );
-  connect( myPluginGui, &QgsGPSPluginGui::downloadFromGPS,
-           this, &QgsGPSPlugin::downloadFromGPS );
-  connect( myPluginGui, &QgsGPSPluginGui::uploadToGPS,
-           this, &QgsGPSPlugin::uploadToGPS );
-  connect( this, &QgsGPSPlugin::closeGui, myPluginGui, &QWidget::close );
+  connect( myPluginGui, &QgsGpsPluginGui::drawVectorLayer,
+           this, &QgsGpsPlugin::drawVectorLayer );
+  connect( myPluginGui, &QgsGpsPluginGui::loadGPXFile,
+           this, &QgsGpsPlugin::loadGPXFile );
+  connect( myPluginGui, &QgsGpsPluginGui::importGPSFile,
+           this, &QgsGpsPlugin::importGPSFile );
+  connect( myPluginGui, &QgsGpsPluginGui::convertGPSFile,
+           this, &QgsGpsPlugin::convertGPSFile );
+  connect( myPluginGui, &QgsGpsPluginGui::downloadFromGPS,
+           this, &QgsGpsPlugin::downloadFromGPS );
+  connect( myPluginGui, &QgsGpsPluginGui::uploadToGPS,
+           this, &QgsGpsPlugin::uploadToGPS );
+  connect( this, &QgsGpsPlugin::closeGui, myPluginGui, &QWidget::close );
 
   myPluginGui->show();
 }
 
-void QgsGPSPlugin::createGPX()
+void QgsGpsPlugin::createGPX()
 {
   QgsSettings settings;
   QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
-                                  tr( "Save new GPX file as..." ),
+                                  tr( "Save New GPX File As" ),
                                   dir,
                                   tr( "GPS eXchange file" ) + " (*.gpx)" );
   if ( !fileName.isEmpty() )
@@ -176,7 +167,7 @@ void QgsGPSPlugin::createGPX()
     std::ofstream ofs( fileName.toUtf8() );
     if ( !ofs )
     {
-      QMessageBox::warning( nullptr, tr( "Could not create file" ),
+      QMessageBox::warning( nullptr, tr( "Save New GPX File" ),
                             tr( "Unable to create a GPX file with the given name. "
                                 "Try again with another name or in another "
                                 "directory." ) );
@@ -195,7 +186,7 @@ void QgsGPSPlugin::createGPX()
   }
 }
 
-void QgsGPSPlugin::drawVectorLayer( const QString &pathNameQString,
+void QgsGpsPlugin::drawVectorLayer( const QString &pathNameQString,
                                     const QString &baseNameQString,
                                     const QString &providerQString )
 {
@@ -204,18 +195,18 @@ void QgsGPSPlugin::drawVectorLayer( const QString &pathNameQString,
 }
 
 // Unload the plugin by cleaning up the GUI
-void QgsGPSPlugin::unload()
+void QgsGpsPlugin::unload()
 {
   // remove the GUI
   mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
   mQGisInterface->newLayerMenu()->removeAction( mCreateGPXAction );
-  mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->vectorMenu()->removeAction( mQActionPointer );
   mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
   mQActionPointer = nullptr;
 }
 
-void QgsGPSPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
+void QgsGpsPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, bool loadRoutes,
                                 bool loadTracks )
 {
   //check if input file is readable
@@ -242,7 +233,7 @@ void QgsGPSPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, boo
   emit closeGui();
 }
 
-void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
+void QgsGpsPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *importer,
                                   bool importWaypoints, bool importRoutes,
                                   bool importTracks, const QString &outputFileName,
                                   const QString &layerName )
@@ -267,13 +258,13 @@ void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( nullptr, tr( "Could not start process" ),
-                          tr( "Could not start GPSBabel!" ) );
+    QMessageBox::warning( nullptr, tr( "Import GPS File" ),
+                          tr( "Could not start GPSBabel." ) );
     return;
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -291,7 +282,7 @@ void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
     QString errorMsg( tr( "Could not import data from %1!\n\n" )
                       .arg( inputFileName ) );
     errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Error importing data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Import GPS File" ), errorMsg );
     return;
   }
 
@@ -309,7 +300,7 @@ void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
   emit closeGui();
 }
 
-void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
+void QgsGpsPlugin::convertGPSFile( const QString &inputFileName,
                                    int convertType,
                                    const QString &outputFileName,
                                    const QString &layerName )
@@ -346,13 +337,13 @@ void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( nullptr, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Convert GPS File" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Importing data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Importing data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -368,7 +359,7 @@ void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
     QString errorMsg( tr( "Could not convert data from %1!\n\n" )
                       .arg( inputFileName ) );
     errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Error converting data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Convert GPS File" ), errorMsg );
     return;
   }
 
@@ -396,7 +387,7 @@ void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
   emit closeGui();
 }
 
-void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
+void QgsGpsPlugin::downloadFromGPS( const QString &device, const QString &port,
                                     bool downloadWaypoints, bool downloadRoutes,
                                     bool downloadTracks, const QString &outputFileName,
                                     const QString &layerName )
@@ -425,7 +416,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
                                      port, outputFileName );
   if ( babelArgs.isEmpty() )
   {
-    QMessageBox::warning( nullptr, tr( "Not supported" ),
+    QMessageBox::warning( nullptr, tr( "Download from GPS" ),
                           tr( "This device does not support downloading of %1." )
                           .arg( features ) );
     return;
@@ -437,13 +428,13 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( nullptr, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Download from GPS" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Downloading data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Downloading data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -458,7 +449,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
     QString babelError( babelProcess.readAllStandardError() );
     QString errorMsg( tr( "Could not download data from GPS!\n\n" ) );
     errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Error downloading data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Download from GPS" ), errorMsg );
     return;
   }
 
@@ -481,7 +472,7 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
   emit closeGui();
 }
 
-void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
+void QgsGpsPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
                                 const QString &port )
 {
   const QString &source( gpxLayer->dataProvider()->dataSourceUri() );
@@ -515,7 +506,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
                                      source.left( source.lastIndexOf( '?' ) ), port );
   if ( babelArgs.isEmpty() )
   {
-    QMessageBox::warning( nullptr, tr( "Not supported" ),
+    QMessageBox::warning( nullptr, tr( "Upload to GPS" ),
                           tr( "This device does not support uploading of %1." )
                           .arg( features ) );
     return;
@@ -527,13 +518,13 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   babelProcess.start( babelArgs.join( QStringLiteral( " " ) ) );
   if ( !babelProcess.waitForStarted() )
   {
-    QMessageBox::warning( nullptr, tr( "Could not start process" ),
+    QMessageBox::warning( nullptr, tr( "Upload to GPS" ),
                           tr( "Could not start GPSBabel!" ) );
     return;
   }
 
   // wait for gpsbabel to finish (or the user to cancel)
-  QProgressDialog progressDialog( tr( "Uploading data..." ), tr( "Cancel" ), 0, 0 );
+  QProgressDialog progressDialog( tr( "Uploading data…" ), tr( "Cancel" ), 0, 0 );
   progressDialog.setWindowModality( Qt::WindowModal );
   for ( int i = 0; babelProcess.state() == QProcess::Running; ++i )
   {
@@ -548,7 +539,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
     QString babelError( babelProcess.readAllStandardError() );
     QString errorMsg( tr( "Error while uploading data to GPS!\n\n" ) );
     errorMsg += babelError;
-    QMessageBox::warning( nullptr, tr( "Error uploading data" ), errorMsg );
+    QMessageBox::warning( nullptr, tr( "Upload to GPS" ), errorMsg );
     return;
   }
 
@@ -560,7 +551,7 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
   emit closeGui();
 }
 
-void QgsGPSPlugin::setupBabel()
+void QgsGpsPlugin::setupBabel()
 {
   // where is gpsbabel?
   QgsSettings settings;
@@ -631,7 +622,7 @@ void QgsGPSPlugin::setupBabel()
 
   // and the GPS devices
   mDevices[QStringLiteral( "Garmin serial" )] =
-    new QgsGPSDevice( QStringLiteral( "%babel -w -i garmin -o gpx %in %out" ),
+    new QgsGpsDevice( QStringLiteral( "%babel -w -i garmin -o gpx %in %out" ),
                       QStringLiteral( "%babel -w -i gpx -o garmin %in %out" ),
                       QStringLiteral( "%babel -r -i garmin -o gpx %in %out" ),
                       QStringLiteral( "%babel -r -i gpx -o garmin %in %out" ),
@@ -662,14 +653,14 @@ void QgsGPSPlugin::setupBabel()
     QString trkUpload = settings.
                         value( QStringLiteral( "/Plugin-GPS/devices/%1/trkupload" ).arg( *iter ), "" ).
                         toString();
-    mDevices[*iter] = new QgsGPSDevice( wptDownload, wptUpload,
+    mDevices[*iter] = new QgsGpsDevice( wptDownload, wptUpload,
                                         rteDownload, rteUpload,
                                         trkDownload, trkUpload );
   }
 }
 
-//! Set icons to the current theme
-void QgsGPSPlugin::setCurrentTheme( const QString &themeName )
+//! Sets icons to the current theme
+void QgsGpsPlugin::setCurrentTheme( const QString &themeName )
 {
   Q_UNUSED( themeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/gps_importer/";
@@ -708,7 +699,7 @@ void QgsGPSPlugin::setCurrentTheme( const QString &themeName )
 // Class factory to return a new instance of the plugin class
 QGISEXTERN QgisPlugin *classFactory( QgisInterface *qgisInterfacePointer )
 {
-  return new QgsGPSPlugin( qgisInterfacePointer );
+  return new QgsGpsPlugin( qgisInterfacePointer );
 }
 
 // Return the name of the plugin - note that we do not user class members as

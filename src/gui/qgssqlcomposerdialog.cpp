@@ -29,13 +29,16 @@ email                : even.rouault at spatialys.com
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mTableSelectedCallback( nullptr )
-  , mSQLValidatorCallback( nullptr )
-  , mFocusedObject( nullptr )
-  , mAlreadyModifyingFields( false )
-  , mDistinct( false )
 {
   setupUi( this );
+  connect( mTablesCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mTablesCombo_currentIndexChanged );
+  connect( mColumnsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mColumnsCombo_currentIndexChanged );
+  connect( mSpatialPredicatesCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mSpatialPredicatesCombo_currentIndexChanged );
+  connect( mFunctionsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mFunctionsCombo_currentIndexChanged );
+  connect( mOperatorsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsSQLComposerDialog::mOperatorsCombo_currentIndexChanged );
+  connect( mAddJoinButton, &QPushButton::clicked, this, &QgsSQLComposerDialog::mAddJoinButton_clicked );
+  connect( mRemoveJoinButton, &QPushButton::clicked, this, &QgsSQLComposerDialog::mRemoveJoinButton_clicked );
+  connect( mTableJoins, &QTableWidget::itemSelectionChanged, this, &QgsSQLComposerDialog::mTableJoins_itemSelectionChanged );
 
   mQueryEdit->setWrapMode( QsciScintilla::WrapWord );
   mQueryEdit->installEventFilter( this );
@@ -177,7 +180,7 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
     }
   }
 
-  return QObject::eventFilter( obj, event );
+  return QDialog::eventFilter( obj, event );
 }
 
 void QgsSQLComposerDialog::setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback )
@@ -209,13 +212,13 @@ void QgsSQLComposerDialog::accept()
     if ( !mSQLValidatorCallback->isValid( sql(), errorMsg, warningMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
-      QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
+        errorMsg = tr( "An error occurred during evaluation of the SQL statement." );
+      QMessageBox::critical( this, tr( "SQL Evaluation" ), errorMsg );
       return;
     }
     if ( !warningMsg.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "SQL warning" ), warningMsg );
+      QMessageBox::warning( this, tr( "SQL Evaluation" ), warningMsg );
     }
   }
   QDialog::accept();
@@ -271,7 +274,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   if ( sql.hasParserError() )
     return;
   const QgsSQLStatement::NodeSelect *nodeSelect = dynamic_cast<const QgsSQLStatement::NodeSelect *>( sql.rootNode() );
-  if ( nodeSelect == nullptr )
+  if ( !nodeSelect )
     return;
   mDistinct = nodeSelect->distinct();
   QList<QgsSQLStatement::NodeSelectedColumn *> columns = nodeSelect->columns();
@@ -295,7 +298,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
 
   QString whereText;
   QgsSQLStatement::Node *where = nodeSelect->where();
-  if ( where != nullptr )
+  if ( where )
     whereText = where->dump();
 
   QString orderText;
@@ -354,7 +357,7 @@ void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> &listNameTi
       if ( pair.second.size() < 40 )
         entryText += " (" + pair.second + ")";
       else
-        entryText += " (" + pair.second.mid( 0, 20 ) + "…" + pair.second.mid( pair.second.size() - 20 ) + ")";
+        entryText += " (" + pair.second.mid( 0, 20 ) + QChar( 0x2026 ) + pair.second.mid( pair.second.size() - 20 ) + ")";
     }
     listCombo << entryText;
     mapTableEntryTextToName[entryText] = pair.first;
@@ -476,7 +479,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
       }
       if ( entryText.size() > 60 )
       {
-        entryText = f.name ;
+        entryText = f.name;
         entryText += QLatin1String( "(" );
         entryText += getFunctionAbbridgedParameters( f );
       }
@@ -559,7 +562,7 @@ static void resetCombo( QComboBox *combo )
   QMetaObject::invokeMethod( combo, "setCurrentIndex", Qt::QueuedConnection, Q_ARG( int, 0 ) );
 }
 
-void QgsSQLComposerDialog::on_mTablesCombo_currentIndexChanged( int )
+void QgsSQLComposerDialog::mTablesCombo_currentIndexChanged( int )
 {
   int index = mTablesCombo->currentIndex();
   if ( index <= 0 )
@@ -597,7 +600,7 @@ void QgsSQLComposerDialog::on_mTablesCombo_currentIndexChanged( int )
   resetCombo( mTablesCombo );
 }
 
-void QgsSQLComposerDialog::on_mColumnsCombo_currentIndexChanged( int )
+void QgsSQLComposerDialog::mColumnsCombo_currentIndexChanged( int )
 {
   int index = mColumnsCombo->currentIndex();
   if ( index <= 0 )
@@ -639,12 +642,12 @@ void QgsSQLComposerDialog::on_mColumnsCombo_currentIndexChanged( int )
   resetCombo( mColumnsCombo );
 }
 
-void QgsSQLComposerDialog::on_mFunctionsCombo_currentIndexChanged( int )
+void QgsSQLComposerDialog::mFunctionsCombo_currentIndexChanged( int )
 {
   functionCurrentIndexChanged( mFunctionsCombo, mapFunctionEntryTextToName );
 }
 
-void QgsSQLComposerDialog::on_mSpatialPredicatesCombo_currentIndexChanged( int )
+void QgsSQLComposerDialog::mSpatialPredicatesCombo_currentIndexChanged( int )
 {
   functionCurrentIndexChanged( mSpatialPredicatesCombo, mapSpatialPredicateEntryTextToName );
 }
@@ -672,7 +675,7 @@ void QgsSQLComposerDialog::functionCurrentIndexChanged( QComboBox *combo,
   resetCombo( combo );
 }
 
-void QgsSQLComposerDialog::on_mOperatorsCombo_currentIndexChanged( int )
+void QgsSQLComposerDialog::mOperatorsCombo_currentIndexChanged( int )
 {
   int index = mOperatorsCombo->currentIndex();
   if ( index <= 0 )
@@ -703,7 +706,7 @@ void QgsSQLComposerDialog::on_mOperatorsCombo_currentIndexChanged( int )
   resetCombo( mOperatorsCombo );
 }
 
-void QgsSQLComposerDialog::on_mAddJoinButton_clicked()
+void QgsSQLComposerDialog::mAddJoinButton_clicked()
 {
   int insertRow = mTableJoins->currentRow();
   int rowCount = mTableJoins->rowCount();
@@ -719,7 +722,7 @@ void QgsSQLComposerDialog::on_mAddJoinButton_clicked()
   mTableJoins->setItem( ( insertRow == rowCount ) ? insertRow : insertRow + 1, 1, new QTableWidgetItem( QLatin1String( "" ) ) );
 }
 
-void QgsSQLComposerDialog::on_mRemoveJoinButton_clicked()
+void QgsSQLComposerDialog::mRemoveJoinButton_clicked()
 {
   int row = mTableJoins->currentRow();
   if ( row < 0 )
@@ -740,7 +743,7 @@ void QgsSQLComposerDialog::reset()
   mQueryEdit->setText( mResetSql );
 }
 
-void QgsSQLComposerDialog::on_mTableJoins_itemSelectionChanged()
+void QgsSQLComposerDialog::mTableJoins_itemSelectionChanged()
 {
   mRemoveJoinButton->setEnabled( mTableJoins->selectedItems().size() == 1 );
 }

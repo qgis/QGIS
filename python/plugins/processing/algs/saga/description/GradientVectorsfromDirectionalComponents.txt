@@ -1,10 +1,10 @@
 Gradient Vectors from Directional Components
 shapes_grid
-ParameterRaster|X|X Component|False
-ParameterRaster|Y|Y Component|False
-ParameterNumber|STEP|Step|None|None|1
-ParameterNumber|SIZE_MIN|Size Range Min|None|None|25.0
-ParameterNumber|SIZE_MAX|Size Range Max|None|None|100.0
-ParameterSelection|AGGR|Aggregation|[0] nearest neighbour;[1] mean value
-ParameterSelection|STYLE|Style|[0] simple line;[1] arrow;[2] arrow (centered to cell)
-OutputVector|VECTORS|Gradient Vectors
+QgsProcessingParameterRasterLayer|X|X Component|None|False
+QgsProcessingParameterRasterLayer|Y|Y Component|None|False
+QgsProcessingParameterNumber|STEP|Step|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterNumber|SIZE_MIN|Size Range Min|QgsProcessingParameterNumber.Double|25.0|False|None|None
+QgsProcessingParameterNumber|SIZE_MAX|Size Range Max|QgsProcessingParameterNumber.Double|100.0|False|None|None
+QgsProcessingParameterEnum|AGGR|Aggregation|[0] nearest neighbour;[1] mean value
+QgsProcessingParameterEnum|STYLE|Style|[0] simple line;[1] arrow;[2] arrow (centered to cell)
+QgsProcessingParameterVectorDestination|VECTORS|Gradient Vectors

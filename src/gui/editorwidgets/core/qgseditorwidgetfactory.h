@@ -30,7 +30,8 @@ class QgsVectorLayer;
 class QWidget;
 class QgsSearchWidgetWrapper;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Every attribute editor widget needs a factory, which inherits this class
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes
@@ -69,7 +70,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const SIP_FACTORY;
 
     /**
-     * Return The human readable identifier name of this widget type
+     * Returns The human readable identifier name of this widget type
      *
      * \returns a name
      */
@@ -94,7 +95,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \param fieldIdx  The field index
      * \returns          True if the type is supported for this field
      *
-     * \see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
+     * \see fieldScore()
      */
     inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
@@ -124,7 +125,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \returns 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
      *      taken by default). The default implementation returns 5..
      *
-     * \see supportsField( QgsVectorLayer* vl, fieldIdx )
+     * \see supportsField()
      */
     virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 

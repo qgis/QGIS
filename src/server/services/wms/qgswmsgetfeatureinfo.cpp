@@ -31,13 +31,12 @@ namespace QgsWms
   {
     Q_UNUSED( version );
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
-    std::unique_ptr<QByteArray> result( renderer.getFeatureInfo( version ) );
     QString infoFormat = params.value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
 
     response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
-    response.write( *result );
+    response.write( renderer.getFeatureInfo( version ) );
   }
 
 

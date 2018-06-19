@@ -17,7 +17,6 @@
 
 #include "qgslogger.h"
 #include "qgscoordinatetransform.h"
-#include "qgsrasterblock.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
 #include "qgsexception.h"
@@ -25,13 +24,17 @@
 
 #include <QMenu>
 #include <QAction>
+#include <QDoubleValidator>
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
   , mTitleBase( tr( "Extent" ) )
-  , mExtentState( OriginalExtent )
 {
   setupUi( this );
+  connect( mXMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mXMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMinLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
+  connect( mYMaxLineEdit, &QLineEdit::textEdited, this, &QgsExtentGroupBox::setOutputExtentFromLineEdit );
 
   mLayerMenu = new QMenu( this );
   mButtonCalcFromLayer->setMenu( mLayerMenu );
@@ -45,6 +48,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
 
   mOriginalExtentButton->setVisible( false );
   mButtonDrawOnCanvas->setVisible( false );
+  mCurrentExtentButton->setVisible( false );
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
@@ -66,12 +70,15 @@ void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, con
 {
   mCurrentExtent = currentExtent;
   mCurrentCrs = currentCrs;
+
+  mCurrentExtentButton->setVisible( true );
 }
 
 void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
 {
   if ( mOutputCrs != outputCrs )
   {
+    bool prevExtentEnabled = isChecked();
     switch ( mExtentState )
     {
       case CurrentExtent:
@@ -97,7 +104,7 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
       case UserExtent:
         try
         {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs );
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
           QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
@@ -110,6 +117,8 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
         break;
     }
 
+    if ( !prevExtentEnabled )
+      setChecked( false );
   }
 
 }
@@ -125,7 +134,7 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
   {
     try
     {
-      QgsCoordinateTransform ct( srcCrs, mOutputCrs );
+      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
       extent = ct.transformBoundingBox( r );
     }
     catch ( QgsCsException & )
@@ -135,10 +144,28 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
     }
   }
 
-  mXMinLineEdit->setText( QgsRasterBlock::printValue( extent.xMinimum() ) );
-  mXMaxLineEdit->setText( QgsRasterBlock::printValue( extent.xMaximum() ) );
-  mYMinLineEdit->setText( QgsRasterBlock::printValue( extent.yMinimum() ) );
-  mYMaxLineEdit->setText( QgsRasterBlock::printValue( extent.yMaximum() ) );
+  int decimals = 4;
+  switch ( mOutputCrs.mapUnits() )
+  {
+    case QgsUnitTypes::DistanceDegrees:
+    case QgsUnitTypes::DistanceUnknownUnit:
+      decimals = 9;
+      break;
+    case QgsUnitTypes::DistanceMeters:
+    case QgsUnitTypes::DistanceKilometers:
+    case QgsUnitTypes::DistanceFeet:
+    case QgsUnitTypes::DistanceNauticalMiles:
+    case QgsUnitTypes::DistanceYards:
+    case QgsUnitTypes::DistanceMiles:
+    case QgsUnitTypes::DistanceCentimeters:
+    case QgsUnitTypes::DistanceMillimeters:
+      decimals = 4;
+      break;
+  }
+  mXMinLineEdit->setText( QString::number( extent.xMinimum(), 'f', decimals ) );
+  mXMaxLineEdit->setText( QString::number( extent.xMaximum(), 'f', decimals ) );
+  mYMinLineEdit->setText( QString::number( extent.yMinimum(), 'f', decimals ) );
+  mYMaxLineEdit->setText( QString::number( extent.yMaximum(), 'f', decimals ) );
 
   mExtentState = state;
 
@@ -329,9 +356,11 @@ void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas )
   {
     mCanvas = canvas;
     mButtonDrawOnCanvas->setVisible( true );
+    mCurrentExtentButton->setVisible( true );
   }
   else
   {
     mButtonDrawOnCanvas->setVisible( false );
+    mCurrentExtentButton->setVisible( false );
   }
 }

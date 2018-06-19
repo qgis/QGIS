@@ -33,19 +33,8 @@
 
 QgsHeatmapRenderer::QgsHeatmapRenderer()
   : QgsFeatureRenderer( QStringLiteral( "heatmapRenderer" ) )
-  , mCalculatedMaxValue( 0 )
-  , mRadius( 10 )
-  , mRadiusPixels( 0 )
-  , mRadiusSquared( 0 )
-  , mRadiusUnit( QgsUnitTypes::RenderMillimeters )
-  , mWeightAttrNum( -1 )
-  , mGradientRamp( nullptr )
-  , mExplicitMax( 0.0 )
-  , mRenderQuality( 3 )
-  , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsGradientColorRamp( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
-
 }
 
 QgsHeatmapRenderer::~QgsHeatmapRenderer()
@@ -65,7 +54,8 @@ void QgsHeatmapRenderer::initializeValues( QgsRenderContext &context )
 
 void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
-  Q_UNUSED( fields );
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !context.painter() )
   {
     return;
@@ -82,9 +72,9 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext &context, const QgsFields
   initializeValues( context );
 }
 
-QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
+QgsMultiPointXY QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
 {
-  QgsMultiPoint multiPoint;
+  QgsMultiPointXY multiPoint;
   if ( !geom->isMultipart() )
   {
     multiPoint << geom->asPoint();
@@ -97,7 +87,7 @@ QgsMultiPoint QgsHeatmapRenderer::convertToMultipoint( const QgsGeometry *geom )
   return multiPoint;
 }
 
-bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
+bool QgsHeatmapRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( layer );
   Q_UNUSED( selected );
@@ -148,10 +138,10 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &c
   }
 
   //convert point to multipoint
-  QgsMultiPoint multiPoint = convertToMultipoint( &geom );
+  QgsMultiPointXY multiPoint = convertToMultipoint( &geom );
 
   //loop through all points in multipoint
-  for ( QgsMultiPoint::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
+  for ( QgsMultiPointXY::const_iterator pointIt = multiPoint.constBegin(); pointIt != multiPoint.constEnd(); ++pointIt )
   {
     QgsPointXY pixel = context.mapToPixel().transform( *pointIt );
     int pointX = pixel.x() / mRenderQuality;
@@ -223,6 +213,8 @@ double QgsHeatmapRenderer::triangularKernel( const double distance, const int ba
 
 void QgsHeatmapRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   renderImage( context );
   mWeightExpression.reset();
 }
@@ -341,7 +333,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( QStringLiteral( "[source]" ), mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mPaintEffect && !QgsPaintEffectRegistry::isDefaultStack( mPaintEffect ) )
     mPaintEffect->saveProperties( doc, rendererElem );
@@ -352,18 +344,18 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument &doc, const QgsReadWriteConte
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   return rendererElem;
 }
 
-QgsSymbol *QgsHeatmapRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext & )
+QgsSymbol *QgsHeatmapRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext & ) const
 {
   Q_UNUSED( feature );
   return nullptr;
 }
 
-QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & )
+QgsSymbolList QgsHeatmapRenderer::symbols( QgsRenderContext & ) const
 {
   return QgsSymbolList();
 }

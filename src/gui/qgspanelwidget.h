@@ -20,7 +20,8 @@
 #include <QStack>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Base class for any widget that can be shown as a inline panel
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Base class for any widget that can be shown as a inline panel
      * \param parent Parent widget.
      */
-    QgsPanelWidget( QWidget *parent = 0 );
+    QgsPanelWidget( QWidget *parent = nullptr );
 
     /**
      * Set the title of the panel when shown in the interface.
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     virtual void setDockMode( bool dockMode );
 
     /**
-     * Return the dock mode state.
+     * Returns the dock mode state.
      * \returns True if in dock mode.  If in dock mode the widget
      * will emit the showPanel signal to handle panel opening
      * If false it will open dialogs when openPanel is called.
@@ -95,7 +96,8 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      */
     bool autoDelete() { return mAutoDelete; }
 
-    /** Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
+    /**
+     * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
      * widget.
      * \param widget widget which may be contained within a panel widget
      * \returns parent panel widget if found, otherwise nullptr
@@ -158,17 +160,18 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
      */
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
-    bool mAutoDelete;
+    bool mAutoDelete = true;
     QString mPanelTitle;
-    bool mDockMode;
+    bool mDockMode = false;
 
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief Wrapper widget for existing widgets which can't have
  * the inheritance tree changed, e.g dialogs.
  *

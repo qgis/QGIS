@@ -25,6 +25,8 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaptoolidentify.h"
 #include "qgswebview.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmaptoolselectionhandler.h"
 
 #include <QWidget>
 #include <QList>
@@ -123,9 +125,9 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     //! Constructor - takes it own copy of the QgsAttributeAction so
     // that it is independent of whoever created it.
-    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    ~QgsIdentifyResultsDialog();
+    ~QgsIdentifyResultsDialog() override;
 
     //! Add add feature from vector layer
     void addFeature( QgsVectorLayer *layer,
@@ -150,6 +152,24 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     //! Map tool was activated
     void activate();
 
+    /**
+     * Sets an expression context scope to consider for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used for resolving underlying
+     * actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
+    QgsMapToolSelectionHandler::SelectionMode selectionMode() const;
+
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -159,6 +179,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     void copyToClipboard( QgsFeatureStore &featureStore );
 
     void activateLayer( QgsMapLayer * );
+
+    void selectionModeChanged();
 
   public slots:
     //! Remove results
@@ -201,18 +223,18 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     QTreeWidgetItem *retrieveAttributes( QTreeWidgetItem *item, QgsAttributeMap &attributes, int &currentIdx );
 
-    void on_cmbIdentifyMode_currentIndexChanged( int index );
+    void cmbIdentifyMode_currentIndexChanged( int index );
 
-    void on_cmbViewMode_currentIndexChanged( int index );
+    void cmbViewMode_currentIndexChanged( int index );
 
-    void on_mExpandNewAction_triggered( bool checked );
+    void mExpandNewAction_triggered( bool checked );
 
-    void on_cbxAutoFeatureForm_toggled( bool checked );
+    void cbxAutoFeatureForm_toggled( bool checked );
 
-    void on_mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
-    void on_mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
+    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ); expandAll(); }
+    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ); collapseAll(); }
 
-    void on_mActionCopy_triggered( bool checked );
+    void mActionCopy_triggered( bool checked );
 
     void formatChanged( int index );
 
@@ -233,6 +255,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
     QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
+    QgsExpressionContextScope mExpressionContextScope;
+    QToolButton *mSelectModeButton = nullptr;
 
     QgsMapLayer *layer( QTreeWidgetItem *item );
     QgsVectorLayer *vectorLayer( QTreeWidgetItem *item );
@@ -240,6 +264,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QTreeWidgetItem *featureItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QTreeWidgetItem *item );
     QTreeWidgetItem *layerItem( QObject *layer );
+
 
     void highlightLayer( QTreeWidgetItem *object );
     void layerProperties( QTreeWidgetItem *object );
@@ -261,6 +286,12 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
 
     void showHelp();
+
+    QgsMapToolSelectionHandler::SelectionMode mSelectionMode = QgsMapToolSelectionHandler::SelectSimple;
+
+    void setSelectionMode();
+
+    void initSelectionModes();
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

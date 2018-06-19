@@ -26,13 +26,12 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider *p );
-    ~QgsDelimitedTextFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression = nullptr;
+    std::unique_ptr< QgsExpression > mSubsetExpression;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
@@ -67,17 +66,17 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
   public:
     QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsDelimitedTextFeatureIterator();
+    ~QgsDelimitedTextFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
     bool wantGeometry( const QgsPointXY &point ) const;
     bool wantGeometry( const QgsGeometry &geom ) const;
 
   protected:
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
   private:
 

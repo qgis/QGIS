@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 from .r_li import checkMovingWindow, configFile
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return checkMovingWindow(alg)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return checkMovingWindow(alg, parameters, context)
 
 
-def processCommand(alg, parameters):
-    configFile(alg, parameters)
+def processCommand(alg, parameters, context, feedback):
+    configFile(alg, parameters, context, feedback)

@@ -26,6 +26,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsFeatureRequest,
+                       QgsProcessingException,
                        QgsFeatureSink,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink)
@@ -39,6 +40,9 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()
@@ -56,8 +60,13 @@ class DeleteDuplicateGeometries(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]))
         total = 100.0 / source.featureCount() if source.featureCount() else 0

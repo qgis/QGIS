@@ -42,7 +42,8 @@
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsMapRendererJob class.
  * It will do some performance testing too
  *
@@ -52,14 +53,9 @@ class TestQgsMapRendererJob : public QObject
     Q_OBJECT
 
   public:
-    TestQgsMapRendererJob()
-      : mError( QgsVectorFileWriter::NoError )
-      , mMapSettings( 0 )
-      , mpPolysLayer( 0 )
-    {
-    }
+    TestQgsMapRendererJob() = default;
 
-    ~TestQgsMapRendererJob()
+    ~TestQgsMapRendererJob() override
     {
       delete mMapSettings;
     }
@@ -73,7 +69,8 @@ class TestQgsMapRendererJob : public QObject
     //! This method tests render performance
     void performanceTest();
 
-    /** This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
+    /**
+     * This unit test checks if rendering of adjacent tiles (e.g. to render images for tile caches)
      * does not result in border effects
      */
     void testFourAdjacentTiles_data();
@@ -81,7 +78,7 @@ class TestQgsMapRendererJob : public QObject
 
   private:
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
     QgsMapSettings *mMapSettings = nullptr;
@@ -112,7 +109,7 @@ void TestQgsMapRendererJob::initTestCase()
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + '/';
   QString myTmpDir = QDir::tempPath() + '/';
-  QString myFileName = myTmpDir +  "maprender_testdata.shp";
+  QString myFileName = myTmpDir +  "maprender_testdata.gpkg";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";
   QFile::remove( myTmpDir + "maprender_testdata.qml" );
@@ -135,13 +132,13 @@ void TestQgsMapRendererJob::initTestCase()
         //
         // Create a polygon feature
         //
-        QgsPolyline myPolyline;
+        QgsPolylineXY myPolyline;
         QgsPointXY myPoint1 = QgsPointXY( i, j );
         QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
         QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
         QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
         myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-        QgsPolygon myPolygon;
+        QgsPolygonXY myPolygon;
         myPolygon << myPolyline;
         //polygon: first item of the list is outer ring,
         // inner rings (if any) start from second item
@@ -149,7 +146,7 @@ void TestQgsMapRendererJob::initTestCase()
         // NOTE: don't delete this pointer again -
         // ownership is passed to the feature which will
         // delete it in its dtor!
-        QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+        QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
         QgsFeature myFeature;
         myFeature.setGeometry( mypPolygonGeometry );
         myFeature.initAttributes( 1 );
@@ -281,7 +278,8 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
   }
 
   QString errorMsg;
-  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, QgsReadWriteContext() ) )
+  QgsReadWriteContext context = QgsReadWriteContext();
+  if ( !vectorLayer->readSymbology( qmlDoc.documentElement(), errorMsg, context ) )
   {
     QFAIL( errorMsg.toLocal8Bit().data() );
   }
@@ -297,7 +295,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsMapSettings mapSettings;
 
     //extent
-    QStringList rectCoords = bboxList.at( i ).split( QStringLiteral( "," ) );
+    QStringList rectCoords = bboxList.at( i ).split( ',' );
     if ( rectCoords.size() != 4 )
     {
       QFAIL( "bbox string invalid" );

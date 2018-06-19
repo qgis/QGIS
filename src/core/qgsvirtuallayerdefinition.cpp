@@ -24,8 +24,6 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )
-  , mGeometryWkbType( QgsWkbTypes::Unknown )
-  , mGeometrySrid( 0 )
 {
 }
 
@@ -159,6 +157,10 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         }
       }
     }
+    else if ( key == QLatin1String( "lazy" ) )
+    {
+      def.setLazy( true );
+    }
   }
   def.setFields( fields );
 
@@ -209,6 +211,11 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       url.addQueryItem( QStringLiteral( "field" ), f.name() + ":real" );
     else if ( f.type() == QVariant::String )
       url.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
+  }
+
+  if ( isLazy() )
+  {
+    url.addQueryItem( QStringLiteral( "lazy" ), QLatin1String( "" ) );
   }
 
   return url;

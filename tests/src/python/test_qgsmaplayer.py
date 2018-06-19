@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
+import tempfile
 
 from qgis.core import (QgsReadWriteContext,
                        QgsVectorLayer,
@@ -87,6 +88,22 @@ class TestQgsMapLayer(unittest.TestCase):
         self.copyLayerViaXmlReadWrite(layer, layer2)
         self.assertTrue(layer2.hasAutoRefreshEnabled())
         self.assertEqual(layer2.autoRefreshInterval(), 56)
+
+    def testReadWriteMetadata(self):
+        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        m = layer.metadata()
+        # Only abstract, more tests are done in test_qgslayermetadata.py
+        m.setAbstract('My abstract')
+        layer.setMetadata(m)
+        self.assertTrue(layer.metadata().abstract(), 'My abstract')
+        destination = tempfile.NamedTemporaryFile(suffix='.qmd').name
+        message, status = layer.saveNamedMetadata(destination)
+        self.assertTrue(status, message)
+
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer", "memory")
+        message, status = layer2.loadNamedMetadata(destination)
+        self.assertTrue(status)
+        self.assertTrue(layer2.metadata().abstract(), 'My abstract')
 
 
 if __name__ == '__main__':

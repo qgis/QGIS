@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsGPSDeviceDialogBase</class>
- <widget class="QDialog" name="QgsGPSDeviceDialogBase">
+ <class>QgsGpsDeviceDialogBase</class>
+ <widget class="QDialog" name="QgsGpsDeviceDialogBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -312,7 +312,7 @@ p, li { white-space: pre-wrap; }
   <connection>
    <sender>buttonBox</sender>
    <signal>clicked(QAbstractButton*)</signal>
-   <receiver>QgsGPSDeviceDialogBase</receiver>
+   <receiver>QgsGpsDeviceDialogBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">

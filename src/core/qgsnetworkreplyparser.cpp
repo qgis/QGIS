@@ -29,7 +29,6 @@ QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   : mReply( reply )
   , mValid( false )
 {
-  QgsDebugMsg( "Entered." );
   if ( !mReply ) return;
 
   // Content type examples:

@@ -15,15 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "qgslogger.h"
 
 #include <QApplication>
 #include <QtDebug>
 #include <QFile>
 #include <QThread>
-
-#include "qgsconfig.h"
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined

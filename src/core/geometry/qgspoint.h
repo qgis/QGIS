@@ -29,7 +29,8 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief Point geometry type, with support for z-dimension and m-values.
  * \since QGIS 3.0, (previously QgsPointv2 since QGIS 2.10)
  */
@@ -55,10 +56,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \code{.py}
      *   pt = QgsPoint(43.4, 5.3)
-     *   pt.exportToWkt() # Point(43.4 5.3)
+     *   pt.asWkt() # Point(43.4 5.3)
      *
      *   pt_z = QgsPoint(120, 343, 77)
-     *   pt.exportToWkt() # PointZ(120 343 77)
+     *   pt.asWkt() # PointZ(120 343 77)
      *
      *   pt_m = QgsPoint(33, 88, m=5)
      *   pt_m.m() # 5
@@ -99,11 +100,13 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     % End
 #endif
 
-    /** Construct a QgsPoint from a QgsPointXY object
+    /**
+     * Construct a QgsPoint from a QgsPointXY object
      */
     explicit QgsPoint( const QgsPointXY &p );
 
-    /** Construct a QgsPoint from a QPointF
+    /**
+     * Construct a QgsPoint from a QPointF
      */
     explicit QgsPoint( QPointF p );
 
@@ -114,34 +117,60 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsPoint &pt ) const;
-    bool operator!=( const QgsPoint &pt ) const;
+    bool operator==( const QgsAbstractGeometry &other ) const override
+    {
+      const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+      if ( !pt )
+        return false;
 
-    /** Returns the point's x-coordinate.
+      const QgsWkbTypes::Type type = wkbType();
+
+      bool equal = pt->wkbType() == type;
+      equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+      equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
+      if ( QgsWkbTypes::hasZ( type ) )
+        equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
+      if ( QgsWkbTypes::hasM( type ) )
+        equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
+
+      return equal;
+    }
+
+    bool operator!=( const QgsAbstractGeometry &other ) const override
+    {
+      return !operator==( other );
+    }
+
+    /**
+     * Returns the point's x-coordinate.
      * \see setX()
      * \see rx()
      */
     double x() const { return mX; }
 
-    /** Returns the point's y-coordinate.
+    /**
+     * Returns the point's y-coordinate.
      * \see setY()
      * \see ry()
      */
     double y() const { return mY; }
 
-    /** Returns the point's z-coordinate.
+    /**
+     * Returns the point's z-coordinate.
      * \see setZ()
      * \see rz()
      */
     double z() const { return mZ; }
 
-    /** Returns the point's m value.
+    /**
+     * Returns the point's m value.
      * \see setM()
      * \see rm()
      */
     double m() const { return mM; }
 
-    /** Returns a reference to the x-coordinate of this point.
+    /**
+     * Returns a reference to the x-coordinate of this point.
      * Using a reference makes it possible to directly manipulate x in place.
      * \see x()
      * \see setX()
@@ -149,7 +178,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     double &rx() SIP_SKIP { clearCache(); return mX; }
 
-    /** Returns a reference to the y-coordinate of this point.
+    /**
+     * Returns a reference to the y-coordinate of this point.
      * Using a reference makes it possible to directly manipulate y in place.
      * \see y()
      * \see setY()
@@ -157,7 +187,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     double &ry() SIP_SKIP { clearCache(); return mY; }
 
-    /** Returns a reference to the z-coordinate of this point.
+    /**
+     * Returns a reference to the z-coordinate of this point.
      * Using a reference makes it possible to directly manipulate z in place.
      * \see z()
      * \see setZ()
@@ -165,7 +196,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     double &rz() SIP_SKIP { clearCache(); return mZ; }
 
-    /** Returns a reference to the m value of this point.
+    /**
+     * Returns a reference to the m value of this point.
      * Using a reference makes it possible to directly manipulate m in place.
      * \see m()
      * \see setM()
@@ -173,7 +205,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     double &rm() SIP_SKIP { clearCache(); return mM; }
 
-    /** Sets the point's x-coordinate.
+    /**
+     * Sets the point's x-coordinate.
      * \see x()
      * \see rx()
      */
@@ -183,7 +216,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       mX = x;
     }
 
-    /** Sets the point's y-coordinate.
+    /**
+     * Sets the point's y-coordinate.
      * \see y()
      * \see ry()
      */
@@ -193,7 +227,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       mY = y;
     }
 
-    /** Sets the point's z-coordinate.
+    /**
+     * Sets the point's z-coordinate.
      * \note calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
      * add a z value and force the point to have a z dimension.
      * \see z()
@@ -207,7 +242,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       mZ = z;
     }
 
-    /** Sets the point's m-value.
+    /**
+     * Sets the point's m-value.
      * \note calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
      * add a m value and force the point to have an m dimension.
      * \see m()
@@ -221,19 +257,26 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       mM = m;
     }
 
-    /** Returns the point as a QPointF.
+    /**
+     * Returns the point as a QPointF.
      * \since QGIS 2.14
      */
-    QPointF toQPointF() const;
+    QPointF toQPointF() const
+    {
+      return QPointF( mX, mY );
+    }
 
     /**
      * Returns the distance between this point and a specified x, y coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
-    double distance( double x, double y ) const;
+    double distance( double x, double y ) const
+    {
+      return std::sqrt( ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y ) );
+    }
 
     /**
      * Returns the 2D distance between this point and another point. In certain
@@ -241,7 +284,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * when comparing distances.
      * \since QGIS 3.0
     */
-    double distance( const QgsPoint &other ) const;
+    double distance( const QgsPoint &other ) const
+    {
+      return std::sqrt( ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() ) );
+    }
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate. Calling
@@ -250,7 +296,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( double x, double y ) const;
+    double distanceSquared( double x, double y ) const
+    {
+      return ( mX - x ) * ( mX - x ) + ( mY - y ) * ( mY - y );
+    }
 
     /**
      * Returns the squared distance between this point another point. Calling
@@ -259,14 +308,17 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      * \see distance()
      * \since QGIS 3.0
     */
-    double distanceSquared( const QgsPoint &other ) const;
+    double distanceSquared( const QgsPoint &other ) const
+    {
+      return ( mX - other.x() ) * ( mX - other.x() ) + ( mY - other.y() ) * ( mY - other.y() );
+    }
 
     /**
      * Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
      * cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
      * when comparing distances.
-     * \since QGIS 3.0
      * \see distanceSquared()
+     * \since QGIS 3.0
     */
     double distance3D( double x, double y, double z ) const;
 
@@ -309,7 +361,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     double inclination( const QgsPoint &other ) const;
 
-    /** Returns a new point which correspond to this point projected by a specified distance
+    /**
+     * Returns a new point which correspond to this point projected by a specified distance
      * with specified angles (azimuth and inclination).
      * M value is preserved.
      * \param distance distance to project
@@ -369,54 +422,61 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QgsPoint operator-( QgsVector v ) const { QgsPoint r = *this; r.rx() -= v.x(); r.ry() -= v.y(); return r; }
 
     //implementation of inherited methods
-    bool isEmpty() const override { return false; }
-    virtual QgsRectangle boundingBox() const override { return QgsRectangle( mX, mY, mX, mY ); }
-    virtual QString geometryType() const override { return QStringLiteral( "Point" ); }
-    virtual int dimension() const override { return 0; }
-    virtual QgsPoint *clone() const override SIP_FACTORY;
+    bool isEmpty() const override;
+    QgsRectangle boundingBox() const override;
+    QString geometryType() const override;
+    int dimension() const override;
+    QgsPoint *clone() const override SIP_FACTORY;
+    QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
     void clear() override;
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QString asJson( int precision = 17 ) const override;
     void draw( QPainter &p ) const override;
-    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
-                    bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
-    virtual QgsCoordinateSequence coordinateSequence() const override;
-    virtual int nCoordinates() const override { return 1; }
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform, bool transformZ = false ) override SIP_THROW( QgsCsException );
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
+    QgsCoordinateSequence coordinateSequence() const override;
+    int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override { Q_UNUSED( position ); Q_UNUSED( vertex ); return false; }
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override { Q_UNUSED( position ); return false; }
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT,
-                                   double epsilon ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
 
-    /** Angle undefined. Always returns 0.0
+    /**
+     * Angle undefined. Always returns 0.0
         \param vertex the vertex id
         \returns 0.0*/
-    double vertexAngle( QgsVertexId vertex ) const override { Q_UNUSED( vertex ); return 0.0; }
+    double vertexAngle( QgsVertexId vertex ) const override;
 
-    virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override { return 1; }
-    virtual int ringCount( int /*part*/ = 0 ) const override { return 1; }
-    virtual int partCount() const override { return 1; }
-    virtual QgsPoint vertexAt( QgsVertexId /*id*/ ) const override { return *this; }
+    int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const override;
+    int ringCount( int /*part*/ = 0 ) const override;
+    int partCount() const override;
+    QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
+    QgsPoint *toCurveType() const override SIP_FACTORY;
+    double segmentLength( QgsVertexId startVertex ) const override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
+    bool dropZValue() override;
+    bool dropMValue() override;
+    void swapXy() override;
     bool convertTo( QgsWkbTypes::Type type ) override;
 
 #ifndef SIP_RUN
+
+    void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
 
     /**
      * Cast the \a geom to a QgsPoint.
@@ -432,11 +492,21 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
       return nullptr;
     }
 #endif
+
+    QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
+    int childCount() const override;
+    QgsPoint childPoint( int index ) const override;
+
   private:
     double mX;
     double mY;
     double mZ;
     double mM;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSPOINTV2_H

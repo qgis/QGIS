@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,9 +29,11 @@ import os
 import random
 
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import (QgsFeatureSink,
+from qgis.core import (QgsApplication,
+                       QgsFeatureSink,
                        QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -52,10 +53,19 @@ class RandomSelection(QgisAlgorithm):
     NUMBER = 'NUMBER'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'random_selection.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSelectRandom.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSelectRandom.svg")
 
     def group(self):
         return self.tr('Vector selection')
+
+    def groupId(self):
+        return 'vectorselection'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def __init__(self):
         super().__init__()

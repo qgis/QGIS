@@ -41,7 +41,6 @@ QgsColorWidget::QgsColorWidget( QWidget *parent, const ColorComponent component 
   : QWidget( parent )
   , mCurrentColor( Qt::red )
   , mComponent( component )
-  , mExplicitHue( 0 )
 {
   setAcceptDrops( true );
 }
@@ -366,14 +365,6 @@ void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
 
 QgsColorWheel::QgsColorWheel( QWidget *parent )
   : QgsColorWidget( parent )
-  , mMargin( 4 )
-  , mWheelThickness( 18 )
-  , mClickedPart( QgsColorWheel::None )
-  , mWheelImage( nullptr )
-  , mTriangleImage( nullptr )
-  , mWidgetImage( nullptr )
-  , mWheelDirty( true )
-  , mTriangleDirty( true )
 {
   //create wheel hue brush - only do this once
   QConicalGradient wheelGradient = QConicalGradient( 0, 0, 0 );
@@ -601,7 +592,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
 
 void QgsColorWheel::mouseMoveEvent( QMouseEvent *event )
 {
-  setColorFromPos( event->posF() );
+  setColorFromPos( event->pos() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
@@ -621,7 +612,7 @@ void QgsColorWheel::mousePressEvent( QMouseEvent *event )
   {
     mClickedPart = QgsColorWheel::Wheel;
   }
-  setColorFromPos( event->posF() );
+  setColorFromPos( event->pos() );
 }
 
 void QgsColorWheel::mouseReleaseEvent( QMouseEvent *event )
@@ -741,9 +732,6 @@ void QgsColorWheel::createTriangle()
 
 QgsColorBox::QgsColorBox( QWidget *parent, const ColorComponent component )
   : QgsColorWidget( parent, component )
-  , mMargin( 2 )
-  , mBoxImage( nullptr )
-  , mDirty( true )
 {
   setFocusPolicy( Qt::StrongFocus );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
@@ -976,8 +964,6 @@ QgsColorRampWidget::QgsColorRampWidget( QWidget *parent,
                                         const QgsColorWidget::ColorComponent component,
                                         const Orientation orientation )
   : QgsColorWidget( parent, component )
-  , mMargin( 4 )
-  , mShowFrame( false )
 {
   setFocusPolicy( Qt::StrongFocus );
   setOrientation( orientation );
@@ -1162,7 +1148,7 @@ void QgsColorRampWidget::setMarkerSize( const int markerSize )
 
 void QgsColorRampWidget::mouseMoveEvent( QMouseEvent *event )
 {
-  setColorFromPoint( event->posF() );
+  setColorFromPoint( event->pos() );
   QgsColorWidget::mouseMoveEvent( event );
 }
 
@@ -1191,7 +1177,7 @@ void QgsColorRampWidget::wheelEvent( QWheelEvent *event )
 
 void QgsColorRampWidget::mousePressEvent( QMouseEvent *event )
 {
-  setColorFromPoint( event->posF() );
+  setColorFromPoint( event->pos() );
 }
 
 void QgsColorRampWidget::keyPressEvent( QKeyEvent *event )
@@ -1271,8 +1257,7 @@ void QgsColorRampWidget::setColorFromPoint( QPointF point )
 
 QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponent component )
   : QgsColorWidget( parent, component )
-  , mRampWidget( nullptr )
-  , mSpinBox( nullptr )
+
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
@@ -1400,9 +1385,6 @@ int QgsColorSliderWidget::convertDisplayToReal( const int displayValue ) const
 
 QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   : QgsColorWidget( parent )
-  , mLineEdit( nullptr )
-  , mMenuButton( nullptr )
-  , mFormat( QgsColorTextWidget::HexRgb )
 {
   QHBoxLayout *hLayout = new QHBoxLayout();
   hLayout->setMargin( 0 );
@@ -1428,7 +1410,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = ( ColorTextFormat )settings.value( QStringLiteral( "ColorWidgets/textWidgetFormat" ), 0 ).toInt();
+  mFormat = settings.enumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), HexRgb );
 
   updateText();
 }
@@ -1527,7 +1509,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), ( int )mFormat );
+  settings.setEnumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), mFormat );
 
   updateText();
 }
@@ -1703,7 +1685,7 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *
 
 void QgsColorWidgetAction::onHover()
 {
-  //see https://bugreports.qt-project.org/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
+  //see https://bugreports.qt.io/browse/QTBUG-10427?focusedCommentId=185610&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-185610
   if ( mSuppressRecurse )
   {
     return;

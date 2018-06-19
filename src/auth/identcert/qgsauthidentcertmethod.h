@@ -18,6 +18,7 @@
 #define QGSAUTHIDENTCERTMETHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -29,7 +30,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthIdentCertMethod();
-    ~QgsAuthIdentCertMethod();
+    ~QgsAuthIdentCertMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -57,6 +58,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
     void removePkiConfigBundle( const QString &authcfg );
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
+
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H

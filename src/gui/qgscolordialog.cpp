@@ -18,7 +18,6 @@
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
@@ -34,9 +33,11 @@
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )
   , mPreviousColor( color )
-  , mAllowOpacity( true )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsColorDialog::mButtonBox_accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsColorDialog::mButtonBox_rejected );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsColorDialog::mButtonBox_clicked );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ColorDialog/geometry" ) ).toByteArray() );
@@ -76,51 +77,6 @@ void QgsColorDialog::setAllowOpacity( const bool allowOpacity )
   mColorWidget->setAllowOpacity( allowOpacity );
 }
 
-QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot, QWidget *parent, const QString &title, const bool allowOpacity )
-{
-  QColor returnColor( initialColor );
-
-  QgsSettings settings;
-
-  //using native color dialogs?
-  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
-  if ( useNative )
-  {
-    QColorDialog *liveDialog = new QColorDialog( initialColor, parent );
-    liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    liveDialog->setOptions( allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
-
-    connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
-             updateObject, updateSlot );
-
-    if ( liveDialog->exec() )
-    {
-      returnColor = liveDialog->currentColor();
-    }
-    delete liveDialog;
-  }
-  else
-  {
-    QgsColorDialog *liveDialog = new QgsColorDialog( parent, 0, initialColor );
-    liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
-    if ( !allowOpacity )
-    {
-      liveDialog->setAllowOpacity( false );
-    }
-
-    connect( liveDialog, SIGNAL( currentColorChanged( const QColor & ) ),
-             updateObject, updateSlot );
-
-    if ( liveDialog->exec() )
-    {
-      returnColor = liveDialog->color();
-    }
-    delete liveDialog;
-  }
-
-  return returnColor;
-}
-
 QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, const QString &title, const bool allowOpacity )
 {
   QString dialogTitle = title.isEmpty() ? tr( "Select Color" ) : title;
@@ -134,7 +90,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
   else
   {
-    QgsColorDialog *dialog = new QgsColorDialog( parent, 0, initialColor );
+    QgsColorDialog *dialog = new QgsColorDialog( parent, nullptr, initialColor );
     dialog->setWindowTitle( dialogTitle );
     dialog->setAllowOpacity( allowOpacity );
 
@@ -152,19 +108,19 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
 }
 
-void QgsColorDialog::on_mButtonBox_accepted()
+void QgsColorDialog::mButtonBox_accepted()
 {
   saveSettings();
   accept();
 }
 
-void QgsColorDialog::on_mButtonBox_rejected()
+void QgsColorDialog::mButtonBox_rejected()
 {
   saveSettings();
   reject();
 }
 
-void QgsColorDialog::on_mButtonBox_clicked( QAbstractButton *button )
+void QgsColorDialog::mButtonBox_clicked( QAbstractButton *button )
 {
   if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ResetRole && mPreviousColor.isValid() )
   {

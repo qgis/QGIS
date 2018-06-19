@@ -30,9 +30,8 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsDb2FeatureSource( const QgsDb2Provider *p );
-    ~QgsDb2FeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QgsFields mFields;
@@ -66,20 +65,20 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
   public:
     QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsDb2FeatureIterator();
+    ~QgsDb2FeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
     void BuildStatement( const QgsFeatureRequest &request );
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
 
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
 
     // The current database

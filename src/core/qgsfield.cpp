@@ -22,6 +22,7 @@
 
 #include <QDataStream>
 #include <QIcon>
+#include <QLocale>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -165,14 +166,14 @@ void QgsField::setComment( const QString &comment )
   d->comment = comment;
 }
 
-QString QgsField::defaultValueExpression() const
+QgsDefaultValue QgsField::defaultValueDefinition() const
 {
-  return d->defaultValueExpression;
+  return d->defaultValueDefinition;
 }
 
-void QgsField::setDefaultValueExpression( const QString &expression )
+void QgsField::setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition )
 {
-  d->defaultValueExpression = expression;
+  d->defaultValueDefinition = defaultValueDefinition;
 }
 
 void QgsField::setConstraints( const QgsFieldConstraints &constraints )
@@ -205,13 +206,54 @@ QString QgsField::displayString( const QVariant &v ) const
 {
   if ( v.isNull() )
   {
-    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 
-  if ( d->type == QVariant::Double && d->precision > 0 )
-    return QString::number( v.toDouble(), 'f', d->precision );
-
+  // Special treatment for numeric types if group separator is set or decimalPoint is not a dot
+  if ( d->type == QVariant::Double )
+  {
+    // Locales with decimal point != '.' or that require group separator: use QLocale
+    if ( QLocale().decimalPoint() != '.' ||
+         !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+    {
+      if ( d->precision > 0 )
+      {
+        return QLocale().toString( v.toDouble(), 'f', d->precision );
+      }
+      else
+      {
+        // Precision is not set, let's guess it from the
+        // standard conversion to string
+        QString s( v.toString() );
+        int dotPosition( s.indexOf( '.' ) );
+        int precision;
+        if ( dotPosition < 0 )
+        {
+          precision = 0;
+        }
+        else
+        {
+          precision = s.length() - dotPosition - 1;
+        }
+        return QLocale().toString( v.toDouble(), 'f', precision );
+      }
+    }
+    // Default for doubles with precision
+    else if ( d->type == QVariant::Double && d->precision > 0 )
+    {
+      return QString::number( v.toDouble(), 'f', d->precision );
+    }
+  }
+  // Other numeric types than doubles
+  else if ( isNumeric() &&
+            !( QLocale().numberOptions() & QLocale::NumberOption::OmitGroupSeparator ) )
+  {
+    bool ok;
+    qlonglong converted( v.toLongLong( &ok ) );
+    if ( ok )
+      return QLocale().toString( converted );
+  }
+  // Fallback if special rules do not apply
   return v.toString();
 }
 
@@ -235,6 +277,68 @@ bool QgsField::convertCompatible( QVariant &v ) const
     return false;
   }
 
+  // Give it a chance to convert to double since for not '.' locales
+  // we accept both comma and dot as decimal point
+  if ( d->type == QVariant::Double && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      double d = QLocale().toDouble( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( d );
+        return true;
+      }
+      // For not 'dot' locales, we also want to accept '.'
+      if ( QLocale().decimalPoint() != '.' )
+      {
+        d = QLocale( QLocale::English ).toDouble( v.toString(), &ok );
+        if ( ok )
+        {
+          v = QVariant( d );
+          return true;
+        }
+      }
+    }
+  }
+
+  // For string representation of an int we also might have thousand separator
+  if ( d->type == QVariant::Int && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      int i = QLocale().toInt( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( i );
+        return true;
+      }
+    }
+  }
+
+  // For string representation of a long we also might have thousand separator
+  if ( d->type == QVariant::LongLong && v.type() == QVariant::String )
+  {
+    QVariant tmp( v );
+    if ( !tmp.convert( d->type ) )
+    {
+      // This might be a string with thousand separator: use locale to convert
+      bool ok;
+      qlonglong l = QLocale().toLongLong( v.toString(), &ok );
+      if ( ok )
+      {
+        v = QVariant( l );
+        return true;
+      }
+    }
+  }
+
   //String representations of doubles in QVariant will return false to convert( QVariant::Int )
   //work around this by first converting to double, and then checking whether the double is convertible to int
   if ( d->type == QVariant::Int && v.canConvert( QVariant::Double ) )
@@ -249,7 +353,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     }
 
     double round = std::round( dbl );
-    if ( round  > INT_MAX || round < -INT_MAX )
+    if ( round  > std::numeric_limits<int>::max() || round < -std::numeric_limits<int>::max() )
     {
       //double too large to fit in int
       v = QVariant( d->type );
@@ -258,6 +362,7 @@ bool QgsField::convertCompatible( QVariant &v ) const
     v = QVariant( static_cast< int >( std::round( dbl ) ) );
     return true;
   }
+
 
   if ( !v.convert( d->type ) )
   {
@@ -307,7 +412,8 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
   out << field.precision();
   out << field.comment();
   out << field.alias();
-  out << field.defaultValueExpression();
+  out << field.defaultValueDefinition().expression();
+  out << field.defaultValueDefinition().applyOnUpdate();
   out << field.constraints().constraints();
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) );
   out << static_cast< quint32 >( field.constraints().constraintOrigin( QgsFieldConstraints::ConstraintUnique ) );
@@ -323,10 +429,30 @@ QDataStream &operator<<( QDataStream &out, const QgsField &field )
 
 QDataStream &operator>>( QDataStream &in, QgsField &field )
 {
-  quint32 type, subType, length, precision, constraints, originNotNull, originUnique, originExpression, strengthNotNull, strengthUnique, strengthExpression;
-  QString name, typeName, comment, alias, defaultValueExpression, constraintExpression, constraintDescription;
+  quint32 type;
+  quint32 subType;
+  quint32 length;
+  quint32 precision;
+  quint32 constraints;
+  quint32 originNotNull;
+  quint32 originUnique;
+  quint32 originExpression;
+  quint32 strengthNotNull;
+  quint32 strengthUnique;
+  quint32 strengthExpression;
+
+  bool applyOnUpdate;
+
+  QString name;
+  QString typeName;
+  QString comment;
+  QString alias;
+  QString defaultValueExpression;
+  QString constraintExpression;
+  QString constraintDescription;
+
   in >> name >> type >> typeName >> length >> precision >> comment >> alias
-     >> defaultValueExpression >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
+     >> defaultValueExpression >> applyOnUpdate >> constraints >> originNotNull >> originUnique >> originExpression >> strengthNotNull >> strengthUnique >> strengthExpression >>
      constraintExpression >> constraintDescription >> subType;
   field.setName( name );
   field.setType( static_cast< QVariant::Type >( type ) );
@@ -335,7 +461,7 @@ QDataStream &operator>>( QDataStream &in, QgsField &field )
   field.setPrecision( static_cast< int >( precision ) );
   field.setComment( comment );
   field.setAlias( alias );
-  field.setDefaultValueExpression( defaultValueExpression );
+  field.setDefaultValueDefinition( QgsDefaultValue( defaultValueExpression, applyOnUpdate ) );
   QgsFieldConstraints fieldConstraints;
   if ( constraints & QgsFieldConstraints::ConstraintNotNull )
   {

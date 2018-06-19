@@ -24,10 +24,11 @@
 
 #include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Functions for hashing/checking master password and encrypt/decrypting data with password
- * \since 2.8
  * \note not available in Python bindings
+ * \since 2.8
  */
 class CORE_EXPORT QgsAuthCrypto
 {

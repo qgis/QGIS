@@ -19,12 +19,12 @@
 #include <cmath>
 #include <ctime>
 #include <iostream>
-#include <stdio.h>
+#include <cstdio>
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
-#include <time.h>
-#include <math.h>
+#include <ctime>
+#include <cmath>
 
 #include <QFile>
 #include <QFileInfo>
@@ -119,8 +119,7 @@ int getrusage( int who, struct rusage *rusage )
 #endif
 
 QgsBench::QgsBench( int width, int height, int iterations )
-  : QObject()
-  , mWidth( width )
+  : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
   , mSetExtent( false )
@@ -133,10 +132,6 @@ QgsBench::QgsBench( int width, int height, int iterations )
 
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgsBench::readProject );
-}
-
-QgsBench::~QgsBench()
-{
 }
 
 bool QgsBench::openProject( const QString &fileName )
@@ -218,8 +213,8 @@ void QgsBench::render()
   mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
 
   // Calc stats: user, sys, total
-  double min[4] = {DBL_MAX};
-  double max[4] = { -DBL_MAX};
+  double min[4] = {std::numeric_limits<double>::max()};
+  double max[4] = { std::numeric_limits<double>::lowest()};
   double stdev[4] = {0.};
   double maxdev[4] = {0.};
   double avg[4] = {0.};

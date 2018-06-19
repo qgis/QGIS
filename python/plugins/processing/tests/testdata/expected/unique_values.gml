@@ -8,17 +8,17 @@
                                                                                                                                                                                                                                                                                                 
   <gml:featureMember>
     <ogr:unique_values fid="unique_values.0">
-      <ogr:VALUES>0</ogr:VALUES>
+      <ogr:id2>0</ogr:id2>
     </ogr:unique_values>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:unique_values fid="unique_values.1">
-      <ogr:VALUES>1</ogr:VALUES>
+      <ogr:id2>1</ogr:id2>
     </ogr:unique_values>
   </gml:featureMember>
   <gml:featureMember>
     <ogr:unique_values fid="unique_values.2">
-      <ogr:VALUES>2</ogr:VALUES>
+      <ogr:id2>2</ogr:id2>
     </ogr:unique_values>
   </gml:featureMember>
 </ogr:FeatureCollection>

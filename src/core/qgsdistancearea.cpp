@@ -44,7 +44,8 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMajor = -1.0;
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
-  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
+  QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
+  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ), context ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
 
@@ -53,8 +54,9 @@ bool QgsDistanceArea::willUseEllipsoid() const
   return mEllipsoid != GEO_NONE;
 }
 
-void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
+void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
 {
+  mCoordTransform.setContext( context );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 
@@ -158,7 +160,7 @@ double QgsDistanceArea::measure( const QgsAbstractGeometry *geomV2, MeasureType 
       if ( !surface )
         return 0.0;
 
-      QgsPolygonV2 *polygon = surface->surfaceToPolygon();
+      QgsPolygon *polygon = surface->surfaceToPolygon();
 
       double area = 0;
       const QgsCurve *outerRing = polygon->exteriorRing();
@@ -180,7 +182,7 @@ double QgsDistanceArea::measureArea( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   return measure( geomV2, Area );
 }
 
@@ -189,7 +191,7 @@ double QgsDistanceArea::measureLength( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   return measure( geomV2, Length );
 }
 
@@ -198,7 +200,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   if ( geometry.isNull() )
     return 0.0;
 
-  const QgsAbstractGeometry *geomV2 = geometry.geometry();
+  const QgsAbstractGeometry *geomV2 = geometry.constGet();
   if ( !geomV2 || geomV2->dimension() < 2 )
   {
     return 0.0;
@@ -210,7 +212,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   }
 
   //create list with (single) surfaces
-  QList< const QgsSurface * > surfaces;
+  QVector< const QgsSurface * > surfaces;
   const QgsSurface *surf = qgsgeometry_cast<const QgsSurface *>( geomV2 );
   if ( surf )
   {
@@ -227,7 +229,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
   }
 
   double length = 0;
-  QList<const QgsSurface *>::const_iterator surfaceIt = surfaces.constBegin();
+  QVector<const QgsSurface *>::const_iterator surfaceIt = surfaces.constBegin();
   for ( ; surfaceIt != surfaces.constEnd(); ++surfaceIt )
   {
     if ( !*surfaceIt )
@@ -235,7 +237,7 @@ double QgsDistanceArea::measurePerimeter( const QgsGeometry &geometry ) const
       continue;
     }
 
-    QgsPolygonV2 *poly = ( *surfaceIt )->surfaceToPolygon();
+    QgsPolygon *poly = ( *surfaceIt )->surfaceToPolygon();
     const QgsCurve *outerRing = poly->exteriorRing();
     if ( outerRing )
     {
@@ -259,13 +261,13 @@ double QgsDistanceArea::measureLine( const QgsCurve *curve ) const
   }
 
   QgsPointSequence linePointsV2;
-  QList<QgsPointXY> linePoints;
+  QVector<QgsPointXY> linePoints;
   curve->points( linePointsV2 );
   QgsGeometry::convertPointList( linePointsV2, linePoints );
   return measureLine( linePoints );
 }
 
-double QgsDistanceArea::measureLine( const QList<QgsPointXY> &points ) const
+double QgsDistanceArea::measureLine( const QVector<QgsPointXY> &points ) const
 {
   if ( points.size() < 2 )
     return 0;
@@ -280,7 +282,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPointXY> &points ) const
     else
       p1 = points[0];
 
-    for ( QList<QgsPointXY>::const_iterator i = points.begin(); i != points.end(); ++i )
+    for ( QVector<QgsPointXY>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
     {
       if ( willUseEllipsoid() )
       {
@@ -368,8 +370,8 @@ double QgsDistanceArea::measureLineProjected( const QgsPointXY &p1, double dista
                     .arg( ( ( mCoordTransform.sourceCrs().isGeographic() ) == 1 ? QString( "Geographic" ) : QString( "Cartesian" ) ) )
                     .arg( QgsUnitTypes::toString( sourceCrs().mapUnits() ) )
                     .arg( azimuth )
-                    .arg( p1.wellKnownText() )
-                    .arg( p2.wellKnownText() )
+                    .arg( p1.asWkt() )
+                    .arg( p2.asWkt() )
                     .arg( sourceCrs().description() )
                     .arg( mEllipsoid )
                     .arg( sourceCrs().isGeographic() )
@@ -472,20 +474,20 @@ double QgsDistanceArea::measurePolygon( const QgsCurve *curve ) const
 
   QgsPointSequence linePointsV2;
   curve->points( linePointsV2 );
-  QList<QgsPointXY> linePoints;
+  QVector<QgsPointXY> linePoints;
   QgsGeometry::convertPointList( linePointsV2, linePoints );
   return measurePolygon( linePoints );
 }
 
 
-double QgsDistanceArea::measurePolygon( const QList<QgsPointXY> &points ) const
+double QgsDistanceArea::measurePolygon( const QVector<QgsPointXY> &points ) const
 {
   try
   {
     if ( willUseEllipsoid() )
     {
-      QList<QgsPointXY> pts;
-      for ( QList<QgsPointXY>::const_iterator i = points.begin(); i != points.end(); ++i )
+      QVector<QgsPointXY> pts;
+      for ( QVector<QgsPointXY>::const_iterator i = points.constBegin(); i != points.constEnd(); ++i )
       {
         pts.append( mCoordTransform.transform( *i ) );
       }
@@ -659,7 +661,7 @@ void QgsDistanceArea::computeAreaInit()
 
   m_QbarA = -1.0 - ( 2.0 / 3.0 ) * e2 - ( 3.0 / 5.0 ) * e4  - ( 4.0 / 7.0 ) * e6;
   m_QbarB = ( 2.0 / 9.0 ) * e2 + ( 2.0 / 5.0 ) * e4  + ( 4.0 / 7.0 ) * e6;
-  m_QbarC =                     - ( 3.0 / 25.0 ) * e4 - ( 12.0 / 35.0 ) * e6;
+  m_QbarC = - ( 3.0 / 25.0 ) * e4 - ( 12.0 / 35.0 ) * e6;
   m_QbarD = ( 4.0 / 49.0 ) * e6;
 
   m_Qp = getQ( M_PI_2 );
@@ -685,7 +687,7 @@ void QgsDistanceArea::setFromParams( const QgsEllipsoidUtils::EllipsoidParameter
   }
 }
 
-double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) const
+double QgsDistanceArea::computePolygonArea( const QVector<QgsPointXY> &points ) const
 {
   if ( points.isEmpty() )
   {
@@ -774,7 +776,7 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPointXY> &points ) co
   return area;
 }
 
-double QgsDistanceArea::computePolygonFlatArea( const QList<QgsPointXY> &points ) const
+double QgsDistanceArea::computePolygonFlatArea( const QVector<QgsPointXY> &points ) const
 {
   // Normal plane area calculations.
   double area = 0.0;

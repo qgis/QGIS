@@ -21,7 +21,7 @@
 #include <QTcpSocket>
 
 QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QString &device )
-  : QgsNMEAConnection( new QTcpSocket() )
+  : QgsNmeaConnection( new QTcpSocket() )
   , mDevice( device )
 {
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
@@ -29,11 +29,6 @@ QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QS
   QObject::connect( socket, SIGNAL( connected() ), this, SLOT( connected() ) );
   QObject::connect( socket, SIGNAL( error( QAbstractSocket::SocketError ) ), this, SLOT( error( QAbstractSocket::SocketError ) ) );
   socket->connectToHost( host, port );
-}
-
-QgsGpsdConnection::~QgsGpsdConnection()
-{
-  //connection will be closed by base class
 }
 
 void QgsGpsdConnection::connected()

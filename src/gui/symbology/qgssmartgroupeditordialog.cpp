@@ -79,6 +79,7 @@ QgsSmartGroupEditorDialog::QgsSmartGroupEditorDialog( QgsStyle *style, QWidget *
   , mStyle( style )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsSmartGroupEditorDialog::buttonBox_accepted );
 
   mCondCount = 0;
 
@@ -156,11 +157,8 @@ void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map
   constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
 
   // clear any defaults
-  Q_FOREACH ( int id, mConditionMap.keys() )
-  {
-    QgsSmartGroupCondition *cond = mConditionMap.take( id );
-    delete cond;
-  }
+  qDeleteAll( mConditionMap );
+  mConditionMap.clear();
 
   //set the constraints
   Q_FOREACH ( const QString &constr, constraints )
@@ -192,11 +190,11 @@ void QgsSmartGroupEditorDialog::setSmartgroupName( const QString &name )
   mNameLineEdit->setText( name );
 }
 
-void QgsSmartGroupEditorDialog::on_buttonBox_accepted()
+void QgsSmartGroupEditorDialog::buttonBox_accepted()
 {
   if ( mNameLineEdit->text().isEmpty() )
   {
-    QMessageBox::critical( this, tr( "Invalid name" ), tr( "The smart group name field is empty. Kindly provide a name" ) );
+    QMessageBox::critical( this, tr( "Edit Smart Group" ), tr( "The smart group name field is empty. Kindly provide a name." ) );
     return;
   }
   accept();

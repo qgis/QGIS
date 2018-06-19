@@ -33,7 +33,8 @@ class QwtPlotZoomer;
 // fix for qwt5/qwt6 QwtDoublePoint vs. QPointF
 typedef QPointF QwtDoublePoint SIP_SKIP;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Histogram widget
   */
 
@@ -42,12 +43,16 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Constructor for QgsRasterHistogramWidget, for the specified raster \a layer.
+     */
+    QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Save the histogram as an image to disk
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 
-    //! Set the renderer widget (or just its name if there is no widget)
+    //! Sets the renderer widget (or just its name if there is no widget)
     void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = nullptr );
 
     //! Activate the histogram widget
@@ -65,24 +70,25 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
   public slots:
     //! \brief slot executed when user wishes to refresh raster histogramwidget
     void refreshHistogram();
-    //! This slot lets you save the histogram as an image to disk
-    void on_mSaveAsImageButton_clicked();
 
     void apply() override;
 
   private slots:
+    //! This slot lets you save the histogram as an image to disk
+    void mSaveAsImageButton_clicked();
     //! Used when the histogram band selector changes, or when tab is loaded.
-    void on_cboHistoBand_currentIndexChanged( int );
+    void cboHistoBand_currentIndexChanged( int );
     //! Applies the selected min/max values to the renderer widget.
     void applyHistoMin();
     void applyHistoMax();
     //! Button to activate picking of the min/max value on the graph.
-    void on_btnHistoMin_toggled();
-    void on_btnHistoMax_toggled();
+    void btnHistoMin_toggled();
+    void btnHistoMax_toggled();
     //! Called when a selection has been made using the plot picker.
     void histoPickerSelected( QPointF );
 
-    /** Called when a selection has been made using the plot picker (for qwt5 only).
+    /**
+     * Called when a selection has been made using the plot picker (for qwt5 only).
       \note not available in Python bindings
       */
     void histoPickerSelectedQwt5( QwtDoublePoint ) SIP_SKIP;
@@ -91,7 +97,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     //! Draw the min/max markers on the histogram plot.
     void updateHistoMarkers();
     //! Button to compute the histogram, appears when no cached histogram is available.
-    void on_btnHistoCompute_clicked();
+    void btnHistoCompute_clicked();
 
   private:
 

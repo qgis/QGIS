@@ -52,7 +52,7 @@ void writePoint( struct Map_info *map, int type, const QgsPointXY &point, struct
   Vect_write_line( map, type, gLine, cats );
 }
 
-void writePolyline( struct Map_info *map, int type, const QgsPolyline &polyline, struct line_cats *cats )
+void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polyline, struct line_cats *cats )
 {
   Vect_reset_line( gLine );
   Q_FOREACH ( const QgsPointXY &point, polyline )
@@ -62,11 +62,11 @@ void writePolyline( struct Map_info *map, int type, const QgsPolyline &polyline,
   Vect_write_line( map, type, gLine, cats );
 }
 
-static struct Map_info *finalMap = 0;
-static struct Map_info *tmpMap = 0;
+static struct Map_info *finalMap = nullptr;
+static struct Map_info *tmpMap = nullptr;
 static QString sFinalName;
 static QString sTmpName;
-dbDriver *driver = 0;
+dbDriver *driver = nullptr;
 
 void closeMaps()
 {
@@ -258,7 +258,7 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::MultiPoint )
       {
-        QgsMultiPoint multiPoint = geometry.asMultiPoint();
+        QgsMultiPointXY multiPoint = geometry.asMultiPoint();
         Q_FOREACH ( const QgsPointXY &point, multiPoint )
         {
           writePoint( map, GV_POINT, point, cats );
@@ -266,31 +266,31 @@ int main( int argc, char **argv )
       }
       else if ( geometryType == QgsWkbTypes::LineString )
       {
-        QgsPolyline polyline = geometry.asPolyline();
+        QgsPolylineXY polyline = geometry.asPolyline();
         writePolyline( map, GV_LINE, polyline, cats );
       }
       else if ( geometryType == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline multiPolyline = geometry.asMultiPolyline();
-        Q_FOREACH ( const QgsPolyline &polyline, multiPolyline )
+        QgsMultiPolylineXY multiPolyline = geometry.asMultiPolyline();
+        Q_FOREACH ( const QgsPolylineXY &polyline, multiPolyline )
         {
           writePolyline( map, GV_LINE, polyline, cats );
         }
       }
       else if ( geometryType == QgsWkbTypes::Polygon )
       {
-        QgsPolygon polygon = geometry.asPolygon();
-        Q_FOREACH ( const QgsPolyline &polyline, polygon )
+        QgsPolygonXY polygon = geometry.asPolygon();
+        Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
         {
           writePolyline( map, GV_BOUNDARY, polyline, cats );
         }
       }
       else if ( geometryType == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon multiPolygon = geometry.asMultiPolygon();
-        Q_FOREACH ( const QgsPolygon &polygon, multiPolygon )
+        QgsMultiPolygonXY multiPolygon = geometry.asMultiPolygon();
+        Q_FOREACH ( const QgsPolygonXY &polygon, multiPolygon )
         {
-          Q_FOREACH ( const QgsPolyline &polyline, polygon )
+          Q_FOREACH ( const QgsPolylineXY &polyline, polygon )
           {
             writePolyline( map, GV_BOUNDARY, polyline, cats );
           }
@@ -393,7 +393,7 @@ int main( int argc, char **argv )
       }
       QgsPointXY point( x, y );
       QgsFeature feature( area );
-      feature.setGeometry( QgsGeometry::fromPoint( point ) );
+      feature.setGeometry( QgsGeometry::fromPointXY( point ) );
       feature.setValid( true );
       centroids.insert( area, feature );
       spatialIndex.insertFeature( feature );
@@ -444,14 +444,14 @@ int main( int argc, char **argv )
 
     int centroidsCount = centroids.size();
     count = 0;
-    Q_FOREACH ( const QgsFeature &centroid, centroids.values() )
+    for ( auto it = centroids.constBegin(); it != centroids.constEnd(); ++it )
     {
-      QgsPointXY point = centroid.geometry().asPoint();
+      QgsPointXY point = it.value().geometry().asPoint();
 
-      if ( centroid.attributes().size() > 0 )
+      if ( it.value().attributes().size() > 0 )
       {
         Vect_reset_cats( cats );
-        Q_FOREACH ( const QVariant &attribute, centroid.attributes() )
+        Q_FOREACH ( const QVariant &attribute, it.value().attributes() )
         {
           Vect_cat_set( cats, 1, attribute.toInt() );
         }

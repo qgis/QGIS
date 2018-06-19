@@ -30,7 +30,8 @@ email                : even.rouault at spatialys.com
 
 SIP_NO_FILE
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * SQL composer dialog
  *  \note not available in Python bindings
  */
@@ -46,7 +47,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! pair (name, type)
     typedef QPair<QString, QString> PairNameType;
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * Callback to do actions on table selection
      * \note not available in Python bindings
      */
@@ -58,7 +60,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
         virtual void tableSelected( const QString &name ) = 0;
     };
 
-    /** \ingroup gui
+    /**
+     * \ingroup gui
      * Callback to do validation check on dialog validation.
      * \note not available in Python bindings
      */
@@ -87,12 +90,12 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     {
       //! name
       QString name;
-      //! return type, or empty if unknown
+      //! Returns type, or empty if unknown
       QString returnType;
       //! minimum number of argument (or -1 if unknown)
-      int minArgs;
+      int minArgs = -1;
       //! maximum number of argument (or -1 if unknown)
-      int maxArgs;
+      int maxArgs = -1;
       //! list of arguments. May be empty despite minArgs > 0
       QList<Argument> argumentList;
 
@@ -101,17 +104,17 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() : minArgs( -1 ), maxArgs( -1 ) {}
+      Function() = default;
     };
 
     //! constructor
     explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    virtual ~QgsSQLComposerDialog();
+    ~QgsSQLComposerDialog() override;
 
     //! initialize the SQL statement
     void setSql( const QString &sql );
 
-    //! get the SQL statement
+    //! Gets the SQL statement
     QString sql() const;
 
     //! add a list of table names
@@ -135,15 +138,17 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     //! add a list of API for autocompletion
     void addApis( const QStringList &list );
 
-    //! set if multiple tables/joins are supported. Default is false
+    //! Sets if multiple tables/joins are supported. Default is false
     void setSupportMultipleTables( bool bMultipleTables, const QString &mainTypename = QString() );
 
-    /** Set a callback that will be called when a new table is selected, so
+    /**
+     * Set a callback that will be called when a new table is selected, so
         that new column names can be added typically.
         Ownership of the callback remains to the caller */
     void setTableSelectedCallback( TableSelectedCallback *tableSelectedCallback );
 
-    /** Set a callback that will be called when the OK button is pushed.
+    /**
+     * Set a callback that will be called when the OK button is pushed.
         Ownership of the callback remains to the caller */
     void setSQLValidatorCallback( SQLValidatorCallback *sqlValidatorCallback );
 
@@ -153,14 +158,14 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
   private slots:
     void accept() override;
 
-    void on_mTablesCombo_currentIndexChanged( int );
-    void on_mColumnsCombo_currentIndexChanged( int );
-    void on_mSpatialPredicatesCombo_currentIndexChanged( int );
-    void on_mFunctionsCombo_currentIndexChanged( int );
-    void on_mOperatorsCombo_currentIndexChanged( int );
-    void on_mAddJoinButton_clicked();
-    void on_mRemoveJoinButton_clicked();
-    void on_mTableJoins_itemSelectionChanged();
+    void mTablesCombo_currentIndexChanged( int );
+    void mColumnsCombo_currentIndexChanged( int );
+    void mSpatialPredicatesCombo_currentIndexChanged( int );
+    void mFunctionsCombo_currentIndexChanged( int );
+    void mOperatorsCombo_currentIndexChanged( int );
+    void mAddJoinButton_clicked();
+    void mRemoveJoinButton_clicked();
+    void mTableJoins_itemSelectionChanged();
     void showHelp();
     void reset();
     void buildSQLFromFields();
@@ -172,8 +177,8 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
     TableSelectedCallback *mTableSelectedCallback = nullptr;
     SQLValidatorCallback *mSQLValidatorCallback = nullptr;
     QObject *mFocusedObject = nullptr;
-    bool mAlreadyModifyingFields;
-    bool mDistinct;
+    bool mAlreadyModifyingFields = false;
+    bool mDistinct = false;
     QString mResetSql;
     QMap<QString, QString> mapTableEntryTextToName;
     QMap<QString, QString> mapColumnEntryTextToName;

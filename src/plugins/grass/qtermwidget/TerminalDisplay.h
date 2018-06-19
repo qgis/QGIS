@@ -82,7 +82,7 @@ class KONSOLEPRIVATE_EXPORT TerminalDisplay : public QWidget
 public:
     /** Constructs a new terminal display widget with the specified parent. */
     TerminalDisplay(QWidget *parent=0);
-    virtual ~TerminalDisplay();
+    ~TerminalDisplay() override;
 
     /** Returns the terminal color palette used by the display. */
     const ColorEntry* colorTable() const;
@@ -287,7 +287,7 @@ public:
     void setFixedSize(int cols, int lins);
 
     // reimplemented
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     /**
      * Sets which characters, in addition to letters and numbers,
@@ -574,30 +574,30 @@ signals:
     void usesMouseChanged();
 
 protected:
-    virtual bool event( QEvent * );
+    bool event( QEvent * ) override;
 
-    virtual void paintEvent( QPaintEvent * );
+    void paintEvent( QPaintEvent * ) override;
 
-    virtual void showEvent(QShowEvent*);
-    virtual void hideEvent(QHideEvent*);
-    virtual void resizeEvent(QResizeEvent*);
+    void showEvent(QShowEvent*) override;
+    void hideEvent(QHideEvent*) override;
+    void resizeEvent(QResizeEvent*) override;
 
     virtual void fontChange(const QFont &font);
-    virtual void focusInEvent(QFocusEvent* event);
-    virtual void focusOutEvent(QFocusEvent* event);
-    virtual void keyPressEvent(QKeyEvent* event);
-    virtual void mouseDoubleClickEvent(QMouseEvent* ev);
-    virtual void mousePressEvent( QMouseEvent* );
-    virtual void mouseReleaseEvent( QMouseEvent* );
-    virtual void mouseMoveEvent( QMouseEvent* );
+    void focusInEvent(QFocusEvent* event) override;
+    void focusOutEvent(QFocusEvent* event) override;
+    void keyPressEvent(QKeyEvent* event) override;
+    void mouseDoubleClickEvent(QMouseEvent* ev) override;
+    void mousePressEvent( QMouseEvent* ) override;
+    void mouseReleaseEvent( QMouseEvent* ) override;
+    void mouseMoveEvent( QMouseEvent* ) override;
     virtual void extendSelection( const QPoint& pos );
-    virtual void wheelEvent( QWheelEvent* );
+    void wheelEvent( QWheelEvent* ) override;
 
-    virtual bool focusNextPrevChild( bool next );
+    bool focusNextPrevChild( bool next ) override;
 
     // drag and drop
-    virtual void dragEnterEvent(QDragEnterEvent* event);
-    virtual void dropEvent(QDropEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
     void doDrag();
     enum DragState { diNone, diPending, diDragging };
 
@@ -620,8 +620,8 @@ protected:
     void mouseTripleClickEvent(QMouseEvent* ev);
 
     // reimplemented
-    virtual void inputMethodEvent ( QInputMethodEvent* event );
-    virtual QVariant inputMethodQuery( Qt::InputMethodQuery query ) const;
+    void inputMethodEvent ( QInputMethodEvent* event ) override;
+    QVariant inputMethodQuery( Qt::InputMethodQuery query ) const override;
 
 protected slots:
 
@@ -851,8 +851,8 @@ Q_OBJECT
 public:
     AutoScrollHandler(QWidget* parent);
 protected:
-    virtual void timerEvent(QTimerEvent* event);
-    virtual bool eventFilter(QObject* watched,QEvent* event);
+    void timerEvent(QTimerEvent* event) override;
+    bool eventFilter(QObject* watched,QEvent* event) override;
 private:
     QWidget* widget() const { return static_cast<QWidget*>(parent()); }
     int _timerId;

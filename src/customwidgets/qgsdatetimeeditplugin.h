@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsDateTimeEditPlugin : public QObject, public QDesig
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsDateTimeEditPlugin( QObject *parent = 0 );
+    explicit QgsDateTimeEditPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

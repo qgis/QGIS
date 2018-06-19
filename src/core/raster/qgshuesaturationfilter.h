@@ -24,7 +24,8 @@
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Color and saturation filter pipe for rasters.
   */
 class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
@@ -77,17 +78,17 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void processColorization( int &r, int &g, int &b, int &h, int &s, int &l );
 
     //! Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)
-    int mSaturation;
-    double mSaturationScale;
+    int mSaturation = 0;
+    double mSaturationScale = 1;
 
     //! Current grayscale mode
-    QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
+    QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode = QgsHueSaturationFilter::GrayscaleOff;
 
     //! Colorize settings
-    bool mColorizeOn;
+    bool mColorizeOn = false;
     QColor mColorizeColor;
-    int mColorizeH, mColorizeS;
-    int mColorizeStrength;
+    int mColorizeH = 0, mColorizeS = 50;
+    int mColorizeStrength = 100;
 
 };
 

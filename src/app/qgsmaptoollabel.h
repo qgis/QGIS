@@ -20,9 +20,14 @@
 
 #include "qgsmaptool.h"
 #include "qgspallabeling.h"
+#include "qgsnewauxiliarylayerdialog.h"
+#include "qgsauxiliarystorage.h"
 #include "qgis_app.h"
 
 class QgsRubberBand;
+
+typedef QMap<QgsPalLayerSettings::Property, int> QgsPalIndexes;
+typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
 
 //! Base class for map tools that modify label properties
 class APP_EXPORT QgsMapToolLabel: public QgsMapTool
@@ -31,37 +36,43 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas );
-    ~QgsMapToolLabel();
+    ~QgsMapToolLabel() override;
 
-    /** Returns true if label move can be applied to a layer
+    /**
+     * Returns true if label move can be applied to a layer
         \param xCol out: index of the attribute for data defined x coordinate
         \param yCol out: index of the attribute for data defined y coordinate
         \returns true if labels of layer can be moved*/
     bool labelMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
     bool labelMoveable( QgsVectorLayer *vlayer, const QgsPalLayerSettings &settings, int &xCol, int &yCol ) const;
 
-    /** Returns true if diagram move can be applied to a layer
+    /**
+     * Returns true if diagram move can be applied to a layer
         \param xCol out: index of the attribute for data defined x coordinate
         \param yCol out: index of the attribute for data defined y coordinate
         \returns true if labels of layer can be moved*/
     bool diagramMoveable( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
 
-    /** Returns true if layer has attribute fields set up
+    /**
+     * Returns true if layer has attribute fields set up
         \param xCol out: index of the attribute for data defined x coordinate
         \param yCol out: index of the attribute for data defined y coordinate
         \returns true if layer fields set up and exist*/
     bool layerCanPin( QgsVectorLayer *vlayer, int &xCol, int &yCol ) const;
 
-    /** Returns true if layer has attribute field set up for diagrams
+    /**
+     * Returns true if layer has attribute field set up for diagrams
       \param showCol out: attribute column for data defined diagram showing
       \since QGIS 2.16 */
     bool diagramCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
-    /** Returns true if layer has attribute field set up
+    /**
+     * Returns true if layer has attribute field set up
       \param showCol out: attribute column for data defined label showing*/
     bool labelCanShowHide( QgsVectorLayer *vlayer, int &showCol ) const;
 
-    /** Checks if labels in a layer can be rotated
+    /**
+     * Checks if labels in a layer can be rotated
       \param rotationCol out: attribute column for data defined label rotation*/
     bool layerIsRotatable( QgsVectorLayer *layer, int &rotationCol ) const;
     bool labelIsRotatable( QgsVectorLayer *layer, const QgsPalLayerSettings &settings, int &rotationCol ) const;
@@ -74,9 +85,9 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     struct LabelDetails
     {
-      LabelDetails(): valid( false ), layer( nullptr ) {}
+      LabelDetails() = default;
       explicit LabelDetails( const QgsLabelPosition &p );
-      bool valid;
+      bool valid = false;
       QgsLabelPosition pos;
       QgsVectorLayer *layer = nullptr;
       QgsPalLayerSettings settings;
@@ -86,13 +97,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     LabelDetails mCurrentLabel;
 
 
-    /** Returns label position for mouse click location
+    /**
+     * Returns label position for mouse click location
       \param e mouse event
       \param p out: label position
       \returns true in case of success, false if no label at this location*/
     bool labelAtPosition( QMouseEvent *e, QgsLabelPosition &p );
 
-    /** Finds out rotation point of current label position
+    /**
+     * Finds out rotation point of current label position
       \param ignoreUpsideDown treat label as right-side-up
       \returns true in case of success*/
     bool currentLabelRotationPoint( QgsPointXY &pos, bool ignoreUpsideDown = false, bool rotatingUnpinned = false );
@@ -103,13 +116,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     //! Removes label / feature / fixpoint rubber bands
     void deleteRubberBands();
 
-    /** Returns current label's text
+    /**
+     * Returns current label's text
       \param trunc number of chars to truncate to, with ... added */
     QString currentLabelText( int trunc = 0 );
 
     void currentAlignment( QString &hali, QString &vali );
 
-    /** Gets vector feature for current label pos
+    /**
+     * Gets vector feature for current label pos
       \returns true in case of success*/
     bool currentFeature( QgsFeature &f, bool fetchGeom = false );
 
@@ -119,14 +134,16 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     //! Returns a data defined attribute column name for particular property or empty string if not defined
     QString dataDefinedColumnName( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings ) const;
 
-    /** Returns a data defined attribute column index
+    /**
+     * Returns a data defined attribute column index
       \returns -1 if column does not exist or an expression is used instead */
     int dataDefinedColumnIndex( QgsPalLayerSettings::Property p, const QgsPalLayerSettings &labelSettings, const QgsVectorLayer *vlayer ) const;
 
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
     bool currentLabelPreserveRotation();
 
-    /** Get data defined position of current label
+    /**
+     * Gets data defined position of current label
       \param x out: data defined x-coordinate
       \param xSuccess out: false if attribute value is NULL
       \param y out: data defined y-coordinate
@@ -136,7 +153,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       \returns false if layer does not have data defined label position enabled*/
     bool currentLabelDataDefinedPosition( double &x, bool &xSuccess, double &y, bool &ySuccess, int &xCol, int &yCol ) const;
 
-    /** Returns data defined rotation of current label
+    /**
+     * Returns data defined rotation of current label
       \param rotation out: rotation value
       \param rotationSuccess out: false if rotation value is NULL
       \param rCol out: index of the rotation column
@@ -145,7 +163,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       */
     bool currentLabelDataDefinedRotation( double &rotation, bool &rotationSuccess, int &rCol, bool ignoreXY = false ) const;
 
-    /** Returns data defined show/hide of a feature.
+    /**
+     * Returns data defined show/hide of a feature.
       \param vlayer vector layer
       \param featureId feature identification integer
       \param show out: show/hide value
@@ -155,11 +174,20 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
       */
     bool dataDefinedShowHide( QgsVectorLayer *vlayer, QgsFeatureId featureId, int &show, bool &showSuccess, int &showCol ) const;
 
-    /** Returns the pin status for the current label/diagram
+    /**
+     * Returns the pin status for the current label/diagram
       \returns true if the label/diagram is pinned, false otherwise
       \since QGIS 2.16
       */
     bool isPinned();
+
+    bool createAuxiliaryFields( QgsPalIndexes &palIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsPalIndexes &palIndexes ) const;
+    bool createAuxiliaryFields( QgsDiagramIndexes &diagIndexes );
+    bool createAuxiliaryFields( LabelDetails &details, QgsDiagramIndexes &diagIndexes );
+
+    QList<QgsPalLayerSettings::Property> mPalProperties;
+    QList<QgsDiagramLayerSettings::Property> mDiagramProperties;
 };
 
 #endif // QGSMAPTOOLLABEL_H

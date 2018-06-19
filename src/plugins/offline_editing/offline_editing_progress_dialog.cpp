@@ -20,13 +20,8 @@
 
 QgsOfflineEditingProgressDialog::QgsOfflineEditingProgressDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
-  , mProgressUpdate( 0 )
 {
   setupUi( this );
-}
-
-QgsOfflineEditingProgressDialog::~QgsOfflineEditingProgressDialog()
-{
 }
 
 void QgsOfflineEditingProgressDialog::setTitle( const QString &title )

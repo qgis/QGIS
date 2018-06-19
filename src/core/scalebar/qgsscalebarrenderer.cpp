@@ -16,7 +16,8 @@
 
 #include "qgsscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgscomposerutils.h"
+#include "qgslayoututils.h"
+#include "qgstextrenderer.h"
 #include <QFontMetricsF>
 #include <QPainter>
 
@@ -31,11 +32,13 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   painter->save();
 
-  painter->setFont( settings.font() );
-  painter->setPen( QPen( settings.fontColor() ) );
+  QgsTextFormat format = settings.textFormat();
 
   QString firstLabel = firstLabelString( settings );
-  double xOffset = QgsComposerUtils::textWidthMM( settings.font(), firstLabel ) / 2;
+  QFontMetricsF fontMetrics = QgsTextRenderer::fontMetrics( context, format );
+  double xOffset = fontMetrics.width( firstLabel ) / 2.0;
+
+  double scaledBoxContentSpace = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
 
   double currentLabelNumber = 0.0;
 
@@ -64,8 +67,9 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
-      QgsComposerUtils::drawText( painter, QPointF( positions.at( i ) - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace() ),
-                                  currentNumericLabel, settings.font(), settings.fontColor() );
+      QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
+                                          fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignCenter,
+                                 QStringList() << currentNumericLabel, context, format );
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -78,9 +82,14 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   //also draw the last label
   if ( !positions.isEmpty() )
   {
+    // note: this label is NOT centered over the end of the bar - rather the numeric portion
+    // of it is, without considering the unit label suffix. That's drawn at the end after
+    // horizontally centering just the numeric portion.
     currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
-    QgsComposerUtils::drawText( painter, QPointF( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace() ),
-                                currentNumericLabel + ' ' + settings.unitLabel(), settings.font(), settings.fontColor() );
+    QgsTextRenderer::drawText( QPointF( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth, QgsUnitTypes::RenderMillimeters ) + xOffset
+                                        - fontMetrics.width( currentNumericLabel ) / 2.0,
+                                        fontMetrics.ascent() + scaledBoxContentSpace ), 0, QgsTextRenderer::AlignLeft,
+                               QStringList() << ( currentNumericLabel + ' ' + settings.unitLabel() ), context, format );
   }
 
   painter->restore();
@@ -89,20 +98,22 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 QSizeF QgsScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
+  QFont font = settings.textFormat().toQFont();
+
   //consider centered first label
-  double firstLabelLeft = QgsComposerUtils::textWidthMM( settings.font(), firstLabelString( settings ) ) / 2;
+  double firstLabelLeft = QgsLayoutUtils::textWidthMM( font, firstLabelString( settings ) ) / 2;
 
   //consider last number and label
 
   double largestLabelNumber = settings.numberOfSegments() * settings.unitsPerSegment() / settings.mapUnitsPerScaleBarUnit();
   QString largestNumberLabel = QString::number( largestLabelNumber );
   QString largestLabel = QString::number( largestLabelNumber ) + ' ' + settings.unitLabel();
-  double largestLabelWidth = QgsComposerUtils::textWidthMM( settings.font(), largestLabel ) - QgsComposerUtils::textWidthMM( settings.font(), largestNumberLabel ) / 2;
+  double largestLabelWidth = QgsLayoutUtils::textWidthMM( font, largestLabel ) - QgsLayoutUtils::textWidthMM( font, largestNumberLabel ) / 2;
 
   double totalBarLength = scaleContext.segmentWidth * ( settings.numberOfSegments() + ( settings.numberOfSegmentsLeft() > 0 ? 1 : 0 ) );
 
-  double width =  firstLabelLeft + totalBarLength + 2 * settings.pen().widthF() + largestLabelWidth + 2 * settings.boxContentSpace();
-  double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsComposerUtils::fontAscentMM( settings.font() );
+  double width = firstLabelLeft + totalBarLength + 2 * settings.pen().widthF() + largestLabelWidth + 2 * settings.boxContentSpace();
+  double height = settings.height() + settings.labelBarSpace() + 2 * settings.boxContentSpace() + QgsLayoutUtils::fontAscentMM( font );
 
   return QSizeF( width, height );
 }
@@ -122,7 +133,15 @@ QString QgsScaleBarRenderer::firstLabelString( const QgsScaleBarSettings &settin
 double QgsScaleBarRenderer::firstLabelXOffset( const QgsScaleBarSettings &settings ) const
 {
   QString firstLabel = firstLabelString( settings );
-  return QgsComposerUtils::textWidthMM( settings.font(), firstLabel ) / 2.0;
+  Q_NOWARN_DEPRECATED_PUSH
+  return QgsLayoutUtils::textWidthMM( settings.font(), firstLabel ) / 2.0;
+  Q_NOWARN_DEPRECATED_POP
+}
+
+double QgsScaleBarRenderer::firstLabelXOffset( const QgsScaleBarSettings &settings, const QgsRenderContext &context ) const
+{
+  QString firstLabel = firstLabelString( settings );
+  return QgsTextRenderer::textWidth( context, settings.textFormat(), QStringList() << firstLabel ) / 2.0;
 }
 
 QList<double> QgsScaleBarRenderer::segmentPositions( const ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const
@@ -133,6 +152,7 @@ QList<double> QgsScaleBarRenderer::segmentPositions( const ScaleBarContext &scal
 
   //left segments
   double leftSegmentSize = scaleContext.segmentWidth / settings.numberOfSegmentsLeft();
+  positions.reserve( settings.numberOfSegmentsLeft() + settings.numberOfSegments() );
   for ( int i = 0; i < settings.numberOfSegmentsLeft(); ++i )
   {
     positions << currentXCoord;
@@ -151,6 +171,7 @@ QList<double> QgsScaleBarRenderer::segmentPositions( const ScaleBarContext &scal
 QList<double> QgsScaleBarRenderer::segmentWidths( const ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const
 {
   QList<double> widths;
+  widths.reserve( settings.numberOfSegmentsLeft() + settings.numberOfSegments() );
 
   //left segments
   if ( settings.numberOfSegmentsLeft() > 0 )

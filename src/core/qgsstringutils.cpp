@@ -16,9 +16,9 @@
 #include "qgsstringutils.h"
 #include <QVector>
 #include <QRegExp>
-#include <QTextDocument> // for Qt::escape
 #include <QStringList>
 #include <QTextBoundaryFinder>
+#include <QRegularExpression>
 
 QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
 {
@@ -57,9 +57,69 @@ QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capit
       return temp;
     }
 
+    case TitleCase:
+    {
+      // yes, this is MASSIVELY simplifying the problem!!
+
+      static QStringList smallWords;
+      static QStringList newPhraseSeparators;
+      static QRegularExpression splitWords;
+      if ( smallWords.empty() )
+      {
+        smallWords = QObject::tr( "a|an|and|as|at|but|by|en|for|if|in|nor|of|on|or|per|s|the|to|vs.|vs|via" ).split( '|' );
+        newPhraseSeparators = QObject::tr( ".|:" ).split( '|' );
+        splitWords = QRegularExpression( QStringLiteral( "\\b" ), QRegularExpression::UseUnicodePropertiesOption );
+      }
+
+      const QStringList parts = string.split( splitWords, QString::SkipEmptyParts );
+      QString result;
+      bool firstWord = true;
+      int i = 0;
+      int lastWord = parts.count() - 1;
+      for ( const QString &word : qgis::as_const( parts ) )
+      {
+        if ( newPhraseSeparators.contains( word.trimmed() ) )
+        {
+          firstWord = true;
+          result += word;
+        }
+        else if ( firstWord || ( i == lastWord ) || !smallWords.contains( word ) )
+        {
+          result += word.at( 0 ).toUpper() + word.mid( 1 );
+          firstWord = false;
+        }
+        else
+        {
+          result += word;
+        }
+        i++;
+      }
+      return result;
+    }
   }
   // no warnings
   return string;
+}
+
+// original code from http://www.qtcentre.org/threads/52456-HTML-Unicode-ampersand-encoding
+QString QgsStringUtils::ampersandEncode( const QString &string )
+{
+  QString encoded;
+  for ( int i = 0; i < string.size(); ++i )
+  {
+    QChar ch = string.at( i );
+    if ( ch.unicode() > 160 )
+      encoded += QStringLiteral( "&#%1;" ).arg( static_cast< int >( ch.unicode() ) );
+    else if ( ch.unicode() == 38 )
+      encoded += QStringLiteral( "&amp;" );
+    else if ( ch.unicode() == 60 )
+      encoded += QStringLiteral( "&lt;" );
+    else if ( ch.unicode() == 62 )
+      encoded += QStringLiteral( "&gt;" );
+    else
+      encoded += ch;
+  }
+  return encoded;
 }
 
 int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive )
@@ -362,7 +422,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
     {
       protoUrl.prepend( "http://" );
     }
-    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( Qt::escape( protoUrl ), Qt::escape( url ) );
+    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
     converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
     offset = urlRegEx.pos( 1 ) + anchor.length();
   }
@@ -371,7 +431,7 @@ QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
   {
     found = true;
     QString email = emailRegEx.cap( 1 );
-    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( Qt::escape( email ), Qt::escape( email ) );
+    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped(), email.toHtmlEscaped() );
     converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
     offset = emailRegEx.pos( 1 ) + anchor.length();
   }

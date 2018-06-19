@@ -18,37 +18,45 @@
 #ifndef QGSINBUILTLOCATORFILTERS_H
 #define QGSINBUILTLOCATORFILTERS_H
 
+#include "qgisapp.h"
 #include "qgslocatorfilter.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeatureiterator.h"
+
 class QAction;
 
-class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
 
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "layertree" ); }
-    virtual QString displayName() const override { return tr( "Project Layers" ); }
-    virtual Priority priority() const override { return Highest; }
+    QgsLayerTreeLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "layertree" ); }
+    QString displayName() const override { return tr( "Project Layers" ); }
+    Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "l" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
 };
 
-class QgsLayoutLocatorFilter : public QgsLocatorFilter
+class APP_EXPORT QgsLayoutLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
 
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "layouts" ); }
-    virtual QString displayName() const override { return tr( "Project Layouts" ); }
-    virtual Priority priority() const override { return Highest; }
+    QgsLayoutLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "layouts" ); }
+    QString displayName() const override { return tr( "Project Layouts" ); }
+    Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "pl" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
@@ -62,10 +70,12 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "actions" ); }
-    virtual QString displayName() const override { return tr( "Actions" ); }
-    virtual Priority priority() const override { return Lowest; }
+    QgsActionLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "actions" ); }
+    QString displayName() const override { return tr( "Actions" ); }
+    Priority priority() const override { return Lowest; }
     QString prefix() const override { return QStringLiteral( "." ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
@@ -84,15 +94,83 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "features" ); }
-    virtual QString displayName() const override { return tr( "Active Layer Features" ); }
-    virtual Priority priority() const override { return Medium; }
+    QgsActiveLayerFeaturesLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "features" ); }
+    QString displayName() const override { return tr( "Active Layer Features" ); }
+    Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
+
+    void prepare( const QString &string, const QgsLocatorContext &context ) override;
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+
+    QgsExpression mDispExpression;
+    QgsExpressionContext mContext;
+    QgsFeatureIterator mIterator;
+    QString mLayerId;
+    QIcon mLayerIcon;
+};
+
+class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
+    QgsExpressionCalculatorLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "calculator" ); }
+    QString displayName() const override { return tr( "Calculator" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "=" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 };
 
+
+class QgsBookmarkLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBookmarkLocatorFilter( QObject *parent = nullptr );
+    QgsBookmarkLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "bookmarks" ); }
+    QString displayName() const override { return tr( "Spatial Bookmarks" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "b" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+};
+
+class QgsSettingsLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSettingsLocatorFilter( QObject *parent = nullptr );
+    QgsSettingsLocatorFilter *clone() const override;
+    QString name() const override { return QStringLiteral( "optionpages" ); }
+    QString displayName() const override { return tr( "Settings" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "set" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+
+    QMap<QString, QString> settingsPage( const QString &type,  const QString &page );
+};
 
 #endif // QGSINBUILTLOCATORFILTERS_H
 

@@ -34,7 +34,8 @@
 #include "qgsrasterprojector.h"
 #include <qgsapplication.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterFileWriter class.
  */
 class TestQgsRasterFileWriter: public QObject
@@ -49,6 +50,7 @@ class TestQgsRasterFileWriter: public QObject
     void writeTest();
     void testCreateOneBandRaster();
     void testCreateMultiBandRaster();
+    void testVrtCreation();
   private:
     bool writeTest( const QString &rasterName );
     void log( const QString &msg );
@@ -114,7 +116,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
-  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
 
@@ -192,7 +194,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   int width = 200, height = 100;
 
   QgsRasterFileWriter writer( filename );
-  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QgsRasterDataProvider *dp = writer.createOneBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -202,7 +204,7 @@ void TestQgsRasterFileWriter::testCreateOneBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -224,7 +226,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   int width = 200, height = 100, nBands = 1;
 
   QgsRasterFileWriter writer( filename );
-  QgsRasterDataProvider *dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ), nBands );
+  QgsRasterDataProvider *dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -234,7 +236,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  QgsRasterLayer *rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -244,7 +246,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   delete rlayer;
 
   nBands = 3;
-  dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( "EPSG:4326" ), nBands );
+  dp = writer.createMultiBandRaster( Qgis::Byte, width, height, extent, QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), nBands );
   QVERIFY( dp );
   QCOMPARE( dp->xSize(), width );
   QCOMPARE( dp->ySize(), height );
@@ -257,7 +259,7 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
   QVERIFY( dp->isEditable() );
   delete dp;
 
-  rlayer = new QgsRasterLayer( filename, "tmp", "gdal" );
+  rlayer = new QgsRasterLayer( filename, QStringLiteral( "tmp" ), QStringLiteral( "gdal" ) );
   QVERIFY( rlayer->isValid() );
   QCOMPARE( rlayer->width(), width );
   QCOMPARE( rlayer->height(), height );
@@ -268,6 +270,52 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
     QCOMPARE( rlayer->dataProvider()->dataType( i ), Qgis::Byte );
   }
   delete rlayer;
+}
+
+void TestQgsRasterFileWriter::testVrtCreation()
+{
+  //create a raster layer that will be used in all tests...
+  QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
+  QFileInfo rasterFileInfo( srcFileName );
+  std::unique_ptr< QgsRasterLayer > srcRasterLayer = qgis::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
+
+  QTemporaryDir dir;
+  std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = qgis::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
+
+  //2. Definition of the pyramid levels
+  QList<int> levelList;
+  levelList << 2 << 4 << 8 << 16 << 32 << 64 << 128;
+  rasterFileWriter->setPyramidsList( levelList );
+  //3. Pyramid format
+  rasterFileWriter->setPyramidsFormat( QgsRaster::PyramidsGTiff );
+  //4. Resampling method
+  rasterFileWriter->setPyramidsResampling( QStringLiteral( "NEAREST" ) );
+  //5. Tiled mode => true for vrt creation
+  rasterFileWriter->setTiledMode( true );
+  //6. Tile size
+  rasterFileWriter->setMaxTileWidth( 500 );
+  rasterFileWriter->setMaxTileHeight( 500 );
+  //7. Coordinate Reference System
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( "EPSG:3946" );
+  //8. Prepare raster pipe
+  QgsRasterPipe pipe;
+  pipe.set( srcRasterLayer->dataProvider()->clone() );
+  // Let's do it !
+  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs );
+  QCOMPARE( res, QgsRasterFileWriter::NoError );
+
+  // Now let's compare the georef of the original raster with the georef of the generated vrt file
+  std::unique_ptr< QgsRasterLayer > vrtRasterLayer = qgis::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
+
+  double xminVrt = vrtRasterLayer->extent().xMinimum();
+  double yminVrt = vrtRasterLayer->extent().yMaximum();
+  double xminOriginal = srcRasterLayer->extent().xMinimum();
+  double yminOriginal = srcRasterLayer->extent().yMaximum();
+
+  // Let's check if the georef of the original raster with the georef of the generated vrt file
+  QGSCOMPARENEAR( xminVrt, xminOriginal, srcRasterLayer->rasterUnitsPerPixelX() / 4 );
+  QGSCOMPARENEAR( yminVrt, yminOriginal, srcRasterLayer->rasterUnitsPerPixelY() / 4 );
 }
 
 void TestQgsRasterFileWriter::log( const QString &msg )

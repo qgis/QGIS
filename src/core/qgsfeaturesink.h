@@ -56,20 +56,20 @@ class CORE_EXPORT QgsFeatureSink
      * \see addFeatures()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr );
 
     /**
      * Adds a list of \a features to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \see addFeature()
      * \returns true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) = 0;
 
     /**
      * Adds all features from the specified \a iterator to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \returns true if all features were added successfully, or false if any feature could not be added
      */
-    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 );
+    virtual bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr );
 
     /**
      * Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
@@ -102,9 +102,9 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
      * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
      */
     QgsProxyFeatureSink( QgsFeatureSink *sink );
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeature( feature, flags ); }
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeatures( features, flags ); }
-    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = 0 ) override { return mSink->addFeatures( iterator, flags ); }
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override { return mSink->addFeature( feature, flags ); }
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override { return mSink->addFeatures( features, flags ); }
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = nullptr ) override { return mSink->addFeatures( iterator, flags ); }
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
 
   private:
 
-    QgsFeatureSink *mSink;
+    QgsFeatureSink *mSink = nullptr;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSink * )

@@ -22,10 +22,7 @@
 #include <QDomElement>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
-  : mLimits( None )
-  , mExtent( WholeRaster )
-  , mAccuracy( Estimated )
-  , mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
+  : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
   , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {

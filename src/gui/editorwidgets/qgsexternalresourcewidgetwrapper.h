@@ -28,7 +28,8 @@ SIP_NO_FILE
 
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void setEnabled( bool enabled ) override;
 
   private:
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
     QLineEdit *mLineEdit = nullptr;
     QLabel *mLabel = nullptr;

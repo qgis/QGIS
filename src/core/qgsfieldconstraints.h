@@ -75,7 +75,7 @@ class CORE_EXPORT QgsFieldConstraints
 
     /**
      * Returns any constraints which are present for the field.
-     * \see setConstraints()
+     * \see setConstraint()
      * \see constraintOrigin()
      */
     Constraints constraints() const { return mConstraints; }
@@ -147,7 +147,7 @@ class CORE_EXPORT QgsFieldConstraints
   private:
 
     //! Constraints
-    Constraints mConstraints;
+    Constraints mConstraints = nullptr;
 
     //! Origin of field constraints
     QHash< Constraint, ConstraintOrigin > mConstraintOrigins;

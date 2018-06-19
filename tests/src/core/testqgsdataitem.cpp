@@ -25,7 +25,8 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
 class TestQgsDataItem : public QObject
@@ -50,11 +51,7 @@ class TestQgsDataItem : public QObject
     bool isValidDirItem( QgsDirectoryItem *item );
 };
 
-TestQgsDataItem::TestQgsDataItem()
-  : mDirItem( nullptr )
-{
-
-}
+TestQgsDataItem::TestQgsDataItem() = default;
 
 void TestQgsDataItem::initTestCase()
 {
@@ -75,7 +72,7 @@ void TestQgsDataItem::initTestCase()
   mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
-  mDirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
+  mDirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
 }
 
 void TestQgsDataItem::cleanupTestCase()
@@ -111,7 +108,7 @@ void TestQgsDataItem::testDirItemChildren()
   Q_FOREACH ( const QString &tmpSetting, tmpSettings )
   {
     settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
-    QgsDirectoryItem *dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( nullptr, QStringLiteral( "Test" ), TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
     QVector<QgsDataItem *> children = dirItem->createChildren();

@@ -23,7 +23,8 @@
 
 class QgsGraph;
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  *  This class performs graph analysis, e.g. calculates shortest path between two
  * points using different strategies with Dijkstra algorithm
  */
@@ -37,7 +38,8 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * \param source source graph
      * \param startVertexIdx index of the start vertex
      * \param criterionNum index of the optimization strategy
-     * \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
+     * \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1.
+     * Note that the startVertexIdx will also have a value of -1 and may need special handling by callers.
      * \param resultCost array of the paths costs
      */
     static void SIP_PYALTERNATIVETYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );

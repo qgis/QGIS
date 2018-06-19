@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -28,7 +27,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import (QgsProcessingParameterNumber)
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -38,10 +38,13 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
     VERTICES = 'VERTICES'
 
     def tags(self):
-        return self.tr('add,vertices,points').split(',')
+        return self.tr('add,vertex,vertices,points,nodes').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -56,17 +59,20 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         return 'densifygeometries'
 
     def displayName(self):
-        return self.tr('Densify geometries')
+        return self.tr('Densify by count')
 
     def outputName(self):
         return self.tr('Densified')
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByCount(self.vertices)
             feature.setGeometry(new_geometry)
-        return feature
+        return [feature]

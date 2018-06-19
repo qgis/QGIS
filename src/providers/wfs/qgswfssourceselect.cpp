@@ -48,10 +48,11 @@ enum
 
 QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mCapabilities( nullptr )
-  , mSQLComposerDialog( nullptr )
 {
   setupUi( this );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsWFSSourceSelect::cmbConnections_activated );
+  connect( btnSave, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsWFSSourceSelect::btnLoad_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsWFSSourceSelect::showHelp );
 
@@ -289,7 +290,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
 
 void QgsWFSSourceSelect::addEntryToServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Create a New WFS Connection" ) );
 
@@ -302,7 +303,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
 
 void QgsWFSSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, QgsNewHttpConnection::ConnectionWfs, QgsWFSConstants::CONNECTIONS_WFS, cmbConnections->currentText() );
   nc->setAttribute( Qt::WA_DeleteOnClose );
   nc->setWindowTitle( tr( "Modify WFS Connection" ) );
 
@@ -317,8 +318,8 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result == QMessageBox::Yes )
   {
     QgsWfsConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
@@ -424,7 +425,9 @@ bool QgsWFSValidatorCallback::isValid( const QString &sqlStr, QString &errorReas
 
   QgsWFSDataSourceURI uri( mURI );
   uri.setSql( sqlStr );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions options;
+  QgsWFSProvider p( uri.uri(), options, mCaps );
   if ( !p.isValid() )
   {
     errorReason = p.processSQLErrorMsg();
@@ -453,7 +456,9 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
     return;
   QgsWFSDataSourceURI uri( mURI );
   uri.setTypeName( prefixedTypename );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWFSProvider p( uri.uri(), providerOptions, mCaps );
   if ( !p.isValid() )
   {
     return;
@@ -489,7 +494,9 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
   QgsWfsConnection connection( cmbConnections->currentText() );
   QgsWFSDataSourceURI uri( connection.uri().uri() );
   uri.setTypeName( typeName );
-  QgsWFSProvider p( uri.uri(), mCaps );
+
+  QgsDataProvider::ProviderOptions providerOptions;
+  QgsWFSProvider p( uri.uri(), providerOptions, mCaps );
   if ( !p.isValid() )
   {
     QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Server exception" ), tr( "DescribeFeatureType failed" ), QMessageBox::Ok, this );
@@ -687,7 +694,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
   }
 }
 
-void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
+void QgsWFSSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
   QgsWfsConnection::setSelectedConnection( cmbConnections->currentText() );
@@ -699,15 +706,15 @@ void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
   connect( mCapabilities, &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
 }
 
-void QgsWFSSourceSelect::on_btnSave_clicked()
+void QgsWFSSourceSelect::btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::WFS );
   dlg.exec();
 }
 
-void QgsWFSSourceSelect::on_btnLoad_clicked()
+void QgsWFSSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {

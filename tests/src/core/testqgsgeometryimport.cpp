@@ -17,11 +17,11 @@
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgswkbptr.h"
+#include "qgsgeos.h"
 #include <QPolygonF>
 
 
 #include "qgstest.h"
-#include "qgstestutils.h"
 
 #include <QObject>
 
@@ -55,12 +55,14 @@ class TestQgsGeometryImport: public QObject
     void delimiters();
 
   private:
-    bool compareLineStrings( const QgsPolyline &polyline, QVariantList &line );
+    bool compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line );
+
+    GEOSContextHandle_t geos = nullptr;
 };
 
 void TestQgsGeometryImport::initTestCase()
 {
-  initGEOS( 0, 0 );
+  geos = initGEOS_r( nullptr, nullptr );
 }
 
 void TestQgsGeometryImport::pointWkt_data()
@@ -83,8 +85,8 @@ void TestQgsGeometryImport::pointWkt()
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
   QgsPointXY point = geom.asPoint();
 
-  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::pointWkb_data()
@@ -111,8 +113,8 @@ void TestQgsGeometryImport::pointWkb()
   QgsPointXY point = geom.asPoint();
 
   QCOMPARE( geom.wkbType(), QgsWkbTypes::Point );
-  QGSCOMPARENEAR( point.x(), x, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( point.y(), y, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( point.x(), x, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( point.y(), y, 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::pointGeos_data()
@@ -128,19 +130,18 @@ void TestQgsGeometryImport::pointGeos()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( 1, 2 );
-  GEOSCoordSeq_setX( coord, 0, x );
-  GEOSCoordSeq_setY( coord, 0, y );
-  GEOSGeometry *geosPt = GEOSGeom_createPoint( coord );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geos, 1, 2 );
+  GEOSCoordSeq_setX_r( geos, coord, 0, x );
+  GEOSCoordSeq_setY_r( geos, coord, 0, y );
+  GEOSGeometry *geosPt = GEOSGeom_createPoint_r( geos, coord );
 
-  QgsGeometry geom;
-  geom.fromGeos( geosPt );
+  QgsGeometry geom = QgsGeos::geometryFromGeos( geosPt );
   QVERIFY( geom.wkbType() == QgsWkbTypes::Point );
 
   QgsPointXY geomPt = geom.asPoint();
 
-  QGSCOMPARENEAR( x, geomPt.x(), 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( y, geomPt.y(), 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( x, geomPt.x(), 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( y, geomPt.y(), 4 * std::numeric_limits<double>::epsilon() );
 }
 
 void TestQgsGeometryImport::linestringWkt_data()
@@ -162,7 +163,7 @@ void TestQgsGeometryImport::linestringWkt()
   QgsGeometry geom = QgsGeometry::fromWkt( wktString );
   QCOMPARE( geom.wkbType(), QgsWkbTypes::LineString );
 
-  QgsPolyline polyLine = geom.asPolyline();
+  QgsPolylineXY polyLine = geom.asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
 }
 
@@ -194,7 +195,7 @@ void TestQgsGeometryImport::linestringWkb()
   geom.fromWkb( geomPtr, wkbSize );
 
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
-  QgsPolyline polyline = geom.asPolyline();
+  QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
@@ -211,24 +212,23 @@ void TestQgsGeometryImport::linestringGeos()
   QFETCH( QVariantList, line );
 
   //create geos coord sequence first
-  GEOSCoordSequence *coord = GEOSCoordSeq_create( line.count(), 2 );
+  GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geos, line.count(), 2 );
   for ( int i = 0; i < line.count(); i++ )
   {
     QPointF pt = line.at( i ).toPointF();
-    GEOSCoordSeq_setX( coord, i, pt.x() );
-    GEOSCoordSeq_setY( coord, i, pt.y() );
+    GEOSCoordSeq_setX_r( geos, coord, i, pt.x() );
+    GEOSCoordSeq_setY_r( geos, coord, i, pt.y() );
   }
-  GEOSGeometry *geosLine = GEOSGeom_createLineString( coord );
-  QgsGeometry geom;
-  geom.fromGeos( geosLine );
+  GEOSGeometry *geosLine = GEOSGeom_createLineString_r( geos, coord );
+  QgsGeometry geom = QgsGeos::geometryFromGeos( geosLine );
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
 
-  QgsPolyline polyline = geom.asPolyline();
+  QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
 
-bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline &polyline, QVariantList &line )
+bool TestQgsGeometryImport::compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line )
 {
   bool sizeEqual = ( polyline.size() == line.size() );
   if ( !sizeEqual )
@@ -253,18 +253,18 @@ void TestQgsGeometryImport::delimiters_data()
 {
   QTest::addColumn<QString>( "input" );
   QTest::addColumn<QString>( "expected" );
-  QTest::newRow( "tab delimiter" ) <<  QString( "POINT (180398\t5459331)" ) << QString( "Point (180398 5459331)" );
-  QTest::newRow( "newline" ) <<  QString( "POINT\n(1\n3)" ) << QString( "Point (1 3)" );
-  QTest::newRow( "tab and newline" ) <<  QString( "POINT\t\n(1\t\n3)" ) << QString( "Point (1 3)" );
-  QTest::newRow( "tab, newline and space" ) <<  QString( "POINT\n (1\t\n 3)" ) << QString( "Point (1 3)" );
+  QTest::newRow( "tab delimiter" ) <<  QStringLiteral( "POINT (180398\t5459331)" ) << QStringLiteral( "Point (180398 5459331)" );
+  QTest::newRow( "newline" ) <<  QStringLiteral( "POINT\n(1\n3)" ) << QStringLiteral( "Point (1 3)" );
+  QTest::newRow( "tab and newline" ) <<  QStringLiteral( "POINT\t\n(1\t\n3)" ) << QStringLiteral( "Point (1 3)" );
+  QTest::newRow( "tab, newline and space" ) <<  QStringLiteral( "POINT\n (1\t\n 3)" ) << QStringLiteral( "Point (1 3)" );
 
-  QTest::newRow( "tab delimiter" ) <<  QString( "LINESTRING\t(30\t10,\t10\t30,\t40\t40)" ) << QString( "LineString (30 10, 10 30, 40 40)" );
-  QTest::newRow( "newline delimiter" ) <<  QString( "LINESTRING\n(30\n10,\n10\n30,\n40\n40)" ) << QString( "LineString (30 10, 10 30, 40 40)" );
-  QTest::newRow( "mixed delimiter" ) <<  QString( "LINESTRING\n(30\t10, 10\t30,\n40\t40)" ) << QString( "LineString (30 10, 10 30, 40 40)" );
+  QTest::newRow( "tab delimiter" ) <<  QStringLiteral( "LINESTRING\t(30\t10,\t10\t30,\t40\t40)" ) << QStringLiteral( "LineString (30 10, 10 30, 40 40)" );
+  QTest::newRow( "newline delimiter" ) <<  QStringLiteral( "LINESTRING\n(30\n10,\n10\n30,\n40\n40)" ) << QStringLiteral( "LineString (30 10, 10 30, 40 40)" );
+  QTest::newRow( "mixed delimiter" ) <<  QStringLiteral( "LINESTRING\n(30\t10, 10\t30,\n40\t40)" ) << QStringLiteral( "LineString (30 10, 10 30, 40 40)" );
 
-  QTest::newRow( "tab delimiter" ) <<  QString( "Polygon\t(\t(30\t10,\t10\t30,\t40\t40,30\t10)\t)" ) << QString( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
-  QTest::newRow( "newline delimiter" ) <<  QString( "\nPolygon\n(\n(30\n10,\n10\n30,\n40\n40,30\n10)\n)\n" ) << QString( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
-  QTest::newRow( "mixed delimiter" ) <<  QString( " Polygon (\t(30\n10,\t10\n30,\t40 40,30\n10)\t)\n" ) << QString( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
+  QTest::newRow( "tab delimiter" ) <<  QStringLiteral( "Polygon\t(\t(30\t10,\t10\t30,\t40\t40,30\t10)\t)" ) << QStringLiteral( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
+  QTest::newRow( "newline delimiter" ) <<  QStringLiteral( "\nPolygon\n(\n(30\n10,\n10\n30,\n40\n40,30\n10)\n)\n" ) << QStringLiteral( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
+  QTest::newRow( "mixed delimiter" ) <<  QStringLiteral( " Polygon (\t(30\n10,\t10\n30,\t40 40,30\n10)\t)\n" ) << QStringLiteral( "Polygon ((30 10, 10 30, 40 40, 30 10))" );
 }
 
 void TestQgsGeometryImport::delimiters()
@@ -273,7 +273,7 @@ void TestQgsGeometryImport::delimiters()
   QFETCH( QString, expected );
 
   QgsGeometry gInput = QgsGeometry::fromWkt( input );
-  QCOMPARE( gInput.exportToWkt(), expected );
+  QCOMPARE( gInput.asWkt(), expected );
 }
 
 QGSTEST_MAIN( TestQgsGeometryImport )

@@ -24,7 +24,8 @@ class QgsRectangle;
 #include "qgis.h"
 #include "qgsunittypes.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Assorted helper methods for reading and writing chunks of XML
  */
 class CORE_EXPORT QgsXmlUtils
@@ -33,7 +34,8 @@ class CORE_EXPORT QgsXmlUtils
 
     /* reading */
 
-    /** Decodes a distance unit from a DOM element.
+    /**
+     * Decodes a distance unit from a DOM element.
      * \param element DOM element to decode
      * \returns distance units
      * \see writeMapUnits()
@@ -44,7 +46,8 @@ class CORE_EXPORT QgsXmlUtils
 
     /* writing */
 
-    /** Encodes a distance unit to a DOM element.
+    /**
+     * Encodes a distance unit to a DOM element.
      * \param units units to encode
      * \param doc DOM document
      * \returns element containing encoded units

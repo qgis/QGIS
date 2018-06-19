@@ -26,15 +26,14 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsvectorlayer.h"
 #include <limits>
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, QgsCurve *r )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry *geom, std::unique_ptr<QgsCurve> ring )
 {
-  std::unique_ptr<QgsCurve> ring( r );
   if ( !ring )
   {
-    return QgsGeometry::InvalidInput;
+    return QgsGeometry::InvalidInputGeometryType;
   }
 
-  QList< QgsCurvePolygon * > polygonList;
+  QVector< QgsCurvePolygon * > polygonList;
   QgsCurvePolygon *curvePoly = qgsgeometry_cast< QgsCurvePolygon * >( geom );
   QgsGeometryCollection *multiGeom = qgsgeometry_cast< QgsGeometryCollection * >( geom );
   if ( curvePoly )
@@ -51,24 +50,24 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
   }
   else
   {
-    return QgsGeometry::InvalidInput; //not polygon / multipolygon;
+    return QgsGeometry::OperationResult::InvalidInputGeometryType; //not polygon / multipolygon;
   }
 
   //ring must be closed
   if ( !ring->isClosed() )
   {
-    return QgsGeometry::AddRingNotClosed;
+    return QgsGeometry::OperationResult::AddRingNotClosed;
   }
   else if ( !ring->isRing() )
   {
-    return QgsGeometry::AddRingNotValid;
+    return QgsGeometry::OperationResult::AddRingNotValid;
   }
 
   std::unique_ptr<QgsGeometryEngine> ringGeom( QgsGeometry::createGeometryEngine( ring.get() ) );
   ringGeom->prepareGeometry();
 
   //for each polygon, test if inside outer ring and no intersection with other interior ring
-  QList< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
+  QVector< QgsCurvePolygon * >::const_iterator polyIter = polygonList.constBegin();
   for ( ; polyIter != polygonList.constEnd(); ++polyIter )
   {
     if ( ringGeom->within( *polyIter ) )
@@ -79,7 +78,7 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
       {
         if ( !ringGeom->disjoint( ( *polyIter )->interiorRing( i ) ) )
         {
-          return QgsGeometry::AddRingCrossesExistingRings;
+          return QgsGeometry::OperationResult::AddRingCrossesExistingRings;
         }
       }
 
@@ -90,30 +89,29 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addRing( QgsAbstractGeometry 
         ring->addMValue( 0 );
 
       ( *polyIter )->addInteriorRing( ring.release() );
-      return QgsGeometry::Success; //success
+      return QgsGeometry::OperationResult::Success; //success
     }
   }
-  return QgsGeometry::AddRingNotInExistingFeature; //not contained in any outer ring
+  return QgsGeometry::OperationResult::AddRingNotInExistingFeature; //not contained in any outer ring
 }
 
-QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, QgsAbstractGeometry *p )
+QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry *geom, std::unique_ptr<QgsAbstractGeometry> part )
 {
-  std::unique_ptr<QgsAbstractGeometry> part( p );
   if ( !geom )
   {
-    return QgsGeometry::InvalidBaseGeometry;
+    return QgsGeometry::OperationResult::InvalidBaseGeometry;
   }
 
   if ( !part )
   {
-    return QgsGeometry::InvalidInput;
+    return QgsGeometry::OperationResult::InvalidInputGeometryType;
   }
 
   //multitype?
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( geom );
   if ( !geomCollection )
   {
-    return QgsGeometry::AddPartNotMultiGeometry;
+    return QgsGeometry::OperationResult::AddPartNotMultiGeometry;
   }
 
   bool added = false;
@@ -127,11 +125,11 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       std::unique_ptr<QgsCurvePolygon> poly;
       if ( QgsWkbTypes::flatType( curve->wkbType() ) == QgsWkbTypes::LineString )
       {
-        poly.reset( new QgsPolygonV2() );
+        poly = qgis::make_unique< QgsPolygon >();
       }
       else
       {
-        poly.reset( new QgsCurvePolygon() );
+        poly = qgis::make_unique< QgsCurvePolygon >();
       }
       // Ownership is still with part, curve points to the same object and is transferred
       // to poly here.
@@ -139,11 +137,13 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       poly->setExteriorRing( curve );
       added = geomCollection->addGeometry( poly.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::Polygon
+              || QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::CurvePolygon )
     {
       added = geomCollection->addGeometry( part.release() );
     }
-    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon )
+    else if ( QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiPolygon
+              ||  QgsWkbTypes::flatType( part->wkbType() ) == QgsWkbTypes::MultiSurface )
     {
       std::unique_ptr<QgsGeometryCollection> parts( static_cast<QgsGeometryCollection *>( part.release() ) );
 
@@ -157,19 +157,19 @@ QgsGeometry::OperationResult QgsGeometryEditUtils::addPart( QgsAbstractGeometry 
       {
         while ( geomCollection->numGeometries() > n )
           geomCollection->removeGeometry( n );
-        return QgsGeometry::InvalidInput;
+        return QgsGeometry::OperationResult::InvalidInputGeometryType;
       }
     }
     else
     {
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     }
   }
   else
   {
     added = geomCollection->addGeometry( part.release() );
   }
-  return added ? QgsGeometry::Success : QgsGeometry::InvalidInput;
+  return added ? QgsGeometry::Success : QgsGeometry::OperationResult::InvalidInputGeometryType;
 }
 
 bool QgsGeometryEditUtils::deleteRing( QgsAbstractGeometry *geom, int ringNum, int partNum )
@@ -223,7 +223,7 @@ bool QgsGeometryEditUtils::deletePart( QgsAbstractGeometry *geom, int partNum )
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( const QgsAbstractGeometry &geom,
     const QList<QgsVectorLayer *> &avoidIntersectionsLayers,
-    QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures )
+    const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures )
 {
   std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( &geom ) );
   if ( !geomEngine )
@@ -242,10 +242,10 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
   if ( avoidIntersectionsLayers.isEmpty() )
     return nullptr; //no intersections stored in project does not mean error
 
-  QList< QgsAbstractGeometry * > nearGeometries;
+  QVector< QgsGeometry > nearGeometries;
 
   //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  Q_FOREACH ( QgsVectorLayer *currentLayer, avoidIntersectionsLayers )
+  for ( QgsVectorLayer *currentLayer : avoidIntersectionsLayers )
   {
     QgsFeatureIds ignoreIds;
     QHash<QgsVectorLayer *, QSet<qint64> >::const_iterator ignoreIt = ignoreFeatures.constFind( currentLayer );
@@ -264,7 +264,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
       if ( !f.hasGeometry() )
         continue;
 
-      nearGeometries << f.geometry().geometry()->clone();
+      nearGeometries << f.geometry();
     }
   }
 
@@ -273,16 +273,13 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryEditUtils::avoidIntersections( c
     return nullptr;
   }
 
-
-  QgsAbstractGeometry *combinedGeometries = geomEngine->combine( nearGeometries );
-  qDeleteAll( nearGeometries );
+  std::unique_ptr< QgsAbstractGeometry > combinedGeometries( geomEngine->combine( nearGeometries ) );
   if ( !combinedGeometries )
   {
     return nullptr;
   }
 
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geomEngine->difference( combinedGeometries.get() ) );
 
-  delete combinedGeometries;
   return diffGeom;
 }

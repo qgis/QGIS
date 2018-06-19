@@ -20,11 +20,12 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgsgeometry.h"
 
-#include <QList>
+#include <QVector>
 
 class QgsAbstractGeometry;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryEngine
  * \brief Contains geometry relation and modification algorithms.
  * \since QGIS 2.10
@@ -52,7 +53,21 @@ class CORE_EXPORT QgsGeometryEngine
 
     virtual ~QgsGeometryEngine() = default;
 
+    /**
+     * Should be called whenever the geometry associated with the engine
+     * has been modified and the engine must be updated to suit.
+     */
     virtual void geometryChanged() = 0;
+
+    /**
+     * Prepares the geometry, so that subsequent calls to spatial relation methods
+     * are much faster.
+     *
+     * This should be called for any geometry which is used for multiple relation
+     * tests against other geometries.
+     *
+     * \see geometryChanged()
+     */
     virtual void prepareGeometry() = 0;
 
     /**
@@ -81,7 +96,14 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QList< QgsAbstractGeometry * > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the combination of this and \a geometries.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
@@ -172,7 +194,8 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
-    /** Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
+    /**
+     * Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
      * relationship between the geometries.
      * \param geom geometry to relate to
      * \param errorMsg destination storage for any error message
@@ -181,7 +204,8 @@ class CORE_EXPORT QgsGeometryEngine
      */
     virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
 
-    /** Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
+    /**
+     * Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
      * pattern.
      * \param geom geometry to relate to
      * \param pattern DE-9IM pattern for match
@@ -204,13 +228,23 @@ class CORE_EXPORT QgsGeometryEngine
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const = 0;
     virtual bool isEmpty( QString *errorMsg ) const = 0;
 
-    /** Determines whether the geometry is simple (according to OGC definition).
+    /**
+     * Determines whether the geometry is simple (according to OGC definition).
      * \since QGIS 3.0
      */
     virtual bool isSimple( QString *errorMsg = nullptr ) const = 0;
 
+    /**
+     * Splits this geometry according to a given line.
+     * \param splitLine the line that splits the geometry
+     * \param[out] newGeometries list of new geometries that have been created with the split
+     * \param topological true if topological editing is enabled
+     * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
+     * \param[out] errorMsg error messages emitted, if any
+     * \returns 0 in case of success, 1 if geometry has not been split, error else
+    */
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QList<QgsAbstractGeometry *> &newGeometries,
+        QVector<QgsGeometry > &newGeometries SIP_OUT,
         bool topological,
         QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr ) const
     {

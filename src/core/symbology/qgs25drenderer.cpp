@@ -20,6 +20,7 @@
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #define ROOF_EXPRESSION \
   "translate(" \
@@ -138,11 +139,15 @@ QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadW
 
 void Qgs25DRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   mSymbol->startRender( context, fields );
 }
 
 void Qgs25DRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   mSymbol->stopRender( context );
 }
 
@@ -158,14 +163,14 @@ QgsFeatureRenderer *Qgs25DRenderer::clone() const
   return c;
 }
 
-QgsSymbol *Qgs25DRenderer::symbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *Qgs25DRenderer::symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature )
   Q_UNUSED( context )
   return mSymbol.get();
 }
 
-QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList Qgs25DRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;

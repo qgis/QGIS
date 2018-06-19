@@ -40,7 +40,6 @@
 QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTransform &transform )
   : QWidget( parent )
   , mCurve( transform )
-  , mCurrentPlotMarkerIndex( -1 )
 {
   mPlot = new QwtPlot();
   mPlot->setMinimumSize( QSize( 0, 100 ) );

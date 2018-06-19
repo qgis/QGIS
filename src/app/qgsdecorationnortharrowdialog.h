@@ -23,18 +23,19 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
 
   public:
     QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent = nullptr );
-    ~QgsDecorationNorthArrowDialog();
+    ~QgsDecorationNorthArrowDialog() override;
 
   private:
+    void updateSvgPath( const QString &svgPath );
     void drawNorthArrow();
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
     void showHelp();
-    void on_spinAngle_valueChanged( int spinAngle );
-    void on_sliderRotation_valueChanged( int rotationValue );
+    void spinAngle_valueChanged( int spinAngle );
+    void sliderRotation_valueChanged( int rotationValue );
     void apply();
 
   protected:

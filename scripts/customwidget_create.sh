@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This script automatically creates custom widget plugin for a given widget class name.
 # Use customwidget_create.sh QgsColorButton to create QgsColorButtonPlugin files.
@@ -11,11 +11,11 @@ set -e
 
 CLASSNAME=$1
 
-TODAY=`date '+%d.%m.%Y'`
-YEAR=`date '+%Y'`
+TODAY=$(date '+%d.%m.%Y')
+YEAR=$(date '+%Y')
 
-AUTHOR=`git config user.name`
-EMAIL=`git config user.email`
+AUTHOR=$(git config user.name)
+EMAIL=$(git config user.email)
 
 CLASSUPPER="${CLASSNAME^^}"
 CLASSLOWER="${CLASSNAME,,}"

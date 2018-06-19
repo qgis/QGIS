@@ -108,15 +108,17 @@ class CORE_EXPORT QgsPropertyDefinition
     /**
      * Constructs an empty property.
      */
-    QgsPropertyDefinition();
+    QgsPropertyDefinition() = default;
 
     /**
      * Constructor for QgsPropertyDefinition, using a standard property template.
      * \param name is used internally and should be a unique, alphanumeric string.
      * \param description can be any localised string describing what the property is used for.
      * \param type one of the predefined standard property template
+     * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type );
+    QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Constructor for custom QgsPropertyDefinitions.
@@ -125,8 +127,10 @@ class CORE_EXPORT QgsPropertyDefinition
      * \param description can be any localised string describing what the property is used for.
      * \param helpText parameter should specify a descriptive string for users outlining the types
      * of value acceptable by the property (eg 'dashed' or 'solid' for a line style property).
+     * \param origin The origin of the property
+     * \param comment A free comment for the property
      */
-    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText );
+    QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString(), const QString &comment = QString() );
 
     /**
      * Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
@@ -134,14 +138,48 @@ class CORE_EXPORT QgsPropertyDefinition
     QString name() const { return mName; }
 
     /**
+     * Sets the name of the property
+     */
+    void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
+     */
+    QString origin() const { return mOrigin; }
+
+    /**
+     * Sets the origin of the property. For example, a PAL property has an
+     * origin set to "labeling" while a diagram property has an origin set to
+     * "diagram".
+     */
+    void setOrigin( const QString &origin ) { mOrigin = origin; }
+
+    /**
      * Descriptive name of the property.
      */
     QString description() const { return mDescription; }
 
     /**
+     * Returns the comment of the property
+     */
+    QString comment() const { return mComment; }
+
+    /**
+     * Sets comment of the property
+     */
+    void setComment( const QString &comment ) { mComment = comment; }
+
+    /**
      * Helper text for using the property, including a description of the valid values for the property.
      */
     QString helpText() const { return mHelpText; }
+
+    /**
+     * Sets the data type
+     */
+    void setDataType( DataType type ) { mTypes = type; }
 
     /**
      * Returns the allowable field/value data type for the property.
@@ -164,9 +202,11 @@ class CORE_EXPORT QgsPropertyDefinition
 
     QString mName;
     QString mDescription;
-    DataType mTypes;
+    DataType mTypes = DataTypeString;
     QString mHelpText;
     StandardPropertyTemplate mStandardType = Custom;
+    QString mOrigin;
+    QString mComment;
 
     static QString trString();
 };
@@ -326,7 +366,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = 0 ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
@@ -340,7 +380,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a color.
@@ -354,7 +394,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
@@ -368,7 +408,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
@@ -382,7 +422,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
@@ -396,7 +436,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Saves this property to a QVariantMap, wrapped in a QVariant.

@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsMapLayerComboBoxPlugin : public QObject, public QD
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsMapLayerComboBoxPlugin( QObject *parent = 0 );
+    explicit QgsMapLayerComboBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

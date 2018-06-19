@@ -22,7 +22,7 @@
 #include "qgsglobefrustumhighlight.h"
 
 QgsGlobeFrustumHighlightCallback::QgsGlobeFrustumHighlightCallback( osg::View *view, osgEarth::Terrain *terrain, QgsMapCanvas *mapCanvas, QColor color )
-  : osg::NodeCallback()
+  : osg::Callback()
   , mView( view )
   , mTerrain( terrain )
   , mRubberBand( new QgsRubberBand( mapCanvas, QgsWkbTypes::PolygonGeometry ) )
@@ -36,23 +36,33 @@ QgsGlobeFrustumHighlightCallback::~QgsGlobeFrustumHighlightCallback()
   delete mRubberBand;
 }
 
-void QgsGlobeFrustumHighlightCallback::operator()( osg::Node *, osg::NodeVisitor * )
+bool QgsGlobeFrustumHighlightCallback::run( osg::Object *object, osg::Object *data )
 {
-  const osg::Viewport::value_type &width = mView->getCamera()->getViewport()->width();
-  const osg::Viewport::value_type &height = mView->getCamera()->getViewport()->height();
-
-  osg::Vec3d corners[4];
-
-  mTerrain->getWorldCoordsUnderMouse( mView, 0,         0,          corners[0] );
-  mTerrain->getWorldCoordsUnderMouse( mView, 0,         height - 1, corners[1] );
-  mTerrain->getWorldCoordsUnderMouse( mView, width - 1, height - 1, corners[2] );
-  mTerrain->getWorldCoordsUnderMouse( mView, width - 1, 0,          corners[3] );
-
-  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
-  for ( int i = 0; i < 4; i++ )
+  osg::Node *node = dynamic_cast<osg::Node *>( object );
+  osg::NodeVisitor *nv = dynamic_cast<osg::NodeVisitor *>( data );
+  if ( node && nv )
   {
-    osg::Vec3d localCoords;
-    mSrs->transformFromWorld( corners[i], localCoords );
-    mRubberBand->addPoint( QgsPointXY( localCoords.x(), localCoords.y() ) );
+    const osg::Viewport::value_type &width = mView->getCamera()->getViewport()->width();
+    const osg::Viewport::value_type &height = mView->getCamera()->getViewport()->height();
+
+    osg::Vec3d corners[4];
+
+    mTerrain->getWorldCoordsUnderMouse( mView, 0,         0,          corners[0] );
+    mTerrain->getWorldCoordsUnderMouse( mView, 0,         height - 1, corners[1] );
+    mTerrain->getWorldCoordsUnderMouse( mView, width - 1, height - 1, corners[2] );
+    mTerrain->getWorldCoordsUnderMouse( mView, width - 1, 0,          corners[3] );
+
+    mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
+    for ( int i = 0; i < 4; i++ )
+    {
+      osg::Vec3d localCoords;
+      mSrs->transformFromWorld( corners[i], localCoords );
+      mRubberBand->addPoint( QgsPointXY( localCoords.x(), localCoords.y() ) );
+    }
+    return true;
+  }
+  else
+  {
+    return traverse( object, data );
   }
 }

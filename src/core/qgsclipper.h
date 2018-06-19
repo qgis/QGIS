@@ -32,7 +32,8 @@ class QgsCurve;
 SIP_FEATURE( ARM ) // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to trim lines and polygons to within a rectangular region.
  * The functions in this class are likely to be called from within a
  * render loop and hence need to as CPU efficient as possible.
@@ -99,7 +100,8 @@ class CORE_EXPORT QgsClipper
 
     static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
 
-    /** Takes a linestring and clips it to clipExtent
+    /**
+     * Takes a linestring and clips it to clipExtent
      * \param curve the linestring
      * \param clipExtent clipping bounds
      * \returns clipped line coordinates
@@ -123,14 +125,14 @@ class CORE_EXPORT QgsClipper
     static void trimPolygonToBoundary( const QPolygonF &inPts, QPolygonF &outPts, const QgsRectangle &rect, Boundary b, double boundaryValue );
 
     // Determines if a point is inside or outside the given boundary
-    static bool inside( const double x, const double y, Boundary b );
+    static bool inside( double x, double y, Boundary b );
 
     static bool inside( QPointF pt, Boundary b, double val );
 
     // Calculates the intersection point between a line defined by a
     // (x1, y1), and (x2, y2) and the given boundary
-    static QgsPointXY intersect( const double x1, const double y1,
-                                 const double x2, const double y2,
+    static QgsPointXY intersect( double x1, double y1,
+                                 double x2, double y2,
                                  Boundary b );
 
     static QPointF intersectRect( QPointF pt1,
@@ -140,7 +142,8 @@ class CORE_EXPORT QgsClipper
     //Implementation of 'Fast clipping' algorithm (Sobkow et al. 1987, Computers & Graphics Vol.11, 4, p.459-467)
     static bool clipLineSegment( double xLeft, double xRight, double yBottom, double yTop, double &x0, double &y0, double &x1, double &y1 );
 
-    /** Connects two lines split by the clip (by inserting points on the clip border)
+    /**
+     * Connects two lines split by the clip (by inserting points on the clip border)
       \param x0 x-coordinate of the first line end
       \param y0 y-coordinate of the first line end
       \param x1 x-coordinate of the second line start

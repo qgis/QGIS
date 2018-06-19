@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -34,7 +33,9 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
                        QgsProcessingParameterNumber,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingFeatureSource,
+                       QgsFeatureRequest)
 from collections import defaultdict
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -49,6 +50,9 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector selection')
+
+    def groupId(self):
+        return 'vectorselection'
 
     def __init__(self):
         super().__init__()
@@ -80,13 +84,16 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
         field = self.parameterAsString(parameters, self.FIELD, context)
 
         index = source.fields().lookupField(field)
 
-        features = source.getFeatures()
+        features = source.getFeatures(QgsFeatureRequest(), QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks)
         featureCount = source.featureCount()
         unique = source.uniqueValues(index)
         value = self.parameterAsInt(parameters, self.NUMBER, context)
@@ -104,6 +111,8 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         selran = []
         total = 100.0 / (featureCount * len(unique)) if featureCount else 1

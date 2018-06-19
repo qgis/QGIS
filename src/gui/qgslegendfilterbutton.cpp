@@ -23,14 +23,13 @@
 
 QgsLegendFilterButton::QgsLegendFilterButton( QWidget *parent )
   : QToolButton( parent )
-  , mMenu( nullptr )
-  , mLayer( nullptr )
+
 {
   mMenu = new QMenu( this );
-  mSetExpressionAction = new QAction( tr( "Edit filter expression" ), mMenu );
+  mSetExpressionAction = new QAction( tr( "Edit Filter Expression…" ), mMenu );
   connect( mSetExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onSetLegendFilterExpression );
 
-  mClearExpressionAction = new QAction( tr( "Clear filter expression" ), mMenu );
+  mClearExpressionAction = new QAction( tr( "Clear Filter Expression" ), mMenu );
   connect( mClearExpressionAction, &QAction::triggered, this, &QgsLegendFilterButton::onClearFilterExpression );
   mClearExpressionAction->setEnabled( false );
 

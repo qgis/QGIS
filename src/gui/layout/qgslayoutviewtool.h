@@ -28,6 +28,7 @@ class QKeyEvent;
 class QgsLayoutView;
 class QgsLayoutViewMouseEvent;
 class QgsLayout;
+class QgsLayoutItem;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool() override;
 
     /**
      * Returns the current combination of flags set for the tool.
@@ -165,6 +166,11 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     QgsLayout *layout() const;
 
+    /**
+     * Returns a list of items which should be ignored while snapping events
+     * for this tool.
+     */
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
 
   signals:
 
@@ -178,13 +184,19 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     void deactivated();
 
+    /**
+     * Emitted when an \a item is "focused" by the tool, i.e. it should become the active
+     * item and should have its properties displayed in any designer windows.
+     */
+    void itemFocused( QgsLayoutItem *item );
+
   protected:
 
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()
      */
-    void setFlags( const QgsLayoutViewTool::Flags flags );
+    void setFlags( QgsLayoutViewTool::Flags flags );
 
     /**
      * Constructor for QgsLayoutViewTool, taking a layout \a view and
@@ -205,10 +217,10 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     //! Pointer to layout view.
     QgsLayoutView *mView = nullptr;
 
-    QgsLayoutViewTool::Flags mFlags;
+    QgsLayoutViewTool::Flags mFlags = nullptr;
 
     //! Cursor used by tool
-    QCursor mCursor;
+    QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
     QPointer< QAction > mAction;

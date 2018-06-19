@@ -47,12 +47,13 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget
+      * \param browserModel instance of the (shared) browser model
       * \param parent parent widget
       */
-    explicit QgsBrowserDockWidget( const QString &name, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsBrowserDockWidget();
+    explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsBrowserDockWidget() override;
     //! Add directory to favorites
-    void addFavoriteDirectory( const QString &favDir );
+    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
 
   public slots:
     //! Add layer at index
@@ -74,9 +75,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void showFilterWidget( bool visible );
     //! Enable/disable properties widget
     void enablePropertiesWidget( bool enable );
-    //! Set filter syntax
+    //! Sets filter syntax
     void setFilterSyntax( QAction * );
-    //! Set filter case sensitivity
+    //! Sets filter case sensitivity
     void setCaseSensitive( bool caseSensitive );
     //! Apply filter to the model
     void setFilter();
@@ -99,7 +100,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   signals:
     //! Emitted when a file needs to be opened
-    void openFile( const QString & );
+    void openFile( const QString &fileName, const QString &fileTypeHint = QString() );
     //! Emitted when drop uri list needs to be handled
     void handleDropUriList( const QgsMimeDataUtils::UriList & );
     //! Connections changed in the browser
@@ -109,6 +110,10 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     //! Show event override
     void showEvent( QShowEvent *event ) override;
 
+  private slots:
+    void itemDoubleClicked( const QModelIndex &index );
+    void renameFavorite();
+
   private:
     //! Refresh the model
     void refreshModel( const QModelIndex &index );
@@ -116,7 +121,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
     void addLayer( QgsLayerItem *layerItem );
     //! Clear the properties widget
     void clearPropertiesWidget();
-    //! Set the properties widget
+    //! Sets the properties widget
     void setPropertiesWidget();
 
     //! Count selected items

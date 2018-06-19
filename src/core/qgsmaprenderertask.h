@@ -56,7 +56,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     QgsMapRendererTask( const QgsMapSettings &ms,
                         const QString &fileName,
                         const QString &fileFormat = QString( "PNG" ),
-                        const bool forceRaster = false );
+                        bool forceRaster = false );
 
     /**
      * Constructor for QgsMapRendererTask to render a map to a QPainter object.
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
     /**
      * Adds \a decorations to be rendered on the map.
      */
-    void addDecorations( QList< QgsMapDecoration * > decorations );
+    void addDecorations( const QList<QgsMapDecoration *> &decorations );
 
     /**
      * Sets whether a world file will be created alongside an image file.
@@ -95,8 +95,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 
@@ -117,5 +117,7 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
     int mError = 0;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

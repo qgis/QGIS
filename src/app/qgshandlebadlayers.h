@@ -29,10 +29,10 @@ class APP_EXPORT QgsHandleBadLayersHandler
     Q_OBJECT
 
   public:
-    QgsHandleBadLayersHandler();
+    QgsHandleBadLayersHandler() = default;
 
     //! Implementation of the handler
-    virtual void handleBadLayers( const QList<QDomNode> &layers ) override;
+    void handleBadLayers( const QList<QDomNode> &layers ) override;
 };
 
 
@@ -46,7 +46,6 @@ class APP_EXPORT QgsHandleBadLayers
 
   public:
     QgsHandleBadLayers( const QList<QDomNode> &layers );
-    ~QgsHandleBadLayers();
 
     int layerCount();
 
@@ -56,7 +55,7 @@ class APP_EXPORT QgsHandleBadLayers
     void editAuthCfg();
     void apply();
     void accept() override;
-    void rejected();
+    void reject() override;
 
   private:
     QPushButton *mBrowseButton = nullptr;

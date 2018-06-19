@@ -28,7 +28,7 @@ class SubLayerItem : public QTreeWidgetItem
       :  QTreeWidgetItem( strings, type )
     {}
 
-    bool operator <( const QTreeWidgetItem &other ) const
+    bool operator <( const QTreeWidgetItem &other ) const override
     {
       QgsSublayersDialog *d = qobject_cast<QgsSublayersDialog *>( treeWidget()->parent() );
       int col = treeWidget()->sortColumn();
@@ -50,7 +50,7 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
 
   if ( providerType == QgsSublayersDialog::Ogr )
   {
-    setWindowTitle( tr( "Select Vector Layers to Add..." ) );
+    setWindowTitle( tr( "Select Vector Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Number of features" ) << tr( "Geometry type" ) );
     mShowCount = true;
@@ -58,12 +58,12 @@ QgsSublayersDialog::QgsSublayersDialog( ProviderType providerType, const QString
   }
   else if ( providerType == QgsSublayersDialog::Gdal )
   {
-    setWindowTitle( tr( "Select Raster Layers to Add..." ) );
+    setWindowTitle( tr( "Select Raster Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) );
   }
   else
   {
-    setWindowTitle( tr( "Select Layers to Add..." ) );
+    setWindowTitle( tr( "Select Layers to Add…" ) );
     layersTable->setHeaderLabels( QStringList() << tr( "Layer ID" ) << tr( "Layer name" )
                                   << tr( "Type" ) );
     mShowType = true;
@@ -136,7 +136,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << QString::number( item.count );
+      elements << ( item.count == -1 ? tr( "Unknown" ) : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     layersTable->addTopLevelItem( new SubLayerItem( elements ) );

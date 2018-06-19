@@ -24,8 +24,7 @@
 #include <QtTest/QTest>
 
 #include <cstdio>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #ifdef Q_OS_WIN
 // Open files in binary mode
@@ -61,7 +60,8 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( std::string const &appName )
 {
@@ -86,7 +86,7 @@ void usage( std::string const &appName )
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
-            << "    vectors, and QGIS project files (.qgs): \n"
+            << "    vectors, and QGIS project files (.qgs or .qgz): \n"
             << "     1. Rasters - Supported formats include GeoTiff, DEM \n"
             << "        and others supported by GDAL\n"
             << "     2. Vectors - Supported formats include ESRI Shapefiles\n"
@@ -105,7 +105,7 @@ void usage( std::string const &appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString myProjectFileName = QLatin1String( "" );
+static QString myProjectFileName;
 
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
@@ -131,12 +131,12 @@ int main( int argc, char *argv[] )
   //
 
   int myIterations = 1;
-  QString mySnapshotFileName = QLatin1String( "" );
-  QString myLogFileName = QLatin1String( "" );
-  QString myPrefixPath = QLatin1String( "" );
+  QString mySnapshotFileName;
+  QString myLogFileName;
+  QString myPrefixPath;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
-  QString myQuality = QLatin1String( "" );
+  QString myQuality;
   bool myParallel = false;
   QString myPrintTime = QStringLiteral( "total" );
 
@@ -144,7 +144,7 @@ int main( int argc, char *argv[] )
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = QLatin1String( "" );
+  QString myInitialExtent;
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
@@ -158,28 +158,28 @@ int main( int argc, char *argv[] )
   // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
   ///////////////////////////////////////////////////////////////
   int optionChar;
-  while ( 1 )
+  while ( true )
   {
     static struct option long_options[] =
     {
       /* These options set a flag. */
-      {"help", no_argument, 0, '?'},
+      {"help", no_argument, nullptr, '?'},
       /* These options don't set a flag.
        *  We distinguish them by their indices. */
-      {"iterations",    required_argument, 0, 'i'},
-      {"snapshot", required_argument, 0, 's'},
-      {"log", required_argument, 0, 'l'},
-      {"width",    required_argument, 0, 'w'},
-      {"height",   required_argument, 0, 'h'},
-      {"project",  required_argument, 0, 'p'},
-      {"extent",   required_argument, 0, 'e'},
-      {"optionspath", required_argument, 0, 'o'},
-      {"configpath", required_argument, 0, 'c'},
-      {"prefix", required_argument, 0, 'r'},
-      {"quality", required_argument, 0, 'q'},
-      {"parallel", no_argument, 0, 'P'},
-      {"print", required_argument, 0, 'R'},
-      {0, 0, 0, 0}
+      {"iterations",    required_argument, nullptr, 'i'},
+      {"snapshot", required_argument, nullptr, 's'},
+      {"log", required_argument, nullptr, 'l'},
+      {"width",    required_argument, nullptr, 'w'},
+      {"height",   required_argument, nullptr, 'h'},
+      {"project",  required_argument, nullptr, 'p'},
+      {"extent",   required_argument, nullptr, 'e'},
+      {"optionspath", required_argument, nullptr, 'o'},
+      {"configpath", required_argument, nullptr, 'c'},
+      {"prefix", required_argument, nullptr, 'r'},
+      {"quality", required_argument, nullptr, 'q'},
+      {"parallel", no_argument, nullptr, 'P'},
+      {"print", required_argument, nullptr, 'R'},
+      {nullptr, 0, nullptr, 0}
     };
 
     /* getopt_long stores the option index here. */
@@ -196,7 +196,7 @@ int main( int argc, char *argv[] )
     {
       case 0:
         /* If this option set a flag, do nothing else now. */
-        if ( long_options[option_index].flag != 0 )
+        if ( long_options[option_index].flag != nullptr )
           break;
         printf( "option %s", long_options[option_index].name );
         if ( optarg )
@@ -471,11 +471,11 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( myProjectFileName.isEmpty() )
   {
-    // check for a .qgs
+    // check for a .qgs or .qgz
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) || arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -525,8 +525,9 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
-    // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    // don't load anything with a .qgs or .qgz extension - these are project files
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+         !myLayerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -582,12 +583,12 @@ int main( int argc, char *argv[] )
 
   qbench->render();
 
-  if ( mySnapshotFileName != QLatin1String( "" ) )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     qbench->saveSnapsot( mySnapshotFileName );
   }
 
-  if ( myLogFileName != QLatin1String( "" ) )
+  if ( !myLogFileName.isEmpty() )
   {
     qbench->saveLog( myLogFileName );
   }

@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgstestutils.h"
 
 #include <QDir>
 

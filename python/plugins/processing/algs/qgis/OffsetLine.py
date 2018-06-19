@@ -32,6 +32,7 @@ from qgis.core import (QgsFeatureSink,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterFeatureSink)
 
@@ -50,6 +51,9 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -59,10 +63,10 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
         self.miter_limit = None
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'),
-                                                       type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=10.0))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Distance'),
+                                                         defaultValue=10.0,
+                                                         parentParameterName='INPUT'))
         self.addParameter(QgsProcessingParameterNumber(self.SEGMENTS,
                                                        self.tr('Segments'),
                                                        type=QgsProcessingParameterNumber.Integer,
@@ -87,6 +91,9 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     def outputName(self):
         return self.tr('Offset')
 
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
+
     def outputType(self):
         return QgsProcessing.TypeVectorLine
 
@@ -97,7 +104,7 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
         self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.offsetCurve(self.distance, self.segments, self.join_style, self.miter_limit)
@@ -107,4 +114,4 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
 
             feature.setGeometry(output_geometry)
 
-        return feature
+        return [feature]

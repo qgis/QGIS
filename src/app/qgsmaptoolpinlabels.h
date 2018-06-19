@@ -31,16 +31,16 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
 
   public:
     QgsMapToolPinLabels( QgsMapCanvas *canvas );
-    ~QgsMapToolPinLabels();
+    ~QgsMapToolPinLabels() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool isShowingPinned() const { return mShowPinned; }
     void setShowingPinned( bool showing ) { mShowPinned = showing; }

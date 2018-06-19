@@ -29,7 +29,8 @@ class QgsExpression;
 class QgsCategorizedSymbolRenderer;
 class QgsGraduatedSymbolRenderer;
 
-/** \ingroup core
+/**
+ * \ingroup core
 When drawing a vector layer with rule-based renderer, it goes through
 the rules and draws features with symbols from rules that match.
  */
@@ -44,10 +45,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       FeatDrawMarkers = 2
     };
 
-    // feature for rendering: QgsFeature and some flags
+    /**
+     * Feature for rendering by a QgsRuleBasedRenderer. Contains a QgsFeature and some flags.
+     * \ingroup core
+     */
     struct FeatureToRender
     {
-      FeatureToRender( QgsFeature &_f, int _flags )
+      FeatureToRender( const QgsFeature &_f, int _flags )
         : feat( _f )
         , flags( _flags )
       {}
@@ -55,25 +59,35 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       int flags; // selected and/or draw markers
     };
 
-    // rendering job: a feature to be rendered with a particular symbol
-    // (both f, symbol are _not_ owned by this class)
+    /**
+     * A QgsRuleBasedRenderer rendering job, consisting of a feature to be rendered with a particular symbol.
+     * \ingroup core
+     */
     struct RenderJob
     {
       RenderJob( QgsRuleBasedRenderer::FeatureToRender &_ftr, QgsSymbol *_s )
         : ftr( _ftr )
         , symbol( _s )
       {}
+
+      //! Feature to render
       QgsRuleBasedRenderer::FeatureToRender &ftr;
+
+      //! Symbol to render feature with (not owned by this object).
       QgsSymbol *symbol = nullptr;
     };
 
-    // render level: a list of jobs to be drawn at particular level
-    // (jobs are owned by this class)
+    /**
+     * Render level: a list of jobs to be drawn at particular level for a QgsRuleBasedRenderer.
+     * \ingroup core
+     */
     struct RenderLevel
     {
       explicit RenderLevel( int z ): zIndex( z ) {}
-      ~RenderLevel() { Q_FOREACH ( RenderJob *j, jobs ) delete j; }
+      ~RenderLevel() { qDeleteAll( jobs ); }
       int zIndex;
+
+      //! List of jobs to render, owned by this object.
       QList<QgsRuleBasedRenderer::RenderJob *> jobs;
 
       QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
@@ -81,7 +95,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
-        Q_FOREACH ( RenderJob *job, rh.jobs )
+        for ( RenderJob *job :  qgis::as_const( rh.jobs ) )
         {
           jobs << new RenderJob( *job );
         }
@@ -91,7 +105,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
       RenderLevel( const QgsRuleBasedRenderer::RenderLevel &other )
         : zIndex( other.zIndex )
       {
-        Q_FOREACH ( RenderJob *job, other.jobs )
+        for ( RenderJob *job : qgis::as_const( other.jobs ) )
         {
           jobs << new RenderJob( *job );
         }
@@ -99,13 +113,14 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     };
 
-    // rendering queue: a list of rendering levels
+    //! Rendering queue: a list of rendering levels
     typedef QList<QgsRuleBasedRenderer::RenderLevel> RenderQueue;
 
     class Rule;
     typedef QList<QgsRuleBasedRenderer::Rule *> RuleList;
 
-    /** \ingroup core
+    /**
+     * \ingroup core
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
       If filter is empty, it matches all features.
@@ -142,7 +157,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QString dump( int indent = 0 ) const;
 
         /**
-         * Return the attributes used to evaluate the expression of this rule
+         * Returns the attributes used to evaluate the expression of this rule
          * \returns A set of attribute names
          */
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -165,7 +180,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param context   The context in which the rendering happens
          * \returns          True if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, QgsRenderContext *context = nullptr ) const;
+        bool isFilterOK( const QgsFeature &f, QgsRenderContext *context = nullptr ) const;
 
         /**
          * Check if this rule applies for a given \a scale.
@@ -176,7 +191,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool isScaleOK( double scale ) const;
 
-        QgsSymbol *symbol() { return mSymbol; }
+        QgsSymbol *symbol() { return mSymbol.get(); }
         QString label() const { return mLabel; }
         bool dependsOnScale() const { return mMaximumScale != 0 || mMinimumScale != 0; }
 
@@ -204,7 +219,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * A filter that will check if this rule applies
          * \returns An expression
          */
-        QgsExpression *filter() const { return mFilter; }
+        QgsExpression *filter() const { return mFilter.get(); }
 
         /**
          * A filter that will check if this rule applies
@@ -226,14 +241,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool active() const { return mIsActive; }
 
-        //! Unique rule identifier (for identification of rule within renderer)
-        //! \since QGIS 2.6
+        /**
+         * Unique rule identifier (for identification of rule within renderer)
+         * \since QGIS 2.6
+         */
         QString ruleKey() const { return mRuleKey; }
-        //! Override the assigned rule key (should be used just internally by rule-based renderer)
-        //! \since QGIS 2.6
+
+        /**
+         * Override the assigned rule key (should be used just internally by rule-based renderer)
+         * \since QGIS 2.6
+         */
         void setRuleKey( const QString &key ) { mRuleKey = key; }
 
-        //! set a new symbol (or NULL). Deletes old symbol.
+        //! Sets a new symbol (or NULL). Deletes old symbol.
         void setSymbol( QgsSymbol *sym SIP_TRANSFER );
         void setLabel( const QString &label ) { mLabel = label; }
 
@@ -290,11 +310,13 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! prepare the rule for rendering and its children (build active children array)
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 
-        //! get all used z-levels from this rule and children
+        //! Gets all used z-levels from this rule and children
         QSet<int> collectZLevels();
 
-        //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
-        //! \note not available in Python bindings
+        /**
+         * assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+         * \note not available in Python bindings
+         */
         void setNormZLevels( const QMap<int, int> &zLevelsToNormLevels ) SIP_SKIP;
 
         /**
@@ -309,18 +331,26 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         QgsRuleBasedRenderer::Rule::RenderResult renderFeature( QgsRuleBasedRenderer::FeatureToRender &featToRender, QgsRenderContext &context, QgsRuleBasedRenderer::RenderQueue &renderQueue );
 
         //! only tell whether a feature will be rendered without actually rendering it
-        bool willRenderFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        bool willRenderFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
         //! tell which symbols will be used to render the feature
-        QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
-        /** Returns which legend keys match the feature
+        /**
+         * Returns which legend keys match the feature
          * \since QGIS 2.14
          */
-        QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        QSet< QString > legendKeysForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr );
 
-        //! tell which rules will be used to render the feature
-        QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = nullptr );
+        /**
+         * Returns the list of rules used to render the feature in a specific
+         * context.
+         *
+         * \param feature The feature for which rules have to be find
+         * \param context The rendering context
+         * \param onlyActive True to search for active rules only, false otherwise
+         */
+        QgsRuleBasedRenderer::RuleList rulesForFeature( const QgsFeature &feature, QgsRenderContext *context = nullptr, bool onlyActive = true );
 
         /**
          * Stop a rendering process. Used to clean up the internal state of this rule
@@ -340,18 +370,18 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap ) SIP_FACTORY;
 
         /**
-         * Return all children rules of this rule
+         * Returns all children rules of this rule
          *
          * \returns A list of rules
          */
-        QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
+        const QgsRuleBasedRenderer::RuleList &children() { return mChildren; }
 
         /**
          * Returns all children, grand-children, grand-grand-children, grand-gra... you get it
          *
          * \returns A list of descendant rules
          */
-        QgsRuleBasedRenderer::RuleList descendants() const { RuleList l; Q_FOREACH ( QgsRuleBasedRenderer::Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
+        QgsRuleBasedRenderer::RuleList descendants() const;
 
         /**
          * The parent rule
@@ -378,8 +408,10 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! take child rule out, set parent as null
         QgsRuleBasedRenderer::Rule *takeChildAt( int i ) SIP_TRANSFERBACK;
 
-        //! Try to find a rule given its unique key
-        //! \since QGIS 2.6
+        /**
+         * Try to find a rule given its unique key
+         * \since QGIS 2.6
+         */
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 
         /**
@@ -394,33 +426,33 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          *
          * \returns True if this rule is an else rule
          */
-        bool isElse() { return mElseRule; }
+        bool isElse() const { return mElseRule; }
 
       protected:
         void initFilter();
-
-        Rule *mParent; // parent rule (NULL only for root rule)
-        QgsSymbol *mSymbol = nullptr;
-        double mMaximumScale = 0;
-        double mMinimumScale = 0;
-        QString mFilterExp, mLabel, mDescription;
-        bool mElseRule;
-        RuleList mChildren;
-        RuleList mElseRules;
-        bool mIsActive; // whether it is enabled or not
-
-        QString mRuleKey; // string used for unique identification of rule within renderer
-
-        // temporary
-        QgsExpression *mFilter = nullptr;
-        // temporary while rendering
-        QSet<int> mSymbolNormZLevels;
-        RuleList mActiveChildren;
 
       private:
 #ifdef SIP_RUN
         Rule( const QgsRuleBasedRenderer::Rule &rh );
 #endif
+
+        Rule *mParent = nullptr; // parent rule (NULL only for root rule)
+        std::unique_ptr< QgsSymbol > mSymbol;
+        double mMaximumScale = 0;
+        double mMinimumScale = 0;
+        QString mFilterExp, mLabel, mDescription;
+        bool mElseRule = false;
+        RuleList mChildren;
+        RuleList mElseRules;
+        bool mIsActive = true; // whether it is enabled or not
+
+        QString mRuleKey; // string used for unique identification of rule within renderer
+
+        // temporary
+        std::unique_ptr< QgsExpression > mFilter;
+        // temporary while rendering
+        QSet<int> mSymbolNormZLevels;
+        RuleList mActiveChildren;
 
         /**
          * Check which child rules are else rules and update the internal list of else rules
@@ -439,44 +471,44 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
     QgsRuleBasedRenderer( QgsSymbol *defaultSymbol SIP_TRANSFER );
 
-    ~QgsRuleBasedRenderer();
+    ~QgsRuleBasedRenderer() override;
 
-    //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    //! Returns symbol for current feature. Should not be used individually: there could be more symbols for a feature
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
-    virtual void stopRender( QgsRenderContext &context ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
-    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
+    QString filter( const QgsFields &fields = QgsFields() ) override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    virtual bool filterNeedsGeometry() const override;
+    bool filterNeedsGeometry() const override;
 
-    virtual QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
+    QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual bool legendSymbolItemsCheckable() const override;
-    virtual bool legendSymbolItemChecked( const QString &key ) override;
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    bool legendSymbolItemsCheckable() const override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QString dump() const override;
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    QgsLegendSymbolList legendSymbolItems() const override;
+    QString dump() const override;
+    bool willRenderFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList symbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QSet<QString> legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 
@@ -491,9 +523,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
     static void refineRuleScales( QgsRuleBasedRenderer::Rule *initialRule, QList<int> scales );
 
-    //! creates a QgsRuleBasedRenderer from an existing renderer.
-    //! \since QGIS 2.5
-    //! \returns a new renderer if the conversion was possible, otherwise 0.
+    /**
+     * creates a QgsRuleBasedRenderer from an existing renderer.
+     * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
+     */
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     //! helper function to convert the size scale and rotation fields present in some other renderers to data defined symbology

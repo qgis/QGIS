@@ -36,7 +36,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   , mMapCanvas( canvas )
 {
   setupUi( this );
-  setPanelTitle( tr( "Data-defined size legend" ) );
+  setPanelTitle( tr( "Data-defined Size Legend" ) );
 
   QgsMarkerSymbol *symbol = nullptr;
 
@@ -102,7 +102,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   connect( mSizeClassesModel, &QStandardItemModel::dataChanged, this, &QgsDataDefinedSizeLegendWidget::onSizeClassesChanged );
 
   // prepare layer and model to preview legend
-  mPreviewLayer = new QgsVectorLayer( "Point?crs=EPSG:4326", "Preview", "memory" );
+  mPreviewLayer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326" ), QStringLiteral( "Preview" ), QStringLiteral( "memory" ) );
   mPreviewTree = new QgsLayerTree;
   mPreviewLayerNode = mPreviewTree->addLayer( mPreviewLayer );  // node owned by the tree
   mPreviewModel = new QgsLayerTreeModel( mPreviewTree );
@@ -110,7 +110,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
     mPreviewModel->setLegendMapViewData( canvas->mapUnitsPerPixel(), canvas->mapSettings().outputDpi(), canvas->scale() );
   viewLayerTree->setModel( mPreviewModel );
 
-  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ] { emit widgetChanged(); } );
+  connect( cboAlignSymbols, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ] { emit widgetChanged(); } );
   connect( radDisabled, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radSeparated, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
   connect( radCollapsed, &QRadioButton::clicked, this, &QgsPanelWidget::widgetChanged );
@@ -184,7 +184,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   context.setExpressionContext( &ec );
 
   QString crsAuthId = mMapCanvas ? mMapCanvas->mapSettings().destinationCrs().authid() : QString();
-  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( "Point?crs=" + crsAuthId, "tmp", "memory" ) );
+  std::unique_ptr<QgsVectorLayer> layer( new QgsVectorLayer( "Point?crs=" + crsAuthId, QStringLiteral( "tmp" ), QStringLiteral( "memory" ) ) );
 
   QgsSymbolSelectorDialog d( newSymbol.get(), QgsStyle::defaultStyle(), layer.get(), this );
   d.setContext( context );
@@ -192,7 +192,7 @@ void QgsDataDefinedSizeLegendWidget::changeSymbol()
   if ( d.exec() != QDialog::Accepted )
     return;
 
-  mSourceSymbol.reset( newSymbol.release() );
+  mSourceSymbol = std::move( newSymbol );
   QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mSourceSymbol.get(), btnChangeSymbol->iconSize() );
   btnChangeSymbol->setIcon( icon );
 

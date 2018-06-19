@@ -22,7 +22,6 @@
 #include <qgsrenderchecker.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaptoolpan.h>
-#include "qgstestutils.h"
 
 namespace QTest
 {
@@ -45,9 +44,7 @@ class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapCanvas()
-      : mCanvas( nullptr )
-    {}
+    TestQgsMapCanvas() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -57,6 +54,7 @@ class TestQgsMapCanvas : public QObject
     void testMagnification();
     void testMagnificationExtent();
     void testMagnificationScale();
+    void testScaleLockCanvasResize();
     void testZoomByWheel();
     void testShiftZoom();
 
@@ -196,7 +194,7 @@ void TestQgsMapCanvas::testMagnification()
   checker.setControlName( QStringLiteral( "expected_map_magnification" ) );
   checker.setRenderedImage( tmpName );
   checker.setSizeTolerance( 10, 10 );
-  QCOMPARE( checker.compareImages( "map_magnification", 100 ), true );
+  QCOMPARE( checker.compareImages( QStringLiteral( "map_magnification" ), 100 ), true );
 }
 
 void compareExtent( const QgsRectangle &initialExtent,
@@ -301,6 +299,29 @@ void TestQgsMapCanvas::testMagnificationScale()
 
   mCanvas->setMagnificationFactor( 1.0 );
   QCOMPARE( initialScale, mCanvas->scale() );
+}
+
+void TestQgsMapCanvas::testScaleLockCanvasResize()
+{
+  QSize prevSize = mCanvas->size();
+  mCanvas->resize( 600, 400 );
+  QCOMPARE( mCanvas->width(), 600 );
+  QCOMPARE( mCanvas->height(), 400 );
+
+  mCanvas->setMagnificationFactor( 2.0 );
+  double initialScale = mCanvas->scale();
+  mCanvas->setScaleLocked( true );
+
+  mCanvas->resize( 300, 200 );
+  QCOMPARE( mCanvas->width(), 300 );
+  QCOMPARE( mCanvas->height(), 200 );
+
+  QCOMPARE( mCanvas->magnificationFactor(), 2.0 );
+  QCOMPARE( mCanvas->scale(), initialScale );
+
+  mCanvas->setScaleLocked( false );
+  mCanvas->setMagnificationFactor( 1.0 );
+  mCanvas->resize( prevSize );
 }
 
 void TestQgsMapCanvas::testZoomByWheel()

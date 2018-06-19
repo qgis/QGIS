@@ -1,6 +1,6 @@
 Maximum Flow Path Length
 ta_hydrology
-ParameterRaster|ELEVATION|Elevation|False
-ParameterRaster|WEIGHTS|Weights|True
-OutputRaster|DISTANCE|Flow Path Length
-ParameterSelection|DIRECTION|Direction of Measurement|[0] downstream;[1] upstream| 0
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterRasterLayer|WEIGHTS|Weights|None|True
+QgsProcessingParameterRasterDestination|DISTANCE|Flow Path Length
+QgsProcessingParameterEnum|DIRECTION|Direction of Measurement|[0] downstream;[1] upstream|False|0

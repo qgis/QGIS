@@ -134,6 +134,12 @@ class  CORE_EXPORT QgsProjectArchive : public QgsArchive
      * \returns true if the file is well removed, false otherwise
      */
     bool clearProjectFile();
+
+    /**
+     * Returns the current .qgd auxiliary storage file or an empty string if
+     * there's none
+     */
+    QString auxiliaryStorageFile() const;
 };
 
 #endif

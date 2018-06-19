@@ -23,7 +23,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
   {
-    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -32,7 +32,7 @@ QgsCachedFeatureIterator::QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
   if ( !mFilterRect.isNull() )
@@ -109,7 +109,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mVectorLayerCache->sourceCrs() )
   {
-    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mVectorLayerCache->sourceCrs(), mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -118,7 +118,7 @@ QgsCachedFeatureWriterIterator::QgsCachedFeatureWriterIterator( QgsVectorLayerCa
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
   if ( !mFilterRect.isNull() )

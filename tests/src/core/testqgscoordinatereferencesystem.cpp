@@ -15,17 +15,19 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 #include <QPixmap>
 
-#include <qgsapplication.h>
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 //header for class being tested
-#include <qgscoordinatereferencesystem.h>
-#include <qgis.h>
-#include <qgsvectorlayer.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgis.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
 
 #include <proj_api.h>
 #include <gdal.h>
 #include <cpl_conv.h>
+#include <QtTest/QSignalSpy>
 
 class TestQgsCoordinateReferenceSystem: public QObject
 {
@@ -60,8 +62,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void equality();
     void noEquality();
     void equalityInvalid();
-    void readXml();
-    void writeXml();
+    void readWriteXml();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -75,6 +76,11 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void createFromProj4Invalid();
     void validSrsIds();
     void asVariant();
+    void bounds();
+    void saveAsUserCrs();
+    void projectWithCustomCrs();
+    void projectEPSG25833();
+    void geoCcsDescription();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -85,24 +91,35 @@ class TestQgsCoordinateReferenceSystem: public QObject
     QStringList myProj4Strings;
     QStringList myTOWGS84Strings;
     QStringList myAuthIdStrings;
+    QString mTempFolder;
     QString testESRIWkt( int i, QgsCoordinateReferenceSystem &crs );
 };
 
 
 void TestQgsCoordinateReferenceSystem::initTestCase()
 {
+  // we start from a clean profile - we don't want to mess with user custom srses
+  // create temporary folder
+  QString subPath = QUuid::createUuid().toString().remove( '-' ).remove( '{' ).remove( '}' );
+  mTempFolder = QDir::tempPath() + '/' + subPath;
+  if ( !QDir( mTempFolder ).exists() )
+    QDir().mkpath( mTempFolder );
+
   //
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QgsApplication::init();
+  QgsApplication::init( mTempFolder );
+  QgsApplication::createDatabase();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+
+  QgsDebugMsg( QString( "Custom srs database: %1" ).arg( QgsApplication::qgisUserDatabaseFilePath() ) );
 
   qDebug() << "GEOPROJ4 constant:      " << GEOPROJ4;
   qDebug() << "GDAL version (build):   " << GDAL_RELEASE_NAME;
   qDebug() << "GDAL version (runtime): " << GDALVersionInfo( "RELEASE_NAME" );
-  qDebug() << "PROJ.4 version:         " << PJ_VERSION;
+  qDebug() << "PROJ version:           " << PJ_VERSION;
 
   // if user set GDAL_FIX_ESRI_WKT print a warning
   if ( strcmp( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ), "" ) != 0 )
@@ -322,11 +339,11 @@ QString TestQgsCoordinateReferenceSystem::testESRIWkt( int i, QgsCoordinateRefer
     return QStringLiteral( "test %1 crs is invalid" );
 #if 0
   if ( myCrs.toProj4() != myProj4Strings[i] )
-    return QString( "test %1 PROJ.4 = [ %2 ] expecting [ %3 ]"
+    return QString( "test %1 PROJ = [ %2 ] expecting [ %3 ]"
                   ).arg( i ).arg( myCrs.toProj4() ).arg( myProj4Strings[i] );
 #endif
   if ( myCrs.toProj4().indexOf( myTOWGS84Strings[i] ) == -1 )
-    return QStringLiteral( "test %1 [%2] not found, PROJ.4 = [%3] expecting [%4]"
+    return QStringLiteral( "test %1 [%2] not found, PROJ = [%3] expecting [%4]"
                          ).arg( i ).arg( myTOWGS84Strings[i], myCrs.toProj4(), myProj4Strings[i] );
   if ( myCrs.authid() != myAuthIdStrings[i] )
     return QStringLiteral( "test %1 AUTHID = [%2] expecting [%3]"
@@ -364,8 +381,8 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
   myGdalVersionOK << 1900;
 
   //proj definition for EPSG:4618 was updated in GDAL 2.0 - see https://github.com/OSGeo/proj.4/issues/241
-  myProj4Strings << "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs";
-  myTOWGS84Strings << "+towgs84=-66.87,4.37,-38.52,0,0,0,0";
+  myProj4Strings << QStringLiteral( "+proj=longlat +ellps=aust_SA +towgs84=-66.87,4.37,-38.52,0,0,0,0 +no_defs" );
+  myTOWGS84Strings << QStringLiteral( "+towgs84=-66.87,4.37,-38.52,0,0,0,0" );
   myAuthIdStrings << QStringLiteral( "EPSG:4618" );
 
   // do test with WKT definitions
@@ -388,7 +405,7 @@ void TestQgsCoordinateReferenceSystem::createFromESRIWkt()
 
     // do test with shapefiles
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configOld );
-    if ( myFiles[i] != QLatin1String( "" ) )
+    if ( !myFiles[i].isEmpty() )
     {
       // use ogr to open file, make sure CRS is OK
       // this probably could be in another test, but leaving it here since it deals with CRS
@@ -584,18 +601,38 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
   QgsCoordinateReferenceSystem invalidCrs2;
   QVERIFY( invalidCrs1 == invalidCrs2 );
 }
-void TestQgsCoordinateReferenceSystem::readXml()
+void TestQgsCoordinateReferenceSystem::readWriteXml()
 {
-  //QgsCoordinateReferenceSystem myCrs;
-  //myCrs.createFromSrid( GEOSRID );
-  //QgsCoordinateReferenceSystem myCrs2;
-  //QVERIFY( myCrs2.readXml( QDomNode & node ) );
-}
-void TestQgsCoordinateReferenceSystem::writeXml()
-{
-  //QgsCoordinateReferenceSystem myCrs;
-  //bool writeXml( QDomNode & node, QDomDocument & doc ) const;
-  //QVERIFY( myCrs.isValid() );
+  QgsCoordinateReferenceSystem myCrs;
+  myCrs.createFromSrid( GEOSRID );
+  QVERIFY( myCrs.isValid() );
+  QDomDocument document( "test" );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+  QVERIFY( myCrs.writeXml( node, document ) );
+  QgsCoordinateReferenceSystem myCrs2;
+  QVERIFY( myCrs2.readXml( node ) );
+  QVERIFY( myCrs == myCrs2 );
+
+  // Empty XML made from writeXml operation
+  QgsCoordinateReferenceSystem myCrs3;
+  QDomDocument document2( "test" );
+  QDomElement node2 = document2.createElement( QStringLiteral( "crs" ) );
+  document2.appendChild( node2 );
+  QVERIFY( ! myCrs3.isValid() );
+  QVERIFY( myCrs3.writeXml( node2, document2 ) );
+  QgsCoordinateReferenceSystem myCrs4;
+  QVERIFY( myCrs4.readXml( node2 ) );
+  QVERIFY( ! myCrs4.isValid() );
+  QVERIFY( myCrs3 == myCrs4 );
+
+  // Empty XML node
+  QDomDocument document3( "test" );
+  QDomElement node3 = document3.createElement( QStringLiteral( "crs" ) );
+  document3.appendChild( node3 );
+  QgsCoordinateReferenceSystem myCrs5;
+  QVERIFY( ! myCrs5.readXml( node3 ) );
+  QVERIFY( myCrs5 == QgsCoordinateReferenceSystem() );
 }
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
 {
@@ -607,7 +644,7 @@ void TestQgsCoordinateReferenceSystem::customSrsValidation()
 {
 
   /**
-   * @todo implement this test
+   * \todo implement this test
   "QgsCoordinateReferenceSystem myCrs;
   static CUSTOM_CRS_VALIDATION customSrsValidation();
   QVERIFY( myCrs.isValid() );
@@ -732,16 +769,23 @@ void TestQgsCoordinateReferenceSystem::createFromProj4Invalid()
 
 void TestQgsCoordinateReferenceSystem::validSrsIds()
 {
-  QList< long > ids = QgsCoordinateReferenceSystem::validSrsIds();
+  const QList< long > ids = QgsCoordinateReferenceSystem::validSrsIds();
   QVERIFY( ids.contains( 3857 ) );
   QVERIFY( ids.contains( 28356 ) );
 
+  int validCount = 0;
+
   // check that all returns ids are valid
-  Q_FOREACH ( long id, ids )
+  for ( long id : ids )
   {
     QgsCoordinateReferenceSystem c = QgsCoordinateReferenceSystem::fromSrsId( id );
-    QVERIFY( c.isValid() );
+    if ( c.isValid() )
+      validCount++;
+    else
+      qDebug() << QStringLiteral( "QgsCoordinateReferenceSystem::fromSrsId( %1 ) is not valid (%2 of %3 IDs returned by QgsCoordinateReferenceSystem::validSrsIds())." ).arg( id ).arg( ids.indexOf( id ) ).arg( ids.length() );
   }
+
+  QVERIFY( validCount > ids.size() - 100 );
 }
 
 void TestQgsCoordinateReferenceSystem::asVariant()
@@ -757,5 +801,118 @@ void TestQgsCoordinateReferenceSystem::asVariant()
   QCOMPARE( fromVar.authid(), original.authid() );
 }
 
+void TestQgsCoordinateReferenceSystem::bounds()
+{
+  QgsCoordinateReferenceSystem invalid;
+  QVERIFY( invalid.bounds().isNull() );
+
+  QgsCoordinateReferenceSystem crs3111( "EPSG:3111" );
+  QgsRectangle bounds = crs3111.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 140.960000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 150.040000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -39.200000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), -33.980000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs28356( "EPSG:28356" );
+  bounds = crs28356.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 150.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 156.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -58.960000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), -13.870000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs3857( "EPSG:3857" );
+  bounds = crs3857.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), -180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -85.060000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 85.060000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs4326( "EPSG:4326" );
+  bounds = crs4326.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), -180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), -90.00000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 90.00000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs2163( "EPSG:2163" );
+  bounds = crs2163.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 167.65000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), -65.69000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), 15.56000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 74.71000, 0.0001 );
+}
+
+void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
+{
+  QString madeUpProjection = QStringLiteral( "+proj=aea +lat_1=20 +lat_2=-23 +lat_0=4 +lon_0=29 +x_0=10 +y_0=3 +datum=WGS84 +units=m +no_defs" );
+  QgsCoordinateReferenceSystem userCrs = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
+  QVERIFY( userCrs.isValid() );
+  QCOMPARE( userCrs.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs.srsid(), 0L ); // not saved to database yet
+
+  long newId = userCrs.saveAsUserCrs( QStringLiteral( "babies first projection" ) );
+  QCOMPARE( newId, static_cast< long >( USER_CRS_START_ID ) );
+  QCOMPARE( userCrs.srsid(), newId );
+  QCOMPARE( userCrs.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs.description(), QStringLiteral( "babies first projection" ) );
+
+  // new CRS with same definition, check that it's matched to user crs
+  QgsCoordinateReferenceSystem userCrs2 = QgsCoordinateReferenceSystem::fromProj4( madeUpProjection );
+  QVERIFY( userCrs2.isValid() );
+  QCOMPARE( userCrs2.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
+  QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
+  QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
+
+  // createFromString with user crs
+  QgsCoordinateReferenceSystem userCrs3;
+  userCrs3.createFromString( QStringLiteral( "USER:100000" ) );
+  QVERIFY( userCrs3.isValid() );
+  QCOMPARE( userCrs3.authid(), QString( "USER:100000" ) );
+  QCOMPARE( userCrs3.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs3.description(), QStringLiteral( "babies first projection" ) );
+}
+
+void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
+{
+  // tests loading a 2.x project with a custom CRS defined
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/custom_crs.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QCOMPARE( p.crs().toProj4(), QStringLiteral( "+proj=ortho +lat_0=42.1 +lon_0=12.8 +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
+}
+
+void TestQgsCoordinateReferenceSystem::projectEPSG25833()
+{
+  // tests loading a 2.x project with a predefined EPSG that has non unique proj.4 string
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
+}
+
+void TestQgsCoordinateReferenceSystem::geoCcsDescription()
+{
+  // test that geoccs crs descriptions are correctly imported from GDAL
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( QStringLiteral( "EPSG:3822" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:3822" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "TWD97" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4340" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4340" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "Australian Antarctic (geocentric)" ) );
+
+  crs.createFromString( QStringLiteral( "EPSG:4348" ) );
+  QVERIFY( crs.isValid() );
+  QCOMPARE( crs.authid(), QStringLiteral( "EPSG:4348" ) );
+  QCOMPARE( crs.description(), QStringLiteral( "GDA94 (geocentric)" ) );
+}
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

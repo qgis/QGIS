@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from collections import OrderedDict
 
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QVariant, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.core import (QgsWkbTypes,
@@ -41,6 +41,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingOutputNumber,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterField,
@@ -84,14 +85,17 @@ class ShortestPathPointToPoint(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -137,10 +141,9 @@ class ShortestPathPointToPoint(QgisAlgorithm):
                                                    self.tr('Default speed (km/h)'),
                                                    QgsProcessingParameterNumber.Double,
                                                    5.0, False, 0, 99999999.99))
-        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
-                                                   self.tr('Topology tolerance'),
-                                                   QgsProcessingParameterNumber.Double,
-                                                   0.0, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterDistance(self.TOLERANCE,
+                                                     self.tr('Topology tolerance'),
+                                                     0.0, self.INPUT, False, 0, 99999999.99))
 
         for p in params:
             p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -160,8 +163,11 @@ class ShortestPathPointToPoint(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         network = self.parameterAsSource(parameters, self.INPUT, context)
-        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context)
-        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context)
+        if network is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
+        startPoint = self.parameterAsPoint(parameters, self.START_POINT, context, network.sourceCrs())
+        endPoint = self.parameterAsPoint(parameters, self.END_POINT, context, network.sourceCrs())
         strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
 
         directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
@@ -180,6 +186,8 @@ class ShortestPathPointToPoint(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.LineString, network.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         directionField = -1
         if directionField:
@@ -206,35 +214,33 @@ class ShortestPathPointToPoint(QgisAlgorithm):
             multiplier = 3600
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(context.project().crs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
-        feedback.pushInfo(self.tr('Building graph...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, [startPoint, endPoint], feedback)
 
-        feedback.pushInfo(self.tr('Calculating shortest path...'))
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Calculating shortest path…'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
 
-        tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+        tree, costs = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
         if tree[idxEnd] == -1:
             raise QgsProcessingException(
                 self.tr('There is no route from start point to end point.'))
 
-        route = []
-        cost = 0.0
+        route = [graph.vertex(idxEnd).point()]
+        cost = costs[idxEnd]
         current = idxEnd
         while current != idxStart:
-            cost += graph.edge(tree[current]).cost(0)
-            route.append(graph.vertex(graph.edge(tree[current]).inVertex()).point())
-            current = graph.edge(tree[current]).outVertex()
+            current = graph.edge(tree[current]).fromVertex()
+            route.append(graph.vertex(current).point())
 
-        route.append(snappedPoints[0])
         route.reverse()
 
-        feedback.pushInfo(self.tr('Writing results...'))
-        geom = QgsGeometry.fromPolyline(route)
+        feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Writing results…'))
+        geom = QgsGeometry.fromPolylineXY(route)
         feat = QgsFeature()
         feat.setFields(fields)
         feat['start'] = startPoint.toString()

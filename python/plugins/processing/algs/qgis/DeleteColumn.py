@@ -25,7 +25,9 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import (QgsProcessingParameterField)
+from qgis.core import (QgsProcessingParameterField,
+                       QgsProcessing,
+                       QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
@@ -39,6 +41,9 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.fields_to_delete = []
@@ -48,6 +53,9 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
         self.addParameter(QgsProcessingParameterField(self.COLUMNS,
                                                       self.tr('Fields to drop'),
                                                       None, 'INPUT', QgsProcessingParameterField.Any, True))
+
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVector]
 
     def name(self):
         return 'deletecolumn'
@@ -76,9 +84,12 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
             input_fields.remove(index)
         return input_fields
 
-    def processFeature(self, feature, feedback):
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         for index in self.field_indices:
             del attributes[index]
         feature.setAttributes(attributes)
-        return feature
+        return [feature]

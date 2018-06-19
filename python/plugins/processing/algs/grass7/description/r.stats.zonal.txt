@@ -1,0 +1,9 @@
+r.stats.zonal
+Calculates category or object oriented statistics (accumulator-based statistics)
+Raster (r.*)
+QgsProcessingParameterRasterLayer|base|Base raster|None|False
+QgsProcessingParameterRasterLayer|cover|Cover raster|None|False
+QgsProcessingParameterEnum|method|Method of object-based statistic|count;sum;min;max;range;average;avedev;variance;stddev;skewness;kurtosis;variance2;stddev2;skewness2;kurtosis2|False|0|False
+*QgsProcessingParameterBoolean|-c|Cover values extracted from the category labels of the cover map|False|True
+*QgsProcessingParameterBoolean|-r|Create reclass map with statistics as category labels|False|True
+QgsProcessingParameterRasterDestination|output|Resultant raster

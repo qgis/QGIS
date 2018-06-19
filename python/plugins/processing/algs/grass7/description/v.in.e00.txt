@@ -1,0 +1,6 @@
+v.in.e00
+Imports E00 file into a vector map
+Vector (v.*)
+QgsProcessingParameterFile|input|Name of input E00 file|QgsProcessingParameterFile.File|e00|None|False
+QgsProcessingParameterEnum|type|Input feature type|point;line;area|True|0|True
+QgsProcessingParameterVectorDestination|output|Name of output vector

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>155</height>
+    <width>443</width>
+    <height>315</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,68 @@
      <property name="fieldGrowthPolicy">
       <enum>QFormLayout::ExpandingFieldsGrow</enum>
      </property>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="editLabel"/>
+     </item>
+     <item row="6" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Description</string>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="1">
+      <widget class="QLineEdit" name="editDescription"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="QFrame" name="filterFrame">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="editFilter"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnExpressionBuilder">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnTestFilter">
+          <property name="text">
+           <string>Test</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QRadioButton" name="mElseRadio">
+       <property name="text">
+        <string>Else</string>
+       </property>
+      </widget>
+     </item>
      <item row="0" column="0">
       <widget class="QLabel" name="label_1">
        <property name="text">
@@ -26,52 +88,22 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="editLabel"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
+     <item row="3" column="0">
+      <widget class="QRadioButton" name="mFilterRadio">
        <property name="text">
         <string>Filter</string>
        </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLineEdit" name="editFilter"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnExpressionBuilder">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>…</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="btnTestFilter">
-         <property name="text">
-          <string>Test</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Description</string>
+       <property name="checked">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="editDescription"/>
+     <item row="4" column="1">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Catch-all for other features</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -135,5 +167,22 @@
   <tabstop>groupSymbol</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mFilterRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>filterFrame</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>61</x>
+     <y>75</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>304</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

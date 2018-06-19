@@ -360,18 +360,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
-    QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other );
-    QgsGenericNumericTransformer &operator=( const QgsGenericNumericTransformer &other );
-
-    virtual Type transformerType() const override { return GenericNumericTransformer; }
-    virtual QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return GenericNumericTransformer; }
+    QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -395,50 +389,49 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
 
     /**
      * Returns the minimum calculated size.
-     * \see setMinSize()
-     * \see maxSize()
+     * \see setMinOutputValue()
+     * \see maxOutputValue()
      */
     double minOutputValue() const { return mMinOutput; }
 
     /**
      * Sets the minimum calculated size.
      * \param size minimum size
-     * \see minSize()
-     * \see setMaxSize()
+     * \see minOutputValue()
+     * \see setMaxOutputValue()
      */
     void setMinOutputValue( double size ) { mMinOutput = size; }
 
     /**
      * Returns the maximum calculated size.
-     * \see minSize()
+     * \see minOutputValue()
      */
     double maxOutputValue() const { return mMaxOutput; }
 
     /**
      * Sets the maximum calculated size.
      * \param size maximum size
-     * \see maxSize()
-     * \see setMinSize()
+     * \see maxOutputValue()
+     * \see setMinOutputValue()
      */
     void setMaxOutputValue( double size ) { mMaxOutput = size; }
 
     /**
      * Returns the size value when an expression evaluates to NULL.
-     * \see setNullSize()
+     * \see setNullOutputValue()
      */
     double nullOutputValue() const { return mNullOutput; }
 
     /**
      * Sets the size value for when an expression evaluates to NULL.
      * \param size null size
-     * \see nullSize()
+     * \see nullOutputValue()
      */
     void setNullOutputValue( double size ) { mNullOutput = size; }
 
     /**
      * Returns the exponent for an exponential expression.
      * \see setExponent()
-     * \see type()
      */
     double exponent() const { return mExponent; }
 
@@ -496,18 +489,12 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
                              double nullSize = 0.0,
                              double exponent = 1.0 );
 
-    /**
-     * Copy constructor.
-     */
-    QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other );
-    QgsSizeScaleTransformer &operator=( const QgsSizeScaleTransformer &other );
-
-    virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return SizeScaleTransformer; }
+    QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -602,7 +589,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
     void setType( ScaleType type );
 
   private:
-    ScaleType mType;
+    ScaleType mType = Linear;
     double mMinSize;
     double mMaxSize;
     double mNullSize;
@@ -639,12 +626,12 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
-    virtual Type transformerType() const override { return ColorRampTransformer; }
-    virtual QgsColorRampTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return ColorRampTransformer; }
+    QgsColorRampTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Calculates the color corresponding to a specific value.
@@ -676,7 +663,7 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
     /**
      * Sets the color corresponding to a null value.
      * \param color null color
-     * \see nullSize()
+     * \see nullColor()
      */
     void setNullColor( const QColor &color ) { mNullColor = color; }
 

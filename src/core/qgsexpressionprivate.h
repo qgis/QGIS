@@ -37,10 +37,6 @@ class QgsExpressionPrivate
   public:
     QgsExpressionPrivate()
       : ref( 1 )
-      , mRootNode( nullptr )
-      , mCalc( nullptr )
-      , mDistanceUnit( QgsUnitTypes::DistanceUnknownUnit )
-      , mAreaUnit( QgsUnitTypes::AreaUnknownUnit )
     {}
 
     QgsExpressionPrivate( const QgsExpressionPrivate &other )
@@ -48,6 +44,7 @@ class QgsExpressionPrivate
       , mRootNode( other.mRootNode ? other.mRootNode->clone() : nullptr )
       , mParserErrorString( other.mParserErrorString )
       , mEvalErrorString( other.mEvalErrorString )
+      , mParserErrors( other.mParserErrors )
       , mExp( other.mExp )
       , mCalc( other.mCalc )
       , mDistanceUnit( other.mDistanceUnit )
@@ -66,11 +63,13 @@ class QgsExpressionPrivate
     QString mParserErrorString;
     QString mEvalErrorString;
 
+    QList<QgsExpression::ParserError> mParserErrors;
+
     QString mExp;
 
     std::shared_ptr<QgsDistanceArea> mCalc;
-    QgsUnitTypes::DistanceUnit mDistanceUnit;
-    QgsUnitTypes::AreaUnit mAreaUnit;
+    QgsUnitTypes::DistanceUnit mDistanceUnit = QgsUnitTypes::DistanceUnknownUnit;
+    QgsUnitTypes::AreaUnit mAreaUnit = QgsUnitTypes::AreaUnknownUnit;
 };
 ///@endcond
 

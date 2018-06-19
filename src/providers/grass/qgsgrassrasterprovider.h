@@ -53,7 +53,7 @@ class QgsCoordinateTransform;
 class GRASS_LIB_EXPORT QgsGrassRasterValue
 {
   public:
-    QgsGrassRasterValue();
+    QgsGrassRasterValue() = default;
     ~QgsGrassRasterValue();
 
     QgsGrassRasterValue( const QgsGrassRasterValue &other ) = delete;
@@ -97,14 +97,15 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const &uri = 0 );
+    explicit QgsGrassRasterProvider( QString const &uri = QString() );
 
 
-    ~QgsGrassRasterProvider();
+    ~QgsGrassRasterProvider() override;
 
     QgsRasterInterface *clone() const override;
 
-    /** Return a provider name
+    /**
+     * Returns a provider name
      *
      * Essentially just returns the provider key.  Should be used to build file
      * dialogs so that providers can be shown with their supported types. Thus
@@ -121,9 +122,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     QString name() const override;
 
 
-    /** Return description
+    /**
+     * Returns description
      *
-     * Return a terse string describing what the provider is.
+     * Returns a terse string describing what the provider is.
      *
      * \note
      *
@@ -134,11 +136,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString description() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
-    /** Return the extent for this data layer
+    /**
+     * Returns the extent for this data layer
      */
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
@@ -165,7 +168,8 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
 
     QString lastError() override;
 
-    /** Returns a bitmask containing the supported capabilities
+    /**
+     * Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on which
         sublayers are visible on this provider, so it may
         be prudent to check this value per intended operation.
@@ -198,12 +202,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     // void buildSupportedRasterFileFilter( QString & fileFiltersString );
 
     /**
-     * Get metadata in a format suitable for feeding directly
+     * Gets metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata() override;
+    QString htmlMetadata() override;
 
-    virtual QDateTime dataTimestamp() const override;
+    QDateTime dataTimestamp() const override;
 
     // used by GRASS tools
     void freeze();
@@ -218,18 +222,18 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
     QString mMapName;       // map name
 
-    RASTER_MAP_TYPE mGrassDataType; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
+    RASTER_MAP_TYPE mGrassDataType = 0; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
 
-    int mCols;
-    int mRows;
-    int mYBlockSize;
+    int mCols = 0;
+    int mRows = 0;
+    int mYBlockSize = 0;
 
     QHash<QString, QString> mInfo;
 

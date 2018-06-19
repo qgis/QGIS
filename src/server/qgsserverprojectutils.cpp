@@ -105,40 +105,33 @@ bool QgsServerProjectUtils::wmsUseLayerIds( const QgsProject &project )
   return project.readBoolEntry( QStringLiteral( "WMSUseLayerIDs" ), QStringLiteral( "/" ), false );
 }
 
+int QgsServerProjectUtils::wmsImageQuality( const QgsProject &project )
+{
+  return project.readNumEntry( QStringLiteral( "WMSImageQuality" ), QStringLiteral( "/" ), -1 );
+}
+
 bool QgsServerProjectUtils::wmsInfoFormatSia2045( const QgsProject &project )
 {
   QString sia2045 = project.readEntry( QStringLiteral( "WMSInfoFormatSIA2045" ), QStringLiteral( "/" ), "" );
 
-  if ( sia2045.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
-       || sia2045.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return true;
-  }
-  return false;
+  return sia2045.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || sia2045.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( const QgsProject &project )
 {
   QString wktGeom = project.readEntry( QStringLiteral( "WMSAddWktGeometry" ), QStringLiteral( "/" ), "" );
 
-  if ( wktGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
-       || wktGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return true;
-  }
-  return false;
+  return wktGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || wktGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
 bool QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( const QgsProject &project )
 {
   QString segmGeom = project.readEntry( QStringLiteral( "WMSSegmentizeFeatureInfoGeometry" ), QStringLiteral( "/" ), "" );
 
-  if ( segmGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
-       || segmGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
-  {
-    return true;
-  }
-  return false;
+  return segmGeom.compare( QLatin1String( "enabled" ), Qt::CaseInsensitive ) == 0
+         || segmGeom.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 }
 
 int QgsServerProjectUtils::wmsFeatureInfoPrecision( const QgsProject &project )

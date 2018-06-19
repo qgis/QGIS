@@ -23,7 +23,8 @@
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A CSS editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
  * \since QGIS 2.6
@@ -33,7 +34,9 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsCodeEditorCSS
+    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     void setSciLexerCSS();

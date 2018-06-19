@@ -474,143 +474,100 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <widget class="QGroupBox" name="saveStrategyGroup">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>571</width>
-         <height>131</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Connection naming</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="lblSaveStrategy">
-          <property name="text">
-           <string>When saving the connection of an OWS service</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTitleAsk">
-          <property name="text">
-           <string>Use the OWS Service Title and ask before overwriting</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTitleNoAsk">
-          <property name="text">
-           <string>Use the OWS Service Title and always overwrite if already available</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QRadioButton" name="radioTempName">
-          <property name="text">
-           <string>Use a temporary name, which you can change later</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_3">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>230</y>
-         <width>571</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Results paging</string>
-       </property>
-       <widget class="QLabel" name="label_5">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>41</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Show</string>
-        </property>
-       </widget>
-       <widget class="QSpinBox" name="spnRecords">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>30</y>
-          <width>104</width>
-          <height>26</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>30</y>
-          <width>229</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>results at a time</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_4">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>150</y>
-         <width>571</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string>Server timeout</string>
-       </property>
-       <widget class="QSpinBox" name="spnTimeout">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>30</y>
-          <width>104</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="value">
-         <number>10</number>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_9">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>40</y>
-          <width>46</width>
-          <height>13</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>seconds</string>
-        </property>
-       </widget>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <item>
+        <widget class="QGroupBox" name="saveStrategyGroup">
+         <property name="title">
+          <string>Connection naming</string>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <item>
+           <widget class="QLabel" name="lblSaveStrategy">
+            <property name="text">
+             <string>When saving the connection of an OWS service</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioTitleAsk">
+            <property name="text">
+             <string>Use the OWS Service Title and ask before overwriting</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioTitleNoAsk">
+            <property name="text">
+             <string>Use the OWS Service Title and always overwrite if already available</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioTempName">
+            <property name="text">
+             <string>Use a temporary name, which you can change later</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Server timeout</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QSpinBox" name="spnTimeout">
+            <property name="value">
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="text">
+             <string>seconds</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Results paging</string>
+         </property>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Show</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="spnRecords"/>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>results at a time</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>

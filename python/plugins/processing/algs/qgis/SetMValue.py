@@ -29,7 +29,10 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
-                       QgsProcessingParameterNumber)
+                       QgsPropertyDefinition,
+                       QgsProcessingParameters,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingFeatureSource)
 
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -44,9 +47,14 @@ class SetMValue(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.m_value = 0
+        self.dynamic_m = False
+        self.m_property = None
 
     def name(self):
         return 'setmvalue'
@@ -61,26 +69,39 @@ class SetMValue(QgisFeatureBasedAlgorithm):
         return self.tr('set,add,m,measure,values').split(',')
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.M_VALUE,
-                                                       self.tr('M Value'), QgsProcessingParameterNumber.Double, defaultValue=0.0))
+        m_param = QgsProcessingParameterNumber(self.M_VALUE,
+                                               self.tr('M Value'), QgsProcessingParameterNumber.Double, defaultValue=0.0)
+        m_param.setIsDynamic(True)
+        m_param.setDynamicLayerParameterName('INPUT')
+        m_param.setDynamicPropertyDefinition(QgsPropertyDefinition(self.M_VALUE, self.tr("M Value"), QgsPropertyDefinition.Double))
+        self.addParameter(m_param)
 
     def outputWkbType(self, inputWkb):
         return QgsWkbTypes.addM(inputWkb)
 
     def prepareAlgorithm(self, parameters, context, feedback):
         self.m_value = self.parameterAsDouble(parameters, self.M_VALUE, context)
+        self.dynamic_m = QgsProcessingParameters.isDynamic(parameters, self.M_VALUE)
+        if self.dynamic_m:
+            self.m_property = parameters[self.M_VALUE]
         return True
 
-    def processFeature(self, feature, feedback):
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
-            new_geom = input_geometry.geometry().clone()
+            new_geom = input_geometry.constGet().clone()
             if QgsWkbTypes.hasM(new_geom.wkbType()):
                 # addMValue won't alter existing M values, so drop them first
                 new_geom.dropMValue()
 
-            new_geom.addMValue(self.m_value)
+            m = self.m_value
+            if self.dynamic_m:
+                m, ok = self.m_property.valueAsDouble(context.expressionContext(), m)
+            new_geom.addMValue(m)
 
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return feature
+        return [feature]

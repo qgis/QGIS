@@ -10,16 +10,85 @@ SET(QGIS_ANALYSIS_SRCS
   interpolation/CloughTocherInterpolator.cpp
   interpolation/DualEdgeTriangulation.cpp
   interpolation/HalfEdge.cpp
-  interpolation/Line3D.cpp
   interpolation/LinTriangleInterpolator.cpp
   interpolation/MathUtils.cpp
   interpolation/NormVecDecorator.cpp
-  interpolation/Node.cpp
   interpolation/ParametricLine.cpp
   interpolation/TriangleInterpolator.cpp
   interpolation/Triangulation.cpp
   interpolation/TriDecorator.cpp
   interpolation/Vector3D.cpp
+
+  processing/qgsalgorithmaddincrementalfield.cpp
+  processing/qgsalgorithmassignprojection.cpp
+  processing/qgsalgorithmboundary.cpp
+  processing/qgsalgorithmboundingbox.cpp
+  processing/qgsalgorithmbuffer.cpp
+  processing/qgsalgorithmcentroid.cpp
+  processing/qgsalgorithmclip.cpp
+  processing/qgsalgorithmconvexhull.cpp
+  processing/qgsalgorithmdifference.cpp
+  processing/qgsalgorithmdissolve.cpp
+  processing/qgsalgorithmdropgeometry.cpp
+  processing/qgsalgorithmdropmzvalues.cpp
+  processing/qgsalgorithmexplode.cpp
+  processing/qgsalgorithmextenttolayer.cpp
+  processing/qgsalgorithmextractbyattribute.cpp
+  processing/qgsalgorithmextractbyexpression.cpp
+  processing/qgsalgorithmextractbyextent.cpp
+  processing/qgsalgorithmextractbylocation.cpp
+  processing/qgsalgorithmextractvertices.cpp
+  processing/qgsalgorithmfiledownloader.cpp
+  processing/qgsalgorithmfilter.cpp
+  processing/qgsalgorithmfixgeometries.cpp
+  processing/qgsalgorithmintersection.cpp
+  processing/qgsalgorithmjoinbyattribute.cpp
+  processing/qgsalgorithmjoinwithlines.cpp
+  processing/qgsalgorithmimportphotos.cpp
+  processing/qgsalgorithmlineintersection.cpp
+  processing/qgsalgorithmloadlayer.cpp
+  processing/qgsalgorithmmeancoordinates.cpp
+  processing/qgsalgorithmmergelines.cpp
+  processing/qgsalgorithmmergevector.cpp
+  processing/qgsalgorithmminimumenclosingcircle.cpp
+  processing/qgsalgorithmmultiparttosinglepart.cpp
+  processing/qgsalgorithmmultiringconstantbuffer.cpp
+  processing/qgsalgorithmorderbyexpression.cpp
+  processing/qgsalgorithmorientedminimumboundingbox.cpp
+  processing/qgsalgorithmpackage.cpp
+  processing/qgsalgorithmpointonsurface.cpp
+  processing/qgsalgorithmprojectpointcartesian.cpp
+  processing/qgsalgorithmpromotetomultipart.cpp
+  processing/qgsalgorithmrasterlayeruniquevalues.cpp
+  processing/qgsalgorithmreclassifybylayer.cpp
+  processing/qgsalgorithmremoveduplicatevertices.cpp
+  processing/qgsalgorithmremoveholes.cpp
+  processing/qgsalgorithmremovenullgeometry.cpp
+  processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmrotate.cpp
+  processing/qgsalgorithmsaveselectedfeatures.cpp
+  processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmsimplify.cpp
+  processing/qgsalgorithmsmooth.cpp
+  processing/qgsalgorithmsnaptogrid.cpp
+  processing/qgsalgorithmsplitwithlines.cpp
+  processing/qgsalgorithmstringconcatenation.cpp
+  processing/qgsalgorithmswapxy.cpp
+  processing/qgsalgorithmsubdivide.cpp
+  processing/qgsalgorithmsymmetricaldifference.cpp
+  processing/qgsalgorithmtaperedbuffer.cpp
+  processing/qgsalgorithmtransect.cpp
+  processing/qgsalgorithmtransform.cpp
+  processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmunion.cpp
+  processing/qgsalgorithmuniquevalueindex.cpp
+  processing/qgsalgorithmwedgebuffers.cpp
+  processing/qgsalgorithmzonalhistogram.cpp
+
+  processing/qgsnativealgorithms.cpp
+  processing/qgsoverlayutils.cpp
+  processing/qgsrasteranalysisutils.cpp
+  processing/qgsreclassifyutils.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -36,13 +105,7 @@ SET(QGIS_ANALYSIS_SRCS
   raster/qgsrastermatrix.cpp
   vector/mersenne-twister.cpp
   vector/qgsgeometrysnapper.cpp
-  vector/qgstransectsample.cpp
   vector/qgszonalstatistics.cpp
-
-  openstreetmap/qgsosmbase.cpp
-  openstreetmap/qgsosmdatabase.cpp
-  openstreetmap/qgsosmdownload.cpp
-  openstreetmap/qgsosmimport.cpp
 
   network/qgsgraph.cpp
   network/qgsgraphbuilder.cpp
@@ -50,15 +113,70 @@ SET(QGIS_ANALYSIS_SRCS
   network/qgsnetworkdistancestrategy.cpp
   network/qgsvectorlayerdirector.cpp
   network/qgsgraphanalyzer.cpp
+
+  vector/geometry_checker/qgsfeaturepool.cpp
+  vector/geometry_checker/qgsgeometrychecker.cpp
+  vector/geometry_checker/qgsgeometryanglecheck.cpp
+  vector/geometry_checker/qgsgeometryareacheck.cpp
+  vector/geometry_checker/qgsgeometrycheck.cpp
+  vector/geometry_checker/qgsgeometrychecker.cpp
+  vector/geometry_checker/qgsgeometrycheckerutils.cpp
+  vector/geometry_checker/qgsgeometrycontainedcheck.cpp
+  vector/geometry_checker/qgsgeometrydanglecheck.cpp
+  vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.cpp
+  vector/geometry_checker/qgsgeometryduplicatecheck.cpp
+  vector/geometry_checker/qgsgeometryduplicatenodescheck.cpp
+  vector/geometry_checker/qgsgeometrygapcheck.cpp
+  vector/geometry_checker/qgsgeometryfollowboundariescheck.cpp
+  vector/geometry_checker/qgsgeometryholecheck.cpp
+  vector/geometry_checker/qgsgeometrylineintersectioncheck.cpp
+  vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.cpp
+  vector/geometry_checker/qgsgeometrymultipartcheck.cpp
+  vector/geometry_checker/qgsgeometryoverlapcheck.cpp
+  vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.cpp
+  vector/geometry_checker/qgsgeometrypointinpolygoncheck.cpp
+  vector/geometry_checker/qgsgeometrysegmentlengthcheck.cpp
+  vector/geometry_checker/qgsgeometryselfcontactcheck.cpp
+  vector/geometry_checker/qgsgeometryselfintersectioncheck.cpp
+  vector/geometry_checker/qgsgeometrysliverpolygoncheck.cpp
+  vector/geometry_checker/qgsgeometrytypecheck.cpp
 )
 
 SET(QGIS_ANALYSIS_MOC_HDRS
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
+  processing/qgsnativealgorithms.h
+
   vector/qgsgeometrysnapper.h
 
   network/qgsgraphdirector.h
   network/qgsvectorlayerdirector.h
+
+  processing/qgsalgorithmfiledownloader.h
+
+  vector/geometry_checker/qgsfeaturepool.h
+  vector/geometry_checker/qgsgeometrychecker.h
+  vector/geometry_checker/qgsgeometryanglecheck.h
+  vector/geometry_checker/qgsgeometryareacheck.h
+  vector/geometry_checker/qgsgeometrychecker.h
+  vector/geometry_checker/qgsgeometrycheck.h
+  vector/geometry_checker/qgsgeometrycontainedcheck.h
+  vector/geometry_checker/qgsgeometrydanglecheck.h
+  vector/geometry_checker/qgsgeometrydegeneratepolygoncheck.h
+  vector/geometry_checker/qgsgeometryduplicatecheck.h
+  vector/geometry_checker/qgsgeometryduplicatenodescheck.h
+  vector/geometry_checker/qgsgeometryfollowboundariescheck.h
+  vector/geometry_checker/qgsgeometrygapcheck.h
+  vector/geometry_checker/qgsgeometryholecheck.h
+  vector/geometry_checker/qgsgeometrylineintersectioncheck.h
+  vector/geometry_checker/qgsgeometrylinelayerintersectioncheck.h
+  vector/geometry_checker/qgsgeometrymultipartcheck.h
+  vector/geometry_checker/qgsgeometryoverlapcheck.h
+  vector/geometry_checker/qgsgeometrypointcoveredbylinecheck.h
+  vector/geometry_checker/qgsgeometrypointinpolygoncheck.h
+  vector/geometry_checker/qgsgeometrysegmentlengthcheck.h
+  vector/geometry_checker/qgsgeometryselfcontactcheck.h
+  vector/geometry_checker/qgsgeometryselfintersectioncheck.h
+  vector/geometry_checker/qgsgeometrysliverpolygoncheck.h
+  vector/geometry_checker/qgsgeometrytypecheck.h
 )
 
 INCLUDE_DIRECTORIES(SYSTEM ${SPATIALITE_INCLUDE_DIR})
@@ -99,6 +217,9 @@ QT5_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 # install headers
 
 SET(QGIS_ANALYSIS_HDRS
+  processing/qgsalgorithmimportphotos.h
+  processing/qgsreclassifyutils.h
+
   raster/qgsalignraster.h
   raster/qgsaspectfilter.h
   raster/qgsderivativefilter.h
@@ -115,8 +236,8 @@ SET(QGIS_ANALYSIS_HDRS
 
   vector/mersenne-twister.h
   vector/qgsgeometrysnapper.h
-  vector/qgstransectsample.h
   vector/qgszonalstatistics.h
+  vector/geometry_checker/qgsgeometrycheckerutils.h
 
   interpolation/qgsinterpolator.h
   interpolation/qgsgridfilewriter.h
@@ -129,18 +250,11 @@ SET(QGIS_ANALYSIS_HDRS
   interpolation/Vector3D.h
   interpolation/DualEdgeTriangulation.h
   interpolation/MathUtils.h
-  interpolation/Node.h
   interpolation/TriDecorator.h
   interpolation/Triangulation.h
   interpolation/HalfEdge.h
   interpolation/LinTriangleInterpolator.h
   interpolation/NormVecDecorator.h
-  interpolation/Line3D.h
-
-  openstreetmap/qgsosmbase.h
-  openstreetmap/qgsosmdatabase.h
-  openstreetmap/qgsosmdownload.h
-  openstreetmap/qgsosmimport.h
 
   network/qgsgraph.h
   network/qgsgraphbuilderinterface.h
@@ -156,6 +270,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/processing
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata
@@ -166,7 +281,7 @@ INCLUDE_DIRECTORIES(
   network
 )
 INCLUDE_DIRECTORIES(SYSTEM
-  ${PROJ_INCLUDE_DIR}
+  ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}

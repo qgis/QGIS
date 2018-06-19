@@ -1,0 +1,5 @@
+r.out.mat
+Exports a GRASS raster to a binary MAT-File
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterFileDestination|output|MAT File|Mat files (*.mat)|None|False

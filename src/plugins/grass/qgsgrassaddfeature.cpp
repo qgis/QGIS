@@ -21,7 +21,3 @@ QgsGrassAddFeature::QgsGrassAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
 {
   setCheckGeometryType( false );
 }
-
-QgsGrassAddFeature::~QgsGrassAddFeature()
-{
-}

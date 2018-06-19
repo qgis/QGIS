@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          begin                : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -21,11 +21,12 @@
 #include "qgisinterface.h"
 #include "qgsguiutils.h"
 
-// Qt4 Related Includes
+// Qt Related Includes
 #include <QAction>
 #include <QToolBar>
 #include <QFile>
 #include <QMessageBox>
+#include <QMenu>
 
 #include "topol.h"
 #include "checkDock.h"
@@ -46,18 +47,13 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
 /**
  * Constructor for the plugin. The plugin is passed a pointer
  * an interface object that provides access to exposed functions in QGIS.
- * @param theQGisInterface - Pointer to the QGIS interface object
+ * \param theQGisInterface - Pointer to the QGIS interface object
  */
 Topol::Topol( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
   mDock = nullptr;
-}
-
-Topol::~Topol()
-{
 }
 
 /*
@@ -82,7 +78,7 @@ void Topol::initGui()
   connect( mQActionPointer, &QAction::triggered, this, &Topol::showOrHide );
   // Add the icon to the toolbar
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( QString(), mQActionPointer );
   //run();
 }
 //method defined in interface
@@ -117,7 +113,7 @@ void Topol::run()
 void Topol::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
+  mQGisIface->vectorMenu()->removeAction( mQActionPointer );
   mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }

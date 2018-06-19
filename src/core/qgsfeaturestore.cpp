@@ -15,9 +15,6 @@
 
 #include "qgsfeaturestore.h"
 
-QgsFeatureStore::QgsFeatureStore()
-{
-}
 
 QgsFeatureStore::QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs )
   : mFields( fields )

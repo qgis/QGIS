@@ -28,13 +28,12 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas );
-    ~QgsMapToolMoveLabel();
 
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 

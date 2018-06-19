@@ -11,16 +11,16 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/providers/wms
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
+  ${CMAKE_SOURCE_DIR}/src/providers/arcgisrest
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
   ${POSTGRES_INCLUDE_DIR}
@@ -41,10 +41,10 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -64,7 +64,12 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
   COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
 )
 
+ADD_QGIS_TEST(arcgisrestutilstest testqgsarcgisrestutils.cpp)
+TARGET_LINK_LIBRARIES(qgis_arcgisrestutilstest arcgisfeatureserverprovider_a)
+
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
+
+ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
 
 ADD_QGIS_TEST(wmscapabilititestest
               testqgswmscapabilities.cpp)
@@ -102,17 +107,13 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
   )
-  INCLUDE_DIRECTORIES(SYSTEM
-    ${QT_QTSCRIPT_INCLUDE_DIR}
-  )
 
   TARGET_LINK_LIBRARIES(qgis_wcstest
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTNETWORK_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTXML_LIBRARY}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
     ${OPTIONAL_QTWEBKIT}
-    ${QT_QTSCRIPT_LIBRARY}
     qgis_core
   )
 

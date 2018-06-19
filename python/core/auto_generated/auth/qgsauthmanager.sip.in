@@ -1,0 +1,806 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthmanager.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsAuthManager : QObject
+{
+%Docstring
+Singleton offering an interface to manage the authentication configuration database
+and to utilize configurations through various authentication method plugins
+
+QgsAuthManager should not usually be directly created, but rather accessed through
+:py:func:`QgsApplication.authManager()`
+%End
+
+%TypeHeaderCode
+#include "qgsauthmanager.h"
+%End
+  public:
+
+    enum MessageLevel
+    {
+      INFO,
+      WARNING,
+      CRITICAL
+    };
+
+    bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
+%Docstring
+init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
+
+:param pluginPath: the plugin path
+:param authDatabasePath: the authentication DB path
+
+:return: true on success
+
+.. seealso:: :py:func:`QgsApplication.pluginPath`
+
+.. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
+%End
+
+    ~QgsAuthManager();
+
+    QSqlDatabase authDatabaseConnection() const;
+%Docstring
+Sets up the application instance of the authentication database connection
+%End
+
+    const QString authDatabaseConfigTable() const;
+%Docstring
+Name of the authentication database table that stores configs
+%End
+
+    const QString authDatabaseServersTable() const;
+%Docstring
+Name of the authentication database table that stores server exceptions/configs
+%End
+
+
+    bool isDisabled() const;
+%Docstring
+Whether QCA has the qca-ossl plugin, which a base run-time requirement
+%End
+
+    const QString disabledMessage() const;
+%Docstring
+Standard message for when QCA's qca-ossl plugin is missing and system is disabled
+%End
+
+    const QString authenticationDatabasePath() const;
+%Docstring
+The standard authentication database file in ~/.qgis3/ or defined location
+
+.. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
+%End
+
+    bool setMasterPassword( bool verify = false );
+%Docstring
+Main call to initially set or continually check master password is set
+
+.. note::
+
+   If it is not set, the user is asked for its input
+
+:param verify: Whether password's hash was saved in authentication database
+%End
+
+    bool setMasterPassword( const QString &pass, bool verify = false );
+%Docstring
+Overloaded call to reset master password or set it initially without user interaction
+
+.. note::
+
+   Only use this in trusted reset functions, unit tests or user/app setup scripts!
+
+:param pass: Password to use
+:param verify: Whether password's hash was saved in authentication database
+%End
+
+    bool verifyMasterPassword( const QString &compare = QString() );
+%Docstring
+Verify the supplied master password against any existing hash in authentication database
+
+.. note::
+
+   Do not emit verification signals when only comparing
+
+:param compare: Password to compare against
+%End
+
+    bool masterPasswordIsSet() const;
+%Docstring
+Whether master password has be input and verified, i.e. authentication database is accessible
+%End
+
+    bool masterPasswordHashInDatabase() const;
+%Docstring
+Verify a password hash existing in authentication database
+%End
+
+    void clearMasterPassword();
+%Docstring
+Clear supplied master password
+
+.. note::
+
+   This will not necessarily clear authenticated connections cached in network connection managers
+%End
+
+    bool masterPasswordSame( const QString &pass ) const;
+%Docstring
+Check whether supplied password is the same as the one already set
+
+:param pass: Password to verify
+%End
+
+    bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath /In,Out/ = 0 );
+%Docstring
+Reset the master password to a new one, then re-encrypt all previous
+configs in a new database file, optionally backup curren database
+
+:param newpass: New master password to replace existing
+:param oldpass: Current master password to replace existing
+:param keepbackup: Whether to keep the generated backup of current database
+:param backuppath: Where the backup is located, if kept
+%End
+
+
+
+    void setScheduledAuthDatabaseEraseRequestEmitted( bool emitted );
+%Docstring
+Re-emit a signal to schedule an optional erase of authentication database.
+
+.. note::
+
+   This can be called from the slot connected to a previously emitted scheduling signal,
+   so that the slot can ask for another emit later, if the slot noticies the current GUI
+   processing state is not ready for interacting with the user, e.g. project is still loading
+
+:param emitted: Setting to false will cause signal to be emitted by the schedule timer.
+                Setting to true will stop any emitting, but will not stop the schedule timer.
+%End
+
+    QString authManTag() const;
+%Docstring
+Simple text tag describing authentication system for message logs
+%End
+
+    bool registerCoreAuthMethods();
+%Docstring
+Instantiate and register existing C++ core authentication methods from plugins
+%End
+
+    QgsAuthMethodConfigsMap availableAuthMethodConfigs( const QString &dataprovider = QString() );
+%Docstring
+Gets mapping of authentication config ids and their base configs (not decrypted data)
+%End
+
+    void updateConfigAuthMethods();
+%Docstring
+Sync the confg/authentication method cache with what is in database
+%End
+
+    QgsAuthMethod *configAuthMethod( const QString &authcfg );
+%Docstring
+Gets authentication method from the config/provider cache
+
+:param authcfg: Authentication config id
+%End
+
+    QString configAuthMethodKey( const QString &authcfg ) const;
+%Docstring
+Gets key of authentication method associated with config ID
+
+:param authcfg:
+%End
+
+    QStringList authMethodsKeys( const QString &dataprovider = QString() );
+%Docstring
+Gets keys of supported authentication methods
+%End
+
+    QgsAuthMethod *authMethod( const QString &authMethodKey );
+%Docstring
+Gets authentication method from the config/provider cache via its key
+
+:param authMethodKey: Authentication method key
+%End
+
+
+    QWidget *authMethodEditWidget( const QString &authMethodKey, QWidget *parent );
+%Docstring
+Gets authentication method edit widget via its key
+
+:param authMethodKey: Authentication method key
+:param parent: Parent widget
+%End
+
+    QgsAuthMethod::Expansions supportedAuthMethodExpansions( const QString &authcfg );
+%Docstring
+Gets supported authentication method expansion(s), e.g. NetworkRequest | DataSourceURI, as flags
+
+:param authcfg:
+%End
+
+    const QString uniqueConfigId() const;
+%Docstring
+Gets a unique generated 7-character string to assign to as config id
+%End
+
+    bool configIdUnique( const QString &id ) const;
+%Docstring
+Verify if provided authentication id is unique
+
+:param id: Id to check
+%End
+
+    bool hasConfigId( const QString &txt ) const;
+%Docstring
+Returns whether a string includes an authcfg ID token
+
+:param txt: String to check
+%End
+
+    QString configIdRegex() const;
+%Docstring
+Returns the regular expression for authcfg=.{7} key/value token for authentication ids
+%End
+
+    QStringList configIds() const;
+%Docstring
+Gets list of authentication ids from database
+%End
+
+    bool storeAuthenticationConfig( QgsAuthMethodConfig &mconfig /In,Out/ );
+%Docstring
+Store an authentication config in the database
+
+:param mconfig: Associated authentication config id
+
+:return: Whether operation succeeded
+%End
+
+    bool updateAuthenticationConfig( const QgsAuthMethodConfig &config );
+%Docstring
+Update an authentication config in the database
+
+:param config: Associated authentication config id
+
+:return: Whether operation succeeded
+%End
+
+    bool loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig /In,Out/, bool full = false );
+%Docstring
+Load an authentication config from the database into subclass
+
+:param authcfg: Associated authentication config id
+:param mconfig: Subclassed config to load into
+:param full: Whether to decrypt and populate all sensitive data in subclass
+
+:return: Whether operation succeeded
+%End
+
+    bool removeAuthenticationConfig( const QString &authcfg );
+%Docstring
+Remove an authentication config in the database
+
+:param authcfg: Associated authentication config id
+
+:return: Whether operation succeeded
+%End
+
+    bool removeAllAuthenticationConfigs();
+%Docstring
+Clear all authentication configs from table in database and from provider caches
+
+:return: Whether operation succeeded
+%End
+
+    bool backupAuthenticationDatabase( QString *backuppath /In,Out/ = 0 );
+%Docstring
+Close connection to current authentication database and back it up
+
+:return: Path to backup
+%End
+
+    bool eraseAuthenticationDatabase( bool backup, QString *backuppath /In,Out/ = 0 );
+%Docstring
+Erase all rows from all tables in authentication database
+
+:param backup: Whether to backup of current database
+:param backuppath: Where the backup is locate
+
+:return: Whether operation succeeded
+%End
+
+
+
+    bool updateNetworkRequest( QNetworkRequest &request /In,Out/, const QString &authcfg,
+                               const QString &dataprovider = QString() );
+%Docstring
+Provider call to update a QNetworkRequest with an authentication config
+
+:param request: The QNetworkRequest
+:param authcfg: Associated authentication config id
+:param dataprovider: Provider key filter, offering logic branching in authentication method
+
+:return: Whether operation succeeded
+%End
+
+    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+%Docstring
+Provider call to update a QNetworkReply with an authentication config (used to skip known SSL errors, etc.)
+
+:param reply: The QNetworkReply
+:param authcfg: Associated authentication config id
+:param dataprovider: Provider key filter, offering logic branching in authentication method
+
+:return: Whether operation succeeded
+%End
+
+    bool updateDataSourceUriItems( QStringList &connectionItems /In,Out/, const QString &authcfg,
+                                   const QString &dataprovider = QString() );
+%Docstring
+Provider call to update a QgsDataSourceUri with an authentication config
+
+:param connectionItems: The connection items, e.g. username=myname, of :py:class:`QgsDataSourceUri`
+:param authcfg: Associated authentication config id
+:param dataprovider: Provider key filter, offering logic branching in authentication method
+
+:return: Whether operation succeeded
+%End
+
+    bool updateNetworkProxy( QNetworkProxy &proxy /In,Out/, const QString &authcfg,
+                             const QString &dataprovider = QString() );
+%Docstring
+Provider call to update a QNetworkProxy with an authentication config
+
+:param proxy: the QNetworkProxy
+:param authcfg: Associated authentication config id
+:param dataprovider: Provider key filter, offering logic branching in authentication method
+
+:return: Whether operation succeeded
+%End
+
+
+    bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
+%Docstring
+Store an authentication setting (stored as string via QVariant( value ).toString() )
+%End
+
+    QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
+%Docstring
+authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+
+:param key: setting key
+:param defaultValue:
+:param decrypt: if the value needs decrypted
+
+:return: QVariant( QString ) authentication setting
+
+.. versionadded:: 3.0
+%End
+
+    bool existsAuthSetting( const QString &key );
+%Docstring
+Check if an authentication setting exists
+%End
+
+    bool removeAuthSetting( const QString &key );
+%Docstring
+Remove an authentication setting
+%End
+
+
+    bool initSslCaches();
+%Docstring
+Initialize various SSL authentication caches
+%End
+
+    bool storeCertIdentity( const QSslCertificate &cert, const QSslKey &key );
+%Docstring
+Store a certificate identity
+%End
+
+    const QSslCertificate certIdentity( const QString &id );
+%Docstring
+certIdentity get a certificate identity by ``id`` (sha hash)
+
+:param id: sha hash of the cert
+
+:return: the certificate
+
+.. versionadded:: 3.0
+%End
+
+
+    const QStringList certIdentityBundleToPem( const QString &id );
+%Docstring
+certIdentityBundleToPem get a certificate identity bundle by ``id`` (sha hash) returned as PEM text
+
+:param id: sha hash
+
+:return: a list of strings
+
+.. versionadded:: 3.0
+%End
+
+    const QList<QSslCertificate> certIdentities();
+%Docstring
+certIdentities get certificate identities
+
+:return: list of certificates
+
+.. versionadded:: 3.0
+%End
+
+
+    QStringList certIdentityIds() const;
+%Docstring
+certIdentityIds get list of certificate identity ids from database
+
+:return: list of certificate ids
+
+.. versionadded:: 3.0
+%End
+
+    bool existsCertIdentity( const QString &id );
+%Docstring
+Check if a certificate identity exists
+%End
+
+    bool removeCertIdentity( const QString &id );
+%Docstring
+Remove a certificate identity
+%End
+
+
+    bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config );
+%Docstring
+Store an SSL certificate custom config
+%End
+
+    const QgsAuthConfigSslServer sslCertCustomConfig( const QString &id, const QString &hostport );
+%Docstring
+sslCertCustomConfig get an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
+
+:param id: sha hash
+:param hostport: string host:port
+
+:return: a SSL certificate custom config
+
+.. versionadded:: 3.0
+%End
+
+    const QgsAuthConfigSslServer sslCertCustomConfigByHost( const QString &hostport );
+%Docstring
+sslCertCustomConfigByHost get an SSL certificate custom config by ``hostport`` (host:port)
+
+:param hostport: host:port
+
+:return: a SSL certificate custom config
+
+.. versionadded:: 3.0
+%End
+
+    const QList<QgsAuthConfigSslServer> sslCertCustomConfigs();
+%Docstring
+sslCertCustomConfigs get SSL certificate custom configs
+
+:return: list of SSL certificate custom config
+
+.. versionadded:: 3.0
+%End
+
+    bool existsSslCertCustomConfig( const QString &id, const QString &hostport );
+%Docstring
+Check if SSL certificate custom config exists
+%End
+
+    bool removeSslCertCustomConfig( const QString &id, const QString &hostport );
+%Docstring
+Remove an SSL certificate custom config
+%End
+
+
+    void dumpIgnoredSslErrorsCache_();
+%Docstring
+Utility function to dump the cache for debug purposes
+%End
+
+    bool updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer &config );
+%Docstring
+Update ignored SSL error cache with possible ignored SSL errors, using server config
+%End
+
+    bool updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors );
+%Docstring
+Update ignored SSL error cache with possible ignored SSL errors, using sha:host:port key
+%End
+
+    bool rebuildIgnoredSslErrorCache();
+%Docstring
+Rebuild ignoredSSL error cache
+%End
+
+
+    bool storeCertAuthorities( const QList<QSslCertificate> &certs );
+%Docstring
+Store multiple certificate authorities
+%End
+
+    bool storeCertAuthority( const QSslCertificate &cert );
+%Docstring
+Store a certificate authority
+%End
+
+
+    const QSslCertificate certAuthority( const QString &id );
+%Docstring
+certAuthority get a certificate authority by ``id`` (sha hash)
+
+:param id: sha hash
+
+:return: a certificate
+
+.. versionadded:: 3.0
+%End
+
+    bool existsCertAuthority( const QSslCertificate &cert );
+%Docstring
+Check if a certificate authority exists
+%End
+
+    bool removeCertAuthority( const QSslCertificate &cert );
+%Docstring
+Remove a certificate authority
+%End
+
+    const QList<QSslCertificate> systemRootCAs();
+%Docstring
+systemRootCAs get root system certificate authorities
+
+:return: list of certificate authorities
+
+.. versionadded:: 3.0
+%End
+
+    const QList<QSslCertificate> extraFileCAs();
+%Docstring
+extraFileCAs extra file-based certificate authorities
+
+:return: list of certificate authorities
+
+.. versionadded:: 3.0
+%End
+
+    const QList<QSslCertificate> databaseCAs();
+%Docstring
+databaseCAs get database-stored certificate authorities
+
+:return: list of certificate authorities
+
+.. versionadded:: 3.0
+%End
+
+    const QMap<QString, QSslCertificate> mappedDatabaseCAs();
+%Docstring
+mappedDatabaseCAs get sha1-mapped database-stored certificate authorities
+
+:return: sha1-mapped certificate authorities
+
+.. versionadded:: 3.0
+%End
+
+
+    bool rebuildCaCertsCache();
+%Docstring
+Rebuild certificate authority cache
+%End
+
+    bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy );
+%Docstring
+Store user trust value for a certificate
+%End
+
+    QgsAuthCertUtils::CertTrustPolicy certTrustPolicy( const QSslCertificate &cert );
+%Docstring
+certTrustPolicy get whether certificate ``cert`` is trusted by user
+
+:param cert:
+
+:return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+
+.. versionadded:: 3.0
+%End
+
+    bool removeCertTrustPolicies( const QList<QSslCertificate> &certs );
+%Docstring
+Remove a group certificate authorities
+%End
+
+    bool removeCertTrustPolicy( const QSslCertificate &cert );
+%Docstring
+Remove a certificate authority
+%End
+
+    QgsAuthCertUtils::CertTrustPolicy certificateTrustPolicy( const QSslCertificate &cert );
+%Docstring
+certificateTrustPolicy get trust policy for a particular certificate ``cert``
+
+:param cert:
+
+:return: DefaultTrust if certificate sha not in trust table, i.e. follows default trust policy
+
+.. versionadded:: 3.0
+%End
+
+    bool setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy );
+%Docstring
+Sets the default certificate trust policy preferred by user
+%End
+
+    QgsAuthCertUtils::CertTrustPolicy defaultCertTrustPolicy();
+%Docstring
+Gets the default certificate trust policy preferred by user
+%End
+
+    const QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > certTrustCache();
+%Docstring
+certTrustCache get cache of certificate sha1s, per trust policy
+
+:return: trust-policy-mapped certificate sha1s
+
+.. versionadded:: 3.0
+%End
+
+    bool rebuildCertTrustCache();
+%Docstring
+Rebuild certificate authority cache
+%End
+
+    const QList<QSslCertificate> trustedCaCerts( bool includeinvalid = false );
+%Docstring
+trustedCaCerts get list of all trusted CA certificates
+
+:param includeinvalid: whether invalid certs needs to be returned
+
+:return: list of certificates
+
+.. versionadded:: 3.0
+%End
+
+    const QList<QSslCertificate> untrustedCaCerts( QList<QSslCertificate> trustedCAs = QList<QSslCertificate>() );
+%Docstring
+untrustedCaCerts get list of untrusted certificate authorities
+
+:return: list of certificates
+
+.. versionadded:: 3.0
+%End
+
+    bool rebuildTrustedCaCertsCache();
+%Docstring
+Rebuild trusted certificate authorities cache
+%End
+
+    const QList<QSslCertificate> trustedCaCertsCache();
+%Docstring
+trustedCaCertsCache cache of trusted certificate authorities, ready for network connections
+
+:return: list of certificates
+
+.. versionadded:: 3.0
+%End
+
+    const QByteArray trustedCaCertsPemText();
+%Docstring
+trustedCaCertsPemText get concatenated string of all trusted CA certificates
+
+:return: bye array with all PEM encoded trusted CAs
+
+.. versionadded:: 3.0
+%End
+
+
+
+
+
+
+
+
+
+    static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    static const QString AUTH_MAN_TAG;
+
+  signals:
+
+    void passwordHelperFailure();
+%Docstring
+Signals emitted on password helper failure,
+mainly used in the tests to exit main application loop
+%End
+
+    void passwordHelperSuccess();
+%Docstring
+Signals emitted on password helper success,
+mainly used in the tests to exit main application loop
+%End
+
+    void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
+%Docstring
+Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
+
+:param message: Message to send
+:param tag: Associated tag (title)
+:param level: Message log level
+
+.. seealso:: :py:class:`QgsMessageLog`
+%End
+
+    void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
+%Docstring
+Custom logging signal to inform the user about master password <-> password manager interactions
+
+:param message: Message to send
+:param tag: Associated tag (title)
+:param level: Message log level
+
+.. seealso:: :py:class:`QgsMessageLog`
+%End
+
+
+    void masterPasswordVerified( bool verified );
+%Docstring
+Emitted when a password has been verify (or not)
+
+:param verified: The state of password's verification
+%End
+
+    void authDatabaseEraseRequested();
+%Docstring
+Emitted when a user has indicated they may want to erase the authentication db.
+%End
+
+    void authDatabaseChanged();
+%Docstring
+Emitted when the authentication db is significantly changed, e.g. large record removal, erased, etc.
+%End
+
+  public slots:
+    void clearAllCachedConfigs();
+%Docstring
+Clear all authentication configs from authentication method caches
+%End
+
+    void clearCachedConfig( const QString &authcfg );
+%Docstring
+Clear an authentication config from its associated authentication method cache
+%End
+
+  protected:
+
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthmanager.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

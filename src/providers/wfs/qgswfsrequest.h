@@ -19,6 +19,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QUrl>
+#include <QAuthenticator>
 
 #include "qgswfsdatasourceuri.h"
 
@@ -27,9 +28,9 @@ class QgsWfsRequest : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsWfsRequest( const QString &uri );
+    explicit QgsWfsRequest( const QgsWFSDataSourceURI &uri );
 
-    virtual ~QgsWfsRequest();
+    ~QgsWfsRequest() override;
 
     //! \brief proceed to sending a GET request
     bool sendGET( const QUrl &url, bool synchronous, bool forceRefresh = false, bool cache = true );
@@ -45,14 +46,17 @@ class QgsWfsRequest : public QObject
                      WFSVersionNotSupported
                    };
 
-    //! \brief Return error code (after download/post)
+    //! Returns the error code (after download/post)
     ErrorCode errorCode() const { return mErrorCode; }
 
-    //! \brief Return error message (after download/post)
+    //! Returns the error message (after download/post)
     QString errorMessage() const { return mErrorMessage; }
 
-    //! \brief Return server response (after download/post)
+    //! Returns the server response (after download/post)
     QByteArray response() const { return mResponse; }
+
+    //! Returns the url for a WFS request
+    QUrl requestUrl( const QString &request ) const;
 
   public slots:
     //! Abort network request immediately
@@ -100,19 +104,45 @@ class QgsWfsRequest : public QObject
 
   protected:
 
-    //! base service URL
-    QUrl baseURL() const { return mUri.baseURL(); }
-
-    /** Return (translated) error message, composed with a
-        (possibly translated, but sometimes coming from server) reason  */
+    /**
+     * Returns (translated) error message, composed with a
+     * (possibly translated, but sometimes coming from server) reason
+     */
     virtual QString errorMessageWithReason( const QString &reason ) = 0;
 
-    //! Return experiation delay in second
+    //! Returns experiation delay in second
     virtual int defaultExpirationInSec() { return 0; }
 
   private:
     QString errorMessageFailedAuth();
 
+};
+
+
+class DownloaderThread : public QThread
+{
+    Q_OBJECT
+
+  public:
+    DownloaderThread( std::function<bool()> function, QObject *parent = nullptr )
+      : QThread( parent )
+      , mFunction( function )
+    {
+    }
+
+    void run() override
+    {
+      mSuccess = mFunction();
+    }
+
+    bool success() const
+    {
+      return mSuccess;
+    }
+
+  private:
+    std::function<bool()> mFunction;
+    bool mSuccess = false;
 };
 
 #endif // QGSWFSREQUEST_H

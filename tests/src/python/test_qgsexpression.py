@@ -97,7 +97,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(args, 3)
         values = [1, 2, 3]
         exp = QgsExpression("")
-        result = function.func(values, None, exp)
+        result = function.func(values, None, exp, None)
         # Make sure there is no eval error
         self.assertEqual(exp.evalErrorString(), "")
         self.assertEqual(result, (1, 2, 3))

@@ -16,6 +16,19 @@
 
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemtexttable.h"
+#include "qgslayoutframe.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
 #include <QPainter>
@@ -28,6 +41,7 @@ QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
 QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
 {
   qDeleteAll( mMetadata );
+  qDeleteAll( mMultiFrameMetadata );
 }
 
 bool QgsLayoutItemRegistry::populate()
@@ -35,18 +49,36 @@ bool QgsLayoutItemRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
+#if 0
   // add temporary item to register
-  auto createTemporaryItem = []( QgsLayout * layout, const QVariantMap & )->QgsLayoutItem*
+  auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem *
   {
     return new TestLayoutItem( layout );
   };
 
-  addLayoutItemType( new QgsLayoutItemMetadata( 101, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), nullptr ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), createTemporaryItem ) );
+#endif
 
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutRectangle, QStringLiteral( "Rectangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), QgsLayoutItemRectangularShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutEllipse, QStringLiteral( "Ellipse" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicCircle.svg" ) ), QgsLayoutItemEllipseShape::create ) );
-  addLayoutItemType( new QgsLayoutItemMetadata( LayoutTriangle, QStringLiteral( "Triangle" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicTriangle.svg" ) ), QgsLayoutItemTriangleShape::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QObject::tr( "Group" ), QgsLayoutItemGroup::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutFrame, QObject::tr( "Frame" ), QgsLayoutFrame::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QObject::tr( "Page" ), QgsLayoutItemPage::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutMap, QObject::tr( "Map" ), QgsLayoutItemMap::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QObject::tr( "Picture" ), QgsLayoutItemPicture::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QObject::tr( "Label" ), QgsLayoutItemLabel::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QObject::tr( "Legend" ), QgsLayoutItemLegend::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutScaleBar, QObject::tr( "Scalebar" ), QgsLayoutItemScaleBar::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QObject::tr( "Shape" ), []( QgsLayout * layout )
+  {
+    QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );
+    shape->setShapeType( QgsLayoutItemShape::Rectangle );
+    return shape;
+  } ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolygon, QObject::tr( "Polygon" ), QgsLayoutItemPolygon::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QObject::tr( "Polyline" ), QgsLayoutItemPolyline::create ) );
+
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QObject::tr( "HTML" ), QgsLayoutItemHtml::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsLayoutItemAttributeTable::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutTextTable, QObject::tr( "Text Table" ), QgsLayoutItemTextTable::create ) );
 
   return true;
 }
@@ -54,6 +86,11 @@ bool QgsLayoutItemRegistry::populate()
 QgsLayoutItemAbstractMetadata *QgsLayoutItemRegistry::itemMetadata( int type ) const
 {
   return mMetadata.value( type );
+}
+
+QgsLayoutMultiFrameAbstractMetadata *QgsLayoutItemRegistry::multiFrameMetadata( int type ) const
+{
+  return mMultiFrameMetadata.value( type );
 }
 
 bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata )
@@ -66,35 +103,61 @@ bool QgsLayoutItemRegistry::addLayoutItemType( QgsLayoutItemAbstractMetadata *me
   return true;
 }
 
-QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout, const QVariantMap &properties ) const
+bool QgsLayoutItemRegistry::addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata )
+{
+  if ( !metadata || mMultiFrameMetadata.contains( metadata->type() ) )
+    return false;
+
+  mMultiFrameMetadata[metadata->type()] = metadata;
+  emit multiFrameTypeAdded( metadata->type(), metadata->visibleName() );
+  return true;
+}
+
+QgsLayoutItem *QgsLayoutItemRegistry::createItem( int type, QgsLayout *layout ) const
 {
   if ( !mMetadata.contains( type ) )
     return nullptr;
 
-  return mMetadata[type]->createItem( layout, properties );
+  return mMetadata[type]->createItem( layout );
+}
+
+QgsLayoutMultiFrame *QgsLayoutItemRegistry::createMultiFrame( int type, QgsLayout *layout ) const
+{
+  if ( !mMultiFrameMetadata.contains( type ) )
+    return nullptr;
+
+  return mMultiFrameMetadata[type]->createMultiFrame( layout );
 }
 
 void QgsLayoutItemRegistry::resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const
 {
-  if ( !mMetadata.contains( type ) )
-    return;
-
-  mMetadata[type]->resolvePaths( properties, pathResolver, saving );
-
+  if ( mMetadata.contains( type ) )
+  {
+    mMetadata[type]->resolvePaths( properties, pathResolver, saving );
+  }
+  else if ( mMultiFrameMetadata.contains( type ) )
+  {
+    mMultiFrameMetadata[type]->resolvePaths( properties, pathResolver, saving );
+  }
 }
 
 QMap<int, QString> QgsLayoutItemRegistry::itemTypes() const
 {
   QMap<int, QString> types;
-  QMap<int, QgsLayoutItemAbstractMetadata *>::ConstIterator it = mMetadata.constBegin();
-  for ( ; it != mMetadata.constEnd(); ++it )
+  for ( auto it = mMetadata.constBegin(); it != mMetadata.constEnd(); ++it )
   {
     types.insert( it.key(), it.value()->visibleName() );
   }
+  for ( auto it = mMultiFrameMetadata.constBegin(); it != mMultiFrameMetadata.constEnd(); ++it )
+  {
+    types.insert( it.key(), it.value()->visibleName() );
+  }
+
   return types;
 }
 
 ///@cond TEMPORARY
+#if 0
 TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
@@ -143,4 +206,5 @@ void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphics
   painter->restore();
   stack.end( context );
 }
+#endif
 ///@endcond

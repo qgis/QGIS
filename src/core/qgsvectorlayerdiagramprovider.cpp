@@ -20,6 +20,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "diagram/qgsdiagram.h"
+#include "qgsgeos.h"
 
 #include "feature.h"
 #include "labelposition.h"
@@ -83,6 +84,7 @@ QList<QgsLabelFeature *> QgsVectorLayerDiagramProvider::labelFeatures( QgsRender
   QgsFeature fet;
   while ( fit.nextFeature( fet ) )
   {
+    context.expressionContext().setFeature( fet );
     registerFeature( fet, context );
   }
 
@@ -145,8 +147,12 @@ bool QgsVectorLayerDiagramProvider::prepare( const QgsRenderContext &context, QS
     // this is context for layer rendering - use its CT as it includes correct datum transform
     s2.setCoordinateTransform( context.coordinateTransform() );
   else
+  {
     // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
+    Q_NOWARN_DEPRECATED_PUSH
     s2.setCoordinateTransform( QgsCoordinateTransform( mLayerCrs, mapSettings.destinationCrs() ) );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   s2.setRenderer( mDiagRenderer );
 
@@ -207,7 +213,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     extentGeom.rotate( -mapSettings.rotation(), mapSettings.visibleExtent().center() );
   }
 
-  GEOSGeometry *geomCopy = nullptr;
+  geos::unique_ptr geomCopy;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, mSettings.coordinateTransform(), extentGeom ) )
   {
@@ -215,26 +221,26 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     QgsGeometry *preparedGeom = scopedPreparedGeom.get();
     if ( preparedGeom->isNull() )
       return nullptr;
-    geomCopy = preparedGeom->exportToGeos();
+    geomCopy = QgsGeos::asGeos( *preparedGeom );
   }
   else
   {
-    geomCopy = geom.exportToGeos();
+    geomCopy = QgsGeos::asGeos( geom );
   }
 
   if ( !geomCopy )
     return nullptr; // invalid geometry
 
-  GEOSGeometry *geosObstacleGeomClone = nullptr;
+  geos::unique_ptr geosObstacleGeomClone;
   std::unique_ptr<QgsGeometry> scopedObstacleGeom;
   if ( isObstacle && obstacleGeometry && QgsPalLabeling::geometryRequiresPreparation( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom ) )
   {
     QgsGeometry preparedObstacleGeom = QgsPalLabeling::prepareGeometry( obstacleGeometry, context, mSettings.coordinateTransform(), extentGeom );
-    geosObstacleGeomClone = preparedObstacleGeom.exportToGeos();
+    geosObstacleGeomClone = QgsGeos::asGeos( preparedObstacleGeom );
   }
   else if ( mSettings.isObstacle() && !obstacleGeometry.isNull() )
   {
-    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
+    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }
 
   double diagramWidth = 0;
@@ -282,7 +288,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
     }
   }
 
-  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), geomCopy, QSizeF( diagramWidth, diagramHeight ) );
+  QgsDiagramLabelFeature *lf = new QgsDiagramLabelFeature( feat.id(), std::move( geomCopy ), QSizeF( diagramWidth, diagramHeight ) );
   lf->setHasFixedPosition( ddPos );
   lf->setFixedPosition( QgsPointXY( ddPosX, ddPosY ) );
   lf->setHasFixedAngle( true );
@@ -291,7 +297,7 @@ QgsLabelFeature *QgsVectorLayerDiagramProvider::registerDiagram( QgsFeature &fea
   lf->setIsObstacle( isObstacle );
   if ( geosObstacleGeomClone )
   {
-    lf->setObstacleGeometry( geosObstacleGeomClone );
+    lf->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
   }
 
   if ( dr )

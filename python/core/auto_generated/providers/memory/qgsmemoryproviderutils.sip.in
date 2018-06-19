@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/memory/qgsmemoryproviderutils.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMemoryProviderUtils
+{
+%Docstring
+Utility functions for use with the memory vector data provider.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsmemoryproviderutils.h"
+%End
+  public:
+
+    static QgsVectorLayer *createMemoryLayer( const QString &name,
+        const QgsFields &fields,
+        QgsWkbTypes::Type geometryType = QgsWkbTypes::NoGeometry,
+        const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) /Factory/;
+%Docstring
+Creates a new memory layer using the specified parameters. The caller takes responsibility
+for deleting the newly created layer.
+
+:param name: layer name
+:param fields: fields for layer
+:param geometryType: optional layer geometry type
+:param crs: optional layer CRS for layers with geometry
+%End
+};
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/providers/memory/qgsmemoryproviderutils.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

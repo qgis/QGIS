@@ -19,10 +19,6 @@
 #include <QImage>
 #include <cmath>
 
-QgsBilinearRasterResampler::QgsBilinearRasterResampler()
-{
-}
-
 QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 {
   return new QgsBilinearRasterResampler();

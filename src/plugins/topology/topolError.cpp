@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -22,7 +22,7 @@
 //TODO: tell dock to parse errorlist when feature is deleted
 bool TopolError::fix( const QString &fixName )
 {
-  QgsMessageLog::logMessage( QObject::tr( "Using fix %1." ).arg( fixName ), QObject::tr( "Topology plugin" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QObject::tr( "Using fix %1." ).arg( fixName ), QObject::tr( "Topology plugin" ), Qgis::Info );
   return ( this->*mFixMap[fixName] )();
 }
 
@@ -94,11 +94,11 @@ bool TopolError::fixSnap()
 
   QgsGeometry ge = f1.geometry();
 
-  QgsPolyline line = ge.asPolyline();
-  QgsPolyline conflictLine = mConflict.asPolyline();
+  QgsPolylineXY line = ge.asPolyline();
+  QgsPolylineXY conflictLine = mConflict.asPolyline();
   line.last() = conflictLine.last();
 
-  QgsGeometry newG = QgsGeometry::fromPolyline( line );
+  QgsGeometry newG = QgsGeometry::fromPolylineXY( line );
   bool ret = fl.layer->changeGeometry( f1.id(), newG );
 
   return ret;

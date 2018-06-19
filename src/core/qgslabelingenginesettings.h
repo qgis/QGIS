@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgslabelingenginesettings.h
+    ---------------------
+    begin                : April 2017
+    copyright            : (C) 2017 by Martin Dobias
+    email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #ifndef QGSLABELINGENGINESETTINGS_H
 #define QGSLABELINGENGINESETTINGS_H
 
@@ -7,7 +21,8 @@
 
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Stores global configuration for labeling engine
  * \since QGIS 3.0
  */
@@ -25,8 +40,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    //! Search methods in the PAL library to remove colliding labels
-    //! (methods have different processing speed and number of labels placed)
+    /**
+     * Search methods in the PAL library to remove colliding labels
+     * (methods have different processing speed and number of labels placed)
+     */
     enum Search
     {
       Chain,
@@ -38,24 +55,24 @@ class CORE_EXPORT QgsLabelingEngineSettings
 
     QgsLabelingEngineSettings();
 
-    //! Return the configuration to the defaults
+    //! Returns the configuration to the defaults
     void clear();
 
-    //! Set flags of the labeling engine
+    //! Sets flags of the labeling engine
     void setFlags( Flags flags ) { mFlags = flags; }
-    //! Get flags of the labeling engine
+    //! Gets flags of the labeling engine
     Flags flags() const { return mFlags; }
     //! Test whether a particular flag is enabled
     bool testFlag( Flag f ) const { return mFlags.testFlag( f ); }
-    //! Set whether a particual flag is enabled
+    //! Sets whether a particual flag is enabled
     void setFlag( Flag f, bool enabled = true ) { if ( enabled ) mFlags |= f; else mFlags &= ~f; }
 
-    //! Get number of candidate positions that will be generated for each label feature (default to 8)
+    //! Gets number of candidate positions that will be generated for each label feature (default to 8)
     void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const { candPoint = mCandPoint; candLine = mCandLine; candPolygon = mCandPolygon; }
-    //! Set number of candidate positions that will be generated for each label feature
+    //! Sets number of candidate positions that will be generated for each label feature
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) { mCandPoint = candPoint; mCandLine = candLine; mCandPolygon = candPolygon; }
 
-    //! Set which search method to use for removal collisions between labels
+    //! Sets which search method to use for removal collisions between labels
     void setSearchMethod( Search s ) { mSearchMethod = s; }
     //! Which search method to use for removal collisions between labels
     Search searchMethod() const { return mSearchMethod; }
@@ -69,9 +86,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
     //! Flags
     Flags mFlags;
     //! search method to use for removal collisions between labels
-    Search mSearchMethod;
+    Search mSearchMethod = Chain;
     //! Number of candedate positions that will be generated for features
-    int mCandPoint, mCandLine, mCandPolygon;
+    int mCandPoint = 16, mCandLine = 50, mCandPolygon = 30;
 
 };
 

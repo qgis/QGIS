@@ -105,25 +105,25 @@ def writeShape(theMemoryLayer, theFileName):
     myFileName = os.path.join(str(QDir.tempPath()), theFileName)
     print(myFileName)
     # Explicitly giving all options, not really needed but nice for clarity
-    myErrorMessage = ''
     myOptions = []
     myLayerOptions = []
     mySelectedOnlyFlag = False
     mySkipAttributesFlag = False
     myGeoCrs = QgsCoordinateReferenceSystem()
     myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
-    myResult = QgsVectorFileWriter.writeAsVectorFormat(
+    myResult, myErrorMessage = QgsVectorFileWriter.writeAsVectorFormat(
         theMemoryLayer,
         myFileName,
         'utf-8',
         myGeoCrs,
         'ESRI Shapefile',
         mySelectedOnlyFlag,
-        myErrorMessage,
         myOptions,
         myLayerOptions,
         mySkipAttributesFlag)
-    assert myResult == QgsVectorFileWriter.NoError
+    assert myResult == QgsVectorFileWriter.NoError, 'Writing shape failed, Error {} ({})'.format(myResult, myErrorMessage)
+
+    return myFileName
 
 
 def doubleNear(a, b, tol=0.0000000001):
@@ -323,8 +323,8 @@ def printImportant(info):
 def waitServer(url, timeout=10):
     """ Wait for a server to be online and to respond
         HTTP errors are ignored
-        @param timeout: in seconds
-        @return: True of False
+        \param timeout: in seconds
+        \return: True of False
     """
     from time import time as now
     end = now() + timeout

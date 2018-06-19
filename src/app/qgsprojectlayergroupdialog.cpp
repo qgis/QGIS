@@ -25,26 +25,56 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QPushButton>
+
+QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
+  : QgsLayerTreeModel( rootNode, parent )
+{
+}
+
+QVariant QgsEmbeddedLayerTreeModel::data( const QModelIndex &index, int role ) const
+{
+  if ( role == Qt::ForegroundRole || role == Qt::FontRole )
+    return QVariant();
+
+  return QgsLayerTreeModel::data( index, role );
+}
+
+
 
 QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
   : QDialog( parent, f )
-  , mShowEmbeddedContent( false )
   , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
 
+  mProjectFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  mProjectFileWidget->setFilter( tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.QGS)" ) );
+  mProjectFileWidget->setDialogTitle( tr( "Select Project File" ) );
+  mProjectFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString() );
   if ( !projectFile.isEmpty() )
   {
-    mProjectFileLineEdit->setText( projectFile );
+    mProjectFileWidget->setFilePath( projectFile );
     mProjectFileLabel->hide();
-    mProjectFileLineEdit->hide();
-    mBrowseFileToolButton->hide();
+    mProjectFileWidget->hide();
     mShowEmbeddedContent = true;
+    mPresetProjectMode = true;
     changeProjectFile();
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
   }
+  else
+  {
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
+  }
+
+  connect( mProjectFileWidget, &QgsFileWidget::fileChanged, this, &QgsProjectLayerGroupDialog::changeProjectFile );
+
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
+
+  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
+
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
@@ -99,7 +129,7 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 
 QString QgsProjectLayerGroupDialog::selectedProjectFile() const
 {
-  return mProjectFileLineEdit->text();
+  return mProjectFileWidget->filePath();
 }
 
 bool QgsProjectLayerGroupDialog::isValid() const
@@ -107,47 +137,24 @@ bool QgsProjectLayerGroupDialog::isValid() const
   return nullptr != mTreeView->layerTreeModel();
 }
 
-void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
-{
-  //line edit might emit editingFinished signal when losing focus
-  mProjectFileLineEdit->blockSignals( true );
-
-  QgsSettings s;
-  QString projectFile = QFileDialog::getOpenFileName( this,
-                        tr( "Select project file" ),
-                        s.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString(),
-                        tr( "QGIS files" ) + " (*.qgs *.QGS)" );
-  if ( !projectFile.isEmpty() )
-  {
-    mProjectFileLineEdit->setText( projectFile );
-  }
-  changeProjectFile();
-  mProjectFileLineEdit->blockSignals( false );
-}
-
-void QgsProjectLayerGroupDialog::on_mProjectFileLineEdit_editingFinished()
-{
-  changeProjectFile();
-}
-
 void QgsProjectLayerGroupDialog::changeProjectFile()
 {
-  QFile projectFile( mProjectFileLineEdit->text() );
+  QFile projectFile( mProjectFileWidget->filePath() );
   if ( !projectFile.exists() )
   {
     return;
   }
 
-  if ( mProjectPath == mProjectFileLineEdit->text() )
+  if ( mProjectPath == mProjectFileWidget->filePath() )
   {
     //already up to date
     return;
   }
 
   //check we are not embedding from/to the same project
-  if ( mProjectFileLineEdit->isVisible() && mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
+  if ( mProjectFileWidget->isVisible() && mProjectFileWidget->filePath() == QgsProject::instance()->fileName() )
   {
-    QMessageBox::critical( nullptr, tr( "Recursive embedding not possible" ), tr( "It is not possible to embed layers / groups from the current project." ) );
+    QMessageBox::critical( nullptr, tr( "Embed Layers and Groups" ), tr( "Recursive embedding is not supported. It is not possible to embed layers / groups from the current project." ) );
     return;
   }
 
@@ -168,7 +175,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
   }
   else
   {
@@ -178,12 +185,12 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   if ( !mShowEmbeddedContent )
     removeEmbeddedNodes( mRootGroup );
 
-  QgsLayerTreeModel *model = new QgsLayerTreeModel( mRootGroup, this );
+  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
   connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
 
-  mProjectPath = mProjectFileLineEdit->text();
+  mProjectPath = mProjectFileWidget->filePath();
 }
 
 
@@ -208,6 +215,9 @@ void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
   {
     deselectChildren( index );
   }
+
+  if ( !mPresetProjectMode )
+    mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( !mTreeView->selectionModel()->selectedIndexes().empty() );
 }
 
 
@@ -224,7 +234,7 @@ void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
   }
 }
 
-void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
+void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 {
   QgsSettings s;
   QFileInfo fi( mProjectPath );

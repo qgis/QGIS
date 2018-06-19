@@ -32,7 +32,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QString mGeometryColumn;
@@ -59,13 +59,13 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsSpatiaLiteFeatureIterator();
-    virtual bool rewind() override;
-    virtual bool close() override;
+    ~QgsSpatiaLiteFeatureIterator() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
@@ -90,18 +90,18 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
     sqlite3_stmt *sqliteStatement = nullptr;
 
     //! Geometry column index used when fetching geometry
-    int mGeomColIdx;
+    int mGeomColIdx = 1;
 
-    //! Set to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    //! Sets to true, if geometry is in the requested columns
+    bool mFetchGeometry = true;
 
     bool mHasPrimaryKey;
     QgsFeatureId mRowNumber;
 
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
-    bool mOrderByCompiled;
-    bool mExpressionCompiled;
+    bool mOrderByCompiled = false;
+    bool mExpressionCompiled = false;
 
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;

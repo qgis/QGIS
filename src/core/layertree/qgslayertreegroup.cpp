@@ -26,9 +26,6 @@
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )
   , mName( name )
-  , mChangingChildVisibility( false )
-  , mMutuallyExclusive( false )
-  , mMutuallyExclusiveChildIndex( -1 )
 {
   connect( this, &QgsLayerTreeNode::visibilityChanged, this, &QgsLayerTreeGroup::nodeVisibilityChanged );
 }
@@ -252,7 +249,7 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::findGroup( const QString &name )
   return nullptr;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element )
+QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.tagName() != QLatin1String( "layer-tree-group" ) )
     return nullptr;
@@ -268,22 +265,22 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element )
 
   groupNode->readCommonXml( element );
 
-  groupNode->readChildrenFromXml( element );
+  groupNode->readChildrenFromXml( element, context );
 
   groupNode->setIsMutuallyExclusive( isMutuallyExclusive, mutuallyExclusiveChildIndex );
 
   return groupNode;
 }
 
-QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsProject *project )
+QgsLayerTreeGroup *QgsLayerTreeGroup::readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context )
 {
-  QgsLayerTreeGroup *node = readXml( element );
+  QgsLayerTreeGroup *node = readXml( element, context );
   if ( node )
     node->resolveReferences( project );
   return node;
 }
 
-void QgsLayerTreeGroup::writeXml( QDomElement &parentElement )
+void QgsLayerTreeGroup::writeXml( QDomElement &parentElement, const QgsReadWriteContext &context )
 {
   QDomDocument doc = parentElement.ownerDocument();
   QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
@@ -299,18 +296,18 @@ void QgsLayerTreeGroup::writeXml( QDomElement &parentElement )
   writeCommonXml( elem );
 
   Q_FOREACH ( QgsLayerTreeNode *node, mChildren )
-    node->writeXml( elem );
+    node->writeXml( elem, context );
 
   parentElement.appendChild( elem );
 }
 
-void QgsLayerTreeGroup::readChildrenFromXml( QDomElement &element )
+void QgsLayerTreeGroup::readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QList<QgsLayerTreeNode *> nodes;
   QDomElement childElem = element.firstChildElement();
   while ( !childElem.isNull() )
   {
-    QgsLayerTreeNode *newNode = QgsLayerTreeNode::readXml( childElem );
+    QgsLayerTreeNode *newNode = QgsLayerTreeNode::readXml( childElem, context );
     if ( newNode )
       nodes << newNode;
 

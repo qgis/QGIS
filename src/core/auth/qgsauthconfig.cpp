@@ -23,6 +23,8 @@
 #include <QCryptographicHash>
 #include <QUrl>
 
+#include "qgsauthcertutils.h"
+
 
 //////////////////////////////////////////////
 // QgsAuthMethodConfig
@@ -172,25 +174,6 @@ QgsPkiBundle::QgsPkiBundle( const QSslCertificate &clientCert,
   setClientKey( clientKey );
 }
 
-static QByteArray fileData_( const QString &path, bool astext = false )
-{
-  QByteArray data;
-  QFile file( path );
-  if ( file.exists() )
-  {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
-  }
-  return data;
-}
-
 const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
     const QString &keyPath,
     const QString &keyPass,
@@ -200,35 +183,16 @@ const QgsPkiBundle QgsPkiBundle::fromPemPaths( const QString &certPath,
   if ( !certPath.isEmpty() && !keyPath.isEmpty()
        && ( certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
             || certPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
-       && ( keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive )
-            || keyPath.endsWith( QLatin1String( ".der" ), Qt::CaseInsensitive ) )
        && QFile::exists( certPath ) && QFile::exists( keyPath )
      )
   {
     // client cert
     bool pem = certPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QSslCertificate clientcert( fileData_( certPath, pem ), pem ? QSsl::Pem : QSsl::Der );
+    QSslCertificate clientcert( QgsAuthCertUtils::fileData( certPath ), pem ? QSsl::Pem : QSsl::Der );
     pkibundle.setClientCert( clientcert );
 
-    // client key
-    bool pem_key = keyPath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-    QByteArray keydata( fileData_( keyPath, pem_key ) );
-
     QSslKey clientkey;
-    clientkey = QSslKey( keydata,
-                         QSsl::Rsa,
-                         pem_key ? QSsl::Pem : QSsl::Der,
-                         QSsl::PrivateKey,
-                         !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    if ( clientkey.isNull() )
-    {
-      // try DSA algorithm, since Qt can't seem to determine it otherwise
-      clientkey = QSslKey( keydata,
-                           QSsl::Dsa,
-                           pem_key ? QSsl::Pem : QSsl::Der,
-                           QSsl::PrivateKey,
-                           !keyPass.isNull() ? keyPass.toUtf8() : QByteArray() );
-    }
+    clientkey = QgsAuthCertUtils::keyFromFile( keyPath, keyPass );
     pkibundle.setClientKey( clientkey );
     if ( !caChain.isEmpty() )
     {
@@ -292,7 +256,7 @@ bool QgsPkiBundle::isNull() const
 
 bool QgsPkiBundle::isValid() const
 {
-  return ( !isNull() && mCert.isValid() );
+  return ( !isNull() && QgsAuthCertUtils::certIsViable( mCert ) );
 }
 
 const QString QgsPkiBundle::certId() const
@@ -329,10 +293,12 @@ void QgsPkiBundle::setClientKey( const QSslKey &certkey )
 
 QgsPkiConfigBundle::QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                                         const QSslCertificate &cert,
-                                        const QSslKey &certkey )
+                                        const QSslKey &certkey,
+                                        const QList<QSslCertificate> &cachain )
   : mConfig( config )
   , mCert( cert )
   , mCertKey( certkey )
+  , mCaChain( cachain )
 {
 }
 
@@ -352,9 +318,6 @@ QgsAuthConfigSslServer::QgsAuthConfigSslServer()
   : mSslHostPort( QString() )
   , mSslCert( QSslCertificate() )
   , mSslIgnoredErrors( QList<QSslError::SslError>() )
-  , mSslPeerVerifyMode( QSslSocket::VerifyPeer )
-  , mSslPeerVerifyDepth( 0 )
-  , mVersion( 1 )
 {
   // TODO: figure out if Qt 5 has changed yet again, e.g. TLS-only
   mQtVersion = 480;

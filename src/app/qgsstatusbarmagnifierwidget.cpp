@@ -66,10 +66,6 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   setLayout( mLayout );
 }
 
-QgsStatusBarMagnifierWidget::~QgsStatusBarMagnifierWidget()
-{
-}
-
 void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )
 {
   mSpinBox->setClearValue( ( int )100 * factor );

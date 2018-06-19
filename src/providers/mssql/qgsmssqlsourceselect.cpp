@@ -102,7 +102,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
       QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsMssqlTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsWkbTypes::displayString( type ) : tr( "Select…" ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsMssqlTableModel::DbtmPkCol )
@@ -119,10 +119,22 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
-  , mColumnTypeThread( nullptr )
-  , mUseEstimatedMetadata( false )
 {
   setupUi( this );
+  connect( btnConnect, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnConnect_clicked );
+  connect( cbxAllowGeometrylessTables, &QCheckBox::stateChanged, this, &QgsMssqlSourceSelect::cbxAllowGeometrylessTables_stateChanged );
+  connect( btnNew, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnNew_clicked );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnDelete_clicked );
+  connect( btnSave, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnSave_clicked );
+  connect( btnLoad, &QPushButton::clicked, this, &QgsMssqlSourceSelect::btnLoad_clicked );
+  connect( mSearchGroupBox, &QGroupBox::toggled, this, &QgsMssqlSourceSelect::mSearchGroupBox_toggled );
+  connect( mSearchTableEdit, &QLineEdit::textChanged, this, &QgsMssqlSourceSelect::mSearchTableEdit_textChanged );
+  connect( mSearchColumnComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged );
+  connect( mSearchModeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsMssqlSourceSelect::cmbConnections_activated );
+  connect( mTablesTreeView, &QTreeView::clicked, this, &QgsMssqlSourceSelect::mTablesTreeView_clicked );
+  connect( mTablesTreeView, &QTreeView::doubleClicked, this, &QgsMssqlSourceSelect::mTablesTreeView_doubleClicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMssqlSourceSelect::showHelp );
 
@@ -204,7 +216,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
 }
 //! Autoconnected SLOTS *
 // Slot for adding a new connection
-void QgsMssqlSourceSelect::on_btnNew_clicked()
+void QgsMssqlSourceSelect::btnNew_clicked()
 {
   QgsMssqlNewConnection *nc = new QgsMssqlNewConnection( this );
   if ( nc->exec() )
@@ -215,11 +227,11 @@ void QgsMssqlSourceSelect::on_btnNew_clicked()
   delete nc;
 }
 // Slot for deleting an existing connection
-void QgsMssqlSourceSelect::on_btnDelete_clicked()
+void QgsMssqlSourceSelect::btnDelete_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   QgsMssqlSourceSelect::deleteConnection( cmbConnections->currentText() );
@@ -245,15 +257,15 @@ void QgsMssqlSourceSelect::deleteConnection( const QString &name )
   settings.remove( key );
 }
 
-void QgsMssqlSourceSelect::on_btnSave_clicked()
+void QgsMssqlSourceSelect::btnSave_clicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Export, QgsManageConnectionsDialog::MSSQL );
   dlg.exec();
 }
 
-void QgsMssqlSourceSelect::on_btnLoad_clicked()
+void QgsMssqlSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QDir::homePath(),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -266,7 +278,7 @@ void QgsMssqlSourceSelect::on_btnLoad_clicked()
 }
 
 // Slot for editing a connection
-void QgsMssqlSourceSelect::on_btnEdit_clicked()
+void QgsMssqlSourceSelect::btnEdit_clicked()
 {
   QgsMssqlNewConnection *nc = new QgsMssqlNewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
@@ -280,7 +292,7 @@ void QgsMssqlSourceSelect::on_btnEdit_clicked()
 //! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsMssqlSourceSelect::on_cmbConnections_activated( int )
+void QgsMssqlSourceSelect::cmbConnections_activated( int )
 {
   // Remember which database was selected.
   QgsSettings settings;
@@ -291,9 +303,9 @@ void QgsMssqlSourceSelect::on_cmbConnections_activated( int )
   cbxAllowGeometrylessTables->blockSignals( false );
 }
 
-void QgsMssqlSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
+void QgsMssqlSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 {
-  on_btnConnect_clicked();
+  btnConnect_clicked();
 }
 
 void QgsMssqlSourceSelect::buildQuery()
@@ -301,12 +313,12 @@ void QgsMssqlSourceSelect::buildQuery()
   setSql( mTablesTreeView->currentIndex() );
 }
 
-void QgsMssqlSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::mTablesTreeView_clicked( const QModelIndex &index )
 {
   mBuildQueryButton->setEnabled( index.parent().isValid() );
 }
 
-void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
+void QgsMssqlSourceSelect::mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/addMSSQLDC" ), false ).toBool() )
@@ -319,15 +331,15 @@ void QgsMssqlSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchGroupBox_toggled( bool checked )
+void QgsMssqlSourceSelect::mSearchGroupBox_toggled( bool checked )
 {
   if ( mSearchTableEdit->text().isEmpty() )
     return;
 
-  on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
+  mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : QLatin1String( "" ) );
 }
 
-void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
+void QgsMssqlSourceSelect::mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -339,7 +351,7 @@ void QgsMssqlSourceSelect::on_mSearchTableEdit_textChanged( const QString &text 
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
+void QgsMssqlSourceSelect::mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -375,10 +387,10 @@ void QgsMssqlSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const Q
   }
 }
 
-void QgsMssqlSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
+void QgsMssqlSourceSelect::mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
-  on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
+  mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
 void QgsMssqlSourceSelect::setLayerType( const QgsMssqlLayerProperty &layerProperty )
@@ -457,7 +469,7 @@ void QgsMssqlSourceSelect::addButtonClicked()
   }
 }
 
-void QgsMssqlSourceSelect::on_btnConnect_clicked()
+void QgsMssqlSourceSelect::btnConnect_clicked()
 {
   cbxAllowGeometrylessTables->setEnabled( true );
 
@@ -494,7 +506,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
 
   bool estimateMetadata = settings.value( key + "/estimatedMetadata", true ).toBool();
 
-  mConnInfo =  "dbname='" + database + '\'';
+  mConnInfo = "dbname='" + database + '\'';
   if ( !host.isEmpty() )
     mConnInfo += " host='" + host + '\'';
   if ( !username.isEmpty() )
@@ -583,8 +595,8 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
         if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
         {
           addSearchGeometryColumn( connectionName, layer, estimateMetadata );
-          type = QLatin1String( "" );
-          srid = QLatin1String( "" );
+          type.clear();
+          srid.clear();
         }
       }
 
@@ -709,7 +721,7 @@ void QgsMssqlSourceSelect::addSearchGeometryColumn( const QString &connectionNam
 
 QString QgsMssqlSourceSelect::fullDescription( const QString &schema, const QString &table, const QString &column, const QString &type )
 {
-  QString full_desc = QLatin1String( "" );
+  QString full_desc;
   if ( !schema.isEmpty() )
     full_desc = schema + '.';
   full_desc += table + " (" + column + ") " + type;

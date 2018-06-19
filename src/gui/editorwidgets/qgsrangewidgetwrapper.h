@@ -29,8 +29,10 @@ class QSlider;
 class QDial;
 class QgsSlider;
 class QgsDial;
+class TestQgsRangeWidgetWrapper;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a range widget.
  *
  * Options:
@@ -51,15 +53,15 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    virtual QVariant value() const override;
+    QVariant value() const override;
 
   protected:
-    virtual QWidget *createWidget( QWidget *parent ) override;
-    virtual void initWidget( QWidget *editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    virtual void setValue( const QVariant &value ) override;
+    void setValue( const QVariant &value ) override;
 
   private slots:
 
@@ -74,6 +76,8 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
     QDial *mDial = nullptr;
     QgsSlider *mQgsSlider = nullptr;
     QgsDial *mQgsDial = nullptr;
+
+    friend class TestQgsRangeWidgetWrapper;
 };
 
 #endif // QGSRANGEWIDGETWRAPPER_H

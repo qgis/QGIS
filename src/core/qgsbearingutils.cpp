@@ -17,14 +17,15 @@
 
 #include "qgsbearingutils.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgspointxy.h"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 
-double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsPointXY &point )
+double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext  &transformContext, const QgsPointXY &point )
 {
   // step 1 - transform point into WGS84 geographic crs
-  QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), transformContext );
 
   if ( !transform.isValid() )
   {

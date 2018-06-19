@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscomposerinterface.h
+    qgslayoutdesignerinterface.h
      ---------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
@@ -22,8 +22,12 @@
 
 class QgsLayout;
 class QgsLayoutView;
+class QgsLayoutItem;
+class QgsMessageBar;
+class QgsMasterLayoutInterface;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayoutDesignerInterface
  * A common interface for layout designer dialogs and widgets.
  *
@@ -42,24 +46,37 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Constructor for QgsLayoutDesignerInterface.
      */
-    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = 0 )
+    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
     {}
 
-    virtual ~QgsLayoutDesignerInterface() = default;
-
     /**
-     * Returns the layout displayed in the designer.
+     * Returns the current layout displayed in the designer.
      * \see view()
      */
     virtual QgsLayout *layout() = 0;
 
+    /**
+     * Returns the master layout displayed in the designer.
+     * \see layout()
+     */
+    virtual QgsMasterLayoutInterface *masterLayout() = 0;
 
     /**
      * Returns the layout view utilized by the designer.
      * \see layout()
      */
     virtual QgsLayoutView *view() = 0;
+
+    /**
+     * Returns the designer's message bar.
+     */
+    virtual QgsMessageBar *messageBar() = 0;
+
+    /**
+     * Selects the specified \a items.
+     */
+    virtual void selectItems( QList< QgsLayoutItem * > items ) = 0;
 
   public slots:
 

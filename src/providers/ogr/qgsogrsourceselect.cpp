@@ -17,11 +17,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QFileDialog>
+
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QTextCodec>
 
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsogrsourceselect.h"
 #include "qgsvectordataprovider.h"
@@ -29,12 +30,23 @@
 #include "qgsproviderregistry.h"
 #include "ogr/qgsnewogrconnection.h"
 #include "ogr/qgsogrhelperfunctions.h"
-#include "qgsapplication.h"
+
+#include <gdal.h>
 
 QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
+  connect( radioSrcFile, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcFile_toggled );
+  connect( radioSrcDirectory, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDirectory_toggled );
+  connect( radioSrcDatabase, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcDatabase_toggled );
+  connect( radioSrcProtocol, &QRadioButton::toggled, this, &QgsOgrSourceSelect::radioSrcProtocol_toggled );
+  connect( btnNew, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnNew_clicked );
+  connect( btnEdit, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnEdit_clicked );
+  connect( btnDelete, &QPushButton::clicked, this, &QgsOgrSourceSelect::btnDelete_clicked );
+  connect( cmbDatabaseTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbConnections_currentIndexChanged );
+  connect( cmbProtocolTypes, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOgrSourceSelect::showHelp );
 
@@ -88,15 +100,21 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   }
 
   //add protocol drivers
-  QStringList proDrivers = QgsProviderRegistry::instance()->protocolDrivers().split( ';' );
-  for ( int i = 0; i < proDrivers.count(); i++ )
+  QStringList protocolTypes = QString( "HTTP/HTTPS/FTP,vsicurl;AWS S3,vsis3;Google Cloud Storage,vsigs;" ).split( ';' );
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  protocolTypes += QString( "Microsoft Azure Blob,vsiaz;Alibaba Cloud OSS,vsioss;OpenStack Swift Object Storage,vsiswift;" ).split( ';' );
+#endif
+  protocolTypes += QgsProviderRegistry::instance()->protocolDrivers().split( ';' );
+  for ( int i = 0; i < protocolTypes.count(); i++ )
   {
-    QString proDriver = proDrivers.at( i );
-    if ( ( !proDriver.isEmpty() ) && ( !proDriver.isNull() ) )
-      cmbProtocolTypes->addItem( proDriver.split( ',' ).at( 0 ) );
+    QString protocolType = protocolTypes.at( i );
+    if ( ( !protocolType.isEmpty() ) && ( !protocolType.isNull() ) )
+      cmbProtocolTypes->addItem( protocolType.split( ',' ).at( 0 ) );
   }
   cmbDatabaseTypes->blockSignals( false );
   cmbConnections->blockSignals( false );
+
+  mAuthWarning->setText( tr( " Additional credential options are required as documented <a href=\"%1\">here</a>." ).arg( QStringLiteral( "http://gdal.org/gdal_virtual_file_systems.html#gdal_virtual_file_systems_network" ) ) );
 
   mFileWidget->setDialogTitle( tr( "Open OGR Supported Vector Dataset(s)" ) );
   mFileWidget->setFilter( mVectorFileFilter );
@@ -105,8 +123,27 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
   {
     mVectorPath = path;
-    emit enableButtons( ! mVectorPath.isEmpty() );
+    if ( radioSrcFile->isChecked() || radioSrcDirectory->isChecked() )
+      emit enableButtons( ! mVectorPath.isEmpty() );
   } );
+
+  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    if ( radioSrcProtocol->isChecked() )
+      emit enableButtons( !text.isEmpty() );
+  } );
+  connect( mBucket, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    if ( radioSrcProtocol->isChecked() )
+      emit enableButtons( !text.isEmpty() && !mKey->text().isEmpty() );
+  } );
+  connect( mKey, &QLineEdit::textChanged, this, [ = ]( const QString & text )
+  {
+    if ( radioSrcProtocol->isChecked() )
+      emit enableButtons( !text.isEmpty() && !mBucket->text().isEmpty() );
+  } );
+  // Set filter for ogr compatible auth methods
+  mAuthSettingsProtocol->setDataprovider( QStringLiteral( "ogr" ) );
 }
 
 QgsOgrSourceSelect::~QgsOgrSourceSelect()
@@ -128,6 +165,15 @@ QString QgsOgrSourceSelect::encoding()
 QString QgsOgrSourceSelect::dataSourceType()
 {
   return mDataSourceType;
+}
+
+bool QgsOgrSourceSelect::isProtocolCloudType()
+{
+  return ( cmbProtocolTypes->currentText() == QStringLiteral( "AWS S3" ) ||
+           cmbProtocolTypes->currentText() == QStringLiteral( "Google Cloud Storage" ) ||
+           cmbProtocolTypes->currentText() == QStringLiteral( "Microsoft Azure Blob" ) ||
+           cmbProtocolTypes->currentText() == QStringLiteral( "Alibaba Cloud OSS" ) ||
+           cmbProtocolTypes->currentText() == QStringLiteral( "OpenStack Swift Object Storage" ) );
 }
 
 void QgsOgrSourceSelect::addNewConnection()
@@ -154,8 +200,8 @@ void QgsOgrSourceSelect::deleteConnection()
   QString key = '/' + cmbDatabaseTypes->currentText() + "/connections/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result == QMessageBox::Yes )
   {
     settings.remove( key + "/host" );
     settings.remove( key + "/database" );
@@ -163,6 +209,7 @@ void QgsOgrSourceSelect::deleteConnection()
     settings.remove( key + "/password" );
     settings.remove( key + "/port" );
     settings.remove( key + "/save" );
+    settings.remove( key + "/autchcfg" );
     settings.remove( key );
     cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
@@ -245,6 +292,32 @@ void QgsOgrSourceSelect::setSelectedConnection()
   QgsDebugMsg( "Setting selected connection to " + cmbConnections->currentText() );
 }
 
+void QgsOgrSourceSelect::setProtocolWidgetsVisibility()
+{
+  if ( isProtocolCloudType() )
+  {
+    labelProtocolURI->hide();
+    protocolURI->hide();
+    mAuthGroupBox->hide();
+    labelBucket->show();
+    mBucket->show();
+    labelKey->show();
+    mKey->show();
+    mAuthWarning->show();
+  }
+  else
+  {
+    labelProtocolURI->show();
+    protocolURI->show();
+    mAuthGroupBox->show();
+    labelBucket->hide();
+    mBucket->hide();
+    labelKey->hide();
+    mKey->hide();
+    mAuthWarning->hide();
+  }
+}
+
 void QgsOgrSourceSelect::addButtonClicked()
 {
   QgsSettings settings;
@@ -269,9 +342,10 @@ void QgsOgrSourceSelect::addButtonClicked()
     QString port = settings.value( baseKey + "/port" ).toString();
     QString user = settings.value( baseKey + "/username" ).toString();
     QString pass = settings.value( baseKey + "/password" ).toString();
+    QString configid = settings.value( baseKey + "/configid" ).toString();
 
     bool makeConnection = false;
-    if ( pass.isEmpty() )
+    if ( pass.isEmpty() && configid.isEmpty( ) )
     {
       if ( cmbDatabaseTypes->currentText() == QLatin1String( "MSSQL" ) )
         makeConnection = true;
@@ -283,13 +357,14 @@ void QgsOgrSourceSelect::addButtonClicked()
                                       &makeConnection );
     }
 
-    if ( makeConnection || !pass.isEmpty() )
+    if ( makeConnection || !( pass.isEmpty() && configid.isEmpty( ) ) )
     {
       mDataSources << createDatabaseURI(
                      cmbDatabaseTypes->currentText(),
                      host,
                      database,
                      port,
+                     configid,
                      user,
                      pass
                    );
@@ -297,15 +372,37 @@ void QgsOgrSourceSelect::addButtonClicked()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
-    if ( protocolURI->text().isEmpty() )
+    bool cloudType = isProtocolCloudType();
+    if ( !cloudType && protocolURI->text().isEmpty() )
     {
       QMessageBox::information( this,
                                 tr( "Add vector layer" ),
                                 tr( "No protocol URI entered." ) );
       return;
     }
+    else if ( cloudType && ( mBucket->text().isEmpty() || mKey->text().isEmpty() ) )
+    {
+      QMessageBox::information( this,
+                                tr( "Add vector layer" ),
+                                tr( "No protocol bucket and/or key entered." ) );
+      return;
+    }
 
-    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(), protocolURI->text() );
+    QString uri;
+    if ( cloudType )
+    {
+      uri = QStringLiteral( "%1/%2" ).arg( mBucket->text(), mKey->text() );
+    }
+    else
+    {
+      uri = protocolURI->text();
+    }
+
+    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(),
+                                       uri,
+                                       mAuthSettingsProtocol->configId(),
+                                       mAuthSettingsProtocol->username(),
+                                       mAuthSettingsProtocol->password() );
   }
   else if ( radioSrcFile->isChecked() )
   {
@@ -353,7 +450,7 @@ void QgsOgrSourceSelect::addButtonClicked()
 
 //********************auto connected slots *****************/
 
-void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcFile_toggled( bool checked )
 {
   if ( checked )
   {
@@ -369,10 +466,12 @@ void QgsOgrSourceSelect::on_radioSrcFile_toggled( bool checked )
     mFileWidget->setFilePath( QString() );
 
     mDataSourceType = QStringLiteral( "file" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDirectory_toggled( bool checked )
 {
   if ( checked )
   {
@@ -387,10 +486,12 @@ void QgsOgrSourceSelect::on_radioSrcDirectory_toggled( bool checked )
     mFileWidget->setFilePath( QString() );
 
     mDataSourceType = QStringLiteral( "directory" );
+
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcDatabase_toggled( bool checked )
 {
   if ( checked )
   {
@@ -403,10 +504,12 @@ void QgsOgrSourceSelect::on_radioSrcDatabase_toggled( bool checked )
     populateConnectionList();
     setConnectionListPosition();
     mDataSourceType = QStringLiteral( "database" );
+
+    emit enableButtons( true );
   }
 }
 
-void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
+void QgsOgrSourceSelect::radioSrcProtocol_toggled( bool checked )
 {
   if ( checked )
   {
@@ -414,38 +517,48 @@ void QgsOgrSourceSelect::on_radioSrcProtocol_toggled( bool checked )
     dbGroupBox->hide();
     protocolGroupBox->show();
     mDataSourceType = QStringLiteral( "protocol" );
+
+    setProtocolWidgetsVisibility();
+
+    emit enableButtons( ! protocolURI->text().isEmpty() );
   }
 }
 
 // Slot for adding a new connection
-void QgsOgrSourceSelect::on_btnNew_clicked()
+void QgsOgrSourceSelect::btnNew_clicked()
 {
   addNewConnection();
 }
 // Slot for deleting an existing connection
-void QgsOgrSourceSelect::on_btnDelete_clicked()
+void QgsOgrSourceSelect::btnDelete_clicked()
 {
   deleteConnection();
 }
 
 
 // Slot for editing a connection
-void QgsOgrSourceSelect::on_btnEdit_clicked()
+void QgsOgrSourceSelect::btnEdit_clicked()
 {
   editConnection();
 }
 
-void QgsOgrSourceSelect::on_cmbDatabaseTypes_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbDatabaseTypes_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
-void QgsOgrSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
+void QgsOgrSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   setSelectedConnection();
+}
+
+void QgsOgrSourceSelect::cmbProtocolTypes_currentIndexChanged( const QString &text )
+{
+  Q_UNUSED( text );
+  setProtocolWidgetsVisibility();
 }
 //********************end auto connected slots *****************/
 

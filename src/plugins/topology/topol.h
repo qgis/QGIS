@@ -36,7 +36,7 @@
 #ifndef TOPOL_H
 #define TOPOL_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 
 //QGIS includes
@@ -72,11 +72,9 @@ class Topol: public QObject, public QgisPlugin
      */
     explicit Topol( QgisInterface *interface );
 
-    virtual ~Topol();
-
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Create and show the dialog box
     void run();
     //! Show/hide the dialog box

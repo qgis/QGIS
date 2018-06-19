@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsGPSPluginGuiBase</class>
- <widget class="QDialog" name="QgsGPSPluginGuiBase">
+ <class>QgsGpsPluginGuiBase</class>
+ <widget class="QDialog" name="QgsGpsPluginGuiBase">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -173,11 +173,13 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext &context, QSet
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = QgsCoordinateTransform();
   if ( context.coordinateTransform().isValid() )
-    // this is context for layer rendering - use its CT as it includes correct datum transform
+    // this is context for layer rendering
     lyr.ct = context.coordinateTransform();
   else
-    // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-    lyr.ct = QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
+  {
+    // otherwise fall back to creating our own CT
+    lyr.ct = QgsCoordinateTransform( mCrs, mapSettings.destinationCrs(), mapSettings.transformContext() );
+  }
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
@@ -266,16 +268,16 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
   if ( !fet.hasGeometry() || fet.geometry().type() != QgsWkbTypes::PointGeometry )
     return QgsGeometry();
 
-  bool isMultiPoint = fet.geometry().geometry()->nCoordinates() > 1;
-  QgsAbstractGeometry *obstacleGeom = nullptr;
+  bool isMultiPoint = fet.geometry().constGet()->nCoordinates() > 1;
+  std::unique_ptr< QgsAbstractGeometry > obstacleGeom;
   if ( isMultiPoint )
-    obstacleGeom = new QgsMultiPolygonV2();
+    obstacleGeom = qgis::make_unique< QgsMultiPolygon >();
 
   // for each point
-  for ( int i = 0; i < fet.geometry().geometry()->nCoordinates(); ++i )
+  for ( int i = 0; i < fet.geometry().constGet()->nCoordinates(); ++i )
   {
     QRectF bounds;
-    QgsPoint p =  fet.geometry().geometry()->vertexAt( QgsVertexId( i, 0, 0 ) );
+    QgsPoint p = fet.geometry().constGet()->vertexAt( QgsVertexId( i, 0, 0 ) );
     double x = p.x();
     double y = p.y();
     double z = 0; // dummy variable for coordinate transforms
@@ -283,7 +285,14 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     //transform point to pixels
     if ( context.coordinateTransform().isValid() )
     {
-      context.coordinateTransform().transformInPlace( x, y, z );
+      try
+      {
+        context.coordinateTransform().transformInPlace( x, y, z );
+      }
+      catch ( QgsCsException & )
+      {
+        return QgsGeometry();
+      }
     }
     context.mapToPixel().transformInPlace( x, y );
 
@@ -304,7 +313,7 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     bX << bounds.left() << bounds.right() << bounds.right() << bounds.left();
     QVector< double > bY;
     bY << bounds.top() << bounds.top() << bounds.bottom() << bounds.bottom();
-    QgsLineString *boundLineString = new QgsLineString( bX, bY );
+    std::unique_ptr< QgsLineString > boundLineString = qgis::make_unique< QgsLineString >( bX, bY );
 
     //then transform back to map units
     //TODO - remove when labeling is refactored to use screen units
@@ -316,24 +325,42 @@ QgsGeometry QgsVectorLayerLabelProvider::getPointObstacleGeometry( QgsFeature &f
     }
     if ( context.coordinateTransform().isValid() )
     {
-      boundLineString->transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      try
+      {
+        boundLineString->transform( context.coordinateTransform(), QgsCoordinateTransform::ReverseTransform );
+      }
+      catch ( QgsCsException & )
+      {
+        return QgsGeometry();
+      }
     }
     boundLineString->close();
 
-    QgsPolygonV2 *obstaclePolygon = new QgsPolygonV2();
-    obstaclePolygon->setExteriorRing( boundLineString );
+    if ( context.coordinateTransform().isValid() )
+    {
+      // coordinate transforms may have resulted in nan coordinates - if so, strip these out
+      boundLineString->filterVertices( []( const QgsPoint & point )->bool
+      {
+        return std::isfinite( point.x() ) && std::isfinite( point.y() );
+      } );
+      if ( !boundLineString->isRing() )
+        return QgsGeometry();
+    }
+
+    std::unique_ptr< QgsPolygon > obstaclePolygon = qgis::make_unique< QgsPolygon >();
+    obstaclePolygon->setExteriorRing( boundLineString.release() );
 
     if ( isMultiPoint )
     {
-      static_cast<QgsMultiPolygonV2 *>( obstacleGeom )->addGeometry( obstaclePolygon );
+      static_cast<QgsMultiPolygon *>( obstacleGeom.get() )->addGeometry( obstaclePolygon.release() );
     }
     else
     {
-      obstacleGeom = obstaclePolygon;
+      obstacleGeom = std::move( obstaclePolygon );
     }
   }
 
-  return QgsGeometry( obstacleGeom );
+  return QgsGeometry( std::move( obstacleGeom ) );
 }
 
 void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const

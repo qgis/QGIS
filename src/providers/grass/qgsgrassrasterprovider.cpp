@@ -25,6 +25,7 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgshtmlutils.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
@@ -45,11 +46,6 @@
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   : QgsRasterDataProvider( uri )
-  , mValid( false )
-  , mGrassDataType( 0 )
-  , mCols( 0 )
-  , mRows( 0 )
-  , mYBlockSize( 0 )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
@@ -118,7 +114,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   double myInternalNoDataValue;
   if ( mGrassDataType == CELL_TYPE )
   {
-    myInternalNoDataValue = INT_MIN;
+    myInternalNoDataValue = std::numeric_limits<int>::min();
   }
   else if ( mGrassDataType == DCELL_TYPE )
   {
@@ -507,7 +503,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   return QgsRaster::GrayIndex;
 }
 
-QString QgsGrassRasterProvider::metadata()
+QString QgsGrassRasterProvider::htmlMetadata()
 {
   QString myMetadata;
   QStringList myList;
@@ -521,9 +517,7 @@ QString QgsGrassRasterProvider::metadata()
   {
     myList.append( i.key() + " : " + i.value() );
   }
-  myMetadata += QgsRasterDataProvider::makeTableCells( myList );
-
-
+  myMetadata += QgsHtmlUtils::buildBulletList( myList );
   return myMetadata;
 }
 
@@ -605,11 +599,6 @@ void QgsGrassRasterProvider::thaw()
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
 
-QgsGrassRasterValue::QgsGrassRasterValue()
-  : mProcess( 0 )
-{
-}
-
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {
   stop();
@@ -656,7 +645,7 @@ void QgsGrassRasterValue::stop()
     mProcess->waitForFinished();
     QgsDebugMsg( "process finished" );
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
   }
 }
 
@@ -685,7 +674,7 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
 
   // TODO: use doubles instead of strings
 
-  QStringList list = str.trimmed().split( QStringLiteral( ":" ) );
+  QStringList list = str.trimmed().split( ':' );
   if ( list.size() == 2 )
   {
     if ( list[1] == QLatin1String( "error" ) ) return value;

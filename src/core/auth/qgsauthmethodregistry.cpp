@@ -167,7 +167,8 @@ QgsAuthMethodRegistry::~QgsAuthMethodRegistry()
 }
 
 
-/** Convenience function for finding any existing auth methods that match "authMethodKey"
+/**
+ * Convenience function for finding any existing auth methods that match "authMethodKey"
 
   Necessary because [] map operator will create a QgsProviderMetadata
   instance.  Also you cannot use the map [] operator in const members for that
@@ -228,7 +229,7 @@ QString QgsAuthMethodRegistry::pluginList( bool asHtml ) const
 
     if ( asHtml )
     {
-      list += "<br></li>";
+      list += QLatin1String( "<br></li>" );
     }
     else
     {
@@ -316,7 +317,7 @@ typedef QWidget *editFactoryFunction_t( QWidget *parent );
 QWidget *QgsAuthMethodRegistry::editWidget( const QString &authMethodKey, QWidget *parent )
 {
   editFactoryFunction_t *editFactory =
-    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, "editWidget" ) ) );
+    reinterpret_cast< editFactoryFunction_t * >( cast_to_fptr( function( authMethodKey, QStringLiteral( "editWidget" ) ) ) );
 
   if ( !editFactory )
     return nullptr;

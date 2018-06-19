@@ -34,16 +34,18 @@
 QgsMapOverviewCanvas::QgsMapOverviewCanvas( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QWidget( parent )
   , mMapCanvas( mapCanvas )
-  , mJob( nullptr )
+
 {
   setAutoFillBackground( true );
   setObjectName( QStringLiteral( "theOverviewCanvas" ) );
   mPanningWidget = new QgsPanningWidget( this );
 
+  mSettings.setTransformContext( mMapCanvas->mapSettings().transformContext() );
   mSettings.setFlag( QgsMapSettings::DrawLabeling, false );
 
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapOverviewCanvas::drawExtentRect );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapOverviewCanvas::destinationCrsChanged );
+  connect( mMapCanvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapOverviewCanvas::transformContextChanged );
 }
 
 void QgsMapOverviewCanvas::resizeEvent( QResizeEvent *e )
@@ -260,6 +262,11 @@ void QgsMapOverviewCanvas::updateFullExtent()
 void QgsMapOverviewCanvas::destinationCrsChanged()
 {
   mSettings.setDestinationCrs( mMapCanvas->mapSettings().destinationCrs() );
+}
+
+void QgsMapOverviewCanvas::transformContextChanged()
+{
+  mSettings.setTransformContext( mMapCanvas->mapSettings().transformContext() );
 }
 
 QList<QgsMapLayer *> QgsMapOverviewCanvas::layers() const

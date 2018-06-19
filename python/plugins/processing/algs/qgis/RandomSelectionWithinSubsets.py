@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -31,9 +30,11 @@ import random
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsFeatureRequest,
+from qgis.core import (QgsApplication,
+                       QgsFeatureRequest,
                        QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
@@ -55,13 +56,22 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'sub_selection.png'))
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmSelectRandom.svg")
+
+    def svgIconPath(self):
+        return QgsApplication.iconPath("/algorithms/mAlgorithmSelectRandom.svg")
 
     def group(self):
         return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),

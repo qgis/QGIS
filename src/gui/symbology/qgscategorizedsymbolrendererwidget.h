@@ -18,8 +18,9 @@
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgis.h"
 #include "qgsrendererwidget.h"
+#include "qgsproxystyle.h"
 #include <QStandardItem>
-#include <QProxyStyle>
+
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
@@ -66,15 +67,16 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
     QString mMimeFormat;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * View style which shows drop indicator line between items
  */
-class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
+class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
   public:
-    explicit QgsCategorizedSymbolRendererViewStyle( QStyle *style = nullptr );
+    explicit QgsCategorizedSymbolRendererViewStyle( QWidget *parent );
 
     void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
 };
@@ -83,7 +85,8 @@ class QgsCategorizedSymbolRendererViewStyle: public QProxyStyle
 
 #endif
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
  */
 class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget, private QgsExpressionContextGenerator
@@ -93,11 +96,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
-    ~QgsCategorizedSymbolRendererWidget();
+    ~QgsCategorizedSymbolRendererWidget() override;
 
-    virtual QgsFeatureRenderer *renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
-    /** Replaces category symbols with the symbols from a style that have a matching
+    /**
+     * Replaces category symbols with the symbols from a style that have a matching
      * name.
      * \param style style containing symbols to match with
      * \returns number of symbols matched
@@ -114,7 +118,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void addCategory();
     void addCategories();
 
-    /** Applies the color ramp passed on by the color ramp button
+    /**
+     * Applies the color ramp passed on by the color ramp button
      */
     void applyColorRamp();
 
@@ -125,7 +130,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void rowsMoved();
 
-    /** Replaces category symbols with the symbols from the users' symbol library that have a
+    /**
+     * Replaces category symbols with the symbols from the users' symbol library that have a
      * matching name.
      * \see matchToSymbolsFromXml
      * \see matchToSymbols
@@ -133,7 +139,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     void matchToSymbolsFromLibrary();
 
-    /** Prompts for selection of an xml file, then replaces category symbols with the symbols
+    /**
+     * Prompts for selection of an xml file, then replaces category symbols with the symbols
      * from the XML file with a matching name.
      * \see matchToSymbolsFromLibrary
      * \see matchToSymbols
@@ -156,16 +163,18 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     // Called by virtual refreshSymbolView()
     void populateCategories();
 
-    //! return row index for the currently selected category (-1 if on no selection)
+    //! Returns row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
 
-    //! return a list of indexes for the categories unders selection
+    //! Returns a list of indexes for the categories under selection
     QList<int> selectedCategories();
 
-    //! change the selected symbols alone for the change button, if there is a selection
+    //! Changes the selected symbols alone for the change button, if there is a selection
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
+    //! Applies current symbol to selected categories, or to all categories if none is selected
+    void applyChangeToSymbol();
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
@@ -173,9 +182,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    QgsCategorizedSymbolRenderer *mRenderer = nullptr;
+    std::unique_ptr< QgsCategorizedSymbolRenderer > mRenderer;
 
-    QgsSymbol *mCategorizedSymbol = nullptr;
+    std::unique_ptr< QgsSymbol > mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererModel *mModel = nullptr;
 

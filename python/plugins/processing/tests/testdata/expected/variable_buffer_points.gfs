@@ -2,6 +2,7 @@
   <GMLFeatureClass>
     <Name>variable_buffer_points</Name>
     <ElementPath>variable_buffer_points</ElementPath>
+    <!--POLYGON-->
     <GeometryType>3</GeometryType>
     <SRSName>EPSG:3857</SRSName>
     <DatasetSpecificInfo>

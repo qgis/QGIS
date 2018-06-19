@@ -38,8 +38,6 @@
 ///@cond PRIVATE
 QgsSvgSelectorLoader::QgsSvgSelectorLoader( QObject *parent )
   : QThread( parent )
-  , mCanceled( false )
-  , mTimerThreshold( 0 )
 {
 }
 
@@ -159,7 +157,6 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject *parent )
   : QThread( parent )
-  , mCanceled( false )
 {
 
 }
@@ -265,7 +262,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
     strokeWidth = 0.2;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage &img = QgsApplication::svgCache()->svgAsImage( entry, mIconSize, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  QImage img = QgsApplication::svgCache()->svgAsImage( entry, mIconSize, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
   return QPixmap::fromImage( img );
 }
 
@@ -376,6 +373,8 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 {
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
+  connect( mFilePushButton, &QPushButton::clicked, this, &QgsSvgSelectorWidget::mFilePushButton_clicked );
+  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsSvgSelectorWidget::mFileLineEdit_textChanged );
 
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
@@ -387,10 +386,6 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
            this, &QgsSvgSelectorWidget::svgSelectionChanged );
   connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsSvgSelectorWidget::populateIcons );
-}
-
-QgsSvgSelectorWidget::~QgsSvgSelectorWidget()
-{
 }
 
 void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
@@ -450,7 +445,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
 
 }
 
-void QgsSvgSelectorWidget::on_mFilePushButton_clicked()
+void QgsSvgSelectorWidget::mFilePushButton_clicked()
 {
   QgsSettings settings;
   QString openDir = settings.value( QStringLiteral( "UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
@@ -491,7 +486,7 @@ void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
   mFileLineEdit->setToolTip( !ok ? tr( "File not found" ) : tip );
 }
 
-void QgsSvgSelectorWidget::on_mFileLineEdit_textChanged( const QString &text )
+void QgsSvgSelectorWidget::mFileLineEdit_textChanged( const QString &text )
 {
   QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsProject::instance()->pathResolver() );
   bool validSVG = !resolvedPath.isNull();

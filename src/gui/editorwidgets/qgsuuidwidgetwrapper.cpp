@@ -19,8 +19,7 @@
 
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mLabel( nullptr )
-  , mLineEdit( nullptr )
+
 {
 }
 
@@ -63,7 +62,7 @@ void QgsUuidWidgetWrapper::setValue( const QVariant &value )
     if ( mLabel )
       mLabel->setText( QUuid::createUuid().toString() );
 
-    valueChanged();
+    emitValueChanged();
   }
   else
   {

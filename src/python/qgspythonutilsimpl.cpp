@@ -110,7 +110,7 @@ bool QgsPythonUtilsImpl::checkSystemImports()
     return false;
   }
 
-  // set PyQt4 api versions
+  // set PyQt api versions
   QStringList apiV2classes;
   apiV2classes << QStringLiteral( "QDate" ) << QStringLiteral( "QDateTime" ) << QStringLiteral( "QString" ) << QStringLiteral( "QTextStream" ) << QStringLiteral( "QTime" ) << QStringLiteral( "QUrl" ) << QStringLiteral( "QVariant" );
   Q_FOREACH ( const QString &clsName, apiV2classes )
@@ -191,20 +191,20 @@ bool QgsPythonUtilsImpl::checkQgisUser()
 
 void QgsPythonUtilsImpl::doCustomImports()
 {
-  QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, "startup.py" );
+  QStringList startupPaths = QStandardPaths::locateAll( QStandardPaths::AppDataLocation, QStringLiteral( "startup.py" ) );
   if ( startupPaths.isEmpty() )
   {
     return;
   }
 
-  runString( "import importlib.util" );
+  runString( QStringLiteral( "import importlib.util" ) );
 
   QStringList::const_iterator iter = startupPaths.constBegin();
   for ( ; iter != startupPaths.constEnd(); ++iter )
   {
-    runString( QString( "spec = importlib.util.spec_from_file_location('startup','%1')" ).arg( *iter ) );
-    runString( "module = importlib.util.module_from_spec(spec)" );
-    runString( "spec.loader.exec_module(module)" );
+    runString( QStringLiteral( "spec = importlib.util.spec_from_file_location('startup','%1')" ).arg( *iter ) );
+    runString( QStringLiteral( "module = importlib.util.module_from_spec(spec)" ) );
+    runString( QStringLiteral( "spec.loader.exec_module(module)" ) );
   }
 }
 
@@ -224,6 +224,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface *interface )
     return;
   }
   doCustomImports();
+  installErrorHook();
   finish();
 }
 
@@ -264,6 +265,7 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
 
 void QgsPythonUtilsImpl::exitPython()
 {
+  uninstallErrorHook();
   Py_Finalize();
   mMainModule = nullptr;
   mMainDict = nullptr;
@@ -285,8 +287,6 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
 {
   runString( QStringLiteral( "qgis.utils.uninstallErrorHook()" ) );
 }
-
-
 
 bool QgsPythonUtilsImpl::runStringUnsafe( const QString &command, bool single )
 {

@@ -209,10 +209,10 @@
    <item row="1" column="1" colspan="2">
     <widget class="QLineEdit" name="editURL">
      <property name="toolTip">
-      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
+      <string>Enter the repository URL, beginning with &quot;http://&quot; or &quot;file:///&quot;</string>
      </property>
      <property name="whatsThis">
-      <string>Enter the repository URL, beginning with &quot;http://&quot;</string>
+      <string>Enter the repository URL, beginning with &quot;http://&quot; or &quot;file:///&quot;</string>
      </property>
      <property name="text">
       <string/>

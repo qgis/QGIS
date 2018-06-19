@@ -32,12 +32,8 @@ class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
 class QgsPointXY;
 
-// tolerances for soft constraints (last values, and common angles)
-// for angles, both tolerance in pixels and degrees are used for better performance
-static const double SOFT_CONSTRAINT_TOLERANCE_PIXEL = 15 SIP_SKIP;
-static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10 SIP_SKIP;
-
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \brief The QgsAdvancedDigitizingDockWidget class is a dockable widget
  * used to handle the CAD tools on top of a selection of map tools.
  * It handles both the UI and the constraints. Constraints are applied
@@ -46,7 +42,6 @@ static const double SOFT_CONSTRAINT_TOLERANCE_DEGREES = 10 SIP_SKIP;
 class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private Ui::QgsAdvancedDigitizingDockWidgetBase
 {
     Q_OBJECT
-    Q_FLAGS( CadCapacities )
 
   public:
 
@@ -62,6 +57,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
       RelativeCoordinates = 4, //!< This corresponds to distance and relative coordinates
     };
     Q_DECLARE_FLAGS( CadCapacities, CadCapacity )
+    Q_FLAG( CadCapacities )
 
     /**
      * Additional constraints which can be enabled
@@ -74,16 +70,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     };
 
     /**
-     * Determines if the dock has to record one, two or many points.
-     */
-    enum AdvancedDigitizingMode
-    {
-      SinglePoint, //!< Capture a single point (e.g. for point digitizing)
-      TwoPoints,   //!< Capture two points (e.g. for translation)
-      ManyPoints   //!< Capture two or more points (e.g. line or polygon digitizing)
-    };
-
-    /** \ingroup gui
+     * \ingroup gui
      * \brief The CadConstraint is an abstract class for all basic constraints (angle/distance/x/y).
      * It contains all values (locked, value, relative) and pointers to corresponding widgets.
      * \note Relative is not mandatory since it is not used for distance.
@@ -102,7 +89,8 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
           HardLock
         };
 
-        /** Constructor for CadConstraint.
+        /**
+         * Constructor for CadConstraint.
          * \param lineEdit associated line edit for constraint value
          * \param lockerButton associated button for locking constraint
          * \param relativeButton optional button for toggling relative constraint mode
@@ -130,10 +118,11 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         bool isLocked() const { return mLockMode != NoLock; }
 
-        /** Returns true if a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Returns true if a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
-         * \since QGIS 2.16
          * \see setRepeatingLock()
+         * \since QGIS 2.16
          */
         bool isRepeatingLock() const { return mRepeatingLock; }
 
@@ -157,11 +146,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
          */
         void setLockMode( LockMode mode );
 
-        /** Sets whether a repeating lock is set for the constraint. Repeating locks are not
+        /**
+         * Sets whether a repeating lock is set for the constraint. Repeating locks are not
          * automatically cleared after a new point is added.
          * \param repeating set to true to set the lock to repeat automatically
-         * \since QGIS 2.16
          * \see isRepeatingLock()
+         * \since QGIS 2.16
          */
         void setRepeatingLock( bool repeating );
 
@@ -198,10 +188,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
         double mValue;
     };
 
-    //! performs the intersection of a circle and a line
-    //! \note from the two solutions, the intersection will be set to the closest point
-    static bool lineCircleIntersection( const QgsPointXY &center, const double radius, const QList<QgsPointXY> &segment, QgsPointXY &intersection );
-
     /**
      * Create an advanced digitizing dock widget
      * \param canvas The map canvas on which the widget operates
@@ -215,31 +201,6 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void hideEvent( QHideEvent * ) override;
 
     /**
-     * Will react on a canvas press event
-     *
-     * \param e A mouse event (may be modified)
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasPressEvent( QgsMapMouseEvent *e );
-
-    /**
-     * Will react on a canvas release event
-     *
-     * \param e A mouse event (may be modified)
-     * \param mode determines if the dock has to record one, two or many points.
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasReleaseEvent( QgsMapMouseEvent *e, AdvancedDigitizingMode mode );
-
-    /**
-     * Will react on a canvas move event
-     *
-     * \param e A mouse event (may be modified)
-     * \returns  If the event is hidden (construction mode hides events from the maptool)
-     */
-    bool canvasMoveEvent( QgsMapMouseEvent *e );
-
-    /**
      * Filter key events to e.g. toggle construction mode or adapt constraints
      *
      * \param e A mouse event (may be modified)
@@ -247,9 +208,25 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     bool canvasKeyPressEventFilter( QKeyEvent *e );
 
-    //! apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
-    //! \returns false if no solution was found (invalid constraints)
-    virtual bool applyConstraints( QgsMapMouseEvent *e );
+    /**
+     * apply the CAD constraints. The will modify the position of the map event in map coordinates by applying the CAD constraints.
+     * \returns false if no solution was found (invalid constraints)
+     */
+    bool applyConstraints( QgsMapMouseEvent *e );
+
+    /**
+     * align to segment for additional constraint.
+     * If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
+     * \since QGIS 3.0
+     */
+    bool alignToSegment( QgsMapMouseEvent *e, QgsAdvancedDigitizingDockWidget::CadConstraint::LockMode lockMode = QgsAdvancedDigitizingDockWidget::CadConstraint::HardLock );
+
+    /**
+     * unlock all constraints
+     * \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
+     * \since QGIS 3.0
+     */
+    void releaseLocks( bool releaseRepeatingLocks = true );
 
     /**
      * Clear any cached previous clicks and helper lines
@@ -276,6 +253,27 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     const CadConstraint *constraintY() const { return mYConstraint.get(); }
     //! Constraint on a common angle
     bool commonAngleConstraint() const { return mCommonAngleConstraint; }
+
+    /**
+     * Removes all points from the CAD point list
+     * \since QGIS 3.0
+     */
+    void clearPoints();
+
+    /**
+     * Adds point to the CAD point list
+     * \since QGIS 3.0
+     */
+    void addPoint( const QgsPointXY &point );
+
+    /**
+     * Configures list of current CAD points
+     *
+     * Some map tools may find it useful to override list of CAD points that is otherwise
+     * automatically populated when user clicks with left mouse button on map canvas.
+     * \since QGIS 3.0
+     */
+    void setPoints( const QList<QgsPointXY> &points );
 
     /**
      * The last point.
@@ -313,7 +311,7 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      */
     QList<QgsPointXY> snappedSegment() const { return mSnappedSegment; }
 
-    //! return the action used to enable/disable the tools
+    //! Returns the action used to enable/disable the tools
     QAction *enableAction() { return mEnableAction; }
 
     /**
@@ -328,6 +326,12 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
      * Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing::deactivate().
      */
     void disable();
+
+    /**
+     * Updates canvas item that displays constraints on the ma
+     * \since QGIS 3.0
+     */
+    void updateCadPaintItem();
 
   signals:
 
@@ -352,32 +356,34 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     void pointChanged( const QgsPointXY &point );
 
   private slots:
-    //! set the additional constraint by clicking on the perpendicular/parallel buttons
+    //! Sets the additional constraint by clicking on the perpendicular/parallel buttons
     void additionalConstraintClicked( bool activated );
 
     //! lock/unlock a constraint and set its value
     void lockConstraint( bool activate = true );
 
-    //! Called when user has manually altered a constraint value. Any entered expressions will
-    //! be left intact
+    /**
+     * Called when user has manually altered a constraint value. Any entered expressions will
+     * be left intact
+     */
     void constraintTextEdited( const QString &textValue );
 
-    //! Called when a constraint input widget has lost focus. Any entered expressions
-    //! will be converted to their calculated value
+    /**
+     * Called when a constraint input widget has lost focus. Any entered expressions
+     * will be converted to their calculated value
+     */
     void constraintFocusOut();
 
-    //! unlock all constraints
-    //! \param releaseRepeatingLocks set to false to preserve the lock for any constraints set to repeating lock mode
-    void releaseLocks( bool releaseRepeatingLocks = true );
-
-    //! set the relative properties of constraints
+    //! Sets the relative properties of constraints
     void setConstraintRelative( bool activate );
 
-    //! Set the repeating lock property of constraints
+    //! Sets the repeating lock property of constraints
     void setConstraintRepeatingLock( bool activate );
 
-    //! activate/deactivate tools. It is called when tools are activated manually (from the GUI)
-    //! it will call setCadEnabled to properly update the UI.
+    /**
+     * activate/deactivate tools. It is called when tools are activated manually (from the GUI)
+     * it will call setCadEnabled to properly update the UI.
+     */
     void activateCad( bool enabled );
 
     //! enable/disable construction mode (events are not forwarded to the map tool)
@@ -399,27 +405,28 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! defines the additional constraint to be used (no/parallel/perpendicular)
     void lockAdditionalConstraint( AdditionalConstraint constraint );
 
-    QList<QgsPointXY> snapSegment( const QgsPointLocator::Match &snapMatch );
+    /**
+     * Returns the first snapped segment. Will try to snap a segment using all layers
+     * \param originalMapPoint point to be snapped (in map coordinates)
+     * \param snapped if given, determines if a segment has been snapped
+     */
+    QList<QgsPointXY> snapSegmentToAllLayers( const QgsPointXY &originalMapPoint, bool *snapped = nullptr ) const;
 
-    //! align to segment for additional constraint.
-    //! If additional constraints are used, this will determine the angle to be locked depending on the snapped segment.
-    bool alignToSegment( QgsMapMouseEvent *e, CadConstraint::LockMode lockMode = CadConstraint::HardLock );
-
-    //! add point to the CAD point list
-    void addPoint( const QgsPointXY &point );
     //! update the current point in the CAD point list
     void updateCurrentPoint( const QgsPointXY &point );
     //! remove previous point in the CAD point list
     void removePreviousPoint();
-    //! remove all points from the CAD point list
-    void clearPoints();
 
-    //! filters key press
-    //! \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+    /**
+     * filters key press
+     * \note called by eventFilter (filter on line edits), canvasKeyPressEvent (filter on map tool) and keyPressEvent (filter on dock)
+     */
     bool filterKeyPress( QKeyEvent *e );
 
-    //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    //! \note defined as private in Python bindings
+    /**
+     * event filter for line edits in the dock UI (angle/distance/x/y line edits)
+     * \note defined as private in Python bindings
+     */
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_SKIP;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
@@ -431,12 +438,16 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     //! Attempts to convert a user input value to double, either directly or via expression
     double parseUserInput( const QString &inputValue, bool &ok ) const;
 
-    /** Updates a constraint value based on a text input.
+    /**
+     * Updates a constraint value based on a text input.
      * \param constraint constraint to update
      * \param textValue user entered text value, may be an expression
      * \param convertExpression set to true to update widget contents to calculated expression value
      */
     void updateConstraintValue( CadConstraint *constraint, const QString &textValue, bool convertExpression = false );
+
+    //! Updates values of constraints that are not locked based on the current point
+    void updateUnlockedConstraintValues( const QgsPointXY &point );
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;

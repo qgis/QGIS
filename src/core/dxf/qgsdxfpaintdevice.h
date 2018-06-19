@@ -28,7 +28,8 @@ class QgsDxfPaintEngine;
 class QgsDxfExport;
 class QPaintEngine;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A paint device for drawing into dxf files.
  * \note not available in Python bindings
 */
@@ -37,7 +38,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
   public:
     QgsDxfPaintDevice( QgsDxfExport *dxf );
-    ~QgsDxfPaintDevice();
+    ~QgsDxfPaintDevice() override;
 
     QPaintEngine *paintEngine() const override;
 

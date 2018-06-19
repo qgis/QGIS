@@ -67,8 +67,12 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
     return nullptr;
 
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
-
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
+
+  // Update the editor form context with the feature being edited
+  QgsFeatureId fid( index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong() );
+  context.setFormFeature( vl->getFeature( fid ) );
+
   QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
   QWidget *w = eww->widget();
 
@@ -129,7 +133,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsEditorWidgetWrapper *eww =  QgsEditorWidgetWrapper::fromWidget( editor );
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 

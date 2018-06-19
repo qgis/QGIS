@@ -45,24 +45,17 @@
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsRasterLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterLayer()
-      : mpRasterLayer( nullptr )
-      , mpLandsatRasterLayer( nullptr )
-      , mpFloat32RasterLayer( nullptr )
-      , mPngRasterLayer( nullptr )
-      , mGeoJp2RasterLayer( nullptr )
-      , mMapSettings( nullptr )
-    {}
-    ~TestQgsRasterLayer()
+    TestQgsRasterLayer() = default;
+    ~TestQgsRasterLayer() override
     {
       delete mMapSettings;
     }
@@ -120,9 +113,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( nullptr )
-      , rendererChanged( false )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
   public slots:
     void onRendererChanged()
     {
@@ -156,17 +148,17 @@ void TestQgsRasterLayer::initTestCase()
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
-  qDebug() << "tenbyteraster metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << "tenbyteraster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo myLandsatRasterFileInfo( myLandsatFileName );
   mpLandsatRasterLayer = new QgsRasterLayer( myLandsatRasterFileInfo.filePath(),
       myLandsatRasterFileInfo.completeBaseName() );
-  qDebug() << "landsat metadata: " << mpLandsatRasterLayer->dataProvider()->metadata();
+  qDebug() << "landsat metadata: " << mpLandsatRasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo myFloat32RasterFileInfo( myFloat32FileName );
   mpFloat32RasterLayer = new QgsRasterLayer( myFloat32RasterFileInfo.filePath(),
       myFloat32RasterFileInfo.completeBaseName() );
-  qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->metadata();
+  qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo pngRasterFileInfo( pngRasterFileName );
   mPngRasterLayer = new QgsRasterLayer( pngRasterFileInfo.filePath(),
@@ -287,9 +279,9 @@ void TestQgsRasterLayer::populateColorRampShader( QgsColorRampShader *colorRampS
 
   //items to imitate old pseudo color renderer
   QList<QgsColorRampShader::ColorRampItem> colorRampItems;
-  QList<double>::const_iterator value_it = entryValues.begin();
-  QVector<QColor>::const_iterator color_it = entryColors.begin();
-  for ( ; value_it != entryValues.end(); ++value_it, ++color_it )
+  QList<double>::const_iterator value_it = entryValues.constBegin();
+  QVector<QColor>::const_iterator color_it = entryColors.constBegin();
+  for ( ; value_it != entryValues.constEnd(); ++value_it, ++color_it )
   {
     colorRampItems.append( QgsColorRampShader::ColorRampItem( *value_it, *color_it ) );
   }
@@ -398,7 +390,7 @@ void TestQgsRasterLayer::checkStats()
   //QVERIFY( myStatistics.elementCount == 100 );
   QVERIFY( myStatistics.minimumValue == 0 );
   QVERIFY( myStatistics.maximumValue == 9 );
-  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
   mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
@@ -657,7 +649,7 @@ void TestQgsRasterLayer::transparency()
   rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
 
   QgsRasterRenderer *rasterRenderer = mpFloat32RasterLayer->renderer();
-  QVERIFY( rasterRenderer != 0 );
+  QVERIFY( rasterRenderer != nullptr );
   rasterRenderer->setRasterTransparency( rasterTransparency );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpFloat32RasterLayer );

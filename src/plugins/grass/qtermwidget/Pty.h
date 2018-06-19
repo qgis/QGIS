@@ -78,7 +78,7 @@ Q_OBJECT
      */
     explicit Pty(int ptyMasterFd, QObject* parent = 0);
 
-    ~Pty();
+    ~Pty() override;
 
     /**
      * Starts the terminal process.
@@ -189,7 +189,7 @@ Q_OBJECT
     void receivedData(const char* buffer, int length);
 
   protected:
-      void setupChildProcess();
+      void setupChildProcess() override;
 
   private slots:
     // called when data is received from the terminal process

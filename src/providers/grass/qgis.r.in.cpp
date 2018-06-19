@@ -159,9 +159,9 @@ int main( int argc, char **argv )
       return 1;
     }
 
-    qint32 *cell = 0;
-    float *fcell = 0;
-    double *dcell = 0;
+    qint32 *cell = nullptr;
+    float *fcell = nullptr;
+    double *dcell = nullptr;
     if ( grass_type == CELL_TYPE )
       cell = ( qint32 * ) byteArray.data();
     else if ( grass_type == FCELL_TYPE )

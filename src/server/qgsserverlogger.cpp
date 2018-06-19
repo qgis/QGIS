@@ -37,13 +37,12 @@ QgsServerLogger *QgsServerLogger::instance()
 
 QgsServerLogger::QgsServerLogger()
   : mLogFile( nullptr )
-  , mLogLevel( QgsMessageLog::NONE )
 {
-  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLog::messageReceived ), this,
            &QgsServerLogger::logMessage );
 }
 
-void QgsServerLogger::setLogLevel( QgsMessageLog::MessageLevel level )
+void QgsServerLogger::setLogLevel( Qgis::MessageLevel level )
 {
   mLogLevel = level;
 }
@@ -66,7 +65,7 @@ void QgsServerLogger::setLogFile( const QString &f )
   }
 }
 
-void QgsServerLogger::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
+void QgsServerLogger::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
   Q_UNUSED( tag );
   if ( !mLogFile.isOpen() || mLogLevel > level )

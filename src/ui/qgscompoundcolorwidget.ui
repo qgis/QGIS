@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>620</width>
-    <height>402</height>
+    <width>597</width>
+    <height>329</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -134,6 +134,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="mAddColorToSchemeButton">
+             <property name="toolTip">
+              <string>Add current color</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -145,6 +148,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="mRemoveColorsFromSchemeButton">
+             <property name="toolTip">
+              <string>Remove selected color</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -256,7 +262,7 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>0</height>
             </size>
            </property>
           </spacer>
@@ -430,7 +436,7 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>0</height>
            </size>
           </property>
          </spacer>
@@ -440,6 +446,18 @@
      </item>
      <item row="1" column="0">
       <widget class="QWidget" name="mPreviewWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>80</height>
+        </size>
+       </property>
        <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0">
         <item row="0" column="0">
          <widget class="QLabel" name="label_3">
@@ -464,7 +482,7 @@
         <item row="0" column="2" rowspan="2">
          <widget class="QPushButton" name="mAddCustomColorButton">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -480,6 +498,9 @@
             <width>28</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Add color to swatch</string>
           </property>
           <property name="text">
            <string/>
@@ -535,6 +556,12 @@
      </item>
      <item row="1" column="1">
       <widget class="QWidget" name="mSwatchesWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <layout class="QGridLayout" name="gridLayout_4">
         <property name="spacing">
          <number>1</number>

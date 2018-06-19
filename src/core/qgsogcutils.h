@@ -37,8 +37,10 @@ class QgsRectangle;
 #include "qgsexpressionnode.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgssqlstatement.h"
+#include "qgsvectorlayer.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsOgcUtils class provides various utility functions for conversion between
  *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
@@ -59,14 +61,16 @@ class CORE_EXPORT QgsOgcUtils
       GML_3_2_1,
     };
 
-    /** Static method that creates geometry from GML
+    /**
+     * Static method that creates geometry from GML
      \param xmlString xml representation of the geometry. GML elements are expected to be
        in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
        "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
      */
     static QgsGeometry geometryFromGML( const QString &xmlString );
 
-    /** Static method that creates geometry from GML
+    /**
+     * Static method that creates geometry from GML
       */
     static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
 
@@ -76,7 +80,8 @@ class CORE_EXPORT QgsOgcUtils
     //! Read rectangle from GML3 Envelope
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode &envelopeNode );
 
-    /** Exports the geometry to GML
+    /**
+     * Exports the geometry to GML
         \returns QDomElement
         \since QGIS 2.16
      */
@@ -87,22 +92,26 @@ class CORE_EXPORT QgsOgcUtils
                                       const QString &gmlIdBase,
                                       int precision = 17 );
 
-    /** Exports the geometry to GML2 or GML3
+    /**
+     * Exports the geometry to GML2 or GML3
         \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, const QString &format, int precision = 17 );
 
-    /** Exports the geometry to GML2
+    /**
+     * Exports the geometry to GML2
         \returns QDomElement
      */
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
 
-    /** Exports the rectangle to GML2 Box
+    /**
+     * Exports the rectangle to GML2 Box
         \returns QDomElement
      */
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
-    /** Exports the rectangle to GML2 Box
+    /**
+     * Exports the rectangle to GML2 Box
         \returns QDomElement
         \since QGIS 2.16
      */
@@ -111,12 +120,14 @@ class CORE_EXPORT QgsOgcUtils
                                           bool invertAxisOrientation,
                                           int precision = 17 );
 
-    /** Exports the rectangle to GML3 Envelope
+    /**
+     * Exports the rectangle to GML3 Envelope
         \returns QDomElement
      */
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
-    /** Exports the rectangle to GML3 Envelope
+    /**
+     * Exports the rectangle to GML3 Envelope
         \returns QDomElement
         \since QGIS 2.16
      */
@@ -130,16 +141,18 @@ class CORE_EXPORT QgsOgcUtils
     static QColor colorFromOgcFill( const QDomElement &fillElement );
 
     //! Parse XML with OGC filter into QGIS expression
-    static QgsExpression *expressionFromOgcFilter( const QDomElement &element ) SIP_FACTORY;
+    static QgsExpression *expressionFromOgcFilter( const QDomElement &element, QgsVectorLayer *layer = nullptr ) SIP_FACTORY;
 
-    /** Creates OGC filter XML element. Supports minimum standard filter
+    /**
+     * Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
-    /** OGC filter version
+    /**
+     * OGC filter version
      */
     enum FilterVersion
     {
@@ -148,12 +161,13 @@ class CORE_EXPORT QgsOgcUtils
       FILTER_FES_2_0
     };
 
-    /** Creates OGC filter XML element. Supports minimum standard filter
+    /**
+     * Creates OGC filter XML element. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     static QDomElement expressionToOgcFilter( const QgsExpression &exp,
         QDomDocument &doc,
@@ -165,13 +179,15 @@ class CORE_EXPORT QgsOgcUtils
         bool invertAxisOrientation,
         QString *errorMessage = nullptr ) SIP_SKIP;
 
-    /** Creates an OGC expression XML element.
+    /**
+     * Creates an OGC expression XML element.
      * \returns valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
     static QDomElement expressionToOgcExpression( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = nullptr );
 
-    /** Creates an OGC expression XML element.
+    /**
+     * Creates an OGC expression XML element.
      * \returns valid OGC expression QDomElement on success,
      * otherwise null QDomElement
      */
@@ -187,16 +203,17 @@ class CORE_EXPORT QgsOgcUtils
 
 #ifndef SIP_RUN
 
-    /** \ingroup core
+    /**
+     * \ingroup core
      * Layer properties. Used by SQLStatementToOgcFilter().
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     class LayerProperties
     {
       public:
         //! Constructor
-        LayerProperties() {}
+        LayerProperties() = default;
 
         //! Layer name
         QString mName;
@@ -207,7 +224,8 @@ class CORE_EXPORT QgsOgcUtils
     };
 #endif
 
-    /** Creates OGC filter XML element from the WHERE and JOIN clauses of a SQL
+    /**
+     * Creates OGC filter XML element from the WHERE and JOIN clauses of a SQL
      * statement. Supports minimum standard filter
      * according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT,LIKE,BETWEEN,IN)
      * Supports layer joins.
@@ -221,8 +239,8 @@ class CORE_EXPORT QgsOgcUtils
      *          custom functions
      * \returns valid \verbatim <Filter> \endverbatim QDomElement on success,
      * otherwise null QDomElement
-     * \since QGIS 2.16
      * \note not available in Python bindings
+     * \since QGIS 2.16
      */
     static QDomElement SQLStatementToOgcFilter( const QgsSQLStatement &statement,
         QDomDocument &doc,
@@ -249,37 +267,41 @@ class CORE_EXPORT QgsOgcUtils
     //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
 
-    /** Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
+    /**
+     * Reads the \verbatim <gml:coordinates> \endverbatim element and extracts the coordinates as points
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:coordinates> \endverbatim element
        \returns boolean for success*/
-    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
 
-    /** Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
+    /**
+     * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
        and extracts the coordinates as points
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
        \returns boolean for success*/
-    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
 
 
-    /** Create a GML coordinates element from a point list.
+    /**
+     * Create a GML coordinates element from a point list.
       \param points list of data points
       \param doc the GML document
       \returns QDomElement */
-    static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument &doc );
+    static QDomElement createGMLCoordinates( const QgsPolylineXY &points, QDomDocument &doc );
 
-    /** Create a GML pos or posList element from a point list.
+    /**
+     * Create a GML pos or posList element from a point list.
       \param points list of data points
       \param doc the GML document
       \returns QDomElement */
-    static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument &doc );
+    static QDomElement createGMLPositions( const QgsPolylineXY &points, QDomDocument &doc );
 
     //! handle a generic sub-expression
-    static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handle a generic binary operator
-    static QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNodeBinaryOperator *nodeBinaryOperatorFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handles various spatial operation tags (\verbatim <Intersects> \endverbatim, \verbatim <Touches> \endverbatim etc.)
     static QgsExpressionNodeFunction *nodeSpatialOperatorFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handle \verbatim <Not> \endverbatim tag
@@ -287,7 +309,7 @@ class CORE_EXPORT QgsOgcUtils
     //! handles \verbatim <Function> \endverbatim tag
     static QgsExpressionNodeFunction *nodeFunctionFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <Literal> \endverbatim tag
-    static QgsExpressionNode *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage );
+    static QgsExpressionNode *nodeLiteralFromOgcFilter( QDomElement &element, QString &errorMessage, QgsVectorLayer *layer = nullptr );
     //! handles \verbatim <PropertyName> \endverbatim tag
     static QgsExpressionNodeColumnRef *nodeColumnRefFromOgcFilter( QDomElement &element, QString &errorMessage );
     //! handles \verbatim <PropertyIsBetween> \endverbatim tag
@@ -298,7 +320,8 @@ class CORE_EXPORT QgsOgcUtils
 
 #ifndef SIP_RUN
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal use by QgsOgcUtils
  * \note not available in Python bindings
  */
@@ -317,10 +340,10 @@ class QgsOgcUtilsExprToFilter
     //! Convert an expression to a OGC filter
     QDomElement expressionNodeToOgcFilter( const QgsExpressionNode *node );
 
-    //! Return whether the gml: namespace is used
+    //! Returns whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    //! Return the error message.
+    //! Returns the error message.
     QString errorMessage() const { return mErrorMessage; }
 
   private:
@@ -344,7 +367,8 @@ class QgsOgcUtilsExprToFilter
     QDomElement expressionFunctionToOgcFilter( const QgsExpressionNodeFunction *node );
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Internal use by QgsOgcUtils
  * \note not available in Python bindings
  */
@@ -363,10 +387,10 @@ class QgsOgcUtilsSQLStatementToFilter
     //! Convert a SQL statement to a OGC filter
     QDomElement toOgcFilter( const QgsSQLStatement::Node *node );
 
-    //! Return whether the gml: namespace is used
+    //! Returns whether the gml: namespace is used
     bool GMLNamespaceUsed() const { return mGMLUsed; }
 
-    //! Return the error message.
+    //! Returns the error message.
     QString errorMessage() const { return mErrorMessage; }
 
   private:

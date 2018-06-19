@@ -18,7 +18,8 @@
 #include <qgswmscapabilities.h>
 #include <qgsapplication.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the WMS capabilities parser.
  */
 class TestQgsWmsCapabilities: public QObject

@@ -28,7 +28,8 @@ class QgsWebView;
 #include "qgsfeature.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A maptip is a class to display a tip on a map canvas
  * when a mouse is hovered over a feature.
  *
@@ -52,11 +53,13 @@ class GUI_EXPORT QgsMapTip : public QWidget
     Q_OBJECT
   public:
 
-    /** Default constructor
+    /**
+     * Default constructor
      */
     QgsMapTip();
 
-    /** Show a maptip at a given point on the map canvas
+    /**
+     * Show a maptip at a given point on the map canvas
      * \param thepLayer a qgis vector map layer pointer that will
      *        be used to provide the attribute data for the map tip.
      * \param mapPosition a reference to the position of the cursor
@@ -70,7 +73,8 @@ class GUI_EXPORT QgsMapTip : public QWidget
                      QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 
-    /** Clear the current maptip if it exists
+    /**
+     * Clear the current maptip if it exists
      * \param mpMapCanvas the canvas from which the tip should be cleared.
      */
     void clear( QgsMapCanvas *mpMapCanvas = nullptr );

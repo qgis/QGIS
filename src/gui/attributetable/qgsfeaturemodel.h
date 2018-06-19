@@ -19,7 +19,8 @@
 #include "qgsfeature.h" // QgsFeatureId
 #include <QModelIndex>
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureModel
  */
 class GUI_EXPORT QgsFeatureModel

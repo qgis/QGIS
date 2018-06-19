@@ -57,16 +57,17 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
 
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mLayer->crs() );
+  myDa.setSourceCrs( mLayer->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
+  context.setMapCanvas( QgisApp::instance()->mapCanvas() );
   context.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
 
   QgsAttributeDialog *dialog = new QgsAttributeDialog( mLayer, f, cloneFeature, parentWidget(), true, context );
   dialog->setWindowFlags( dialog->windowFlags() | Qt::Tool );
-  dialog->setObjectName( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
+  dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
 
   QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
   if ( !actions.isEmpty() )
@@ -80,6 +81,9 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     Q_FOREACH ( const QgsAction &action, actions )
     {
       if ( !action.runable() )
+        continue;
+
+      if ( !mLayer->isEditable() && action.isEnabledOnlyWhenEditable() )
         continue;
 
       QgsFeature &feat = const_cast<QgsFeature &>( *dialog->feature() );
@@ -101,7 +105,7 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
   if ( !mLayer || !mFeature )
     return false;
 
-  QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
+  QString name( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
 
   QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
   if ( dialog )
@@ -139,7 +143,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    QString name( QString( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
+    QString name( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
 
     QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
     if ( dialog )
@@ -217,9 +221,14 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap &defaultAttributes, boo
     mFeatureSaved = mLayer->addFeature( *mFeature );
 
     if ( mFeatureSaved )
+    {
       mLayer->endEditCommand();
+      mLayer->triggerRepaint();
+    }
     else
+    {
       mLayer->destroyEditCommand();
+    }
   }
   else
   {

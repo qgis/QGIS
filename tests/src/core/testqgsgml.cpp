@@ -23,7 +23,8 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for GML parsing
  */
 class TestQgsGML : public QObject
@@ -77,6 +78,7 @@ class TestQgsGML : public QObject
     void testThroughOGRGeometry();
     void testThroughOGRGeometry_urn_EPSG_4326();
     void testAccents();
+    void testSameTypeameAsGeomName();
 };
 
 const QString data1( "<myns:FeatureCollection "
@@ -222,7 +224,7 @@ void TestQgsGML::testLineStringGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
@@ -260,7 +262,7 @@ void TestQgsGML::testPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -298,7 +300,7 @@ void TestQgsGML::testMultiPointGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPoint );
-  QgsMultiPoint multi = features[0].first->geometry().asMultiPoint();
+  QgsMultiPointXY multi = features[0].first->geometry().asMultiPoint();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( multi[1], QgsPointXY( 30, 40 ) );
@@ -336,7 +338,7 @@ void TestQgsGML::testMultiLineStringGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
@@ -375,7 +377,7 @@ void TestQgsGML::testMultiPolygonGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -544,7 +546,7 @@ void TestQgsGML::testLineStringGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
@@ -571,7 +573,7 @@ void TestQgsGML::testLineStringGML3_LineStringSegment()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::LineString );
-  QgsPolyline line = features[0].first->geometry().asPolyline();
+  QgsPolylineXY line = features[0].first->geometry().asPolyline();
   QCOMPARE( line.size(), 2 );
   QCOMPARE( line[0], QgsPointXY( 10, 20 ) );
   QCOMPARE( line[1], QgsPointXY( 30, 40 ) );
@@ -609,7 +611,7 @@ void TestQgsGML::testPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 2 );
   QCOMPARE( poly[0].size(), 5 );
   QCOMPARE( poly[1].size(), 4 );
@@ -642,7 +644,7 @@ void TestQgsGML::testPolygonGML3_srsDimension_on_Polygon()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -679,7 +681,7 @@ void TestQgsGML::testMultiLineStringGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiLineString );
-  QgsMultiPolyline multi = features[0].first->geometry().asMultiPolyline();
+  QgsMultiPolylineXY multi = features[0].first->geometry().asMultiPolyline();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 2 );
   QCOMPARE( multi[0][0], QgsPointXY( 10, 20 ) );
@@ -727,7 +729,7 @@ void TestQgsGML::testMultiPolygonGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -785,7 +787,7 @@ void TestQgsGML::testBoundingBoxGML2()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -814,7 +816,7 @@ void TestQgsGML::testBoundingBoxGML3()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::Polygon );
-  QgsPolygon poly = features[0].first->geometry().asPolygon();
+  QgsPolygonXY poly = features[0].first->geometry().asPolygon();
   QCOMPARE( poly.size(), 1 );
   QCOMPARE( poly[0].size(), 5 );
   delete features[0].first;
@@ -1059,7 +1061,7 @@ void TestQgsGML::testThroughOGRGeometry()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );
@@ -1095,7 +1097,7 @@ void TestQgsGML::testThroughOGRGeometry_urn_EPSG_4326()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 1 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 4 );
@@ -1145,7 +1147,53 @@ void TestQgsGML::testAccents()
   QCOMPARE( features.size(), 1 );
   QVERIFY( features[0].first->hasGeometry() );
   QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
-  QgsMultiPolygon multi = features[0].first->geometry().asMultiPolygon();
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
+  QCOMPARE( multi.size(), 2 );
+  QCOMPARE( multi[0].size(), 1 );
+  QCOMPARE( multi[0][0].size(), 5 );
+  delete features[0].first;
+}
+
+void TestQgsGML::testSameTypeameAsGeomName()
+{
+  QgsFields fields;
+  QgsGmlStreamingParser gmlParser( QStringLiteral( "foo" ), QStringLiteral( "foo" ), fields );
+  QCOMPARE( gmlParser.processData( QByteArray( "<myns:FeatureCollection "
+                                   "xmlns:myns='http://myns' "
+                                   "xmlns:gml='http://www.opengis.net/gml'>"
+                                   "<gml:featureMember>"
+                                   "<myns:foo fid='foo.1'>"
+                                   "<myns:foo>"
+                                   "<gml:MultiSurface srsName='EPSG:27700'>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "<gml:surfaceMember>"
+                                   "<gml:Polygon srsName='EPSG:27700'>"
+                                   "<gml:exterior>"
+                                   "<gml:LinearRing>"
+                                   "<gml:posList>0 0 0 10 10 10 10 0 0 0</gml:posList>"
+                                   "</gml:LinearRing>"
+                                   "</gml:exterior>"
+                                   "</gml:Polygon>"
+                                   "</gml:surfaceMember>"
+                                   "</gml:MultiSurface>"
+                                   "</myns:foo>"
+                                   "</myns:foo>"
+                                   "</gml:featureMember>"
+                                   "</myns:FeatureCollection>" ), true ), true );
+  QCOMPARE( gmlParser.wkbType(), QgsWkbTypes::MultiPolygon );
+  QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> features = gmlParser.getAndStealReadyFeatures();
+  QCOMPARE( features.size(), 1 );
+  QVERIFY( features[0].first->hasGeometry() );
+  QCOMPARE( features[0].first->geometry().wkbType(), QgsWkbTypes::MultiPolygon );
+  QgsMultiPolygonXY multi = features[0].first->geometry().asMultiPolygon();
   QCOMPARE( multi.size(), 2 );
   QCOMPARE( multi[0].size(), 1 );
   QCOMPARE( multi[0][0].size(), 5 );

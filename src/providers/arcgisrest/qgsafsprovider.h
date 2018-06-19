@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
+#include "qgslayermetadata.h"
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -35,7 +36,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
 
   public:
 
-    QgsAfsProvider( const QString &uri );
+    QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
@@ -44,6 +45,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
     QgsFields fields() const override;
+    QgsLayerMetadata layerMetadata() const override;
     /* Read only for the moment
     bool addFeatures( QgsFeatureList &flist ) override{ return false; }
     bool deleteFeatures( const QgsFeatureIds &id ) override{ return false; }
@@ -52,7 +54,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override{ return false; }
     bool changeGeometryValues( QgsGeometryMap & geometry_map ) override{ return false; }
     */
-    QgsVectorDataProvider::Capabilities capabilities() const override { return QgsVectorDataProvider::NoCapabilities; }
+    QgsVectorDataProvider::Capabilities capabilities() const override;
     QgsAttributeList pkAttributeIndexes() const override { return QgsAttributeList() << mObjectIdFieldIdx; }
     QgsAttrPalIndexNameHash palAttributeIndexNames() const override { return QgsAttrPalIndexNameHash(); }
 
@@ -64,16 +66,20 @@ class QgsAfsProvider : public QgsVectorDataProvider
     /* Read only for the moment
     void updateExtents() override{}
     */
-    QString name() const override { return mLayerName; }
-    QString description() const override { return mLayerDescription; }
+    QString name() const override;
+    QString description() const override;
+    QString dataComment() const override;
     void reloadData() override;
+    QgsFeatureRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const override;
 
   private:
-    bool mValid;
+    bool mValid = false;
     std::shared_ptr<QgsAfsSharedData> mSharedData;
-    int mObjectIdFieldIdx;
+    int mObjectIdFieldIdx = -1;
     QString mLayerName;
     QString mLayerDescription;
+    QgsLayerMetadata mLayerMetadata;
+    QVariantMap mRendererDataMap;
 };
 
 #endif // QGSAFSPROVIDER_H

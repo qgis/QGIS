@@ -20,6 +20,7 @@
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutserializableobject.h"
 #include <QPen>
 #include <QAbstractListModel>
 #include <QSortFilterProxyModel>
@@ -28,6 +29,9 @@
 
 class QgsLayout;
 class QgsLayoutPageCollection;
+class QDomElement;
+class QDomDocument;
+class QgsReadWriteContext;
 
 /**
  * \ingroup core
@@ -42,13 +46,6 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
 
   public:
 
-    //! Guide orientation
-    enum Orientation
-    {
-      Horizontal, //!< Horizontal guide
-      Vertical, //!< Vertical guide
-    };
-
     /**
      * Constructor for a new guide with the specified \a orientation and
      * initial \a position.
@@ -57,9 +54,9 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      * Adding the guide to a QgsLayoutGuideCollection will automatically set
      * the corresponding layout for you.
      */
-    QgsLayoutGuide( Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+    QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
 
-    ~QgsLayoutGuide();
+    ~QgsLayoutGuide() override;
 
     /**
      * Returns the layout the guide belongs to.
@@ -80,7 +77,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
     /**
      * Returns the guide's orientation.
      */
-    Orientation orientation() const;
+    Qt::Orientation orientation() const;
 
     /**
      * Returns the guide's position within the page.
@@ -147,7 +144,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
 
   private:
 
-    Orientation mOrientation = Vertical;
+    Qt::Orientation mOrientation = Qt::Vertical;
 
     //! Horizontal/vertical position of guide on page
     QgsLayoutMeasurement mPosition;
@@ -168,7 +165,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
  * \brief Stores and manages the snap guides used by a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
+class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public QgsLayoutSerializableObject
 {
 
     Q_OBJECT
@@ -190,7 +187,10 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      * and linked to the specified \a pageCollection.
      */
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
-    ~QgsLayoutGuideCollection();
+    ~QgsLayoutGuideCollection() override;
+
+    QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
+    QgsLayout *layout() override;
 
     int rowCount( const QModelIndex & ) const override;
     int columnCount( const QModelIndex & ) const override;
@@ -215,6 +215,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     void removeGuide( QgsLayoutGuide *guide );
 
     /**
+     * Sets the absolute \a position (in layout coordinates) for \a guide within the layout.
+     */
+    void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
+
+    /**
      * Removes all guides from the collection.
      * \see removeGuide()
      */
@@ -231,12 +236,17 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     void update();
 
     /**
+     * Returns a list of all guides contained in the collection.
+     */
+    QList< QgsLayoutGuide * > guides();
+
+    /**
      * Returns the list of guides contained in the collection with the specified
      * \a orientation and on a matching \a page.
      * If \a page is -1, guides from all pages will be returned.
      * \see guidesOnPage()
      */
-    QList< QgsLayoutGuide * > guides( QgsLayoutGuide::Orientation orientation, int page = -1 );
+    QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
 
     /**
      * Returns the list of guides contained on a matching \a page.
@@ -256,11 +266,29 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
      */
     void setVisible( bool visible );
 
+    /**
+     * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+
+    /**
+     * Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
   private slots:
 
     void pageAboutToBeRemoved( int pageNumber );
 
   private:
+
+    enum UndoRoles
+    {
+      Move = 10000,
+      Remove = 20000,
+    };
 
     QgsLayout *mLayout = nullptr;
     QgsLayoutPageCollection *mPageCollection = nullptr;
@@ -269,6 +297,9 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel
     int mHeaderSize = 0;
 
     bool mGuidesVisible = true;
+    bool mBlockUndoCommands = false;
+
+    friend class QgsLayoutGuideCollectionUndoCommand;
 
 };
 
@@ -290,7 +321,7 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
      *
      * Page numbers begin at 0.
      */
-    explicit QgsLayoutGuideProxyModel( QObject *parent SIP_TRANSFERTHIS, QgsLayoutGuide::Orientation orientation, int page );
+    explicit QgsLayoutGuideProxyModel( QObject *parent SIP_TRANSFERTHIS, Qt::Orientation orientation, int page );
 
     /**
      * Sets the current \a page for filtering matching guides. Page numbers begin at 0.
@@ -301,7 +332,7 @@ class CORE_EXPORT QgsLayoutGuideProxyModel : public QSortFilterProxyModel
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:
-    QgsLayoutGuide::Orientation mOrientation = QgsLayoutGuide::Horizontal;
+    Qt::Orientation mOrientation = Qt::Horizontal;
     int mPage = 0;
 
 };

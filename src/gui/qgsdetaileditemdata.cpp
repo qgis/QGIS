@@ -1,5 +1,5 @@
 /***************************************************************************
-     qgsdetailedlistdata.cpp  -  A data represenation for a rich QItemData subclass
+     qgsdetailedlistdata.cpp  -  A data representation for a rich QItemData subclass
                              -------------------
     begin                : Sat May 17 2008
     copyright            : (C) 2008 Tim Sutton
@@ -16,14 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemdata.h"
-QgsDetailedItemData::QgsDetailedItemData()
-  : mCheckableFlag( false )
-  , mCheckedFlag( false )
-  , mEnabledFlag( true )
-  , mRenderAsWidgetFlag( false )
-{
-
-}
 
 void QgsDetailedItemData::setTitle( const QString &title )
 {

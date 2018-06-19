@@ -29,7 +29,8 @@
 class QgsCachedFeatureIterator;
 class QgsAbstractCacheIndex;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class caches features of a given QgsVectorLayer.
  *
  * \brief
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   public:
     QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsVectorLayerCache();
+    ~QgsVectorLayerCache() override;
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from
@@ -114,8 +115,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
     /**
      * Returns true if the cache will fetch and cache feature geometries.
-     * \since QGIS 3.0
      * \see setCacheGeometry()
+     * \since QGIS 3.0
      */
     bool cacheGeometry() const { return mCacheGeometry; }
 
@@ -149,7 +150,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      */
     void setFullCache( bool fullCache );
 
-    /** Returns true if the cache is complete, ie it contains all features. This may happen as
+    /**
+     * Returns true if the cache is complete, ie it contains all features. This may happen as
      * a result of a call to setFullCache() or by through a feature request which resulted in
      * all available features being cached.
      * \see setFullCache()
@@ -219,11 +221,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
      * \returns True if this id is in the cache
      * \see cachedFeatureIds()
      */
-    bool isFidCached( const QgsFeatureId fid ) const;
+    bool isFidCached( QgsFeatureId fid ) const;
 
-    /** Returns the set of feature IDs for features which are cached.
-     * \since QGIS 3.0
+    /**
+     * Returns the set of feature IDs for features which are cached.
      * \see isFidCached()
+     * \since QGIS 3.0
      */
     QgsFeatureIds cachedFeatureIds() const { return mCache.keys().toSet(); }
 
@@ -396,7 +399,8 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     friend class QgsCachedFeatureWriterIterator;
     friend class QgsCachedFeature;
 
-    /** Returns true if the cache contains all the features required for a specified request.
+    /**
+     * Returns true if the cache contains all the features required for a specified request.
      * \param featureRequest feature request
      * \param it will be set to iterator for matching features
      * \returns true if cache can satisfy request

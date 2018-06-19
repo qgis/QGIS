@@ -71,16 +71,13 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
     * QGIS when it attempts to instantiate the plugin.
-    * \param Pointer to the QgisApp object
-    * \param Pointer to the QgisIface object.
+    * \param interface pointer to the QgisIface object.
      */
-    explicit QgsGeorefPlugin( QgisInterface * );
-
-    virtual ~ QgsGeorefPlugin();
+    explicit QgsGeorefPlugin( QgisInterface *interface );
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin

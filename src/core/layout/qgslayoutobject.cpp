@@ -18,6 +18,8 @@
 #include <QPainter>
 
 #include "qgslayout.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoutobject.h"
 
 
@@ -74,6 +76,7 @@ void QgsLayoutObject::initPropertyDefinitions()
     { QgsLayoutObject::ScalebarFillColor2, QgsPropertyDefinition( "dataDefinedScalebarFill2", QObject::tr( "Secondary fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::ScalebarLineColor, QgsPropertyDefinition( "dataDefinedScalebarLineColor", QObject::tr( "Line color" ), QgsPropertyDefinition::ColorWithAlpha ) },
     { QgsLayoutObject::ScalebarLineWidth, QgsPropertyDefinition( "dataDefinedScalebarLineWidth", QObject::tr( "Line width" ), QgsPropertyDefinition::StrokeWidth ) },
+    { QgsLayoutObject::AttributeTableSourceLayer, QgsPropertyDefinition( "dataDefinedAttributeTableSourceLayer", QObject::tr( "Table source layer" ), QgsPropertyDefinition::String ) },
   };
 }
 
@@ -88,8 +91,23 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   , mLayout( layout )
 {
   initPropertyDefinitions();
+
+  if ( mLayout )
+  {
+    connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
+    connect( &mLayout->reportContext(), &QgsLayoutReportContext::changed, this, &QgsLayoutObject::refresh );
+  }
 }
 
+const QgsLayout *QgsLayoutObject::layout() const
+{
+  return mLayout.data();
+}
+
+QgsLayout *QgsLayoutObject::layout()
+{
+  return mLayout.data();
+}
 
 void QgsLayoutObject::setCustomProperty( const QString &key, const QVariant &value )
 {

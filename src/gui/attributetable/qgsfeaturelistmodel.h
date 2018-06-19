@@ -18,7 +18,7 @@
 #include "qgsexpression.h"
 #include "qgis.h"
 
-#include <QAbstractProxyModel>
+#include <QSortFilterProxyModel>
 #include <QVariant>
 #include <QItemSelectionModel>
 
@@ -32,10 +32,11 @@ class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListModel
  */
-class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
@@ -43,29 +44,39 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     struct FeatureInfo
     {
       public:
-        FeatureInfo()
-          : isNew( false )
-          , isEdited( false )
-        {}
 
-        bool isNew;
-        bool isEdited;
+        /**
+         * Constructor for FeatureInfo.
+         */
+        FeatureInfo() = default;
+
+        //! True if feature is a newly added feature.
+        bool isNew = false;
+
+        //! True if feature has been edited.
+        bool isEdited = false;
     };
 
     enum Role
     {
-      FeatureInfoRole = Qt::UserRole,
+      FeatureInfoRole = 0x1000, // Make sure no collisions with roles on QgsAttributeTableModel
       FeatureRole
     };
 
   public:
-    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
-    virtual ~QgsFeatureListModel();
+
+    //! Constructor for QgsFeatureListModel
+    explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
+
+    /**
+     * Returns the vector layer cache which is being used to populate the model.
+     */
     QgsVectorLayerCache *layerCache();
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+    QVariant data( const QModelIndex &index, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * \brief If true is specified, a NULL value will be injected
@@ -99,11 +110,21 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
 
     QString displayExpression() const;
     bool featureByIndex( const QModelIndex &index, QgsFeature &feat );
-    QgsFeatureId idxToFid( const QModelIndex &index ) const;
-    QModelIndex fidToIdx( const QgsFeatureId fid ) const;
 
-    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
-    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    /**
+     * Returns the feature ID corresponding to an \a index from the model.
+     * \see fidToIdx()
+     */
+    QgsFeatureId idxToFid( const QModelIndex &index ) const;
+
+    /**
+     * Returns the model index corresponding to a feature ID.
+     * \see idxToFid()
+     */
+    QModelIndex fidToIdx( QgsFeatureId fid ) const;
+
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
@@ -111,27 +132,68 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     virtual QItemSelection mapSelectionFromMaster( const QItemSelection &selection ) const;
     virtual QItemSelection mapSelectionToMaster( const QItemSelection &selection ) const;
 
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QModelIndex parent( const QModelIndex &child ) const override;
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     QModelIndex fidToIndex( QgsFeatureId fid ) override;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
+    /**
+     * Sort this model by its display expression.
+     *
+     * \since QGIS 3.2
+     */
+    bool sortByDisplayExpression() const;
+
+    /**
+     * Sort this model by its display expression.
+     *
+     * \note Not compatible with injectNull, if sorting by display expression is enabled,
+     * injectNull will automatically turned off.
+     *
+     * \since QGIS 3.2
+     */
+    void setSortByDisplayExpression( bool sortByDisplayExpression );
+
   public slots:
-    void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
-    void onEndRemoveRows( const QModelIndex &parent, int first, int last );
-    void onBeginInsertRows( const QModelIndex &parent, int first, int last );
-    void onEndInsertRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginRemoveRows()
+     *
+     * \deprecated Use beginRemoveRows() instead
+     */
+    Q_DECL_DEPRECATED void onBeginRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endRemoveRows()
+     *
+     * \deprecated Use endRemoveRows() instead
+     */
+    Q_DECL_DEPRECATED void onEndRemoveRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling beginInsertRows()
+     *
+     * \deprecated use beginInsertRows() instead
+     */
+    Q_DECL_DEPRECATED void onBeginInsertRows( const QModelIndex &parent, int first, int last );
+
+    /**
+     * Does nothing except for calling endInsertRows()
+     *
+     * \deprecated use endInsertRows() instead
+     */
+    Q_DECL_DEPRECATED void onEndInsertRows( const QModelIndex &parent, int first, int last );
 
   private:
     mutable QgsExpression mDisplayExpression;
     QgsAttributeTableFilterModel *mFilterModel = nullptr;
     QString mParserErrorString;
-    bool mInjectNull;
+    bool mInjectNull = false;
     mutable QgsExpressionContext mExpressionContext;
     mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
+    bool mSortByDisplayExpression = false;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
 use File::Basename;
@@ -18,9 +18,17 @@ use constant MULTILINE_NO => 20;
 use constant MULTILINE_METHOD => 21;
 use constant MULTILINE_CONDITIONAL_STATEMENT => 22;
 
+use constant CODE_SNIPPET => 30;
+use constant CODE_SNIPPET_CPP => 31;
+
 # read arguments
 my $debug = 0;
-die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
+my $sip_output = '';
+my $python_output = '';
+#my $SUPPORT_TEMPLATE_DOCSTRING = 0;
+#die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
+die("usage: $0 [-debug] [-sip_output FILE] [-python_output FILE] headerfile\n")
+  unless GetOptions ("debug" => \$debug, "sip_output=s" => \$sip_output, "python_output=s" => \$python_output) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -44,31 +52,39 @@ my $MULTILINE_DEFINITION = MULTILINE_NO;
 my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
+my $INDENT = '';
 my $COMMENT = '';
+my $COMMENT_PARAM_LIST = 0;
+my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+my $COMMENT_CODE_SNIPPET = 0;
+my $COMMENT_TEMPLATE_DOCSTRING = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
 my $RETURN_TYPE = '';
 my $IS_OVERRIDE = 0;
 my $IF_FEATURE_CONDITION = '';
+my $FOUND_SINCE = 0;
 my %QFLAG_HASH;
 
 my $LINE_COUNT = @INPUT_LINES;
 my $LINE_IDX = 0;
 my $LINE;
 my @OUTPUT = ();
+my @OUTPUT_PYTHON = ();
 
 
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
     $LINE_IDX++;
-    $debug == 0 or print sprintf('LIN:%d DEPTH:%d ACC:%d BRCK:%d SIP:%d MLT:%d CLSS: %s/%d',
+    $debug == 0 or print sprintf('LIN:%d DEPTH:%d ACC:%d BRCK:%d SIP:%d MLT:%d OVR: %d CLSS: %s/%d',
                                   $LINE_IDX,
                                   $#ACCESS,
                                   $ACCESS[$#ACCESS],
                                   $GLOB_BRACKET_NESTING_IDX[$#GLOB_BRACKET_NESTING_IDX],
                                   $SIP_RUN,
                                   $MULTILINE_DEFINITION,
+                                  $IS_OVERRIDE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
     return $new_line;
@@ -100,41 +116,194 @@ sub exit_with_error {
   die "! Sipify error in $headerfile at line :: $LINE_IDX\n! $_[0]\n";
 }
 
-sub write_header_footer {
-    push @OUTPUT,  "/************************************************************************\n";
-    push @OUTPUT,  " * This file has been generated automatically from                      *\n";
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT, sprintf " * %-*s *\n", 68, $headerfile;
-    push @OUTPUT,  " *                                                                      *\n";
-    push @OUTPUT,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
-    push @OUTPUT,  " ************************************************************************/\n";
+sub sip_header_footer {
+    my @header_footer = ();
+    # small hack to turn files src/core/3d/X.h to src/core/./3d/X.h
+    # otherwise "sip up to date" test fails. This is because the test uses %Include entries
+    # and over there we have to use ./3d/X.h entries because SIP parser does not allow a number
+    # as the first letter of a relative path
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
+    push @header_footer,  "/************************************************************************\n";
+    push @header_footer,  " * This file has been generated automatically from                      *\n";
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer, sprintf " * %-*s *\n", 68, $headerfile_x;
+    push @header_footer,  " *                                                                      *\n";
+    push @header_footer,  " * Do not edit manually ! Edit header and run scripts/sipify.pl again   *\n";
+    push @header_footer,  " ************************************************************************/\n";
+    return @header_footer;
+}
+
+sub python_header {
+    my @header = ();
+    my $headerfile_x = $headerfile;
+    $headerfile_x =~ s/src\/core\/3d/src\/core\/.\/3d/;
+    push @header, "# The following has been generated automatically from ";
+    push @header, sprintf "%s\n", $headerfile_x;
+    return @header;
 }
 
 sub processDoxygenLine {
     my $line = $_[0];
+
+    # detect code snippet
+    if ( $line =~ m/\\code(\{\.(\w+)\})?/ ) {
+        my $codelang = "";
+        $codelang = " $2" if (defined $2);
+        $COMMENT_CODE_SNIPPET = CODE_SNIPPET;
+        $COMMENT_CODE_SNIPPET = CODE_SNIPPET_CPP if ($codelang =~ m/cpp/ );
+        $codelang =~ s/py/python/;
+        return "\n" if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP );
+        return ".. code-block::$codelang\n\n";
+    }
+    if ( $line =~ m/\\endcode/ ) {
+        $COMMENT_CODE_SNIPPET = 0;
+        return "\n";
+    }
+    if ($COMMENT_CODE_SNIPPET != 0){
+        if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP ){
+            return "";
+        } else {
+            if ( $line ne ''){
+                  return "    $line\n";
+              } else {
+                  return "\n";
+              }
+        }
+    }
+
+    # remove prepending spaces
+    $line =~ s/^\s+//g;
     # remove \a formatting
     $line =~ s/\\a (.+?)\b/``$1``/g;
     # replace :: with . (changes c++ style namespace/class directives to Python style)
     $line =~ s/::/./g;
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
+
+    if ( $line eq '*' ) {
+        $line = '';
+    }
+
+    # if inside multi-line parameter, ensure additional lines are indented
+    if ($line ne '') {
+        if ( $line !~ m/^\s*[\\:]+(param|note|since|return|deprecated|warning)/ ) {
+            $line = "$INDENT$line";
+        }
+    }
+    else
+    {
+        $INDENT = '';
+    }
     # replace \returns with :return:
-    $line =~ s/\\return(s)?/:return:/g;
+    if ( $line =~ m/\\return(s)?/ ){
+        $line =~ s/\s*\\return(s)?\s*/\n:return: /;
+        # remove any trailing spaces, will be present now for empty 'returns' tags
+        $line =~ s/\s*$//g;
+        $INDENT = ' 'x( index($line,':',4) + 1);
+    }
+
+    # params
+    if ( $line =~ m/\\param / ){
+        $line =~ s/\s*\\param\s+(\w+)\b\s*/:param $1: /g;
+        # remove any trailing spaces, will be present now for empty 'param' tags
+        $line =~ s/\s*$//g;
+        $INDENT = ' 'x( index($line,':',2) + 2);
+        if ( $line =~ m/^:param/ ){
+          if ( $COMMENT_PARAM_LIST == 0 )
+          {
+              $line = "\n$line";
+          }
+          $COMMENT_PARAM_LIST = 1;
+          $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+        }
+    }
+
+    if ( $line =~ m/^\s*[\\@]brief/){
+        $line =~ s/[\\@]brief\s*//;
+        if ( $FOUND_SINCE eq 1 ) {
+            exit_with_error("$headerfile\:\:$LINE_IDX Since annotation must come after brief")
+        }
+        $FOUND_SINCE = 0;
+        if ( $line =~ m/^\s*$/ ){
+            return "";
+        }
+    }
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
-        return ""
+        $INDENT = '';
+        return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
-        return ".. versionadded:: $1\n";
+        $INDENT = '';
+        $FOUND_SINCE = 1;
+        return "\n.. versionadded:: $1\n";
     }
-    if ( $line =~ m/\\see (.*)/ ) {
-        return ".. seealso:: $1\n";
+    if ( $line =~ m/\\deprecated(.*)/i ) {
+        $INDENT = '';
+        return "\n.. deprecated::$1\n";
     }
+
+    # create links in see also
+    if ( $line =~ m/\\see +(\w+(\.\w+)*)(\([^()]*\))?/ ) {
+        my $seealso = $1;
+        my $seeline = '';
+        dbg_info("see also: $seealso");
+        if (  $seealso =~ m/^Qgs[A-Z]\w+(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:class");
+            $seeline = ":py:class:`$seealso`";
+        }
+        elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:func with param");
+            $seeline = ":py:func:`$1.$2`";
+        }
+        elsif (  $seealso =~ m/^[a-z]\w+(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:func");
+            $seeline = ":py:func:`$seealso`";
+        }
+        if ( $line =~ m/^\s*\\see/ ){
+            if ( $seeline ne ''){
+                return "\n.. seealso:: $seeline\n";
+            } else {
+                return "\n.. seealso:: $seealso\n";
+            }
+        } else {
+            if ( $seeline ne ''){
+                $line =~ s/\\see +(\w+(\.\w+)*(\(\))?)/$seeline/;
+            } else {
+                $line =~s/\\see/see/;
+            }
+        }
+    }
+    else
+    {
+        # create links in plain text too (less performant)
+        if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
+            if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
+                $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
+            }
+        }
+        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
+    }
+
     if ( $line =~ m/[\\@]note (.*)/ ) {
-        return ".. note::\n\n   $1\n";
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        $INDENT = '';
+        return "\n.. note::\n\n   $1\n";
     }
-    if ( $line =~ m/[\\@]brief (.*)/ ) {
-        return " $1\n";
+    if ( $line =~ m/[\\@]warning (.*)/ ) {
+        $INDENT = '';
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
+        return "\n.. warning::\n\n   $1\n";
+    }
+
+    if ( $line !~ m/^\s*$/ ){
+        if ( $COMMENT_LAST_LINE_NOTE_WARNING == 1 ){
+            dbg_info("prepend spaces for multiline warning/note xx$line");
+            $line = "   $line";
+        }
+    } else {
+        $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     }
     return "$line\n";
 }
@@ -204,6 +373,7 @@ sub remove_following_body_or_initializerlist {
 sub fix_annotations {
     my $line = $_[0];
     # printed annotations
+    $line =~ s/\/\/\s*SIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ABSTRACT\b/\/Abstract\//;
     $line =~ s/\bSIP_ALLOWNONE\b/\/AllowNone\//;
     $line =~ s/\bSIP_ARRAY\b/\/Array\//g;
@@ -224,11 +394,12 @@ sub fix_annotations {
 
     $line =~ s/SIP_PYNAME\(\s*(\w+)\s*\)/\/PyName=$1\//;
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
+    $line =~ s/SIP_THROW\(\s*(\w+)\s*\)/throw\( $1 \)/;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/3
+    # https://regex101.com/r/uvCt4M/4
     do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
@@ -256,6 +427,18 @@ sub fix_annotations {
         $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
+    $line =~ s/SIP_DOC_TEMPLATE//;
+    $line =~ s/\s+;$/;/;
+    return $line;
+}
+
+sub fix_constants {
+    my $line = $_[0];
+    $line =~ s/\bstd::numeric_limits<double>::max\(\)/DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::lowest\(\)/-DBL_MAX/g;
+    $line =~ s/\bstd::numeric_limits<double>::epsilon\(\)/DBL_EPSILON/g;
+    $line =~ s/\bstd::numeric_limits<int>::max\(\)/INT_MAX/g;
+    $line =~ s/\bstd::numeric_limits<int>::min\(\)/INT_MIN/g;
     return $line;
 }
 
@@ -264,6 +447,11 @@ sub fix_annotations {
 sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
+    $COMMENT_PARAM_LIST = 0;
+    $INDENT = '';
+    $COMMENT_CODE_SNIPPET = 0;
+    $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+    $FOUND_SINCE = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -274,15 +462,20 @@ sub detect_comment_block{
             $LINE = read_line();
             $COMMENT .= processDoxygenLine( $LINE =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
         }
+        $COMMENT =~ s/\n\s+\n/\n\n/;
+        $COMMENT =~ s/\n{3,}/\n\n/;
         $COMMENT =~ s/\n+$//;
         return 1;
     }
     return 0;
 }
 
-
-
-write_header_footer();
+# Detect if line is a non method member declaration
+# https://regex101.com/r/gUBZUk/14
+sub detect_non_method_member{
+  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|((QMap|QList)<[^()]+>\(\))|(\w+::)*\w+(\([^()]?\))?)|\[\d+\])?)+;/;
+  return 0;
+}
 
 # write some code in front of line to know where the output comes from
 $debug == 0 or push @OUTPUT, "CODE SIP_RUN MultiLine\n";
@@ -368,7 +561,8 @@ while ($LINE_IDX < $LINE_COUNT){
             $SIP_RUN = 1;
             if ($ACCESS[$#ACCESS] == PRIVATE){
                 dbg_info("writing private content");
-                write_output("PRV1", $PRIVATE_SECTION_LINE."\n");
+                write_output("PRV1", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                $PRIVATE_SECTION_LINE = '';
             }
             next;
         }
@@ -418,7 +612,8 @@ while ($LINE_IDX < $LINE_COUNT){
                     # code here will be printed out
                     if ($ACCESS[$#ACCESS] == PRIVATE){
                         dbg_info("writing private content");
-                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n");
+                        write_output("PRV2", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+                        $PRIVATE_SECTION_LINE = '';
                     }
                     $SIP_RUN = 1;
                     last;
@@ -463,15 +658,44 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^\s*friend class \w+/ ){
         next;
     }
-    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM, Q_GADGET etc.
-    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|PROPERTY|GADGET|DECLARE_METATYPE|DECLARE_TYPEINFO|DECL_DEPRECATED|NOWARN_DEPRECATED_(PUSH|POP)).*?$/){
+
+    # insert metaoject for Q_GADGET
+    if ($LINE =~ m/^\s*Q_GADGET\b.*?$/){
+        if ($LINE !~ m/SIP_SKIP/){
+            dbg_info('Q_GADGET');
+            write_output("HCE", "  public:\n");
+            write_output("HCE", "    static const QMetaObject staticMetaObject;\n\n");
+        }
+        next;
+    }
+    # insert in python output (python/module/__init__.py)
+    if ($LINE =~ m/Q_(ENUM|FLAG)\(\s*(\w+)\s*\)/ ){
+        if ($LINE !~ m/SIP_SKIP/){
+            my $is_flag = $1 eq 'FLAG' ? 1 : 0;
+            my $enum_helper = "$ACTUAL_CLASS.$2.baseClass = $ACTUAL_CLASS";
+            dbg_info("Q_ENUM/Q_FLAG $enum_helper");
+            if ($python_output ne ''){
+                if ($enum_helper ne ''){
+                    push @OUTPUT_PYTHON, "$enum_helper\n";
+                    if ($is_flag == 1){
+                        # SIP seems to introduce the flags in the module rather than in the class itself
+                        # as a dirty hack, inject directly in module, hopefully we don't have flags with the same name....
+                        push @OUTPUT_PYTHON, "$2 = $ACTUAL_CLASS  # dirty hack since SIP seems to introduce the flags in module\n";
+                    }
+                }
+            }
+        }
+        next;
+    }
+
+    # Skip Q_OBJECT, Q_PROPERTY, Q_ENUM etc.
+    if ($LINE =~ m/^\s*Q_(OBJECT|ENUMS|ENUM|FLAG|PROPERTY|DECLARE_METATYPE|DECLARE_TYPEINFO|NOWARN_DEPRECATED_(PUSH|POP))\b.*?$/){
         next;
     }
 
     # SIP_SKIP
-    if ( $LINE =~ m/SIP_SKIP/ ){
+    if ( $LINE =~ m/SIP_SKIP|SIP_PYTHON_OPERATOR_/ ){
         dbg_info('SIP SKIP!');
-        $COMMENT = '';
         # if multiline definition, remove previous lines
         if ( $MULTILINE_DEFINITION != MULTILINE_NO){
             dbg_info('SIP_SKIP with MultiLine');
@@ -486,6 +710,16 @@ while ($LINE_IDX < $LINE_COUNT){
         # also skip method body if there is one
         detect_and_remove_following_body_or_initializerlist();
         # line skipped, go to next iteration
+
+        if ($LINE =~ m/SIP_PYTHON_OPERATOR_(\w+)\(\s*(\w+)\s*\)/ ){
+            my $pyop = "${ACTUAL_CLASS}.__" . lc($1) . "__ = lambda self: self.$2()";
+            dbg_info("PYTHON OPERATOR $pyop");
+            if ($python_output ne ''){
+                push @OUTPUT_PYTHON, "$pyop\n";
+            }
+        }
+
+        $COMMENT = '';
         next;
     }
 
@@ -504,7 +738,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     # class declaration started
     # https://regex101.com/r/6FWntP/10
-    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
+    if ( $LINE =~ m/^(\s*class)\s+([A-Z]+_EXPORT\s+)?(\w+)(\s*\:\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*(,\s*(public|protected|private)\s+\w+(< *(\w|::)+ *>)?(::\w+(<\w+>)?)*)*)?(?<annot>\s*\/?\/?\s*SIP_\w+)?\s*?(\/\/.*|(?!;))$/ ){
         dbg_info("class definition started");
         push @ACCESS, PUBLIC;
         push @EXPORTED, 0;
@@ -643,7 +877,8 @@ while ($LINE_IDX < $LINE_COUNT){
     }
     elsif ( $ACCESS[$#ACCESS] == PRIVATE && $LINE =~ m/SIP_FORCE/){
         dbg_info("private with SIP_FORCE");
-        write_output("PRV3", $PRIVATE_SECTION_LINE."\n");
+        write_output("PRV3", $PRIVATE_SECTION_LINE."\n") if $PRIVATE_SECTION_LINE ne '';
+        $PRIVATE_SECTION_LINE = '';
     }
     elsif ( PRIVATE ~~ @ACCESS && $SIP_RUN == 0 ) {
         $COMMENT = '';
@@ -660,6 +895,9 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $SIP_RUN == 0 ){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
+                $COMMENT_PARAM_LIST = 0;
+                $INDENT = '';
+                $COMMENT_LAST_LINE_NOTE_WARNING = 0;
                 $COMMENT = processDoxygenLine( $1 );
                 $COMMENT =~ s/\n+$//;
             }
@@ -712,6 +950,9 @@ while ($LINE_IDX < $LINE_COUNT){
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
         $LINE =~ s/\s*\bextern \b//;
+        $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
+        $LINE =~ s/\s*\bNODISCARD \b//;
+        $LINE =~ s/\s*\bQ_DECL_DEPRECATED\b//;
         $LINE =~ s/^(\s*)?(const )?(virtual |static )?inline /$1$2$3/;
         $LINE =~ s/\bconstexpr\b/const/;
         $LINE =~ s/\bnullptr\b/0/g;
@@ -724,10 +965,9 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # skip non-method member declaration in non-public sections
-    # https://regex101.com/r/gUBZUk/10
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/){
+         detect_non_method_member() == 1){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
@@ -748,7 +988,7 @@ while ($LINE_IDX < $LINE_COUNT){
     };
 
     # remove struct member assignment
-    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = \w+(\([^()]+\))?;/ ){
+    if ( $SIP_RUN != 1 && $ACCESS[$#ACCESS] == PUBLIC && $LINE =~ m/^(\s*\w+[\w<> *&:,]* \*?\w+) = [\-\w\:\.]+(\([^()]*\))?\s*;/ ){
         dbg_info("remove struct member assignment");
         $LINE = "$1;";
     }
@@ -757,8 +997,8 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $LINE =~ m/^(\s*)Q_DECLARE_FLAGS\(\s*(.*?)\s*,\s*(.*?)\s*\)\s*$/ ){
         my $ACTUAL_CLASS = $CLASSNAME[$#CLASSNAME];
         dbg_info("Declare flags: $ACTUAL_CLASS");
-        $LINE = "$1typedef QFlags<$ACTUAL_CLASS::$3> $2;\n";
-        $QFLAG_HASH{"$ACTUAL_CLASS::$2"} = "$ACTUAL_CLASS::$3";
+        $LINE = "$1typedef QFlags<${ACTUAL_CLASS}::$3> $2;\n";
+        $QFLAG_HASH{"${ACTUAL_CLASS}::$2"} = "${ACTUAL_CLASS}::$3";
     }
     # catch Q_DECLARE_OPERATORS_FOR_FLAGS
     if ( $LINE =~ m/^(\s*)Q_DECLARE_OPERATORS_FOR_FLAGS\(\s*(.*?)\s*\)\s*$/ ){
@@ -834,6 +1074,30 @@ while ($LINE_IDX < $LINE_COUNT){
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
+    # Skip comments
+    $COMMENT_TEMPLATE_DOCSTRING = 0;
+    if ( $LINE =~ m/^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE/ ) {
+        # support Docstring for template based classes in SIP 4.19.7+
+        $COMMENT_TEMPLATE_DOCSTRING = 1;
+    }
+    elsif ( $LINE =~ m/\/\// ||
+            $LINE =~ m/^\s*typedef / ||
+            $LINE =~ m/\s*struct / ||
+            $LINE =~ m/operator\[\]\(/ ||
+            $LINE =~ m/^\s*operator\b/ ||
+            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
+            $LINE =~ m/^\s*%\w+(.*)?$/ ||
+            $LINE =~ m/^\s*namespace\s+\w+/ ||
+            $LINE =~ m/^\s*(virtual\s*)?~/ ||
+            detect_non_method_member() == 1 ){
+        dbg_info('skipping comment');
+        dbg_info('because typedef') if ($LINE =~ m/\s*typedef.*?(?!SIP_DOC_TEMPLATE)/);
+        $COMMENT = '';
+        $RETURN_TYPE = '';
+        $IS_OVERRIDE = 0;
+    }
+
+    $LINE = fix_constants($LINE);
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
@@ -887,35 +1151,36 @@ while ($LINE_IDX < $LINE_COUNT){
         # do not comment now for templates, wait for class definition
         next;
     }
-    if ( $LINE =~ m/^\s*namespace\s+\w+/){
-        $COMMENT = '';
-    }
-    if ( $LINE =~ m/\/\// ||
-            $LINE =~ m/\s*typedef / ||
-            $LINE =~ m/\s*struct / ||
-            $LINE =~ m/operator\[\]\(/ ||
-            $LINE =~ m/operator==/ ||
-            ($LINE =~ m/operator[!+-=*\/\[\]]{1,2}/ && $#ACCESS == 0) ||  # apparently global operators cannot be documented
-            $LINE =~ m/^\s*%\w+(.*)?$/ ){
-        dbg_info('skipping comment');
-        $COMMENT = '';
-        $RETURN_TYPE = '';
-    }
-    elsif ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
+    if ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
         if ( $IS_OVERRIDE == 1 && $COMMENT =~ m/^\s*$/ ){
             # overridden method with no new docs - so don't create a Docstring and use
             # parent class Docstring
         }
         else {
             dbg_info('writing comment');
-            write_output("CM1", "%Docstring\n");
             if ( $COMMENT !~ m/^\s*$/ ){
-                write_output("CM2", "$COMMENT\n");
+                my $doc_prepend = "";
+                $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
+                write_output("CM1", "$doc_prepend%Docstring\n");
+                my @comment_lines = split /\n/, $COMMENT;
+                foreach my $comment_line (@comment_lines) {
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
+                  write_output("CM2", "$doc_prepend$comment_line\n");
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
+                }
+            write_output("CM4", "$doc_prepend%End\n");
             }
-            if ($RETURN_TYPE ne '' ){
-                write_output("CM3", " :rtype: $RETURN_TYPE\n");
-            }
-            write_output("CM4", "%End\n");
+            # if ( $RETURN_TYPE ne '' ){
+            #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
+            # }
         }
         $COMMENT = '';
         $RETURN_TYPE = '';
@@ -925,6 +1190,25 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
     }
 }
-write_header_footer();
 
-print join('',@OUTPUT);
+if ( $sip_output ne ''){
+  open(FH, '>', $sip_output) or die $!;
+  print FH join('', sip_header_footer());
+  print FH join('',@OUTPUT);
+  print FH join('', sip_header_footer());
+  close(FH);
+} else {
+  print join('', sip_header_footer());
+  print join('',@OUTPUT);
+  print join('', sip_header_footer());
+}
+
+if ( $python_output ne '' ){
+    unlink $python_output or 1;
+    if ( @OUTPUT_PYTHON ){
+        open(FH2, '>', $python_output) or die $!;
+        print FH2 join('', python_header());
+        print FH2 join('', @OUTPUT_PYTHON);
+        close(FH2);
+    }
+}

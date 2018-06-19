@@ -30,10 +30,8 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
     Q_OBJECT
   public:
     QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
-    ~QgsSelectLayerTreeModel();
-
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 };
 
 class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditingPluginGuiBase
@@ -41,8 +39,8 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     Q_OBJECT
 
   public:
-    QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
-    virtual ~QgsOfflineEditingPluginGui();
+    QgsOfflineEditingPluginGui( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    ~QgsOfflineEditingPluginGui() override;
 
     QString offlineDataPath();
     QString offlineDbFile();
@@ -63,9 +61,9 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QStringList mSelectedLayerIds;
 
   private slots:
-    void on_mBrowseButton_clicked();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void mBrowseButton_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
     void showHelp();
 };
 

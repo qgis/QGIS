@@ -36,9 +36,8 @@
 #include <QMessageBox>
 
 #include <cstdio>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
+#include <cstdlib>
+#include <cstdarg>
 
 #ifdef WIN32
 // Open files in binary mode
@@ -72,9 +71,9 @@ typedef SInt32 SRefCon;
 #if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
-#include <signal.h>
+#include <csignal>
 #include <sys/wait.h>
-#include <errno.h>
+#include <cerrno>
 #endif
 
 #include "qgscustomization.h"
@@ -98,11 +97,15 @@ typedef SInt32 SRefCon;
 #include "qgsvectorlayer.h"
 #include "qgis_app.h"
 #include "qgscrashhandler.h"
+#include "qgsziputils.h"
+#include "qgsversionmigration.h"
+#include "qgsfirstrundialog.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( const QString &appName )
 {
@@ -134,9 +137,10 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
-      << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
+      << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -168,7 +172,7 @@ void usage( const QString &appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString sProjectFileName = QLatin1String( "" );
+static QString sProjectFileName;
 
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
@@ -298,7 +302,7 @@ void qgisCrash( int signal )
 #endif
     if ( len < 0 )
     {
-      myPrint( "Could not read link (%d:%s)\n", errno, strerror( errno ) );
+      myPrint( "Could not read link (%d: %s)\n", errno, strerror( errno ) );
     }
     else
     {
@@ -323,7 +327,7 @@ void qgisCrash( int signal )
       }
       else
       {
-        myPrint( "Cannot fork (%d:%s)\n", errno, strerror( errno ) );
+        myPrint( "Cannot fork (%d: %s)\n", errno, strerror( errno ) );
         dumpBacktrace( 256 );
       }
     }
@@ -473,7 +477,7 @@ int main( int argc, char *argv[] )
   signal( SIGXFSZ, qgisCrash );
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
@@ -492,13 +496,14 @@ int main( int argc, char *argv[] )
 
   // This behavior is used to load the app, snapshot the map,
   // save the image to disk and then exit
-  QString mySnapshotFileName = "";
-  QString configLocalStorageLocation =  "";
+  QString mySnapshotFileName;
+  QString configLocalStorageLocation;
   QString profileName;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool mySettingsMigrationForce = false;
   bool mySkipVersionCheck = false;
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: Splash hidden" ) );
@@ -513,14 +518,14 @@ int main( int argc, char *argv[] )
   QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
-  QString dxfPreset;
+  QString dxfMapTheme;
   QgsRectangle dxfExtent;
 
   // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = QLatin1String( "" );
+  QString myInitialExtent;
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
@@ -567,6 +572,10 @@ int main( int argc, char *argv[] )
       else if ( arg == QLatin1String( "--nologo" ) || arg == QLatin1String( "-n" ) )
       {
         myHideSplash = true;
+      }
+      else if ( arg == QLatin1String( "--version-migration" ) )
+      {
+        mySettingsMigrationForce = true;
       }
       else if ( arg == QLatin1String( "--noversioncheck" ) || arg == QLatin1String( "-V" ) )
       {
@@ -713,9 +722,9 @@ int main( int argc, char *argv[] )
       {
         dxfEncoding = args[++i];
       }
-      else if ( arg == QLatin1String( "--dxf-preset" ) )
+      else if ( arg == QLatin1String( "--dxf-map-theme" ) )
       {
-        dxfPreset = args[++i];
+        dxfMapTheme = args[++i];
       }
       else if ( arg == QLatin1String( "--" ) )
       {
@@ -784,7 +793,11 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
+#if QT_VERSION >= 0x051000
+  QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
+#endif
 
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
 
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
@@ -794,36 +807,38 @@ int main( int argc, char *argv[] )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
   }
+
   if ( globalsettingsfile.isEmpty() )
   {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    QString default_globalsettingsfile = QgsApplication::resolvePkgPath() + "/resources/qgis_global_settings.ini";
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;
     }
   }
+
   if ( !globalsettingsfile.isEmpty() )
   {
     if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
     {
-      QgsMessageLog::logMessage( QString( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Invalid globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
     else
     {
-      QgsMessageLog::logMessage( QString( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Successfully loaded globalsettingsfile path: %1" ).arg( globalsettingsfile ), QStringLiteral( "QGIS" ) );
     }
   }
 
-  QgsSettings settings;
   if ( configLocalStorageLocation.isEmpty() )
   {
+    QSettings globalSettings( globalsettingsfile, QSettings::IniFormat );
     if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
     {
       configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
     }
-    else if ( settings.contains( "profilesPath", QgsSettings::Core ) )
+    else if ( globalSettings.contains( QStringLiteral( "core/profilesPath" ) ) )
     {
-      configLocalStorageLocation = settings.value( "profilesPath", "", QgsSettings::Core ).toString();
+      configLocalStorageLocation = globalSettings.value( QStringLiteral( "core/profilesPath" ), "" ).toString();
       QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
     }
 
@@ -841,12 +856,130 @@ int main( int argc, char *argv[] )
   profileName = profile->name();
   delete profile;
 
-  QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
+  // We can't use QgsSettings until this point because the format and
+  // folder isn't set until profile is fetch.
+  // Should be cleaned up in future to make this cleaner.
+  QgsSettings settings;
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+  QgsDebugMsgLevel( QStringLiteral( "User profile details:" ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileName ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( profileFolder ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\t - %1" ).arg( rootProfileFolder ), 2 );
+
+  myApp.init( profileFolder );
+
+  // Settings migration is only supported on the default profile for now.
+  if ( profileName == "default" )
+  {
+    // Note: this flag is ka version number so that we can reset it once we change the version.
+    // Note2: Is this a good idea can we do it better.
+
+    int firstRunVersion = settings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+
+    std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
+    if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
+    {
+      bool runMigration = true;
+      if ( !mySettingsMigrationForce && showWelcome )
+      {
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        settings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+      }
+
+      if ( runMigration )
+      {
+        QgsDebugMsg( "RUNNING MIGRATION" );
+        migration->runMigration();
+      }
+    }
+  }
+
+  // Redefine QgsApplication::libraryPaths as necessary.
+  // IMPORTANT: Do *after* QgsApplication myApp(...), but *before* Qt uses any plugins,
+  //            e.g. loading splash screen, setting window icon, etc.
+  //            Always honor QT_PLUGIN_PATH env var or qt.conf, which will
+  //            be part of libraryPaths just after QgsApplication creation.
+#ifdef Q_OS_WIN
+  // For non static builds on win (static builds are not supported)
+  // we need to be sure we can find the qt image plugins.
+  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
+                                    + QDir::separator() + "qtplugins" );
+#endif
+#ifdef Q_OS_MAC
+  // Resulting libraryPaths has critical QGIS plugin paths first, then any Qt plugin paths, then
+  // any dev-defined paths (in app's qt.conf) and/or user-defined paths (QT_PLUGIN_PATH env var).
+  //
+  // NOTE: Minimizes, though does not fully protect against, crashes due to dev/user-defined libs
+  //       built against a different Qt/QGIS, while still allowing custom C++ plugins to load.
+  QStringList libPaths( QCoreApplication::libraryPaths() );
+
+  QgsDebugMsgLevel( QStringLiteral( "Initial macOS QCoreApplication::libraryPaths: %1" )
+                    .arg( libPaths.join( " " ) ), 4 );
+
+  // Strip all critical paths that should always be prepended
+  if ( libPaths.removeAll( QDir::cleanPath( QgsApplication::pluginPath() ) ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "QgsApplication::pluginPath removed from initial libraryPaths" ), 4 );
+  }
+  if ( libPaths.removeAll( QCoreApplication::applicationDirPath() ) )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "QCoreApplication::applicationDirPath removed from initial libraryPaths" ), 4 );
+  }
+  // Prepend path, so a standard Qt bundle directory is parsed
+  QgsDebugMsgLevel( QStringLiteral( "Prepending QCoreApplication::applicationDirPath to libraryPaths" ), 4 );
+  libPaths.prepend( QCoreApplication::applicationDirPath() );
+
+  // Check if we are running in a 'release' app bundle, i.e. contains copied-in
+  // standard Qt-specific plugin subdirectories (ones never created by QGIS, e.g. 'sqldrivers' is).
+  // Note: bundleclicked(...) is inadequate to determine which *type* of bundle was opened, e.g. release or build dir.
+  // An app bundled with QGIS_MACAPP_BUNDLE > 0 is considered a release bundle.
+  QString  relLibPath( QDir::cleanPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) ) );
+  // Note: relLibPath becomes the defacto QT_PLUGINS_DIR of a release app bundle
+  if ( QFile::exists( relLibPath + QStringLiteral( "/imageformats" ) )
+       && QFile::exists( relLibPath + QStringLiteral( "/codecs" ) ) )
+  {
+    // We are in a release app bundle.
+    // Strip QT_PLUGINS_DIR because it will crash a launched release app bundle, since
+    // the appropriate Qt frameworks and plugins have been copied into the bundle.
+    if ( libPaths.removeAll( QT_PLUGINS_DIR ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QT_PLUGINS_DIR removed from initial libraryPaths" ), 4 );
+    }
+    // Prepend the Plugins path, so copied-in Qt plugin bundle directories are parsed.
+    QgsDebugMsgLevel( QStringLiteral( "Prepending <bundle>/Plugins to libraryPaths" ), 4 );
+    libPaths.prepend( relLibPath );
+
+    // TODO: see if this or another method can be used to avoid QCA's install prefix plugins
+    //       from being parsed and loaded (causes multi-Qt-loaded errors when bundled Qt should
+    //       be the only one loaded). QCA core (> v2.1.3) needs an update first.
+    //setenv( "QCA_PLUGIN_PATH", relLibPath.toUtf8().constData(), 1 );
+  }
+  else
+  {
+    // We are either running from build dir bundle, or launching Mach-O binary directly.  //#spellok
+    // Add system Qt plugins, since they are not bundled, and not always referenced by default.
+    // An app bundled with QGIS_MACAPP_BUNDLE = 0 will still have Plugins/qgis in it.
+    // Note: Don't always prepend.
+    //       User may have already defined it in QT_PLUGIN_PATH in a specific order.
+    if ( !libPaths.contains( QT_PLUGINS_DIR ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "Prepending QT_PLUGINS_DIR to libraryPaths" ), 4 );
+      libPaths.prepend( QT_PLUGINS_DIR );
+    }
+  }
+
+  QgsDebugMsgLevel( QStringLiteral( "Prepending QgsApplication::pluginPath to libraryPaths" ), 4 );
+  libPaths.prepend( QDir::cleanPath( QgsApplication::pluginPath() ) );
+
+  // Redefine library search paths.
+  QCoreApplication::setLibraryPaths( libPaths );
+
+  QgsDebugMsgLevel( QStringLiteral( "Rewritten macOS QCoreApplication::libraryPaths: %1" )
+                    .arg( QCoreApplication::libraryPaths().join( " " ) ), 4 );
+#endif
 
 #ifdef Q_OS_MAC
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
@@ -858,34 +991,21 @@ int main( int argc, char *argv[] )
   myApp.setWindowIcon( QIcon( QgsApplication::appIconPath() ) );
 #endif
 
-#ifdef Q_OS_WIN
-  if ( !QgsApplication::isRunningFromBuildDir() )
-  {
-    QString symbolPath( getenv( "QGIS_PREFIX_PATH" ) );
-    symbolPath = symbolPath + "\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
-    QgsStackTrace::setSymbolPath( symbolPath );
-  }
-  else
-  {
-    QString symbolPath( getenv( "QGIS_PDB_PATH" ) );
-    symbolPath = symbolPath + ";http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore";
-    QgsStackTrace::setSymbolPath( symbolPath );
-  }
-#endif
-
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
 
-  // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    // Using the customizationfile option always overrides the option and config path options.
     QgsCustomization::instance()->setEnabled( true );
   }
   else
   {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
   }
+
+  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
 
   // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
@@ -999,7 +1119,7 @@ int main( int argc, char *argv[] )
   if ( activeStyleName.isEmpty() ) // not set, using default style
   {
     //not set, check default
-    activeStyleName = QApplication::style()->metaObject()->className() ;
+    activeStyleName = QApplication::style()->metaObject()->className();
   }
   if ( activeStyleName.contains( QStringLiteral( "adwaita" ), Qt::CaseInsensitive ) )
   {
@@ -1042,7 +1162,7 @@ int main( int argc, char *argv[] )
   {
     if ( !myLocaleOverrideFlag || myUserLocale.isEmpty() )
     {
-      myTranslationCode = QLocale::system().name();
+      myTranslationCode = QLocale().name();
       //setting the locale/userLocale when the --lang= option is not set will allow third party
       //plugins to always use the same locale as the QGIS, otherwise they can be out of sync
       mySettings.setValue( QStringLiteral( "locale/userLocale" ), myTranslationCode );
@@ -1080,36 +1200,6 @@ int main( int argc, char *argv[] )
       QgsDebugMsg( QStringLiteral( "loading of qt translation failed %1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ), myTranslationCode ) );
     }
   }
-
-  // For non static builds on mac and win (static builds are not supported)
-  // we need to be sure we can find the qt image
-  // plugins. In mac be sure to look in the
-  // application bundle...
-#ifdef Q_OS_WIN
-  QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
-                                    + QDir::separator() + "qtplugins" );
-#endif
-#ifdef Q_OS_MACX
-  // IMPORTANT: do before Qt uses any plugins, e.g. before loading splash screen
-  QString  myPath( QCoreApplication::applicationDirPath().append( "/../PlugIns" ) );
-  // Check if it contains a standard Qt-specific plugin subdirectory
-  if ( !QFile::exists( myPath + "/imageformats" ) )
-  {
-    // We are either running from build dir bundle, or launching binary directly.
-    // Use system Qt plugins, since they are not bundled.
-    // An app bundled with QGIS_MACAPP_BUNDLE=0 will still have Plugins/qgis in it
-    myPath = QT_PLUGINS_DIR;
-  }
-
-  // First clear the plugin search paths so we can be sure only plugins we define
-  // are being used. Note: this strips QgsApplication::pluginPath()
-  QStringList myPathList;
-  QCoreApplication::setLibraryPaths( myPathList );
-
-  QgsDebugMsg( QString( "Adding Mac QGIS and Qt plugins dirs to search path: %1" ).arg( myPath ) );
-  QCoreApplication::addLibraryPath( QgsApplication::pluginPath() );
-  QCoreApplication::addLibraryPath( myPath );
-#endif
 
   // set authentication database directory
   if ( !authdbdirectory.isEmpty() )
@@ -1165,15 +1255,14 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
-  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
+  for ( const QString &layerName : qgis::as_const( sFileList ) )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
-    QString myLayerName = *myIterator;
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive )
+         && !QgsZipUtils::isZipFile( layerName ) )
     {
-      qgis->openLayer( myLayerName );
+      qgis->openLayer( layerName );
     }
   }
 
@@ -1220,10 +1309,6 @@ int main( int argc, char *argv[] )
       // set extent from parsed values
       QgsRectangle rect( coords[0], coords[1], coords[2], coords[3] );
       qgis->setExtent( rect );
-      if ( qgis->mapCanvas() )
-      {
-        qgis->mapCanvas()->refresh();
-      }
     }
   }
 
@@ -1239,7 +1324,7 @@ int main( int argc, char *argv[] )
   /////////////////////////////////`////////////////////////////////////
   // Take a snapshot of the map view then exit if snapshot mode requested
   /////////////////////////////////////////////////////////////////////
-  if ( mySnapshotFileName != QLatin1String( "" ) )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     /*You must have at least one paintEvent() delivered for the window to be
       rendered properly.
@@ -1271,15 +1356,15 @@ int main( int argc, char *argv[] )
     dxfExport.setExtent( dxfExtent );
 
     QStringList layerIds;
-    QList< QPair<QgsVectorLayer *, int > > layers;
-    if ( !dxfPreset.isEmpty() )
+    QList< QgsDxfExport::DxfLayer > layers;
+    if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }
@@ -1290,7 +1375,7 @@ int main( int argc, char *argv[] )
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
         if ( !vl )
           continue;
-        layers << qMakePair<QgsVectorLayer *, int>( vl, -1 );
+        layers << QgsDxfExport::DxfLayer( vl );
         layerIds << vl->id();
       }
     }
@@ -1324,6 +1409,9 @@ int main( int argc, char *argv[] )
 
     return res;
   }
+
+  // make sure we don't have a dirty blank project after launch
+  QgsProject::instance()->setDirty( false );
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

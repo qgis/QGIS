@@ -1,13 +1,13 @@
 Diffuse Pollution Risk
 sim_hydrology
-ParameterRaster|DEM|Elevation|False
-ParameterRaster|CHANNEL|Channel Network|True
-ParameterRaster|WEIGHT|Land Cover Weights|True
-ParameterNumber|WEIGHT_DEFAULT|Default| 0.000000|None| 1.000000
-ParameterRaster|RAIN|Rainfall|True
-ParameterNumber|RAIN_DEFAULT|Default| 0.000000|None| 500.000000
-OutputRaster|DELIVERY|Delivery Index
-OutputRaster|RISK_POINT|Locational Risk
-OutputRaster|RISK_DIFFUSE|Diffuse Pollution Risk
-ParameterSelection|METHOD|Flow Direction Algorithm|[0] single;[1] multiple| 1
-ParameterNumber|CHANNEL_START|Channel Initiation Threshold| 1|None| 150
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterLayer|CHANNEL|Channel Network|None|True
+QgsProcessingParameterRasterLayer|WEIGHT|Land Cover Weights|None|True
+QgsProcessingParameterNumber|WEIGHT_DEFAULT|Default|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
+QgsProcessingParameterRasterLayer|RAIN|Rainfall|None|True
+QgsProcessingParameterNumber|RAIN_DEFAULT|Default|QgsProcessingParameterNumber.Double|500.000000|False|0.000000|None
+QgsProcessingParameterRasterDestination|DELIVERY|Delivery Index
+QgsProcessingParameterRasterDestination|RISK_POINT|Locational Risk
+QgsProcessingParameterRasterDestination|RISK_DIFFUSE|Diffuse Pollution Risk
+QgsProcessingParameterEnum|METHOD|Flow Direction Algorithm|[0] single;[1] multiple|False|1
+QgsProcessingParameterNumber|CHANNEL_START|Channel Initiation Threshold|QgsProcessingParameterNumber.Integer|150|False|1|None

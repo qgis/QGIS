@@ -37,7 +37,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Constructor
     QgsDecorationGrid( QObject *parent = nullptr );
 
-    virtual ~ QgsDecorationGrid();
+    ~ QgsDecorationGrid() override;
 
     enum GridStyle
     {
@@ -116,11 +116,11 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     /* void setCrossLength( double l ) {mCrossLength = l;} */
     /* double crossLength() {return mCrossLength;} */
 
-    //! Set symbol that is used to draw grid lines. Takes ownership
+    //! Sets symbol that is used to draw grid lines. Takes ownership
     void setLineSymbol( QgsLineSymbol *symbol );
     const QgsLineSymbol *lineSymbol() const { return mLineSymbol; }
 
-    //! Set symbol that is used to draw markers. Takes ownership
+    //! Sets symbol that is used to draw markers. Takes ownership
     void setMarkerSymbol( QgsMarkerSymbol *symbol );
     const QgsMarkerSymbol *markerSymbol() const { return mMarkerSymbol; }
 
@@ -128,7 +128,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void setMapUnits( QgsUnitTypes::DistanceUnit t ) { mMapUnits = t; }
     QgsUnitTypes::DistanceUnit mapUnits() { return mMapUnits; }
 
-    //! Set mapUnits value
+    //! Sets mapUnits value
     void setDirty( bool dirty = true );
     bool isDirty();
 
@@ -140,7 +140,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     double getDefaultInterval( bool useXAxis = true );
 
   public slots:
-    //! set values on the gui when a project is read or the gui first loaded
+    //! Sets values on the gui when a project is read or the gui first loaded
     void projectRead() override;
     //! save values to the project
     void saveToProject() override;
@@ -196,32 +196,37 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
     QgsUnitTypes::DistanceUnit mMapUnits;
 
-    /** Draw coordinates for mGridAnnotationType Coordinate
+    /**
+     * Draw coordinates for mGridAnnotationType Coordinate
         \param p drawing painter
     \param hLines horizontal coordinate lines in item coordinates
         \param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter *p, const QList< QPair< qreal, QLineF > > &hLines, const QList< QPair< qreal, QLineF > > &vLines );
     void drawCoordinateAnnotation( QPainter *p, QPointF pos, const QString &annotationString );
 
-    /** Draws a single annotation
+    /**
+     * Draws a single annotation
         \param p drawing painter
         \param pos item coordinates where to draw
         \param rotation text rotation
         \param annotationText the text to draw*/
     void drawAnnotation( QPainter *p, QPointF pos, int rotation, const QString &annotationText );
 
-    /** Returns the grid lines with associated coordinate value
+    /**
+     * Returns the grid lines with associated coordinate value
         \returns 0 in case of success*/
     int xGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
-    /** Returns the grid lines for the y-coordinates. Not vertical in case of rotation
+    /**
+     * Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         \returns 0 in case of success*/
     int yGridLines( const QgsMapSettings &mapSettings, QList< QPair< qreal, QLineF > > &lines ) const;
 
     //! Returns the item border of a point (in item coordinates)
     Border borderForLineCoord( QPointF point, QPainter *p ) const;
 
-    /** Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
+    /**
+     * Draws Text. Takes care about all the composer specific issues (calculation to pixel, scaling of font and painter
      to work around the Qt font bug)*/
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
     //! Like the above, but with a rectangle for multiline text

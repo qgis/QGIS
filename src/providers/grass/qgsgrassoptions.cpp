@@ -35,6 +35,8 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   , mModulesSettingsPath( QStringLiteral( "/GRASS/modules/config" ) )
 {
   setupUi( this );
+  connect( mGisbaseBrowseButton, &QPushButton::clicked, this, &QgsGrassOptions::mGisbaseBrowseButton_clicked );
+  connect( mModulesConfigBrowseButton, &QPushButton::clicked, this, &QgsGrassOptions::mModulesConfigBrowseButton_clicked );
   initOptionsBase( false );
 
   connect( this, &QDialog::accepted, this, &QgsGrassOptions::saveOptions );
@@ -69,7 +71,7 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   mModulesDebugCheckBox->setChecked( QgsGrass::modulesDebug() );
 
   // Browser
-  QgsRasterProjector::Precision crsTransform = ( QgsRasterProjector::Precision ) settings.value( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate ).toInt();
+  QgsRasterProjector::Precision crsTransform = settings.enumValue( mImportSettingsPath + "/crsTransform", QgsRasterProjector::Approximate );
   mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Approximate ), QgsRasterProjector::Approximate );
   mCrsTransformationComboBox->addItem( QgsRasterProjector::precisionLabel( QgsRasterProjector::Exact ), QgsRasterProjector::Exact );
   mCrsTransformationComboBox->setCurrentIndex( mCrsTransformationComboBox->findData( crsTransform ) );
@@ -88,13 +90,13 @@ QgsGrassOptions::QgsGrassOptions( QWidget *parent )
   restoreOptionsBaseUi();
 }
 
-void QgsGrassOptions::on_mGisbaseBrowseButton_clicked()
+void QgsGrassOptions::mGisbaseBrowseButton_clicked()
 {
   QString gisbase = mGisbaseLineEdit->text();
   // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
   // since Mac native dialog doesn't allow user to browse inside bundles.
   gisbase = QFileDialog::getExistingDirectory(
-              0, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
+              nullptr, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
               QFileDialog::DontUseNativeDialog );
   if ( !gisbase.isEmpty() )gisbaseChanged();
   {
@@ -125,7 +127,7 @@ void QgsGrassOptions::gisbaseChanged()
   }
 }
 
-void QgsGrassOptions::on_mModulesConfigBrowseButton_clicked()
+void QgsGrassOptions::mModulesConfigBrowseButton_clicked()
 {
   QString dir = QFileDialog::getExistingDirectory( this,
                 tr( "Choose a directory with configuration files (default.qgc, *.qgm)" ),
@@ -153,8 +155,8 @@ void QgsGrassOptions::saveOptions()
   QgsGrass::instance()->setModulesDebug( mModulesDebugCheckBox->isChecked() );
 
   // Browser
-  settings.setValue( mImportSettingsPath + "/crsTransform",
-                     mCrsTransformationComboBox->currentData().toInt() );
+  settings.setEnumValue( mImportSettingsPath + "/crsTransform",
+                         ( QgsRasterProjector::Precision )mCrsTransformationComboBox->currentData().toInt() );
 
   settings.setValue( mImportSettingsPath + "/external", mImportExternalCheckBox->isChecked() );
 

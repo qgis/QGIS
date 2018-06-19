@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsSymbolButtonPlugin : public QObject, public QDesig
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsSymbolButtonPlugin( QObject *parent = 0 );
+    explicit QgsSymbolButtonPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

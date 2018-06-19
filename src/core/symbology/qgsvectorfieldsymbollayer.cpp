@@ -18,18 +18,9 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
+#include "qgssymbollayerutils.h"
 
 QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
-  : mXAttribute( QLatin1String( "" ) )
-  , mYAttribute( QLatin1String( "" ) )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
-  , mScale( 1.0 )
-  , mVectorFieldType( Cartesian )
-  , mAngleOrientation( ClockwiseFromNorth )
-  , mAngleUnits( Degrees )
-  , mLineSymbol( nullptr )
-  , mXIndex( -1 )
-  , mYIndex( -1 )
 {
   setSubSymbol( new QgsLineSymbol() );
 }

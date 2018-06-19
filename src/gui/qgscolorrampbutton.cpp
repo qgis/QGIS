@@ -39,15 +39,6 @@
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
   , mColorRampDialogTitle( dialogTitle.isEmpty() ? tr( "Select Color Ramp" ) : dialogTitle )
-  , mShowGradientOnly( false )
-  , mColorRamp( nullptr )
-  , mDefaultColorRamp( nullptr ) //default to invalid ramp
-  , mAcceptLiveUpdates( true )
-  , mColorRampSet( false )
-  , mShowRandomColorRamp( false )
-  , mShowNull( false )
-  , mMenu( nullptr )
-
 {
   setAcceptDrops( true );
   setMinimumSize( QSize( 24, 16 ) );
@@ -76,9 +67,10 @@ QSize QgsColorRampButton::sizeHint() const
 {
   //make sure height of button looks good under different platforms
 #ifdef Q_OS_WIN
-  return QSize( 120, 22 );
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ), 22.0 ) ) );
 #else
-  return QSize( 120, 28 );
+  // Adjust height for HiDPI screens
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ) * 1.4, 28.0 ) ) );
 #endif
 }
 
@@ -109,7 +101,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsLimitedRandomColorRampWidget *widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsLimitedRandomColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -128,7 +120,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsPresetColorRampWidget *widget = new QgsPresetColorRampWidget( *presetRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsPresetColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -147,7 +139,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsColorBrewerColorRampWidget *widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -180,7 +172,7 @@ void QgsColorRampButton::showColorRampDialog()
 
 void QgsColorRampButton::setToDefaultColorRamp()
 {
-  if ( mDefaultColorRamp == nullptr )
+  if ( !mDefaultColorRamp )
   {
     return;
   }
@@ -238,14 +230,14 @@ void QgsColorRampButton::prepareMenu()
 {
   mMenu->clear();
 
-  QAction *invertAction = new QAction( tr( "Invert color ramp" ), this );
+  QAction *invertAction = new QAction( tr( "Invert Color Ramp" ), this );
   invertAction->setEnabled( !isNull() && !isRandomColorRamp() );
   mMenu->addAction( invertAction );
   connect( invertAction, &QAction::triggered, this, &QgsColorRampButton::invertColorRamp );
 
   if ( mShowNull )
   {
-    QAction *nullAction = new QAction( tr( "Clear current ramp" ), this );
+    QAction *nullAction = new QAction( tr( "Clear Current Ramp" ), this );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsColorRampButton::setToNull );
   }
@@ -253,9 +245,9 @@ void QgsColorRampButton::prepareMenu()
   mMenu->addSeparator();
 
   //show default color option if set
-  if ( mDefaultColorRamp != nullptr )
+  if ( mDefaultColorRamp )
   {
-    QAction *defaultColorRampAction = new QAction( tr( "Default color ramp" ), this );
+    QAction *defaultColorRampAction = new QAction( tr( "Default Color Ramp" ), this );
     defaultColorRampAction->setIcon( createMenuIcon( mDefaultColorRamp ) );
     mMenu->addAction( defaultColorRampAction );
     connect( defaultColorRampAction, &QAction::triggered, this, &QgsColorRampButton::setToDefaultColorRamp );
@@ -263,7 +255,7 @@ void QgsColorRampButton::prepareMenu()
 
   if ( mShowRandomColorRamp )
   {
-    QAction *randomColorRampAction = new QAction( tr( "Random color ramp" ), this );
+    QAction *randomColorRampAction = new QAction( tr( "Random Color Ramp" ), this );
     randomColorRampAction->setCheckable( true );
     randomColorRampAction->setChecked( isRandomColorRamp() );
     mMenu->addAction( randomColorRampAction );
@@ -271,7 +263,7 @@ void QgsColorRampButton::prepareMenu()
 
     if ( isRandomColorRamp() || dynamic_cast<QgsLimitedRandomColorRamp *>( mColorRamp ) )
     {
-      QAction *shuffleRandomColorRampAction = new QAction( tr( "Shuffle random colors" ), this );
+      QAction *shuffleRandomColorRampAction = new QAction( tr( "Shuffle Random Colors" ), this );
       mMenu->addAction( shuffleRandomColorRampAction );
       connect( shuffleRandomColorRampAction, &QAction::triggered, this, &QgsColorRampButton::colorRampChanged );
     }
@@ -317,16 +309,16 @@ void QgsColorRampButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *newColorRampAction = new QAction( tr( "Create new color ramp..." ), this );
+  QAction *newColorRampAction = new QAction( tr( "Create New Color Ramp…" ), this );
   connect( newColorRampAction, &QAction::triggered, this, &QgsColorRampButton::createColorRamp );
   mMenu->addAction( newColorRampAction );
 
-  QAction *editColorRampAction = new QAction( tr( "Edit color ramp..." ), this );
+  QAction *editColorRampAction = new QAction( tr( "Edit Color Ramp…" ), this );
   editColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( editColorRampAction, &QAction::triggered, this, &QgsColorRampButton::showColorRampDialog );
   mMenu->addAction( editColorRampAction );
 
-  QAction *saveColorRampAction = new QAction( tr( "Save color ramp..." ), this );
+  QAction *saveColorRampAction = new QAction( tr( "Save Color Ramp…" ), this );
   saveColorRampAction->setEnabled( !isNull() && !isRandomColorRamp() );
   connect( saveColorRampAction, &QAction::triggered, this, &QgsColorRampButton::saveColorRamp );
   mMenu->addAction( saveColorRampAction );
@@ -408,7 +400,7 @@ void QgsColorRampButton::saveColorRamp()
   // check if there is no symbol with same name
   if ( mStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    int res = QMessageBox::warning( this, tr( "Save color ramp" ),
+    int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
                                     tr( "Color ramp with name '%1' already exists. Overwrite?" )
                                     .arg( saveDlg.name() ),
                                     QMessageBox::Yes | QMessageBox::No );
@@ -513,7 +505,7 @@ void QgsColorRampButton::setRandomColorRamp()
 void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 {
   QgsColorRamp *backgroundColorRamp = colorramp;
-  if ( colorramp == nullptr )
+  if ( !colorramp )
   {
     backgroundColorRamp = mColorRamp;
   }
@@ -565,7 +557,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
 
     painter.begin( &pm );
     painter.setPen( pen );
-    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, "Random colors" );
+    painter.drawText( QRect( 0, 0, currentIconSize.width(), currentIconSize.height() ), Qt::AlignCenter, QStringLiteral( "Random colors" ) );
     painter.end();
   }
   else
@@ -613,8 +605,7 @@ void QgsColorRampButton::setDefaultColorRamp( QgsColorRamp *colorramp )
 
 bool QgsColorRampButton::isRandomColorRamp() const
 {
-  QgsRandomColorRamp *randomRamp = dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
-  return randomRamp ? true : false;
+  return dynamic_cast<QgsRandomColorRamp *>( mColorRamp );
 }
 
 void QgsColorRampButton::setShowNull( bool showNull )
@@ -629,7 +620,7 @@ bool QgsColorRampButton::showNull() const
 
 bool QgsColorRampButton::isNull() const
 {
-  return mColorRamp == nullptr;
+  return !mColorRamp;
 }
 
 void QgsColorRampButton::rampWidgetUpdated()

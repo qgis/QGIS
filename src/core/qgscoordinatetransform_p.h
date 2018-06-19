@@ -18,6 +18,7 @@
 #define QGSCOORDINATETRANSFORMPRIVATE_H
 
 #define SIP_NO_FILE
+#include "qgsconfig.h"
 
 /// @cond PRIVATE
 
@@ -31,7 +32,13 @@
 //
 
 #include <QSharedData>
+
+#ifndef USE_THREAD_LOCAL
+#include <QThreadStorage>
+#endif
+
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 
 typedef void *projPJ;
 typedef void *projCtx;
@@ -62,25 +69,39 @@ class QgsCoordinateTransformPrivate : public QSharedData
     explicit QgsCoordinateTransformPrivate();
 
     QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
-                                   const QgsCoordinateReferenceSystem &destination );
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   const QgsCoordinateTransformContext &context );
+
+    QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
+                                   const QgsCoordinateReferenceSystem &destination,
+                                   int sourceDatumTransform,
+                                   int destDatumTransform );
 
     QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other );
 
     ~QgsCoordinateTransformPrivate();
 
+    bool checkValidity();
+
+    void invalidate();
+
     bool initialize();
+
+    void calculateTransforms( const QgsCoordinateTransformContext &context );
 
     QPair< projPJ, projPJ > threadLocalProjData();
 
-    //! Flag to indicate whether the transform is valid (ie has a valid
-    //! source and destination crs)
-    bool mIsValid;
+    /**
+     * Flag to indicate whether the transform is valid (ie has a valid
+     * source and destination crs)
+     */
+    bool mIsValid = false;
 
     /**
      * Flag to indicate that the source and destination coordinate systems are
      * equal and not transformation needs to be done
      */
-    bool mShortCircuit;
+    bool mShortCircuit = false;
 
     //! QgsCoordinateReferenceSystem of the source (layer) coordinate system
     QgsCoordinateReferenceSystem mSourceCRS;
@@ -91,19 +112,21 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QString mSourceProjString;
     QString mDestProjString;
 
-    int mSourceDatumTransform;
-    int mDestinationDatumTransform;
+    int mSourceDatumTransform = -1;
+    int mDestinationDatumTransform = -1;
 
     /**
      * Thread local proj context storage. A new proj context will be created
      * for every thread.
      */
+#ifdef USE_THREAD_LOCAL
     static thread_local QgsProjContextStore mProjContext;
+#else
+    static QThreadStorage< QgsProjContextStore * > mProjContext;
+#endif
 
     QReadWriteLock mProjLock;
     QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
-
-    static QString datumTransformString( int datumTransform );
 
   private:
 
@@ -111,7 +134,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QString stripDatumTransform( const QString &proj4 ) const;
 
     //! In certain situations, null grid shifts have to be added to src / dst proj string
-    void addNullGridShifts( QString &srcProjString, QString &destProjString ) const;
+    void addNullGridShifts( QString &srcProjString, QString &destProjString, int sourceDatumTransform, int destinationDatumTransform ) const;
 
     void setFinder();
 

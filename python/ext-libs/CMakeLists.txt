@@ -3,11 +3,6 @@
 SET (QGIS_PYTHON_DIR ${QGIS_DATA_DIR}/python)
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 
-SET (WITH_PYSPATIALITE FALSE CACHE BOOL "Determines whether PYSPATIALITE should be built")
-IF (WITH_PYSPATIALITE)
-  ADD_SUBDIRECTORY(pyspatialite)
-ENDIF (WITH_PYSPATIALITE)
-
 MACRO(EXT_PYLIB lib enable_by_default)
   STRING(TOUPPER ${lib} ulib)
   SET (WITH_INTERNAL_${ulib} ${enable_by_default} CACHE BOOL "Determines whether python ${lib} should be included")

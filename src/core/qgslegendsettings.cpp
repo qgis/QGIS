@@ -19,24 +19,10 @@
 
 QgsLegendSettings::QgsLegendSettings()
   : mTitle( QObject::tr( "Legend" ) )
-  , mTitleAlignment( Qt::AlignLeft )
-  , mWrapChar( QLatin1String( "" ) )
   , mFontColor( QColor( 0, 0, 0 ) )
-  , mBoxSpace( 2 )
   , mSymbolSize( 7, 4 )
   , mWmsLegendSize( 50, 25 )
-  , mLineSpacing( 1 )
-  , mColumnSpace( 2 )
-  , mColumnCount( 1 )
-  , mSplitLayer( false )
-  , mEqualColumnWidth( false )
-  , mRasterSymbolStroke( true )
   , mRasterStrokeColor( Qt::black )
-  , mRasterStrokeWidth( 0.0 )
-  , mMmPerMapUnit( 1 )
-  , mUseAdvancedEffects( true )
-  , mMapScale( 1 )
-  , mDpi( 96 ) // based on QImage's default DPI
 {
   rstyle( QgsLegendStyle::Title ).setMargin( QgsLegendStyle::Bottom, 3.5 );
   rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, 3 );

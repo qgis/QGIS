@@ -21,7 +21,8 @@
 
 class QgsOuterGlowEffect;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class Qgs25DRenderer
  */
 class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
@@ -44,11 +45,11 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     QgsFeatureRenderer *clone() const override SIP_FACTORY;
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const override;
+    QgsSymbolList symbols( QgsRenderContext &context ) const override;
 
     /**
-     * Get the roof color
+     * Gets the roof color
      */
     QColor roofColor() const;
 
@@ -58,7 +59,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setRoofColor( const QColor &roofColor );
 
     /**
-     * Get the wall color
+     * Gets the wall color
      */
     QColor wallColor() const;
 
@@ -73,12 +74,12 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setWallShadingEnabled( bool enabled );
 
     /**
-     * Get wall shading enabled
+     * Gets wall shading enabled
      */
     bool wallShadingEnabled() const;
 
     /**
-     * Get the shadow's color
+     * Gets the shadow's color
      */
     QColor shadowColor() const;
 
@@ -88,7 +89,7 @@ class CORE_EXPORT Qgs25DRenderer : public QgsFeatureRenderer
     void setShadowColor( const QColor &shadowColor );
 
     /**
-     * Get the shadow's spread distance in map units
+     * Gets the shadow's spread distance in map units
      */
     double shadowSpread() const;
 

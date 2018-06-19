@@ -29,6 +29,7 @@
 
 import json
 import os.path
+import warnings
 from urllib.request import build_opener, install_opener, ProxyHandler
 
 from qgis.PyQt.QtCore import Qt
@@ -39,11 +40,15 @@ from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
-                       QgsProviderRegistry, QgsSettings)
+                       QgsProviderRegistry, QgsSettings, QgsProject)
 from qgis.gui import QgsRubberBand
 from qgis.utils import OverrideCursor
 
-from owslib.csw import CatalogueServiceWeb # spellok
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=ResourceWarning)
+    warnings.filterwarnings("ignore", category=ImportWarning)
+    from owslib.csw import CatalogueServiceWeb # spellok
+
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
 
@@ -400,7 +405,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
-            xform = QgsCoordinateTransform(src, dest)
+            xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
             maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
@@ -456,6 +461,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.timeout = self.spnTimeout.value()
 
         # bbox
+        # CRS is WGS84 with axis order longitude, latitude
+        # defined by 'urn:ogc:def:crs:OGC:1.3:CRS84'
         minx = self.leWest.text()
         miny = self.leSouth.text()
         maxx = self.leEast.text()
@@ -466,7 +473,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # even for a global bbox, if a spatial filter is applied, then
         # the CSW server will skip records without a bbox
         if bbox != ['-180', '-90', '180', '90']:
-            self.constraints.append(BBox(bbox))
+            self.constraints.append(BBox(bbox,
+                                         crs='urn:ogc:def:crs:OGC:1.3:CRS84'))
 
         # keywords
         if self.leKeywords.text():
@@ -570,7 +578,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
-                    ctr = QgsCoordinateTransform(src, dst)
+                    ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
                     try:
                         geom.transform(ctr)
                     except Exception as err:
@@ -696,7 +704,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         caller = self.sender().objectName()
 
-        # stype = human name,/Qgis/connections-%s,providername
+        # stype = human name,/qgis/connections-%s,providername
         if caller == 'mActionAddWms':
             stype = ['OGC:WMS/OGC:WMTS', 'wms', 'wms']
             data_url = item_data['wms']
@@ -718,9 +726,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # store connection
         # check if there is a connection with same name
         if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
         else:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
@@ -745,9 +753,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # no dups detected or overwrite is allowed
         if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
         else:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
         self.settings.setValue('/%s/url' % sname, clean_ows_url(data_url))
         self.settings.endGroup()
 
@@ -760,21 +768,25 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if service_type == 'OGC:WMS/OGC:WMTS':
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
-            connect = 'on_btnConnect_clicked'
+            connect = 'btnConnect_clicked'
         elif service_type == 'OGC:WFS':
-            ows_provider.addWfsLayer.connect(self.iface.mainWindow().addWfsLayer)
+            def addVectorLayer(path, name):
+                self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+            ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
         elif service_type == 'OGC:WCS':
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
-            connect = 'on_mConnectButton_clicked'
+            connect = 'mConnectButton_clicked'
         elif service_type == 'ESRI:ArcGIS:MapServer':
-            ows_provider.addAction(self.iface.actionAddAmsLayer())
+            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
-            ows_provider.addAction(self.iface.actionAddAfsLayer())
+            def addAfsLayer(path, name):
+                self.iface.mainWindow().addVectorLayer(path, name, 'afs')
+            ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
         ows_provider.setModal(False)
@@ -786,9 +798,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb.setCurrentIndex(index)
             # only for wfs
             if service_type == 'OGC:WFS':
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
             elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
     def show_metadata(self):

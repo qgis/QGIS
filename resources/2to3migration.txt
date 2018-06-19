@@ -1,0 +1,26 @@
+# version=2
+# If you update this file make sure you bump the above version number it must be higher then the last run.
+#oldkey;newkey
+
+# Connections
+MSSQL/connections/*;*
+Qgis/connections-xyz/*;qgis/connections-xyz/*
+Qgis/connections-wms/*;qgis/connections-wms/*
+Qgis/connections-wfs/*;qgis/connections-wfs/*
+
+# Authentication configurations
+Qgis/WMS/*;qgis/WMS/*
+Qgis/WFS/*;qgis/WFS/*
+
+# random stuff
+browser/favourites;*
+svg/searchPathsForSVG;*
+Qgis/compileExpressions;*
+
+# variables
+variables/names;*
+variables/values;*
+
+#Plugin installer
+Qgis/plugin-installer/*;app/plugin_installer/*
+Qgis/plugin-repos/*;app/plugin_repositories/*

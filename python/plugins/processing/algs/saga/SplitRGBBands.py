@@ -26,37 +26,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.PyQt.QtGui import QIcon
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterRaster
-from processing.core.outputs import OutputRaster
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterRasterDestination)
 from processing.tools.system import getTempFilename
 from . import SagaUtils
+from .SagaAlgorithmBase import SagaAlgorithmBase
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class SplitRGBBands(GeoAlgorithm):
+class SplitRGBBands(SagaAlgorithmBase):
 
     INPUT = 'INPUT'
     R = 'R'
     G = 'G'
     B = 'B'
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
-
     def __init__(self):
         super().__init__()
-        self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
-                                          self.tr('Input layer'), False))
-        self.addOutput(OutputRaster(SplitRGBBands.R,
-                                    self.tr('Output R band layer')))
-        self.addOutput(OutputRaster(SplitRGBBands.G,
-                                    self.tr('Output G band layer')))
-        self.addOutput(OutputRaster(SplitRGBBands.B,
-                                    self.tr('Output B band layer')))
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
+
+        self.addParameter(QgsProcessingParameterRasterDestination(self.R, self.tr('Output R band layer')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.G, self.tr('Output G band layer')))
+        self.addParameter(QgsProcessingParameterRasterDestination(self.B, self.tr('Output B band layer')))
 
     def name(self):
         return 'splitrgbbands'
@@ -69,7 +64,8 @@ class SplitRGBBands(GeoAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         # TODO: check correct num of bands
-        input = self.getParameterValue(SplitRGBBands.INPUT)
+        inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        input = inLayer.source()
         temp = getTempFilename(None).replace('.', '')
         basename = os.path.basename(temp)
         validChars = \
@@ -77,11 +73,12 @@ class SplitRGBBands(GeoAlgorithm):
         safeBasename = ''.join(c for c in basename if c in validChars)
         temp = os.path.join(os.path.dirname(temp), safeBasename)
 
-        r = self.getOutputValue(SplitRGBBands.R)
-        g = self.getOutputValue(SplitRGBBands.G)
-        b = self.getOutputValue(SplitRGBBands.B)
+        r = self.parameterAsOutputLayer(parameters, self.R, context)
+        g = self.parameterAsOutputLayer(parameters, self.G, context)
+        b = self.parameterAsOutputLayer(parameters, self.B, context)
+
         commands = []
-        version = SagaUtils.getSagaInstalledVersion(True)  # NOQA
+        version = SagaUtils.getInstalledVersion(True)
         trailing = ""
         lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)
@@ -95,3 +92,5 @@ class SplitRGBBands(GeoAlgorithm):
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         SagaUtils.executeSaga(feedback)
+
+        return {self.R: r, self.G: g, self.B: b}

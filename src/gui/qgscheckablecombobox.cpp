@@ -75,7 +75,7 @@ void QgsCheckBoxDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
 QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   : QComboBox( parent )
-  , mSeparator( ", " )
+  , mSeparator( QStringLiteral( ", " ) )
 {
   setModel( new QgsCheckableItemModel( this ) );
   setItemDelegate( new QgsCheckBoxDelegate( this ) );
@@ -85,8 +85,8 @@ QgsCheckableComboBox::QgsCheckableComboBox( QWidget *parent )
   setLineEdit( lineEdit );
 
   mContextMenu = new QMenu( this );
-  mSelectAllAction = mContextMenu->addAction( tr( "Select all" ) );
-  mDeselectAllAction = mContextMenu->addAction( tr( "Deselect all" ) );
+  mSelectAllAction = mContextMenu->addAction( tr( "Select All" ) );
+  mDeselectAllAction = mContextMenu->addAction( tr( "Deselect All" ) );
   connect( mSelectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::selectAllOptions );
   connect( mDeselectAllAction, &QAction::triggered, this, &QgsCheckableComboBox::deselectAllOptions );
 
@@ -176,7 +176,7 @@ void QgsCheckableComboBox::hidePopup()
   mSkipHide = false;
 }
 
-void QgsCheckableComboBox::showContextMenu( const QPoint &pos )
+void QgsCheckableComboBox::showContextMenu( QPoint pos )
 {
   Q_UNUSED( pos );
 
@@ -220,7 +220,7 @@ bool QgsCheckableComboBox::eventFilter( QObject *object, QEvent *event )
       return true;
     }
   }
-  return false;
+  return QComboBox::eventFilter( object, event );
 }
 
 void QgsCheckableComboBox::setCheckedItems( const QStringList &items )

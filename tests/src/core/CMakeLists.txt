@@ -1,7 +1,3 @@
-# Standard includes and utils to compile into all tests.
-#SET (util_SRCS qgscompositionchecker.cpp)
-
-
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
@@ -10,10 +6,11 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layout
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
@@ -23,6 +20,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/mesh
   ${CMAKE_SOURCE_DIR}/src/test
   ${CMAKE_BINARY_DIR}/src/core
 )
@@ -54,10 +52,10 @@ MACRO (ADD_QGIS_TEST TESTSRC)
   ADD_EXECUTABLE(${TESTNAME} ${TESTSRC} ${util_SRCS})
   SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(${TESTNAME}
-    ${QT_QTXML_LIBRARY}
-    ${QT_QTCORE_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
-    ${QT_QTTEST_LIBRARY}
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Xml_LIBRARIES}
+    ${Qt5Svg_LIBRARIES}
+    ${Qt5Test_LIBRARIES}
     ${PROJ_LIBRARY}
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
@@ -71,31 +69,16 @@ ENDMACRO (ADD_QGIS_TEST)
 SET(TESTS
  testqgs25drenderer.cpp
  testqgsapplication.cpp
- testqgsatlascomposition.cpp
  testqgsauthcrypto.cpp
+ testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
  testqgsauthmanager.cpp
  testqgsblendmodes.cpp
+ testqgscadutils.cpp
  testqgsclipper.cpp
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
- testqgscomposerdd.cpp
- testqgscomposereffects.cpp
- testqgscomposergroup.cpp
- testqgscomposerlabel.cpp
- testqgscomposermapgrid.cpp
- testqgscomposermapoverview.cpp
- testqgscomposermap.cpp
- testqgscomposermodel.cpp
- testqgscomposermultiframe.cpp
- testqgscomposerobject.cpp
- testqgscomposerpaper.cpp
- testqgscomposerpicture.cpp
- testqgscomposerrotation.cpp
- testqgscomposerscalebar.cpp
- testqgscomposershapes.cpp
- testqgscomposertablev2.cpp
- testqgscomposerutils.cpp
+ testqgscompositionconverter.cpp
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
@@ -106,6 +89,7 @@ SET(TESTS
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
  testqgsdistancearea.cpp
+ testqgsdxfexport.cpp
  testqgsellipsemarker.cpp
  testqgsexpressioncontext.cpp
  testqgsexpression.cpp
@@ -118,20 +102,36 @@ SET(TESTS
  testqgsgeometryimport.cpp
  testqgsgeometry.cpp
  testqgsgeometryutils.cpp
+ testqgsgeonodeconnection.cpp
  testqgsgml.cpp
  testqgsgradients.cpp
  testqgsgraduatedsymbolrenderer.cpp
  testqgshistogram.cpp
  testqgsimageoperation.cpp
+ testqgsinternalgeometryengine.cpp
  testqgsinvertedpolygonrenderer.cpp
  testqgsjsonutils.cpp
  testqgslabelingengine.cpp
  testqgslayertree.cpp
  testqgslayout.cpp
+ testqgslayoutatlas.cpp
  testqgslayoutcontext.cpp
+ testqgslayouthtml.cpp
  testqgslayoutitem.cpp
+ testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
+ testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutpolyline.cpp
+ testqgslayoutscalebar.cpp
+ testqgslayoutshapes.cpp
+ testqgslayouttable.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp
@@ -143,6 +143,7 @@ SET(TESTS
  testqgsmaprotation.cpp
  testqgsmapsettings.cpp
  testqgsmapsettingsutils.cpp
+ testqgsmapthemecollection.cpp
  testqgsmaptopixelgeometrysimplifier.cpp
  testqgsmaptopixel.cpp
  testqgsmarkerlinesymbol.cpp
@@ -156,18 +157,20 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
- testqgsprocessing.cpp
  testqgsproject.cpp
+ testqgsprojectstorage.cpp
  testqgsproperty.cpp
  testqgis.cpp
  testqgsrasterfilewriter.cpp
  testqgsrasterfill.cpp
+ testqgsrasteriterator.cpp
  testqgsrasterblock.cpp
  testqgsrasterlayer.cpp
  testqgsrastersublayer.cpp
  testqgsrectangle.cpp
  testqgsrenderers.cpp
  testqgsrulebasedrenderer.cpp
+ testqgssettings.cpp
  testqgsshapeburst.cpp
  testqgssimplemarker.cpp
  testqgssnappingutils.cpp
@@ -175,22 +178,26 @@ SET(TESTS
  testqgsstatisticalsummary.cpp
  testqgsstringutils.cpp
  testqgsstyle.cpp
+ testqgssvgcache.cpp
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp
  testqgstracer.cpp
  testqgsfontutils.cpp
+ testqgsvector.cpp
  testqgsvectordataprovider.cpp
  testqgsvectorlayercache.cpp
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testziplayer.cpp
-    )
+ testqgsmeshlayer.cpp
+ testqgsmeshlayerrenderer.cpp
+ testqgslayerdefinition.cpp
+ testqgssqliteutils.cpp
+   )
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}
-      testqgscomposerhtml.cpp
-      testqgscomposition.cpp
         )
 ENDIF(WITH_QTWEBKIT)
 

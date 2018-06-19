@@ -31,9 +31,6 @@
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )
-  , mIncludeGeometry( true )
-  , mIncludeAttributes( true )
-  , mIncludeRelatedAttributes( false )
   , mLayer( vectorLayer )
 {
   if ( vectorLayer )
@@ -96,7 +93,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
     }
     QgsRectangle box = geom.boundingBox();
 
-    if ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) != QgsWkbTypes::Point )
+    if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::Point )
     {
       s += QStringLiteral( "   \"bbox\":[%1, %2, %3, %4],\n" ).arg( qgsDoubleToString( box.xMinimum(), mPrecision ),
            qgsDoubleToString( box.yMinimum(), mPrecision ),
@@ -104,7 +101,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
            qgsDoubleToString( box.yMaximum(), mPrecision ) );
     }
     s += QLatin1String( "   \"geometry\":\n   " );
-    s += geom.exportToGeoJSON( mPrecision );
+    s += geom.asJson( mPrecision );
     s += QLatin1String( ",\n" );
   }
   else
@@ -130,7 +127,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
 
         if ( attributeCounter > 0 )
           properties += QLatin1String( ",\n" );
-        QVariant val =  feature.attributes().at( i );
+        QVariant val = feature.attributes().at( i );
 
         if ( mLayer )
         {
@@ -287,7 +284,7 @@ QString QgsJsonUtils::encodeValue( const QVariant &value )
   }
 }
 
-QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, QVector<QVariant> attributeWidgetCaches )
+QString QgsJsonUtils::exportAttributes( const QgsFeature &feature, QgsVectorLayer *layer, const QVector<QVariant> &attributeWidgetCaches )
 {
   QgsFields fields = feature.fields();
   QString attrs;

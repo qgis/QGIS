@@ -21,6 +21,7 @@
 
 #include <QImageWriter>
 #include <QFontDialog>
+#include <QApplication>
 
 
 namespace QgsGuiUtils
@@ -158,7 +159,7 @@ namespace QgsGuiUtils
       outputFileName = fileDialog->selectedFiles().first();
     }
 
-    selectedFilter = fileDialog->selectedFilter();
+    selectedFilter = fileDialog->selectedNameFilter();
     QgsDebugMsg( "Selected filter: " + selectedFilter );
     ext = filterMap.value( selectedFilter, QString() );
 
@@ -201,4 +202,61 @@ namespace QgsGuiUtils
     return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
   }
-} // namespace QgisGui
+
+  void saveGeometry( QWidget *widget, const QString &keyName )
+  {
+    QgsSettings settings;
+    QString key = createWidgetKey( widget, keyName );
+    settings.setValue( key, widget->saveGeometry() );
+  }
+
+  bool restoreGeometry( QWidget *widget, const QString &keyName )
+  {
+    QgsSettings settings;
+    QString key = createWidgetKey( widget, keyName );
+    return widget->restoreGeometry( settings.value( key ).toByteArray() );
+  }
+
+  QString createWidgetKey( QWidget *widget, const QString &keyName )
+  {
+    QString subKey;
+    if ( !keyName.isEmpty() )
+    {
+      subKey = keyName;
+    }
+    else if ( widget->objectName().isEmpty() )
+    {
+      subKey = QString( widget->metaObject()->className() );
+    }
+    else
+    {
+      subKey = widget->objectName();
+    }
+    QString key = QStringLiteral( "Windows/%1/geometry" ).arg( subKey );
+    return key;
+  }
+}
+
+//
+// QgsTemporaryCursorOverride
+//
+
+QgsTemporaryCursorOverride::QgsTemporaryCursorOverride( const QCursor &cursor )
+{
+  QApplication::setOverrideCursor( cursor );
+}
+
+QgsTemporaryCursorOverride::~QgsTemporaryCursorOverride()
+{
+  if ( mHasOverride )
+    QApplication::restoreOverrideCursor();
+}
+
+void QgsTemporaryCursorOverride::release()
+{
+  if ( !mHasOverride )
+    return;
+
+  mHasOverride = false;
+  QApplication::restoreOverrideCursor();
+}

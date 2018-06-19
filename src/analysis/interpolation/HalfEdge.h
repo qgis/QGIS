@@ -21,7 +21,8 @@
 
 #define SIP_NO_FILE
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class HalfEdge
  * \note Not available in Python bindings.
  */
@@ -29,19 +30,19 @@ class ANALYSIS_EXPORT HalfEdge
 {
   protected:
     //! Number of the dual HalfEdge
-    int mDual;
+    int mDual = -10;
     //! Number of the next HalfEdge
-    int mNext;
+    int mNext = -10;
     //! Number of the point at which this HalfEdge points
-    int mPoint;
+    int mPoint = -10;
     //! True, if the HalfEdge belongs to a break line, false otherwise
-    bool mBreak;
+    bool mBreak = false;
     //! True, if the HalfEdge belongs to a constrained edge, false otherwise
-    bool mForced;
+    bool mForced = false;
 
   public:
     //! Default constructor. Values for mDual, mNext, mPoint are set to -10 which means that they are undefined
-    HalfEdge();
+    HalfEdge() = default;
     HalfEdge( int dual, int next, int point, bool mbreak, bool forced );
 
     //! Returns the number of the dual HalfEdge
@@ -67,12 +68,6 @@ class ANALYSIS_EXPORT HalfEdge
 };
 
 #ifndef SIP_RUN
-
-
-inline HalfEdge::HalfEdge(): mDual( -10 ), mNext( -10 ), mPoint( -10 ), mBreak( false ), mForced( false )
-{
-
-}
 
 inline HalfEdge::HalfEdge( int dual, int next, int point, bool mbreak, bool forced ): mDual( dual ), mNext( next ), mPoint( point ), mBreak( mbreak ), mForced( forced )
 {

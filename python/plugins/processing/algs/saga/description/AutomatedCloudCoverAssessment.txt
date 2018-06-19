@@ -1,14 +1,14 @@
 Automated Cloud Cover Assessment
 imagery_tools
-ParameterRaster|BAND2|Landsat Band 2|False
-ParameterRaster|BAND3|Landsat Band 3|False
-ParameterRaster|BAND4|Landsat Band 4|False
-ParameterRaster|BAND5|Landsat Band 5|False
-ParameterRaster|BAND6|Landsat Band 6|False
-OutputRaster|CLOUD|Cloud Cover
-ParameterBoolean|FILTER|Apply post-processing filter to remove small holes|True
-ParameterNumber|B56C|B56 Composite (step 6)|None|None| 225.000000
-ParameterNumber|B45R|B45 Ratio: Desert detection (step 10)|None|None| 1.000000
-ParameterBoolean|CSIG|Always use cloud signature (step 14)|True
-ParameterBoolean|PASS2|Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds|True
-ParameterBoolean|SHADOW|Include a category for cloud shadows|True
+QgsProcessingParameterRasterLayer|BAND2|Landsat Band 2|None|False
+QgsProcessingParameterRasterLayer|BAND3|Landsat Band 3|None|False
+QgsProcessingParameterRasterLayer|BAND4|Landsat Band 4|None|False
+QgsProcessingParameterRasterLayer|BAND5|Landsat Band 5|None|False
+QgsProcessingParameterRasterLayer|BAND6|Landsat Band 6|None|False
+QgsProcessingParameterRasterDestination|CLOUD|Cloud Cover
+QgsProcessingParameterBoolean|FILTER|Apply post-processing filter to remove small holes|True
+QgsProcessingParameterNumber|B56C|B56 Composite (step 6)|QgsProcessingParameterNumber.Double|225.000000|False|None|None
+QgsProcessingParameterNumber|B45R|B45 Ratio: Desert detection (step 10)|QgsProcessingParameterNumber.Double|1.000000|False|None|None
+QgsProcessingParameterBoolean|CSIG|Always use cloud signature (step 14)|True
+QgsProcessingParameterBoolean|PASS2|Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds|True
+QgsProcessingParameterBoolean|SHADOW|Include a category for cloud shadows|True

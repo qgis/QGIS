@@ -162,7 +162,7 @@ static GEOSGeometry *LWGEOM_GEOS_buildArea( const GEOSGeometry *geom_in, QString
   }
   catch ( GEOSException &e )
   {
-    errorMessage = QString( "GEOSPolygonize(): %1" ).arg( e.what() );
+    errorMessage = QStringLiteral( "GEOSPolygonize(): %1" ).arg( e.what() );
     return nullptr;
   }
 
@@ -341,7 +341,7 @@ static GEOSGeometry *LWGEOM_GEOS_getPointN( const GEOSGeometry *g_in, uint32_t n
 
 
 static bool lwline_make_geos_friendly( QgsLineString *line );
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly );
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly );
 static bool lwcollection_make_geos_friendly( QgsGeometryCollection *g );
 
 
@@ -364,7 +364,7 @@ static bool lwgeom_make_geos_friendly( QgsAbstractGeometry *geom )
 
     case QgsWkbTypes::Polygon:
       // polygons need all rings closed and with npoints > 3
-      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygonV2 *>( geom ) );
+      return lwpoly_make_geos_friendly( qgsgeometry_cast<QgsPolygon *>( geom ) );
       break;
 
     case QgsWkbTypes::MultiLineString:
@@ -388,6 +388,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 
   // earlier we allowed in only geometries with straight segments
   QgsLineString *linestring = qgsgeometry_cast<QgsLineString *>( ring );
+  Q_ASSERT_X( linestring, "ring_make_geos_friendly", "ring was not a linestring" );
 
   // close the ring if not already closed (2d only)
 
@@ -404,7 +405,7 @@ static bool ring_make_geos_friendly( QgsCurve *ring )
 }
 
 // Make sure all rings are closed and have > 3 points.
-static bool lwpoly_make_geos_friendly( QgsPolygonV2 *poly )
+static bool lwpoly_make_geos_friendly( QgsPolygon *poly )
 {
   // If the polygon has no rings there's nothing to do
   // TODO: in qgis representation there always is exterior ring
@@ -456,13 +457,15 @@ static GEOSGeometry *LWGEOM_GEOS_nodeLines( const GEOSGeometry *lines )
   if ( ! point )
     return nullptr;
 
-  GEOSGeometry *noded = GEOSUnion_r( handle, lines, point );
-  if ( !noded )
+  GEOSGeometry *noded = nullptr;
+  try
   {
-    GEOSGeom_destroy_r( handle, point );
-    return nullptr;
+    noded = GEOSUnion_r( handle, lines, point );
   }
-
+  catch ( GEOSException & )
+  {
+    // no need to do anything here - we'll return nullptr anyway
+  }
   GEOSGeom_destroy_r( handle, point );
   return noded;
 }
@@ -492,7 +495,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
   if ( !geos_cut_edges )
   {
     GEOSGeom_destroy_r( handle, geos_bound );
-    errorMessage = "LWGEOM_GEOS_nodeLines() failed";
+    errorMessage = QStringLiteral( "LWGEOM_GEOS_nodeLines() failed" );
     return nullptr;
   }
 
@@ -509,7 +512,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     catch ( GEOSException &e )
     {
       GEOSGeom_destroy_r( handle, geos_bound );
-      errorMessage = QString( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
       return nullptr;
     }
 
@@ -521,7 +524,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     {
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
-      errorMessage = QString( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSGeom_extractUniquePoints(): %1" ).arg( e.what() );
       return nullptr;
     }
 
@@ -534,7 +537,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
       GEOSGeom_destroy_r( handle, geos_bound );
       GEOSGeom_destroy_r( handle, pi );
       GEOSGeom_destroy_r( handle, po );
-      errorMessage = QString( "GEOSDifference(): %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSDifference(): %1" ).arg( e.what() );
       return nullptr;
     }
 
@@ -550,7 +553,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
   }
   catch ( GEOSException &e )
   {
-    errorMessage = QString( "GEOSGeom_createEmptyPolygon(): %1" ).arg( e.what() );
+    errorMessage = QStringLiteral( "GEOSGeom_createEmptyPolygon(): %1" ).arg( e.what() );
     GEOSGeom_destroy_r( handle, geos_cut_edges );
     return nullptr;
   }
@@ -576,7 +579,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     {
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, geos_area );
-      errorMessage = QString( "LWGEOM_GEOS_buildArea() threw an error: %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "LWGEOM_GEOS_buildArea() threw an error: %1" ).arg( e.what() );
       return nullptr;
     }
 
@@ -599,7 +602,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     {
       // We did check for empty area already so
       // this must be some other error
-      errorMessage = QString( "GEOSBoundary() threw an error: %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSBoundary() threw an error: %1" ).arg( e.what() );
       GEOSGeom_destroy_r( handle, new_area );
       GEOSGeom_destroy_r( handle, geos_area );
       return nullptr;
@@ -616,7 +619,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
       GEOSGeom_destroy_r( handle, new_area );
       GEOSGeom_destroy_r( handle, new_area_bound );
       GEOSGeom_destroy_r( handle, geos_area );
-      errorMessage = QString( "GEOSSymDifference() threw an error: %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSSymDifference() threw an error: %1" ).arg( e.what() );
       return nullptr;
     }
 
@@ -642,7 +645,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
       GEOSGeom_destroy_r( handle, geos_cut_edges );
       GEOSGeom_destroy_r( handle, new_area_bound );
       GEOSGeom_destroy_r( handle, geos_area );
-      errorMessage = QString( "GEOSDifference() threw an error: %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSDifference() threw an error: %1" ).arg( e.what() );
       return nullptr;
     }
     GEOSGeom_destroy_r( handle, geos_cut_edges );
@@ -691,7 +694,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidPolygon( const GEOSGeometry *gin, QStr
     }
     catch ( GEOSException &e )
     {
-      errorMessage = QString( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
+      errorMessage = QStringLiteral( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
       // TODO: cleanup!
       return nullptr;
     }
@@ -715,7 +718,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
   int ngeoms = GEOSGetNumGeometries_r( handle, gin );
   uint32_t nlines_alloc = ngeoms;
   QVector<GEOSGeometry *> lines;
-  QVector<GEOSGeometry *> points( ngeoms );
+  QVector<GEOSGeometry *> points;
   lines.reserve( nlines_alloc );
   points.reserve( ngeoms );
 
@@ -750,7 +753,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
     else
     {
       // NOTE: return from GEOSGeomType will leak but we really don't expect this to happen
-      errorMessage = QString( "unexpected geom type returned by LWGEOM_GEOS_makeValid: %1" ).arg( GEOSGeomTypeId_r( handle, vg ) );
+      errorMessage = QStringLiteral( "unexpected geom type returned by LWGEOM_GEOS_makeValid: %1" ).arg( GEOSGeomTypeId_r( handle, vg ) );
     }
   }
 
@@ -812,7 +815,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidCollection( const GEOSGeometry *gin, Q
   int nvgeoms = GEOSGetNumGeometries_r( handle, gin );
   if ( nvgeoms == -1 )
   {
-    errorMessage = QString( "GEOSGetNumGeometries: %1" ).arg( "?" );
+    errorMessage = QStringLiteral( "GEOSGetNumGeometries: %1" ).arg( QStringLiteral( "?" ) );
     return nullptr;
   }
 
@@ -839,7 +842,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidCollection( const GEOSGeometry *gin, Q
     // cleanup and throw
     for ( int i = 0; i < nvgeoms; ++i )
       GEOSGeom_destroy_r( handle, vgeoms[i] );
-    errorMessage = QString( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
+    errorMessage = QStringLiteral( "GEOSGeom_createCollection() threw an error: %1" ).arg( e.what() );
     return nullptr;
   }
 }
@@ -862,7 +865,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
   catch ( GEOSException &e )
   {
     // I don't think should ever happen
-    errorMessage = QString( "GEOSisValid(): %1" ).arg( e.what() );
+    errorMessage = QStringLiteral( "GEOSisValid(): %1" ).arg( e.what() );
     return nullptr;
   }
   Q_NOWARN_UNREACHABLE_POP
@@ -891,13 +894,13 @@ static GEOSGeometry *LWGEOM_GEOS_makeValid( const GEOSGeometry *gin, QString &er
       return LWGEOM_GEOS_makeValidCollection( gin, errorMessage );
 
     default:
-      errorMessage = QString( "ST_MakeValid: doesn't support geometry type: %1" ).arg( GEOSGeomTypeId_r( handle, gin ) );
+      errorMessage = QStringLiteral( "ST_MakeValid: doesn't support geometry type: %1" ).arg( GEOSGeomTypeId_r( handle, gin ) );
       return nullptr;
   }
 }
 
 
-QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
+std::unique_ptr< QgsAbstractGeometry > _qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_in, QString &errorMessage )
 {
   //bool is3d = FLAGS_GET_Z(lwgeom_in->flags);
 
@@ -905,7 +908,7 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
   // otherwise (adding only duplicates of existing points)
   GEOSContextHandle_t handle = QgsGeos::getGEOSHandler();
 
-  GEOSGeometry *geosgeom = QgsGeos::asGeos( lwgeom_in );
+  geos::unique_ptr geosgeom = QgsGeos::asGeos( lwgeom_in );
   if ( !geosgeom )
   {
     QgsDebugMsg( "Original geom can't be converted to GEOS - will try cleaning that up first" );
@@ -922,21 +925,20 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
 
     if ( ! geosgeom )
     {
-      errorMessage = "Could not convert QGIS geom to GEOS";
+      errorMessage = QStringLiteral( "Could not convert QGIS geom to GEOS" );
       return nullptr;
     }
   }
   else
   {
-    QgsDebugMsg( "original geom converted to GEOS" );
+    QgsDebugMsgLevel( "original geom converted to GEOS", 4 );
   }
 
-  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom, errorMessage );
-  GEOSGeom_destroy_r( handle, geosgeom );
+  GEOSGeometry *geosout = LWGEOM_GEOS_makeValid( geosgeom.get(), errorMessage );
   if ( !geosout )
     return nullptr;
 
-  QgsAbstractGeometry *lwgeom_out = QgsGeos::fromGeos( geosout );
+  std::unique_ptr< QgsAbstractGeometry > lwgeom_out = QgsGeos::fromGeos( geosout );
   GEOSGeom_destroy_r( handle, geosout );
   if ( !lwgeom_out )
     return nullptr;
@@ -948,20 +950,20 @@ QgsAbstractGeometry *_qgis_lwgeom_make_valid( const QgsAbstractGeometry *lwgeom_
     switch ( QgsWkbTypes::multiType( lwgeom_out->wkbType() ) )
     {
       case QgsWkbTypes::MultiPoint:
-        collection = new QgsMultiPointV2();
+        collection = new QgsMultiPoint();
         break;
       case QgsWkbTypes::MultiLineString:
         collection = new QgsMultiLineString();
         break;
       case QgsWkbTypes::MultiPolygon:
-        collection = new QgsMultiPolygonV2();
+        collection = new QgsMultiPolygon();
         break;
       default:
         collection = new QgsGeometryCollection();
         break;
     }
-    collection->addGeometry( lwgeom_out ); // takes ownership
-    lwgeom_out = collection;
+    collection->addGeometry( lwgeom_out.release() ); // takes ownership
+    lwgeom_out.reset( collection );
   }
 
   return lwgeom_out;

@@ -30,10 +30,12 @@
 #include "qgslinesymbollayer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssinglesymbolrenderer.h"
+#include "qgsmarkersymbollayer.h"
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
 class TestQgsSymbol : public QObject
@@ -70,13 +72,7 @@ class TestQgsSymbol : public QObject
     void symbolProperties();
 };
 
-TestQgsSymbol::TestQgsSymbol()
-  : mpPointsLayer( 0 )
-  , mpLinesLayer( 0 )
-  , mpPolysLayer( 0 )
-{
-
-}
+TestQgsSymbol::TestQgsSymbol() = default;
 
 // slots
 void TestQgsSymbol::initTestCase()
@@ -182,6 +178,7 @@ void TestQgsSymbol::testCanvasClip()
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setPlacement( QgsMarkerLineSymbolLayer:: CentralPoint );
+  static_cast< QgsSimpleMarkerSymbolLayer *>( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   QgsLineSymbol *lineSymbol = new QgsLineSymbol();
   lineSymbol->changeSymbolLayer( 0, markerLine );
   QgsSingleSymbolRenderer *renderer = new QgsSingleSymbolRenderer( lineSymbol );
@@ -201,6 +198,7 @@ void TestQgsSymbol::testCanvasClip()
   ms.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
 
   QgsCentroidFillSymbolLayer *centroidFill = new QgsCentroidFillSymbolLayer();
+  static_cast< QgsSimpleMarkerSymbolLayer * >( centroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, centroidFill );
   renderer = new QgsSingleSymbolRenderer( fillSymbol );

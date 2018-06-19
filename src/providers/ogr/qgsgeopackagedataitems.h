@@ -18,6 +18,8 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
+#include "qgstaskmanager.h"
+
 
 /**
  * \brief The QgsGeoPackageAbstractLayerItem class is the base class for GeoPackage raster and vector layers
@@ -27,14 +29,15 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
     Q_OBJECT
 
   protected:
-    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
+    QgsGeoPackageAbstractLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, const QString &providerKey );
 
-    /** Subclasses need to implement this function with
+    /**
+     * Subclasses need to implement this function with
      * the real deletion implementation
      */
     virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
   public slots:
     virtual void deleteLayer();
 #endif
@@ -46,9 +49,9 @@ class QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
 
   public:
-    QgsGeoPackageRasterLayerItem( QgsDataItem *parent, QString name, QString path, QString uri );
+    QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
   protected:
-    virtual bool executeDeleteLayer( QString &errCause ) override;
+    bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
@@ -57,43 +60,70 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
     Q_OBJECT
 
   public:
-    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
   protected:
-    virtual bool executeDeleteLayer( QString &errCause ) override;
+    bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
-class QgsGeoPackageConnectionItem : public QgsDataCollectionItem
+/**
+ * \brief The QgsGeoPackageCollectionItem class is the base class for
+ *        GeoPackage container
+ */
+class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
 
   public:
-    QgsGeoPackageConnectionItem( QgsDataItem *parent, QString name, QString path );
-
+    QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
-    QList<QAction *> actions() override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    //! Return the layer type from \a geometryType
+    //! Returns the layer type from \a geometryType
     static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
 
     //! Delete a geopackage layer
-    static bool deleteGeoPackageRasterLayer( const QString uri, QString &errCause );
+    static bool deleteGeoPackageRasterLayer( const QString &uri, QString &errCause );
 
   public slots:
 #ifdef HAVE_GUI
-    void editConnection();
-    void deleteConnection();
     void addTable();
+    void addConnection();
+    void deleteConnection();
 #endif
 
   protected:
     QString mPath;
+};
+
+
+/**
+ * \brief The QgsGeoPackageConnectionItem class adds the stored
+ *        connection management to QgsGeoPackageCollectionItem
+ */
+class QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
+{
+    Q_OBJECT
+
+  public:
+    QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
+    bool equal( const QgsDataItem *other ) override;
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
+
+  public slots:
+#ifdef HAVE_GUI
+    void editConnection();
+#endif
+
 };
 
 
@@ -102,24 +132,22 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     Q_OBJECT
 
   public:
-    QgsGeoPackageRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsGeoPackageRootItem();
+    QgsGeoPackageRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 1; }
+
+
 #ifdef HAVE_GUI
-    virtual QWidget *paramWidget() override;
-    QList<QAction *> actions() override;
+    QWidget *paramWidget() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
     void newConnection();
-    void connectionsChanged();
+    void onConnectionsChanged();
     void createDatabase();
 #endif
-
-  private:
-    bool storeConnection( const QString &path );
-
 };
 
 
@@ -127,11 +155,35 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "GPKG" ); }
-    virtual int capabilities() override { return QgsDataProvider::Database; }
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    QString name() override { return QStringLiteral( "GPKG" ); }
+    int capabilities() override { return QgsDataProvider::Database; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 
+/**
+ * \brief The QgsConcurrentFileWriterImportTask class is the parent task for
+ * importing layers from a drag and drop operation in the browser.
+ * Individual layers need to be added as individual substask.
+ */
+class QgsConcurrentFileWriterImportTask : public QgsTask
+{
+    Q_OBJECT
+
+  public:
+
+    QgsConcurrentFileWriterImportTask( const QString &desc = QString() ) : QgsTask( desc ) {}
+
+    void emitProgressChanged( double progress ) { setProgress( progress ); }
+
+
+  protected:
+
+    bool run() override
+    {
+      return true;
+    }
+
+};
 
 #endif // QGSGEOPACKAGEDATAITEMS_H

@@ -17,7 +17,6 @@
 #include <algorithm>
 
 #include "qgsrasterdataprovider.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
@@ -26,9 +25,6 @@
 
 QgsRasterProjector::QgsRasterProjector()
   : QgsRasterInterface( nullptr )
-  , mSrcDatumTransform( -1 )
-  , mDestDatumTransform( -1 )
-  , mPrecision( Approximate )
 {
   QgsDebugMsgLevel( "Entered", 4 );
 }
@@ -87,8 +83,6 @@ ProjectorData::ProjectorData( const QgsRectangle &extent, int width, int height,
   , mSrcYRes( 0.0 )
   , mDestRowsPerMatrixRow( 0.0 )
   , mDestColsPerMatrixCol( 0.0 )
-  , pHelperTop( nullptr )
-  , pHelperBottom( nullptr )
   , mHelperTopRow( 0 )
   , mCPCols( 0 )
   , mCPRows( 0 )
@@ -239,7 +233,7 @@ void ProjectorData::calcSrcExtent()
   // Expand a bit to avoid possible approx coords falling out because of representation error?
 
   // Combine with maximum source  extent
-  mSrcExtent = mSrcExtent.intersect( &mExtent );
+  mSrcExtent = mSrcExtent.intersect( mExtent );
 
   // If mMaxSrcXRes, mMaxSrcYRes are defined (fixed src resolution)
   // align extent to src resolution to avoid jumping of reprojected pixels
@@ -759,7 +753,7 @@ QgsRasterBlock *QgsRasterProjector::block( int bandNo, QgsRectangle  const &exte
     return mInput->block( bandNo, extent, width, height, feedback );
   }
 
-  QgsCoordinateTransform inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  QgsCoordinateTransform inverseCt( mDestCRS, mSrcCRS, mDestDatumTransform, mSrcDatumTransform );
 
   ProjectorData pd( extent, width, height, mInput, inverseCt, mPrecision );
 
@@ -857,7 +851,7 @@ bool QgsRasterProjector::destExtentSize( const QgsRectangle &srcExtent, int srcX
   {
     return false;
   }
-  QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSrcCRS.authid(), mDestCRS.authid(), mSrcDatumTransform, mDestDatumTransform );
+  QgsCoordinateTransform ct( mSrcCRS, mDestCRS, mSrcDatumTransform, mDestDatumTransform );
 
   return extentSize( ct, srcExtent, srcXSize, srcYSize, destExtent, destXSize, destYSize );
 }

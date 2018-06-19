@@ -31,12 +31,9 @@
 #include <QDomElement>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QToolButton>
 #include <QMessageBox>
 #include <QUrl>
-
-QgsHandleBadLayersHandler::QgsHandleBadLayersHandler()
-{
-}
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
@@ -49,7 +46,7 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
       tr( "%1 of %2 bad layers were not fixable." )
       .arg( layers.size() - dialog->layerCount() )
       .arg( layers.size() ),
-      QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+      Qgis::Warning, QgisApp::instance()->messageTimeout() );
 
   if ( dialog->layerCount() > 0 )
     dialog->exec();
@@ -151,10 +148,6 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   // mLayerList->resizeColumnsToContents();
 }
 
-QgsHandleBadLayers::~QgsHandleBadLayers()
-{
-}
-
 void QgsHandleBadLayers::selectionChanged()
 {
 
@@ -236,7 +229,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
       QUrl uriSource = QUrl::fromEncoded( datasource.toLatin1() );
       QUrl uriDest = QUrl::fromLocalFile( filename );
       uriDest.setQueryItems( uriSource.queryItems() );
-      datasource = QString::fromAscii( uriDest.toEncoded() );
+      datasource = QString::fromLatin1( uriDest.toEncoded() );
     }
   }
   else
@@ -273,7 +266,7 @@ void QgsHandleBadLayers::browseClicked()
 
     QStringList selectedFiles;
     QString enc;
-    QString title = tr( "Select file to replace '%1'" ).arg( fn );
+    QString title = tr( "Select File to Replace '%1'" ).arg( fn );
 
     QgsGuiUtils::openFilesRememberingFilter( memoryQualifier, fileFilter, selectedFiles, enc, title );
     if ( selectedFiles.size() != 1 )
@@ -286,7 +279,7 @@ void QgsHandleBadLayers::browseClicked()
   }
   else if ( mRows.size() > 1 )
   {
-    QString title = tr( "Select new directory of selected files" );
+    QString title = tr( "Select New Directory of Selected Files" );
 
     QgsSettings settings;
     QString lastDir = settings.value( QStringLiteral( "UI/missingDirectory" ), QDir::homePath() ).toString();
@@ -399,7 +392,7 @@ void QgsHandleBadLayers::accept()
   QDialog::accept();
 }
 
-void QgsHandleBadLayers::rejected()
+void QgsHandleBadLayers::reject()
 {
 
   if ( mLayerList->rowCount() > 0  &&

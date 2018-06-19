@@ -42,7 +42,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      */
     QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsProcessingProvider();
+    ~QgsProcessingProvider() override;
 
     //! Providers cannot be copied
     QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;
@@ -66,15 +66,37 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * should be a unique, short, character only string, eg "qgis" or "gdal". This
      * string should not be localised.
      * \see name()
+     * \see helpId()
      */
     virtual QString id() const = 0;
 
     /**
-     * Returns the full provider name, which is used to describe the provider within the GUI.
-     * This string should be localised.
+     * Returns the provider help id string, used for creating QgsHelp urls for algorithms
+     * belong to this provider. By default, this returns the provider's id(). This string
+     * should not be localised.
+     * \see id()
+     */
+    virtual QString helpId() const;
+
+    /**
+     * Returns the provider name, which is used to describe the provider within the GUI.
+     * This string should be short (e.g. "Lastools") and localised.
+     * \see longName()
      * \see id()
      */
     virtual QString name() const = 0;
+
+    /**
+     * Returns the a longer version of the provider name, which can include extra details
+     * such as version numbers. E.g. "Lastools LIDAR tools (version 2.2.1)".
+     * This string should be localised.
+     *
+     * The default implementation returns the same string as name().
+     *
+     * \see name()
+     * \see id()
+     */
+    virtual QString longName() const;
 
     /**
      * Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
@@ -91,31 +113,60 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
     /**
      * Returns a list of the raster format file extensions supported by this provider.
      * \see supportedOutputVectorLayerExtensions()
-     * \see supportedOutputTableExtensions()
      */
-    virtual QStringList supportedOutputRasterLayerExtensions() const { return QStringList() << QStringLiteral( "tif" ); }
+    virtual QStringList supportedOutputRasterLayerExtensions() const;
 
     /**
      * Returns a list of the vector format file extensions supported by this provider.
+     * \see defaultVectorFileExtension()
      * \see supportedOutputRasterLayerExtensions()
-     * \see supportedOutputTableExtensions()
      * \see supportsNonFileBasedOutput()
      */
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
     /**
-     * Returns a list of the table format file extensions supported by this provider.
-     * \see supportedOutputRasterLayerExtensions()
+     * Returns the default file extension to use for vector outputs created by the
+     * provider.
+     *
+     * If \a hasGeometry is true then the output file format must have support for
+     * geometry. If \a hasGeometry is false then non-spatial formats can be used.
+     *
+     * The default implementation returns the user's default Processing vector output format
+     * setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
+     * Otherwise the first reported supported vector format will be used.
+     *
      * \see supportedOutputVectorLayerExtensions()
+     * \see defaultRasterFileExtension()
      */
-    virtual QStringList supportedOutputTableExtensions() const { return QStringList() << QStringLiteral( "csv" ); }
+    virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
+
+    /**
+     * Returns the default file extension to use for raster outputs created by the
+     * provider.
+     *
+     * The default implementation returns the user's default Processing raster output format
+     * setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
+     * Otherwise the first reported supported raster format will be used.
+     *
+     * \see supportedOutputRasterLayerExtensions()
+     * \see defaultVectorFileExtension()
+     */
+    virtual QString defaultRasterFileExtension() const;
 
     /**
      * Returns true if the provider supports non-file based outputs (such as memory layers
-     * or direct database outputs).
+     * or direct database outputs). If a provider returns false for this method than it
+     * indicates that none of the outputs from any of the provider's algorithms have
+     * support for non-file based outputs. Returning true indicates that the algorithm's
+     * parameters will each individually declare their non-file based support.
+     *
+     * The default behavior for providers is to support non-file based outputs, and most
+     * providers which rely solely on QGIS API (and which do not depend on third-party scripts
+     * or external dependencies) will automatically support this.
+     *
      * \see supportedOutputVectorLayerExtensions()
      */
-    virtual bool supportsNonFileBasedOutput() const { return false; }
+    virtual bool supportsNonFileBasedOutput() const;
 
     /**
      * Loads the provider. This will be called when the plugin is being loaded, and any general

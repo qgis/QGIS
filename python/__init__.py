@@ -25,6 +25,7 @@ __revision__ = '$Format:%H$'
 
 from builtins import zip
 import os
+import sys
 
 
 def setupenv():
@@ -69,25 +70,20 @@ if os.name == 'nt':
 
 
 from qgis.PyQt import QtCore
-from qgis.core import QgsFeature, QgsGeometry
 
-
-def mapping_feature(feature):
-    geom = feature.geometry()
-    properties = {}
-    fields = [field.name() for field in feature.fields()]
-    properties = dict(list(zip(fields, feature.attributes())))
-    return {'type': 'Feature',
-            'properties': properties,
-            'geometry': geom.__geo_interface__}
-
-
-def mapping_geometry(geometry):
-    geo = geometry.exportToGeoJSON()
-    # We have to use eval because exportToGeoJSON() gives us
-    # back a string that looks like a dictionary.
-    return eval(geo)
-
-
-QgsFeature.__geo_interface__ = property(mapping_feature)
-QgsGeometry.__geo_interface__ = property(mapping_geometry)
+# monkey patching custom widgets in case we are running on a local install
+# this should fix import errors such as "ModuleNotFoundError: No module named qgsfilewidget"
+# ("from qgsfilewidget import QgsFileWidget")
+# In a complete install, this is normally avoided and rather imports "qgis.gui"
+# (thanks to uic/widget-plugins/qgis_customwidgets.py)
+try:
+    import qgis.gui
+    widget_list = dir(qgis.gui)
+    # remove widgets that are not allowed as customwidgets (they need to be manually promoted)
+    skip_list = ['QgsScrollArea']
+    for widget in widget_list:
+        if widget.startswith('Qgs') and widget not in skip_list:
+            sys.modules[widget.lower()] = qgis.gui
+except ImportError:
+    # gui might not be built
+    pass

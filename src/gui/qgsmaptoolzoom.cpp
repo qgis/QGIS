@@ -16,7 +16,6 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
-#include "qgscursors.h"
 #include "qgsrubberband.h"
 
 #include <QMouseEvent>
@@ -31,12 +30,12 @@ QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )
   , mZoomOut( zoomOut )
   , mDragging( false )
-  , mRubberBand( nullptr )
+
 {
   mToolName = tr( "Zoom" );
   // set the cursor
-  QPixmap myZoomQPixmap = QPixmap( ( const char ** )( zoomOut ? zoom_out : zoom_in ) );
-  mCursor = QCursor( myZoomQPixmap, 7, 7 );
+  mCursor = zoomOut ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+            QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn );
 }
 
 QgsMapToolZoom::~QgsMapToolZoom()

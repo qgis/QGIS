@@ -33,7 +33,9 @@
 
 QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
+  , mMeasureArea( tool->measureArea() )
   , mTool( tool )
+  , mCanvas( tool->canvas() )
 {
   setupUi( this );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsMeasureDialog::showHelp );
@@ -47,16 +49,13 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
   buttonBox->addButton( cb, QDialogButtonBox::ActionRole );
   connect( cb, &QAbstractButton::clicked, this, &QgsMeasureDialog::openConfigTab );
 
-  mMeasureArea = tool->measureArea();
-  mTotal = 0.;
-
   repopulateComboBoxUnits( mMeasureArea );
   if ( mMeasureArea )
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->areaUnits() ) );
   else
     mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( QgsProject::instance()->distanceUnits() ) );
 
-  if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+  if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
     mUnitsCombo->setEnabled( false );
     if ( mMeasureArea )
@@ -69,7 +68,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f )
 
   connect( mUnitsCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeasureDialog::unitsChanged );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsMeasureDialog::reject );
-  connect( mTool->canvas(), &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
+  connect( mCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMeasureDialog::crsChanged );
 
   groupBox->setCollapsed( true );
 }
@@ -81,7 +80,7 @@ void QgsMeasureDialog::openConfigTab()
 
 void QgsMeasureDialog::crsChanged()
 {
-  if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+  if ( !mCanvas->mapSettings().destinationCrs().isValid() )
   {
     mUnitsCombo->setEnabled( false );
     if ( mMeasureArea )
@@ -101,11 +100,11 @@ void QgsMeasureDialog::updateSettings()
   QgsSettings settings;
 
   mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
-  mCanvasUnits = mTool->canvas()->mapUnits();
+  mCanvasUnits = mCanvas->mapUnits();
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
-  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs() );
+  mDa.setSourceCrs( mCanvas->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mTable->clear();
@@ -149,14 +148,14 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
   // and adding moving point at the end
   if ( mMeasureArea && mTool->points().size() >= 2 )
   {
-    QList<QgsPointXY> tmpPoints = mTool->points();
+    QVector<QgsPointXY> tmpPoints = mTool->points();
     tmpPoints.append( point );
     double area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area ) );
   }
-  else if ( !mMeasureArea && mTool->points().size() >= 1 )
+  else if ( !mMeasureArea && !mTool->points().empty() )
   {
-    QList< QgsPointXY > tmpPoints = mTool->points();
+    QVector< QgsPointXY > tmpPoints = mTool->points();
     QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) ), p2( point );
     double d = mDa.measureLine( p1, p2 );
 
@@ -168,7 +167,7 @@ void QgsMeasureDialog::mouseMove( const QgsPointXY &point )
     QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
     if ( item )
     {
-      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
     }
   }
 }
@@ -185,7 +184,7 @@ void QgsMeasureDialog::addPoint()
   {
     if ( !mTool->done() )
     {
-      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( 0.0, 'f', mDecimalPlaces ) ) );
+      QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( 0.0, 'f', mDecimalPlaces ) ) );
       item->setTextAlignment( 0, Qt::AlignRight );
       mTable->addTopLevelItem( item );
       mTable->scrollToItem( item );
@@ -205,7 +204,7 @@ void QgsMeasureDialog::removeLastPoint()
   {
     if ( numPoints > 1 )
     {
-      QList<QgsPointXY> tmpPoints = mTool->points();
+      QVector<QgsPointXY> tmpPoints = mTool->points();
       tmpPoints.append( mLastMousePoint );
       double area = mDa.measurePolygon( tmpPoints );
       editTotal->setText( formatArea( area ) );
@@ -225,14 +224,14 @@ void QgsMeasureDialog::removeLastPoint()
     if ( !mTool->done() )
     {
       // need to add the distance for the temporary mouse cursor point
-      QList< QgsPointXY > tmpPoints = mTool->points();
+      QVector< QgsPointXY > tmpPoints = mTool->points();
       QgsPointXY p1( tmpPoints.at( tmpPoints.size() - 1 ) );
       double d = mDa.measureLine( p1, mLastMousePoint );
 
       d = convertLength( d, mDistanceUnits );
 
       QTreeWidgetItem *item = mTable->topLevelItem( mTable->topLevelItemCount() - 1 );
-      item->setText( 0, QLocale::system().toString( d, 'f', mDecimalPlaces ) );
+      item->setText( 0, QLocale().toString( d, 'f', mDecimalPlaces ) );
       editTotal->setText( formatDistance( mTotal + d ) );
     }
     else
@@ -306,7 +305,7 @@ void QgsMeasureDialog::updateUi()
 
   if ( mMeasureArea )
   {
-    if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
     {
       // no CRS => no units, newb!
       toolTip += "<br> * " + tr( "No map projection set, so area is calculated using Cartesian calculations." );
@@ -314,12 +313,12 @@ void QgsMeasureDialog::updateUi()
       forceCartesian = true;
       convertToDisplayUnits = false;
     }
-    else if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && ( mAreaUnits == QgsUnitTypes::AreaSquareDegrees || mAreaUnits == QgsUnitTypes::AreaUnknownUnit ) )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured area are in degrees, so area is calculated using Cartesian calculations in square degrees." ).arg(
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().description() );
       forceCartesian = true;
       convertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -335,10 +334,10 @@ void QgsMeasureDialog::updateUi()
       }
       else
       {
-        resultUnit = QgsUnitTypes::distanceToAreaUnit( mTool->canvas()->mapSettings().destinationCrs().mapUnits() );
+        resultUnit = QgsUnitTypes::distanceToAreaUnit( mCanvas->mapSettings().destinationCrs().mapUnits() );
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Area is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().description() );
       }
       setWindowTitle( tr( "Measure" ) );
 
@@ -376,7 +375,7 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    if ( !mTool->canvas()->mapSettings().destinationCrs().isValid() )
+    if ( !mCanvas->mapSettings().destinationCrs().isValid() )
     {
       // no CRS => no units, newb!
       toolTip += "<br> * " + tr( "No map projection set, so distance is calculated using Cartesian calculations." );
@@ -384,12 +383,12 @@ void QgsMeasureDialog::updateUi()
       forceCartesian = true;
       convertToDisplayUnits = false;
     }
-    else if ( mTool->canvas()->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
+    else if ( mCanvas->mapSettings().destinationCrs().mapUnits() == QgsUnitTypes::DistanceDegrees
               && mDistanceUnits == QgsUnitTypes::DistanceDegrees )
     {
       //both source and destination units are degrees
       toolTip += "<br> * " + tr( "Both project CRS (%1) and measured length are in degrees, so distance is calculated using Cartesian calculations in degrees." ).arg(
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().description() );
       forceCartesian = true;
       convertToDisplayUnits = false; //not required since we will be measuring in degrees
     }
@@ -405,10 +404,10 @@ void QgsMeasureDialog::updateUi()
       }
       else
       {
-        resultUnit = mTool->canvas()->mapSettings().destinationCrs().mapUnits();
+        resultUnit = mCanvas->mapSettings().destinationCrs().mapUnits();
         toolTip += "<br> * " + tr( "Project ellipsoidal calculation is not selected." ) + ' ';
         toolTip += tr( "Distance is calculated in %1, based on project CRS (%2)." ).arg( QgsUnitTypes::toString( resultUnit ),
-                   mTool->canvas()->mapSettings().destinationCrs().description() );
+                   mCanvas->mapSettings().destinationCrs().description() );
       }
       setWindowTitle( tr( "Measure" ) );
 
@@ -478,12 +477,12 @@ void QgsMeasureDialog::updateUi()
   }
   else
   {
-    QList<QgsPointXY>::const_iterator it;
+    QVector<QgsPointXY>::const_iterator it;
     bool b = true; // first point
 
     QgsPointXY p1, p2;
     mTotal = 0;
-    QList< QgsPointXY > tmpPoints = mTool->points();
+    QVector< QgsPointXY > tmpPoints = mTool->points();
     for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
     {
       p2 = *it;
@@ -502,7 +501,7 @@ void QgsMeasureDialog::updateUi()
           d = convertLength( d, mDistanceUnits );
         }
 
-        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale::system().toString( d, 'f', mDecimalPlaces ) ) );
+        QTreeWidgetItem *item = new QTreeWidgetItem( QStringList( QLocale().toString( d, 'f', mDecimalPlaces ) ) );
         item->setTextAlignment( 0, Qt::AlignRight );
         mTable->addTopLevelItem( item );
         mTable->scrollToItem( item );

@@ -29,9 +29,9 @@
  * QgsTask task which performs a QgsVectorFileWriter layer saving operation as a background
  * task. This can be used to save a vector layer out to a file without blocking the
  * QGIS interface.
- * \since QGIS 3.0
  * \see QgsVectorLayerExporterTask
  * \see QgsRasterFileWriterTask
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 {
@@ -47,7 +47,7 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
                              const QString &fileName,
                              const QgsVectorFileWriter::SaveVectorOptions &options );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -65,23 +65,21 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
-
-    QPointer< QgsVectorLayer > mLayer = nullptr;
 
     QString mDestFileName;
 
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
-
     QgsVectorFileWriter::WriterError mError = QgsVectorFileWriter::NoError;
 
     QString mNewFilename;
     QString mErrorMessage;
 
     QgsVectorFileWriter::SaveVectorOptions mOptions;
+    QgsVectorFileWriter::PreparedWriterDetails mWriterDetails;
     std::unique_ptr< QgsVectorFileWriter::FieldValueConverter > mFieldValueConverter;
 };
 

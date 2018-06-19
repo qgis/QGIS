@@ -40,10 +40,6 @@ QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &n
 {
 }
 
-QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry(): rendererCreateFunction( nullptr ), widgetCreateFunction( nullptr )
-{
-}
-
 QIcon QgsRasterRendererRegistryEntry::icon()
 {
   return QgsApplication::getThemeIcon( QString( "styleicons/%1.svg" ).arg( name ) );

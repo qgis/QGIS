@@ -49,6 +49,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   , mModified( false )
 {
   setupUi( this );
+  connect( tabItemType, &QTabWidget::currentChanged, this, &QgsStyleManagerDialog::tabItemType_currentChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsStyleManagerDialog::showHelp );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsStyleManagerDialog::onClose );
 
@@ -63,28 +64,29 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mSplitter->restoreState( settings.value( QStringLiteral( "Windows/StyleV2Manager/splitter" ) ).toByteArray() );
 
   tabItemType->setDocumentMode( true );
-  searchBox->setPlaceholderText( trUtf8( "Filter symbols…" ) );
+  searchBox->setShowSearchIcon( true );
+  searchBox->setPlaceholderText( tr( "Filter symbols…" ) );
 
   connect( this, &QDialog::finished, this, &QgsStyleManagerDialog::onFinished );
 
   connect( listItems, &QAbstractItemView::doubleClicked, this, &QgsStyleManagerDialog::editItem );
 
-  connect( btnAddItem, &QPushButton::clicked, [ = ]( bool ) { addItem(); }
+  connect( btnAddItem, &QPushButton::clicked, this, [ = ]( bool ) { addItem(); }
          );
-  connect( btnEditItem, &QPushButton::clicked, [ = ]( bool ) { editItem(); }
+  connect( btnEditItem, &QPushButton::clicked, this, [ = ]( bool ) { editItem(); }
          );
-  connect( actnEditItem, &QAction::triggered, [ = ]( bool ) { editItem(); }
+  connect( actnEditItem, &QAction::triggered, this, [ = ]( bool ) { editItem(); }
          );
-  connect( btnRemoveItem, &QPushButton::clicked, [ = ]( bool ) { removeItem(); }
+  connect( btnRemoveItem, &QPushButton::clicked, this, [ = ]( bool ) { removeItem(); }
          );
-  connect( actnRemoveItem, &QAction::triggered, [ = ]( bool ) { removeItem(); }
+  connect( actnRemoveItem, &QAction::triggered, this, [ = ]( bool ) { removeItem(); }
          );
 
-  QMenu *shareMenu = new QMenu( tr( "Share menu" ), this );
-  QAction *exportAction = new QAction( tr( "Export symbol(s)…" ), this );
+  QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
+  QAction *exportAction = new QAction( tr( "Export Symbol(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import symbol(s)…" ), this );
+  QAction *importAction = new QAction( tr( "Import Symbol(s)…" ), this );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   shareMenu->addAction( importAction );
   shareMenu->addSeparator();
@@ -122,7 +124,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   connect( groupModel, &QStandardItemModel::itemChanged,
            this, &QgsStyleManagerDialog::groupRenamed );
 
-  QMenu *groupMenu = new QMenu( tr( "Group actions" ), this );
+  QMenu *groupMenu = new QMenu( tr( "Group Actions" ), this );
   connect( actnTagSymbols, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
   groupMenu->addAction( actnTagSymbols );
   connect( actnFinishTagging, &QAction::triggered, this, &QgsStyleManagerDialog::tagSymbolsAction );
@@ -161,7 +163,7 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupMenu->addAction( actnRemoveFavorite );
   mGroupMenu->addSeparator()->setParent( this );
   mGroupListMenu = new QMenu( mGroupMenu );
-  mGroupListMenu->setTitle( tr( "Add to tag" ) );
+  mGroupListMenu->setTitle( tr( "Add to Tag" ) );
   mGroupListMenu->setEnabled( false );
   mGroupMenu->addMenu( mGroupListMenu );
   actnDetag->setData( 0 );
@@ -178,16 +180,16 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
   mGroupTreeContextMenu = new QMenu( this );
   connect( actnEditSmartGroup, &QAction::triggered, this, &QgsStyleManagerDialog::editSmartgroupAction );
   mGroupTreeContextMenu->addAction( actnEditSmartGroup );
-  connect( actnAddTag, &QAction::triggered, [ = ]( bool ) { addTag(); }
+  connect( actnAddTag, &QAction::triggered, this, [ = ]( bool ) { addTag(); }
          );
   mGroupTreeContextMenu->addAction( actnAddTag );
-  connect( actnAddSmartgroup, &QAction::triggered, [ = ]( bool ) { addSmartgroup(); }
+  connect( actnAddSmartgroup, &QAction::triggered, this, [ = ]( bool ) { addSmartgroup(); }
          );
   mGroupTreeContextMenu->addAction( actnAddSmartgroup );
   connect( actnRemoveGroup, &QAction::triggered, this, &QgsStyleManagerDialog::removeGroup );
   mGroupTreeContextMenu->addAction( actnRemoveGroup );
 
-  on_tabItemType_currentChanged( 0 );
+  tabItemType_currentChanged( 0 );
 }
 
 void QgsStyleManagerDialog::onFinished()
@@ -243,11 +245,11 @@ void QgsStyleManagerDialog::populateTypes()
 #endif
 }
 
-void QgsStyleManagerDialog::on_tabItemType_currentChanged( int )
+void QgsStyleManagerDialog::tabItemType_currentChanged( int )
 {
   // when in Color Ramp tab, add menu to add item button and hide "Export symbols as PNG/SVG"
   bool flag = currentItemType() != 3;
-  searchBox->setPlaceholderText( flag ? trUtf8( "Filter symbols…" ) : trUtf8( "Filter color ramps…" ) );
+  searchBox->setPlaceholderText( flag ? tr( "Filter symbols…" ) : tr( "Filter color ramps…" ) );
   btnAddItem->setMenu( flag ? nullptr : mMenuBtnAddItemColorRamp );
   actnExportAsPNG->setVisible( flag );
   actnExportAsSVG->setVisible( flag );
@@ -286,7 +288,7 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
-      item->setToolTip( QString( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( ", " ) : tr( "Not tagged" ) ) );
+      item->setToolTip( QStringLiteral( "<b>%1</b><br><i>%2</i>" ).arg( name, tags.count() > 0 ? tags.join( QStringLiteral( ", " ) ) : tr( "Not tagged" ) ) );
       // add to model
       model->appendRow( item );
     }
@@ -419,12 +421,12 @@ bool QgsStyleManagerDialog::addSymbol()
     // validate name
     if ( name.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "Save symbol" ),
+      QMessageBox::warning( this, tr( "Save Symbol" ),
                             tr( "Cannot save symbol without name. Enter a name." ) );
     }
     else if ( mStyle->symbolNames().contains( name ) )
     {
-      int res = QMessageBox::warning( this, tr( "Save symbol" ),
+      int res = QMessageBox::warning( this, tr( "Save Symbol" ),
                                       tr( "Symbol with name '%1' already exists. Overwrite?" )
                                       .arg( name ),
                                       QMessageBox::Yes | QMessageBox::No );
@@ -473,7 +475,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     QStringList rampTypes;
     rampTypes << tr( "Gradient" ) << tr( "Color presets" ) << tr( "Random" ) << tr( "Catalog: cpt-city" );
     rampTypes << tr( "Catalog: ColorBrewer" );
-    rampType = QInputDialog::getItem( parent, tr( "Color ramp type" ),
+    rampType = QInputDialog::getItem( parent, tr( "Color Ramp Type" ),
                                       tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
   }
   if ( !ok || rampType.isEmpty() )
@@ -568,7 +570,7 @@ QString QgsStyleManagerDialog::addColorRampStatic( QWidget *parent, QgsStyle *st
     }
     else if ( style->colorRampNames().contains( name ) )
     {
-      int res = QMessageBox::warning( parent, tr( "Save color ramp" ),
+      int res = QMessageBox::warning( parent, tr( "Save Color Ramp" ),
                                       tr( "Color ramp with name '%1' already exists. Overwrite?" )
                                       .arg( name ),
                                       QMessageBox::Yes | QMessageBox::No );
@@ -770,11 +772,13 @@ void QgsStyleManagerDialog::removeItem()
 bool QgsStyleManagerDialog::removeSymbol()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Symbol" ),
        QString( tr( "Do you really want to remove %n symbol(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
+
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
@@ -790,11 +794,13 @@ bool QgsStyleManagerDialog::removeSymbol()
 bool QgsStyleManagerDialog::removeColorRamp()
 {
   QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
-  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm removal" ),
-       QString( tr( "Do you really want to remove %n ramps(s)?", nullptr, indexes.count() ) ),
+  if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Remove Color Ramp" ),
+       QString( tr( "Do you really want to remove %n ramp(s)?", nullptr, indexes.count() ) ),
        QMessageBox::Yes,
        QMessageBox::No ) )
     return false;
+
+  QgsTemporaryCursorOverride override( Qt::WaitCursor );
 
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
@@ -829,7 +835,7 @@ void QgsStyleManagerDialog::itemChanged( QStandardItem *item )
   }
   else
   {
-    QMessageBox::critical( this, tr( "Cannot rename item" ),
+    QMessageBox::critical( this, tr( "Save Item" ),
                            tr( "Name is already taken by another item. Choose a different name." ) );
     item->setText( oldName );
   }
@@ -837,7 +843,7 @@ void QgsStyleManagerDialog::itemChanged( QStandardItem *item )
 
 void QgsStyleManagerDialog::exportItemsPNG()
 {
-  QString dir = QFileDialog::getExistingDirectory( this, tr( "Exported selected symbols as PNG" ),
+  QString dir = QFileDialog::getExistingDirectory( this, tr( "Export Selected Symbols as PNG" ),
                 QDir::home().absolutePath(),
                 QFileDialog::ShowDirsOnly
                 | QFileDialog::DontResolveSymlinks );
@@ -846,7 +852,7 @@ void QgsStyleManagerDialog::exportItemsPNG()
 
 void QgsStyleManagerDialog::exportItemsSVG()
 {
-  QString dir = QFileDialog::getExistingDirectory( this, tr( "Exported selected symbols as SVG" ),
+  QString dir = QFileDialog::getExistingDirectory( this, tr( "Export Selected Symbols as SVG" ),
                 QDir::home().absolutePath(),
                 QFileDialog::ShowDirsOnly
                 | QFileDialog::DontResolveSymlinks );
@@ -859,7 +865,7 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   if ( dir.isEmpty() )
     return;
 
-  QModelIndexList indexes =  listItems->selectionModel()->selection().indexes();
+  QModelIndexList indexes = listItems->selectionModel()->selection().indexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     QString name = index.data().toString();
@@ -1060,7 +1066,7 @@ int QgsStyleManagerDialog::addTag()
   QString itemName;
   int id;
   bool ok;
-  itemName = QInputDialog::getText( this, tr( "Tag name" ),
+  itemName = QInputDialog::getText( this, tr( "Add Tag" ),
                                     tr( "Please enter name for the new tag:" ), QLineEdit::Normal, tr( "New tag" ), &ok ).trimmed();
   if ( !ok || itemName.isEmpty() )
     return 0;
@@ -1068,14 +1074,14 @@ int QgsStyleManagerDialog::addTag()
   int check = mStyle->tagId( itemName );
   if ( check > 0 )
   {
-    QMessageBox::critical( this, tr( "Error!" ),
+    QMessageBox::critical( this, tr( "Add Tag" ),
                            tr( "Tag name already exists in your symbol database." ) );
     return 0;
   }
   id = mStyle->addTag( itemName );
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Error!" ),
+    QMessageBox::critical( this, tr( "Add Tag" ),
                            tr( "New tag could not be created.\n"
                                "There was a problem with your symbol database." ) );
     return 0;
@@ -1130,8 +1136,8 @@ void QgsStyleManagerDialog::removeGroup()
   QString data = index.data( Qt::UserRole + 1 ).toString();
   if ( data == QLatin1String( "all" ) || data == QLatin1String( "favorite" ) || data == QLatin1String( "tags" ) || index.data() == "smartgroups" )
   {
-    int err = QMessageBox::critical( this, tr( "Invalid selection" ),
-                                     tr( "Cannot delete system defined categories.\n"
+    int err = QMessageBox::critical( this, tr( "Remove Group" ),
+                                     tr( "Invalid selection. Cannot delete system defined categories.\n"
                                          "Kindly select a group or smart group you might want to delete." ) );
     if ( err )
       return;
@@ -1253,8 +1259,8 @@ void QgsStyleManagerDialog::regrouped( QStandardItem *item )
     regrouped = mStyle->detagSymbol( type, symbolName, QStringList( tag ) );
   if ( !regrouped )
   {
-    int er = QMessageBox::critical( this, tr( "Database Error" ),
-                                    tr( "There was a problem with the Symbols database while regrouping." ) );
+    int er = QMessageBox::critical( this, tr( "Group Items" ),
+                                    tr( "There was a problem with the symbols database while regrouping." ) );
     // call the slot again to get back to normal
     if ( er )
       tagSymbolsAction();
@@ -1389,7 +1395,7 @@ void QgsStyleManagerDialog::listitemsContextMenu( QPoint point )
   {
     mGroupListMenu->addSeparator();
   }
-  a = new QAction( "Create new tag... ", mGroupListMenu );
+  a = new QAction( tr( "Create New Tag…" ), mGroupListMenu );
   connect( a, &QAction::triggered, this, [ = ]( bool ) { tagSelectedSymbols( true ); }
          );
   mGroupListMenu->addAction( a );
@@ -1406,7 +1412,7 @@ void QgsStyleManagerDialog::addFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->addFavorite( type, index.data().toString() );
@@ -1423,7 +1429,7 @@ void QgsStyleManagerDialog::removeFavoriteSelectedSymbols()
     return;
   }
 
-  QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+  QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
   Q_FOREACH ( const QModelIndex &index, indexes )
   {
     mStyle->removeFavorite( type, index.data().toString() );
@@ -1459,7 +1465,7 @@ void QgsStyleManagerDialog::tagSelectedSymbols( bool newTag )
       tag = selectedItem->data().toString();
     }
 
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->tagSymbol( type, index.data().toString(), QStringList( tag ) );
@@ -1482,7 +1488,7 @@ void QgsStyleManagerDialog::detagSelectedSymbols()
       QgsDebugMsg( "unknown entity type" );
       return;
     }
-    QModelIndexList indexes =  listItems->selectionModel()->selectedIndexes();
+    QModelIndexList indexes = listItems->selectionModel()->selectedIndexes();
     Q_FOREACH ( const QModelIndex &index, indexes )
     {
       mStyle->detagSymbol( type, index.data().toString() );
@@ -1501,7 +1507,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   QModelIndex present = groupTree->currentIndex();
   if ( present.parent().data( Qt::UserRole + 1 ) != "smartgroups" )
   {
-    QMessageBox::critical( this, tr( "Invalid Selection" ),
+    QMessageBox::critical( this, tr( "Edit Smart Group" ),
                            tr( "You have not selected a Smart Group. Kindly select a Smart Group to edit." ) );
     return;
   }
@@ -1520,7 +1526,7 @@ void QgsStyleManagerDialog::editSmartgroupAction()
   int id = mStyle->addSmartgroup( dlg.smartgroupName(), dlg.conditionOperator(), dlg.conditionMap() );
   if ( !id )
   {
-    QMessageBox::critical( this, tr( "Database Error!" ),
+    QMessageBox::critical( this, tr( "Edit Smart Group" ),
                            tr( "There was some error while editing the smart group." ) );
     return;
   }

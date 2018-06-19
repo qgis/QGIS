@@ -21,7 +21,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgswkbptr.h"
-
+#include "qgsogrutils.h"
 #include <QBuffer>
 #include <QList>
 #include <QNetworkRequest>
@@ -43,8 +43,7 @@ QgsGml::QgsGml(
   const QString &typeName,
   const QString &geometryAttribute,
   const QgsFields &fields )
-  : QObject()
-  , mParser( typeName, geometryAttribute, fields )
+  : mParser( typeName, geometryAttribute, fields )
   , mTypeName( typeName )
   , mFinished( false )
 {
@@ -63,12 +62,12 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
   QNetworkRequest request( uri );
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkRequest( request, authcfg ) )
     {
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
         tr( "Network" ),
-        QgsMessageLog::CRITICAL
+        Qgis::Critical
       );
       return 1;
     }
@@ -81,13 +80,13 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
 
   if ( !authcfg.isEmpty() )
   {
-    if ( !QgsAuthManager::instance()->updateNetworkReply( reply, authcfg ) )
+    if ( !QgsApplication::authManager()->updateNetworkReply( reply, authcfg ) )
     {
       reply->deleteLater();
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network reply update failed for authcfg %1" ).arg( authcfg ),
         tr( "Network" ),
-        QgsMessageLog::CRITICAL
+        Qgis::Critical
       );
       return 1;
     }
@@ -149,7 +148,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
     QgsMessageLog::logMessage(
       tr( "GML Getfeature network request failed with error: %1" ).arg( replyErrorString ),
       tr( "Network" ),
-      QgsMessageLog::CRITICAL
+      Qgis::Critical
     );
     return 1;
   }
@@ -223,7 +222,7 @@ void QgsGml::handleProgressEvent( qint64 progress, qint64 totalSteps )
 
 void QgsGml::calculateExtentFromFeatures()
 {
-  if ( mFeatures.size() < 1 )
+  if ( mFeatures.empty() )
   {
     return;
   }
@@ -288,14 +287,12 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QString &typeName,
   , mTruncatedResponse( false )
   , mParseDepth( 0 )
   , mFeatureTupleDepth( 0 )
-  , mCurrentFeature( nullptr )
   , mFeatureCount( 0 )
   , mCurrentWKB( nullptr, 0 )
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
   , mEpsg( 0 )
-  , mGMLNameSpaceURIPtr( nullptr )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -342,24 +339,20 @@ QgsGmlStreamingParser::QgsGmlStreamingParser( const QList<LayerProperties> &laye
     AxisOrientationLogic axisOrientationLogic,
     bool invertAxisOrientation )
   : mLayerProperties( layerProperties )
-  , mTypeNamePtr( nullptr )
   , mTypeNameUTF8Len( 0 )
   , mWkbType( QgsWkbTypes::Unknown )
-  , mGeometryAttributePtr( nullptr )
   , mGeometryAttributeUTF8Len( 0 )
   , mFields( fields )
   , mIsException( false )
   , mTruncatedResponse( false )
   , mParseDepth( 0 )
   , mFeatureTupleDepth( 0 )
-  , mCurrentFeature( nullptr )
   , mFeatureCount( 0 )
   , mCurrentWKB( nullptr, 0 )
   , mBoundedByNullFound( false )
   , mDimension( 0 )
   , mCoorMode( Coordinate )
   , mEpsg( 0 )
-  , mGMLNameSpaceURIPtr( nullptr )
   , mAxisOrientationLogic( axisOrientationLogic )
   , mInvertAxisOrientationRequest( invertAxisOrientation )
   , mInvertAxisOrientation( invertAxisOrientation )
@@ -550,7 +543,9 @@ void QgsGmlStreamingParser::startElement( const XML_Char *el, const XML_Char **a
       }
     }
   }
-  else if ( localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) &&
+  else if ( ( parseMode == Feature || parseMode == FeatureTuple ) &&
+            mCurrentFeature &&
+            localNameLen == static_cast<int>( mGeometryAttributeUTF8Len ) &&
             memcmp( pszLocalName, mGeometryAttributePtr, localNameLen ) == 0 )
   {
     mParseModeStack.push( QgsGmlStreamingParser::Geometry );
@@ -849,7 +844,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
   const int localNameLen = ( pszSep ) ? ( int )( elLen - nsLen ) - 1 : elLen;
   ParseMode parseMode( mParseModeStack.isEmpty() ? None : mParseModeStack.top() );
 
-  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.top() ;
+  mDimension = mDimensionStack.isEmpty() ? 0 : mDimensionStack.pop();
 
   const bool isGMLNS = ( nsLen == mGMLNameSpaceURI.size() && mGMLNameSpaceURIPtr && memcmp( el, mGMLNameSpaceURIPtr, nsLen ) == 0 );
 
@@ -882,20 +877,20 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
     mParseModeStack.pop();
     if ( mFoundUnhandledGeometryElement )
     {
-      OGRGeometryH hGeom = OGR_G_CreateFromGML( mGeometryString.c_str() );
+      gdal::ogr_geometry_unique_ptr hGeom( OGR_G_CreateFromGML( mGeometryString.c_str() ) );
       if ( hGeom )
       {
-        const int wkbSize = OGR_G_WkbSize( hGeom );
+        const int wkbSize = OGR_G_WkbSize( hGeom.get() );
         unsigned char *pabyBuffer = new unsigned char[ wkbSize ];
-        OGR_G_ExportToIsoWkb( hGeom, wkbNDR, pabyBuffer );
+        OGR_G_ExportToIsoWkb( hGeom.get(), wkbNDR, pabyBuffer );
         QgsGeometry g;
         g.fromWkb( pabyBuffer, wkbSize );
         if ( mInvertAxisOrientation )
         {
           g.transform( QTransform( 0, 1, 1, 0, 0, 0 ) );
         }
+        Q_ASSERT( mCurrentFeature );
         mCurrentFeature->setGeometry( g );
-        OGR_G_DestroyGeometry( hGeom );
       }
     }
     mGeometryString.clear();
@@ -910,7 +905,7 @@ void QgsGmlStreamingParser::endElement( const XML_Char *el )
       QgsDebugMsg( "creation of bounding box failed" );
     }
     if ( !mCurrentExtent.isNull() && mLayerExtent.isNull() &&
-         mCurrentFeature == nullptr && mFeatureCount == 0 )
+         !mCurrentFeature && mFeatureCount == 0 )
     {
       mLayerExtent = mCurrentExtent;
       mCurrentExtent = QgsRectangle();

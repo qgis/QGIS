@@ -18,10 +18,14 @@
 #define QGSSETTINGS_H
 
 #include <QSettings>
+#include <QMetaEnum>
+
 #include "qgis_core.h"
 #include "qgis.h"
+#include "qgslogger.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsSettings
  *
  * This class is a composition of two QSettings instances:
@@ -70,13 +74,15 @@ class CORE_EXPORT QgsSettings : public QObject
       Misc
     };
 
-    /** Construct a QgsSettings object for accessing settings of the application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application
      * called application from the organization called organization, and with parent parent.
      */
     explicit QgsSettings( const QString &organization,
                           const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing settings of the application called application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application called application
      * from the organization called organization, and with parent parent.
      * If scope is QSettings::UserScope, the QSettings object searches user-specific settings first,
      * before it searches system-wide settings as a fallback. If scope is QSettings::SystemScope,
@@ -91,7 +97,8 @@ class CORE_EXPORT QgsSettings : public QObject
     QgsSettings( QSettings::Scope scope, const QString &organization,
                  const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing settings of the application called application
+    /**
+     * Construct a QgsSettings object for accessing settings of the application called application
      * from the organization called organization, and with parent parent.
      * If scope is QSettings::UserScope, the QSettings object searches user-specific settings first,
      * before it searches system-wide settings as a fallback. If scope is QSettings::SystemScope,
@@ -105,7 +112,8 @@ class CORE_EXPORT QgsSettings : public QObject
     QgsSettings( QSettings::Format format, QSettings::Scope scope, const QString &organization,
                  const QString &application = QString(), QObject *parent = nullptr );
 
-    /** Construct a QgsSettings object for accessing the settings stored in the file called fileName,
+    /**
+     * Construct a QgsSettings object for accessing the settings stored in the file called fileName,
      * with parent parent. If the file doesn't already exist, it is created.
      *
      * If format is QSettings::NativeFormat, the meaning of fileName depends on the platform. On Unix,
@@ -125,7 +133,8 @@ class CORE_EXPORT QgsSettings : public QObject
      */
     QgsSettings( const QString &fileName, QSettings::Format format, QObject *parent = nullptr );
 
-    /** Constructs a QgsSettings object for accessing settings of the application and organization
+    /**
+     * Constructs a QgsSettings object for accessing settings of the application and organization
      * set previously with a call to QCoreApplication::setOrganizationName(),
      * QCoreApplication::setOrganizationDomain(), and QCoreApplication::setApplicationName().
      *
@@ -133,15 +142,16 @@ class CORE_EXPORT QgsSettings : public QObject
      * by default). Use setDefaultFormat() before calling this constructor to change the default
      * format used by this constructor.
      */
-    explicit QgsSettings( QObject *parent = 0 );
-    ~QgsSettings();
+    explicit QgsSettings( QObject *parent = nullptr );
+    ~QgsSettings() override;
 
-    /** Appends prefix to the current group.
+    /**
+     * Appends prefix to the current group.
      * The current group is automatically prepended to all keys specified to QSettings.
      * In addition, query functions such as childGroups(), childKeys(), and allKeys()
      * are based on the group. By default, no group is set.
      */
-    void beginGroup( const QString &prefix );
+    void beginGroup( const QString &prefix, QgsSettings::Section section = QgsSettings::NoSection );
     //! Resets the group to what it was before the corresponding beginGroup() call.
     void endGroup();
     //! Returns a list of all keys, including subkeys, that can be read using the QSettings object.
@@ -150,39 +160,45 @@ class CORE_EXPORT QgsSettings : public QObject
     QStringList childKeys() const;
     //! Returns a list of all key top-level groups that contain keys that can be read using the QSettings object.
     QStringList childGroups() const;
-    //! Return the path to the Global Settings QSettings storage file
+    //! Returns a list of all key top-level groups (same as childGroups) but only for groups defined in global settings.
+    QStringList globalChildGroups() const;
+    //! Returns the path to the Global Settings QSettings storage file
     static QString globalSettingsPath() { return sGlobalSettingsPath; }
-    //! Set the Global Settings QSettings storage file
-    static bool setGlobalSettingsPath( QString path );
+    //! Sets the Global Settings QSettings storage file
+    static bool setGlobalSettingsPath( const QString &path );
     //! Adds prefix to the current group and starts reading from an array. Returns the size of the array.
     int beginReadArray( const QString &prefix );
 
-    /** Adds prefix to the current group and starts writing an array of size size.
+    /**
+     * Adds prefix to the current group and starts writing an array of size size.
      * If size is -1 (the default), it is automatically determined based on the indexes of the entries written.
-     * @note This will completely shadow any existing array with the same name in the global settings
+     * \note This will completely shadow any existing array with the same name in the global settings
      */
     void beginWriteArray( const QString &prefix, int size = -1 );
     //! Closes the array that was started using beginReadArray() or beginWriteArray().
     void endArray();
 
-    /** Sets the current array index to i. Calls to functions such as setValue(), value(),
+    /**
+     * Sets the current array index to i. Calls to functions such as setValue(), value(),
      * remove(), and contains() will operate on the array entry at that index.
      */
     void setArrayIndex( int i );
 
-    /** Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
+    /**
+     * Sets the value of setting key to value. If the key already exists, the previous value is overwritten.
      * An optional Section argument can be used to set a value to a specific Section.
      */
-    void setValue( const QString &key, const QVariant &value, const QgsSettings::Section section = QgsSettings::NoSection );
+    void setValue( const QString &key, const QVariant &value, QgsSettings::Section section = QgsSettings::NoSection );
 
-    /** Returns the value for setting key. If the setting doesn't exist, it will be
+    /**
+     * Returns the value for setting key. If the setting doesn't exist, it will be
      * searched in the Global Settings and if not found, returns defaultValue.
      * If no default value is specified, a default QVariant is returned.
      * An optional Section argument can be used to get a value from a specific Section.
      */
 #ifndef SIP_RUN
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant(),
-                    const Section section = NoSection ) const;
+                    Section section = NoSection ) const;
 #else
     SIP_PYOBJECT value( const QString &key, const QVariant &defaultValue = QVariant(),
                         SIP_PYOBJECT type = 0,
@@ -203,23 +219,184 @@ class CORE_EXPORT QgsSettings : public QObject
     % End
 #endif
 
-    /** Returns true if there exists a setting called key; returns false otherwise.
+#ifndef SIP_RUN
+
+    /**
+     * Returns the setting value for a setting based on an enum.
+     * This forces the output to be a valid and existing entry of the enum.
+     * Hence if the setting value is incorrect, the given default value is returned.
+     * This tries first with setting as a string (as the enum) and then as an integer value.
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly
+     * \see setEnumValue
+     * \see flagValue
+     */
+    template <class T>
+    T enumValue( const QString &key, const T &defaultValue,
+                 const Section section = NoSection )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( !metaEnum.isValid() )
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+
+      T v;
+      bool ok = false;
+
+      if ( metaEnum.isValid() )
+      {
+        // read as string
+        QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
+      }
+      if ( !ok )
+      {
+        // if failed, try to read as int (old behavior)
+        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+        // then the method could be marked as const
+        v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+        if ( metaEnum.isValid() )
+        {
+          if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
+          {
+            v = defaultValue;
+          }
+          else
+          {
+            // found setting as an integer
+            // convert the setting to the new form (string)
+            setEnumValue( key, v, section );
+          }
+        }
+      }
+
+      return v;
+    }
+
+    /**
+     * Set the value of a setting based on an enum.
+     * The setting will be saved as string.
+     * \note The enum needs to be declared with Q_ENUM, and flags with Q_FLAG (not Q_FLAGS).
+     * \see enumValue
+     * \see setFlagValue
+     */
+    template <class T>
+    void setEnumValue( const QString &key, const T &value,
+                       const Section section = NoSection )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( metaEnum.isValid() )
+      {
+        setValue( key, metaEnum.valueToKey( value ), section );
+      }
+      else
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+    }
+
+    /**
+     * Returns the setting value for a setting based on a flag.
+     * This forces the output to be a valid and existing entry of the flag.
+     * Hence if the setting value is incorrect, the given default value is returned.
+     * This tries first with setting as a string (using a byte array) and then as an integer value.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \note for Python bindings, a custom implementation is achieved in Python directly.
+     * \see setFlagValue
+     * \see enumValue
+     */
+    template <class T>
+    T flagValue( const QString &key, const T &defaultValue,
+                 const Section section = NoSection )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( !metaEnum.isValid() )
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+
+      T v;
+      bool ok = false;
+
+      if ( metaEnum.isValid() )
+      {
+        // read as string
+        QByteArray ba = value( key, metaEnum.valueToKeys( defaultValue ) ).toString().toUtf8();
+        const char *vs = ba.data();
+        v = static_cast<T>( metaEnum.keysToValue( vs, &ok ) );
+      }
+      if ( !ok )
+      {
+        // if failed, try to read as int (old behavior)
+        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+        // then the method could be marked as const
+        v = T( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+        if ( metaEnum.isValid() )
+        {
+          if ( !ok || !metaEnum.valueToKeys( static_cast<int>( v ) ).size() )
+          {
+            v = defaultValue;
+          }
+          else
+          {
+            // found setting as an integer
+            // convert the setting to the new form (string)
+            setFlagValue( key, v, section );
+          }
+        }
+      }
+
+      return v;
+    }
+
+    /**
+     * Set the value of a setting based on a flaf.
+     * The setting will be saved as string.
+     * \note The flag needs to be declared with Q_FLAG (not Q_FLAGS).
+     * \see flagValue
+     * \see setEnumValue
+     */
+    template <class T>
+    void setFlagValue( const QString &key, const T &value,
+                       const Section section = NoSection )
+    {
+      QMetaEnum metaEnum = QMetaEnum::fromType<T>();
+      Q_ASSERT( metaEnum.isValid() );
+      if ( metaEnum.isValid() )
+      {
+        setValue( key, metaEnum.valueToKeys( value ), section );
+      }
+      else
+      {
+        QgsDebugMsg( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." );
+      }
+    }
+#endif
+
+    /**
+     * Returns true if there exists a setting called key; returns false otherwise.
      * If a group is set using beginGroup(), key is taken to be relative to that group.
      */
-    bool contains( const QString &key, const QgsSettings::Section section = QgsSettings::NoSection ) const;
+    bool contains( const QString &key, QgsSettings::Section section = QgsSettings::NoSection ) const;
     //! Returns the path where settings written using this QSettings object are stored.
     QString fileName() const;
 
-    /** Writes any unsaved changes to permanent storage, and reloads any settings that have been
+    /**
+     * Writes any unsaved changes to permanent storage, and reloads any settings that have been
      * changed in the meantime by another application.
      * This function is called automatically from QSettings's destructor and by the event
      * loop at regular intervals, so you normally don't need to call it yourself.
      */
     void sync();
-    //! Removes the setting key and any sub-settings of key.
-    void remove( const QString &key );
-    //! Return the sanitized and prefixed key
-    QString prefixedKey( const QString &key, const QgsSettings::Section section ) const;
+    //! Removes the setting key and any sub-settings of key in a section.
+    void remove( const QString &key, QgsSettings::Section section = QgsSettings::NoSection );
+    //! Returns the sanitized and prefixed key
+    QString prefixedKey( const QString &key, QgsSettings::Section section ) const;
     //! Removes all entries in the user settings
     void clear();
 
@@ -227,7 +404,7 @@ class CORE_EXPORT QgsSettings : public QObject
 
     static QString sGlobalSettingsPath;
     void init();
-    QString sanitizeKey( QString key ) const;
+    QString sanitizeKey( const QString &key ) const;
     QSettings *mUserSettings = nullptr;
     QSettings *mGlobalSettings = nullptr;
     bool mUsingGlobalArray = false;

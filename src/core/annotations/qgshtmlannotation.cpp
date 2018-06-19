@@ -61,7 +61,7 @@ void QgsHtmlAnnotation::setSourceFile( const QString &htmlFile )
   mHtmlFile = htmlFile;
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    mHtmlSource = QLatin1String( "" );
+    mHtmlSource.clear();
   }
   else
   {

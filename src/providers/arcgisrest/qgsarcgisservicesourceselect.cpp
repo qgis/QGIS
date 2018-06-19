@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 
+#include <QButtonGroup>
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QFileDialog>
@@ -36,14 +37,13 @@
 #include <QImageReader>
 #include "qgshelp.h"
 
-QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode ),
-  mServiceName( serviceName ),
-  mServiceType( serviceType ),
-  mBuildQueryButton( 0 ),
-  mImageEncodingGroup( 0 )
+QgsArcGisServiceSourceSelect::QgsArcGisServiceSourceSelect( const QString &serviceName, ServiceType serviceType, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+  , mServiceName( serviceName )
+  , mServiceType( serviceType )
 {
   setupUi( this );
+  connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisServiceSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisServiceSourceSelect::showHelp );
   setWindowTitle( QStringLiteral( "Add %1 Layer from a Server" ).arg( mServiceName ) );
@@ -112,7 +112,7 @@ QgsArcGisServiceSourceSelect::~QgsArcGisServiceSourceSelect()
 void QgsArcGisServiceSourceSelect::populateImageEncodings( const QStringList &availableEncodings )
 {
   QLayoutItem *item = nullptr;
-  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) != nullptr )
+  while ( ( item = gbImageEncoding->layout()->takeAt( 0 ) ) )
   {
     delete item->widget();
     delete item;
@@ -208,8 +208,7 @@ void QgsArcGisServiceSourceSelect::refresh()
 
 void QgsArcGisServiceSourceSelect::addEntryToServerList()
 {
-
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ) );
   nc.setWindowTitle( tr( "Create a New %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -221,7 +220,7 @@ void QgsArcGisServiceSourceSelect::addEntryToServerList()
 
 void QgsArcGisServiceSourceSelect::modifyEntryOfServerList()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-%1/" ).arg( mServiceName.toLower() ), cmbConnections->currentText() );
   nc.setWindowTitle( tr( "Modify %1 Connection" ).arg( mServiceName ) );
 
   if ( nc.exec() )
@@ -235,8 +234,8 @@ void QgsArcGisServiceSourceSelect::deleteEntryOfServerList()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
+  QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
+  if ( result == QMessageBox::Yes )
   {
     QgsOwsConnection::deleteConnection( mServiceName, cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
@@ -280,7 +279,7 @@ void QgsArcGisServiceSourceSelect::connectToServer()
     }
     else
     {
-      QMessageBox::information( 0, tr( "No Layers" ), tr( "The query returned no layers." ) );
+      QMessageBox::information( nullptr, tr( "No Layers" ), tr( "The query returned no layers." ) );
     }
   }
 
@@ -317,7 +316,9 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
   {
     try
     {
+      Q_NOWARN_DEPRECATED_PUSH
       extent = QgsCoordinateTransform( canvasCrs, pCrs ).transform( extent );
+      Q_NOWARN_DEPRECATED_POP
       QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
                    .arg( canvasCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
     }
@@ -354,7 +355,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
-    emit addLayer( uri, layerName );
+    addServiceLayer( uri, layerName );
   }
   accept();
 }
@@ -402,7 +403,7 @@ void QgsArcGisServiceSourceSelect::changeCrsFilter()
   }
 }
 
-void QgsArcGisServiceSourceSelect::on_cmbConnections_activated( int index )
+void QgsArcGisServiceSourceSelect::cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
   QgsOwsConnection::setSelectedConnection( mServiceName, cmbConnections->currentText() );

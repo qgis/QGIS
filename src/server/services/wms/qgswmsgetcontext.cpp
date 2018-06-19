@@ -67,8 +67,6 @@ namespace QgsWms
   {
     Q_UNUSED( version );
 
-    //QgsWmsConfigParser  *configParser = getConfigParser( serverIface );
-
     QDomDocument doc;
     QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
         QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
@@ -101,7 +99,7 @@ namespace QgsWms
                                           QgsServerInterface *serverIface, const QgsProject *project,
                                           const QgsServerRequest &request )
     {
-      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->fileInfo().baseName() );
+      parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
       // OWSContext General element
       QDomElement generalElem = doc.createElement( QStringLiteral( "General" ) );
@@ -278,7 +276,7 @@ namespace QgsWms
           // OWSContext Layer opacity is set to 1
           layerElem.setAttribute( QStringLiteral( "opacity" ), 1 );
 
-          QString wmsName =  l->name();
+          QString wmsName = l->name();
           if ( QgsServerProjectUtils::wmsUseLayerIds( *project ) )
           {
             wmsName = l->id();
@@ -407,7 +405,9 @@ namespace QgsWms
           // update combineBBox
           try
           {
+            Q_NOWARN_DEPRECATED_PUSH
             QgsCoordinateTransform t( l->crs(), project->crs() );
+            Q_NOWARN_DEPRECATED_POP
             QgsRectangle BBox = t.transformBoundingBox( l->extent() );
             if ( combinedBBox.isEmpty() )
             {

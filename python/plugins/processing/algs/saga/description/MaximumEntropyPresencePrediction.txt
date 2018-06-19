@@ -1,18 +1,18 @@
 Maximum Entropy Presence Prediction
 imagery_maxent
-ParameterVector|PRESENCE|Presence Data|-1|False
-ParameterMultipleInput|FEATURES_NUM|Numerical Features|3|True
-ParameterMultipleInput|FEATURES_CAT|Categorical Features|3|True
-OutputRaster|PREDICTION|Presence Prediction
-OutputRaster|PROBABILITY|Presence Probability
-ParameterNumber|BACKGROUND|Background Sample Density [Percent]| 0.000000| 100.000000| 1.000000
-ParameterSelection|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin| 0
-ParameterFile|YT_FILE_LOAD|Load from File...|False|False
-ParameterFile|YT_FILE_SAVE|Save to File...|False|False
-ParameterSelection|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2| 1
-ParameterNumber|YT_REGUL_VAL|Regularization Factor| 0.000000|None| 1.000000
-ParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
-ParameterNumber|DL_ALPHA|Alpha|None|None| 0.100000
-ParameterNumber|DL_THRESHOLD|Threshold| 0.000000|None| 0.000000
-ParameterNumber|DL_ITERATIONS|Maximum Iterations| 1|None| 100
-ParameterNumber|NUM_CLASSES|Number of Numeric Value Classes| 1|None| 32
+QgsProcessingParameterFeatureSource|PRESENCE|Presence Data|-1|None|False
+QgsProcessingParameterMultipleLayers|FEATURES_NUM|Numerical Features|3|None|True
+QgsProcessingParameterMultipleLayers|FEATURES_CAT|Categorical Features|3|None|True
+QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
+QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
+QgsProcessingParameterNumber|BACKGROUND|Background Sample Density [Percent]|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|100.000000
+QgsProcessingParameterEnum|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin|False|0
+QgsProcessingParameterFile|YT_FILE_LOAD|Load from File...|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterFile|YT_FILE_SAVE|Save to File...|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterEnum|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2|False|1
+QgsProcessingParameterNumber|YT_REGUL_VAL|Regularization Factor|QgsProcessingParameterNumber.Double|1.000000|False|0.000000|None
+QgsProcessingParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
+QgsProcessingParameterNumber|DL_ALPHA|Alpha|QgsProcessingParameterNumber.Double|0.100000|False|None|None
+QgsProcessingParameterNumber|DL_THRESHOLD|Threshold|QgsProcessingParameterNumber.Double|0.000000|False|0.000000|None
+QgsProcessingParameterNumber|DL_ITERATIONS|Maximum Iterations|QgsProcessingParameterNumber.Integer|100|False|1|None
+QgsProcessingParameterNumber|NUM_CLASSES|Number of Numeric Value Classes|QgsProcessingParameterNumber.Integer|32|False|1|None

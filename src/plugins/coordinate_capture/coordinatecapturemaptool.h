@@ -34,19 +34,17 @@ class CoordinateCaptureMapTool : public QgsMapTool
   public:
     explicit CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas );
 
-    ~CoordinateCaptureMapTool();
-
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate() override;
+    void deactivate() override;
 
   public slots:
 

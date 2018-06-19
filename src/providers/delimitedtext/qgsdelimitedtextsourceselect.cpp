@@ -36,10 +36,7 @@ const int MAX_SAMPLE_LENGTH = 200;
 QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
   , mFile( new QgsDelimitedTextFile() )
-  , mExampleRowCount( 20 )
-  , mBadRowCount( 0 )
   , mPluginKey( QStringLiteral( "/Plugin-DelimitedText" ) )
-  , mLastFileType( QLatin1String( "" ) )
 {
 
   setupUi( this );
@@ -69,7 +66,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   loadSettings();
   updateFieldsAndEnable();
 
-  connect( txtFilePath, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
   connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
   connect( cmbEncoding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
@@ -95,6 +91,13 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( cbxPointIsComma, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxXyDms, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+
+  connect( crsGeometry, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+
+  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
+  mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
+  mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]() { updateFileName(); } );
 }
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
@@ -102,11 +105,6 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   QgsSettings settings;
   settings.setValue( mPluginKey + "/geometry", saveGeometry() );
   delete mFile;
-}
-
-void QgsDelimitedTextSourceSelect::on_btnBrowseForFile_clicked()
-{
-  getOpenFileName();
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()
@@ -156,6 +154,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
     url.addQueryItem( QStringLiteral( "xyDms" ), QStringLiteral( "yes" ) );
   }
 
+  bool haveGeom = true;
   if ( geomTypeXY->isChecked() )
   {
     if ( !cmbXField->currentText().isEmpty() && !cmbYField->currentText().isEmpty() )
@@ -180,7 +179,17 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
   }
   else
   {
+    haveGeom = false;
     url.addQueryItem( QStringLiteral( "geomType" ), QStringLiteral( "none" ) );
+  }
+  if ( haveGeom )
+  {
+    QgsCoordinateReferenceSystem crs = crsGeometry->crs();
+    if ( crs.isValid() )
+    {
+      url.addQueryItem( QStringLiteral( "crs" ), crs.authid() );
+    }
+
   }
 
   if ( ! geomTypeNone->isChecked() ) url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? "yes" : "no" );
@@ -189,11 +198,17 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   // store the settings
   saveSettings();
-  saveSettingsForFile( txtFilePath->text() );
+  saveSettingsForFile( mFileWidget->filePath() );
 
 
   // add the layer to the map
-  emit addVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text() );
+  emit addVectorLayer( QString::fromLatin1( url.toEncoded() ), txtLayerName->text() );
+
+  // clear the file and layer name show something has happened, ready for another file
+
+  mFileWidget->setFilePath( QString() );
+  txtLayerName->setText( QString() );
+
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {
     accept();
@@ -203,7 +218,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
 QString QgsDelimitedTextSourceSelect::selectedChars()
 {
-  QString chars = QLatin1String( "" );
+  QString chars;
   if ( cbxDelimComma->isChecked() )
     chars.append( ',' );
   if ( cbxDelimSpace->isChecked() )
@@ -284,6 +299,12 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
     else geomTypeNone->setChecked( true );
     cbxXyDms->setChecked( settings.value( key + "/xyDms", "false" ) == "true" );
     swGeomType->setCurrentIndex( bgGeomType->checkedId() );
+    QString authid = settings.value( key + "/crs", "" ).toString();
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
+    if ( crs.isValid() )
+    {
+      crsGeometry->setCrs( crs );
+    }
   }
 
 }
@@ -321,6 +342,10 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
     if ( geomTypeWKT->isChecked() ) geomColumnType = QStringLiteral( "wkt" );
     settings.setValue( key + "/geomColumnType", geomColumnType );
     settings.setValue( key + "/xyDms", cbxXyDms->isChecked() ? "true" : "false" );
+    if ( crsGeometry->crs().isValid() )
+    {
+      settings.setValue( key + "/crs", crsGeometry->crs().authid() );
+    }
   }
 
 }
@@ -345,7 +370,7 @@ void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename 
 
 bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 {
-  mFile->setFileName( txtFilePath->text() );
+  mFile->setFileName( mFileWidget->filePath() );
   mFile->setEncoding( cmbEncoding->currentText() );
   if ( delimiterChars->isChecked() )
   {
@@ -438,7 +463,8 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
       QString value = i < nv ? values[i] : QLatin1String( "" );
-      if ( value.length() > MAX_SAMPLE_LENGTH ) value = value.mid( 0, MAX_SAMPLE_LENGTH ) + "…";
+      if ( value.length() > MAX_SAMPLE_LENGTH )
+        value = value.mid( 0, MAX_SAMPLE_LENGTH ) + QChar( 0x2026 );
       QTableWidgetItem *item = new QTableWidgetItem( value );
       tblSample->setItem( counter - 1, i, item );
       if ( ! value.isEmpty() )
@@ -542,11 +568,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   bool haveFields = fieldNo > 0;
 
-  bool isXY = cmbWktField->currentIndex() < 0 ||
-              ( geomTypeXY->isChecked() &&
-                ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
-  geomTypeXY->setChecked( isXY );
-  geomTypeWKT->setChecked( ! isXY );
+  if ( !geomTypeNone->isChecked() )
+  {
+    bool isXY = cmbWktField->currentIndex() < 0 ||
+                ( geomTypeXY->isChecked() &&
+                  ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
+    geomTypeXY->setChecked( isXY );
+    geomTypeWKT->setChecked( ! isXY );
+  }
   swGeomType->setCurrentIndex( bgGeomType->checkedId() );
 
   if ( haveFields )
@@ -611,37 +640,20 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
   return indexY >= 0;
 }
 
-void QgsDelimitedTextSourceSelect::getOpenFileName()
-{
-  // Get a file to process, starting at the current directory
-  // Set initial dir to last used
-  QgsSettings settings;
-  QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
-
-  QString s = QFileDialog::getOpenFileName(
-                this,
-                tr( "Choose a delimited text file to open" ),
-                settings.value( mPluginKey + "/text_path", QDir::homePath() ).toString(),
-                tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;"
-                + tr( "All files" ) + " (* *.*)",
-                &selectedFilter
-              );
-  // set path
-  if ( s.isNull() ) return;
-  settings.setValue( mPluginKey + "/file_filter", selectedFilter );
-  txtFilePath->setText( s );
-}
-
 void QgsDelimitedTextSourceSelect::updateFileName()
 {
+  QgsSettings settings;
+  settings.setValue( mPluginKey + "/file_filter", mFileWidget->selectedFilter() );
+
   // put a default layer name in the text entry
-  QString filename = txtFilePath->text();
+  QString filename = mFileWidget->filePath();
   QFileInfo finfo( filename );
   if ( finfo.exists() )
   {
     QgsSettings settings;
     settings.setValue( mPluginKey + "/text_path", finfo.path() );
   }
+
   txtLayerName->setText( finfo.completeBaseName() );
   loadSettingsForFile( filename );
   updateFieldsAndEnable();
@@ -660,13 +672,13 @@ bool QgsDelimitedTextSourceSelect::validate()
   QString message( QLatin1String( "" ) );
   bool enabled = false;
 
-  if ( txtFilePath->text().trimmed().isEmpty() )
+  if ( mFileWidget->filePath().trimmed().isEmpty() )
   {
     message = tr( "Please select an input file" );
   }
-  else if ( ! QFileInfo::exists( txtFilePath->text() ) )
+  else if ( ! QFileInfo::exists( mFileWidget->filePath() ) )
   {
-    message = tr( "File %1 does not exist" ).arg( txtFilePath->text() );
+    message = tr( "File %1 does not exist" ).arg( mFileWidget->filePath() );
   }
   else if ( txtLayerName->text().isEmpty() )
   {
@@ -719,6 +731,10 @@ bool QgsDelimitedTextSourceSelect::validate()
   else if ( geomTypeWKT->isChecked() && cmbWktField->currentText().isEmpty() )
   {
     message = tr( "The WKT field name must be selected" );
+  }
+  else if ( ! geomTypeNone->isChecked() && ! crsGeometry->crs().isValid() )
+  {
+    message = tr( "The CRS must be selected" );
   }
   else
   {

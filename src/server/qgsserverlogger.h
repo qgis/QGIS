@@ -35,23 +35,23 @@ class QgsServerLogger: public QObject
   public:
 
     /**
-     * Get the singleton instance
+     * Gets the singleton instance
      */
     static QgsServerLogger *instance();
 
     /**
-     * Get the current log level
+     * Gets the current log level
      * \returns the log level
      * \since QGIS 3.0
      */
-    QgsMessageLog::MessageLevel logLevel() const { return mLogLevel; }
+    Qgis::MessageLevel logLevel() const { return mLogLevel; }
 
     /**
       * Set the current log level
       * \param level the log level
       * \since QGIS 3.0
       */
-    void setLogLevel( QgsMessageLog::MessageLevel level );
+    void setLogLevel( Qgis::MessageLevel level );
 
     /**
       * Set the current log file
@@ -67,7 +67,7 @@ class QgsServerLogger: public QObject
      * \param tag tag of the message
      * \param level log level of the message
      */
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
   protected:
     QgsServerLogger();
@@ -77,7 +77,7 @@ class QgsServerLogger: public QObject
 
     QFile mLogFile;
     QTextStream mTextStream;
-    QgsMessageLog::MessageLevel mLogLevel;
+    Qgis::MessageLevel mLogLevel = Qgis::None;
 };
 
 #endif // QGSSERVERLOGGER_H

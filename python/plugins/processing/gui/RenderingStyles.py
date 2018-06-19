@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -30,7 +29,7 @@ import os
 from processing.tools.system import userFolder
 
 
-class RenderingStyles(object):
+class RenderingStyles:
 
     styles = {}
 

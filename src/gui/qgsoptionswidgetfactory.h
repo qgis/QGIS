@@ -19,8 +19,10 @@
 #include <QListWidgetItem>
 #include "qgis_gui.h"
 #include "qgis.h"
+#include "qgsoptionsdialoghighlightwidget.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsOptionsPageWidget
  * Base class for widgets for pages included in the options dialog.
  * \since QGIS 3.0
@@ -38,6 +40,26 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
       : QWidget( parent )
     {}
 
+    /**
+     * Returns the optional help key for the options page. The default implementation
+     * returns an empty string.
+     *
+     * If a non-empty string is returned by this method, it will be used as the help key
+     * retrieved when the "help" button is clicked while this options page is active.
+     *
+     * If an empty string is returned by this method the default QGIS options
+     * help will be retrieved.
+     */
+    virtual QString helpKey() const { return QString(); }
+
+
+    /**
+     * Returns the registered highlight widgets used to search and highlight text in
+     * options dialogs.
+     */
+    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() {return mHighlighWidgets;} SIP_SKIP
+
+
   public slots:
 
     /**
@@ -46,9 +68,26 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      */
     virtual void apply() = 0;
 
+  protected:
+
+    /**
+     * Register a highlight widget to be used to search and highlight text in
+     * options dialogs. This can be used to provide a custom implementation of
+     * QgsOptionsDialogHighlightWidget.
+     */
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget )
+    {
+      mHighlighWidgets.insert( highlightWidget->widget(), highlightWidget );
+    }
+
+  private:
+    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlighWidgets;
+
+
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsOptionsWidgetFactory
  * A factory class for creating custom options pages.
  * \since QGIS 3.0
@@ -62,14 +101,11 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
   public:
 
     //! Constructor
-    QgsOptionsWidgetFactory()
-      : QObject()
-    {}
+    QgsOptionsWidgetFactory() = default;
 
     //! Constructor
     QgsOptionsWidgetFactory( const QString &title, const QIcon &icon )
-      : QObject()
-      , mTitle( title )
+      : mTitle( title )
       , mIcon( icon )
     {}
 

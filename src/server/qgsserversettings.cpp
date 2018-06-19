@@ -71,7 +71,7 @@ void QgsServerSettings::initSettings()
                               "Log level",
                               "",
                               QVariant::Int,
-                              QVariant( QgsMessageLog::NONE ),
+                              QVariant( Qgis::None ),
                               QVariant()
                             };
   mSettings[ sLogLevel.envVar ] = sLogLevel;
@@ -243,20 +243,20 @@ void QgsServerSettings::logSummary() const
   const QMetaEnum metaEnumSrc( QMetaEnum::fromType<QgsServerSettingsEnv::Source>() );
   const QMetaEnum metaEnumEnv( QMetaEnum::fromType<QgsServerSettingsEnv::EnvVar>() );
 
-  QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( "Qgis Server Settings: ", "Server", Qgis::Info );
   for ( Setting s : mSettings )
   {
     const QString src = metaEnumSrc.valueToKey( s.src );
     const QString var = metaEnumEnv.valueToKey( s.envVar );
 
     const QString msg = "  - " + var + " / '" + s.iniKey + "' (" + s.descr + "): '" + value( s.envVar ).toString() + "' (read from " + src + ")";
-    QgsMessageLog::logMessage( msg, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
   }
 
   if ( ! iniFile().isEmpty() )
   {
     const QString msg = "Ini file used to initialize settings: " + iniFile();
-    QgsMessageLog::logMessage( msg, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
   }
 }
 
@@ -281,9 +281,9 @@ QString QgsServerSettings::logFile() const
   return value( QgsServerSettingsEnv::QGIS_SERVER_LOG_FILE ).toString();
 }
 
-QgsMessageLog::MessageLevel QgsServerSettings::logLevel() const
+Qgis::MessageLevel QgsServerSettings::logLevel() const
 {
-  return static_cast<QgsMessageLog::MessageLevel>( value( QgsServerSettingsEnv::QGIS_SERVER_LOG_LEVEL ).toInt() );
+  return static_cast<Qgis::MessageLevel>( value( QgsServerSettingsEnv::QGIS_SERVER_LOG_LEVEL ).toInt() );
 }
 
 int QgsServerSettings::maxCacheLayers() const

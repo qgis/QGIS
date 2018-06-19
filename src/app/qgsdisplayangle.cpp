@@ -25,13 +25,8 @@
 QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
   , mTool( tool )
-  , mValue( 0.0 )
 {
   setupUi( this );
-}
-
-QgsDisplayAngle::~QgsDisplayAngle()
-{
 }
 
 void QgsDisplayAngle::setValueInRadians( double value )

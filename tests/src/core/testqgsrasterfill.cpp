@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster fill types.
  */
 class TestQgsRasterFill : public QObject
@@ -42,13 +43,7 @@ class TestQgsRasterFill : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRasterFill()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mRasterFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsRasterFill() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,7 +58,7 @@ class TestQgsRasterFill : public QObject
     void width();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

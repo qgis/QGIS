@@ -31,10 +31,6 @@ QgisAppStyleSheet::QgisAppStyleSheet( QObject *parent )
   setActiveValues();
 }
 
-QgisAppStyleSheet::~QgisAppStyleSheet()
-{
-}
-
 QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 {
   QMap<QString, QVariant> opts;
@@ -83,12 +79,12 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
   QgsDebugMsg( QString( "fontFamily: %1" ).arg( fontFamily ) );
   opts.insert( QStringLiteral( "fontFamily" ), QVariant( fontFamily ) );
 
-  bool gbxCustom = ( mMacStyle ? true : false );
+  bool gbxCustom = ( mMacStyle );
   opts.insert( QStringLiteral( "groupBoxCustom" ), settings.value( QStringLiteral( "groupBoxCustom" ), QVariant( gbxCustom ) ) );
 
   settings.endGroup(); // "qgis/stylesheet"
 
-  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ) );
+  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/iconSize" ), QGIS_ICON_SIZE ) );
 
   return opts;
 }
@@ -107,6 +103,21 @@ void QgisAppStyleSheet::buildStyleSheet( const QMap<QString, QVariant> &opts )
   if ( fontFamily.isEmpty() ) { return; }
 
   ss += QStringLiteral( "* { font: %1pt \"%2\"} " ).arg( fontSize, fontFamily );
+
+#if QT_VERSION >= 0x050900
+  // Fix for macOS Qt 5.9+, where close boxes do not show on document mode tab bar tabs
+  // See: https://bugreports.qt.io/browse/QTBUG-61092
+  //      https://bugreports.qt.io/browse/QTBUG-61742
+  // Setting any stylesheet makes the default close button disappear.
+  // Specifically setting a custom close button temporarily works around issue.
+  // TODO: Remove when regression is fixed (Qt 5.9.3 or 5.10?); though hard to tell,
+  //       since we are overriding the default close button image now.
+  if ( mMacStyle )
+  {
+    ss += QLatin1String( "QTabBar::close-button{ image: url(:/images/themes/default/mIconCloseTab.svg); }" );
+    ss += QLatin1String( "QTabBar::close-button:hover{ image: url(:/images/themes/default/mIconCloseTabHover.svg); }" );
+  }
+#endif
 
   // QGroupBox and QgsCollapsibleGroupBox, mostly for Ubuntu and Mac
   bool gbxCustom = opts.value( QStringLiteral( "groupBoxCustom" ) ).toBool();
@@ -198,16 +209,16 @@ void QgisAppStyleSheet::setActiveValues()
   mStyle = qApp->style()->objectName(); // active style name (lowercase)
   QgsDebugMsg( QString( "Style name: %1" ).arg( mStyle ) );
 
-  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ) ? true : false; // motif
-  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ) ? true : false; // cde
-  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ) ? true : false; // plastique
-  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ) ? true : false; // cleanlooks
-  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ) ? true : false; // gtk+
-  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ) ? true : false; // windows
-  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ) ? true : false; // windowsxp
-  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ) ? true : false; // windowsvista
-  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ) ? true : false; // macintosh (aqua)
-  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ) ? true : false; // oxygen
+  mMotifStyle = mStyle.contains( QLatin1String( "motif" ) ); // motif
+  mCdeStyle = mStyle.contains( QLatin1String( "cde" ) ); // cde
+  mPlastqStyle = mStyle.contains( QLatin1String( "plastique" ) ); // plastique
+  mCleanLkStyle = mStyle.contains( QLatin1String( "cleanlooks" ) ); // cleanlooks
+  mGtkStyle = mStyle.contains( QLatin1String( "gtk" ) ); // gtk+
+  mWinStyle = mStyle.contains( QLatin1String( "windows" ) ); // windows
+  mWinXpStyle = mStyle.contains( QLatin1String( "windowsxp" ) ); // windowsxp
+  mWinVistaStyle = mStyle.contains( QLatin1String( "windowsvista" ) ); // windowsvista
+  mMacStyle = mStyle.contains( QLatin1String( "macintosh" ) ); // macintosh (aqua)
+  mOxyStyle = mStyle.contains( QLatin1String( "oxygen" ) ); // oxygen
 
   mDefaultFont = qApp->font(); // save before it is changed in any way
 

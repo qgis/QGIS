@@ -32,7 +32,6 @@ from qgis.core import (QgsRectangle,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterBand,
                        QgsProcessingParameterFileDestination,
-                       QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -54,6 +53,9 @@ class RasterLayerStatistics(QgisAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
+    def groupId(self):
+        return 'rasteranalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -65,7 +67,6 @@ class RasterLayerStatistics(QgisAlgorithm):
                                                      1,
                                                      self.INPUT))
         self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT_HTML_FILE, self.tr('Statistics'), self.tr('HTML files (*.html)'), None, True))
-        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
 
         self.addOutput(QgsProcessingOutputNumber(self.MIN, self.tr('Minimum value')))
         self.addOutput(QgsProcessingOutputNumber(self.MAX, self.tr('Maximum value')))

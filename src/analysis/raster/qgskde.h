@@ -17,6 +17,7 @@
 #define QGSKDE_H
 
 #include "qgsrectangle.h"
+#include "qgsogrutils.h"
 #include <QString>
 
 // GDAL includes
@@ -100,6 +101,11 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
      */
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );
 
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other ) = delete;
+    //! QgsKernelDensityEstimation cannot be copied.
+    QgsKernelDensityEstimation &operator=( const QgsKernelDensityEstimation &other ) = delete;
+
     /**
      * Runs the KDE calculation across the whole layer at once. Either call this method, or manually
      * call run(), addFeature() and finalise() separately.
@@ -131,17 +137,17 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
   private:
 
     //! Calculate the value given to a point width a given distance for a specified kernel shape
-    double calculateKernelValue( const double distance, const double bandwidth, const KernelShape shape, const OutputValues outputType ) const;
+    double calculateKernelValue( double distance, double bandwidth, KernelShape shape, OutputValues outputType ) const;
     //! Uniform kernel function
-    double uniformKernel( const double distance, const double bandwidth, const OutputValues outputType ) const;
+    double uniformKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Quartic kernel function
-    double quarticKernel( const double distance, const double bandwidth, const OutputValues outputType ) const;
+    double quarticKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Triweight kernel function
-    double triweightKernel( const double distance, const double bandwidth, const OutputValues outputType ) const;
+    double triweightKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Epanechnikov kernel function
-    double epanechnikovKernel( const double distance, const double bandwidth, const OutputValues outputType ) const;
+    double epanechnikovKernel( double distance, double bandwidth, OutputValues outputType ) const;
     //! Triangular kernel function
-    double triangularKernel( const double distance, const double bandwidth, const OutputValues outputType ) const;
+    double triangularKernel( double distance, double bandwidth, OutputValues outputType ) const;
 
     QgsRectangle calculateBounds() const;
 
@@ -162,12 +168,16 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
 
     int mBufferSize;
 
-    GDALDatasetH mDatasetH;
+    gdal::dataset_unique_ptr mDatasetH;
     GDALRasterBandH mRasterBandH;
 
     //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
     int radiusSizeInPixels( double radius ) const;
+
+#ifdef SIP_RUN
+    QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
+#endif
 };
 
 

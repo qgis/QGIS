@@ -1,9 +1,9 @@
 Function Fit
 table_calculus
-ParameterTable|SOURCE|Source|False
-ParameterTable|YFIELD|y - Values|False
-ParameterSelection|USE_X|Use x -Values|[0] No;[1] Yes| 0
-ParameterTable|XFIELD|x - Values|False
-ParameterString|FORMEL|Formula
-ParameterNumber|ITER|Iterationen| 1|None| 1000
-ParameterNumber|LAMDA|Max Lamda| 1.000000|None| 10000.000000
+QgsProcessingParameterFeatureSource|SOURCE|Source|5|None|False
+QgsProcessingParameterFeatureSource|YFIELD|y - Values|5|None|False
+QgsProcessingParameterEnum|USE_X|Use x -Values|[0] No;[1] Yes|False|0
+QgsProcessingParameterFeatureSource|XFIELD|x - Values|5|None|False
+QgsProcessingParameterString|FORMEL|Formula
+QgsProcessingParameterNumber|ITER|Iterationen|QgsProcessingParameterNumber.Integer|1000|False|1|None
+QgsProcessingParameterNumber|LAMDA|Max Lamda|QgsProcessingParameterNumber.Double|10000.000000|False|1.000000|None

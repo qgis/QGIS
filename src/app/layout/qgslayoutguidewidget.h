@@ -62,18 +62,12 @@ class QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
 
   public:
 
-    QgsLayoutGuidePositionDelegate( QgsLayout *layout, QAbstractItemModel *model );
+    QgsLayoutGuidePositionDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
-    void setModelData( const QModelIndex &index, const QVariant &value, int role ) const;
-
-  private:
-
-    QgsLayout *mLayout = nullptr;
-    QAbstractItemModel *mModel = nullptr;
 };
 
 class QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
@@ -82,19 +76,12 @@ class QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
 
   public:
 
-    QgsLayoutGuideUnitDelegate( QgsLayout *layout, QAbstractItemModel *model );
+    QgsLayoutGuideUnitDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
-    void setModelData( const QModelIndex &index, const QVariant &value, int role ) const;
-
-  private:
-
-    QgsLayout *mLayout = nullptr;
-
-    QAbstractItemModel *mModel = nullptr;
 };
 
 #endif // QGSLAYOUTGUIDEWIDGET_H

@@ -38,7 +38,8 @@ class QTimer;
 
 class QgsMessageBarItem;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A bar for displaying non-blocking messages to the user.
  */
 class GUI_EXPORT QgsMessageBar: public QFrame
@@ -46,15 +47,9 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     Q_OBJECT
 
   public:
-    enum MessageLevel
-    {
-      INFO = 0,
-      WARNING = 1,
-      CRITICAL = 2,
-      SUCCESS = 3
-    };
 
-    QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsMessageBar
+    QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Display a message item on the bar after hiding the currently visible one
@@ -65,15 +60,17 @@ class GUI_EXPORT QgsMessageBar: public QFrame
      */
     void pushItem( QgsMessageBarItem *item SIP_TRANSFER );
 
-    /** Display a widget as a message on the bar after hiding the currently visible one
+    /**
+     * Display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * \param widget message widget to display
-     * \param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
+     * \param level is Qgis::Info, Warning, Critical or Success
      * \param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
-    QgsMessageBarItem *pushWidget( QWidget *widget SIP_TRANSFER, MessageLevel level = INFO, int duration = 0 );
+    QgsMessageBarItem *pushWidget( QWidget *widget SIP_TRANSFER, Qgis::MessageLevel level = Qgis::Info, int duration = 0 );
 
-    /** Remove the passed widget from the bar (if previously added),
+    /**
+     * Remove the passed widget from the bar (if previously added),
      *  then display the next one in the stack if any or hide the bar
      *  \param item item to remove
      *  \returns true if the widget was removed, false otherwise
@@ -88,9 +85,12 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr ) SIP_FACTORY;
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString(), text, level, duration ); }
+    void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 ) { pushMessage( QString(), text, level, duration ); }
     //! convenience method for pushing a message with title to the bar
-    void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 5 );
+    void pushMessage( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
+
+    //! convenience method for pushing a message to the bar with a detail text which be shown when pressing a "more" button
+    void pushMessage( const QString &title, const QString &text, const QString &showMore, Qgis::MessageLevel level = Qgis::Info, int duration = 5 );
 
     QgsMessageBarItem *currentItem() { return mCurrentItem; }
 
@@ -103,13 +103,15 @@ class GUI_EXPORT QgsMessageBar: public QFrame
 
   public slots:
 
-    /** Remove the currently displayed widget from the bar and
+    /**
+     * Remove the currently displayed widget from the bar and
      *  display the next in the stack if any or hide the bar.
      *  \returns true if the widget was removed, false otherwise
      */
     bool popWidget();
 
-    /** Remove all items from the bar's widget list
+    /**
+     * Remove all items from the bar's widget list
      *  \returns true if all items were removed, false otherwise
      */
     bool clearWidgets();

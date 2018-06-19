@@ -1,0 +1,84 @@
+<Composer>
+ <Composition snapGridOffsetY="0" numPages="1" name="composer title" printAsRaster="0" snapGridOffsetX="0" snapGridResolution="10" alignmentSnap="1" resizeToContentsMarginTop="0" paperHeight="210" paperWidth="297" generateWorldFile="0" worldFileMap="" resizeToContentsMarginRight="0" smartGuides="1" resizeToContentsMarginBottom="0" snapTolerancePixels="5" guidesVisible="1" resizeToContentsMarginLeft="0" showPages="1" printResolution="305" snapping="0" gridVisible="0">
+  <symbol type="fill" clip_to_extent="1" name="" alpha="1">
+   <layer pass="0" enabled="1" locked="0" class="SimpleFill">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="241,244,199,255" k="color"/>
+    <prop v="bevel" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="175,179,138,255" k="outline_color"/>
+    <prop v="solid" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" value="" name="name"/>
+      <Option name="properties"/>
+      <Option type="QString" value="collection" name="type"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <ComposerScaleBar numUnitsPerSegment="250000" labelBarSpace="5" boxContentSpace="4" mapId="0" maxBarWidth="150" numSegments="6" segmentSizeMode="0" numSegmentsLeft="3" unitType="meters" lineJoinStyle="round" style="Double Box" alignment="1" numMapUnitsPerScaleBarUnit="2000" outlineWidth="0.4" minBarWidth="50" unitLabel="hh" lineCapStyle="square" height="3" segmentMillimeters="5.64513">
+   <scaleBarFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+   <fillColor blue="28" green="26" red="227" alpha="255"/>
+   <fillColor2 blue="111" green="191" red="253" alpha="255"/>
+   <strokeColor blue="0" green="127" red="255" alpha="255"/>
+   <textColor blue="232" green="98" red="226" alpha="255"/>
+   <ComposerItem y="184.506" excludeFromExports="0" frame="false" background="false" uuid="{2988dc5e-ea88-428f-93dd-e6aaf719dc8e}" lastValidViewScaleFactor="-1" zValue="7" frameJoinStyle="miter" id="" positionLock="false" width="62.9878" positionMode="0" itemRotation="0" page="1" outlineWidth="0.3" blendMode="0" pagey="184.506" x="140.608" pagex="140.608" visibility="1" opacity="1" height="20.2">
+    <FrameColor blue="0" green="0" red="0" alpha="255"/>
+    <BackgroundColor blue="255" green="255" red="255" alpha="255"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" value="" name="name"/>
+      <Option name="properties"/>
+      <Option type="QString" value="collection" name="type"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </ComposerItem>
+  </ComposerScaleBar>
+  <dataDefinedProperties>
+   <Option type="Map">
+    <Option type="QString" value="" name="name"/>
+    <Option type="Map" name="properties">
+     <Option type="Map" name="dataDefinedHeight">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="28" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedMapScale">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="24126145*1.1" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedPositionX">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="200" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedPositionY">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="70" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedSource">
+      <Option type="bool" value="false" name="active"/>
+      <Option type="QString" value="" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+     <Option type="Map" name="dataDefinedWidth">
+      <Option type="bool" value="true" name="active"/>
+      <Option type="QString" value="24" name="expression"/>
+      <Option type="int" value="3" name="type"/>
+     </Option>
+    </Option>
+    <Option type="QString" value="collection" name="type"/>
+   </Option>
+  </dataDefinedProperties>
+  <customproperties/>
+ </Composition>
+</Composer>

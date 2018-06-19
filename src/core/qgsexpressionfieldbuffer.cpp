@@ -19,9 +19,6 @@
 
 #include "qgsvectorlayer.h"
 
-QgsExpressionFieldBuffer::QgsExpressionFieldBuffer()
-{
-}
 
 void QgsExpressionFieldBuffer::addExpression( const QString &exp, const QgsField &fld )
 {
@@ -84,7 +81,7 @@ void QgsExpressionFieldBuffer::readXml( const QDomNode &layerNode )
       int precision = field.attribute( QStringLiteral( "precision" ) ).toInt();
       int length = field.attribute( QStringLiteral( "length" ) ).toInt();
       QVariant::Type type = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "type" ) ).toInt() );
-      QVariant::Type subType = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "subType" ), 0 ).toInt() );
+      QVariant::Type subType = static_cast< QVariant::Type >( field.attribute( QStringLiteral( "subType" ), QStringLiteral( "0" ) ).toInt() );
       QString typeName = field.attribute( QStringLiteral( "typeName" ) );
 
       mExpressions.append( ExpressionField( exp, QgsField( name, type, typeName, length, precision, comment, subType ) ) );

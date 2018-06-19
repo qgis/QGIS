@@ -29,7 +29,8 @@
 #include <QUrl>
 #include <QVariant>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QWebFrame class is a collection of stubs to mimic the API of a QWebFrame on systems
  * where QtWebkit is not available.
  */
@@ -39,7 +40,7 @@ class CORE_EXPORT QWebFrame : public QObject
     Q_OBJECT
 
   public:
-    QWebFrame( QObject *parent = 0 )
+    QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
     {
 

@@ -38,11 +38,7 @@ class QgsPropertyPrivate : public QSharedData
 {
   public:
 
-    QgsPropertyPrivate()
-      : type( 0 )
-      , active( true )
-      , transformer( nullptr )
-    {}
+    QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
       : QSharedData( other )
@@ -68,7 +64,7 @@ class QgsPropertyPrivate : public QSharedData
     //! Stores whether the property is currently active
     bool active = true;
 
-    //! Optional transfomer
+    //! Optional transformer
     QgsPropertyTransformer *transformer = nullptr;
 
     // StaticData

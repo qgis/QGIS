@@ -30,7 +30,10 @@ import psycopg2.extensions  # For isolation levels
 import re
 import os
 
-from qgis.core import QgsDataSourceUri, QgsCredentials, QgsSettings
+from qgis.core import (QgsProcessingException,
+                       QgsDataSourceUri,
+                       QgsCredentials,
+                       QgsSettings)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -44,7 +47,7 @@ def uri_from_name(conn_name):
     settings.beginGroup(u"/PostgreSQL/connections/%s" % conn_name)
 
     if not settings.contains("database"):  # non-existent entry?
-        raise DbError(QCoreApplication.translate("PostGIS", 'There is no defined database connection "{0}".').format(conn_name))
+        raise QgsProcessingException(QCoreApplication.translate("PostGIS", 'There is no defined database connection "{0}".').format(conn_name))
 
     uri = QgsDataSourceUri()
 
@@ -52,7 +55,10 @@ def uri_from_name(conn_name):
     service, host, port, database, username, password, authcfg = [settings.value(x, "", type=str) for x in settingsList]
 
     useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-    sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+    try:
+        sslmode = settings.value("sslmode", QgsDataSourceUri.SslPrefer, type=int)
+    except TypeError:
+        sslmode = QgsDataSourceUri.SslPrefer
 
     settings.endGroup()
 
@@ -126,19 +132,6 @@ class TableIndex(object):
         self.columns = list(map(int, columns.split(' ')))
 
 
-class DbError(Exception):
-
-    def __init__(self, message, query=None):
-        self.message = message
-        self.query = query
-
-    def __str__(self):
-        text = "MESSAGE: {}".format(self.message)
-        if self.query:
-            text = "{}\nQUERY: {}".format(text, self.query)
-        return text
-
-
 class TableField(object):
 
     def __init__(self, name, data_type, is_null=None, default=None,
@@ -207,7 +200,7 @@ class GeoDB(object):
                 break
             except psycopg2.OperationalError as e:
                 if i == 3:
-                    raise DbError(str(e))
+                    raise QgsProcessingException(str(e))
 
                 err = str(e)
                 user = self.uri.username()
@@ -217,7 +210,7 @@ class GeoDB(object):
                                                                      password,
                                                                      err)
                 if not ok:
-                    raise DbError(QCoreApplication.translate("PostGIS", 'Action canceled by user'))
+                    raise QgsProcessingException(QCoreApplication.translate("PostGIS", 'Action canceled by user'))
                 if user:
                     self.uri.setUsername(user)
                 if password:
@@ -317,7 +310,7 @@ class GeoDB(object):
                             reltuples, relpages, NULL, NULL, NULL, NULL
                   FROM pg_class
                   JOIN pg_namespace ON pg_namespace.oid = pg_class.relnamespace
-                  WHERE pg_class.relkind IN ('v', 'r')""" \
+                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p')""" \
                   + schema_where + 'ORDER BY nspname, relname'
         else:
             # Discovery of all tables and whether they contain a
@@ -334,7 +327,7 @@ class GeoDB(object):
                       OR pg_attribute.atttypid IN
                           (SELECT oid FROM pg_type
                            WHERE typbasetype='geometry'::regtype))
-                  WHERE pg_class.relkind IN ('v', 'r') """ \
+                  WHERE pg_class.relkind IN ('v', 'r', 'm', 'p') """ \
                   + schema_where + 'ORDER BY nspname, relname, attname'
 
         self._exec_sql(c, sql)
@@ -352,7 +345,7 @@ class GeoDB(object):
                   JOIN pg_namespace ON relnamespace=pg_namespace.oid
                   LEFT OUTER JOIN geometry_columns ON
                       relname=f_table_name AND nspname=f_table_schema
-                  WHERE (relkind = 'r' or relkind='v') """ \
+                  WHERE relkind IN ('r','v','m','p') """ \
                   + schema_where + 'ORDER BY nspname, relname, \
                   f_geometry_column'
             self._exec_sql(c, sql)
@@ -462,7 +455,7 @@ class GeoDB(object):
         sql = """SELECT pg_get_viewdef(c.oid)
               FROM pg_class c
               JOIN pg_namespace nsp ON c.relnamespace = nsp.oid
-              WHERE relname='%s' %s AND relkind='v'""" \
+              WHERE relname='%s' %s AND relkind IN ('v','m')""" \
               % (self._quote_unicode(view), schema_where)
         c = self.con.cursor()
         self._exec_sql(c, sql)
@@ -735,7 +728,7 @@ class GeoDB(object):
 
         sql = "SELECT has_database_privilege('%(d)s', 'CREATE'), \
                       has_database_privilege('%(d)s', 'TEMP')" \
-              % {'d': self._quote_unicode(self.dbname)}
+              % {'d': self._quote_unicode(self.uri.database())}
         c = self.con.cursor()
         self._exec_sql(c, sql)
         return c.fetchone()
@@ -823,8 +816,8 @@ class GeoDB(object):
         try:
             cursor.execute(sql)
         except psycopg2.Error as e:
-            raise DbError(str(e),
-                          e.cursor.query.decode(e.cursor.connection.encoding))
+            raise QgsProcessingException(str(e) + ' QUERY: ' +
+                                         e.cursor.query.decode(e.cursor.connection.encoding))
 
     def _exec_sql_and_commit(self, sql):
         """Tries to execute and commit some action, on error it rolls

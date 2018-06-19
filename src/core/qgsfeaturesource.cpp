@@ -18,6 +18,10 @@
 #include "qgsfeaturesource.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeatureiterator.h"
+#include "qgsmemoryproviderutils.h"
+#include "qgsfeedback.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
@@ -101,5 +105,80 @@ QgsRectangle QgsFeatureSource::sourceExtent() const
       r.combineExtentWith( f.geometry().boundingBox() );
   }
   return r;
+}
+
+QgsFeatureIds QgsFeatureSource::allFeatureIds() const
+{
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags( QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( QgsAttributeList() ) );
+
+  QgsFeatureIds ids;
+
+  QgsFeature fet;
+  while ( fit.nextFeature( fet ) )
+  {
+    ids << fet.id();
+  }
+
+  return ids;
+}
+
+QgsVectorLayer *QgsFeatureSource::materialize( const QgsFeatureRequest &request, QgsFeedback *feedback )
+{
+  QgsWkbTypes::Type outWkbType = request.flags() & QgsFeatureRequest::NoGeometry ? QgsWkbTypes::NoGeometry : wkbType();
+  QgsCoordinateReferenceSystem crs = request.destinationCrs().isValid() ? request.destinationCrs() : sourceCrs();
+
+  QgsAttributeList requestedAttrs = request.subsetOfAttributes();
+
+  QgsFields outFields;
+  if ( request.flags() & QgsFeatureRequest::SubsetOfAttributes )
+  {
+    int i = 0;
+    const QgsFields sourceFields = fields();
+    for ( const QgsField &field : sourceFields )
+    {
+      if ( requestedAttrs.contains( i ) )
+        outFields.append( field );
+      i++;
+    }
+  }
+  else
+  {
+    outFields = fields();
+  }
+
+  std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer(
+        sourceName(),
+        outFields,
+        outWkbType,
+        crs ) );
+  QgsFeature f;
+  QgsFeatureIterator it = getFeatures( request );
+  int fieldCount = fields().count();
+  while ( it.nextFeature( f ) )
+  {
+    if ( feedback && feedback->isCanceled() )
+      break;
+
+    if ( request.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    {
+      // remove unused attributes
+      QgsAttributes attrs;
+      for ( int i = 0; i < fieldCount; ++i )
+      {
+        if ( requestedAttrs.contains( i ) )
+        {
+          attrs.append( f.attributes().at( i ) );
+        }
+      }
+
+      f.setAttributes( attrs );
+    }
+
+    layer->dataProvider()->addFeature( f, QgsFeatureSink::FastInsert );
+  }
+
+  return layer.release();
 }
 

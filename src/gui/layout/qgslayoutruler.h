@@ -15,10 +15,12 @@
 #ifndef QGSLAYOUTRULER_H
 #define QGSLAYOUTRULER_H
 
-#include "qgscomposeritem.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include <QWidget>
 #include <QPointer>
-#include "qgis_gui.h"
+#include <QMenu>
+#include <memory>
 
 class QgsLayout;
 class QGraphicsLineItem;
@@ -104,7 +106,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     QgsLayoutView *mView = nullptr;
 
     QTransform mTransform;
-    QPointF mMarkerPos;
+    QPoint mMarkerPos;
 
     QFont mRulerFont;
     std::unique_ptr< QFontMetrics > mRulerFontMetrics;
@@ -121,7 +123,7 @@ class GUI_EXPORT QgsLayoutRuler: public QWidget
     QgsLayoutGuide *mHoverGuide = nullptr;
 
     bool mCreatingGuide = false;
-    std::unique_ptr< QGraphicsLineItem > mGuideItem;
+    QGraphicsLineItem *mGuideItem = nullptr;
 
     //! Polygon for drawing guide markers
     QPolygonF mGuideMarker;

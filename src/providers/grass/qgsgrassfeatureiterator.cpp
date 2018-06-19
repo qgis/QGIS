@@ -185,11 +185,11 @@ void QgsGrassFeatureIterator::setSelectionRect( const QgsRectangle &rect, bool u
         type = GV_POINTS | GV_LINES;
       }
       QgsDebugMsg( QString( "type = %1" ).arg( type ) );
-      Vect_select_lines_by_polygon( mSource->map(), polygon, 0, NULL, type, list );
+      Vect_select_lines_by_polygon( mSource->map(), polygon, 0, nullptr, type, list );
     }
     else if ( mSource->mLayerType == QgsGrassProvider::Polygon )
     {
-      Vect_select_areas_by_polygon( mSource->map(), polygon, 0, NULL, list );
+      Vect_select_areas_by_polygon( mSource->map(), polygon, 0, nullptr, list );
     }
     else if ( mSource->mLayerType == QgsGrassProvider::TopoNode )
     {
@@ -239,7 +239,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
   int type = 0;
   int lid = 0;
   QgsFeatureId featureId = 0;
-  QgsAbstractGeometry *oldGeometry = 0;
+  QgsAbstractGeometry *oldGeometry = nullptr;
   int cidxFieldIndex = mSource->mLayer->cidxFieldIndex();
 
 #ifdef QGISDEBUG
@@ -289,7 +289,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         mSource->mLayer->map()->unlockReadWrite();
         return false;
       }
-      type = Vect_read_line( mSource->map(), 0, 0, lid );
+      type = Vect_read_line( mSource->map(), nullptr, nullptr, lid );
 
       // TODO real cat when line/cat was rewritten?!
       cat = catFromFid( mRequest.filterFid() );
@@ -342,7 +342,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         }
 
         struct line_cats *cats = Vect_new_cats_struct();
-        int tmpType = Vect_read_line( mSource->map(), 0, cats, mNextLid );
+        int tmpType = Vect_read_line( mSource->map(), nullptr, cats, mNextLid );
         if ( cats->n_cats == 0 )
         {
           lid = mNextLid;
@@ -382,7 +382,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
           break;
         }
         lid = mNextLid;
-        type = Vect_read_line( mSource->map(), 0, 0, mNextLid++ );
+        type = Vect_read_line( mSource->map(), nullptr, nullptr, mNextLid++ );
         if ( !( type & mSource->mGrassType ) )
         {
           continue;
@@ -586,7 +586,7 @@ void QgsGrassFeatureIterator::setFeatureGeometry( QgsFeature &feature, int id, i
 {
   QgsDebugMsgLevel( QString( "id = %1 type = %2" ).arg( id ).arg( type ), 3 );
 
-  QgsAbstractGeometry *geometry = 0;
+  QgsAbstractGeometry *geometry = nullptr;
   if ( type & ( GV_POINTS | GV_LINES | GV_FACE ) )
   {
     geometry = mSource->mLayer->map()->lineGeometry( id );
@@ -664,7 +664,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
 {
   QgsDebugMsgLevel( QString( "setFeatureAttributes cat = %1" ).arg( cat ), 3 );
   QgsAttributeList attlist;
-  int nFields =  mSource->mLayer->fields().size();
+  int nFields = mSource->mLayer->fields().size();
   if ( nFields > 0 )
   {
     for ( int i = 0; i <  mSource->mLayer->fields().size(); i++ )
@@ -704,7 +704,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
     QVariant value;
     if ( isEditedLayer )
     {
-      value =  mSource->mLayer->attribute( cat, *iter );
+      value = mSource->mLayer->attribute( cat, *iter );
       if ( value.type() == QVariant::ByteArray )
       {
         value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );

@@ -47,10 +47,11 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
     virtual void setProgressText( const QString &text ) { Q_UNUSED( text ); }
 
     /**
-     * Reports that the algorithm encountered an error which prevented it
-     * from successfully executing.
+     * Reports that the algorithm encountered an \a error while executing.
+     *
+     * If \a fatalError is true then the error prevented the algorithm from executing.
      */
-    virtual void reportError( const QString &error ) { QgsMessageLog::logMessage( error ); }
+    virtual void reportError( const QString &error, bool fatalError = false ) { Q_UNUSED( fatalError ); QgsMessageLog::logMessage( error, tr( "Processing" ), Qgis::Critical ); }
 
     /**
      * Pushes a general informational message from the algorithm. This can
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes an informational message containing a command from the algorithm.
@@ -70,7 +71,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushCommandInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushCommandInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes an informational message containing debugging helpers from
@@ -79,7 +80,7 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushCommandInfo()
      * \see pushConsoleInfo()
      */
-    virtual void pushDebugInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushDebugInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
     /**
      * Pushes a console feedback message from the algorithm. This is used to
@@ -88,10 +89,59 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
      * \see pushDebugInfo()
      * \see pushCommandInfo()
      */
-    virtual void pushConsoleInfo( const QString &info ) { QgsMessageLog::logMessage( info ); }
+    virtual void pushConsoleInfo( const QString &info ) { QgsMessageLog::logMessage( info, tr( "Processing" ), Qgis::Info ); }
 
 };
 
+
+/**
+ * \class QgsProcessingMultiStepFeedback
+ * \ingroup core
+ *
+ * Processing feedback object for multi-step operations.
+ *
+ * A processing feedback object which proxies its calls to an underlying
+ * feedback object, but scales overall progress reports to account
+ * for a number of child steps which each report their own feedback.
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
+     * number of \a steps. This feedback object will proxy calls
+     * to the specified \a feedback object.
+     */
+    QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
+
+    /**
+     * Sets the \a step which is being executed. This is used
+     * to scale the current progress to account for progress through the overall process.
+     */
+    void setCurrentStep( int step );
+
+    void setProgressText( const QString &text ) override;
+    void reportError( const QString &error, bool fatalError ) override;
+    void pushInfo( const QString &info ) override;
+    void pushCommandInfo( const QString &info ) override;
+    void pushDebugInfo( const QString &info ) override;
+    void pushConsoleInfo( const QString &info ) override;
+
+  private slots:
+
+    void updateOverallProgress( double progress );
+
+  private:
+
+    int mChildSteps = 0;
+    int mCurrentStep = 0;
+    QgsProcessingFeedback *mFeedback = nullptr;
+};
 
 #endif // QGSPROCESSINGFEEDBACK_H
 

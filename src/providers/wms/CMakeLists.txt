@@ -12,7 +12,6 @@ SET (WMS_SRCS
 SET (WMS_MOC_HDRS
   qgswmscapabilities.h
   qgswmsprovider.h
-  qgswmsconnection.h
   qgswmsdataitems.h
 )
 
@@ -38,6 +37,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/gui
@@ -49,8 +49,6 @@ INCLUDE_DIRECTORIES(
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${QT_QTSCRIPT_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
@@ -60,20 +58,23 @@ ADD_LIBRARY(wmsprovider MODULE ${WMS_SRCS} ${WMS_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(wmsprovider
   qgis_core
-  ${QT_QTSCRIPT_LIBRARY}
   ${GDAL_LIBRARY}  # for OGR_G_CreateGeometryFromJson()
 )
+
+
+TARGET_LINK_LIBRARIES(wmsprovider_a
+  qgis_core
+)
+
 
 IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (wmsprovider
     qgis_gui
   )
+  TARGET_LINK_LIBRARIES (wmsprovider_a
+    qgis_gui
+  )
 ENDIF ()
-
-TARGET_LINK_LIBRARIES(wmsprovider_a
-  qgis_core
-  ${QT_QTSCRIPT_LIBRARY}
-)
 
 INSTALL (TARGETS wmsprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}

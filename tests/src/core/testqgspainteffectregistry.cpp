@@ -27,14 +27,14 @@
 class DummyPaintEffect : public QgsPaintEffect
 {
   public:
-    DummyPaintEffect() {}
-    virtual QString type() const override { return QStringLiteral( "Dummy" ); }
-    virtual QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
+    DummyPaintEffect() = default;
+    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QgsPaintEffect *clone() const override { return new DummyPaintEffect(); }
     static QgsPaintEffect *create( const QgsStringMap & ) { return new DummyPaintEffect(); }
-    virtual QgsStringMap properties() const override { return QgsStringMap(); }
-    virtual void readProperties( const QgsStringMap &props ) override { Q_UNUSED( props ); }
+    QgsStringMap properties() const override { return QgsStringMap(); }
+    void readProperties( const QgsStringMap &props ) override { Q_UNUSED( props ); }
   protected:
-    virtual void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
+    void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
 };
 
 class TestQgsPaintEffectRegistry : public QObject

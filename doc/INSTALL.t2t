@@ -84,7 +84,7 @@ regularly updated to match the corresponding release. Instructions for the curre
 master branch are available at
 http://htmlpreview.github.io/?https://raw.github.com/qgis/QGIS/master/doc/INSTALL.html.
 If you wish to build another version of QGIS, ensure to checkout the appropriate
-release branch.
+release branch. The QGIS source code can be found [in the repository https://github.com/qgis/QGIS].
 
 Please visit http://qgis.org for information on joining our mailing lists 
 and getting involved in the project further.
@@ -104,6 +104,7 @@ source directory.
 = Building on Windows =
 %!include: msvc.t2t
 %!include: msys.t2t
+%!include: mxe.t2t
 
 %!include: osx.t2t
 

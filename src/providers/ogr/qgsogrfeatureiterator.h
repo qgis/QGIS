@@ -28,9 +28,9 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOgrFeatureSource( const QgsOgrProvider *p );
-    ~QgsOgrFeatureSource();
+    ~QgsOgrFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QString mDataSource;
@@ -55,31 +55,33 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
   public:
     QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsOgrFeatureIterator();
+    ~QgsOgrFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
 
-    bool readFeature( OGRFeatureH fet, QgsFeature &feature ) const;
+    bool readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const;
 
-    //! Get an attribute associated with a feature
+    //! Gets an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH ogrLayer;
+    OGRLayerH mOgrLayer = nullptr;
+    OGRLayerH mOgrOrigLayer = nullptr;
+    OGRLayerH mOgrLayerWithFid = nullptr;
 
-    bool mSubsetStringSet;
+    bool mOrigFidAdded = false;
 
-    //! Set to true, if geometry is in the requested columns
-    bool mFetchGeometry;
+    //! Sets to true, if geometry is in the requested columns
+    bool mFetchGeometry = false;
 
-    bool mExpressionCompiled;
+    bool mExpressionCompiled = false;
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;
 

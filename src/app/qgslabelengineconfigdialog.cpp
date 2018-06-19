@@ -17,6 +17,7 @@
 #include "qgslabelingenginesettings.h"
 #include "qgsproject.h"
 #include "pal/pal.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 
@@ -26,6 +27,7 @@ QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
   setupUi( this );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelEngineConfigDialog::showHelp );
   connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
            this, &QgsLabelEngineConfigDialog::setDefaults );
 
@@ -79,4 +81,9 @@ void QgsLabelEngineConfigDialog::setDefaults()
   chkShowAllLabels->setChecked( false );
   chkShowPartialsLabels->setChecked( p.getShowPartial() );
   mDrawOutlinesChkBox->setChecked( true );
+}
+
+void QgsLabelEngineConfigDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#setting-the-automated-placement-engine" ) );
 }

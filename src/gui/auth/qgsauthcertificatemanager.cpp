@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthcertificatemanager.h"
+#include "qgssettings.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -24,6 +25,14 @@ QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
+  QgsSettings settings;
+  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "AuthCertEditorsSelectedTab" ), 0, QgsSettings::Section::Auth ).toInt() );
+}
+
+QgsAuthCertEditors::~QgsAuthCertEditors()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "AuthCertEditorsSelectedTab" ), tabWidget->currentIndex(), QgsSettings::Section::Auth );
 }
 
 

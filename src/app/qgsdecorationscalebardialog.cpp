@@ -25,6 +25,8 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationScaleBarDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationScaleBarDialog::buttonBox_rejected );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationScaleBarDialog::showHelp );
 
   QgsSettings settings;
@@ -81,6 +83,9 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select Scale Bar Outline Color" ) );
+
+  mButtonFontStyle->setMode( QgsFontButton::ModeTextRenderer );
+  mButtonFontStyle->setTextFormat( mDeco.mTextFormat );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
@@ -106,16 +111,18 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
   mDeco.mOutlineColor = pbnChangeOutlineColor->color();
+  mDeco.mTextFormat = mButtonFontStyle->textFormat();
+  mDeco.setupScaleBar();
   mDeco.update();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+void QgsDecorationScaleBarDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_rejected()
+void QgsDecorationScaleBarDialog::buttonBox_rejected()
 {
   reject();
 }

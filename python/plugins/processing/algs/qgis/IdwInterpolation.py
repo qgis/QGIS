@@ -76,10 +76,10 @@ class ParameterInterpolationData(QgsProcessingParameterDefinition):
     def dataToString(data):
         s = ''
         for c in data:
-            s += '{}, {}, {:d}, {:d};'.format(c[0],
-                                              c[1],
-                                              c[2],
-                                              c[3])
+            s += '{}::~::{}::~::{:d}::~::{:d};'.format(c[0],
+                                                       c[1],
+                                                       c[2],
+                                                       c[3])
         return s[:-1]
 
 
@@ -89,8 +89,6 @@ class IdwInterpolation(QgisAlgorithm):
     DISTANCE_COEFFICIENT = 'DISTANCE_COEFFICIENT'
     COLUMNS = 'COLUMNS'
     ROWS = 'ROWS'
-    CELLSIZE_X = 'CELLSIZE_X'
-    CELLSIZE_Y = 'CELLSIZE_Y'
     EXTENT = 'EXTENT'
     OUTPUT = 'OUTPUT'
 
@@ -99,6 +97,9 @@ class IdwInterpolation(QgisAlgorithm):
 
     def group(self):
         return self.tr('Interpolation')
+
+    def groupId(self):
+        return 'interpolation'
 
     def __init__(self):
         super().__init__()
@@ -116,12 +117,6 @@ class IdwInterpolation(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.ROWS,
                                                        self.tr('Number of rows'),
                                                        minValue=0, maxValue=10000000, defaultValue=300))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_X,
-                                                       self.tr('Cell Size X'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
-        self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE_Y,
-                                                       self.tr('Cell Size Y'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.0, maxValue=999999.000000, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Extent'),
                                                        optional=False))
@@ -139,8 +134,6 @@ class IdwInterpolation(QgisAlgorithm):
         coefficient = self.parameterAsDouble(parameters, self.DISTANCE_COEFFICIENT, context)
         columns = self.parameterAsInt(parameters, self.COLUMNS, context)
         rows = self.parameterAsInt(parameters, self.ROWS, context)
-        cellsizeX = self.parameterAsDouble(parameters, self.CELLSIZE_X, context)
-        cellsizeY = self.parameterAsDouble(parameters, self.CELLSIZE_Y, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -151,22 +144,22 @@ class IdwInterpolation(QgisAlgorithm):
         layerData = []
         layers = []
         for row in interpolationData.split(';'):
-            v = row.split(',')
+            v = row.split('::~::')
             data = QgsInterpolator.LayerData()
 
             # need to keep a reference until interpolation is complete
-            layer = QgsProcessingUtils.mapLayerFromString(v[0], context)
-            data.vectorLayer = layer
+            layer = QgsProcessingUtils.variantToSource(v[0], context)
+            data.source = layer
             layers.append(layer)
 
-            data.zCoordInterpolation = bool(v[1])
+            data.valueSource = int(v[1])
             data.interpolationAttribute = int(v[2])
             if v[3] == '0':
-                data.mInputType = QgsInterpolator.POINTS
+                data.sourceType = QgsInterpolator.SourcePoints
             elif v[3] == '1':
-                data.mInputType = QgsInterpolator.STRUCTURE_LINES
+                data.sourceType = QgsInterpolator.SourceStructureLines
             else:
-                data.mInputType = QgsInterpolator.BREAK_LINES
+                data.sourceType = QgsInterpolator.SourceBreakLines
             layerData.append(data)
 
         interpolator = QgsIDWInterpolator(layerData)
@@ -176,9 +169,7 @@ class IdwInterpolation(QgisAlgorithm):
                                    output,
                                    bbox,
                                    columns,
-                                   rows,
-                                   cellsizeX,
-                                   cellsizeY)
+                                   rows)
 
         writer.writeFile(feedback)
         return {self.OUTPUT: output}

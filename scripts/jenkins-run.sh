@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if [ -d build ]
 then
@@ -13,5 +13,5 @@ make Experimental || true
 #TRES=0
 #ctest -T test --no-compress-output || true
 if [ -f Testing/TAG ] ; then
-   xsltproc ../tests/ctest2junix.xsl Testing/`head -n 1 < Testing/TAG`/Test.xml > CTestResults.xml
+   xsltproc ../tests/ctest2junix.xsl Testing/$(head -n 1 < Testing/TAG)/Test.xml > CTestResults.xml
 fi

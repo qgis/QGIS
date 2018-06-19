@@ -16,7 +16,3 @@
  ***************************************************************************/
 
 #include "qgsmapdecoration.h"
-
-QgsMapDecoration::QgsMapDecoration()
-{
-}

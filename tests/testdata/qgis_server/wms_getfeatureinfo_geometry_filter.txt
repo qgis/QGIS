@@ -7,8 +7,7 @@ Content-Type: text/xml; charset=utf-8
    <Attribute name="id" value="2"/>
    <Attribute name="name" value="two"/>
    <Attribute name="utf8nameè" value="two àò"/>
-   <BoundingBox CRS="EPSG:3857" minx="913214.6741" maxx="913214.6741" miny="5606017.8743" maxy="5606017.8743"/>
-   <Attribute name="geometry" value="Point (913214.6741 5606017.8743)" type="derived"/>
+   <BoundingBox CRS="EPSG:4326" minx="8.2035" maxx="8.2035" miny="44.9014" maxy="44.9014"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

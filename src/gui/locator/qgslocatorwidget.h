@@ -22,12 +22,10 @@
 #include "qgslocatorfilter.h"
 #include "qgsfloatingwidget.h"
 #include <QWidget>
-#include <QAbstractListModel>
 #include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
 #include <QTimer>
-#include <QSortFilterProxyModel>
 
 class QgsLocator;
 class QgsFilterLineEdit;
@@ -62,7 +60,7 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
 
     /**
      * Sets a map \a canvas to associate with the widget. This allows the
-     * widget to customise the searches performed by its locator(), such
+     * widget to customize the searches performed by its locator(), such
      * as prioritizing results which are near the current canvas extent.
      */
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -136,99 +134,18 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
 
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
 
-    virtual QString name() const override { return QStringLiteral( "filters" );}
-    virtual QString displayName() const override { return QString(); }
-    virtual Priority priority() const override { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
-    virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
-    virtual void triggerResult( const QgsLocatorResult &result ) override;
+    QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
+    QgsLocatorFilter::Flags flags() const override;
+
+    QString name() const override { return QStringLiteral( "filters" );}
+    QString displayName() const override { return QString(); }
+    Priority priority() const override { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
 
   private:
 
     QgsLocatorWidget *mLocator = nullptr;
-};
-
-/**
- * \class QgsLocatorModel
- * \ingroup gui
- * An abstract list model for displaying the results in a QgsLocatorWidget.
- * \since QGIS 3.0
- */
-class QgsLocatorModel : public QAbstractTableModel
-{
-    Q_OBJECT
-
-  public:
-
-    //! Custom model roles
-    enum Role
-    {
-      ResultDataRole = Qt::UserRole + 1, //!< QgsLocatorResult data
-      ResultTypeRole,
-      ResultFilterPriorityRole,
-      ResultScoreRole,
-      ResultFilterNameRole,
-    };
-
-    enum columnCount
-    {
-      Name = 0,
-      Description
-    };
-
-    /**
-     * Constructor for QgsLocatorModel.
-     */
-    QgsLocatorModel( QObject *parent = nullptr );
-
-    /**
-     * Resets the model and clears all existing results.
-     * \see deferredClear()
-     */
-    void clear();
-
-    /**
-     * Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
-     * (whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
-     * which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
-     * \see deferredClear()
-     */
-    void deferredClear();
-
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    Qt::ItemFlags flags( const QModelIndex &index ) const override;
-
-  public slots:
-
-    /**
-     * Adds a new \a result to the model.
-     */
-    void addResult( const QgsLocatorResult &result );
-
-  private:
-
-    struct Entry
-    {
-      QgsLocatorResult result;
-      QString filterTitle;
-      QgsLocatorFilter *filter = nullptr;
-    };
-
-    QList<Entry> mResults;
-    QSet<QString> mFoundResultsFromFilterNames;
-    bool mDeferredClear = false;
-    QTimer mDeferredClearTimer;
-};
-
-class QgsLocatorProxyModel : public QSortFilterProxyModel
-{
-    Q_OBJECT
-
-  public:
-
-    explicit QgsLocatorProxyModel( QObject *parent = nullptr );
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 /**

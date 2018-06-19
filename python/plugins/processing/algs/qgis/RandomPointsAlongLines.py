@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -42,6 +41,7 @@ from qgis.core import (QgsField,
                        QgsProject,
                        QgsProcessing,
                        QgsProcessingException,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -61,6 +61,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation')
 
+    def groupId(self):
+        return 'vectorcreation'
+
     def __init__(self):
         super().__init__()
 
@@ -72,10 +75,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
                                                        self.tr('Number of points'),
                                                        QgsProcessingParameterNumber.Integer,
                                                        1, False, 1, 1000000000))
-        self.addParameter(QgsProcessingParameterNumber(self.MIN_DISTANCE,
-                                                       self.tr('Minimum distance between points'),
-                                                       QgsProcessingParameterNumber.Double,
-                                                       0, False, 0, 1000000000))
+        self.addParameter(QgsProcessingParameterDistance(self.MIN_DISTANCE,
+                                                         self.tr('Minimum distance between points'),
+                                                         0, self.INPUT, False, 0, 1000000000))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
                                                             self.tr('Random points'),
                                                             type=QgsProcessing.TypeVectorPoint))
@@ -88,6 +90,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         pointCount = self.parameterAsDouble(parameters, self.POINTS_NUMBER, context)
         minDistance = self.parameterAsDouble(parameters, self.MIN_DISTANCE, context)
 
@@ -96,6 +101,8 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.Point, source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         nPoints = 0
         nIterations = 0
@@ -107,7 +114,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         points = dict()
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         request = QgsFeatureRequest()
@@ -148,7 +155,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
 
                 # generate random point
                 p = QgsPointXY(rx, ry)
-                geom = QgsGeometry.fromPoint(p)
+                geom = QgsGeometry.fromPointXY(p)
                 if vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)

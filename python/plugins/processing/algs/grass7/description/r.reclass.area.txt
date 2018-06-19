@@ -1,0 +1,8 @@
+r.reclass.area
+Reclassifies a raster layer, selecting areas lower than a user specified size
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterNumber|value|Value option that sets the area size limit [hectares]|QgsProcessingParameterNumber.Double|1.0|False|0|None
+QgsProcessingParameterEnum|mode|Lesser or greater than specified value|lesser;greater|False|0|False
+QgsProcessingParameterEnum|method|Method used for reclassification|reclass;rmarea|False|0|True
+QgsProcessingParameterRasterDestination|output|Reclassified

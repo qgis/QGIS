@@ -23,9 +23,11 @@
 #include "qgsmodule.h"
 #include "qgswfsutils.h"
 #include "qgswfsgetcapabilities.h"
+#include "qgswfsgetcapabilities_1_0_0.h"
 #include "qgswfsgetfeature.h"
 #include "qgswfsdescribefeaturetype.h"
 #include "qgswfstransaction.h"
+#include "qgswfstransaction_1_0_0.h"
 
 #define QSTR_COMPARE( str, lit )\
   (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
@@ -41,16 +43,16 @@ namespace QgsWfs
         : mServerIface( serverIface )
       {}
 
-      QString name()    const { return QStringLiteral( "WFS" ); }
-      QString version() const { return implementationVersion(); }
+      QString name()    const override { return QStringLiteral( "WFS" ); }
+      QString version() const override { return implementationVersion(); }
 
-      bool allowMethod( QgsServerRequest::Method method ) const
+      bool allowMethod( QgsServerRequest::Method method ) const override
       {
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project )
+                           const QgsProject *project ) override
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -71,7 +73,15 @@ namespace QgsWfs
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
         {
-          writeGetCapabilities( mServerIface, project, versionString, request, response );
+          // Supports WFS 1.0.0
+          if ( QSTR_COMPARE( versionString, "1.0.0" ) )
+          {
+            v1_0_0::writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
+          else
+          {
+            writeGetCapabilities( mServerIface, project, versionString, request, response );
+          }
         }
         else if ( QSTR_COMPARE( req, "GetFeature" ) )
         {
@@ -83,7 +93,15 @@ namespace QgsWfs
         }
         else if ( QSTR_COMPARE( req, "Transaction" ) )
         {
-          writeTransaction( mServerIface, project, versionString, request, response );
+          // Supports WFS 1.0.0
+          if ( QSTR_COMPARE( versionString, "1.0.0" ) )
+          {
+            v1_0_0::writeTransaction( mServerIface, project, versionString, request, response );
+          }
+          else
+          {
+            writeTransaction( mServerIface, project, versionString, request, response );
+          }
         }
         else
         {
@@ -105,7 +123,7 @@ namespace QgsWfs
 class QgsWfsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( "WFSModule::registerSelf called" );
       registry.registerService( new  QgsWfs::Service( serverIface ) );

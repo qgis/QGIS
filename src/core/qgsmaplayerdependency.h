@@ -22,7 +22,8 @@
 #include "qgis_core.h"
 #include <QString>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class models dependencies with or between map layers.
  * A dependency is defined by a layer ID, a type and an origin.
  * The two combinations of type/origin that are currently supported are:
@@ -55,13 +56,13 @@ class CORE_EXPORT QgsMapLayerDependency
       , mLayerId( layerId )
     {}
 
-    //! Return the dependency type
+    //! Returns the dependency type
     Type type() const { return mType; }
 
-    //! Return the dependency origin
+    //! Returns the dependency origin
     Origin origin() const { return mOrigin; }
 
-    //! Return the ID of the layer this dependency depends on
+    //! Returns the ID of the layer this dependency depends on
     QString layerId() const { return mLayerId; }
 
     //! Comparison operator

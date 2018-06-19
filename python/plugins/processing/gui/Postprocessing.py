@@ -30,7 +30,8 @@ import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
                        QgsMapLayer,
@@ -76,17 +77,25 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                             style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
                 if style:
                     layer.loadNamedStyle(style)
+
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+
+                if details.postProcessor():
+                    details.postProcessor().postProcessLayer(layer, context, feedback)
+
+            else:
+                wrongLayers.append(str(l))
         except Exception:
-            QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', Qgis.Critical)
             wrongLayers.append(str(l))
         i += 1
 
-    QApplication.restoreOverrideCursor()
+    feedback.setProgress(100)
+
     if wrongLayers:
-        msg = "The following layers were not correctly generated.<ul>"
-        msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += "You can check the log messages to find more information about the execution of the algorithm"
+        msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
+        msg += "<ul>" + "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
+        msg += QCoreApplication.translate('Postprocessing', "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
         feedback.reportError(msg)
 
     return len(wrongLayers) == 0

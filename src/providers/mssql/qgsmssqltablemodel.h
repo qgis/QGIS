@@ -39,7 +39,8 @@ struct QgsMssqlLayerProperty
 
 class QIcon;
 
-/** A model that holds the tables of a database in a hierarchy where the
+/**
+ * A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
 class QgsMssqlTableModel : public QStandardItemModel
@@ -54,7 +55,8 @@ class QgsMssqlTableModel : public QStandardItemModel
     //! Sets an sql statement that belongs to a cell specified by a model index
     void setSql( const QModelIndex &index, const QString &sql );
 
-    /** Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
+    /**
+     * Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is detected later by thread*/
     void setGeometryTypesForTable( QgsMssqlLayerProperty layerProperty );
 
@@ -84,7 +86,7 @@ class QgsMssqlTableModel : public QStandardItemModel
 
   private:
     //! Number of tables in the model
-    int mTableCount;
+    int mTableCount = 0;
 };
 
 #endif

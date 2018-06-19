@@ -1,6 +1,6 @@
 Merge Layers
 shapes_tools
-ParameterMultipleInput|INPUT|Input Layers|-1|True
-ParameterBoolean|SRCINFO|Add source information|True
-ParameterBoolean|MATCH|Match Fields by Name|True
-OutputVector|MERGED|Merged Layer
+QgsProcessingParameterMultipleLayers|INPUT|Input Layers|-1|None|True
+QgsProcessingParameterBoolean|SRCINFO|Add source information|True
+QgsProcessingParameterBoolean|MATCH|Match Fields by Name|True
+QgsProcessingParameterVectorDestination|MERGED|Merged Layer

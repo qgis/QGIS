@@ -18,7 +18,7 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgsdxfpaintengine.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf ): QPaintDevice(), mPaintEngine( nullptr )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -46,7 +46,7 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmHeightMM:
       return mDrawingSize.height();
     case QPaintDevice::PdmNumColors:
-      return INT_MAX;
+      return std::numeric_limits<int>::max();
     case QPaintDevice::PdmDepth:
       return 32;
     case QPaintDevice::PdmDpiX:

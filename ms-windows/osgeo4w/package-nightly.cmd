@@ -67,10 +67,9 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
-
 goto cmake
 
 :cmake_x86_64
@@ -84,22 +83,27 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :cmake
-for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass72 --config path`) do set GRASS72_PATH=%%a
-for %%i in ("%GRASS72_PATH%") do set GRASS72_VERSION=%%~nxi
-set GRASS72_VERSION=%GRASS72_VERSION:grass-=%
-set GRASS_VERSIONS=%GRASS72_VERSION%
+set GRASS7=
+if exist %OSGEO4W_ROOT%\bin\grass72.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass72.bat
+if exist %OSGEO4W_ROOT%\bin\grass74.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass74.bat
+if "%GRASS7%"=="" (echo GRASS7 not found & goto error)
+
+for /f "usebackq tokens=1" %%a in (`%GRASS7% --config path`) do set GRASS7_PATH=%%a
+for %%i in ("%GRASS7_PATH%") do set GRASS7_VERSION=%%~nxi
+set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set PYTHONPATH=
 if exist "%PF86%\CMake\bin" path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
 if exist "%PROGRAMFILES%\CMake\bin" path %PATH%;c:\cygwin\bin;%PROGRAMFILES%\CMake\bin
 
-PROMPT qgis%VERSION%$g 
+PROMPT qgis%VERSION%$g
 
 set BUILDCONF=RelWithDebInfo
 
@@ -165,8 +169,9 @@ cmake -G Ninja ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
+	-D WITH_3D=TRUE ^
 	-D WITH_GRASS7=TRUE ^
-	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
+	-D GRASS_PREFIX7=%GRASS7_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
 	-D WITH_ORACLE=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
@@ -184,7 +189,6 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
@@ -201,14 +205,21 @@ if errorlevel 1 (echo clean failed & goto error)
 :skipclean
 if exist ..\skipbuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
-cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 (echo build failed twice & goto error)
+cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
+if errorlevel 1 cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
+if errorlevel 1 (
+	cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+	if errorlevel 1 echo SUBMITTING BUILD ERRORS WAS NOT SUCCESSFUL.
+	echo build failed twice
+	goto error
+)
 
 :skipbuild
 if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
+
+reg add "HKCU\Software\Microsoft\Windows\Windows Error Reporting" /v DontShow /t REG_DWORD /d 1 /f
 
 set oldtemp=%TEMP%
 set oldtmp=%TMP%
@@ -226,8 +237,10 @@ for %%g IN (%GRASS_VERSIONS%) do (
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
-cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
+cmake --build %BUILDDIR% --target NightlyTest --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%
@@ -267,14 +280,11 @@ for %%g IN (%GRASS_VERSIONS%) do (
 )
 
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
-if errorlevel 1 (echo creation of python wrapper failed & goto error)
+if errorlevel 1 (echo creation of python wrapper template failed & goto error)
 
-REM sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %PKGDIR%\python\qgis\qgisconfig.py >%PKGDIR%\python\qgis\qgisconfig.py.tmpl
-REM if errorlevel 1 (echo creation of qgisconfig.py.tmpl failed & goto error)
-
-REM del %PKGDIR%\python\qgis\qgisconfig.py
 
 touch exclude
+if exist ..\skipbuild (echo skip build & goto skipbuild)
 
 move %PKGDIR%\bin\qgis.exe %OSGEO4W_ROOT%\bin\%PACKAGENAME%-bin.exe
 if errorlevel 1 (echo move of desktop executable failed & goto error)
@@ -324,6 +334,7 @@ exit /b 1
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
+exit /b 1
 
 :end
 echo FINISHED: %DATE% %TIME%

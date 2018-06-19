@@ -111,11 +111,11 @@ QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
   , mFetchedFid( false )
-  , mInterruptionChecker( nullptr )
+
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -124,7 +124,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
   if ( !mFilterRect.isNull() )
@@ -158,7 +158,7 @@ QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeat
   // values
   if ( mRequest.destinationCrs().isValid() )
   {
-    mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem() );
+    mProviderRequest.setDestinationCrs( QgsCoordinateReferenceSystem(), mRequest.transformContext() );
   }
 
   if ( mProviderRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -402,10 +402,15 @@ bool QgsVectorLayerFeatureIterator::close()
   return true;
 }
 
-void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsInterruptionChecker *interruptionChecker )
+void QgsVectorLayerFeatureIterator::setInterruptionChecker( QgsFeedback *interruptionChecker )
 {
   mProviderIterator.setInterruptionChecker( interruptionChecker );
   mInterruptionChecker = interruptionChecker;
+}
+
+bool QgsVectorLayerFeatureIterator::isValid() const
+{
+  return mProviderIterator.isValid();
 }
 
 bool QgsVectorLayerFeatureIterator::fetchNextAddedFeature( QgsFeature &f )
@@ -610,7 +615,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsExpression *exp = new QgsExpression( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs );
+  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
@@ -671,7 +676,7 @@ void QgsVectorLayerFeatureIterator::prepareFields()
   }
 
   //sort joins by dependency
-  if ( mFetchJoinInfo.size() > 0 )
+  if ( !mFetchJoinInfo.empty() )
   {
     createOrderedJoinList();
   }
@@ -717,12 +722,11 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
       int joinField = mOrderedJoinInfoList.at( i ).joinField;
 
       QgsAttributeList attributes = mOrderedJoinInfoList.at( i ).attributes;
-      QgsAttributeList::const_iterator attIt = attributes.constBegin();
-      for ( ; attIt != attributes.constEnd(); ++attIt )
+      for ( int n = 0; n < attributes.size(); n++ )
       {
-        if ( *attIt != joinField )
+        if ( n != joinField )
         {
-          resolvedFields.insert( joinField < *attIt ? *attIt + offset - 1 : *attIt + offset );
+          resolvedFields.insert( joinField < n ? n + offset - 1 : n + offset );
         }
       }
     }
@@ -757,7 +761,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     {
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
         if ( mRequest.invalidGeometryCallback() )
         {
           mRequest.invalidGeometryCallback()( feature );
@@ -770,7 +774,7 @@ bool QgsVectorLayerFeatureIterator::checkGeometryValidity( const QgsFeature &fea
     case QgsFeatureRequest::GeometryAbortOnInvalid:
       if ( !feature.geometry().isGeosValid() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QObject::tr( "Geometry error: One or more input features have invalid geometry." ), QString(), Qgis::Critical );
         close();
         if ( mRequest.invalidGeometryCallback() )
         {
@@ -870,7 +874,7 @@ void QgsVectorLayerFeatureIterator::addExpressionAttribute( QgsFeature &f, int a
   {
     mExpressionContext->setFeature( f );
     QVariant val = exp->evaluate( mExpressionContext.get() );
-    mSource->mFields.at( attrIndex ).convertCompatible( val );
+    ( void )mSource->mFields.at( attrIndex ).convertCompatible( val );
     f.setAttribute( attrIndex, val );
   }
   else
@@ -944,10 +948,12 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   // maybe user requested just a subset of layer's attributes
   // so we do not have to cache everything
-  bool hasSubset = joinInfo->joinFieldNamesSubset();
   QVector<int> subsetIndices;
-  if ( hasSubset )
-    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, *joinInfo->joinFieldNamesSubset() );
+  if ( joinInfo->hasSubset() )
+  {
+    const QStringList subsetNames = QgsVectorLayerJoinInfo::joinFieldNamesSubset( *joinInfo );
+    subsetIndices = QgsVectorLayerJoinBuffer::joinSubsetIndices( joinLayer, subsetNames );
+  }
 
   // select (no geometry)
   QgsFeatureRequest request;
@@ -963,7 +969,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   {
     int index = indexOffset;
     QgsAttributes attr = fet.attributes();
-    if ( hasSubset )
+    if ( joinInfo->hasSubset() )
     {
       for ( int i = 0; i < subsetIndices.count(); ++i )
         f.setAttribute( index++, attr.at( subsetIndices.at( i ) ) );
@@ -1077,6 +1083,7 @@ QgsVectorLayerSelectedFeatureSource::QgsVectorLayerSelectedFeatureSource( QgsVec
   , mSelectedFeatureIds( layer->selectedFeatureIds() )
   , mWkbType( layer->wkbType() )
   , mName( layer->name() )
+  , mLayer( layer )
 {}
 
 QgsFeatureIterator QgsVectorLayerSelectedFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
@@ -1120,4 +1127,12 @@ long QgsVectorLayerSelectedFeatureSource::featureCount() const
 QString QgsVectorLayerSelectedFeatureSource::sourceName() const
 {
   return mName;
+}
+
+QgsExpressionContextScope *QgsVectorLayerSelectedFeatureSource::createExpressionContextScope() const
+{
+  if ( mLayer )
+    return mLayer->createExpressionContextScope();
+  else
+    return nullptr;
 }

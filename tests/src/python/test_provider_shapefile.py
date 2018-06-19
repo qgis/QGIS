@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 import tempfile
 import shutil
 import glob
@@ -92,6 +93,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
+        return True
 
     def disableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', False)
@@ -209,7 +211,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ids = [f.id() for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression('pk=1'))]
         vl.selectByIds(ids)
         self.assertEqual(vl.selectedFeatureIds(), ids)
-        self.assertEqual(vl.pendingFeatureCount(), 5)
+        self.assertEqual(vl.featureCount(), 5)
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(3))
         self.assertTrue(vl.commitChanges())
@@ -269,7 +271,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         values = [f_iter['pk'] for f_iter in features]
         self.assertEqual(values, [200])
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (2.0, 49.0))
 
         self.assertTrue(vl.dataProvider().changeGeometryValues({fid: QgsGeometry.fromWkt('Point (3 50)')}))
@@ -278,7 +280,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
         values = [f_iter['pk'] for f_iter in features]
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (3.0, 50.0))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
@@ -459,7 +461,23 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # Test the content of the shapefile while it is still opened
         ds = osgeo.ogr.Open(datasource)
         # Test repacking has been done
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Delete another feature while in update mode
+        self.assertTrue(2 == 2)
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Test that repacking was performed when leaving updateMode
+        vl.dataProvider().leaveUpdateMode()
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 2)
         ds = None
 
         vl = None
@@ -551,6 +569,109 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = osgeo.ogr.Open(datasource)
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
+
+    def testOpenWithFilter(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        # ensure that no longer required ogr SQL layers are correctly cleaned up
+        # we need to run this twice for the incorrect cleanup asserts to trip,
+        # since they are triggered only when fetching an existing layer from the ogr
+        # connection pool
+        for i in range(2):
+            vl = QgsVectorLayer(uri)
+            self.assertTrue(vl.isValid(), 'Layer not valid, iteration {}'.format(i + 1))
+            self.assertEqual(vl.featureCount(), 1)
+            f = next(vl.getFeatures())
+            self.assertEqual(f['name'], 'Apple')
+            # force close of data provider
+            vl.setDataSource('', 'test', 'ogr')
+
+    def testCreateAttributeIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
+        self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+        self.assertTrue(vl.dataProvider().createAttributeIndex(1))
+
+    def testCreateSpatialIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(vl.dataProvider().createSpatialIndex())
+
+    def testSubSetStringEditable_bug17795(self):
+        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+
+        testPath = TEST_DATA_DIR + '/' + 'lines.shp'
+        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('"Name" = \'Arterial\'')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = TEST_DATA_DIR + '/' + 'points.shp'
+        subSetString = '"Class" = \'Biplane\''
+        subSet = '|layerid=0|subset=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'ogr')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
 
 if __name__ == '__main__':

@@ -27,6 +27,7 @@
 #include "qgslogger.h"
 #include "qgscolorramp.h"
 #include "qgsunittypes.h"
+#include "qgsmessagelog.h"
 
 #include <QPainter>
 #include <QFile>
@@ -40,9 +41,7 @@ QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::Bru
   , mStrokeColor( strokeColor )
   , mStrokeStyle( strokeStyle )
   , mStrokeWidth( strokeWidth )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
   , mPenJoinStyle( penJoinStyle )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
@@ -381,7 +380,7 @@ QgsSymbolLayer *QgsSimpleFillSymbolLayer::createFromSld( QDomElement &element )
   QPointF offset;
   QgsSymbolLayerUtils::displacementFromSldElement( element, offset );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ), QString() );
   offset.setX( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.x() ) );
   offset.setY( QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, offset.y() ) );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
@@ -407,7 +406,7 @@ double QgsSimpleFillSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRende
     context.setOriginalValueVariable( mStrokeWidth );
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyStrokeWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
-  return width * e.mapUnitScaleFactor( e.symbologyScale(), mStrokeWidthUnit, e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScale(), mStrokeWidthUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
 }
 
 QColor QgsSimpleFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
@@ -458,15 +457,11 @@ QgsGradientFillSymbolLayer::QgsGradientFillSymbolLayer( const QColor &color, con
     GradientColorType colorType, GradientType gradientType,
     GradientCoordinateMode coordinateMode, GradientSpread spread )
   : mGradientColorType( colorType )
-  , mGradientRamp( nullptr )
   , mGradientType( gradientType )
   , mCoordinateMode( coordinateMode )
   , mGradientSpread( spread )
   , mReferencePoint1( QPointF( 0.5, 0 ) )
-  , mReferencePoint1IsCentroid( false )
   , mReferencePoint2( QPointF( 0.5, 1 ) )
-  , mReferencePoint2IsCentroid( false )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
   mColor2 = color2;
@@ -634,7 +629,7 @@ void QgsGradientFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderConte
   GradientCoordinateMode coordinateMode = mCoordinateMode;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyCoordinateMode ) )
   {
-    QString currentCoordMode =  mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
+    QString currentCoordMode = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyCoordinateMode, context.renderContext().expressionContext(), QString(), &ok );
     if ( ok )
     {
       if ( currentCoordMode == QObject::tr( "feature" ) )
@@ -947,21 +942,13 @@ QgsShapeburstFillSymbolLayer::QgsShapeburstFillSymbolLayer( const QColor &color,
   : mBlurRadius( blurRadius )
   , mUseWholeShape( useWholeShape )
   , mMaxDistance( maxDistance )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
   , mColorType( colorType )
   , mColor2( color2 )
-  , mGradientRamp( nullptr )
-  , mTwoColorGradientRamp( nullptr )
-  , mIgnoreRings( false )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
 {
   mColor = color;
 }
 
-QgsShapeburstFillSymbolLayer::~QgsShapeburstFillSymbolLayer()
-{
-  delete mGradientRamp;
-}
+QgsShapeburstFillSymbolLayer::~QgsShapeburstFillSymbolLayer() = default;
 
 QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props )
 {
@@ -1016,7 +1003,7 @@ QgsSymbolLayer *QgsShapeburstFillSymbolLayer::create( const QgsStringMap &props 
 
   //attempt to create color ramp from props
   QgsColorRamp *gradientRamp = nullptr;
-  if ( props.contains( QStringLiteral( "rampType" ) ) && props["rampType"] == QStringLiteral( "cpt-city" ) )
+  if ( props.contains( QStringLiteral( "rampType" ) ) && props[QStringLiteral( "rampType" )] == QStringLiteral( "cpt-city" ) )
   {
     gradientRamp = QgsCptCityColorRamp::create( props );
   }
@@ -1065,8 +1052,10 @@ QString QgsShapeburstFillSymbolLayer::layerType() const
 
 void QgsShapeburstFillSymbolLayer::setColorRamp( QgsColorRamp *ramp )
 {
-  delete mGradientRamp;
-  mGradientRamp = ramp;
+  if ( mGradientRamp.get() == ramp )
+    return;
+
+  mGradientRamp.reset( ramp );
 }
 
 void QgsShapeburstFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext &context, QColor &color, QColor &color2, int &blurRadius, bool &useWholeShape,
@@ -1085,7 +1074,7 @@ void QgsShapeburstFillSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderCon
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertySecondaryColor ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodeColor( mColor2 ) );
-    color =  mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
+    color = mDataDefinedProperties.valueAsColor( QgsSymbolLayer::PropertySecondaryColor, context.renderContext().expressionContext(), mColor2 );
   }
 
   //blur radius
@@ -1180,9 +1169,10 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   //if we are using the two color mode, create a gradient ramp
+  std::unique_ptr< QgsGradientColorRamp > twoColorGradientRamp;
   if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
   {
-    mTwoColorGradientRamp = new QgsGradientColorRamp( color1, color2 );
+    twoColorGradientRamp = qgis::make_unique< QgsGradientColorRamp >( color1, color2 );
   }
 
   //no stroke for shapeburst fills
@@ -1191,23 +1181,37 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
   int sideBuffer = 4 + ( blurRadius + 2 ) * 4;
   //create a QImage to draw shapeburst in
-  double imWidth = points.boundingRect().width() + ( sideBuffer * 2 );
-  double imHeight = points.boundingRect().height() + ( sideBuffer * 2 );
-  QImage *fillImage = new QImage( imWidth,
-                                  imHeight, QImage::Format_ARGB32_Premultiplied );
+  int pointsWidth = static_cast< int >( std::round( points.boundingRect().width() ) );
+  int pointsHeight = static_cast< int >( std::round( points.boundingRect().height() ) );
+  int imWidth = pointsWidth + ( sideBuffer * 2 );
+  int imHeight = pointsHeight + ( sideBuffer * 2 );
+  std::unique_ptr< QImage > fillImage = qgis::make_unique< QImage >( imWidth,
+                                        imHeight, QImage::Format_ARGB32_Premultiplied );
+  if ( fillImage->isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for shapeburst fill" ) );
+    return;
+  }
+
+  //also create an image to store the alpha channel
+  std::unique_ptr< QImage > alphaImage = qgis::make_unique< QImage >( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
+  if ( alphaImage->isNull() )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Could not allocate sufficient memory for shapeburst fill" ) );
+    return;
+  }
+
   //Fill this image with black. Initially the distance transform is drawn in greyscale, where black pixels have zero distance from the
   //polygon boundary. Since we don't care about pixels which fall outside the polygon, we start with a black image and then draw over it the
   //polygon in white. The distance transform function then fills in the correct distance values for the white pixels.
   fillImage->fill( Qt::black );
 
-  //also create an image to store the alpha channel
-  QImage *alphaImage = new QImage( fillImage->width(), fillImage->height(), QImage::Format_ARGB32_Premultiplied );
   //initially fill the alpha channel image with a transparent color
   alphaImage->fill( Qt::transparent );
 
   //now, draw the polygon in the alpha channel image
   QPainter imgPainter;
-  imgPainter.begin( alphaImage );
+  imgPainter.begin( alphaImage.get() );
   imgPainter.setRenderHint( QPainter::Antialiasing, true );
   imgPainter.setBrush( QBrush( Qt::white ) );
   imgPainter.setPen( QPen( Qt::black ) );
@@ -1217,7 +1221,7 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
 
   //now that we have a render of the polygon in white, draw this onto the shapeburst fill image too
   //(this avoids calling _renderPolygon twice, since that can be slow)
-  imgPainter.begin( fillImage );
+  imgPainter.begin( fillImage.get() );
   if ( !ignoreRings )
   {
     imgPainter.drawImage( 0, 0, *alphaImage );
@@ -1235,18 +1239,14 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   imgPainter.end();
 
   //apply distance transform to image, uses the current color ramp to calculate final pixel colors
-  double *dtArray = distanceTransform( fillImage );
+  double *dtArray = distanceTransform( fillImage.get() );
 
   //copy distance transform values back to QImage, shading by appropriate color ramp
-  dtArrayToQImage( dtArray, fillImage, mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? mTwoColorGradientRamp : mGradientRamp,
+  dtArrayToQImage( dtArray, fillImage.get(), mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor ? twoColorGradientRamp.get() : mGradientRamp.get(),
                    context.opacity(), useWholeShape, outputPixelMaxDist );
 
   //clean up some variables
   delete [] dtArray;
-  if ( mColorType == QgsShapeburstFillSymbolLayer::SimpleTwoColor )
-  {
-    delete mTwoColorGradientRamp;
-  }
 
   //apply blur if desired
   if ( blurRadius > 0 )
@@ -1255,12 +1255,12 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   //apply alpha channel to distance transform image, so that areas outside the polygon are transparent
-  imgPainter.begin( fillImage );
+  imgPainter.begin( fillImage.get() );
   imgPainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
   imgPainter.drawImage( 0, 0, *alphaImage );
   imgPainter.end();
   //we're finished with the alpha channel image now
-  delete alphaImage;
+  alphaImage.reset();
 
   //draw shapeburst image in correct place in the destination painter
 
@@ -1274,8 +1274,6 @@ void QgsShapeburstFillSymbolLayer::renderPolygon( const QPolygonF &points, QList
   }
 
   p->drawImage( points.boundingRect().left() - sideBuffer, points.boundingRect().top() - sideBuffer, *fillImage );
-
-  delete fillImage;
 
   if ( !mOffset.isNull() )
   {
@@ -1550,10 +1548,6 @@ QgsMapUnitScale QgsShapeburstFillSymbolLayer::mapUnitScale() const
 //QgsImageFillSymbolLayer
 
 QgsImageFillSymbolLayer::QgsImageFillSymbolLayer()
-  : mNextAngle( 0.0 )
-  , mStrokeWidth( 0.0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mStroke( nullptr )
 {
   setSubSymbol( new QgsLineSymbol() );
 }
@@ -1678,7 +1672,7 @@ double QgsImageFillSymbolLayer::dxfWidth( const QgsDxfExport &e, QgsSymbolRender
     context.setOriginalValueVariable( mStrokeWidth );
     width = mDataDefinedProperties.valueAsDouble( QgsSymbolLayer::PropertyWidth, context.renderContext().expressionContext(), mStrokeWidth );
   }
-  return width * e.mapUnitScaleFactor( e.symbologyScale(), mStrokeWidthUnit, e.mapUnits() );
+  return width * e.mapUnitScaleFactor( e.symbologyScale(), mStrokeWidthUnit, e.mapUnits(), context.renderContext().mapToPixel().mapUnitsPerPixel() );
 }
 
 QColor QgsImageFillSymbolLayer::dxfColor( QgsSymbolRenderContext &context ) const
@@ -1727,7 +1721,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
   mSvgPattern = nullptr;
@@ -1744,7 +1738,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 0, 0, 0 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
@@ -1945,12 +1939,12 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
   {
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
-    const QImage &patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                                 context.renderContext().scaleFactor(), fitsInCache );
+    QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
+                          context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
-      const QPicture &patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                                    context.renderContext().scaleFactor() );
+      QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
+                             context.renderContext().scaleFactor() );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -2142,7 +2136,7 @@ QgsSymbolLayer *QgsSVGFillSymbolLayer::createFromSld( QDomElement &element )
 
   QgsSymbolLayerUtils::lineFromSld( graphicElem, penStyle, strokeColor, strokeWidth );
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
 
@@ -2203,7 +2197,8 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &co
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
   {
     context.setOriginalValueVariable( mSvgFilePath );
-    svgFile = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath );
+    svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath ),
+              context.renderContext().pathResolver() );
   }
   QColor svgFillColor = mColor;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )
@@ -2290,14 +2285,6 @@ void QgsSVGFillSymbolLayer::setDefaultSvgParams()
 
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mDistance( 5.0 )
-  , mDistanceUnit( QgsUnitTypes::RenderMillimeters )
-  , mLineWidth( 0 )
-  , mLineWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mLineAngle( 45.0 )
-  , mOffset( 0.0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mFillLineSymbol( nullptr )
 {
   setSubSymbol( new QgsLineSymbol() );
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //no stroke
@@ -2967,7 +2954,7 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
     offset = std::sqrt( std::pow( vectOffset.x(), 2 ) + std::pow( vectOffset.y(), 2 ) );
   }
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   lineWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, lineWidth );
 
@@ -3000,15 +2987,6 @@ QgsSymbolLayer *QgsLinePatternFillSymbolLayer::createFromSld( QDomElement &eleme
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer()
   : QgsImageFillSymbolLayer()
-  , mMarkerSymbol( nullptr )
-  , mDistanceX( 15 )
-  , mDistanceXUnit( QgsUnitTypes::RenderMillimeters )
-  , mDistanceY( 15 )
-  , mDistanceYUnit( QgsUnitTypes::RenderMillimeters )
-  , mDisplacementX( 0 )
-  , mDisplacementXUnit( QgsUnitTypes::RenderMillimeters )
-  , mDisplacementY( 0 )
-  , mDisplacementYUnit( QgsUnitTypes::RenderMillimeters )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -3166,6 +3144,11 @@ void QgsPointPatternFillSymbolLayer::applyPattern( const QgsSymbolRenderContext 
     pointRenderContext.setRendererScale( context.renderContext().rendererScale() );
     pointRenderContext.setPainter( &p );
     pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+    if ( context.renderContext().flags() & QgsRenderContext::Antialiasing )
+    {
+      pointRenderContext.setFlag( QgsRenderContext::Antialiasing, true );
+      p.setRenderHint( QPainter::Antialiasing, true );
+    }
     QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() );
     pointRenderContext.setMapToPixel( mtp );
     pointRenderContext.setForceVectorOutput( false );
@@ -3383,11 +3366,6 @@ QColor QgsPointPatternFillSymbolLayer::color() const
 
 
 QgsCentroidFillSymbolLayer::QgsCentroidFillSymbolLayer()
-  : mMarker( nullptr )
-  , mPointOnSurface( false )
-  , mPointOnAllParts( true )
-  , mCurrentFeatureId( -1 )
-  , mBiggestPartIndex( -1 )
 {
   setSubSymbol( new QgsMarkerSymbol() );
 }
@@ -3452,8 +3430,8 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
 
         if ( context.geometryPartCount() > 1 )
         {
-          QgsGeometry geom = feature->geometry();
-          const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.geometry() );
+          const QgsGeometry geom = feature->geometry();
+          const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
 
           double area = 0;
           double areaBiggest = 0;
@@ -3470,8 +3448,6 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
       }
     }
   }
-
-  QgsDebugMsg( QString( "num: %1, count: %2" ).arg( context.geometryPartNum() ).arg( context.geometryPartCount() ) );
 
   if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
   {
@@ -3595,10 +3571,6 @@ QgsMapUnitScale QgsCentroidFillSymbolLayer::mapUnitScale() const
 QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath )
   : QgsImageFillSymbolLayer()
   , mImageFilePath( imageFilePath )
-  , mCoordinateMode( QgsRasterFillSymbolLayer::Feature )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mWidth( 0.0 )
-  , mWidthUnit( QgsUnitTypes::RenderPixels )
 {
   QgsImageFillSymbolLayer::setSubSymbol( nullptr ); //disable sub symbol
 }
@@ -3662,6 +3634,18 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
   return symbolLayer;
+}
+
+void QgsRasterFillSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = pathResolver.writePath( it.value() );
+    else
+      it.value() = pathResolver.readPath( it.value() );
+  }
 }
 
 bool QgsRasterFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
@@ -3812,7 +3796,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( hasFileExpression )
   {
     context.setOriginalValueVariable( mImageFilePath );
-    file = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file );
+    file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
   applyPattern( mBrush, file, width, opacity, context );
 }

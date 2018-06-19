@@ -12,10 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #ifndef QGSGLOBEFEATURESOURCE_H
 #define QGSGLOBEFEATURESOURCE_H
 
 #include <osgEarthFeatures/FeatureSource>
+#include <osgEarth/Version>
 #include <QObject>
 
 #include "qgsglobefeatureoptions.h"
@@ -38,10 +40,16 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
     const char *className() const override { return "QGISFeatureSource"; }
     const char *libraryName() const override { return "QGIS"; }
 
-    void initialize( const osgDB::Options *dbOptions ) override;
+#if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
+    osgEarth::Status initialize( const osgDB::Options *dbOptions );
+#else
+    void initialize( const osgDB::Options *dbOptions );
+#endif
 
   protected:
+#if OSGEARTH_VERSION_LESS_THAN(2, 8, 0)
     const osgEarth::Features::FeatureProfile *createFeatureProfile() override { return mProfile; }
+#endif
     const osgEarth::Features::FeatureSchema &getSchema() const override { return mSchema; }
 
     ~QgsGlobeFeatureSource() {}
@@ -49,7 +57,9 @@ class QgsGlobeFeatureSource : public QObject, public osgEarth::Features::Feature
   private:
     QgsGlobeFeatureOptions mOptions;
     QgsVectorLayer *mLayer = nullptr;
+#if OSGEARTH_VERSION_LESS_THAN(2, 8, 0)
     osgEarth::Features::FeatureProfile *mProfile = nullptr;
+#endif
     osgEarth::Features::FeatureSchema mSchema;
     typedef std::map<osgEarth::Features::FeatureID, osg::observer_ptr<osgEarth::Features::Feature> > FeatureMap_t;
     FeatureMap_t mFeatures;

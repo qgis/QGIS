@@ -31,16 +31,12 @@
 
 #define KNOTS_TO_KMH 1.852
 
-QgsNMEAConnection::QgsNMEAConnection( QIODevice *dev ): QgsGPSConnection( dev )
+QgsNmeaConnection::QgsNmeaConnection( QIODevice *device )
+  : QgsGpsConnection( device )
 {
 }
 
-QgsNMEAConnection::~QgsNMEAConnection()
-{
-  //connection will be closed by base class
-}
-
-void QgsNMEAConnection::parseData()
+void QgsNmeaConnection::parseData()
 {
   if ( !mSource )
   {
@@ -74,7 +70,7 @@ void QgsNMEAConnection::parseData()
   }
 }
 
-void QgsNMEAConnection::processStringBuffer()
+void QgsNmeaConnection::processStringBuffer()
 {
   int endSentenceIndex = 0;
   int dollarIndex;
@@ -99,35 +95,35 @@ void QgsNMEAConnection::processStringBuffer()
         if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) )
         {
           QgsDebugMsg( substring );
-          processGGASentence( ba.data(), ba.length() );
+          processGgaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsg( substring );
-          processRMCSentence( ba.data(), ba.length() );
+          processRmcSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) )
         {
           QgsDebugMsg( substring );
-          processGSVSentence( ba.data(), ba.length() );
+          processGsvSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPVTG" ) ) )
         {
           QgsDebugMsg( substring );
-          processVTGSentence( ba.data(), ba.length() );
+          processVtgSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) )
         {
           QgsDebugMsg( substring );
-          processGSASentence( ba.data(), ba.length() );
+          processGsaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
@@ -138,7 +134,7 @@ void QgsNMEAConnection::processStringBuffer()
   }
 }
 
-void QgsNMEAConnection::processGGASentence( const char *data, int len )
+void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 {
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
@@ -163,7 +159,7 @@ void QgsNMEAConnection::processGGASentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processRMCSentence( const char *data, int len )
+void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
@@ -200,7 +196,7 @@ void QgsNMEAConnection::processRMCSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSVSentence( const char *data, int len )
+void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 {
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
@@ -229,7 +225,7 @@ void QgsNMEAConnection::processGSVSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processVTGSentence( const char *data, int len )
+void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
@@ -238,7 +234,7 @@ void QgsNMEAConnection::processVTGSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSASentence( const char *data, int len )
+void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )

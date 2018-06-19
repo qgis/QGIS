@@ -46,41 +46,51 @@
 class QgsServerResponse;
 class QgsProject;
 
-/** \ingroup server
+/**
+ * \ingroup server
  * The QgsServer class provides OGC web services.
  */
 class SERVER_EXPORT QgsServer
 {
   public:
 
-    /** Creates the server instance
+    /**
+     * Creates the server instance
      */
     QgsServer();
 
-    /** Set environment variable
+    /**
+     * Set environment variable
      * \param var environment variable name
      * \param val value
      * \since QGIS 2.14
      */
     void putenv( const QString &var, const QString &val );
 
-    /** Handles the request.
+    /**
+     * Handles the request.
      * The query string is normally read from environment
      * but can be also passed in args and in this case overrides the environment
      * variable
      *
      * \param request a QgsServerRequest holding request parameters
      * \param response a QgsServerResponse for handling response I/O)
+     * \param project a QgsProject or nullptr, if it is nullptr the project
+     *        is created from the MAP param specified in request or from
+     *        the QGIS_PROJECT_FILE setting
      */
-    void handleRequest( QgsServerRequest &request, QgsServerResponse &response );
+    void handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project = nullptr );
 
 
     //! Returns a pointer to the server interface
     QgsServerInterfaceImpl SIP_PYALTERNATIVETYPE( QgsServerInterface ) *serverInterface() { return sServerInterface; }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-    //! Initialize Python
-    //! Note: not in Python bindings
+
+    /**
+     * Initialize Python
+     * Note: not in Python bindings
+     */
     void initPython();
 #endif
 
@@ -93,8 +103,9 @@ class SERVER_EXPORT QgsServer
     //! Server initialization
     static bool init();
 
-    // All functions that where previously in the main file are now
-    // static methods of this class
+    /**
+     * Returns the configuration file path.
+     */
     static QString configPath( const QString &defaultConfigPath,
                                const QMap<QString, QString> &parameters );
 
@@ -105,11 +116,19 @@ class SERVER_EXPORT QgsServer
      */
     static void printRequestParameters(
       const QMap< QString, QString> &parameterMap,
-      QgsMessageLog::MessageLevel logLevel );
+      Qgis::MessageLevel logLevel );
 
+    /**
+     * Returns the default project file.
+     */
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();
+
+    /**
+     * \brief QgsServer::setupNetworkAccessManager
+     */
     static void setupNetworkAccessManager();
+
     //! Create and return a request handler instance
     static QgsRequestHandler *createRequestHandler( const QgsServerRequest &request, QgsServerResponse &response );
 
@@ -124,12 +143,11 @@ class SERVER_EXPORT QgsServer
     static bool sInitialized;
 
     //! service registry
-    static QgsServiceRegistry sServiceRegistry;
+    static QgsServiceRegistry *sServiceRegistry;
 
     static QgsServerSettings sSettings;
 
     //! cache
-    QgsConfigCache *mConfigCache;
+    QgsConfigCache *mConfigCache = nullptr;
 };
 #endif // QGSSERVER_H
-

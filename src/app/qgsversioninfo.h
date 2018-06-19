@@ -25,13 +25,6 @@ class QgsVersionInfo : public QObject
   public:
     explicit QgsVersionInfo( QObject *parent = nullptr );
 
-  public slots:
-
-    /**
-     * Connects to qgis.org and checks for new versions.
-     */
-    void checkVersion();
-
     QString html() const { return mAdditionalHtml; }
 
     QString downloadInfo() const { return mDownloadInfo; }
@@ -46,6 +39,13 @@ class QgsVersionInfo : public QObject
 
     QString errorString() const { return mErrorString; }
 
+  public slots:
+
+    /**
+     * Connects to qgis.org and checks for new versions.
+     */
+    void checkVersion();
+
   private slots:
     void versionReplyFinished();
 
@@ -53,10 +53,10 @@ class QgsVersionInfo : public QObject
     void versionInfoAvailable();
 
   private:
-    int mLatestVersion;
+    int mLatestVersion = 0;
     QString mDownloadInfo;
     QString mAdditionalHtml;
-    QNetworkReply::NetworkError mError;
+    QNetworkReply::NetworkError mError = QNetworkReply::NoError;
     QString mErrorString;
 };
 

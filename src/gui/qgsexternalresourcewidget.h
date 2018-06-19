@@ -38,7 +38,8 @@ class QgsPixmapLabel;
 #endif
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget to display file path with a push button for an "open file" dialog
  * It can also be used to display a picture or a web page.
  **/
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 
     //! returns if the file widget is visible in the widget
     bool fileWidgetVisible() const;
-    //! set the visiblity of the file widget in the layout
+    //! Sets the visiblity of the file widget in the layout
     void setFileWidgetVisible( bool visible );
 
     //! returns the type of content used in the document viewer
@@ -106,7 +107,7 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
      */
     void setDocumentViewerHeight( int height );
     //! returns the width of the document viewer
-    int documentViewerWidth() const ;
+    int documentViewerWidth() const;
 
     /**
      * \brief setDocumentViewerWidth set the width of the document viewer.
@@ -155,11 +156,11 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     QString resolvePath( const QString &path );
 
     //! properties
-    bool mFileWidgetVisible;
-    DocumentViewerContent mDocumentViewerContent;
-    int mDocumentViewerHeight;
-    int mDocumentViewerWidth;
-    QgsFileWidget::RelativeStorage mRelativeStorage;
+    bool mFileWidgetVisible = true;
+    DocumentViewerContent mDocumentViewerContent = NoContent;
+    int mDocumentViewerHeight = 0;
+    int mDocumentViewerWidth = 0;
+    QgsFileWidget::RelativeStorage mRelativeStorage = QgsFileWidget::Absolute;
     QString mDefaultRoot; // configured default root path for QgsFileWidget::RelativeStorage::RelativeDefaultPath
 
     //! UI objects

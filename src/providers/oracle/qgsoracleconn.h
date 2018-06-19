@@ -28,6 +28,7 @@
 #include <QDateTime>
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
 #include <QSqlDatabase>
@@ -43,13 +44,11 @@ struct QgsOracleLayerProperty
   QString              ownerName;
   QString              tableName;
   QString              geometryColName;
-  bool                 isView;
+  bool                 isView = false;
   QStringList          pkCols;
   QString              sql;
 
-  QgsOracleLayerProperty()
-    : isView( false )
-  {}
+  QgsOracleLayerProperty() = default;
 
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
@@ -78,7 +77,7 @@ struct QgsOracleLayerProperty
     return property;
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   QString toString() const
   {
     QString typeString;
@@ -116,27 +115,40 @@ class QgsOracleConn : public QObject
     static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
     void disconnect();
 
-    /** Double quote a Oracle identifier for placement in a SQL string.
+    /**
+     * Double quote a Oracle identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( QString ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
-    //! Get the list of supported layers
+    /**
+     * Gets the list of supported layers.
+     *
+     * If \a limitToSchema is specified, than only layers from the matching schema will be
+     * returned.
+     *
+     */
     bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
+                          const QString &limitToSchema,
                           bool geometryTablesOnly,
                           bool userTablesOnly = true,
                           bool allowGeometrylessTables = false );
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
-    //! Gets information about the spatial tables
-    bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
+    /**
+     * Gets information about the spatial tables.
+     *
+     * If \a schema is specified, only tables from this schema will be retrieved.
+     */
+    bool tableInfo( const QString &schema, bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    //! Get primary key candidates (all int4 columns)
-    QStringList pkCandidates( QString ownerName, QString viewName );
+    //! Gets primary key candidates (all int4 columns)
+    QStringList pkCandidates( const QString &ownerName, const QString &viewName );
 
     static QString fieldExpression( const QgsField &fld );
 
@@ -151,30 +163,31 @@ class QgsOracleConn : public QObject
     static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
     static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( QString alias, QString geomCol, QgsWkbTypes::Type wkbType );
+    static QString databaseTypeFilter( const QString &alias, QString geomCol, QgsWkbTypes::Type wkbType );
 
     static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( QString connName );
-    static QgsDataSourceUri connUri( QString connName );
-    static bool userTablesOnly( QString connName );
-    static bool geometryColumnsOnly( QString connName );
-    static bool allowGeometrylessTables( QString connName );
-    static bool estimatedMetadata( QString connName );
-    static bool onlyExistingTypes( QString connName );
-    static void deleteConnection( QString connName );
-    static QString databaseName( QString database, QString host, QString port );
+    static void setSelectedConnection( const QString &connName );
+    static QgsDataSourceUri connUri( const QString &connName );
+    static bool userTablesOnly( const QString &connName );
+    static QString restrictToSchema( const QString &connName );
+    static bool geometryColumnsOnly( const QString &connName );
+    static bool allowGeometrylessTables( const QString &connName );
+    static bool estimatedMetadata( const QString &connName );
+    static bool onlyExistingTypes( const QString &connName );
+    static void deleteConnection( const QString &connName );
+    static QString databaseName( const QString &database, const QString &host, const QString &port );
     static QString toPoolName( const QgsDataSourceUri &uri );
 
     operator QSqlDatabase() { return mDatabase; }
 
   private:
     explicit QgsOracleConn( QgsDataSourceUri uri );
-    ~QgsOracleConn();
+    ~QgsOracleConn() override;
 
-    bool exec( QSqlQuery &qry, QString sql, const QVariantList &params );
+    bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
 
     //! reference count
     int mRef;

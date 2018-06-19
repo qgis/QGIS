@@ -35,27 +35,50 @@
      </column>
      <column>
       <property name="text">
-       <string>Referencing Layer</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Referencing Field</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
        <string>Referenced Layer</string>
+      </property>
+      <property name="toolTip">
+       <string>Referenced Layer (Parent)</string>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Referenced Field</string>
       </property>
+      <property name="toolTip">
+       <string>Referenced Field</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Referencing Layer</string>
+      </property>
+      <property name="toolTip">
+       <string>Referencing Layer (Child)</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Referencing Field</string>
+      </property>
+      <property name="toolTip">
+       <string>Referencing Field</string>
+      </property>
      </column>
      <column>
       <property name="text">
        <string>Id</string>
+      </property>
+      <property name="toolTip">
+       <string>Id</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Strength</string>
+      </property>
+      <property name="toolTip">
+       <string>Strength</string>
       </property>
      </column>
     </widget>

@@ -20,55 +20,56 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgsmultisurface.h"
 
-/** \ingroup core
- * \class QgsMultiPolygonV2
+/**
+ * \ingroup core
+ * \class QgsMultiPolygon
  * \brief Multi polygon geometry collection.
  * \since QGIS 2.10
  */
-class CORE_EXPORT QgsMultiPolygonV2: public QgsMultiSurface
+class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 {
   public:
-    QgsMultiPolygonV2();
-    virtual QString geometryType() const override { return QStringLiteral( "MultiPolygon" ); }
-    QgsMultiPolygonV2 *clone() const override SIP_FACTORY;
-
+    QgsMultiPolygon();
+    QString geometryType() const override;
+    void clear() override;
+    QgsMultiPolygon *clone() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml", QgsAbstractGeometry::AxisOrder axisOrder = QgsAbstractGeometry::AxisOrder::XY ) const override;
+    QString asJson( int precision = 17 ) const override;
+    bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
+    bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
-    // inherited: int wkbSize() const;
-    // inherited: unsigned char* asWkb( int& binarySize ) const;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
-
-    //! Adds a geometry and takes ownership. Returns true in case of success
-    virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
-
-    /** Returns the geometry converted to the more generic curve type QgsMultiSurface
+    /**
+     * Returns the geometry converted to the more generic curve type QgsMultiSurface
     \returns the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override SIP_FACTORY;
+    QgsMultiSurface *toCurveType() const override SIP_FACTORY;
 
-    virtual QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 #ifndef SIP_RUN
 
     /**
      * Cast the \a geom to a QgsMultiPolygonV2.
-     * Should be used by qgsgeometry_cast<QgsMultiPolygonV2 *>( geometry ).
+     * Should be used by qgsgeometry_cast<QgsMultiPolygon *>( geometry ).
      *
      * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
      * \since QGIS 3.0
      */
-    inline const QgsMultiPolygonV2 *cast( const QgsAbstractGeometry *geom ) const
+    inline const QgsMultiPolygon *cast( const QgsAbstractGeometry *geom ) const
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == QgsWkbTypes::MultiPolygon )
-        return static_cast<const QgsMultiPolygonV2 *>( geom );
+        return static_cast<const QgsMultiPolygon *>( geom );
       return nullptr;
     }
 #endif
 
+    QgsMultiPolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
   protected:
 
-    virtual bool wktOmitChildType() const override { return true; }
+    bool wktOmitChildType() const override;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSMULTIPOLYGONV2_H

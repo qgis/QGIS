@@ -25,7 +25,8 @@
 
 class QgsStyle;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsStyleGroupSelectionDialog
  */
 class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
@@ -34,7 +35,7 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
 
   public:
     QgsStyleGroupSelectionDialog( QgsStyle *style, QWidget *parent = nullptr );
-    //! Set bold font for item
+    //! Sets bold font for item
     void setBold( QStandardItem *item );
 
   signals:

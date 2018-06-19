@@ -35,7 +35,7 @@
 #ifndef COORDINATECAPTURE_H
 #define COORDINATECAPTURE_H
 
-//QT4 includes
+//QT includes
 #include <QObject>
 #include <QPointer>
 
@@ -81,11 +81,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
      */
     explicit CoordinateCapture( QgisInterface *interface );
 
-    virtual ~CoordinateCapture();
-
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
@@ -94,12 +92,13 @@ class CoordinateCapture: public QObject, public QgisPlugin
     void showOrHide();
     //! show the help document
     void help();
-    //! Set the Coordinate Reference System used for displaying non canvas CRS coord
+    //! Sets the Coordinate Reference System used for displaying non canvas CRS coord
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
     void mouseClicked( const QgsPointXY &point );
 
-    /** Called when mouse moved over the canvas. If the tracking button is toggled,
+    /**
+     * Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
     void mouseMoved( const QgsPointXY &point );
     //! Called when mouse is clicked on the canvas
@@ -146,7 +145,7 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! user coordinate display precision
     int mUserCrsDisplayPrecision;
 
-    //! Get the path to the icon from the best available theme
+    //! Gets the path to the icon from the best available theme
     QString getIconPath( const QString &name );
 
     ////////////////////////////////////////////////////////////////////

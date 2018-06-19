@@ -23,7 +23,7 @@
 
 QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget *parent )
   : QWidget( parent )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 }

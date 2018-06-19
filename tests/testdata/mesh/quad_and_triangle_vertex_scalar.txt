@@ -1,0 +1,10 @@
+Vertex Scalar
+---
+name: VertexScalarDataset
+time: 0
+---
+1
+2
+3
+2
+1

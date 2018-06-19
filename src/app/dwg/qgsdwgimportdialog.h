@@ -29,23 +29,23 @@ class QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBase
     Q_OBJECT
   public:
     QgsDwgImportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsDwgImportDialog();
+    ~QgsDwgImportDialog() override;
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_pbBrowseDatabase_clicked();
-    void on_pbBrowseDrawing_clicked();
-    void on_pbImportDrawing_clicked();
-    void on_pbLoadDatabase_clicked();
-    void on_pbSelectAll_clicked();
-    void on_pbDeselectAll_clicked();
-    void on_leDatabase_textChanged( const QString &text );
-    void on_leLayerGroup_textChanged( const QString &text );
+    void buttonBox_accepted();
+    void pbBrowseDatabase_clicked();
+    void pbBrowseDrawing_clicked();
+    void pbImportDrawing_clicked();
+    void pbLoadDatabase_clicked();
+    void pbSelectAll_clicked();
+    void pbDeselectAll_clicked();
+    void leDatabase_textChanged( const QString &text );
+    void leLayerGroup_textChanged( const QString &text );
     void showHelp();
 
   private:
-    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, QString layer, QString table );
-    void createGroup( QgsLayerTreeGroup *group, QString name, QStringList layers, bool visible );
+    QgsVectorLayer *layer( QgsLayerTreeGroup *layerGroup, const QString &layer, const QString &table );
+    void createGroup( QgsLayerTreeGroup *group, const QString &name, const QStringList &layers, bool visible );
     void updateUI();
     void expandInserts();
     void updateCheckState( Qt::CheckState state );

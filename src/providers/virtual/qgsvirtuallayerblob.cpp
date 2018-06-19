@@ -16,19 +16,8 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 
 #include "qgsvirtuallayerblob.h"
-#include <string.h>
+#include <cstring>
 #include <limits>
-
-SpatialiteBlobHeader::SpatialiteBlobHeader()
-  : start( 0x00 )
-  , endianness( 0x01 )
-  , srid( -1 )
-  , mbrMinX( -DBL_MAX )
-  , mbrMinY( -DBL_MAX )
-  , mbrMaxX( DBL_MAX )
-  , mbrMaxY( DBL_MAX )
-  , end( 0x7C )
-{}
 
 void SpatialiteBlobHeader::readFrom( const char *p )
 {
@@ -78,7 +67,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 {
   const int header_len = SpatialiteBlobHeader::LENGTH;
 
-  QByteArray wkb( geom.exportToWkb() );
+  QByteArray wkb( geom.asWkb() );
 
   const int wkb_size = wkb.length();
   size = header_len + wkb_size;
@@ -220,7 +209,7 @@ void copySpatialiteCollectionWkbToQgsGeometry( const char *iwkb, char *owkb, uin
 QgsGeometry spatialiteBlobToQgsGeometry( const char *blob, size_t size )
 {
   const int header_size = SpatialiteBlobHeader::LENGTH;
-  const int wkb_size = static_cast< const int >( size - header_size );
+  const int wkb_size = static_cast< int >( size - header_size );
   char *wkb = new char[wkb_size];
 
   uint32_t osize = 0;

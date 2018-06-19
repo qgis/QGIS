@@ -237,7 +237,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             fielddata = dict((name, str(f[name])) for name in fields)
             g = f.geometry()
             if not g.isNull():
-                fielddata[geomkey] = str(g.exportToWkt())
+                fielddata[geomkey] = str(g.asWkt())
             else:
                 fielddata[geomkey] = "None"
 

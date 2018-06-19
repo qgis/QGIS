@@ -64,6 +64,7 @@ const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() cons
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
 {
   mModelOutputs = modelOutputs;
+
   QMap<QString, QgsProcessingModelOutput>::iterator outputIt = mModelOutputs.begin();
   for ( ; outputIt != mModelOutputs.end(); ++outputIt )
   {
@@ -71,6 +72,12 @@ void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsP
     outputIt->setName( outputIt.key() );
     outputIt->setChildId( mId );
   }
+}
+
+bool QgsProcessingModelChildAlgorithm::removeModelOutput( const QString &name )
+{
+  mModelOutputs.remove( name );
+  return true;
 }
 
 QVariant QgsProcessingModelChildAlgorithm::toVariant() const
@@ -97,7 +104,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
     }
     paramMap.insert( paramIt.key(), sources );
   }
-  map.insert( "params", paramMap );
+  map.insert( QStringLiteral( "params" ), paramMap );
 
   QVariantMap outputMap;
   QMap< QString, QgsProcessingModelOutput >::const_iterator outputIt = mModelOutputs.constBegin();
@@ -105,7 +112,7 @@ QVariant QgsProcessingModelChildAlgorithm::toVariant() const
   {
     outputMap.insert( outputIt.key(), outputIt.value().toVariant() );
   }
-  map.insert( "outputs", outputMap );
+  map.insert( QStringLiteral( "outputs" ), outputMap );
 
   return map;
 }

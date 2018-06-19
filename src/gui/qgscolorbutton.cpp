@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorwidgets.h"
@@ -34,25 +33,15 @@
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
+#include <QScreen>
 #include <QLabel>
 #include <QGridLayout>
 #include <QPushButton>
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )
-  , mBehavior( QgsColorButton::ShowDialog )
   , mColorDialogTitle( cdt.isEmpty() ? tr( "Select Color" ) : cdt )
-  , mColor( QColor() )
-  , mDefaultColor( QColor() ) //default to invalid color
-  , mAllowOpacity( false )
-  , mAcceptLiveUpdates( true )
-  , mColorSet( false )
-  , mShowNoColorOption( false )
   , mNoColorString( tr( "No color" ) )
-  , mShowNull( false )
-  , mPickingColor( false )
-  , mMenu( nullptr )
-
 {
   //if a color scheme registry was specified, use it, otherwise use the global instance
   mColorSchemeRegistry = registry ? registry : QgsApplication::colorSchemeRegistry();
@@ -73,7 +62,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize = QSize( 120, 28 );
 #endif
 
-  mMinimumSize.setHeight( std::max( static_cast<int>( fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
+  mMinimumSize.setHeight( std::max( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 }
 
 
@@ -121,32 +110,22 @@ void QgsColorButton::showColorDialog()
   QColor newColor;
   QgsSettings settings;
 
-  if ( mAcceptLiveUpdates && settings.value( QStringLiteral( "qgis/live_color_dialogs" ), false ).toBool() )
+  // first check if we need to use the limited native dialogs
+  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  if ( useNative )
   {
-    // live updating dialog - QgsColorDialog will automatically use native dialog if option is set
-    newColor = QgsColorDialog::getLiveColor(
-                 color(), this, SLOT( setValidColor( const QColor & ) ),
-                 this, mColorDialogTitle, mAllowOpacity );
+    // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
+    newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
   }
   else
   {
-    // not using live updating dialog - first check if we need to use the limited native dialogs
-    bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
-    if ( useNative )
-    {
-      // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
-      newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
-    }
-    else
-    {
-      QgsColorDialog dialog( this, 0, color() );
-      dialog.setTitle( mColorDialogTitle );
-      dialog.setAllowOpacity( mAllowOpacity );
+    QgsColorDialog dialog( this, nullptr, color() );
+    dialog.setTitle( mColorDialogTitle );
+    dialog.setAllowOpacity( mAllowOpacity );
 
-      if ( dialog.exec() )
-      {
-        newColor = dialog.color();
-      }
+    if ( dialog.exec() )
+    {
+      newColor = dialog.color();
     }
   }
 
@@ -252,16 +231,7 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
 {
   if ( mPickingColor )
   {
-    //currently in color picker mode
-    if ( e->buttons() & Qt::LeftButton )
-    {
-      //if left button depressed, sample color under cursor and temporarily update button color
-      //to give feedback to user
-      QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), e->globalPos().x(), e->globalPos().y(), 1, 1 );
-      QImage snappedImage = snappedPixmap.toImage();
-      QColor hoverColor = snappedImage.pixel( 0, 0 );
-      setButtonBackground( hoverColor );
-    }
+    setButtonBackground( sampleColor( e->globalPos() ) );
     e->accept();
     return;
   }
@@ -303,25 +273,23 @@ void QgsColorButton::mouseReleaseEvent( QMouseEvent *e )
   QToolButton::mouseReleaseEvent( e );
 }
 
-void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
+void QgsColorButton::stopPicking( QPoint eventPos, bool samplingColor )
 {
   //release mouse and keyboard, and reset cursor
   releaseMouse();
   releaseKeyboard();
-  unsetCursor();
+  QgsApplication::restoreOverrideCursor();
+  setMouseTracking( false );
   mPickingColor = false;
 
-  if ( !sampleColor )
+  if ( !samplingColor )
   {
-    //not sampling color, nothing more to do
+    //not sampling color, restore old color
+    setButtonBackground( mCurrentColor );
     return;
   }
 
-  //grab snapshot of pixel under mouse cursor
-  QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), eventPos.x(), eventPos.y(), 1, 1 );
-  QImage snappedImage = snappedPixmap.toImage();
-  //extract color from pixel and set color
-  setColor( snappedImage.pixel( 0, 0 ) );
+  setColor( sampleColor( eventPos ) );
   addRecentColor( mColor );
 }
 
@@ -370,6 +338,31 @@ void QgsColorButton::dropEvent( QDropEvent *e )
     setColor( mimeColor );
     addRecentColor( mimeColor );
   }
+}
+
+QColor QgsColorButton::sampleColor( QPoint point ) const
+{
+
+  QScreen *screen = findScreenAt( point );
+  if ( ! screen )
+  {
+    return QColor();
+  }
+  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), point.x(), point.y(), 1, 1 );
+  QImage snappedImage = snappedPixmap.toImage();
+  return snappedImage.pixel( 0, 0 );
+}
+
+QScreen *QgsColorButton::findScreenAt( QPoint pos )
+{
+  for ( QScreen *screen : QGuiApplication::screens() )
+  {
+    if ( screen->geometry().contains( pos ) )
+    {
+      return screen;
+    }
+  }
+  return nullptr;
 }
 
 void QgsColorButton::setValidColor( const QColor &newColor )
@@ -440,7 +433,7 @@ void QgsColorButton::prepareMenu()
 
   if ( mShowNull )
   {
-    QAction *nullAction = new QAction( tr( "Clear color" ), this );
+    QAction *nullAction = new QAction( tr( "Clear Color" ), this );
     nullAction->setIcon( createMenuIcon( Qt::transparent, false ) );
     mMenu->addAction( nullAction );
     connect( nullAction, &QAction::triggered, this, &QgsColorButton::setToNull );
@@ -449,7 +442,7 @@ void QgsColorButton::prepareMenu()
   //show default color option if set
   if ( mDefaultColor.isValid() )
   {
-    QAction *defaultColorAction = new QAction( tr( "Default color" ), this );
+    QAction *defaultColorAction = new QAction( tr( "Default Color" ), this );
     defaultColorAction->setIcon( createMenuIcon( mDefaultColor ) );
     mMenu->addAction( defaultColorAction );
     connect( defaultColorAction, &QAction::triggered, this, &QgsColorButton::setToDefaultColor );
@@ -501,11 +494,11 @@ void QgsColorButton::prepareMenu()
 
   mMenu->addSeparator();
 
-  QAction *copyColorAction = new QAction( tr( "Copy color" ), this );
+  QAction *copyColorAction = new QAction( tr( "Copy Color" ), this );
   mMenu->addAction( copyColorAction );
   connect( copyColorAction, &QAction::triggered, this, &QgsColorButton::copyColor );
 
-  QAction *pasteColorAction = new QAction( tr( "Paste color" ), this );
+  QAction *pasteColorAction = new QAction( tr( "Paste Color" ), this );
   //enable or disable paste action based on current clipboard contents. We always show the paste
   //action, even if it's disabled, to give hint to the user that pasting colors is possible
   QColor clipColor;
@@ -523,11 +516,11 @@ void QgsColorButton::prepareMenu()
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
-  QAction *pickColorAction = new QAction( tr( "Pick color" ), this );
+  QAction *pickColorAction = new QAction( tr( "Pick Color" ), this );
   mMenu->addAction( pickColorAction );
   connect( pickColorAction, &QAction::triggered, this, &QgsColorButton::activatePicker );
 
-  QAction *chooseColorAction = new QAction( tr( "Choose color..." ), this );
+  QAction *chooseColorAction = new QAction( tr( "Choose Color…" ), this );
   mMenu->addAction( chooseColorAction );
   connect( chooseColorAction, &QAction::triggered, this, &QgsColorButton::showColorDialog );
 }
@@ -683,12 +676,14 @@ void QgsColorButton::pasteColor()
 
 void QgsColorButton::activatePicker()
 {
-  //pick color
-  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
-  setCursor( QCursor( samplerPixmap, 0, 0 ) );
+  //activate picker color
+  // Store current color
+  mCurrentColor = mColor;
+  QApplication::setOverrideCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;
+  setMouseTracking( true );
 }
 
 QColor QgsColorButton::color() const

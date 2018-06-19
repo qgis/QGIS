@@ -57,6 +57,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/symbologyAdd.svg'))
         self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.svg'))
 
+        self.cmbLayers.layerChanged.connect(self.layerChanged)
         self.cmbLayers.setFilters(QgsMapLayerProxyModel.VectorLayer)
         self.cmbFields.setFilters(QgsFieldProxyModel.Numeric)
         self.cmbFields.setLayer(self.cmbLayers.currentLayer())
@@ -80,8 +81,7 @@ class InterpolationDataWidget(BASE, WIDGET):
             return
         self.layersTree.invisibleRootItem().removeChild(item)
 
-    @pyqtSlot(QgsMapLayer)
-    def on_cmbLayers_layerChanged(self, layer):
+    def layerChanged(self, layer):
         self.chkUseZCoordinate.setEnabled(False)
         self.chkUseZCoordinate.setChecked(False)
 
@@ -114,7 +114,7 @@ class InterpolationDataWidget(BASE, WIDGET):
         self.layersTree.clear()
         rows = value.split(';')
         for i, r in enumerate(rows):
-            v = r.split(',')
+            v = r.split('::~::')
             self.addLayerData(v[0], v[1])
 
             comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
@@ -136,26 +136,26 @@ class InterpolationDataWidget(BASE, WIDGET):
                     continue
 
                 interpolationAttribute = item.text(1)
+                interpolationSource = QgsInterpolator.ValueAttribute
                 if interpolationAttribute == 'Z_COORD':
-                    zCoord = True
+                    interpolationSource = QgsInterpolator.ValueZ
                     fieldIndex = -1
                 else:
-                    zCoord = False
                     fieldIndex = layer.fields().indexFromName(interpolationAttribute)
 
                 comboBox = self.layersTree.itemWidget(self.layersTree.topLevelItem(i), 2)
                 inputTypeName = comboBox.currentText()
                 if inputTypeName == self.tr('Points'):
-                    inputType = QgsInterpolator.POINTS
+                    inputType = QgsInterpolator.SourcePoints
                 elif inputTypeName == self.tr('Structure lines'):
-                    inputType = QgsInterpolator.STRUCTURE_LINES
+                    inputType = QgsInterpolator.SourceStructureLines
                 else:
-                    inputType = QgsInterpolator.BREAK_LINES
+                    inputType = QgsInterpolator.SourceBreakLines
 
-            layers += '{},{},{:d},{:d};'.format(layer.source(),
-                                                zCoord,
-                                                fieldIndex,
-                                                inputType)
+            layers += '{}::~::{:d}::~::{:d}::~::{:d};'.format(layer.source(),
+                                                              interpolationSource,
+                                                              fieldIndex,
+                                                              inputType)
         return layers[:-1]
 
 

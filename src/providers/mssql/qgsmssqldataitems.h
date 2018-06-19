@@ -38,14 +38,16 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
+    QVariant sortKey() const override { return 4; }
+
 #ifdef HAVE_GUI
-    virtual QWidget *paramWidget() override;
-    virtual QList<QAction *> actions() override;
+    QWidget *paramWidget() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -55,16 +57,16 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsMssqlConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsMssqlConnectionItem();
+    ~QgsMssqlConnectionItem() override;
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     bool handleDrop( const QMimeData *data, const QString &toSchema );
 
@@ -114,8 +116,8 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlLayerItem *addLayer( const QgsMssqlLayerProperty &layerProperty, bool refresh );
     void refresh() override {} // do not refresh directly
     void addLayers( QgsDataItem *newLayers );
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 };
 
 class QgsMssqlLayerItem : public QgsLayerItem

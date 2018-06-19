@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QLayout>
 #include <QTextCodec>
+#include <QDialogButtonBox>
 
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
     const QString &caption, const QString &directory,
@@ -101,4 +102,65 @@ void QgsEncodingFileDialog::pbnCancelAll_clicked()
   mCancelAll = true;
   // Now, continue as the user clicked the cancel button
   reject();
+}
+
+QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const QString &caption, const QString &encoding, Qt::WindowFlags flags )
+  : QDialog( parent, flags )
+{
+  QString c = caption;
+  if ( c.isEmpty() )
+    c = tr( "Encoding" );
+
+  setWindowTitle( tr( "Select Encoding" ) );
+
+  QVBoxLayout *layout = new QVBoxLayout();
+  layout->setMargin( 6 );
+
+  mEncodingComboBox = new QComboBox( this );
+  QLabel *l = new QLabel( c, this );
+
+  QHBoxLayout *hLayout = new QHBoxLayout();
+  hLayout->addWidget( l );
+  hLayout->addWidget( mEncodingComboBox, 1 );
+  layout->addLayout( hLayout );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+      Qt::Horizontal, this );
+  buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  layout->addWidget( buttonBox );
+  setLayout( layout );
+
+  mEncodingComboBox->addItem( tr( "System" ) );
+  mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
+
+  // Use default encoding if none supplied
+  QString enc = encoding;
+  if ( encoding.isEmpty() )
+  {
+    QgsSettings settings;
+    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+  }
+
+  setEncoding( enc );
+}
+
+QString QgsEncodingSelectionDialog::encoding() const
+{
+  return mEncodingComboBox->currentText();
+}
+
+void QgsEncodingSelectionDialog::setEncoding( const QString &encoding )
+{
+  // The specified decoding is added if not existing alread, and then set current.
+  // This should select it.
+
+  int encindex = mEncodingComboBox->findText( encoding );
+  if ( encindex < 0 )
+  {
+    mEncodingComboBox->insertItem( 0, encoding );
+    encindex = 0;
+  }
+  mEncodingComboBox->setCurrentIndex( encindex );
 }

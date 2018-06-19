@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 # updates the news file from changelog.qgis.org
 
 # Copyright (C) 2016 Jürgen E. Fischer <jef@norbit.de>
@@ -11,7 +11,6 @@
 use strict;
 use warnings;
 use Pod::Usage;
-use LWP::Simple;
 use File::Temp qw/tempfile/;
 use File::Copy qw/copy/;
 use HTML::Entities qw/decode_entities/;
@@ -29,7 +28,7 @@ while(<$in>) {
 	last if /^Last Change/;
 }
 
-my $content = get("http://changelog.qgis.org/en/qgis/version/$major.$minor.0/gnu/" );
+my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$major.$minor.0/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
 print $news "\n= What's new in Version $major.$minor '$releasename'? =\n\n";
@@ -60,8 +59,8 @@ close $in;
 
 copy($tempfile, "doc/news.t2t");
 
-system "txt2tags -odoc/news.html -t html doc/news.t2t";
-system "txt2tags -oNEWS -t txt doc/news.t2t";
+system "txt2tags --encoding=utf-8 -odoc/news.html -t html doc/news.t2t";
+system "txt2tags --encoding=utf-8 -oNEWS -t txt doc/news.t2t";
 
 =head1 NAME
 

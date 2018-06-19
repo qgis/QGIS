@@ -54,7 +54,7 @@ namespace QgsWms
     Q_UNUSED( version );
 
     QgsServerRequest::Parameters params = request.parameters();
-    QgsRenderer renderer( serverIface, project, params, getConfigParser( serverIface ) );
+    QgsRenderer renderer( serverIface, project, params );
 
     QMap<QString, QString> formatOptionsMap = parseFormatOptions( params.value( QStringLiteral( "FORMAT_OPTIONS" ) ) );
 

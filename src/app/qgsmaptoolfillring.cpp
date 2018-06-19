@@ -31,10 +31,6 @@ QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
 {
 }
 
-QgsMapToolFillRing::~QgsMapToolFillRing()
-{
-}
-
 void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   //check if we operate on a vector layer
@@ -69,7 +65,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     else if ( error == 2 )
     {
       // problem with coordinate transformation
-      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), Qgis::Warning );
       return;
     }
 
@@ -92,30 +88,32 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QList< QgsPointXY > pointList = points();
+    QVector< QgsPointXY > pointList = points();
 
-    int addRingReturnCode = vlayer->addRing( pointList, &fid );
-    if ( addRingReturnCode != 0 )
+    QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
+
+    // AP: this is all dead code:
+    //todo: open message box to communicate errors
+    if ( addRingReturnCode != QgsGeometry::OperationResult::Success )
     {
       QString errorMessage;
-      //todo: open message box to communicate errors
-      if ( addRingReturnCode == 1 )
+      if ( addRingReturnCode == QgsGeometry::OperationResult::InvalidInputGeometryType )
       {
         errorMessage = tr( "a problem with geometry type occurred" );
       }
-      else if ( addRingReturnCode == 2 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotClosed )
       {
         errorMessage = tr( "the inserted Ring is not closed" );
       }
-      else if ( addRingReturnCode == 3 )
+      else if ( addRingReturnCode ==  QgsGeometry::OperationResult::AddRingNotValid )
       {
         errorMessage = tr( "the inserted Ring is not a valid geometry" );
       }
-      else if ( addRingReturnCode == 4 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingCrossesExistingRings )
       {
         errorMessage = tr( "the inserted Ring crosses existing rings" );
       }
-      else if ( addRingReturnCode == 5 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotInExistingFeature )
       {
         errorMessage = tr( "the inserted Ring is not contained in a feature" );
       }
@@ -123,13 +121,13 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       {
         errorMessage = tr( "an unknown error occurred" );
       }
-      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), QgsMessageBar::CRITICAL );
+      emit messageEmitted( tr( "could not add ring since %1." ).arg( errorMessage ), Qgis::Critical );
       vlayer->destroyEditCommand();
 
       return;
     }
 
-    g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
+    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList );
   }
   else
   {
@@ -139,7 +137,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( fid == -1 )
     {
-      emit messageEmitted( tr( "No ring found to fill." ), QgsMessageBar::CRITICAL );
+      emit messageEmitted( tr( "No ring found to fill." ), Qgis::Critical );
       vlayer->destroyEditCommand();
       return;
     }
@@ -200,13 +198,13 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
   while ( fit.nextFeature( f ) )
   {
     QgsGeometry g = f.geometry();
-    if ( g.isNull() )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
       continue;
 
-    QgsMultiPolygon pol;
-    if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
+    QgsMultiPolygonXY pol;
+    if ( !QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      pol = QgsMultiPolygon() << g.asPolygon();
+      pol = QgsMultiPolygonXY() << g.asPolygon();
     }
     else
     {
@@ -220,8 +218,8 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          QgsPolygon tempPol = QgsPolygon() << pol[i][j];
-          QgsGeometry tempGeom = QgsGeometry::fromPolygon( tempPol );
+          QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
+          QgsGeometry tempGeom = QgsGeometry::fromPolygonXY( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
             fid = f.id();

@@ -23,7 +23,8 @@ SIP_NO_FILE
 
 class QgsColorButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a color widget. Users will be able to choose a color.
  * \note not available in Python bindings
  */
@@ -48,7 +49,7 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
     void setValue( const QVariant &value ) override;
 
   private:
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
     QgsColorButton *mColorButton = nullptr;
 };

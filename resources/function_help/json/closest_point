@@ -1,10 +1,10 @@
 {
   "name": "closest_point",
   "type": "function",
-  "description": "Returns the point on geometry 1 that is closest to geometry 2.",
+  "description": "Returns the point on geometry1 that is closest to geometry2.",
   "arguments": [
-    {"arg":"geometry 1","description":"geometry to find closest point on"},
-    {"arg":"geometry 2","description":"geometry to find closest point to"}
+    {"arg":"geometry1","description":"geometry to find closest point on"},
+    {"arg":"geometry2","description":"geometry to find closest point to"}
   ],
   "examples": [
     {

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Alexander Bruy'
 __date__ = 'July 2013'
@@ -33,7 +32,9 @@ from qgis.core import (QgsFeatureSink,
                        QgsSpatialIndex,
                        QgsRectangle,
                        QgsProcessing,
+                       QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterDistance,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFeatureSink)
@@ -51,18 +52,21 @@ class PointsDisplacement(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterNumber(self.PROXIMITY,
-                                                       self.tr('Minimum distance to other points'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00001, defaultValue=0.00015))
-        self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Displacement distance'), type=QgsProcessingParameterNumber.Double,
-                                                       minValue=0.00001, defaultValue=0.00015))
+        self.addParameter(QgsProcessingParameterDistance(self.PROXIMITY,
+                                                         self.tr('Minimum distance to other points'), parentParameterName='INPUT',
+                                                         minValue=0.00001, defaultValue=0.00015))
+        self.addParameter(QgsProcessingParameterDistance(self.DISTANCE,
+                                                         self.tr('Displacement distance'), parentParameterName='INPUT',
+                                                         minValue=0.00001, defaultValue=0.00015))
         self.addParameter(QgsProcessingParameterBoolean(self.HORIZONTAL,
                                                         self.tr('Horizontal distribution for two point case')))
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Displaced'), QgsProcessing.TypeVectorPoint))
@@ -75,12 +79,17 @@ class PointsDisplacement(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
+        if source is None:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+
         proximity = self.parameterAsDouble(parameters, self.PROXIMITY, context)
         radius = self.parameterAsDouble(parameters, self.DISTANCE, context)
         horizontal = self.parameterAsBool(parameters, self.HORIZONTAL, context)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), source.wkbType(), source.sourceCrs())
+        if sink is None:
+            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
         features = source.getFeatures()
 
@@ -169,7 +178,7 @@ class PointsDisplacement(QgisAlgorithm):
                     dy = radius * cosinusCurrentAngle
 
                     # we want to keep any existing m/z values
-                    point = f.geometry().geometry().clone()
+                    point = f.geometry().constGet().clone()
                     point.setX(old_point.x() + dx)
                     point.setY(old_point.y() + dy)
                     f.setGeometry(QgsGeometry(point))

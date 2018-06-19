@@ -1,8 +1,0 @@
-r.lake
-r.lake.layer - Fills lake at given point to given level.
-Raster (r.*)
-ParameterRaster|elevation|Elevation|False
-ParameterNumber|water_level|Water level|None|None|1000.0
-ParameterRaster|seed|Raster layer with starting point(s) (at least 1 cell > 0)|False
-ParameterBoolean|-n|Use negative depth values for lake raster layer|False
-OutputRaster|lake|Lake

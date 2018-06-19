@@ -22,7 +22,8 @@
 
 class QgsVectorLayerCache;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief
  * Delivers features from the cache
  *
@@ -44,14 +45,14 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      *
      * \returns bool true if the operation was OK
      */
-    virtual bool rewind() override;
+    bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
      * \returns true if successful
      */
-    virtual bool close() override;
+    bool close() override;
 
     // QgsAbstractFeatureIterator interface
   protected:
@@ -64,7 +65,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      *
      * \see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature &f ) override;
+    bool fetchFeature( QgsFeature &f ) override;
 
     /**
      * We have a local special iterator for FilterFids, no need to run the generic.
@@ -72,7 +73,7 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
      * \param f      Will write to this feature
      * \returns bool  true if the operation was OK
      */
-    virtual bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
+    bool nextFeatureFilterFids( QgsFeature &f ) override { return fetchFeature( f ); }
 
   private:
     QgsFeatureIds mFeatureIds;
@@ -82,7 +83,8 @@ class CORE_EXPORT QgsCachedFeatureIterator : public QgsAbstractFeatureIterator
     QgsRectangle mFilterRect;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief
  * Uses another iterator as backend and writes features to the cache
  *
@@ -104,14 +106,14 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      *
      * \returns bool true if the operation was OK
      */
-    virtual bool rewind() override;
+    bool rewind() override;
 
     /**
      * Close this iterator. No further features will be available.
      *
      * \returns true if successful
      */
-    virtual bool close() override;
+    bool close() override;
 
   protected:
 
@@ -123,7 +125,7 @@ class CORE_EXPORT QgsCachedFeatureWriterIterator : public QgsAbstractFeatureIter
      *
      * \see bool getFeature( QgsFeature& f )
      */
-    virtual bool fetchFeature( QgsFeature &f ) override;
+    bool fetchFeature( QgsFeature &f ) override;
 
   private:
     QgsFeatureIterator mFeatIt;

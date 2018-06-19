@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 ############################################################################
 #
@@ -78,7 +78,7 @@ def addColumn(mapName, columnName, columnType):
 def hasColumn(tableDescription, column):
     """Checks if the column is in the table description
 
-    @todo This should be part of some object in the lib.
+    \todo This should be part of some object in the lib.
     """
     for col in tableDescription['cols']:
         if col[0] == column:

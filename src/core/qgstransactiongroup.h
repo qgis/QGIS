@@ -24,14 +24,17 @@
 
 class QgsVectorLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsTransactionGroup
  */
 class CORE_EXPORT QgsTransactionGroup : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsTransactionGroup( QObject *parent = 0 );
+
+    //! Constructor for QgsTransactionGroup
+    explicit QgsTransactionGroup( QObject *parent = nullptr );
 
     /**
      * Add a layer to this transaction group.
@@ -41,7 +44,7 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool addLayer( QgsVectorLayer *layer );
 
     /**
-     * Get the set of layers currently managed by this transaction group.
+     * Gets the set of layers currently managed by this transaction group.
      *
      * \returns Layer set
      */
@@ -53,13 +56,13 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     bool modified() const;
 
     /**
-     * Return the connection string used by this transaction group.
+     * Returns the connection string used by this transaction group.
      * Layers need be compatible when added.
      */
     QString connString() const;
 
     /**
-     * Return the provider key used by this transaction group.
+     * Returns the provider key used by this transaction group.
      * Layers need be compatible when added.
      */
     QString providerKey() const;
@@ -83,8 +86,8 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
     void onRollback();
 
   private:
-    bool mEditingStarting;
-    bool mEditingStopping;
+    bool mEditingStarting = false;
+    bool mEditingStopping = false;
 
     void disableTransaction();
 

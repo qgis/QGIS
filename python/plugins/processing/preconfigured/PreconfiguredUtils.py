@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 import os
 from processing.tools.system import mkdir, userFolder

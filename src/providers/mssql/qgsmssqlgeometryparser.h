@@ -29,25 +29,25 @@ class QgsMssqlGeometryParser
 {
 
   protected:
-    unsigned char *pszData;
-    unsigned char *pszWkb;
-    int nWkbLen;
-    int nWkbMaxLen;
+    unsigned char *pszData = nullptr;
+    unsigned char *pszWkb = nullptr;
+    int nWkbLen = 0;
+    int nWkbMaxLen = 100;
     /* byte order */
     char chByteOrder;
     /* serialization properties */
-    char chProps;
+    char chProps = 0;
     /* point array */
-    int nPointSize;
-    int nPointPos;
-    int nNumPoints;
+    int nPointSize = 0;
+    int nPointPos = 0;
+    int nNumPoints = 0;
     /* figure array */
-    int nFigurePos;
-    int nNumFigures;
+    int nFigurePos = 0;
+    int nNumFigures = 0;
     /* shape array */
-    int nShapePos;
-    int nNumShapes;
-    int nSRSId;
+    int nShapePos = 0;
+    int nNumShapes = 0;
+    int nSRSId = 0;
 
   protected:
     void CopyBytes( void *src, int len );
@@ -68,7 +68,7 @@ class QgsMssqlGeometryParser
     int GetWkbLen() { return nWkbLen; }
     void DumpMemoryToLog( const char *pszMsg, unsigned char *pszInput, int nLen );
     /* sql geo type */
-    bool IsGeography;
+    bool IsGeography = false;
 };
 
 

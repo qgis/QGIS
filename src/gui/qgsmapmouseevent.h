@@ -25,7 +25,8 @@
 class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
  * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
  * In addition to the coordinates in pixel space it also knows the coordinates in the mapcanvas' CRS
@@ -73,15 +74,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     QgsPointXY snapPoint();
 
     /**
-     * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
-     * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
-     * will not be overwritten.
-     * \param snapped if given, determines if a segment has been snapped
-     * \param allLayers if true, override snapping mode
-     */
-    QList<QgsPointXY> snapSegment( bool *snapped = nullptr, bool allLayers = false ) const;
-
-    /**
      * Returns true if there is a snapped point cached.
      * Will only be useful after snapPoint has previously been called.
      *
@@ -98,6 +90,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     /**
       * Returns the matching data from the most recently snapped point.
       * \returns the snapping data structure
+      * \note This method returns the most recent snap match. It must
+      * follow a call to snapPoint() in order to have a recent snap result available.
       * \since QGIS 2.14
       */
     QgsPointLocator::Match mapPointMatch() const { return mSnapMatch; }
@@ -145,8 +139,10 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     //! Location in map coordinates. May be snapped.
     QgsPointXY mMapPoint;
 
-    //! Location in pixel coordinates. May be snapped.
-    //! Original pixel point available through the parent QMouseEvent.
+    /**
+     * Location in pixel coordinates. May be snapped.
+     * Original pixel point available through the parent QMouseEvent.
+     */
     QPoint mPixelPoint;
 
     //! The map canvas on which the event was triggered.

@@ -21,13 +21,14 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingparameters.h"
 
 ///@cond NOT_STABLE
 
 /**
  * Represents a final output created by the model.
- * \since QGIS 3.0
  * \ingroup core
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
 {
@@ -49,6 +50,38 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
      * \see name()
      */
     void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Returns the default value for the model output parameter.
+     * \see setDefaultValue()
+     * \since QGIS 3.2
+     */
+    QVariant defaultValue() const { return mDefaultValue; }
+
+    /**
+     * Sets the default value for the model output.
+     * \see defaultValue()
+     * \since QGIS 3.2
+     */
+    void setDefaultValue( const QVariant &value ) { mDefaultValue = value; }
+
+    /**
+     * Returns true if the output is mandatory. This may override the associated
+     * child algorithm's parameter optional status - e.g. allowing
+     * an optional output from an algorithm to be mandatory within a model.
+     * \see setMandatory()
+     * \since QGIS 3.2
+     */
+    bool isMandatory() const { return mMandatory; }
+
+    /**
+     * Sets whether the output is \a mandatory. This may override the associated
+     * child algorithm's parameter optional status - e.g. allowing
+     * an optional output from an algorithm to be mandatory within a model.
+     * \see isMandatory()
+     * \since QGIS 3.2
+     */
+    void setMandatory( bool mandatory ) { mMandatory = mandatory; }
 
     /**
      * Returns the child algorithm ID from which this output is generated.
@@ -89,8 +122,10 @@ class CORE_EXPORT QgsProcessingModelOutput : public QgsProcessingModelComponent
   private:
 
     QString mName;
+    QVariant mDefaultValue;
     QString mChildId;
     QString mOutputName;
+    bool mMandatory = false;
 };
 
 ///@endcond

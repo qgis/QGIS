@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -55,7 +56,7 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
 
 void QgsLayoutAddPagesDialog::setLayout( QgsLayout *layout )
 {
-  mConverter = layout->context().measurementConverter();
+  mConverter = layout->renderContext().measurementConverter();
   mSizeUnitsComboBox->setConverter( &mConverter );
   mExistingPageSpinBox->setMaximum( layout->pageCollection()->pageCount() );
   mSizeUnitsComboBox->setUnit( layout->units() );

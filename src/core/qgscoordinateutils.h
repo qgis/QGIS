@@ -26,11 +26,13 @@
 
 class QgsPointXY;
 class QgsCoordinateReferenceSystem;
+class QgsProject;
 
 //not stable api - I plan on reworking this when QgsCoordinateFormatter lands in 2.16
 ///@cond NOT_STABLE_API
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCoordinateUtils
  * \brief Utilities for handling and formatting coordinates
  * \since QGIS 2.14
@@ -39,7 +41,8 @@ class CORE_EXPORT QgsCoordinateUtils
 {
   public:
 
-    /** Returns the precision to use for displaying coordinates to the user, respecting
+    /**
+     * Returns the precision to use for displaying coordinates to the user, respecting
      * the user's project settings. If the user has set the project to use "automatic"
      * precision, this function tries to calculate an optimal coordinate precision for a given
      * map units per pixel by calculating the number of decimal places for the coordinates
@@ -51,7 +54,12 @@ class CORE_EXPORT QgsCoordinateUtils
      */
     static int calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs );
 
-    static QString formatCoordinateForProject( const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
+    /**
+     * Formats a \a point coordinate for use with the specified \a project, respecting the project's
+     * coordinate display settings.
+     * \since QGIS 3.2
+     */
+    static QString formatCoordinateForProject( QgsProject *project, const QgsPointXY &point, const QgsCoordinateReferenceSystem &destCrs, int precision );
 
 };
 

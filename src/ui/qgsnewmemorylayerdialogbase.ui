@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>304</height>
+    <height>246</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,88 +24,47 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QGroupBox" name="buttonGroupGeometry">
-     <property name="title">
-      <string>Geometry type and CRS</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
-      <item>
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="1" column="0">
-         <widget class="QRadioButton" name="mMultiPointRadioButton">
-          <property name="text">
-           <string>Multipoint</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
-         <widget class="QRadioButton" name="mMultiPolygonRadioButton">
-          <property name="text">
-           <string>Multipolygon</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QRadioButton" name="mPolygonRadioButton">
-          <property name="text">
-           <string>Polygon</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
-         <widget class="QRadioButton" name="mPointRadioButton">
-          <property name="text">
-           <string>Point</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QRadioButton" name="mLineRadioButton">
-          <property name="text">
-           <string>Line</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QRadioButton" name="mMultiLineRadioButton">
-          <property name="text">
-           <string>Multiline</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
-        <property name="text">
-         <string>Geometries with Z/M coordinate</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="2" column="2">
+      <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+       <property name="text">
+        <string>Include M values</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Geometry type</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Layer name</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="2" column="1">
+      <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+       <property name="text">
+        <string>Include Z dimension</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QComboBox" name="mGeometryTypeBox"/>
+     </item>
+     <item row="0" column="1" colspan="2">
       <widget class="QLineEdit" name="mNameLineEdit"/>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -157,15 +116,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonGroupGeometry</tabstop>
-  <tabstop>mPointRadioButton</tabstop>
-  <tabstop>mLineRadioButton</tabstop>
-  <tabstop>mPolygonRadioButton</tabstop>
-  <tabstop>mMultiPointRadioButton</tabstop>
-  <tabstop>mMultiLineRadioButton</tabstop>
-  <tabstop>mMultiPolygonRadioButton</tabstop>
-  <tabstop>mCrsSelector</tabstop>
   <tabstop>mNameLineEdit</tabstop>
+  <tabstop>mGeometryTypeBox</tabstop>
+  <tabstop>mGeometryWithZCheckBox</tabstop>
+  <tabstop>mGeometryWithMCheckBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -1,6 +1,6 @@
 r.cross
 Creates a cross product of the category values from multiple raster map layers.
 Raster (r.*)
-ParameterMultipleInput|input|Input raster layers|3.0|False
-ParameterBoolean|-z|Non-zero data only|False
-OutputRaster|output|Cross product
+QgsProcessingParameterMultipleLayers|input|Input raster layers|3|None|False
+QgsProcessingParameterBoolean|-z|Non-zero data only|False
+QgsProcessingParameterRasterDestination|output|Cross product

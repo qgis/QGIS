@@ -29,8 +29,6 @@
 
 QgsMapToolDeletePart::QgsMapToolDeletePart( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , vlayer( nullptr )
-  , mRubberBand( nullptr )
   , mPressedFid( 0 )
   , mPressedPartNum( 0 )
 {
@@ -76,7 +74,7 @@ void QgsMapToolDeletePart::canvasPressEvent( QgsMapMouseEvent *e )
 
   if ( mPressedFid != -1 )
   {
-    mRubberBand = createRubberBand( vlayer->geometryType() ) ;
+    mRubberBand = createRubberBand( vlayer->geometryType() );
 
     mRubberBand->setToGeometry( geomPart, vlayer );
     mRubberBand->show();
@@ -114,7 +112,6 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     emit messageEmitted( tr( "Couldn't remove the selected part." ) );
   }
-  return;
 }
 
 QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fid, int &partNum )
@@ -127,7 +124,7 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     case QgsWkbTypes::PointGeometry:
     case QgsWkbTypes::LineGeometry:
     {
-      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Vertex | QgsPointLocator::Edge );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Types( QgsPointLocator::Vertex | QgsPointLocator::Edge ) );
       if ( !match.isValid() )
         return geomPart;
 
@@ -137,24 +134,24 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
       if ( !g.isMultipart() )
       {
         fid = match.featureId();
-        return QgsGeometry::fromPoint( match.point() );
+        return QgsGeometry::fromPointXY( match.point() );
       }
-      if ( g.wkbType() == QgsWkbTypes::MultiPoint || g.wkbType() == QgsWkbTypes::MultiPoint25D )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::PointGeometry )
       {
         fid = match.featureId();
         partNum = snapVertex;
-        return QgsGeometry::fromPoint( match.point() );
+        return QgsGeometry::fromPointXY( match.point() );
       }
-      if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
       {
-        QgsMultiPolyline mline = g.asMultiPolyline();
+        QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
         {
           if ( snapVertex < mline[part].count() )
           {
             fid = match.featureId();
             partNum = part;
-            return QgsGeometry::fromPolyline( mline[part] );
+            return QgsGeometry::fromPolylineXY( mline[part] );
           }
           snapVertex -= mline[part].count();
         }
@@ -163,25 +160,27 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
     }
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
-      double searchRadius = QgsTolerance::vertexSearchRadius( mCanvas->currentLayer(), mCanvas->mapSettings() );
-      QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
-                               layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
-      QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
-      fit.nextFeature( f );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToCurrentLayer( point, QgsPointLocator::Area );
+      if ( !match.isValid() )
+        return geomPart;
+
+      vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
       QgsGeometry g = f.geometry();
       if ( g.isNull() )
         return geomPart;
+
+      QgsPointXY layerCoords = toLayerCoordinates( vlayer, point );
+
       if ( !g.isMultipart() )
       {
         fid = f.id();
         return geomPart;
       }
-      QgsMultiPolygon mpolygon = g.asMultiPolygon();
+      QgsMultiPolygonXY mpolygon = g.asMultiPolygon();
       for ( int part = 0; part < mpolygon.count(); part++ ) // go through the polygons
       {
-        const QgsPolygon &polygon = mpolygon[part];
-        QgsGeometry partGeo = QgsGeometry::fromPolygon( polygon );
+        const QgsPolygonXY &polygon = mpolygon[part];
+        QgsGeometry partGeo = QgsGeometry::fromPolygonXY( polygon );
         if ( partGeo.contains( &layerCoords ) )
         {
           fid = f.id();

@@ -27,8 +27,7 @@
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mDateTimeEdit( nullptr )
-  , mLayer( nullptr )
+
 {
 }
 
@@ -37,7 +36,7 @@ bool QgsDateTimeSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsDateTimeSearchWidgetWrapper::expression()
+QString QgsDateTimeSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -47,8 +46,16 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
   if ( ! mDateTimeEdit )
     return QDateTime();
 
+  const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
-  return mDateTimeEdit->dateTime().toString( fieldFormat );
+  if ( fieldIsoFormat )
+  {
+    return mDateTimeEdit->dateTime().toString( Qt::ISODate );
+  }
+  else
+  {
+    return mDateTimeEdit->dateTime().toString( fieldFormat );
+  }
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::supportedFlags() const
@@ -63,7 +70,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::defaultFlags
 
 QString QgsDateTimeSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -113,8 +120,9 @@ bool QgsDateTimeSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsDateTimeSearchWidgetWrapper::setExpression( QString exp )
+void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str = QStringLiteral( "%1 = '%3'" )

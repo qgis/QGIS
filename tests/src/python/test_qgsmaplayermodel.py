@@ -63,11 +63,15 @@ class TestQgsMapLayerModel(unittest.TestCase):
         l1 = create_layer('l1')
         QgsProject.instance().addMapLayer(l1)
         self.assertEqual(m.rowCount(QModelIndex()), 1)
+        self.assertEqual(m.layerFromIndex(m.index(0, 0)), l1)
         l2 = create_layer('l2')
         QgsProject.instance().addMapLayer(l2)
         self.assertEqual(m.rowCount(QModelIndex()), 2)
+        self.assertEqual(m.layerFromIndex(m.index(0, 0)), l1)
+        self.assertEqual(m.layerFromIndex(m.index(1, 0)), l2)
         QgsProject.instance().removeMapLayer(l1)
         self.assertEqual(m.rowCount(QModelIndex()), 1)
+        self.assertEqual(m.layerFromIndex(m.index(0, 0)), l2)
         QgsProject.instance().removeMapLayer(l2)
         self.assertEqual(m.rowCount(QModelIndex()), 0)
 
@@ -162,7 +166,9 @@ class TestQgsMapLayerModel(unittest.TestCase):
         l3 = create_layer('l3')  # not in registry
 
         self.assertEqual(m.indexFromLayer(l1).row(), 0)
+        self.assertEqual(m.layerFromIndex(m.indexFromLayer(l1)), l1)
         self.assertEqual(m.indexFromLayer(l2).row(), 1)
+        self.assertEqual(m.layerFromIndex(m.indexFromLayer(l2)), l2)
         self.assertFalse(m.indexFromLayer(l3).isValid())
 
         m.setAllowEmptyLayer(True)

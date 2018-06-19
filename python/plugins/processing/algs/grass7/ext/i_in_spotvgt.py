@@ -26,8 +26,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processInputs(alg):
+def processInputs(alg, parameters, context, feedback):
     # Here, we apply directly the algorithm
     # So we just need to get the projection of the layer !
-    layer = alg.getParameterValue('input')
-    alg.setSessionProjectionFromLayer(layer, alg.commands)
+    layer = alg.parameterAsRasterLayer(parameters, 'input', context)
+    alg.setSessionProjectionFromLayer(layer)

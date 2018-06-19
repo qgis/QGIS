@@ -1,9 +1,9 @@
 Find Field of Extreme Value
 table_calculus
-ParameterTable|INPUT|Input|False
-ParameterTable|FIELDS|Attributes|False
-ParameterTable|EXTREME_ID|Attribute|False
-ParameterTable|EXTREME_VALUE|Value|False
-ParameterTable|OUTPUT|Output|True
-ParameterSelection|TYPE|TYPE|[0] minimum;[1] maximum| 1
-ParameterSelection|IDENTIFY|Attribute Identification|[0] name;[1] index| 0
+QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
+QgsProcessingParameterField|FIELDS|Attributes|None|INPUT|-1|False|False
+QgsProcessingParameterField|EXTREME_ID|Attribute|None|INPUT|-1|False|False
+QgsProcessingParameterField|EXTREME_VALUE|Value|None|INPUT|-1|False|False
+QgsProcessingParameterEnum|TYPE|TYPE|[0] minimum;[1] maximum|False|1
+QgsProcessingParameterEnum|IDENTIFY|Attribute Identification|[0] name;[1] index|False|0
+QgsProcessingParameterVectorDestination|OUTPUT|Output

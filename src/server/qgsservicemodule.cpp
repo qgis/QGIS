@@ -21,15 +21,9 @@
 
 
 //! Constructor
-QgsServiceModule::QgsServiceModule()
-{
-
-}
+QgsServiceModule::QgsServiceModule() = default;
 
 //! Destructor
-QgsServiceModule::~QgsServiceModule()
-{
-
-}
+QgsServiceModule::~QgsServiceModule() = default;
 
 

@@ -20,13 +20,17 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QWidget>
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
 class QgsLayerTreeEmbeddedWidgetRegistry;
 class QgsMapLayerActionRegistry;
+class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
+class QgsWidgetStateHelper;
+class QgsProcessingGuiRegistry;
 
 /**
  * \ingroup gui
@@ -62,6 +66,11 @@ class GUI_EXPORT QgsGui
     static QgsEditorWidgetRegistry *editorWidgetRegistry();
 
     /**
+     * Returns the global source select provider registry, used for managing all known source select widget factories.
+     */
+    static QgsSourceSelectProviderRegistry *sourceSelectProviderRegistry();
+
+    /**
      * Returns the global shortcuts manager, used for managing a QAction and QShortcut sequences.
      */
     static QgsShortcutsManager *shortcutsManager();
@@ -81,18 +90,33 @@ class GUI_EXPORT QgsGui
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
 
+    /**
+     * Returns the global processing gui registry, used for registering the GUI behavior of processing algorithms.
+     * \since QGIS 3.2
+     */
+    static QgsProcessingGuiRegistry *processingGuiRegistry();
+
+    /**
+     * Register the widget to allow its position to be automatically saved and restored when open and closed.
+     * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
+     */
+    static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
+
     ~QgsGui();
 
   private:
 
     QgsGui();
 
+    QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
+    QgsSourceSelectProviderRegistry *mSourceSelectProviderRegistry = nullptr;
     QgsShortcutsManager *mShortcutsManager = nullptr;
     QgsLayerTreeEmbeddedWidgetRegistry *mLayerTreeEmbeddedWidgetRegistry = nullptr;
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
+    QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );

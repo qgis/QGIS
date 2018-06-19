@@ -79,6 +79,10 @@ namespace QgsWcs
     for ( int i = 0; i < wcsLayersId.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );
+      if ( !layer )
+      {
+        continue;
+      }
       if ( layer->type() != QgsMapLayer::LayerType::RasterLayer )
       {
         continue;
@@ -161,7 +165,9 @@ namespace QgsWcs
     // transform rect
     if ( requestCRS != rLayer->crs() )
     {
+      Q_NOWARN_DEPRECATED_PUSH
       QgsCoordinateTransform t( requestCRS, rLayer->crs() );
+      Q_NOWARN_DEPRECATED_POP
       rect = t.transformBoundingBox( rect );
     }
 

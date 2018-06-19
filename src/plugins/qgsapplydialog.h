@@ -19,7 +19,8 @@
 
 #include <QDialog>
 
-/** \ingroup plugins
+/**
+ * \ingroup plugins
  * \brief Interface class for dialogs that have an apply operation (e.g. for symbology)
  * \note not available in Python bindings
 */
@@ -28,8 +29,9 @@ class QgsApplyDialog: public QDialog
     Q_OBJECT
 
   public:
-    QgsApplyDialog(): QDialog() {}
-    ~QgsApplyDialog() {}
+
+    //! Constructor for QgsApplyDialog
+    QgsApplyDialog() = default;
 
     /**
      * This method is called when changes should be applied.

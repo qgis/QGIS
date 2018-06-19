@@ -76,7 +76,7 @@
    <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <property name="spacing">
-      <number>3</number>
+      <number>6</number>
      </property>
      <item>
       <widget class="QLabel" name="label">
@@ -117,6 +117,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <property name="topMargin">
       <number>2</number>
+     </property>
+     <property name="spacing">
+      <number>6</number>
      </property>
      <item>
       <widget class="QLabel" name="lblSymbolName">

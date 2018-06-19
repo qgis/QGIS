@@ -32,21 +32,23 @@ class QgsPGRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGRootItem( QgsDataItem *parent, QString name, QString path );
+    QgsPGRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
 
-#ifdef HAVE_GUI
-    virtual QWidget *paramWidget() override;
+    QVariant sortKey() const override { return 3; }
 
-    virtual QList<QAction *> actions() override;
+#ifdef HAVE_GUI
+    QWidget *paramWidget() override;
+
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
     static QMainWindow *sMainWindow;
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -55,16 +57,16 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGConnectionItem( QgsDataItem *parent, QString name, QString path );
+    QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
     bool handleDrop( const QMimeData *data, const QString &toSchema );
 
@@ -92,11 +94,11 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   public slots:
 #ifdef HAVE_GUI
@@ -120,15 +122,16 @@ class QgsPGLayerItem : public QgsLayerItem
     QString createUri();
 
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
-    virtual QString comments() const override;
+    QString comments() const override;
 
   public slots:
 #ifdef HAVE_GUI
     void deleteLayer();
     void renameLayer();
     void truncateTable();
+    void refreshMaterializedView();
 #endif
 
   private:

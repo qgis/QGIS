@@ -22,9 +22,9 @@
 
 class QgsRelationEditorWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationWidgetWrapper
- * \note not available in Python bindings
  */
 
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
@@ -32,7 +32,9 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsRelationWidgetWrapper
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Defines if a title lable should be shown for this widget.
@@ -78,6 +80,13 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
      */
     void setShowUnlinkButton( bool showUnlinkButton );
 
+    /**
+     * The relation for which this wrapper is created.
+     *
+     * \since QGIS 3.0
+     */
+    QgsRelation relation() const;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
@@ -86,7 +95,8 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
   public slots:
     void setFeature( const QgsFeature &feature ) override;
 
-    /** Sets the visibility of the wrapper's widget.
+    /**
+     * Sets the visibility of the wrapper's widget.
      * \param visible set to true to show widget, false to hide widget
      * \since QGIS 2.16
      */

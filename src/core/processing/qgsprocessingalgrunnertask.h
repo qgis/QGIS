@@ -47,7 +47,7 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
                                 QgsProcessingContext &context,
                                 QgsProcessingFeedback *feedback = nullptr );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -60,8 +60,8 @@ class CORE_EXPORT QgsProcessingAlgRunnerTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

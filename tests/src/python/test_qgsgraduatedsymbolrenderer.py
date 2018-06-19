@@ -58,7 +58,7 @@ def createMemoryLayer(values):
         feat = QgsFeature(fields)
         feat['id'] = id
         feat['value'] = value
-        g = QgsGeometry.fromPoint(QgsPointXY(x, x))
+        g = QgsGeometry.fromPointXY(QgsPointXY(x, x))
         feat.setGeometry(g)
         pr.addFeatures([feat])
     ml.updateExtents()
@@ -412,9 +412,9 @@ class TestQgsGraduatedSymbolRenderer(unittest.TestCase):
 
 
 #    void addClass( QgsSymbol* symbol );
-#    //! @note available in python bindings as addClassRange
+#    //! \note available in python bindings as addClassRange
 #    void addClass( QgsRendererRange range ) /PyName=addClassRange/;
-#    //! @note available in python bindings as addClassLowerUpper
+#    //! \note available in python bindings as addClassLowerUpper
 #    void addClass( double lower, double upper ) /PyName=addClassLowerUpper/;
 #    void deleteClass( int idx );
 #    void deleteAllClasses();

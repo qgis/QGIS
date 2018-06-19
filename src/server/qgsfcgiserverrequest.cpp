@@ -120,16 +120,11 @@ QgsFcgiServerRequest::QgsFcgiServerRequest()
   setMethod( method );
 
   // Output debug infos
-  QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
-  if ( logLevel <= QgsMessageLog::INFO )
+  Qgis::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
+  if ( logLevel <= Qgis::Info )
   {
     printRequestInfos();
   }
-}
-
-QgsFcgiServerRequest::~QgsFcgiServerRequest()
-{
-
 }
 
 QByteArray QgsFcgiServerRequest::data() const
@@ -160,7 +155,7 @@ void QgsFcgiServerRequest::readData()
     else
     {
       QgsMessageLog::logMessage( "fcgi: Failed to parse CONTENT_LENGTH",
-                                 QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+                                 QStringLiteral( "Server" ), Qgis::Critical );
       mHasError = true;
     }
   }
@@ -172,49 +167,49 @@ void QgsFcgiServerRequest::readData()
 
 void QgsFcgiServerRequest::printRequestInfos()
 {
-  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "******************** New request ***************" ), QStringLiteral( "Server" ), Qgis::Info );
   if ( getenv( "REMOTE_ADDR" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_ADDR: " + QString( getenv( "REMOTE_ADDR" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "REMOTE_HOST" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_HOST: " + QString( getenv( "REMOTE_HOST" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "REMOTE_USER" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_USER: " + QString( getenv( "REMOTE_USER" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "REMOTE_IDENT" ) )
   {
-    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "REMOTE_IDENT: " + QString( getenv( "REMOTE_IDENT" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "CONTENT_TYPE" ) )
   {
-    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "CONTENT_TYPE: " + QString( getenv( "CONTENT_TYPE" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "AUTH_TYPE" ) )
   {
-    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "AUTH_TYPE: " + QString( getenv( "AUTH_TYPE" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "HTTP_USER_AGENT" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_USER_AGENT: " + QString( getenv( "HTTP_USER_AGENT" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "HTTP_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_PROXY: " + QString( getenv( "HTTP_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "HTTPS_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTPS_PROXY: " + QString( getenv( "HTTPS_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "NO_PROXY" ) )
   {
-    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "NO_PROXY: " + QString( getenv( "NO_PROXY" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
   if ( getenv( "HTTP_AUTHORIZATION" ) )
   {
-    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "HTTP_AUTHORIZATION: " + QString( getenv( "HTTP_AUTHORIZATION" ) ), QStringLiteral( "Server" ), Qgis::Info );
   }
 }

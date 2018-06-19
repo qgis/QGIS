@@ -16,7 +16,7 @@
 
 #include "qgsnumericscalebarrenderer.h"
 #include "qgsscalebarsettings.h"
-#include "qgscomposerutils.h"
+#include "qgslayoututils.h"
 #include <QList>
 #include <QPainter>
 
@@ -32,27 +32,27 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
-  painter->setFont( settings.font() );
 
-  double margin = settings.boxContentSpace();
+  double margin = context.convertToPainterUnits( settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
   //map scalebar alignment to Qt::AlignmentFlag type
-  Qt::AlignmentFlag hAlign = Qt::AlignLeft;
+  QgsTextRenderer::HAlignment hAlign = QgsTextRenderer::AlignLeft;
   switch ( settings.alignment() )
   {
     case QgsScaleBarSettings::AlignLeft:
-      hAlign = Qt::AlignLeft;
+      hAlign = QgsTextRenderer::AlignLeft;
       break;
     case QgsScaleBarSettings::AlignMiddle:
-      hAlign = Qt::AlignHCenter;
+      hAlign = QgsTextRenderer::AlignCenter;
       break;
     case QgsScaleBarSettings::AlignRight:
-      hAlign = Qt::AlignRight;
+      hAlign = QgsTextRenderer::AlignRight;
       break;
   }
 
   //text destination is item's rect, excluding the margin
-  QRectF painterRect( margin, margin, scaleContext.size.width() - 2 * margin, scaleContext.size.height() - 2 * margin );
-  QgsComposerUtils::drawText( painter, painterRect, scaleText( scaleContext.scale ), settings.font(), settings.fontColor(), hAlign, Qt::AlignTop );
+  QRectF painterRect( margin, margin, context.convertToPainterUnits( scaleContext.size.width(), QgsUnitTypes::RenderMillimeters ) - 2 * margin,
+                      context.convertToPainterUnits( scaleContext.size.height(), QgsUnitTypes::RenderMillimeters ) - 2 * margin );
+  QgsTextRenderer::drawText( painterRect, 0, hAlign, QStringList() << scaleText( scaleContext.scale ), context, settings.textFormat() );
 
   painter->restore();
 }
@@ -60,8 +60,10 @@ void QgsNumericScaleBarRenderer::draw( QgsRenderContext &context, const QgsScale
 QSizeF QgsNumericScaleBarRenderer::calculateBoxSize( const QgsScaleBarSettings &settings,
     const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const
 {
-  double textWidth = QgsComposerUtils::textWidthMM( settings.font(), scaleText( scaleContext.scale ) );
-  double textHeight = QgsComposerUtils::fontAscentMM( settings.font() );
+  QFont font = settings.textFormat().toQFont();
+
+  double textWidth = QgsLayoutUtils::textWidthMM( font, scaleText( scaleContext.scale ) );
+  double textHeight = QgsLayoutUtils::fontAscentMM( font );
 
   return QSizeF( 2 * settings.boxContentSpace() + 2 * settings.pen().width() + textWidth,
                  textHeight + 2 * settings.boxContentSpace() );

@@ -19,14 +19,15 @@ Required build dependencies:
 - Proj >= 4.4.x
 - GEOS >= 3.4
 - Sqlite3 >= 3.0.0
-- SpatiaLite
+- SpatiaLite >= 4.2.0
 - libspatialindex
-- GDAL/OGR >= 2.0
+- GDAL/OGR >= 2.1
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
 - expat >= 1.95
 - QScintilla2
 - QCA
 - qtkeychain (>= 0.5)
+- libzip
 -
 
 Optional dependencies:

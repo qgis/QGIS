@@ -22,6 +22,7 @@
 #include <QGridLayout>
 #include <QVariant>
 #include <QSettings>
+#include <QImageReader>
 #ifdef WITH_QTWEBKIT
 #include <QWebView>
 #endif
@@ -29,12 +30,6 @@
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
-  , mFileWidgetVisible( true )
-  , mDocumentViewerContent( NoContent )
-  , mDocumentViewerHeight( 0 )
-  , mDocumentViewerWidth( 0 )
-  , mRelativeStorage( QgsFileWidget::Absolute )
-
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -179,7 +174,7 @@ QString QgsExternalResourceWidget::resolvePath( const QString &path )
       return path;
       break;
     case QgsFileWidget::RelativeProject:
-      return QgsProject::instance()->fileInfo().dir().filePath( path );
+      return QFileInfo( QgsProject::instance()->absoluteFilePath() ).dir().filePath( path );
       break;
     case QgsFileWidget::RelativeDefaultPath:
       return QDir( mDefaultRoot ).filePath( path );
@@ -235,13 +230,16 @@ void QgsExternalResourceWidget::loadDocument( const QString &path )
 #ifdef WITH_QTWEBKIT
     if ( mDocumentViewerContent == Web )
     {
-      mWebView->setUrl( QUrl( resolvedPath ) );
+      mWebView->setUrl( QUrl::fromEncoded( resolvedPath.toUtf8() ) );
     }
 #endif
 
     if ( mDocumentViewerContent == Image )
     {
-      QPixmap pm( resolvedPath );
+      // use an image reader to ensure image orientation and transforms are correctly handled
+      QImageReader ir( resolvedPath );
+      ir.setAutoTransform( true );
+      QPixmap pm = QPixmap::fromImage( ir.read() );
       mPixmapLabel->setPixmap( pm );
       updateDocumentViewer();
     }

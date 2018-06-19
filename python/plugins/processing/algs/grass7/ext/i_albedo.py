@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 from .i import verifyRasterNum
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    if alg.getParameterValue('-m'):
-        return verifyRasterNum(alg, 'input', 7)
-    elif alg.getParameterValue('-n'):
-        return verifyRasterNum(alg, 'input', 2)
-    elif alg.getParameterValue('-l') or alg.getParameterValue('-a'):
-        return verifyRasterNum(alg, 'input', 6)
-    return None
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    if alg.parameterAsBool(parameters, '-m', context):
+        return verifyRasterNum(alg, parameters, context, 'input', 7)
+    elif alg.parameterAsBool(parameters, '-n', context):
+        return verifyRasterNum(alg, parameters, context, 'input', 2)
+    elif (alg.parameterAsBool(parameters, '-l', context)
+          or alg.parameterAsBool(parameters, '-a', context)):
+        return verifyRasterNum(alg, parameters, context, 'input', 6)
+    return True, None

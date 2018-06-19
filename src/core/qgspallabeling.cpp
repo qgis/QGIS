@@ -58,6 +58,7 @@
 #include "qgsproperty.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgscurvepolygon.h"
 #include <QMessageBox>
 
 
@@ -97,146 +98,140 @@ void QgsPalLayerSettings::initPropertyDefinitions()
   if ( !sPropertyDefinitions.isEmpty() )
     return;
 
+  const QString origin = QStringLiteral( "labeling" );
+
   sPropertyDefinitions = QgsPropertiesDefinition
   {
-    { QgsPalLayerSettings::Size, QgsPropertyDefinition( "Size", QObject::tr( "Font size" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::Bold, QgsPropertyDefinition( "Bold", QObject::tr( "Bold style" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::Italic, QgsPropertyDefinition( "Italic", QObject::tr( "Italic style" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::Underline, QgsPropertyDefinition( "Underline", QObject::tr( "Draw underline" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::Color, QgsPropertyDefinition( "Color", QObject::tr( "Text color" ), QgsPropertyDefinition::ColorNoAlpha ) },
-    { QgsPalLayerSettings::Strikeout, QgsPropertyDefinition( "Strikeout", QObject::tr( "Draw strikeout" ), QgsPropertyDefinition::Boolean ) },
+    { QgsPalLayerSettings::Size, QgsPropertyDefinition( "Size", QObject::tr( "Font size" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::Bold, QgsPropertyDefinition( "Bold", QObject::tr( "Bold style" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::Italic, QgsPropertyDefinition( "Italic", QObject::tr( "Italic style" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::Underline, QgsPropertyDefinition( "Underline", QObject::tr( "Draw underline" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::Color, QgsPropertyDefinition( "Color", QObject::tr( "Text color" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
+    { QgsPalLayerSettings::Strikeout, QgsPropertyDefinition( "Strikeout", QObject::tr( "Draw strikeout" ), QgsPropertyDefinition::Boolean, origin ) },
     {
       QgsPalLayerSettings::Family, QgsPropertyDefinition( "Family", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font family" ), QObject::tr( "string " ) + QObject::tr( "[<b>family</b>|<b>family[foundry]</b>],<br>"
-          "e.g. Helvetica or Helvetica [Cronyx]" ) )
+          "e.g. Helvetica or Helvetica [Cronyx]" ), origin )
     },
     {
       QgsPalLayerSettings::FontStyle, QgsPropertyDefinition( "FontStyle", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font style" ), QObject::tr( "string " ) + QObject::tr( "[<b>font style name</b>|<b>Ignore</b>],<br>"
-          "e.g. Bold Condensed or Light Italic" ) )
+          "e.g. Bold Condensed or Light Italic" ), origin )
     },
-    { QgsPalLayerSettings::FontSizeUnit, QgsPropertyDefinition( "FontSizeUnit", QObject::tr( "Font size units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::FontTransp, QgsPropertyDefinition( "FontTransp", QObject::tr( "Text transparency" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::FontOpacity, QgsPropertyDefinition( "FontOpacity", QObject::tr( "Text opacity" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::FontCase, QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Capitalize</b>]" ) ) },
-    { QgsPalLayerSettings::FontLetterSpacing, QgsPropertyDefinition( "FontLetterSpacing", QObject::tr( "Letter spacing" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::FontWordSpacing, QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::FontBlendMode, QgsPropertyDefinition( "FontBlendMode", QObject::tr( "Text blend mode" ), QgsPropertyDefinition::BlendMode ) },
-    { QgsPalLayerSettings::MultiLineWrapChar, QgsPropertyDefinition( "MultiLineWrapChar", QObject::tr( "Wrap character" ), QgsPropertyDefinition::String ) },
-    { QgsPalLayerSettings::MultiLineHeight, QgsPropertyDefinition( "MultiLineHeight", QObject::tr( "Line height" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::MultiLineAlignment, QgsPropertyDefinition( "MultiLineAlignment", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>|<b>Follow</b>]" ) },
-    { QgsPalLayerSettings::DirSymbDraw, QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::DirSymbLeft, QgsPropertyDefinition( "DirSymbLeft", QObject::tr( "Left direction symbol" ), QgsPropertyDefinition::String ) },
-    { QgsPalLayerSettings::DirSymbRight, QgsPropertyDefinition( "DirSymbRight", QObject::tr( "Right direction symbol" ), QgsPropertyDefinition::String ) },
-    { QgsPalLayerSettings::DirSymbPlacement, QgsPropertyDefinition( "DirSymbPlacement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Direction symbol placement" ), QObject::tr( "string " ) + "[<b>LeftRight</b>|<b>Above</b>|<b>Below</b>]" ) },
-    { QgsPalLayerSettings::DirSymbReverse, QgsPropertyDefinition( "DirSymbReverse", QObject::tr( "Reverse direction symbol" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::NumFormat, QgsPropertyDefinition( "NumFormat", QObject::tr( "Format as number" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::NumDecimals, QgsPropertyDefinition( "NumDecimals", QObject::tr( "Number of decimal places" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsPalLayerSettings::NumPlusSign, QgsPropertyDefinition( "NumPlusSign", QObject::tr( "Draw + sign" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::BufferDraw, QgsPropertyDefinition( "BufferDraw", QObject::tr( "Draw buffer" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::BufferSize, QgsPropertyDefinition( "BufferSize", QObject::tr( "Symbol size" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::BufferUnit, QgsPropertyDefinition( "BufferUnit", QObject::tr( "Buffer units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::BufferColor, QgsPropertyDefinition( "BufferColor", QObject::tr( "Buffer color" ), QgsPropertyDefinition::ColorNoAlpha ) },
-    { QgsPalLayerSettings::BufferTransp, QgsPropertyDefinition( "BufferTransp", QObject::tr( "Buffer transparency" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::BufferOpacity, QgsPropertyDefinition( "BufferOpacity", QObject::tr( "Buffer opacity" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::BufferJoinStyle, QgsPropertyDefinition( "BufferJoinStyle", QObject::tr( "Buffer join style" ), QgsPropertyDefinition::PenJoinStyle ) },
-    { QgsPalLayerSettings::BufferBlendMode, QgsPropertyDefinition( "BufferBlendMode", QObject::tr( "Buffer blend mode" ), QgsPropertyDefinition::BlendMode ) },
-    { QgsPalLayerSettings::ShapeDraw, QgsPropertyDefinition( "ShapeDraw", QObject::tr( "Draw shape" ), QgsPropertyDefinition::Boolean ) },
+    { QgsPalLayerSettings::FontSizeUnit, QgsPropertyDefinition( "FontSizeUnit", QObject::tr( "Font size units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::FontTransp, QgsPropertyDefinition( "FontTransp", QObject::tr( "Text transparency" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::FontOpacity, QgsPropertyDefinition( "FontOpacity", QObject::tr( "Text opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::FontCase, QgsPropertyDefinition( "FontCase", QgsPropertyDefinition::DataTypeString, QObject::tr( "Font case" ), QObject::tr( "string " ) + QStringLiteral( "[<b>NoChange</b>|<b>Upper</b>|<br><b>Lower</b>|<b>Capitalize</b>]" ), origin ) },
+    { QgsPalLayerSettings::FontLetterSpacing, QgsPropertyDefinition( "FontLetterSpacing", QObject::tr( "Letter spacing" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::FontWordSpacing, QgsPropertyDefinition( "FontWordSpacing", QObject::tr( "Word spacing" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::FontBlendMode, QgsPropertyDefinition( "FontBlendMode", QObject::tr( "Text blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
+    { QgsPalLayerSettings::MultiLineWrapChar, QgsPropertyDefinition( "MultiLineWrapChar", QObject::tr( "Wrap character" ), QgsPropertyDefinition::String, origin ) },
+    { QgsPalLayerSettings::MultiLineHeight, QgsPropertyDefinition( "MultiLineHeight", QObject::tr( "Line height" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::MultiLineAlignment, QgsPropertyDefinition( "MultiLineAlignment", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>|<b>Follow</b>]", origin ) },
+    { QgsPalLayerSettings::DirSymbDraw, QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::DirSymbLeft, QgsPropertyDefinition( "DirSymbLeft", QObject::tr( "Left direction symbol" ), QgsPropertyDefinition::String, origin ) },
+    { QgsPalLayerSettings::DirSymbRight, QgsPropertyDefinition( "DirSymbRight", QObject::tr( "Right direction symbol" ), QgsPropertyDefinition::String, origin ) },
+    { QgsPalLayerSettings::DirSymbPlacement, QgsPropertyDefinition( "DirSymbPlacement", QgsPropertyDefinition::DataTypeString, QObject::tr( "Direction symbol placement" ), QObject::tr( "string " ) + "[<b>LeftRight</b>|<b>Above</b>|<b>Below</b>]", origin ) },
+    { QgsPalLayerSettings::DirSymbReverse, QgsPropertyDefinition( "DirSymbReverse", QObject::tr( "Reverse direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::NumFormat, QgsPropertyDefinition( "NumFormat", QObject::tr( "Format as number" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::NumDecimals, QgsPropertyDefinition( "NumDecimals", QObject::tr( "Number of decimal places" ), QgsPropertyDefinition::IntegerPositive, origin ) },
+    { QgsPalLayerSettings::NumPlusSign, QgsPropertyDefinition( "NumPlusSign", QObject::tr( "Draw + sign" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::BufferDraw, QgsPropertyDefinition( "BufferDraw", QObject::tr( "Draw buffer" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::BufferSize, QgsPropertyDefinition( "BufferSize", QObject::tr( "Symbol size" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::BufferUnit, QgsPropertyDefinition( "BufferUnit", QObject::tr( "Buffer units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::BufferColor, QgsPropertyDefinition( "BufferColor", QObject::tr( "Buffer color" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
+    { QgsPalLayerSettings::BufferTransp, QgsPropertyDefinition( "BufferTransp", QObject::tr( "Buffer transparency" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::BufferOpacity, QgsPropertyDefinition( "BufferOpacity", QObject::tr( "Buffer opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::BufferJoinStyle, QgsPropertyDefinition( "BufferJoinStyle", QObject::tr( "Buffer join style" ), QgsPropertyDefinition::PenJoinStyle, origin ) },
+    { QgsPalLayerSettings::BufferBlendMode, QgsPropertyDefinition( "BufferBlendMode", QObject::tr( "Buffer blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
+    { QgsPalLayerSettings::ShapeDraw, QgsPropertyDefinition( "ShapeDraw", QObject::tr( "Draw shape" ), QgsPropertyDefinition::Boolean, origin ) },
     {
       QgsPalLayerSettings::ShapeKind, QgsPropertyDefinition( "ShapeKind", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape type" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Rectangle</b>|<b>Square</b>|<br>"
-          "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ) )
+          "<b>Ellipse</b>|<b>Circle</b>|<b>SVG</b>]" ), origin )
     },
-    { QgsPalLayerSettings::ShapeSVGFile, QgsPropertyDefinition( "ShapeSVGFile", QObject::tr( "Shape SVG path" ), QgsPropertyDefinition::SvgPath ) },
-    { QgsPalLayerSettings::ShapeSizeType, QgsPropertyDefinition( "ShapeSizeType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape size type" ), QObject::tr( "string " ) + "[<b>Buffer</b>|<b>Fixed</b>]" ) },
-    { QgsPalLayerSettings::ShapeSizeX, QgsPropertyDefinition( "ShapeSizeX", QObject::tr( "Shape size (X)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::ShapeSizeY, QgsPropertyDefinition( "ShapeSizeY", QObject::tr( "Shape size (Y)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::ShapeSizeUnits, QgsPropertyDefinition( "ShapeSizeUnits", QObject::tr( "Shape size units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShapeRotationType, QgsPropertyDefinition( "ShapeRotationType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape rotation type" ), QObject::tr( "string " ) + "[<b>Sync</b>|<b>Offset</b>|<b>Fixed</b>]" ) },
-    { QgsPalLayerSettings::ShapeRotation, QgsPropertyDefinition( "ShapeRotation", QObject::tr( "Shape rotation" ), QgsPropertyDefinition::Rotation ) },
-    { QgsPalLayerSettings::ShapeOffset, QgsPropertyDefinition( "ShapeOffset", QObject::tr( "Shape offset" ), QgsPropertyDefinition::Offset ) },
-    { QgsPalLayerSettings::ShapeOffsetUnits, QgsPropertyDefinition( "ShapeOffsetUnits", QObject::tr( "Shape offset units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShapeRadii, QgsPropertyDefinition( "ShapeRadii", QObject::tr( "Shape radii" ), QgsPropertyDefinition::Size2D ) },
-    { QgsPalLayerSettings::ShapeRadiiUnits, QgsPropertyDefinition( "ShapeRadiiUnits", QObject::tr( "Symbol radii units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShapeTransparency, QgsPropertyDefinition( "ShapeTransparency", QObject::tr( "Shape transparency" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::ShapeOpacity, QgsPropertyDefinition( "ShapeOpacity", QObject::tr( "Shape opacity" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::ShapeBlendMode, QgsPropertyDefinition( "ShapeBlendMode", QObject::tr( "Shape blend mode" ), QgsPropertyDefinition::BlendMode ) },
-    { QgsPalLayerSettings::ShapeFillColor, QgsPropertyDefinition( "ShapeFillColor", QObject::tr( "Shape fill color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsPalLayerSettings::ShapeStrokeColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape stroke color" ), QgsPropertyDefinition::ColorWithAlpha ) },
-    { QgsPalLayerSettings::ShapeStrokeWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape stroke width" ), QgsPropertyDefinition::StrokeWidth ) },
-    { QgsPalLayerSettings::ShapeStrokeWidthUnits, QgsPropertyDefinition( "ShapeBorderWidthUnits", QObject::tr( "Shape stroke width units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShapeJoinStyle, QgsPropertyDefinition( "ShapeJoinStyle", QObject::tr( "Shape join style" ), QgsPropertyDefinition::PenJoinStyle ) },
-    { QgsPalLayerSettings::ShadowDraw, QgsPropertyDefinition( "ShadowDraw", QObject::tr( "Draw shadow" ), QgsPropertyDefinition::Boolean ) },
+    { QgsPalLayerSettings::ShapeSVGFile, QgsPropertyDefinition( "ShapeSVGFile", QObject::tr( "Shape SVG path" ), QgsPropertyDefinition::SvgPath, origin ) },
+    { QgsPalLayerSettings::ShapeSizeType, QgsPropertyDefinition( "ShapeSizeType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape size type" ), QObject::tr( "string " ) + "[<b>Buffer</b>|<b>Fixed</b>]", origin ) },
+    { QgsPalLayerSettings::ShapeSizeX, QgsPropertyDefinition( "ShapeSizeX", QObject::tr( "Shape size (X)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::ShapeSizeY, QgsPropertyDefinition( "ShapeSizeY", QObject::tr( "Shape size (Y)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::ShapeSizeUnits, QgsPropertyDefinition( "ShapeSizeUnits", QObject::tr( "Shape size units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShapeRotationType, QgsPropertyDefinition( "ShapeRotationType", QgsPropertyDefinition::DataTypeString, QObject::tr( "Shape rotation type" ), QObject::tr( "string " ) + "[<b>Sync</b>|<b>Offset</b>|<b>Fixed</b>]", origin ) },
+    { QgsPalLayerSettings::ShapeRotation, QgsPropertyDefinition( "ShapeRotation", QObject::tr( "Shape rotation" ), QgsPropertyDefinition::Rotation, origin ) },
+    { QgsPalLayerSettings::ShapeOffset, QgsPropertyDefinition( "ShapeOffset", QObject::tr( "Shape offset" ), QgsPropertyDefinition::Offset, origin ) },
+    { QgsPalLayerSettings::ShapeOffsetUnits, QgsPropertyDefinition( "ShapeOffsetUnits", QObject::tr( "Shape offset units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShapeRadii, QgsPropertyDefinition( "ShapeRadii", QObject::tr( "Shape radii" ), QgsPropertyDefinition::Size2D, origin ) },
+    { QgsPalLayerSettings::ShapeRadiiUnits, QgsPropertyDefinition( "ShapeRadiiUnits", QObject::tr( "Symbol radii units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShapeTransparency, QgsPropertyDefinition( "ShapeTransparency", QObject::tr( "Shape transparency" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::ShapeOpacity, QgsPropertyDefinition( "ShapeOpacity", QObject::tr( "Shape opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::ShapeBlendMode, QgsPropertyDefinition( "ShapeBlendMode", QObject::tr( "Shape blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
+    { QgsPalLayerSettings::ShapeFillColor, QgsPropertyDefinition( "ShapeFillColor", QObject::tr( "Shape fill color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { QgsPalLayerSettings::ShapeStrokeColor, QgsPropertyDefinition( "ShapeBorderColor", QObject::tr( "Shape stroke color" ), QgsPropertyDefinition::ColorWithAlpha, origin ) },
+    { QgsPalLayerSettings::ShapeStrokeWidth, QgsPropertyDefinition( "ShapeBorderWidth", QObject::tr( "Shape stroke width" ), QgsPropertyDefinition::StrokeWidth, origin ) },
+    { QgsPalLayerSettings::ShapeStrokeWidthUnits, QgsPropertyDefinition( "ShapeBorderWidthUnits", QObject::tr( "Shape stroke width units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShapeJoinStyle, QgsPropertyDefinition( "ShapeJoinStyle", QObject::tr( "Shape join style" ), QgsPropertyDefinition::PenJoinStyle, origin ) },
+    { QgsPalLayerSettings::ShadowDraw, QgsPropertyDefinition( "ShadowDraw", QObject::tr( "Draw shadow" ), QgsPropertyDefinition::Boolean, origin ) },
     {
       QgsPalLayerSettings::ShadowUnder, QgsPropertyDefinition( "ShadowUnder", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Lowest</b>|<b>Text</b>|<br>"
-          "<b>Buffer</b>|<b>Background</b>]" ) )
+          "<b>Buffer</b>|<b>Background</b>]" ), origin )
     },
-    { QgsPalLayerSettings::ShadowOffsetAngle, QgsPropertyDefinition( "ShadowOffsetAngle", QObject::tr( "Shadow offset angle" ), QgsPropertyDefinition::Rotation ) },
-    { QgsPalLayerSettings::ShadowOffsetDist, QgsPropertyDefinition( "ShadowOffsetDist", QObject::tr( "Shadow offset distance" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::ShadowOffsetUnits, QgsPropertyDefinition( "ShadowOffsetUnits", QObject::tr( "Shadow offset units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShadowRadius, QgsPropertyDefinition( "ShadowRadius", QObject::tr( "Shadow blur radius" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::ShadowRadiusUnits, QgsPropertyDefinition( "ShadowRadiusUnits", QObject::tr( "Shadow blur units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::ShadowTransparency, QgsPropertyDefinition( "ShadowTransparency", QObject::tr( "Shadow transparency" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::ShadowOpacity, QgsPropertyDefinition( "ShadowOpacity", QObject::tr( "Shadow opacity" ), QgsPropertyDefinition::Opacity ) },
-    { QgsPalLayerSettings::ShadowScale, QgsPropertyDefinition( "ShadowScale", QObject::tr( "Shadow scale" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsPalLayerSettings::ShadowColor, QgsPropertyDefinition( "ShadowColor", QObject::tr( "Shadow color" ), QgsPropertyDefinition::ColorNoAlpha ) },
-    { QgsPalLayerSettings::ShadowBlendMode, QgsPropertyDefinition( "ShadowBlendMode", QObject::tr( "Shadow blend mode" ), QgsPropertyDefinition::BlendMode ) },
+    { QgsPalLayerSettings::ShadowOffsetAngle, QgsPropertyDefinition( "ShadowOffsetAngle", QObject::tr( "Shadow offset angle" ), QgsPropertyDefinition::Rotation, origin ) },
+    { QgsPalLayerSettings::ShadowOffsetDist, QgsPropertyDefinition( "ShadowOffsetDist", QObject::tr( "Shadow offset distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::ShadowOffsetUnits, QgsPropertyDefinition( "ShadowOffsetUnits", QObject::tr( "Shadow offset units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShadowRadius, QgsPropertyDefinition( "ShadowRadius", QObject::tr( "Shadow blur radius" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::ShadowRadiusUnits, QgsPropertyDefinition( "ShadowRadiusUnits", QObject::tr( "Shadow blur units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::ShadowTransparency, QgsPropertyDefinition( "ShadowTransparency", QObject::tr( "Shadow transparency" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::ShadowOpacity, QgsPropertyDefinition( "ShadowOpacity", QObject::tr( "Shadow opacity" ), QgsPropertyDefinition::Opacity, origin ) },
+    { QgsPalLayerSettings::ShadowScale, QgsPropertyDefinition( "ShadowScale", QObject::tr( "Shadow scale" ), QgsPropertyDefinition::IntegerPositive, origin ) },
+    { QgsPalLayerSettings::ShadowColor, QgsPropertyDefinition( "ShadowColor", QObject::tr( "Shadow color" ), QgsPropertyDefinition::ColorNoAlpha, origin ) },
+    { QgsPalLayerSettings::ShadowBlendMode, QgsPropertyDefinition( "ShadowBlendMode", QObject::tr( "Shadow blend mode" ), QgsPropertyDefinition::BlendMode, origin ) },
 
-    { QgsPalLayerSettings::CentroidWhole, QgsPropertyDefinition( "CentroidWhole", QgsPropertyDefinition::DataTypeString, QObject::tr( "Centroid of whole shape" ), QObject::tr( "string " ) + "[<b>Visible</b>|<b>Whole</b>]" ) },
+    { QgsPalLayerSettings::CentroidWhole, QgsPropertyDefinition( "CentroidWhole", QgsPropertyDefinition::DataTypeString, QObject::tr( "Centroid of whole shape" ), QObject::tr( "string " ) + "[<b>Visible</b>|<b>Whole</b>]", origin ) },
     {
       QgsPalLayerSettings::OffsetQuad, QgsPropertyDefinition( "OffsetQuad", QgsPropertyDefinition::DataTypeString, QObject::tr( "Offset quadrant" ), QObject::tr( "int<br>" ) + QStringLiteral( "[<b>0</b>=Above Left|<b>1</b>=Above|<b>2</b>=Above Right|<br>"
           "<b>3</b>=Left|<b>4</b>=Over|<b>5</b>=Right|<br>"
-          "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ) )
+          "<b>6</b>=Below Left|<b>7</b>=Below|<b>8</b>=Below Right]" ), origin )
     },
-    { QgsPalLayerSettings::OffsetXY, QgsPropertyDefinition( "OffsetXY", QObject::tr( "Offset" ), QgsPropertyDefinition::Offset ) },
-    { QgsPalLayerSettings::OffsetUnits, QgsPropertyDefinition( "OffsetUnits", QObject::tr( "Offset units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::LabelDistance, QgsPropertyDefinition( "LabelDistance", QObject::tr( "Label distance" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::DistanceUnits, QgsPropertyDefinition( "DistanceUnits", QObject::tr( "Label distance units" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::OffsetRotation, QgsPropertyDefinition( "OffsetRotation", QObject::tr( "Offset rotation" ), QgsPropertyDefinition::Rotation ) },
-    { QgsPalLayerSettings::CurvedCharAngleInOut, QgsPropertyDefinition( "CurvedCharAngleInOut", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved character angles" ), QObject::tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ) ) },
-    { QgsPalLayerSettings::RepeatDistance, QgsPropertyDefinition( "RepeatDistance", QObject::tr( "Repeat distance" ), QgsPropertyDefinition::DoublePositive ) },
-    { QgsPalLayerSettings::RepeatDistanceUnit, QgsPropertyDefinition( "RepeatDistanceUnit", QObject::tr( "Repeat distance unit" ), QgsPropertyDefinition::RenderUnits ) },
-    { QgsPalLayerSettings::Priority, QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ) ) },
-    { QgsPalLayerSettings::IsObstacle, QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::ObstacleFactor, QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ) ) },
+    { QgsPalLayerSettings::OffsetXY, QgsPropertyDefinition( "OffsetXY", QObject::tr( "Offset" ), QgsPropertyDefinition::Offset, origin ) },
+    { QgsPalLayerSettings::OffsetUnits, QgsPropertyDefinition( "OffsetUnits", QObject::tr( "Offset units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::LabelDistance, QgsPropertyDefinition( "LabelDistance", QObject::tr( "Label distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::DistanceUnits, QgsPropertyDefinition( "DistanceUnits", QObject::tr( "Label distance units" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::OffsetRotation, QgsPropertyDefinition( "OffsetRotation", QObject::tr( "Offset rotation" ), QgsPropertyDefinition::Rotation, origin ) },
+    { QgsPalLayerSettings::CurvedCharAngleInOut, QgsPropertyDefinition( "CurvedCharAngleInOut", QgsPropertyDefinition::DataTypeString, QObject::tr( "Curved character angles" ), QObject::tr( "double coord [<b>in,out</b> as 20.0-60.0,20.0-95.0]" ), origin ) },
+    { QgsPalLayerSettings::RepeatDistance, QgsPropertyDefinition( "RepeatDistance", QObject::tr( "Repeat distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { QgsPalLayerSettings::RepeatDistanceUnit, QgsPropertyDefinition( "RepeatDistanceUnit", QObject::tr( "Repeat distance unit" ), QgsPropertyDefinition::RenderUnits, origin ) },
+    { QgsPalLayerSettings::Priority, QgsPropertyDefinition( "Priority", QgsPropertyDefinition::DataTypeString, QObject::tr( "Label priority" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
+    { QgsPalLayerSettings::IsObstacle, QgsPropertyDefinition( "IsObstacle", QObject::tr( "Feature is a label obstacle" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::ObstacleFactor, QgsPropertyDefinition( "ObstacleFactor", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Obstacle factor" ), QObject::tr( "double [0.0-10.0]" ), origin ) },
     {
       QgsPalLayerSettings::PredefinedPositionOrder, QgsPropertyDefinition( "PredefinedPositionOrder", QgsPropertyDefinition::DataTypeString, QObject::tr( "Predefined position order" ),  QObject::tr( "Comma separated list of placements in order of priority<br>" )
           + QStringLiteral( "[<b>TL</b>=Top left|<b>TSL</b>=Top, slightly left|<b>T</b>=Top middle|<br>"
                             "<b>TSR</b>=Top, slightly right|<b>TR</b>=Top right|<br>"
                             "<b>L</b>=Left|<b>R</b>=Right|<br>"
                             "<b>BL</b>=Bottom left|<b>BSL</b>=Bottom, slightly left|<b>B</b>=Bottom middle|<br>"
-                            "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ) )
+                            "<b>BSR</b>=Bottom, slightly right|<b>BR</b>=Bottom right]" ), origin )
     },
-    { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]" ) },
+    { QgsPalLayerSettings::PositionX, QgsPropertyDefinition( "PositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::PositionY, QgsPropertyDefinition( "PositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::Hali, QgsPropertyDefinition( "Hali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Horizontal alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>]", origin ) },
     {
       QgsPalLayerSettings::Vali, QgsPropertyDefinition( "Vali", QgsPropertyDefinition::DataTypeString, QObject::tr( "Vertical alignment" ), QObject::tr( "string " ) + QStringLiteral( "[<b>Bottom</b>|<b>Base</b>|<br>"
-          "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ) )
+          "<b>Half</b>|<b>Cap</b>|<b>Top</b>]" ), origin )
     },
-    { QgsPalLayerSettings::Rotation, QgsPropertyDefinition( "Rotation", QObject::tr( "Label rotation (deprecated)" ), QgsPropertyDefinition::Rotation ) },
-    { QgsPalLayerSettings::LabelRotation, QgsPropertyDefinition( "LabelRotation", QObject::tr( "Label rotation" ), QgsPropertyDefinition::Rotation ) },
-    { QgsPalLayerSettings::ScaleVisibility, QgsPropertyDefinition( "ScaleVisibility", QObject::tr( "Scale based visibility" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::MinScale, QgsPropertyDefinition( "MinScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::MaxScale, QgsPropertyDefinition( "MaxScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::MinimumScale, QgsPropertyDefinition( "MinimumScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::MaximumScale, QgsPropertyDefinition( "MaximumScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double ) },
+    { QgsPalLayerSettings::Rotation, QgsPropertyDefinition( "Rotation", QObject::tr( "Label rotation (deprecated)" ), QgsPropertyDefinition::Rotation, origin ) },
+    { QgsPalLayerSettings::LabelRotation, QgsPropertyDefinition( "LabelRotation", QObject::tr( "Label rotation" ), QgsPropertyDefinition::Rotation, origin ) },
+    { QgsPalLayerSettings::ScaleVisibility, QgsPropertyDefinition( "ScaleVisibility", QObject::tr( "Scale based visibility" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::MinScale, QgsPropertyDefinition( "MinScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::MaxScale, QgsPropertyDefinition( "MaxScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::MinimumScale, QgsPropertyDefinition( "MinimumScale", QObject::tr( "Minimum scale (denominator)" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::MaximumScale, QgsPropertyDefinition( "MaximumScale", QObject::tr( "Maximum scale (denominator)" ), QgsPropertyDefinition::Double, origin ) },
 
-    { QgsPalLayerSettings::FontLimitPixel, QgsPropertyDefinition( "FontLimitPixel", QObject::tr( "Limit font pixel size" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::FontMinPixel, QgsPropertyDefinition( "FontMinPixel", QObject::tr( "Minimum pixel size" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsPalLayerSettings::FontMaxPixel, QgsPropertyDefinition( "FontMaxPixel", QObject::tr( "Maximum pixel size" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsPalLayerSettings::ZIndex, QgsPropertyDefinition( "ZIndex", QObject::tr( "Label z-index" ), QgsPropertyDefinition::Double ) },
-    { QgsPalLayerSettings::Show, QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean ) },
-    { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean ) },
+    { QgsPalLayerSettings::FontLimitPixel, QgsPropertyDefinition( "FontLimitPixel", QObject::tr( "Limit font pixel size" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::FontMinPixel, QgsPropertyDefinition( "FontMinPixel", QObject::tr( "Minimum pixel size" ), QgsPropertyDefinition::IntegerPositive, origin ) },
+    { QgsPalLayerSettings::FontMaxPixel, QgsPropertyDefinition( "FontMaxPixel", QObject::tr( "Maximum pixel size" ), QgsPropertyDefinition::IntegerPositive, origin ) },
+    { QgsPalLayerSettings::ZIndex, QgsPropertyDefinition( "ZIndex", QObject::tr( "Label z-index" ), QgsPropertyDefinition::Double, origin ) },
+    { QgsPalLayerSettings::Show, QgsPropertyDefinition( "Show", QObject::tr( "Show label" ), QgsPropertyDefinition::Boolean, origin ) },
+    { QgsPalLayerSettings::AlwaysShow, QgsPropertyDefinition( "AlwaysShow", QObject::tr( "Always show label" ), QgsPropertyDefinition::Boolean, origin ) },
   };
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-  : upsidedownLabels( Upright )
-  , mCurFeat( nullptr )
-  , xform( nullptr )
-  , extentGeom( nullptr )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
-  , expression( nullptr )
 {
   initPropertyDefinitions();
 
@@ -248,7 +243,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   useSubstitutions = false;
 
   // text formatting
-  wrapChar = QLatin1String( "" );
   multilineAlign = MultiFollowPlacement;
   addDirectionSymbol = false;
   leftDirectionSymbol = QStringLiteral( "<" );
@@ -303,15 +297,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings &s )
-  : mCurFeat( nullptr )
-  , fieldIndex( 0 )
-  , xform( nullptr )
-  , extentGeom( nullptr )
-  , mFeaturesToLabel( 0 )
-  , mFeatsSendingToPal( 0 )
-  , mFeatsRegPal( 0 )
+  : fieldIndex( 0 )
   , mDataDefinedProperties( s.mDataDefinedProperties )
-  , expression( nullptr )
 {
   *this = s;
 }
@@ -802,7 +789,7 @@ void QgsPalLayerSettings::readXml( QDomElement &elem, const QgsReadWriteContext 
   yOffset = placementElem.attribute( QStringLiteral( "yOffset" ), QStringLiteral( "0" ) ).toDouble();
   if ( !placementElem.hasAttribute( QStringLiteral( "offsetUnits" ) ) )
   {
-    offsetUnits =  placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
+    offsetUnits = placementElem.attribute( QStringLiteral( "labelOffsetInMapUnits" ), QStringLiteral( "1" ) ).toInt() ? QgsUnitTypes::RenderMapUnits : QgsUnitTypes::RenderMillimeters;
   }
   else
   {
@@ -1200,7 +1187,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     return;
   }
 
-//  mCurFields = &layer->pendingFields();
+//  mCurFields = &layer->fields();
 
   // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();
@@ -1508,10 +1495,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( ( geom.type() == QgsWkbTypes::PolygonGeometry )
        && ( placement == Line || placement == PerimeterCurved ) )
   {
-    geom = QgsGeometry( geom.geometry()->boundary() );
+    geom = QgsGeometry( geom.constGet()->boundary() );
   }
 
-  GEOSGeometry *geos_geom_clone = nullptr;
+  geos::unique_ptr geos_geom_clone;
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : QgsGeometry() ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, doClip ? extentGeom : QgsGeometry() );
@@ -1519,7 +1506,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     if ( geom.isNull() )
       return;
   }
-  geos_geom_clone = geom.exportToGeos();
+  geos_geom_clone = QgsGeos::asGeos( geom );
 
   if ( isObstacle )
   {
@@ -1560,10 +1547,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     }
   }
 
-  GEOSGeometry *geosObstacleGeomClone = nullptr;
+  geos::unique_ptr geosObstacleGeomClone;
   if ( obstacleGeometry )
   {
-    geosObstacleGeomClone = obstacleGeometry.exportToGeos();
+    geosObstacleGeomClone = QgsGeos::asGeos( obstacleGeometry );
   }
 
 
@@ -1793,8 +1780,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
         if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
         {
           ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-          xPos = static_cast< QgsPoint * >( ddPoint.geometry() )->x();
-          yPos = static_cast< QgsPoint * >( ddPoint.geometry() )->y();
+          xPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->x();
+          yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
         }
 
         xPos += xdiff;
@@ -1846,7 +1833,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   }
 
   //  feature to the layer
-  QgsTextLabelFeature *lf = new QgsTextLabelFeature( f.id(), geos_geom_clone, QSizeF( labelX, labelY ) );
+  QgsTextLabelFeature *lf = new QgsTextLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( labelX, labelY ) );
   mFeatsRegPal++;
 
   *labelFeature = lf;
@@ -1864,7 +1851,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   ( *labelFeature )->setPermissibleZone( permissibleZone );
   if ( geosObstacleGeomClone )
   {
-    ( *labelFeature )->setObstacleGeometry( geosObstacleGeomClone );
+    ( *labelFeature )->setObstacleGeometry( std::move( geosObstacleGeomClone ) );
 
     if ( geom.type() == QgsWkbTypes::PointGeometry )
     {
@@ -2019,20 +2006,20 @@ void QgsPalLayerSettings::registerObstacleFeature( QgsFeature &f, QgsRenderConte
     geom = simplifier.simplify( geom );
   }
 
-  GEOSGeometry *geos_geom_clone = nullptr;
+  geos::unique_ptr geos_geom_clone;
   std::unique_ptr<QgsGeometry> scopedPreparedGeom;
 
   if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, extentGeom ) )
   {
     geom = QgsPalLabeling::prepareGeometry( geom, context, ct, extentGeom );
   }
-  geos_geom_clone = geom.exportToGeos();
+  geos_geom_clone = QgsGeos::asGeos( geom );
 
   if ( !geos_geom_clone )
     return; // invalid geometry
 
   //  feature to the layer
-  *obstacleFeature = new QgsLabelFeature( f.id(), geos_geom_clone, QSizeF( 0, 0 ) );
+  *obstacleFeature = new QgsLabelFeature( f.id(), std::move( geos_geom_clone ), QSizeF( 0, 0 ) );
   ( *obstacleFeature )->setIsObstacle( true );
   mFeatsRegPal++;
 }
@@ -2196,6 +2183,17 @@ bool QgsPalLayerSettings::dataDefinedValEval( DataDefinedValueType valType,
         if ( !ptstr.isEmpty() )
         {
           dataDefinedValues.insert( p, QVariant( QgsSymbolLayerUtils::decodePoint( ptstr ) ) );
+          return true;
+        }
+        return false;
+      }
+      case DDSizeF:
+      {
+        QString ptstr = exprVal.toString().trimmed();
+
+        if ( !ptstr.isEmpty() )
+        {
+          dataDefinedValues.insert( p, QVariant( QgsSymbolLayerUtils::decodeSize( ptstr ) ) );
           return true;
         }
         return false;
@@ -2580,8 +2578,8 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     QgsDebugMsgLevel( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
 
     // '' empty paths are allowed
-    svgPath = svgfile;
-    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgfile ) );
+    svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
+    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgPath ) );
   }
 
   // data defined shape size type?
@@ -2685,7 +2683,7 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeOffsetUnits, exprVal, context.expressionContext() );
 
   // data defined shape radii?
-  dataDefinedValEval( DDPointF, QgsPalLayerSettings::ShapeRadii, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeSize( background.radii() ) );
+  dataDefinedValEval( DDSizeF, QgsPalLayerSettings::ShapeRadii, exprVal, context.expressionContext(), QgsSymbolLayerUtils::encodeSize( background.radii() ) );
 
   // data defined shape radii units?
   dataDefinedValEval( DDUnits, QgsPalLayerSettings::ShapeRadiiUnits, exprVal, context.expressionContext() );
@@ -2902,6 +2900,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
       QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
       return QgsGeometry();
     }
+    // geometry transforms may result in nan points, remove these
+    geom.filterVertices( []( const QgsPoint & point )->bool
+    {
+      return std::isfinite( point.x() ) && std::isfinite( point.y() );
+    } );
+    if ( QgsCurvePolygon *cp = qgsgeometry_cast< QgsCurvePolygon * >( geom.get() ) )
+      cp->removeInvalidRings();
   }
 
   // Rotate the geometry if needed, before clipping
@@ -2926,7 +2931,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
 
     if ( geom.rotate( m2p.mapRotation(), center ) )
     {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.exportToWkt() ) );
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }
@@ -2934,12 +2939,13 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
   // fix invalid polygons
   if ( geom.type() == QgsWkbTypes::PolygonGeometry && !geom.isGeosValid() )
   {
-    QgsGeometry bufferGeom = geom.buffer( 0, 0 );
-    if ( bufferGeom.isNull() )
+    QgsGeometry validGeom = geom.makeValid();
+    if ( validGeom.isNull() )
     {
+      QgsDebugMsg( QString( "Could not repair geometry: %1" ).arg( validGeom.lastError() ) );
       return QgsGeometry();
     }
-    geom = bufferGeom;
+    geom = validGeom;
   }
 
   if ( !clipGeometry.isNull() &&

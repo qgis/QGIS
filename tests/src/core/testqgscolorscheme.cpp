@@ -25,12 +25,12 @@ class DummyColorScheme : public QgsColorScheme
 {
   public:
 
-    DummyColorScheme() {}
+    DummyColorScheme() = default;
 
-    virtual QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
+    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
       if ( context == QLatin1String( "testscheme" ) )
@@ -48,7 +48,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme *clone() const override
+    QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }

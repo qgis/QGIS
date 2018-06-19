@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsRelationEditorWidgetPlugin : public QObject, publi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsRelationEditorWidgetPlugin( QObject *parent = 0 );
+    explicit QgsRelationEditorWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

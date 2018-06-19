@@ -28,14 +28,17 @@ class QgsAmsRootItem : public QgsDataCollectionItem
     QgsAmsRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
+
+    QVariant sortKey() const override { return 12; }
+
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions() override;
-    virtual QWidget *paramWidget() override;
+    QList<QAction *> actions( QWidget *parent ) override;
+    QWidget *paramWidget() override;
 #endif
 
   public slots:
 #ifdef HAVE_GUI
-    void connectionsChanged();
+    void onConnectionsChanged();
     void newConnection();
 #endif
 };
@@ -49,7 +52,7 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
-    QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
   public slots:

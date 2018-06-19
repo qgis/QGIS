@@ -29,7 +29,8 @@ class QgsDxfExport;
 class QgsDxfPaintDevice;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDxfPaintEngine
  * \note not available in Python bindings
 */
@@ -63,6 +64,8 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QTransform mTransform;
     QPen mPen;
     QBrush mBrush;
+    //! Opacity
+    double mOpacity = 1.0;
     QString mLayer;
     QPointF mShift;
     QgsRingSequence mPolygon;
@@ -86,6 +89,11 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     static int lower( int n, int i );
     static double power( double a, int b );
     static int faculty( int n );
+
+    //! Returns current pen color
+    QColor penColor() const;
+    //! Returns current brush color
+    QColor brushColor() const;
 };
 
 #endif // QGSDXFPAINTENGINE_H

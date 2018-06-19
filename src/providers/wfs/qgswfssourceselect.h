@@ -39,7 +39,7 @@ class QgsWFSItemDelegate : public QItemDelegate
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
@@ -65,13 +65,14 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
   public:
 
     QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsWFSSourceSelect();
+    ~QgsWFSSourceSelect() override;
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
     QgsProjectionSelectionDialog *mProjectionSelector = nullptr;
 
-    /** Stores the available CRS for a server connections.
+    /**
+     * Stores the available CRS for a server connections.
      The first string is the typename, the corresponding list
     stores the CRS for the typename in the form 'EPSG:XXXX'*/
     QMap<QString, QStringList > mAvailableCRS;
@@ -85,7 +86,8 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     QModelIndex mSQLIndex;
     QgsSQLComposerDialog *mSQLComposerDialog = nullptr;
 
-    /** Returns the best suited CRS from a set of authority ids
+    /**
+     * Returns the best suited CRS from a set of authority ids
        1. project CRS if contained in the set
        2. WGS84 if contained in the set
        3. the first entry in the set else
@@ -108,10 +110,10 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     void buildQuery( const QModelIndex &index );
     void changeCRS();
     void changeCRSFilter();
-    void on_cmbConnections_activated( int index );
+    void cmbConnections_activated( int index );
     void capabilitiesReplyFinished();
-    void on_btnSave_clicked();
-    void on_btnLoad_clicked();
+    void btnSave_clicked();
+    void btnLoad_clicked();
     void treeWidgetItemDoubleClicked( const QModelIndex &index );
     void treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void buildQueryButtonClicked();

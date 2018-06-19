@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsnewnamedialog.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -38,10 +39,9 @@
 
 #include <QDragEnterEvent>
 
-QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent )
+QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )
-  , mModel( nullptr )
-  , mProxyModel( nullptr )
+  , mModel( browserModel )
   , mPropertiesWidgetEnabled( false )
   , mPropertiesWidgetHeight( 0 )
 {
@@ -57,7 +57,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent
   mLayoutBrowser->addWidget( mBrowserView );
 
   mWidgetFilter->hide();
-  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items..." ) );
+  mLeFilter->setPlaceholderText( tr( "Type here to filter visible items…" ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
 
   QMenu *menu = new QMenu( this );
@@ -97,7 +97,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QWidget *parent
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsBrowserDockWidget::setFilter );
   connect( group, &QActionGroup::triggered, this, &QgsBrowserDockWidget::setFilterSyntax );
   connect( mBrowserView, &QgsDockBrowserTreeView::customContextMenuRequested, this, &QgsBrowserDockWidget::showContextMenu );
-  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::addLayerAtIndex );
+  connect( mBrowserView, &QgsDockBrowserTreeView::doubleClicked, this, &QgsBrowserDockWidget::itemDoubleClicked );
   connect( mSplitter, &QSplitter::splitterMoved, this, &QgsBrowserDockWidget::splitterMoved );
 }
 
@@ -112,17 +112,22 @@ QgsBrowserDockWidget::~QgsBrowserDockWidget()
 void QgsBrowserDockWidget::showEvent( QShowEvent *e )
 {
   // delayed initialization of the model
-  if ( !mModel )
+  if ( !mModel->initialized( ) )
   {
-    mModel = new QgsBrowserModel( mBrowserView );
+    mModel->initialize();
+  }
+  if ( ! mProxyModel )
+  {
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
+    mBrowserView->setSortingEnabled( true );
+    mBrowserView->sortByColumn( 0, Qt::AscendingOrder );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
-    mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
@@ -152,6 +157,36 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
   QgsDockWidget::showEvent( e );
 }
 
+void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
+{
+  QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
+  if ( !item )
+    return;
+
+  if ( item->handleDoubleClick() )
+    return;
+  else
+    addLayerAtIndex( index ); // default double-click handler
+}
+
+void QgsBrowserDockWidget::renameFavorite()
+{
+  QgsDataItem *dataItem = mModel->dataItem( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
+  if ( !dataItem )
+    return;
+
+  QgsFavoriteItem *favorite = qobject_cast< QgsFavoriteItem * >( dataItem );
+  if ( !favorite )
+    return;
+
+  QgsNewNameDialog dlg( tr( "favorite “%1”" ).arg( favorite->name() ), favorite->name() );
+  dlg.setWindowTitle( tr( "Rename Favorite" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == favorite->name() )
+    return;
+
+  favorite->rename( dlg.name() );
+}
+
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
@@ -164,9 +199,8 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( item->type() == QgsDataItem::Directory )
   {
     QgsSettings settings;
-    QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
-    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
 
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favorites
@@ -174,10 +208,14 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     }
     else if ( inFavDirs )
     {
-      // only favorites can be removed
+      QAction *actionRename = new QAction( tr( "Rename Favorite…" ), this );
+      connect( actionRename, &QAction::triggered, this, &QgsBrowserDockWidget::renameFavorite );
+      menu->addAction( actionRename );
+      menu->addSeparator();
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
+      menu->addSeparator();
     }
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
     QAction *action = menu->addAction( tr( "Fast Scan this Directory" ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
@@ -187,14 +225,24 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   else if ( item->type() == QgsDataItem::Layer )
   {
     menu->addAction( tr( "Add Selected Layer(s) to Canvas" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
+    menu->addAction( tr( "Properties…" ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favorites )
   {
-    menu->addAction( tr( "Add a Directory..." ), this, SLOT( addFavoriteDirectory() ) );
+    menu->addAction( tr( "Add a Directory…" ), this, SLOT( addFavoriteDirectory() ) );
   }
 
-  QList<QAction *> actions = item->actions();
+  const QList<QMenu *> menus = item->menus( menu );
+  QList<QAction *> actions = item->actions( menu );
+
+  if ( !menus.isEmpty() )
+  {
+    for ( QMenu *mn : menus )
+    {
+      menu->addMenu( mn );
+    }
+  }
+
   if ( !actions.isEmpty() )
   {
     if ( !menu->actions().isEmpty() )
@@ -235,9 +283,9 @@ void QgsBrowserDockWidget::addFavoriteDirectory()
   }
 }
 
-void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir )
+void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir, const QString &name )
 {
-  mModel->addFavoriteDirectory( favDir );
+  mModel->addFavoriteDirectory( favDir, name );
 }
 
 void QgsBrowserDockWidget::removeFavorite()
@@ -247,44 +295,46 @@ void QgsBrowserDockWidget::removeFavorite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  if ( mModel )
-    refreshModel( QModelIndex() );
+  refreshModel( QModelIndex() );
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex &index )
 {
-  QgsDataItem *item = mModel->dataItem( index );
-  if ( item )
+  if ( mModel && mProxyModel )
   {
-    QgsDebugMsg( "path = " + item->path() );
-  }
-  else
-  {
-    QgsDebugMsg( "invalid item" );
-  }
-
-  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
-  {
-    mModel->refresh( index );
-  }
-
-  for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
-  {
-    QModelIndex idx = mModel->index( i, 0, index );
-    QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    QgsDataItem *child = mModel->dataItem( idx );
-
-    // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
-    // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
-    if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
+    QgsDataItem *item = mModel->dataItem( index );
+    if ( item )
     {
-      refreshModel( idx );
+      QgsDebugMsg( "path = " + item->path() );
     }
     else
     {
-      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      QgsDebugMsg( "invalid item" );
+    }
+
+    if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+    {
+      mModel->refresh( index );
+    }
+
+    for ( int i = 0; i < mModel->rowCount( index ); i++ )
+    {
+      QModelIndex idx = mModel->index( i, 0, index );
+      QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
+      QgsDataItem *child = mModel->dataItem( idx );
+
+      // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+      // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+      if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
       {
-        child->depopulate();
+        refreshModel( idx );
+      }
+      else
+      {
+        if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+        {
+          child->depopulate();
+        }
       }
     }
   }
@@ -311,7 +361,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex &index )
     if ( projectItem )
     {
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      emit openFile( projectItem->path() );
+      emit openFile( projectItem->path(), QStringLiteral( "project" ) );
       QApplication::restoreOverrideCursor();
     }
   }
@@ -343,7 +393,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
     {
       QgsProjectItem *projectItem = qobject_cast<QgsProjectItem *>( item );
       if ( projectItem )
-        emit openFile( projectItem->path() );
+        emit openFile( projectItem->path(), QStringLiteral( "project" ) );
 
       QApplication::restoreOverrideCursor();
       return;

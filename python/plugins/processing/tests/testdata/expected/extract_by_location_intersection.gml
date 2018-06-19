@@ -20,18 +20,18 @@
     </ogr:extract_by_location_intersection>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:extract_by_location_intersection fid="polys.3">
-      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,1 10,1 10,-3 6,-3 6,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>7,0 7,-2 9,-2 9,0 7,0</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></ogr:geometryProperty>
-      <ogr:name>ASDF</ogr:name>
-      <ogr:intval>0</ogr:intval>
-    </ogr:extract_by_location_intersection>
-  </gml:featureMember>
-  <gml:featureMember>
     <ogr:extract_by_location_intersection fid="polys.5">
       <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,2 6,1 6,-3 2,-1 2,2 3,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
       <ogr:floatval>3.33</ogr:floatval>
+    </ogr:extract_by_location_intersection>
+  </gml:featureMember>
+  <gml:featureMember>
+    <ogr:extract_by_location_intersection fid="polys.3">
+      <ogr:geometryProperty><gml:Polygon srsName="EPSG:4326"><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>6,1 10,1 10,-3 6,-3 6,1</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs><gml:innerBoundaryIs><gml:LinearRing><gml:coordinates>7,0 7,-2 9,-2 9,0 7,0</gml:coordinates></gml:LinearRing></gml:innerBoundaryIs></gml:Polygon></ogr:geometryProperty>
+      <ogr:name>ASDF</ogr:name>
+      <ogr:intval>0</ogr:intval>
     </ogr:extract_by_location_intersection>
   </gml:featureMember>
 </ogr:FeatureCollection>

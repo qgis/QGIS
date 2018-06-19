@@ -32,7 +32,6 @@ QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas
   , mCurrentMouseAzimut( 0.0 )
   , mCurrentRotationFeature( 0.0 )
   , mRotating( false )
-  , mRotationItem( nullptr )
   , mCtrlPressed( false )
 {}
 
@@ -107,7 +106,7 @@ bool QgsMapToolRotatePointSymbols::checkSymbolCompatibility( QgsMarkerSymbol *ma
 
 void QgsMapToolRotatePointSymbols::noCompatibleSymbols()
 {
-  emit messageEmitted( tr( "The selected point does not have a rotation attribute set." ), QgsMessageBar::CRITICAL );
+  emit messageEmitted( tr( "The selected point does not have a rotation attribute set." ), Qgis::Critical );
 }
 
 void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )

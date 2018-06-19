@@ -27,7 +27,8 @@ class QgsWkbPtr;
 class QgsConstWkbPtr;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Implementation of GeometrySimplifier using the "MapToPixel" algorithm
  *
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
@@ -57,7 +58,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
 
   private:
     //! Simplify the geometry using the specified tolerance
-    static QgsGeometry simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, QgsWkbTypes::Type wkbType, const QgsAbstractGeometry &geometry, const QgsRectangle &envelope, double map2pixelTol, bool isaLinearRing );
+    static std::unique_ptr<QgsAbstractGeometry> simplifyGeometry( int simplifyFlags, SimplifyAlgorithm simplifyAlgorithm, const QgsAbstractGeometry &geometry, double map2pixelTol, bool isaLinearRing );
 
   protected:
     //! Current simplification flags
@@ -87,7 +88,7 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm ) { mSimplifyAlgorithm = simplifyAlgorithm; }
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const override;
+    QgsGeometry simplify( const QgsGeometry &geometry ) const override;
 
     //! Sets the tolerance of the vector layer managed
     void setTolerance( double value ) { mTolerance = value; }

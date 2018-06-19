@@ -106,7 +106,7 @@ void QgsPointMarkerItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   mMarkerSymbol->startRender( rc, mFeature.fields() );
-  QRectF bounds =  mMarkerSymbol->bounds( mLocation, rc, mFeature );
+  QRectF bounds = mMarkerSymbol->bounds( mLocation, rc, mFeature );
   mMarkerSymbol->stopRender( rc );
   QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x(), bounds.y() ),
                   mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x() + bounds.width() * 2, bounds.y() + bounds.height() * 2 ) );

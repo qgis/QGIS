@@ -28,7 +28,6 @@ QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, co
   , mFile( file )
   , mFunction( function )
   , mLine( line )
-  , mFormat( Text )
 {
 }
 

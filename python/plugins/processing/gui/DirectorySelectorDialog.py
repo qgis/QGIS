@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'May 2016'
@@ -27,6 +26,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 from qgis.PyQt import uic
 from qgis.core import QgsSettings
@@ -34,8 +34,10 @@ from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialog
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
-WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
 class DirectorySelectorDialog(BASE, WIDGET):

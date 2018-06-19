@@ -23,7 +23,8 @@
 class QgsMapLayer;
 class QgsLayerTreeLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Layer tree group node serves as a container for layers and further groups.
  *
  * Group names do not need to be unique within one tree nor within one parent.
@@ -144,49 +145,49 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeGroup *readXml( QDomElement &element ) SIP_FACTORY;
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
      * Also resolves textual references to layers from the project (calls resolveReferences() internally).
      * \since QGIS 3.0
      */
-    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
      */
-    virtual void writeXml( QDomElement &parentElement ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
     /**
      * Read children from XML and append them to the group.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    void readChildrenFromXml( QDomElement &element );
+    void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
-     * Return text representation of the tree. For debugging purposes only.
+     * Returns text representation of the tree. For debugging purposes only.
      */
-    virtual QString dump() const override;
+    QString dump() const override;
 
     /**
-     * Return a clone of the group. The children are cloned too.
+     * Returns a clone of the group. The children are cloned too.
      */
-    virtual QgsLayerTreeGroup *clone() const override SIP_FACTORY;
+    QgsLayerTreeGroup *clone() const override SIP_FACTORY;
 
     /**
      * Calls resolveReferences() on child tree nodes
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
+    void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
     /**
      * Check or uncheck a node and all its children (taking into account exclusion rules)
      */
-    virtual void setItemVisibilityCheckedRecursive( bool checked ) override;
+    void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     /**
-     * Return whether the group is mutually exclusive (only one child can be checked at a time)
+     * Returns whether the group is mutually exclusive (only one child can be checked at a time)
      * \since QGIS 2.12
      */
     bool isMutuallyExclusive() const;
@@ -211,16 +212,16 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 
     QString mName;
 
-    bool mChangingChildVisibility;
+    bool mChangingChildVisibility = false;
 
     //! Whether the group is mutually exclusive (i.e. only one child can be checked at a time)
-    bool mMutuallyExclusive;
+    bool mMutuallyExclusive = false;
 
     /**
      * Keeps track which child has been most recently selected
      * (so if the whole group is unchecked and checked again, we know which child to check)
      */
-    int mMutuallyExclusiveChildIndex;
+    int mMutuallyExclusiveChildIndex = -1;
 
   private:
 

@@ -26,14 +26,14 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    radius = alg.getParameterValue(u'radius')
-    x_radius = alg.getParameterValue(u'x_radius')
-    y_radius = alg.getParameterValue(u'y_radius')
+    radius = alg.parameterAsString(parameters, 'radius', context)
+    x_radius = alg.parameterAsString(parameters, 'x_radius', context)
+    y_radius = alg.parameterAsString(parameters, 'y_radius', context)
 
     if (not radius and not x_radius and not y_radius) or (radius and (x_radius or y_radius)):
-        return alg.tr("You need to set either radius or x_radius and y_radius!")
+        return False, alg.tr("You need to set either radius or x_radius and y_radius!")
     elif (x_radius and not y_radius) or (y_radius and not x_radius):
-        return alg.tr("You need to set x_radius and y_radius!")
-    return None
+        return False, alg.tr("You need to set x_radius and y_radius!")
+    return True, None

@@ -27,6 +27,8 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
   , mIsShapeFile( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) && vlayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
 {
   setupUi( this );
+  connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAddAttrDialog::mTypeBox_currentIndexChanged );
+  connect( mLength, &QSpinBox::editingFinished, this, &QgsAddAttrDialog::mLength_editingFinished );
 
   if ( !vlayer )
     return;
@@ -52,13 +54,13 @@ QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt:
     mTypeBox->setItemData( i, typelist[i].mMaxPrec, Qt::UserRole + 5 );
   }
 
-  on_mTypeBox_currentIndexChanged( 0 );
+  mTypeBox_currentIndexChanged( 0 );
 
   if ( mIsShapeFile )
     mNameEdit->setMaxLength( 10 );
 }
 
-void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
+void QgsAddAttrDialog::mTypeBox_currentIndexChanged( int idx )
 {
   mTypeName->setText( mTypeBox->itemData( idx, Qt::UserRole + 1 ).toString() );
 
@@ -73,7 +75,7 @@ void QgsAddAttrDialog::on_mTypeBox_currentIndexChanged( int idx )
   setPrecisionMinMax();
 }
 
-void QgsAddAttrDialog::on_mLength_editingFinished()
+void QgsAddAttrDialog::mLength_editingFinished()
 {
   setPrecisionMinMax();
 }
@@ -93,13 +95,13 @@ void QgsAddAttrDialog::accept()
 {
   if ( mIsShapeFile && mNameEdit->text().toLower() == QLatin1String( "shape" ) )
   {
-    QMessageBox::warning( this, tr( "Warning" ),
+    QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "Invalid field name. This field name is reserved and cannot be used." ) );
     return;
   }
   if ( mNameEdit->text().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Warning" ),
+    QMessageBox::warning( this, tr( "Add Field" ),
                           tr( "No name specified. Please specify a name to create a new field." ) );
     return;
   }

@@ -31,9 +31,9 @@ QgsGdalProviderBase::QgsGdalProviderBase()
 }
 
 /**
- * @param bandNumber the number of the band for which you want a color table
- * @param list a pointer the object that will hold the color table
- * @return true of a color table was able to be read, false otherwise
+ * \param bandNumber the number of the band for which you want a color table
+ * \param list a pointer the object that will hold the color table
+ * \return true of a color table was able to be read, false otherwise
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDatasetH gdalDataset, int bandNumber )const
 {
@@ -67,7 +67,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
     }
 
     int myEntryCount = GDALGetColorEntryCount( myGdalColorTable );
-    GDALColorInterp myColorInterpretation =  GDALGetRasterColorInterpretation( myGdalBand );
+    GDALColorInterp myColorInterpretation = GDALGetRasterColorInterpretation( myGdalBand );
     QgsDebugMsg( "Color Interpretation: " + QString::number( static_cast< int >( myColorInterpretation ) ) );
     GDALPaletteInterp myPaletteInterpretation  = GDALGetPaletteInterpretation( myGdalColorTable );
     QgsDebugMsg( "Palette Interpretation: " + QString::number( static_cast< int >( myPaletteInterpretation ) ) );
@@ -238,11 +238,11 @@ QgsRectangle QgsGdalProviderBase::extent( GDALDatasetH gdalDataset )const
   if ( !myHasGeoTransform )
   {
     // Initialize the affine transform matrix
-    myGeoTransform[0] =  0;
-    myGeoTransform[1] =  1;
-    myGeoTransform[2] =  0;
-    myGeoTransform[3] =  0;
-    myGeoTransform[4] =  0;
+    myGeoTransform[0] = 0;
+    myGeoTransform[1] = 1;
+    myGeoTransform[2] = 0;
+    myGeoTransform[3] = 0;
+    myGeoTransform[4] = 0;
     myGeoTransform[5] = -1;
   }
 

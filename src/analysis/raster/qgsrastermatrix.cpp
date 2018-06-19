@@ -19,14 +19,6 @@
 #include <cstring>
 #include <cmath>
 
-QgsRasterMatrix::QgsRasterMatrix()
-  : mColumns( 0 )
-  , mRows( 0 )
-  , mData( nullptr )
-  , mNodataValue( -1 )
-{
-}
-
 QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nodataValue )
   : mColumns( nCols )
   , mRows( nRows )
@@ -36,9 +28,6 @@ QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, double *data, double nod
 }
 
 QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix &m )
-  : mColumns( 0 )
-  , mRows( 0 )
-  , mData( nullptr )
 {
   operator=( m );
 }
@@ -415,9 +404,5 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power ) const
 {
-  if ( ( base == 0 && power < 0 ) || ( base < 0 && ( power - std::floor( power ) ) > 0 ) )
-  {
-    return false;
-  }
-  return true;
+  return !( ( base == 0 && power < 0 ) || ( base < 0 && ( power - std::floor( power ) ) > 0 ) );
 }

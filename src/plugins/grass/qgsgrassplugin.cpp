@@ -61,33 +61,11 @@ static const QString pluginIcon = QStringLiteral( ":/images/themes/default/grass
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
  * and an interface object that provides access to exposed functions in QGIS.
- * @param theQGisApp Pointer to the QGIS main window
- * @param qgisInterFace Pointer to the QGIS interface object
+ * \param theQGisApp Pointer to the QGIS main window
+ * \param qgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface *qgisInterFace )
-  : mToolBarPointer( 0 )
-  , qGisInterface( qgisInterFace )
-  , mCanvas( 0 )
-  , mRegionAction( 0 )
-  , mRegionBand( 0 )
-  , mTools( 0 )
-  , mNewMapset( 0 )
-  , mOpenMapsetAction( 0 )
-  , mNewMapsetAction( 0 )
-  , mCloseMapsetAction( 0 )
-  , mOpenToolsAction( 0 )
-  , mOptionsAction( 0 )
-  , mAddFeatureAction( 0 )
-  , mAddPointAction( 0 )
-  , mAddLineAction( 0 )
-  , mAddBoundaryAction( 0 )
-  , mAddCentroidAction( 0 )
-  , mAddAreaAction( 0 )
-  , mAddPoint( 0 )
-  , mAddLine( 0 )
-  , mAddBoundary( 0 )
-  , mAddCentroid( 0 )
-  , mAddArea()
+  : qGisInterface( qgisInterFace )
 {
 }
 
@@ -136,9 +114,9 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
-  mToolBarPointer = 0;
-  mTools = 0;
-  mNewMapset = 0;
+  mToolBarPointer = nullptr;
+  mTools = nullptr;
+  mNewMapset = nullptr;
 
   mCanvas = qGisInterface->mapCanvas();
 
@@ -240,15 +218,15 @@ void QgsGrassPlugin::initGui()
 
   resetEditActions();
 
-  mAddPoint = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddPoint = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePoint );
   mAddPoint->setAction( mAddPointAction );
-  mAddLine = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddLine = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CaptureLine );
   mAddLine->setAction( mAddLineAction );
-  mAddBoundary = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CaptureLine );
+  mAddBoundary = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CaptureLine );
   mAddBoundary->setAction( mAddBoundaryAction );
-  mAddCentroid = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePoint );
+  mAddCentroid = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePoint );
   mAddCentroid->setAction( mAddCentroidAction );
-  mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolAdvancedDigitizing::CapturePolygon );
+  mAddArea = new QgsGrassAddFeature( qGisInterface->mapCanvas(), QgsMapToolCapture::CapturePolygon );
   mAddArea->setAction( mAddAreaAction );
 
   connect( qGisInterface->actionSplitFeatures(), &QAction::triggered, this, &QgsGrassPlugin::onSplitFeaturesTriggered );
@@ -303,7 +281,7 @@ void QgsGrassPlugin::onGisbaseChanged()
   {
     // TODO: save init error and get it here more reliably
     QString error = tr( "GRASS init error" );
-    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), QgsMessageBar::WARNING );
+    qGisInterface->messageBar()->pushMessage( error, QgsGrass::initError(), Qgis::Warning );
 
     mOpenToolsAction->setDisabled( false ); // allow opening to see that tools are disabled
     mRegionAction->setDisabled( true );
@@ -350,7 +328,7 @@ void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
 void QgsGrassPlugin::resetEditActions()
 {
 
-  QgsGrassProvider *grassProvider = 0;
+  QgsGrassProvider *grassProvider = nullptr;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
@@ -470,7 +448,7 @@ void QgsGrassPlugin::onFieldsChanged()
 
 void QgsGrassPlugin::addFeature()
 {
-  QgsGrassProvider *grassProvider = 0;
+  QgsGrassProvider *grassProvider = nullptr;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
@@ -518,7 +496,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
 {
   if ( checked )
   {
-    QgsGrassProvider *grassProvider = 0;
+    QgsGrassProvider *grassProvider = nullptr;
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
     if ( vectorLayer )
     {
@@ -597,7 +575,7 @@ void QgsGrassPlugin::newVector()
                        QgsGrass::getDefaultLocation(),
                        QgsGrass::getDefaultMapset() );
 
-  struct Map_info *Map = 0;
+  struct Map_info *Map = nullptr;
   G_TRY
   {
     Map = QgsGrass::vectNewMapStruct();
@@ -626,7 +604,7 @@ void QgsGrassPlugin::newVector()
 
   if ( !layer )
   {
-    QMessageBox::warning( 0, tr( "Warning" ),
+    QMessageBox::warning( nullptr, tr( "Warning" ),
                           tr( "New vector created but cannot be opened by data provider." ) );
     return;
   }
@@ -721,7 +699,7 @@ void QgsGrassPlugin::openMapset()
 
   if ( !err.isNull() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
     return;
   }
   QgsGrass::saveMapset();
@@ -784,7 +762,7 @@ void QgsGrassPlugin::projectRead()
 
   if ( !err.isNull() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS mapset. %1" ).arg( err ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open GRASS mapset. %1" ).arg( err ) );
     return;
   }
 }
@@ -862,10 +840,10 @@ void QgsGrassPlugin::unload()
   delete mAddArea;
 
   delete mToolBarPointer;
-  mToolBarPointer = 0;
+  mToolBarPointer = nullptr;
 
   delete mTools;
-  mTools = 0;
+  mTools = nullptr;
 }
 
 // Set icons to the current theme

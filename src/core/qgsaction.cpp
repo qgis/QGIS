@@ -59,7 +59,11 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     return;
   }
 
-  QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &expressionContext );
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( mExpressionContextScope );
+  QgsExpressionContext context( expressionContext );
+  context << scope;
+
+  QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
 
   if ( mType == QgsAction::OpenUrl )
   {
@@ -95,7 +99,7 @@ void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
 void QgsAction::readXml( const QDomNode &actionNode )
 {
   QDomElement actionElement = actionNode.toElement();
-  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( "actionScope" );
+  QDomNodeList actionScopeNodes = actionElement.elementsByTagName( QStringLiteral( "actionScope" ) );
 
   if ( actionScopeNodes.isEmpty() )
   {
@@ -109,7 +113,7 @@ void QgsAction::readXml( const QDomNode &actionNode )
     for ( int j = 0; j < actionScopeNodes.length(); ++j )
     {
       QDomElement actionScopeElem = actionScopeNodes.item( j ).toElement();
-      mActionScopes << actionScopeElem.attribute( "id" );
+      mActionScopes << actionScopeElem.attribute( QStringLiteral( "id" ) );
     }
   }
 
@@ -119,6 +123,8 @@ void QgsAction::readXml( const QDomNode &actionNode )
   mIcon = actionElement.attributeNode( QStringLiteral( "icon" ) ).value();
   mCaptureOutput = actionElement.attributeNode( QStringLiteral( "capture" ) ).value().toInt() != 0;
   mShortTitle = actionElement.attributeNode( QStringLiteral( "shortTitle" ) ).value();
+  mNotificationMessage = actionElement.attributeNode( QStringLiteral( "notificationMessage" ) ).value();
+  mIsEnabledOnlyWhenEditable = actionElement.attributeNode( QStringLiteral( "isEnabledOnlyWhenEditable" ) ).value().toInt() != 0;
   mId = QUuid( actionElement.attributeNode( QStringLiteral( "id" ) ).value() );
   if ( mId.isNull() )
     mId = QUuid::createUuid();
@@ -133,14 +139,26 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
   actionSetting.setAttribute( QStringLiteral( "icon" ), mIcon );
   actionSetting.setAttribute( QStringLiteral( "action" ), mCommand );
   actionSetting.setAttribute( QStringLiteral( "capture" ), mCaptureOutput );
+  actionSetting.setAttribute( QStringLiteral( "notificationMessage" ), mNotificationMessage );
+  actionSetting.setAttribute( QStringLiteral( "isEnabledOnlyWhenEditable" ), mIsEnabledOnlyWhenEditable );
   actionSetting.setAttribute( QStringLiteral( "id" ), mId.toString() );
 
   Q_FOREACH ( const QString &scope, mActionScopes )
   {
-    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( "actionScope" );
-    actionScopeElem.setAttribute( "id", scope );
+    QDomElement actionScopeElem = actionsNode.ownerDocument().createElement( QStringLiteral( "actionScope" ) );
+    actionScopeElem.setAttribute( QStringLiteral( "id" ), scope );
     actionSetting.appendChild( actionScopeElem );
   }
 
   actionsNode.appendChild( actionSetting );
 }
+
+void QgsAction::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsAction::expressionContextScope() const
+{
+  return mExpressionContextScope;
+};

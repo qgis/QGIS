@@ -32,11 +32,6 @@ QgsBufferServerResponse::QgsBufferServerResponse()
   mBuffer.open( QIODevice::ReadWrite );
 }
 
-QgsBufferServerResponse::~QgsBufferServerResponse()
-{
-
-}
-
 void QgsBufferServerResponse::removeHeader( const QString &key )
 {
   if ( !mHeadersSent )

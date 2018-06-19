@@ -29,7 +29,8 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingParameterRasterLayer,
+from qgis.core import (QgsProcessingException,
+                       QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingOutputRasterLayer)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
@@ -41,6 +42,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
+
     INPUT = 'INPUT'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
@@ -49,11 +51,13 @@ class AssignProjection(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer'), optional=False))
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterCrs(self.CRS,
                                                     self.tr('Desired CRS')))
 
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT, self.tr('Layer with projection')))
+        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,
+                                                      self.tr('Layer with projection')))
 
     def name(self):
         return 'assignprojection'
@@ -67,24 +71,33 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasterprojections'
+
+    def commandName(self):
+        return 'gdal_edit'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        if inLayer is None:
+            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+
         fileName = inLayer.source()
 
-        crs = self.parameterAsCrs(parameters, self.CRS, context).authid()
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = []
         arguments.append('-a_srs')
-        arguments.append(crs)
+        arguments.append(GdalUtils.gdal_crs_string(crs))
 
         arguments.append(fileName)
 
         commands = []
         if isWindows():
-            commands = ['cmd.exe', '/C ', 'gdal_edit.bat',
+            commands = ['cmd.exe', '/C ', self.commandName() + '.bat',
                         GdalUtils.escapeAndJoin(arguments)]
         else:
-            commands = ['gdal_edit.py', GdalUtils.escapeAndJoin(arguments)]
+            commands = [self.commandName() + '.py', GdalUtils.escapeAndJoin(arguments)]
 
         self.setOutputValue(self.OUTPUT, fileName)
         return commands

@@ -28,7 +28,7 @@
 class QgsGeorefTransformInterface
 {
   public:
-    virtual ~QgsGeorefTransformInterface() { }
+    virtual ~QgsGeorefTransformInterface() = default;
 
     virtual bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) = 0;
 
@@ -38,7 +38,7 @@ class QgsGeorefTransformInterface
     virtual int getMinimumGCPCount() const = 0;
 
     /**
-     * Return function pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      * Used by GDALwarp.
      */
     virtual GDALTransformerFunc  GDALTransformer()     const = 0;
@@ -74,7 +74,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
 
     explicit QgsGeorefTransform( TransformParametrisation parametrisation );
     QgsGeorefTransform();
-    ~QgsGeorefTransform();
+    ~QgsGeorefTransform() override;
 
     /**
      * Switches the used transform type to the given parametrisation.
@@ -115,7 +115,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
     int getMinimumGCPCount() const override;
 
     /**
-     * \brief Return function pointer to the GDALTransformer function.
+     * Returns function pointer to the GDALTransformer function.
      *
      * Used by the transform routines \ref transform, \ref transformRasterToWorld
      * \ref transformWorldToRaster and by the GDAL warping code

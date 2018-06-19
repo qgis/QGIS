@@ -1,13 +1,13 @@
 v.rectify
 Rectifies a vector by computing a coordinate transformation for each object in the vector based on the control points.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
-ParameterString|inline_points|Inline control points|None|True|True
-ParameterFile|points|Name of input file with control points|False|True
-ParameterNumber|order|Rectification polynomial order|1|3|1|False
-ParameterString|separator|Field separator for RMS report|None|False|True
-*ParameterBoolean|-3|Perform 3D transformation|False
-*ParameterBoolean|-o|Perform orthogonal 3D transformation|False
-*ParameterBoolean|-b|Do not build topology|False
-OutputVector|output|Rectified
-OutputFile|rmsfile|Root Mean Square errors file
+QgsProcessingParameterFeatureSource|input|Name of input vector map|-1|None|False
+QgsProcessingParameterString|inline_points|Inline control points|None|True|True
+QgsProcessingParameterFile|points|Name of input file with control points|QgsProcessingParameterFile.File|txt|None|True
+QgsProcessingParameterNumber|order|Rectification polynomial order|QgsProcessingParameterNumber.Integer|1|True|1|3
+QgsProcessingParameterString|separator|Field separator for RMS report|pipe|False|True
+*QgsProcessingParameterBoolean|-3|Perform 3D transformation|False
+*QgsProcessingParameterBoolean|-o|Perform orthogonal 3D transformation|False
+*QgsProcessingParameterBoolean|-b|Do not build topology|False
+QgsProcessingParameterVectorDestination|output|Rectified
+QgsProcessingParameterFileDestination|rmsfile|Root Mean Square errors file|Txt files (*.txt)|None|False

@@ -33,7 +33,8 @@ static bool _palIsCanceled( void *ctx )
   return ( reinterpret_cast< QgsRenderContext * >( ctx ) )->renderingStopped();
 }
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsLabelSorter
  * Helper class for sorting labels into correct draw order
  */
@@ -241,13 +242,20 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   QPainter *painter = context.painter();
 
   QgsGeometry extentGeom = QgsGeometry::fromRect( mMapSettings.visibleExtent() );
+  QPolygonF visiblePoly = mMapSettings.visiblePolygon();
+  visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
+  QgsGeometry mapBoundaryGeom = QgsGeometry::fromQPolygonF( visiblePoly );
+
   if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
     extentGeom.rotate( -mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
+    // yes - this is rotated in the opposite direction... phew, this is confusing!
+    mapBoundaryGeom.rotate( mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
   }
 
   QgsRectangle extent = extentGeom.boundingBox();
+
 
   p.registerCancelationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
@@ -255,13 +263,10 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   t.start();
 
   // do the labeling itself
-  double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
-
-  QList<pal::LabelPosition *> *labels;
-  pal::Problem *problem = nullptr;
+  std::unique_ptr< pal::Problem > problem;
   try
   {
-    problem = p.extractProblem( bbox );
+    problem = p.extractProblem( extent, mapBoundaryGeom );
   }
   catch ( std::exception &e )
   {
@@ -270,10 +275,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     return;
   }
 
-
   if ( context.renderingStopped() )
   {
-    delete problem;
     return; // it has been canceled
   }
 
@@ -307,47 +310,39 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  labels = p.solveProblem( problem, settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
+  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
-  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
+  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels.size() ), 4 );
   t.restart();
 
   if ( context.renderingStopped() )
   {
-    delete problem;
-    delete labels;
     return;
   }
   painter->setRenderHint( QPainter::Antialiasing );
 
   // sort labels
-  std::sort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( labels.begin(), labels.end(), QgsLabelSorter( mMapSettings ) );
 
   // draw the labels
-  QList<pal::LabelPosition *>::iterator it = labels->begin();
-  for ( ; it != labels->end(); ++it )
+  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
     if ( context.renderingStopped() )
       break;
 
-    QgsLabelFeature *lf = ( *it )->getFeaturePart()->feature();
+    QgsLabelFeature *lf = label->getFeaturePart()->feature();
     if ( !lf )
     {
       continue;
     }
 
-    lf->provider()->drawLabel( context, *it );
+    lf->provider()->drawLabel( context, label );
   }
 
   // Reset composition mode for further drawing operations
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
   QgsDebugMsgLevel( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
-
-  delete problem;
-  delete labels;
-
-
 }
 
 QgsLabelingResults *QgsLabelingEngine::takeResults()
@@ -365,8 +360,7 @@ QgsAbstractLabelProvider *QgsLabelFeature::provider() const
 }
 
 QgsAbstractLabelProvider::QgsAbstractLabelProvider( QgsMapLayer *layer, const QString &providerId )
-  : mEngine( nullptr )
-  , mLayerId( layer ? layer->id() : QString() )
+  : mLayerId( layer ? layer->id() : QString() )
   , mLayer( layer )
   , mProviderId( providerId )
   , mFlags( DrawLabels )

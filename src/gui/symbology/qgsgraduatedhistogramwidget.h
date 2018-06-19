@@ -24,7 +24,8 @@
 class QwtPlotPicker;
 class QgsGraduatedHistogramEventFilter;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsGraduatedHistogramWidget
  * \brief Graphical histogram for displaying distribution of field values and
  * editing range breaks for a QgsGraduatedSymbolRenderer renderer.
@@ -38,12 +39,14 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   public:
 
-    /** QgsGraduatedHistogramWidget constructor
+    /**
+     * QgsGraduatedHistogramWidget constructor
      * \param parent parent widget
      */
-    QgsGraduatedHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsGraduatedHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
+    /**
+     * Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
      * The histogram will fetch the ranges from the renderer before every refresh.
      * \param renderer associated QgsGraduatedSymbolRenderer
      */
@@ -51,7 +54,8 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   signals:
 
-    /** Emitted when the user modifies the graduated ranges using the histogram widget.
+    /**
+     * Emitted when the user modifies the graduated ranges using the histogram widget.
      * \param rangesAdded true if the user has added ranges, false if the user has just
      * modified existing range breaks
      */
@@ -59,7 +63,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 
   protected:
 
-    virtual void drawHistogram() override;
+    void drawHistogram() override;
 
   private slots:
 
@@ -71,7 +75,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QwtPlotPicker *mHistoPicker = nullptr;
     QgsGraduatedHistogramEventFilter *mFilter = nullptr;
-    double mPressedValue;
+    double mPressedValue = 0;
 
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
@@ -95,7 +99,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 
     QgsGraduatedHistogramEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 

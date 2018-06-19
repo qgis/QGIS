@@ -25,7 +25,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
-#include "qgscrscache.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )
@@ -102,11 +101,11 @@ bool QgsMapHitTest::legendKeyVisible( const QString &ruleKey, QgsVectorLayer *la
 
 void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, SymbolSet &usedSymbolsRuleKey, QgsRenderContext &context )
 {
-  bool hasStyleOverride = mSettings.layerStyleOverrides().contains( vl->id() );
-  if ( hasStyleOverride )
-    vl->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
+  QgsMapLayerStyleOverride styleOverride( vl );
+  if ( mSettings.layerStyleOverrides().contains( vl->id() ) )
+    styleOverride.setOverrideStyle( mSettings.layerStyleOverrides().value( vl->id() ) );
 
-  QgsFeatureRenderer *r = vl->renderer();
+  std::unique_ptr< QgsFeatureRenderer > r( vl->renderer()->clone() );
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
   r->startRender( context, vl->fields() );
 
@@ -115,7 +114,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   {
     if ( mSettings.destinationCrs() != vl->crs() )
     {
-      QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSettings.destinationCrs().authid(), vl->crs().authid() );
+      QgsCoordinateTransform ct( mSettings.destinationCrs(), vl->crs(), mSettings.transformContext() );
       transformedPolygon.transform( ct );
     }
   }
@@ -133,7 +132,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     else
     {
       request.setFilterRect( transformedPolygon.boundingBox() );
-      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.geometry() ) );
+      polygonEngine.reset( QgsGeometry::createGeometryEngine( transformedPolygon.constGet() ) );
       polygonEngine->prepareGeometry();
     }
   }
@@ -155,7 +154,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     // filter out elements outside of the polygon
     if ( f.geometry() && polygonEngine )
     {
-      if ( !polygonEngine->intersects( f.geometry().geometry() ) )
+      if ( !polygonEngine->intersects( f.geometry().constGet() ) )
       {
         continue;
       }
@@ -200,8 +199,5 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
     usedSymbols = lUsedSymbols;
     usedSymbolsRuleKey = lUsedSymbolsRuleKey;
   }
-
-  if ( hasStyleOverride )
-    vl->styleManager()->restoreOverrideStyle();
 }
 

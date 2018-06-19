@@ -159,13 +159,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities()
-  : mValid( false )
-  , mLayerCount( -1 )
-  , mCapabilities()
-{
-}
-
 bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
 {
   mParserSettings = settings;
@@ -291,7 +284,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
   {
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
-    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
+    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "WMS_Capabilities" ),
                    QStringLiteral( "WMT_MS_Capabilities" ),
                    docElem.tagName(),
@@ -750,9 +743,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString();
-  layerProperty.title =       QString();
-  layerProperty.abstract =    QString();
+  layerProperty.name = QString();
+  layerProperty.title = QString();
+  layerProperty.abstract = QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -834,9 +827,11 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
 
-            QgsCoordinateReferenceSystem dst =  QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
+            Q_NOWARN_DEPRECATED_PUSH
             QgsCoordinateTransform ct( src, dst );
+            Q_NOWARN_DEPRECATED_POP
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
           }
           catch ( QgsCsException &cse )
@@ -877,7 +872,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
       }
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
-        // TODO: overwrite inherited
         QgsWmsBoundingBoxProperty bbox;
         bbox.box = QgsRectangle( e1.attribute( QStringLiteral( "minx" ) ).toDouble(),
                                  e1.attribute( QStringLiteral( "miny" ) ).toDouble(),
@@ -898,7 +892,18 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
             bbox.box = invAxisBbox;
           }
 
-          layerProperty.boundingBoxes << bbox;
+          // Overwrite existing bounding boxes with identical CRS
+          bool inheritedOverwritten = false;
+          for ( int i = 0; i < layerProperty.boundingBoxes.size(); i++ )
+          {
+            if ( layerProperty.boundingBoxes[i].crs == bbox.crs )
+            {
+              layerProperty.boundingBoxes[i] = bbox;
+              inheritedOverwritten = true;
+            }
+          }
+          if ( ! inheritedOverwritten )
+            layerProperty.boundingBoxes << bbox;
         }
         else
         {
@@ -1886,9 +1891,9 @@ int QgsWmsCapabilities::identifyCapabilities() const
 {
   int capability = QgsRasterInterface::NoCapabilities;
 
-  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {
-    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( it.key() );
   }
 
   return capability;
@@ -1900,7 +1905,6 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
   : QObject( parent )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1910,7 +1914,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, 
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1930,17 +1933,17 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, c
 
 bool QgsWmsCapabilitiesDownload::downloadCapabilities()
 {
-  QgsDebugMsg( QString( "entering: forceRefresh=%1" ).arg( mForceRefresh ) );
+  QgsDebugMsgLevel( QStringLiteral( "entering: forceRefresh=%1" ).arg( mForceRefresh ), 2 );
   abort(); // cancel previous
   mIsAborted = false;
 
   QString url = mBaseUrl;
-  QgsDebugMsg( "url = " + url );
   if ( !url.contains( QLatin1String( "SERVICE=WMTS" ), Qt::CaseInsensitive ) &&
        !url.contains( QLatin1String( "/WMTSCapabilities.xml" ), Qt::CaseInsensitive ) )
   {
     url += QLatin1String( "SERVICE=WMS&REQUEST=GetCapabilities" );
   }
+  QgsDebugMsgLevel( QStringLiteral( "url = %1" ).arg( url ), 2 );
 
   mError.clear();
 
@@ -2177,7 +2180,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findOtherResolution( double tres,
   QMap<double, QgsWmtsTileMatrix>::const_iterator it = tileMatrices.constFind( tres );
   if ( it == tileMatrices.constEnd() )
     return nullptr;
-  while ( 1 )
+  while ( true )
   {
     if ( offset > 0 )
     {

@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsOpacityWidgetPlugin : public QObject, public QDesi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsOpacityWidgetPlugin( QObject *parent = 0 );
+    explicit QgsOpacityWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

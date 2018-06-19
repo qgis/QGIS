@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsCheckableComboBoxPlugin : public QObject, public Q
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsCheckableComboBoxPlugin( QObject *parent = 0 );
+    explicit QgsCheckableComboBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized = false;

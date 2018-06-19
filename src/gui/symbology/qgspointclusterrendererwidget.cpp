@@ -32,7 +32,7 @@ QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer,
 
 QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )
-  , mRenderer( nullptr )
+
 {
   if ( !layer )
   {
@@ -48,6 +48,10 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
     return;
   }
   setupUi( this );
+  connect( mRendererComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged );
+  connect( mDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsPointClusterRendererWidget::mDistanceSpinBox_valueChanged );
+  connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointClusterRendererWidget::mDistanceUnitWidget_changed );
+  connect( mRendererSettingsButton, &QPushButton::clicked, this, &QgsPointClusterRendererWidget::mRendererSettingsButton_clicked );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
   mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderMapUnits << QgsUnitTypes::RenderPixels
@@ -93,7 +97,7 @@ QgsPointClusterRendererWidget::QgsPointClusterRendererWidget( QgsVectorLayer *la
     if ( rendererIndex != -1 )
     {
       mRendererComboBox->setCurrentIndex( rendererIndex );
-      on_mRendererComboBox_currentIndexChanged( rendererIndex );
+      mRendererComboBox_currentIndexChanged( rendererIndex );
     }
   }
 
@@ -122,7 +126,7 @@ void QgsPointClusterRendererWidget::setContext( const QgsSymbolWidgetContext &co
     mCenterSymbolToolButton->setMapCanvas( context.mapCanvas() );
 }
 
-void QgsPointClusterRendererWidget::on_mRendererComboBox_currentIndexChanged( int index )
+void QgsPointClusterRendererWidget::mRendererComboBox_currentIndexChanged( int index )
 {
   QString rendererId = mRendererComboBox->itemData( index ).toString();
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
@@ -136,7 +140,7 @@ void QgsPointClusterRendererWidget::on_mRendererComboBox_currentIndexChanged( in
   emit widgetChanged();
 }
 
-void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
+void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
 {
   if ( !mRenderer )
     return;
@@ -145,7 +149,7 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget *w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
-    w->setPanelTitle( tr( "Renderer settings" ) );
+    w->setPanelTitle( tr( "Renderer Settings" ) );
 
     QgsExpressionContextScope scope;
     scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
@@ -161,7 +165,7 @@ void QgsPointClusterRendererWidget::on_mRendererSettingsButton_clicked()
   }
 }
 
-void QgsPointClusterRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
+void QgsPointClusterRendererWidget::mDistanceSpinBox_valueChanged( double d )
 {
   if ( mRenderer )
   {
@@ -170,7 +174,7 @@ void QgsPointClusterRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
   emit widgetChanged();
 }
 
-void QgsPointClusterRendererWidget::on_mDistanceUnitWidget_changed()
+void QgsPointClusterRendererWidget::mDistanceUnitWidget_changed()
 {
   if ( mRenderer )
   {
@@ -226,6 +230,6 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
 void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )
 {
   QGridLayout *layout = new QGridLayout( this );
-  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point cluster renderer" ).arg( layerName ), this );
+  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a (single) point layer and cannot be displayed by the point cluster renderer." ).arg( layerName ), this );
   layout->addWidget( label );
 }

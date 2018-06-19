@@ -48,7 +48,7 @@ class QgsGeorefDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsGeorefDockWidget( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 };
 
 class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBase
@@ -56,8 +56,8 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     Q_OBJECT
 
   public:
-    QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
-    ~QgsGeorefPluginGui();
+    QgsGeorefPluginGui( QgisInterface *qgisInterface, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
+    ~QgsGeorefPluginGui() override;
 
   protected:
     void closeEvent( QCloseEvent * ) override;
@@ -104,7 +104,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showGeorefConfigDialog();
 
     // plugin info
-    void contextHelp();
+    void showHelp();
 
     // comfort
     void jumpToGCP( uint theGCPIndex );

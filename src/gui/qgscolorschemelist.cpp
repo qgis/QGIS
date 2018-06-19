@@ -80,7 +80,7 @@ void QgsColorSchemeList::removeSelection()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
 
   //remove rows in descending order
   std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -121,7 +121,7 @@ void QgsColorSchemeList::copyColors()
     rows << index.row();
   }
   //remove duplicates
-  QList<int> rowsToCopy =  QList<int>::fromSet( rows.toSet() );
+  QList<int> rowsToCopy = QList<int>::fromSet( rows.toSet() );
 
   QgsNamedColorList colorsToCopy;
   Q_FOREACH ( int row, rowsToCopy )
@@ -138,7 +138,7 @@ void QgsColorSchemeList::showImportColorsDialog()
 {
   QgsSettings s;
   QString lastDir = s.value( QStringLiteral( "/UI/lastGplPaletteDir" ), QDir::homePath() ).toString();
-  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select palette file" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select Palette File" ), lastDir, QStringLiteral( "GPL (*.gpl);;All files (*.*)" ) );
   activateWindow();
   if ( filePath.isEmpty() )
   {
@@ -149,7 +149,7 @@ void QgsColorSchemeList::showImportColorsDialog()
   QFileInfo fileInfo( filePath );
   if ( !fileInfo.exists() || !fileInfo.isReadable() )
   {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, file does not exist or is not readable" ) );
+    QMessageBox::critical( nullptr, tr( "Import Colors" ), tr( "Error, file does not exist or is not readable." ) );
     return;
   }
 
@@ -158,7 +158,7 @@ void QgsColorSchemeList::showImportColorsDialog()
   bool importOk = importColorsFromGpl( file );
   if ( !importOk )
   {
-    QMessageBox::critical( nullptr, tr( "Invalid file" ), tr( "Error, no colors found in palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Import Colors" ), tr( "Error, no colors found in palette file." ) );
     return;
   }
 }
@@ -187,7 +187,7 @@ void QgsColorSchemeList::showExportColorsDialog()
   bool exportOk = exportColorsToGpl( file );
   if ( !exportOk )
   {
-    QMessageBox::critical( nullptr, tr( "Error exporting" ), tr( "Error writing palette file" ) );
+    QMessageBox::critical( nullptr, tr( "Export Colors" ), tr( "Error writing palette file." ) );
     return;
   }
 }
@@ -203,7 +203,7 @@ void QgsColorSchemeList::keyPressEvent( QKeyEvent *event )
       rows << index.row();
     }
     //remove duplicates
-    QList<int> rowsToRemove =  QList<int>::fromSet( rows.toSet() );
+    QList<int> rowsToRemove = QList<int>::fromSet( rows.toSet() );
 
     //remove rows in descending order
     std::sort( rowsToRemove.begin(), rowsToRemove.end(), std::greater<int>() );
@@ -320,7 +320,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
 
   if ( !parent.isValid() && row >= 0 && row < mColors.size() )
   {
-    //return an index for the composer item at this position
+    //return an index for the color item at this position
     return createIndex( row, column );
   }
 
@@ -760,7 +760,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
     if ( panel && panel->dockMode() )
     {
       QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
-      colorWidget->setPanelTitle( tr( "Select color" ) );
+      colorWidget->setPanelTitle( tr( "Select Color" ) );
       colorWidget->setAllowOpacity( true );
       colorWidget->setProperty( "index", index );
       connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorSwatchDelegate::colorChanged );

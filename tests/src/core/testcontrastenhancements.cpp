@@ -25,7 +25,8 @@
 #include <qgslinearminmaxenhancement.h>
 #include <qgslinearminmaxenhancementwithclip.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the ContrastEnhancements contrast enhancement classes.
  */
 class TestContrastEnhancements: public QObject

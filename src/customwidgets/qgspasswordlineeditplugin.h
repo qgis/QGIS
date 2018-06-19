@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsPasswordLineEditPlugin : public QObject, public QD
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsPasswordLineEditPlugin( QObject *parent = 0 );
+    explicit QgsPasswordLineEditPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized = false;

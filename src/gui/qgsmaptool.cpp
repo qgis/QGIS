@@ -27,9 +27,6 @@ QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
   , mCanvas( canvas )
   , mCursor( Qt::CrossCursor )
-  , mAction( nullptr )
-  , mButton( nullptr )
-  , mToolName( QString() )
 {
 }
 
@@ -105,6 +102,11 @@ void QgsMapTool::deactivate()
     mButton->setChecked( false );
 
   emit deactivated();
+}
+
+void QgsMapTool::clean()
+{
+
 }
 
 void QgsMapTool::setAction( QAction *action )

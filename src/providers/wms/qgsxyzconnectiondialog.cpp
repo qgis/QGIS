@@ -13,18 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthconfigselect.h"
 #include "qgsxyzconnectiondialog.h"
 #include "qgsxyzconnection.h"
 
 QgsXyzConnectionDialog::QgsXyzConnectionDialog( QWidget *parent )
   : QDialog( parent )
-  , mAuthConfigSelect( nullptr )
 {
   setupUi( this );
 
-  mAuthConfigSelect = new QgsAuthConfigSelect( this );
-  mTabAuth->insertTab( 1, mAuthConfigSelect, tr( "Configurations" ) );
   // Behavior for min and max zoom checkbox
   connect( mCheckBoxZMin, &QCheckBox::toggled, mSpinZMin, &QSpinBox::setEnabled );
   connect( mCheckBoxZMax, &QCheckBox::toggled, mSpinZMax, &QSpinBox::setEnabled );
@@ -38,18 +34,10 @@ void QgsXyzConnectionDialog::setConnection( const QgsXyzConnection &conn )
   mSpinZMin->setValue( conn.zMin != -1 ? conn.zMin : 0 );
   mCheckBoxZMax->setChecked( conn.zMax != -1 );
   mSpinZMax->setValue( conn.zMax != -1 ? conn.zMax : 18 );
-  mEditUsername->setText( conn.username );
-  mEditPassword->setText( conn.password );
+  mAuthSettings->setUsername( conn.username );
+  mAuthSettings->setPassword( conn.password );
   mEditReferer->setText( conn.referer );
-  mAuthConfigSelect->setConfigId( conn.authCfg );
-  if ( ! conn.authCfg.isEmpty( ) )
-  {
-    mTabAuth->setCurrentIndex( mTabAuth->indexOf( mAuthConfigSelect ) );
-  }
-  else
-  {
-    mTabAuth->setCurrentIndex( 0 );
-  }
+  mAuthSettings->setConfigId( conn.authCfg );
 }
 
 QgsXyzConnection QgsXyzConnectionDialog::connection() const
@@ -61,9 +49,9 @@ QgsXyzConnection QgsXyzConnectionDialog::connection() const
     conn.zMin = mSpinZMin->value();
   if ( mCheckBoxZMax->isChecked() )
     conn.zMax = mSpinZMax->value();
-  conn.username = mEditUsername->text();
-  conn.password = mEditPassword->text();
+  conn.username = mAuthSettings->username();
+  conn.password = mAuthSettings->password();
   conn.referer = mEditReferer->text();
-  conn.authCfg = mAuthConfigSelect->configId( );
+  conn.authCfg = mAuthSettings->configId( );
   return conn;
 }

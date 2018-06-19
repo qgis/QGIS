@@ -28,13 +28,10 @@
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   : QDoubleSpinBox( parent )
-  , mShowClearButton( true )
-  , mClearValueMode( MinimumValue )
-  , mCustomClearValue( 0.0 )
-  , mExpressionsEnabled( true )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
+  // By default, group separator is off
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
@@ -131,11 +128,16 @@ void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode,
 double QgsDoubleSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
-    return minimum() ;
+    return minimum();
   else if ( mClearValueMode == MaximumValue )
     return maximum();
   else
     return mCustomClearValue;
+}
+
+void QgsDoubleSpinBox::setLineEditAlignment( Qt::Alignment alignment )
+{
+  mLineEdit->setAlignment( alignment );
 }
 
 QString QgsDoubleSpinBox::stripped( const QString &originalText ) const

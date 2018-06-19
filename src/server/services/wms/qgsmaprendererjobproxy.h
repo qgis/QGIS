@@ -19,12 +19,14 @@
 #define QGSMAPRENDERERJOBPROXY_H
 
 #include "qgsmapsettings.h"
-#include "qgsaccesscontrol.h"
+
+class QgsFeatureFilterProvider;
 
 namespace QgsWms
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
     * thiss class provides a proxy for sequential or parallel map render job by
     * reading qsettings.
     * \since QGIS 3.0
@@ -33,29 +35,32 @@ namespace QgsWms
   {
     public:
 
-      /** Constructor.
-        * \param accessControl Does not take ownership of QgsAccessControl
+      /**
+       * Constructor.
+        * \param featureFilterProvider Does not take ownership of QgsFeatureFilterProvider
         */
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-        , QgsAccessControl *accessControl
+        , QgsFeatureFilterProvider *featureFilterProvider
       );
 
-      /** Sequential or parallel map rendering according to qsettings.
+      /**
+       * Sequential or parallel map rendering according to qsettings.
         * \param mapSettings passed to MapRendererJob
         * \param the rendered image
         */
       void render( const QgsMapSettings &mapSettings, QImage *image );
 
-      /** Take ownership of the painter used for rendering.
+      /**
+       * Take ownership of the painter used for rendering.
         * \returns painter
         */
       QPainter *takePainter();
 
     private:
       bool mParallelRendering;
-      QgsAccessControl *mAccessControl = nullptr;
+      QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
       std::unique_ptr<QPainter> mPainter;
   };
 

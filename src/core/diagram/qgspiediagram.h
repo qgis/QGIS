@@ -30,7 +30,8 @@ class QgsDiagramInterpolationSettings;
 class QgsFeature;
 class QgsRenderContext;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsPieDiagram
  */
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram
@@ -38,14 +39,14 @@ class CORE_EXPORT QgsPieDiagram: public QgsDiagram
   public:
     QgsPieDiagram();
 
-    virtual QgsPieDiagram *clone() const override SIP_FACTORY;
+    QgsPieDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
     QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
     QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
     double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
-    QString diagramName() const override { return DIAGRAM_NAME_PIE; }
+    QString diagramName() const override;
 
   private:
     QBrush mCategoryBrush;

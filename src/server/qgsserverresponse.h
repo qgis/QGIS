@@ -44,7 +44,7 @@ class SERVER_EXPORT QgsServerResponse
   public:
 
     //!constructor
-    QgsServerResponse();
+    QgsServerResponse() = default;
 
     //! destructor
     virtual ~QgsServerResponse() = default;
@@ -63,27 +63,29 @@ class SERVER_EXPORT QgsServerResponse
     virtual void removeHeader( const QString &key ) = 0;
 
     /**
-     * Return the header value
+     * Returns the header value
      */
     virtual QString header( const QString &key ) const = 0;
 
     /**
-     * Return the header value
+     * Returns the header value
      */
     virtual QMap<QString, QString> headers() const = 0;
 
     /**
-     * Return true if the headers have alredy been sent
+     * Returns true if the headers have alredy been sent
      */
     virtual bool headersSent() const = 0;
 
 
-    /** Set the http status code
+    /**
+     * Set the http status code
      * \param code HTTP status code value
      */
     virtual void setStatusCode( int code ) = 0;
 
-    /** Return the http status code
+    /**
+     * Returns the http status code
      */
     virtual int statusCode() const = 0;
 
@@ -141,7 +143,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual void write( const QgsServerException &ex );
 
     /**
-     * Return the underlying QIODevice
+     * Returns the underlying QIODevice
      */
     virtual QIODevice *io() = 0;
 
@@ -164,7 +166,7 @@ class SERVER_EXPORT QgsServerResponse
     virtual void clear() = 0;
 
     /**
-     * Get the data written so far
+     * Gets the data written so far
      *
      * This is implementation dependent: some implementations may not
      * give access to the underlying and return an empty array.

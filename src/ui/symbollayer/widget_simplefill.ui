@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
-    <height>319</height>
+    <width>573</width>
+    <height>507</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -337,6 +337,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsPropertyOverrideButton</class>
    <extends>QToolButton</extends>
    <header>qgspropertyoverridebutton.h</header>
@@ -350,12 +356,6 @@
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

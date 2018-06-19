@@ -22,14 +22,15 @@
 
 class QgsFeedback;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for utility classes that encapsulate information necessary
  * for rendering of map layers. The rendering is typically done in a background
  * thread, so it is necessary to keep all structures required for rendering away
  * from the original map layer because it may change any time.
  *
  * Because the data needs to be copied (to avoid the need for locking),
- * is is highly desirable to use copy-on-write where possible. This way,
+ * it is highly desirable to use copy-on-write where possible. This way,
  * the overhead of copying (both memory and CPU) will be kept low.
  * Qt containers and various Qt classes use implicit sharing.
  *
@@ -53,14 +54,16 @@ class CORE_EXPORT QgsMapLayerRenderer
     //! Do the rendering (based on data stored in the class)
     virtual bool render() = 0;
 
-    //! Access to feedback object of the layer renderer (may be null)
-    //! \since QGIS 3.0
+    /**
+     * Access to feedback object of the layer renderer (may be null)
+     * \since QGIS 3.0
+     */
     virtual QgsFeedback *feedback() const { return nullptr; }
 
-    //! Return list of errors (problems) that happened during the rendering
+    //! Returns list of errors (problems) that happened during the rendering
     QStringList errors() const { return mErrors; }
 
-    //! Get access to the ID of the layer rendered by this class
+    //! Gets access to the ID of the layer rendered by this class
     QString layerId() const { return mLayerID; }
 
   protected:

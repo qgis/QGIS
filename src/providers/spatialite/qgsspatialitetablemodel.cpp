@@ -19,7 +19,7 @@
 #include "qgsapplication.h"
 #include "qgsdataitem.h" // for icons
 
-QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel(): QStandardItemModel(), mTableCount( 0 )
+QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel()
 {
   QStringList headerLabels;
   headerLabels << tr( "Table" );
@@ -103,7 +103,7 @@ void QgsSpatiaLiteTableModel::setGeometryTypesForTable( const QString &table, co
   QStandardItem *dbItem = nullptr;
   QList < QStandardItem * >dbItems = findItems( mSqliteDb, Qt::MatchExactly, 0 );
 
-  if ( dbItems.size() < 1 )
+  if ( dbItems.empty() )
   {
     return;
   }

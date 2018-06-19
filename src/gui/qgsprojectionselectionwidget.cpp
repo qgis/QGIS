@@ -24,11 +24,11 @@
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
-  mDialog = new QgsProjectionSelectionDialog( this );
+
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
+  layout->setSpacing( 6 );
   setLayout( layout );
 
   mCrsComboBox = new QComboBox( this );
@@ -71,9 +71,9 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
     case QgsProjectionSelectionWidget::ProjectCrs:
-      return mProjectCrs ;
+      return mProjectCrs;
     case QgsProjectionSelectionWidget::DefaultCrs:
-      return mDefaultCrs ;
+      return mDefaultCrs;
     case QgsProjectionSelectionWidget::CurrentCrs:
       return mCrs;
     case QgsProjectionSelectionWidget::RecentCrs:
@@ -156,6 +156,11 @@ void QgsProjectionSelectionWidget::setNotSetText( const QString &text )
   }
 }
 
+void QgsProjectionSelectionWidget::setMessage( const QString &text )
+{
+  mMessage = text;
+}
+
 bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::CrsOption option ) const
 {
   int optionIndex = mCrsComboBox->findData( option );
@@ -165,17 +170,19 @@ bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::
 void QgsProjectionSelectionWidget::selectCrs()
 {
   //find out crs id of current proj4 string
+  QgsProjectionSelectionDialog dlg( this );
+  dlg.setMessage( mMessage );
   if ( mCrs.isValid() )
   {
-    mDialog->setCrs( mCrs );
+    dlg.setCrs( mCrs );
   }
 
-  if ( mDialog->exec() )
+  if ( dlg.exec() )
   {
     mCrsComboBox->blockSignals( true );
     mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( QgsProjectionSelectionWidget::CurrentCrs ) );
     mCrsComboBox->blockSignals( false );
-    QgsCoordinateReferenceSystem crs = mDialog->crs();
+    QgsCoordinateReferenceSystem crs = dlg.crs();
     setCrs( crs );
     emit crsChanged( crs );
   }
@@ -249,7 +256,11 @@ void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &c
                                  currentCrsOptionText( crs ) );
     }
   }
-  mCrs = crs;
+  if ( mCrs != crs )
+  {
+    mCrs = crs;
+    emit crsChanged( crs );
+  }
 }
 
 void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSystem &crs )

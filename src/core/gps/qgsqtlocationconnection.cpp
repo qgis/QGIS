@@ -22,7 +22,8 @@
 #include <QTimer>
 #include <QMetaType>
 
-QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocalSocket() )
+QgsQtLocationConnection::QgsQtLocationConnection()
+  : QgsGpsConnection( new QLocalSocket() )
 {
   //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
   qRegisterMetaType< QList<QGeoSatelliteInfo> >( "QList<QGeoSatelliteInfo>" );
@@ -32,11 +33,6 @@ QgsQtLocationConnection::QgsQtLocationConnection(): QgsGPSConnection( new QLocal
 
   //HACK to signal the gpsinformationwidget that we have a QtLocationConnection
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
-}
-
-QgsQtLocationConnection::~QgsQtLocationConnection()
-{
-  //connection will be closed by base class
 }
 
 //Needed to make connection detectable (half HACK)

@@ -41,7 +41,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {
@@ -50,7 +50,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -194,7 +194,7 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
   bool gotFeature = false;
   if ( mMode == FileScan )
   {
-    gotFeature =  nextFeatureInternal( feature );
+    gotFeature = nextFeatureInternal( feature );
   }
   else
   {
@@ -436,7 +436,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
 
   if ( ok && wantGeometry( pt ) )
   {
-    return QgsGeometry::fromPoint( pt );
+    return QgsGeometry::fromPointXY( pt );
   }
   return QgsGeometry();
 }
@@ -532,11 +532,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
-}
-
-QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
-{
-  delete mSubsetExpression;
 }
 
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )

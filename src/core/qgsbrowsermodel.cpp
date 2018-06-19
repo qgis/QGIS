@@ -31,7 +31,8 @@
 #include "qgssettings.h"
 
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-  : mItem( item )
+  : QFutureWatcher( nullptr )
+  , mItem( item )
 {
 }
 
@@ -43,12 +44,8 @@ static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mFavorites( nullptr )
-  , mProjectHome( nullptr )
+
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
-  connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
-  addRootItems();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -72,7 +69,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
@@ -87,8 +84,9 @@ void QgsBrowserModel::addRootItems()
 {
   updateProjectHome();
 
-  // give the home directory a prominent second place
+  // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  item->setSortKey( QStringLiteral( " 2" ) );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -112,6 +110,7 @@ void QgsBrowserModel::addRootItems()
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+    item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
     connectItem( item );
     mRootItems << item;
@@ -173,6 +172,18 @@ void QgsBrowserModel::removeRootItems()
   mRootItems.clear();
 }
 
+void QgsBrowserModel::initialize()
+{
+  if ( ! mInitialized )
+  {
+    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::projectSaved, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::homePathChanged, this, &QgsBrowserModel::updateProjectHome );
+    addRootItems();
+    mInitialized = true;
+  }
+}
+
 
 Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex &index ) const
 {
@@ -203,6 +214,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DisplayRole )
   {
     return item->name();
+  }
+  else if ( role == QgsBrowserModel::SortRole )
+  {
+    return item->sortKey();
   }
   else if ( role == Qt::ToolTipRole )
   {
@@ -452,16 +467,6 @@ QMimeData *QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
     if ( index.isValid() )
     {
       QgsDataItem *ptr = reinterpret_cast< QgsDataItem * >( index.internalPointer() );
-      if ( ptr->type() == QgsDataItem::Project )
-      {
-        QMimeData *mimeData = new QMimeData();
-        QUrl url = QUrl::fromLocalFile( ptr->path() );
-        QList<QUrl> urls;
-        urls << url;
-        mimeData->setUrls( urls );
-        return mimeData;
-      }
-
       QgsMimeDataUtils::Uri uri = ptr->mimeUri();
       if ( uri.isValid() )
         lst.append( uri );
@@ -532,10 +537,10 @@ void QgsBrowserModel::refresh( const QModelIndex &index )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavoriteDirectory( const QString &directory )
+void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QString &name )
 {
   Q_ASSERT( mFavorites );
-  mFavorites->addDirectory( directory );
+  mFavorites->addDirectory( directory, name );
 }
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )

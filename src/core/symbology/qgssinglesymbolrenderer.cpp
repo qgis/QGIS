@@ -40,16 +40,12 @@ QgsSingleSymbolRenderer::QgsSingleSymbolRenderer( QgsSymbol *symbol )
   Q_ASSERT( symbol );
 }
 
-QgsSingleSymbolRenderer::~QgsSingleSymbolRenderer()
-{
-}
-
-QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( QgsFeature &, QgsRenderContext & )
+QgsSymbol *QgsSingleSymbolRenderer::symbolForFeature( const QgsFeature &, QgsRenderContext & ) const
 {
   return mSymbol.get();
 }
 
-QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context )
+QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   Q_UNUSED( feature );
@@ -58,6 +54,8 @@ QgsSymbol *QgsSingleSymbolRenderer::originalSymbolForFeature( QgsFeature &featur
 
 void QgsSingleSymbolRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !mSymbol )
     return;
 
@@ -66,6 +64,8 @@ void QgsSingleSymbolRenderer::startRender( QgsRenderContext &context, const QgsF
 
 void QgsSingleSymbolRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   if ( !mSymbol )
     return;
 
@@ -121,7 +121,7 @@ void QgsSingleSymbolRenderer::toSld( QDomDocument &doc, QDomElement &element, co
   if ( mSymbol ) mSymbol->toSld( doc, ruleElem, newProps );
 }
 
-QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context )
+QgsSymbolList QgsSingleSymbolRenderer::symbols( QgsRenderContext &context ) const
 {
   Q_UNUSED( context );
   QgsSymbolList lst;
@@ -160,7 +160,7 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::create( QDomElement &element, const
                             sizeScaleElem.attribute( QStringLiteral( "field" ) ) );
   }
 
-  QDomElement ddsLegendSizeElem = element.firstChildElement( "data-defined-size-legend" );
+  QDomElement ddsLegendSizeElem = element.firstChildElement( QStringLiteral( "data-defined-size-legend" ) );
   if ( !ddsLegendSizeElem.isNull() )
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
@@ -234,36 +234,36 @@ QgsFeatureRenderer *QgsSingleSymbolRenderer::createFromSld( QDomElement &element
     return nullptr;
 
   // now create the symbol
-  QgsSymbol *symbol = nullptr;
+  std::unique_ptr< QgsSymbol > symbol;
   switch ( geomType )
   {
     case QgsWkbTypes::LineGeometry:
-      symbol = new QgsLineSymbol( layers );
+      symbol = qgis::make_unique< QgsLineSymbol >( layers );
       break;
 
     case QgsWkbTypes::PolygonGeometry:
-      symbol = new QgsFillSymbol( layers );
+      symbol = qgis::make_unique< QgsFillSymbol >( layers );
       break;
 
     case QgsWkbTypes::PointGeometry:
-      symbol = new QgsMarkerSymbol( layers );
+      symbol = qgis::make_unique< QgsMarkerSymbol >( layers );
       break;
 
     default:
-      QgsDebugMsg( QString( "invalid geometry type: found %1" ).arg( geomType ) );
+      QgsDebugMsg( QStringLiteral( "invalid geometry type: found %1" ).arg( geomType ) );
       return nullptr;
   }
 
   // and finally return the new renderer
-  return new QgsSingleSymbolRenderer( symbol );
+  return new QgsSingleSymbolRenderer( symbol.release() );
 }
 
 QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "singleSymbol" ) );
-  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "symbollevels" ), ( mUsingSymbolLevels ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
+  rendererElem.setAttribute( QStringLiteral( "forceraster" ), ( mForceRaster ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   QgsSymbolMap symbols;
   symbols[QStringLiteral( "0" )] = mSymbol.get();
@@ -285,7 +285,7 @@ QDomElement QgsSingleSymbolRenderer::save( QDomDocument &doc, const QgsReadWrite
     mOrderBy.save( orderBy );
     rendererElem.appendChild( orderBy );
   }
-  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? "1" : "0" ) );
+  rendererElem.setAttribute( QStringLiteral( "enableorderby" ), ( mOrderByEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) ) );
 
   if ( mDataDefinedSizeLegend )
   {
@@ -312,15 +312,15 @@ QgsLegendSymbolList QgsSingleSymbolRenderer::legendSymbolItems() const
   }
 
   QgsLegendSymbolList lst;
-  lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QString() );
+  lst << QgsLegendSymbolItem( mSymbol.get(), QString(), QStringLiteral( "0" ) );
   return lst;
 }
 
-QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context )
+QSet< QString > QgsSingleSymbolRenderer::legendKeysForFeature( const QgsFeature &feature, QgsRenderContext &context ) const
 {
   Q_UNUSED( feature );
   Q_UNUSED( context );
-  return QSet< QString >() << QString();
+  return QSet< QString >() << QStringLiteral( "0" );
 }
 
 void QgsSingleSymbolRenderer::setLegendSymbolItem( const QString &key, QgsSymbol *symbol )

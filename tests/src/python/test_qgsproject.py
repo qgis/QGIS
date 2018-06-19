@@ -19,11 +19,15 @@ import os
 import qgis  # NOQA
 
 from qgis.core import (QgsProject,
+                       QgsProjectDirtyBlocker,
                        QgsApplication,
                        QgsUnitTypes,
                        QgsCoordinateReferenceSystem,
+                       QgsLabelingEngineSettings,
                        QgsVectorLayer,
-                       QgsMapLayer)
+                       QgsRasterLayer,
+                       QgsMapLayer,
+                       QgsExpressionContextUtils)
 from qgis.gui import (QgsLayerTreeMapCanvasBridge,
                       QgsMapCanvas)
 
@@ -33,6 +37,7 @@ import sip
 
 from qgis.testing import start_app, unittest
 from utilities import (unitTestDataPath)
+from shutil import copyfile
 
 app = start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -129,6 +134,14 @@ class TestQgsProject(unittest.TestCase):
 
     def catchMessage(self):
         self.messageCaught = True
+
+    def testClear(self):
+        prj = QgsProject.instance()
+        prj.setTitle('xxx')
+        spy = QSignalSpy(prj.cleared)
+        prj.clear()
+        self.assertEqual(len(spy), 1)
+        self.assertFalse(prj.title())
 
     def testCrs(self):
         prj = QgsProject.instance()
@@ -684,6 +697,12 @@ class TestQgsProject(unittest.TestCase):
         p = None
         self.assertTrue(l1.isValid())
 
+    def test_transactionsGroup(self):
+        # Undefined transaction group (wrong provider key).
+        QgsProject.instance().setAutoTransaction(True)
+        noTg = QgsProject.instance().transactionGroup("provider-key", "database-connection-string")
+        self.assertIsNone(noTg)
+
     def test_zip_new_project(self):
         tmpDir = QTemporaryDir()
         tmpFile = "{}/project.qgz".format(tmpDir.path())
@@ -759,6 +778,318 @@ class TestQgsProject(unittest.TestCase):
         prj.read(os.path.join(TEST_DATA_DIR, 'projects', 'test_memory_layer_proj.qgs'))
         self.assertTrue(prj.crs().isValid())
         self.assertEqual(prj.crs().authid(), 'EPSG:2056')
+
+    def testRelativePaths(self):
+        """
+        Test whether paths to layer sources are stored as relative to the project path
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shp"), os.path.join(tmpDir.path(), "lines.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.dbf"), os.path.join(tmpDir.path(), "lines.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shx"), os.path.join(tmpDir.path(), "lines.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(tmpDir.path(), "lines.shp"), "lines", "ogr")
+        l2 = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l0.isValid())
+        self.assertTrue(l1.isValid())
+        self.assertTrue(l2.isValid())
+        self.assertTrue(project.addMapLayers([l0, l1, l2]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        with open(tmpFile, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="./lines.shp"' in content)
+            self.assertTrue('source="./points.shp"' in content)
+            self.assertTrue('source="./landsat_4326.tif"' in content)
+
+        # Re-read the project and store absolute
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile))
+        store = project.layerStore()
+        self.assertEquals(set([l.name() for l in store.mapLayers().values()]), set(['lines', 'landsat', 'points']))
+        project.writeEntryBool('Paths', '/Absolute', True)
+        tmpFile2 = "{}/project2.qgs".format(tmpDir.path())
+        self.assertTrue(project.write(tmpFile2))
+
+        with open(tmpFile2, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="{}/lines.shp"'.format(tmpDir.path()) in content)
+            self.assertTrue('source="{}/points.shp"'.format(tmpDir.path()) in content)
+            self.assertTrue('source="{}/landsat_4326.tif"'.format(tmpDir.path()) in content)
+
+        del project
+
+    def testSymbolicLinkInProjectPath(self):
+        """
+        Test whether paths to layer sources relative to the project are stored correctly
+        when project'name contains a symbolic link.
+        In other words, test if project's and layers' names are correctly resolved.
+        """
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shp"), os.path.join(tmpDir.path(), "points.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.dbf"), os.path.join(tmpDir.path(), "points.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "points.shx"), os.path.join(tmpDir.path(), "points.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shp"), os.path.join(tmpDir.path(), "lines.shp"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.dbf"), os.path.join(tmpDir.path(), "lines.dbf"))
+        copyfile(os.path.join(TEST_DATA_DIR, "lines.shx"), os.path.join(tmpDir.path(), "lines.shx"))
+        copyfile(os.path.join(TEST_DATA_DIR, "landsat_4326.tif"), os.path.join(tmpDir.path(), "landsat_4326.tif"))
+
+        project = QgsProject()
+
+        l0 = QgsVectorLayer(os.path.join(tmpDir.path(), "points.shp"), "points", "ogr")
+        l1 = QgsVectorLayer(os.path.join(tmpDir.path(), "lines.shp"), "lines", "ogr")
+        l2 = QgsRasterLayer(os.path.join(tmpDir.path(), "landsat_4326.tif"), "landsat", "gdal")
+        self.assertTrue(l0.isValid())
+        self.assertTrue(l1.isValid())
+        self.assertTrue(l2.isValid())
+        self.assertTrue(project.addMapLayers([l0, l1, l2]))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        # Create symbolic link to previous project
+        tmpDir2 = QTemporaryDir()
+        symlinkDir = os.path.join(tmpDir2.path(), "dir")
+        os.symlink(tmpDir.path(), symlinkDir)
+        tmpFile = "{}/project.qgs".format(symlinkDir)
+
+        # Open project from symmlink and force re-save.
+        project = QgsProject()
+        self.assertTrue(project.read(tmpFile))
+        self.assertTrue(project.write(tmpFile))
+        del project
+
+        with open(tmpFile, 'r') as f:
+            content = ''.join(f.readlines())
+            self.assertTrue('source="./lines.shp"' in content)
+            self.assertTrue('source="./points.shp"' in content)
+            self.assertTrue('source="./landsat_4326.tif"' in content)
+
+    def testHomePath(self):
+        p = QgsProject()
+        path_changed_spy = QSignalSpy(p.homePathChanged)
+        self.assertFalse(p.homePath())
+        self.assertFalse(p.presetHomePath())
+
+        # simulate save file
+        tmp_dir = QTemporaryDir()
+        tmp_file = "{}/project.qgs".format(tmp_dir.path())
+        with open(tmp_file, 'w') as f:
+            pass
+        p.setFileName(tmp_file)
+
+        # home path should be file path
+        self.assertEqual(p.homePath(), tmp_dir.path())
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 1)
+
+        # manually override home path
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+        # check project scope
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
+
+        # no extra signal if path is unchanged
+        p.setPresetHomePath('/tmp/my_path')
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        # setting file name should not affect home path is manually set
+        tmp_file_2 = "{}/project/project2.qgs".format(tmp_dir.path())
+        os.mkdir(tmp_dir.path() + '/project')
+        with open(tmp_file_2, 'w') as f:
+            pass
+        p.setFileName(tmp_file_2)
+        self.assertEqual(p.homePath(), '/tmp/my_path')
+        self.assertEqual(p.presetHomePath(), '/tmp/my_path')
+        self.assertEqual(len(path_changed_spy), 2)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '/tmp/my_path')
+
+        # clear manual path
+        p.setPresetHomePath('')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/project')
+        self.assertFalse(p.presetHomePath())
+        self.assertEqual(len(path_changed_spy), 3)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/project')
+
+        # relative path
+        p.setPresetHomePath('../home')
+        self.assertEqual(p.homePath(), tmp_dir.path() + '/home')
+        self.assertEqual(p.presetHomePath(), '../home')
+        self.assertEqual(len(path_changed_spy), 4)
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), tmp_dir.path() + '/home')
+
+        # relative path, no filename
+        p.setFileName('')
+        self.assertEqual(p.homePath(), '../home')
+        self.assertEqual(p.presetHomePath(), '../home')
+
+        scope = QgsExpressionContextUtils.projectScope(p)
+        self.assertEqual(scope.variable('project_home'), '../home')
+
+    def testDirtyBlocker(self):
+        # first test manual QgsProjectDirtyBlocker construction
+        p = QgsProject()
+
+        dirty_spy = QSignalSpy(p.isDirtyChanged)
+        # ^ will do *whatever* it takes to discover the enemy's secret plans!
+
+        # simple checks
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        self.assertEqual(dirty_spy[-1], [True])
+        p.setDirty(True) # already dirty
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 1)
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 2)
+        self.assertEqual(dirty_spy[-1], [False])
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 3)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # with a blocker
+        blocker = QgsProjectDirtyBlocker(p)
+        # blockers will allow cleaning projects
+        p.setDirty(False)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # but not dirtying!
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        # nested block
+        blocker2 = QgsProjectDirtyBlocker(p)
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker2
+        p.setDirty(True)
+        self.assertFalse(p.isDirty())
+        self.assertEqual(len(dirty_spy), 4)
+        self.assertEqual(dirty_spy[-1], [False])
+        del blocker
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 5)
+        self.assertEqual(dirty_spy[-1], [True])
+
+        # using python context manager
+        with QgsProject.blockDirtying(p):
+            # cleaning allowed
+            p.setDirty(False)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+            # but not dirtying!
+            p.setDirty(True)
+            self.assertFalse(p.isDirty())
+            self.assertEqual(len(dirty_spy), 6)
+            self.assertEqual(dirty_spy[-1], [False])
+
+        # unblocked
+        p.setDirty(True)
+        self.assertTrue(p.isDirty())
+        self.assertEqual(len(dirty_spy), 7)
+        self.assertEqual(dirty_spy[-1], [True])
+
+    def testCustomLayerOrderFrom2xProject(self):
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'layer_rendering_order_issue_qgis3.qgs'))
+
+        layer_x = prj.mapLayers()['x20180406151213536']
+        layer_y = prj.mapLayers()['y20180406151217017']
+
+        # check layer order
+        tree = prj.layerTreeRoot()
+        self.assertEqual(tree.children()[0].layer(), layer_x)
+        self.assertEqual(tree.children()[1].layer(), layer_y)
+        self.assertTrue(tree.hasCustomLayerOrder())
+        self.assertEqual(tree.customLayerOrder(), [layer_y, layer_x])
+        self.assertEqual(tree.layerOrder(), [layer_y, layer_x])
+
+    def testCustomLayerOrderFrom3xProject(self):
+        prj = QgsProject.instance()
+        prj.read(os.path.join(TEST_DATA_DIR, 'layer_rendering_order_qgis3_project.qgs'))
+
+        layer_x = prj.mapLayers()['x20180406151213536']
+        layer_y = prj.mapLayers()['y20180406151217017']
+
+        # check layer order
+        tree = prj.layerTreeRoot()
+        self.assertEqual(tree.children()[0].layer(), layer_x)
+        self.assertEqual(tree.children()[1].layer(), layer_y)
+        self.assertTrue(tree.hasCustomLayerOrder())
+        self.assertEqual(tree.customLayerOrder(), [layer_y, layer_x])
+        self.assertEqual(tree.layerOrder(), [layer_y, layer_x])
+
+    def testPalPropertiesReadWrite(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/project.qgs".format(tmpDir.path())
+
+        s0 = QgsLabelingEngineSettings()
+        s0.setNumCandidatePositions(3, 33, 333)
+
+        p0 = QgsProject()
+        p0.setFileName(tmpFile)
+        p0.setLabelingEngineSettings(s0)
+        p0.write()
+
+        p1 = QgsProject()
+        p1.read(tmpFile)
+
+        s1 = p1.labelingEngineSettings()
+        candidates = s1.numCandidatePositions()
+
+        self.assertEqual(candidates[0], 3)
+        self.assertEqual(candidates[1], 33)
+        self.assertEqual(candidates[2], 333)
+
+    def testLayerChangeDirtiesProject(self):
+        """
+        Test that making changes to certain layer properties results in dirty projects
+        """
+        p = QgsProject()
+        l = QgsVectorLayer(os.path.join(TEST_DATA_DIR, "points.shp"), "points", "ogr")
+        self.assertTrue(l.isValid())
+        self.assertTrue(p.addMapLayers([l]))
+        p.setDirty(False)
+
+        l.setCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertTrue(p.isDirty())
+        p.setDirty(False)
+
+        l.setName('test')
+        self.assertTrue(p.isDirty())
+        p.setDirty(False)
+
+        self.assertTrue(l.setSubsetString('class=\'a\''))
+        self.assertTrue(p.isDirty())
 
 
 if __name__ == '__main__':

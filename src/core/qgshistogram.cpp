@@ -19,14 +19,7 @@
 
 #include "qgsstatisticalsummary.h"
 #include "qgsvectorlayer.h"
-
-QgsHistogram::QgsHistogram()
-  : mMax( 0 )
-  , mMin( 0 )
-  , mIQR( 0 )
-{
-
-}
+#include "qgsvectorlayerutils.h"
 
 void QgsHistogram::prepareValues()
 {
@@ -53,7 +46,7 @@ bool QgsHistogram::setValues( const QgsVectorLayer *layer, const QString &fieldO
     return false;
 
   bool ok;
-  mValues = layer->getDoubleValues( fieldOrExpression, ok, false, nullptr, feedback );
+  mValues = QgsVectorLayerUtils::getDoubleValues( layer, fieldOrExpression, ok, false, nullptr, feedback );
   if ( !ok )
     return false;
 

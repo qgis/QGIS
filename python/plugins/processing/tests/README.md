@@ -25,7 +25,7 @@ How To
 To add a new test please follow these steps:
 
  1. **Run the algorithm** you want to test in QGIS from the processing toolbox. If the
-result is a vector layer prefer GML as output for its support of mixed
+result is a vector layer prefer GML, with its XSD, as output for its support of mixed
 geometry types and good readability. Redirect output to
 `python/plugins/processing/tests/testdata/expected`. For input layers prefer to use what's already there in the folder `testdata`. If you need extra data, put it into `testdata/custom`.
 
@@ -131,6 +131,8 @@ It couldn't be more trivial
       type: vector
 ```
 
+Add the expected GML and XSD in the folder.
+
 #### Vector with tolerance
 
 Sometimes different platforms create slightly different results which are
@@ -191,3 +193,10 @@ OUTPUT:
     - 'Geometry: Line String'
     - 'Feature Count: 6'
 ```
+
+Running tests locally
+------------------
+```bash
+ctest -V -R ProcessingQgisAlgorithmsTest
+```
+or one of the following value listed in the [CMakelists.txt](https://github.com/qgis/QGIS/blob/master/python/plugins/processing/tests/CMakeLists.txt)

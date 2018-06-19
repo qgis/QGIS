@@ -40,6 +40,11 @@
 #include "qgsvaluemapwidgetfactory.h"
 #include "qgsvaluerelationwidgetfactory.h"
 
+QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
+{
+  mFallbackWidgetFactory.reset( new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+}
+
 void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
   registerWidget( QStringLiteral( "TextEdit" ), new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
@@ -58,10 +63,6 @@ void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBa
   registerWidget( QStringLiteral( "ExternalResource" ), new QgsExternalResourceWidgetFactory( tr( "Attachment" ) ) );
   registerWidget( QStringLiteral( "KeyValue" ), new QgsKeyValueWidgetFactory( tr( "Key/Value" ) ) );
   registerWidget( QStringLiteral( "List" ), new QgsListWidgetFactory( tr( "List" ) ) );
-}
-
-QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()
-{
 }
 
 QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
@@ -167,19 +168,19 @@ QMap<QString, QgsEditorWidgetFactory *> QgsEditorWidgetRegistry::factories()
 
 QgsEditorWidgetFactory *QgsEditorWidgetRegistry::factory( const QString &widgetId )
 {
-  return mWidgetFactories.value( widgetId );
+  return mWidgetFactories.value( widgetId, mFallbackWidgetFactory.get() );
 }
 
 bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory )
 {
   if ( !widgetFactory )
   {
-    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory not valid." ) );
+    QgsApplication::messageLog()->logMessage( tr( "QgsEditorWidgetRegistry: Factory not valid." ) );
     return false;
   }
   else if ( mWidgetFactories.contains( widgetId ) )
   {
-    QgsApplication::messageLog()->logMessage( QStringLiteral( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
+    QgsApplication::messageLog()->logMessage( tr( "QgsEditorWidgetRegistry: Factory with id %1 already registered." ).arg( widgetId ) );
     return false;
   }
   else

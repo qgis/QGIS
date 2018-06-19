@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsFieldComboBoxPlugin : public QObject, public QDesi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFieldComboBoxPlugin( QObject *parent = 0 );
+    explicit QgsFieldComboBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

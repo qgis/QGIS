@@ -56,17 +56,14 @@
           <string>Define</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="0" column="0" colspan="2">
-           <widget class="QLabel" name="label">
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
+             <string>Parameters</string>
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
+          <item row="1" column="0" colspan="3">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QTreeWidget" name="leNameList">
@@ -145,21 +142,41 @@
                 </property>
                </spacer>
               </item>
-              <item>
-               <widget class="QPushButton" name="pbnCopyCRS">
-                <property name="toolTip">
-                 <string>Copy existing CRS</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-                <property name="icon">
-                 <iconset resource="../../images/images.qrc">
-                  <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-                </property>
-               </widget>
-              </item>
              </layout>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QPlainTextEdit" name="teParameters">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>70</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pbnCopyCRS">
+              <property name="toolTip">
+               <string>Copy parameters from existing CRS</string>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -170,31 +187,18 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QLineEdit" name="leName"/>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Parameters</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <widget class="QPlainTextEdit" name="teParameters">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>70</height>
-             </size>
-            </property>
-           </widget>
           </item>
          </layout>
         </widget>
@@ -323,14 +327,12 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>groupBox</tabstop>
   <tabstop>leNameList</tabstop>
   <tabstop>pbnAdd</tabstop>
   <tabstop>pbnRemove</tabstop>
-  <tabstop>pbnCopyCRS</tabstop>
   <tabstop>leName</tabstop>
   <tabstop>teParameters</tabstop>
-  <tabstop>groupBox_2</tabstop>
+  <tabstop>pbnCopyCRS</tabstop>
   <tabstop>northWGS84</tabstop>
   <tabstop>eastWGS84</tabstop>
   <tabstop>pbnCalculate</tabstop>

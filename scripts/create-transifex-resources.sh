@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 ###########################################################################
 #    create-transifex-resources.sh
 #    ---------------------
@@ -24,7 +24,7 @@
 
 # TODO: update script to consider qgis_sr@latin and qgis_zh-Han*
 
-LOCALES=`ls i18n/qgis_*.ts| grep -o "qgis_[a-z\_A-Z]*" | sed 's/qgis_//g' | sort | uniq`
+LOCALES=$(ls i18n/qgis_*.ts| grep -o "qgis_[a-z\_A-Z]*" | sed 's/qgis_//g' | sort | uniq)
 
 TSFILE='i18n/qgis_en.ts'
 RESOURCE='i18n/qgis_<lang>.ts'
@@ -40,7 +40,7 @@ tx set -t QT --minimum-perc=35 --auto-local -r QGIS.qgis-application \
 
 for LOCALE in $LOCALES
 do
-  LOCALEFILE=`echo $TSFILE | sed "s/\_en/\_$LOCALE/g"`
+  LOCALEFILE=$(echo $TSFILE | sed "s/\_en/\_$LOCALE/g")
   tx set -r QGIS.qgis-application -l $LOCALE  "$LOCALEFILE" 
 done 
 

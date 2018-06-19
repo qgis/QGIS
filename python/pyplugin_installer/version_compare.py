@@ -47,6 +47,7 @@ ALPHA, BETA, RC, PREVIEW and TRUNK which make the version number lower.
 """
 from builtins import str
 from builtins import range
+from qgis.core import Qgis
 
 import re
 
@@ -194,8 +195,20 @@ def isCompatible(curVer, minVer, maxVer):
     if len(maxVer) < 3:
         maxVer += ["99"]
 
-    minVer = "%04d%04d%04d" % (int(minVer[0]), int(minVer[1]), int(minVer[2]))
-    maxVer = "%04d%04d%04d" % (int(maxVer[0]), int(maxVer[1]), int(maxVer[2]))
-    curVer = "%04d%04d%04d" % (int(curVer[0]), int(curVer[1]), int(curVer[2]))
+    minVer = "{:04n}{:04n}{:04n}".format(int(minVer[0]), int(minVer[1]), int(minVer[2]))
+    maxVer = "{:04n}{:04n}{:04n}".format(int(maxVer[0]), int(maxVer[1]), int(maxVer[2]))
+    curVer = "{:04n}{:04n}{:04n}".format(int(curVer[0]), int(curVer[1]), int(curVer[2]))
 
     return (minVer <= curVer and maxVer >= curVer)
+
+
+def pyQgisVersion():
+    """ Return current QGIS version number as X.Y.Z for testing plugin compatibility.
+        If Y = 99, bump up to (X+1.0.0), so e.g. 2.99 becomes 3.0.0
+        This way QGIS X.99 is only compatible with plugins for the upcoming major release.
+    """
+    x, y, z = re.findall(r'^(\d*).(\d*).(\d*)', Qgis.QGIS_VERSION)[0]
+    if y == '99':
+        x = str(int(x) + 1)
+        y = z = '0'
+    return '{}.{}.{}'.format(x, y, z)

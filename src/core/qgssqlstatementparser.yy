@@ -53,7 +53,7 @@ struct sqlstatement_parser_context
   // lexer context
   yyscan_t flex_scanner;
 
-  // varible where the parser error will be stored
+  // variable where the parser error will be stored
   QString errorMsg;
   // root node of the sqlstatement
   QgsSQLStatement::NodeSelect* rootNode;
@@ -205,7 +205,7 @@ struct sqlstatement_parser_context
 %%
 
 root: select_statement { parser_ctx->rootNode = $1; }
-    ;
+   ;
 
 /* We have to separate expr from expr_non_logical to avoid */
 /* grammar ambiguities with the AND of the "BETWEEN x AND y" and the */

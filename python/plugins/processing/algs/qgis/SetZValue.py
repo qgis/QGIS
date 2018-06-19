@@ -29,7 +29,10 @@ import os
 
 from qgis.core import (QgsGeometry,
                        QgsWkbTypes,
-                       QgsProcessingParameterNumber)
+                       QgsPropertyDefinition,
+                       QgsProcessingParameters,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingFeatureSource)
 
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
@@ -44,9 +47,14 @@ class SetZValue(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.z_value = 0
+        self.dynamic_z = False
+        self.z_property = None
 
     def name(self):
         return 'setzvalue'
@@ -61,26 +69,39 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         return self.tr('set,add,z,25d,3d,values').split(',')
 
     def initParameters(self, config=None):
-        self.addParameter(QgsProcessingParameterNumber(self.Z_VALUE,
-                                                       self.tr('Z Value'), QgsProcessingParameterNumber.Double, defaultValue=0.0))
+        z_param = QgsProcessingParameterNumber(self.Z_VALUE,
+                                               self.tr('Z Value'), QgsProcessingParameterNumber.Double, defaultValue=0.0)
+        z_param.setIsDynamic(True)
+        z_param.setDynamicLayerParameterName('INPUT')
+        z_param.setDynamicPropertyDefinition(QgsPropertyDefinition(self.Z_VALUE, self.tr("Z Value"), QgsPropertyDefinition.Double))
+        self.addParameter(z_param)
 
     def outputWkbType(self, inputWkb):
         return QgsWkbTypes.addZ(inputWkb)
 
+    def sourceFlags(self):
+        return QgsProcessingFeatureSource.FlagSkipGeometryValidityChecks
+
     def prepareAlgorithm(self, parameters, context, feedback):
         self.z_value = self.parameterAsDouble(parameters, self.Z_VALUE, context)
+        self.dynamic_z = QgsProcessingParameters.isDynamic(parameters, self.Z_VALUE)
+        if self.dynamic_z:
+            self.z_property = parameters[self.Z_VALUE]
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
-            new_geom = input_geometry.geometry().clone()
+            new_geom = input_geometry.constGet().clone()
             if QgsWkbTypes.hasZ(new_geom.wkbType()):
                 # addZValue won't alter existing Z values, so drop them first
                 new_geom.dropZValue()
 
-            new_geom.addZValue(self.z_value)
+            z = self.z_value
+            if self.dynamic_z:
+                z, ok = self.z_property.valueAsDouble(context.expressionContext(), z)
+            new_geom.addZValue(z)
 
             feature.setGeometry(QgsGeometry(new_geom))
 
-        return feature
+        return [feature]

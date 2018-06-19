@@ -58,7 +58,7 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         provider.addFeatures([ft])
         return layer
@@ -97,8 +97,8 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         while not self.success and not self.fail:
             QCoreApplication.processEvents()
 
-        self.assertFalse(self.success)
-        self.assertTrue(self.fail)
+        self.assertTrue(self.success)
+        self.assertFalse(self.fail)
 
     def testNoLayer(self):
         """test that failure (and not crash) occurs when no layer set"""

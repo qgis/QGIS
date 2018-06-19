@@ -26,14 +26,15 @@ class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;
 class QgsSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \brief The QgsVectorLayerLabelProvider class implements a label provider
  * for vector layers. Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
  *
- * \since QGIS 2.12
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine
  * \note not available in Python bindings
+ * \since QGIS 2.12
  */
 class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
 {
@@ -46,11 +47,11 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QgsPalLayerSettings *settings,
                                           const QString &layerName = QString() );
 
-    ~QgsVectorLayerLabelProvider();
+    ~QgsVectorLayerLabelProvider() override;
 
-    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 
@@ -75,7 +76,8 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
      */
     virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() );
 
-    /** Returns the geometry for a point feature which should be used as an obstacle for labels. This
+    /**
+     * Returns the geometry for a point feature which should be used as an obstacle for labels. This
      * obstacle geometry will respect the dimensions and offsets of the symbol used to render the
      * point, and ensures that labels will not overlap large or offset points.
      * \param fet point feature

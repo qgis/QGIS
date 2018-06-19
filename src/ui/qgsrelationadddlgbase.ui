@@ -7,31 +7,60 @@
     <x>0</x>
     <y>0</y>
     <width>581</width>
-    <height>267</height>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Add Relation</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+   <item row="1" column="2">
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencedLayer"/>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Referenced Field</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QgsFieldComboBox" name="mCbxReferencingField"/>
+   </item>
+   <item row="2" column="2">
+    <widget class="QgsFieldComboBox" name="mCbxReferencedField"/>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Referencing Layer (Child)</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QgsMapLayerComboBox" name="mCbxReferencingLayer"/>
+   </item>
+   <item row="0" column="0">
     <widget class="QLabel" name="label_7">
      <property name="text">
       <string>Name</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QgsMapLayerComboBox" name="mCbxReferencingLayer"/>
+   <item row="0" column="2">
+    <widget class="QLineEdit" name="mTxtRelationName"/>
    </item>
-   <item row="9" column="0">
-    <widget class="QLabel" name="label_5">
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
      <property name="text">
-      <string>Id</string>
+      <string>Referenced Layer (Parent)</string>
      </property>
     </widget>
    </item>
-   <item row="15" column="0" colspan="3">
+   <item row="5" column="2" rowspan="2">
+    <widget class="QLineEdit" name="mTxtRelationId"/>
+   </item>
+   <item row="8" column="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -41,48 +70,29 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Referencing Layer (Child)</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QgsFieldComboBox" name="mCbxReferencingField"/>
-   </item>
-   <item row="5" column="0">
+   <item row="4" column="0" colspan="2">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Referencing Field</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_3">
+   <item row="7" column="0" colspan="2">
+    <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Referenced Layer (Parent)</string>
+      <string>Relationship Strength</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_4">
+   <item row="5" column="0" rowspan="2" colspan="2">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Referenced Field</string>
+      <string>Id</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QgsFieldComboBox" name="mCbxReferencedField"/>
-   </item>
-   <item row="9" column="1" colspan="2">
-    <widget class="QLineEdit" name="mTxtRelationId"/>
-   </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QgsMapLayerComboBox" name="mCbxReferencedLayer"/>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLineEdit" name="mTxtRelationName"/>
+   <item row="7" column="2">
+    <widget class="QComboBox" name="mCbxRelationStrength"/>
    </item>
   </layout>
  </widget>

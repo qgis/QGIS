@@ -6,9 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>617</width>
-    <height>710</height>
+    <width>493</width>
+    <height>430</height>
    </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::PreventContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>Custom Certificate Configuration</string>
@@ -169,7 +172,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string>Save SSL server exception</string>
+       <string>Save SSL server e&amp;xception</string>
       </property>
       <property name="checkable">
        <bool>true</bool>
@@ -219,14 +222,18 @@
     </widget>
    </item>
    <item>
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Abort|QDialogButtonBox::Ignore|QDialogButtonBox::Save</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="standardButtons">
+        <set>QDialogButtonBox::Abort|QDialogButtonBox::Ignore|QDialogButtonBox::Save</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>

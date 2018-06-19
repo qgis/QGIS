@@ -8,7 +8,7 @@
         "Committer": "Yes",
         "First Commit Message": "Initial revision",
         "First Commit Date": "06-07-2002",
-        "GIT Nickname": "gsherman"
+        "GIT Nickname": "g-sherman"
       },
       "geometry": {
         "type": "Point",
@@ -141,7 +141,7 @@
         "Committer": "Yes",
         "First Commit Message": "some dutch translations for git testing",
         "First Commit Date": "4-9-2011",
-        "GIT Nickname": "duiv"
+        "GIT Nickname": "rduivenvoorde"
       },
       "geometry": {
         "type": "Point",
@@ -277,7 +277,7 @@
         "Committer": "Yes",
         "First Commit Message": "some bugfixes",
         "First Commit Date": "07-04-2004",
-        "GIT Nickname": "rabla,rblazek,blazek"
+        "GIT Nickname": "blazek"
       },
       "geometry": {
         "type": "Point",
@@ -325,7 +325,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Mathieu Pellerin",
-        "Committer": "No",
+        "Committer": "Yes",
         "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
         "First Commit Date": "04-09-2015",
         "GIT Nickname": "nirvn"
@@ -334,7 +334,7 @@
         "type": "Point",
         "coordinates": [
           104.9110,
-          11.5582          
+          11.5582
         ]
       }
     },
@@ -417,6 +417,23 @@
         "coordinates": [
           -1.547486,
           47.199934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Paul Blottiere",
+        "Committer": "Yes",
+        "First Commit Message": "Add polygon and polyline tools in composer",
+        "First Commit Date": "04-03-2016",
+        "GIT Nickname": "pblottiere"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.6445492,
+          48.3748789
         ]
       }
     },
@@ -564,8 +581,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.86121,
-          46.47796
+          -70.413406,
+          19.745284
         ]
       }
     },
@@ -627,7 +644,7 @@
         "Committer": "Yes",
         "First Commit Message": "Patch to allow setting extents from cli on startup",
         "First Commit Date": "03-06-2005",
-        "GIT Nickname": "wonder"
+        "GIT Nickname": "wonder-sk"
       },
       "geometry": {
         "type": "Point",

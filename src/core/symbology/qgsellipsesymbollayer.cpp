@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsunittypes.h"
 #include "qgsproperty.h"
+#include "qgssymbollayerutils.h"
 
 #include <QPainter>
 #include <QSet>
@@ -28,17 +29,8 @@
 #include <QDomElement>
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
-  : QgsMarkerSymbolLayer()
-  , mSymbolName( QStringLiteral( "circle" ) )
-  , mSymbolWidth( 4 )
-  , mSymbolWidthUnit( QgsUnitTypes::RenderMillimeters )
-  , mSymbolHeight( 3 )
-  , mSymbolHeightUnit( QgsUnitTypes::RenderMillimeters )
-  , mStrokeColor( Qt::black )
-  , mStrokeStyle( Qt::SolidLine )
-  , mPenJoinStyle( DEFAULT_ELLIPSE_JOINSTYLE )
-  , mStrokeWidth( 0 )
-  , mStrokeWidthUnit( QgsUnitTypes::RenderMillimeters )
+  : mSymbolName( QStringLiteral( "circle" ) )
+  , mStrokeColor( QColor( 35, 35, 35 ) )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );
@@ -216,7 +208,7 @@ void QgsEllipseSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContext &
 
     if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyWidth ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyHeight ) || mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyName ) )
     {
-      QString symbolName =  mSymbolName;
+      QString symbolName = mSymbolName;
       context.setOriginalValueVariable( mSymbolName );
       exprVal = mDataDefinedProperties.value( QgsSymbolLayer::PropertyName, context.renderContext().expressionContext() );
       if ( exprVal.isValid() )
@@ -451,7 +443,7 @@ QgsSymbolLayer *QgsEllipseSymbolLayer::createFromSld( QDomElement &element )
   if ( !QgsSymbolLayerUtils::wellKnownMarkerFromSld( graphicElem, name, fillColor, strokeColor, strokeStyle, strokeWidth, size ) )
     return nullptr;
 
-  QString uom = element.attribute( QStringLiteral( "uom" ), "" );
+  QString uom = element.attribute( QStringLiteral( "uom" ) );
   size = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, size );
   strokeWidth = QgsSymbolLayerUtils::sizeInPixelsFromSldUom( uom, strokeWidth );
 

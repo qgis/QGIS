@@ -25,7 +25,8 @@
 
 class QgsPanelWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A stack widget to manage panels in the interface. Handles the open and close events
  * for added panels.
  * Any widgets that want to have a non blocking panel based interface should use this
@@ -121,6 +122,7 @@ class GUI_EXPORT QgsPanelWidgetStack : public QWidget, private Ui::QgsRendererWi
   protected:
 
     void mouseReleaseEvent( QMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   private:
     void updateBreadcrumb();

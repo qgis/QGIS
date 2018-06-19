@@ -76,7 +76,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
       QgsDebugMsg( "line = '" + line + "'" );
       QString text, html;
       int value;
-      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, value );
+      QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, value );
       if ( type == QgsGrass::OutputPercent )
       {
         mProgressMin = 0;
@@ -124,12 +124,8 @@ void QgsGrassImportProgress::setValue( int value )
 
 //------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
-  : QObject()
-  , mGrassObject( grassObject )
+  : mGrassObject( grassObject )
   , mCanceled( false )
-  , mProcess( 0 )
-  , mProgress( 0 )
-  , mFutureWatcher( 0 )
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
@@ -352,7 +348,7 @@ bool QgsGrassRasterImport::import()
     int iterTop = 0;
     int iterCols = 0;
     int iterRows = 0;
-    QgsRasterBlock *block = 0;
+    QgsRasterBlock *block = nullptr;
     mProcess->setReadChannel( QProcess::StandardOutput );
     mProgress->setRange( 0, mYSize - 1 );
     while ( iter.readNextRasterPart( band, iterCols, iterRows, &block, iterLeft, iterTop ) )
@@ -449,7 +445,7 @@ bool QgsGrassRasterImport::import()
     if ( mProcess->exitStatus() != QProcess::NormalExit )
     {
       setError( mProcess->errorString() );
-      mProcess = 0;
+      mProcess = nullptr;
       return false;
     }
 
@@ -457,12 +453,12 @@ bool QgsGrassRasterImport::import()
     {
       setError( stderrString );
       delete mProcess;
-      mProcess = 0;
+      mProcess = nullptr;
       return false;
     }
 
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
   }
   QgsDebugMsg( QString( "redBand = %1 greenBand = %2 blueBand = %3" ).arg( redBand ).arg( greenBand ).arg( blueBand ) );
   if ( redBand > 0 && greenBand > 0 && blueBand > 0 )
@@ -715,7 +711,9 @@ bool QgsGrassVectorImport::import()
   QgsDebugMsg( "waitForFinished" );
   mProcess->waitForFinished( 30000 );
 
+#ifdef QGISDEBUG
   QString stdoutString = mProcess->readAllStandardOutput().constData();
+#endif
   QString stderrString = mProcess->readAllStandardError().constData();
 
 #ifdef QGISDEBUG
@@ -730,7 +728,7 @@ bool QgsGrassVectorImport::import()
   {
     setError( mProcess->errorString() );
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
     return false;
   }
 
@@ -738,12 +736,12 @@ bool QgsGrassVectorImport::import()
   {
     setError( stderrString );
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
     return false;
   }
 
   delete mProcess;
-  mProcess = 0;
+  mProcess = nullptr;
   return true;
 }
 

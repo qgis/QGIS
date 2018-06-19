@@ -3,7 +3,7 @@
   TOPOLogy checker
   -------------------
          date                 : May 2009
-         copyright            : Vita Cizek
+         copyright            : (C) 2009 by Vita Cizek
          email                : weetya (at) gmail.com
 
  ***************************************************************************
@@ -49,7 +49,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * \param parent parent object
      */
     checkDock( QgisInterface *qIface, QWidget *parent = nullptr );
-    ~checkDock();
+    ~checkDock() override;
 
   private slots:
 

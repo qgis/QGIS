@@ -23,9 +23,7 @@
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mTextEdit( nullptr )
-  , mPlainTextEdit( nullptr )
-  , mLineEdit( nullptr )
+
 {
 }
 
@@ -87,7 +85,7 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
   {
     if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
     {
-      return new QTextEdit( parent );
+      return new QTextBrowser( parent );
     }
     else
     {
@@ -102,15 +100,16 @@ QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 
 void QgsTextEditWrapper::initWidget( QWidget *editor )
 {
+  mTextBrowser = qobject_cast<QTextBrowser *>( editor );
   mTextEdit = qobject_cast<QTextEdit *>( editor );
   mPlainTextEdit = qobject_cast<QPlainTextEdit *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mTextEdit )
-    connect( mTextEdit, &QTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mTextEdit, &QTextEdit::textChanged, this, &QgsEditorWidgetWrapper::emitValueChanged );
 
   if ( mPlainTextEdit )
-    connect( mPlainTextEdit, &QPlainTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mPlainTextEdit, &QPlainTextEdit::textChanged, this, &QgsEditorWidgetWrapper::emitValueChanged );
 
   if ( mLineEdit )
   {
@@ -133,7 +132,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value ) { emit valueChanged( value ); } );
     connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
@@ -218,14 +217,23 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
       v = QgsApplication::nullRepresentation();
   }
   else
-    v = val.toString();
+  {
+    v = field().displayString( val );
+  }
 
   if ( mTextEdit )
   {
     if ( val != value() )
     {
       if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+      {
         mTextEdit->setHtml( v );
+        if ( mTextBrowser )
+        {
+          mTextBrowser->setTextInteractionFlags( Qt::LinksAccessibleByMouse );
+          mTextBrowser->setOpenExternalLinks( true );
+        }
+      }
       else
         mTextEdit->setPlainText( v );
     }

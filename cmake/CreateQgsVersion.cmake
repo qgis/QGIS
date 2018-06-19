@@ -2,7 +2,7 @@ MACRO(CREATE_QGSVERSION)
   IF (EXISTS ${CMAKE_SOURCE_DIR}/.git/index)
     FIND_PROGRAM(GITCOMMAND git PATHS c:/cygwin/bin)
     IF(GITCOMMAND)
-      IF(WIN32)
+      IF(WIN32 AND NOT CMAKE_CROSS_COMPILING)
         IF(USING_NINJA)
          SET(ARG %a)
         ELSE(USING_NINJA)
@@ -16,7 +16,7 @@ MACRO(CREATE_QGSVERSION)
           MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
           WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
-      ELSE(WIN32)
+      ELSE(WIN32 AND NOT CMAKE_CROSS_COMPILING)
         ADD_CUSTOM_COMMAND(
           OUTPUT ${CMAKE_BINARY_DIR}/qgsversion.h ${CMAKE_BINARY_DIR}/qgsversion.inc
           COMMAND ${GITCOMMAND} log -n1 --pretty=\#define\\ QGSVERSION\\ \\"%h\\" >${CMAKE_BINARY_DIR}/qgsversion.h.temp
@@ -26,7 +26,7 @@ MACRO(CREATE_QGSVERSION)
           MAIN_DEPENDENCY ${CMAKE_SOURCE_DIR}/.git/index
           WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
         )
-      ENDIF(WIN32)
+      ENDIF(WIN32 AND NOT CMAKE_CROSS_COMPILING)
     ELSE(GITCOMMAND)
       MESSAGE(STATUS "git marker, but no git found - version will be unknown")
       IF(NOT SHA)
