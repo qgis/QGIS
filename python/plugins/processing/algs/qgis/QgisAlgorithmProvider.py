@@ -26,10 +26,14 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import warnings
 
 try:
-    import plotly  # NOQA
-    hasPlotly = True
+    # importing plotly throws Python warnings from within the library - filter these out
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=ResourceWarning)
+        import plotly  # NOQA
+        hasPlotly = True
 except:
     hasPlotly = False
 
