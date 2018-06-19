@@ -107,6 +107,9 @@ class CORE_EXPORT QgsMimeDataUtils
     static QStringList decode( const QString &encoded );
     static QByteArray uriListToByteArray( const UriList &layers );
 
+
+    friend class TestQgsMimeDataUtils;
+
 };
 
 Q_DECLARE_METATYPE( QgsMimeDataUtils::UriList )

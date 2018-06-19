@@ -1,5 +1,5 @@
 /***************************************************************************
-    testqgsfilefiledownloader.cpp
+    testqgslayerdefinition.cpp
      --------------------------------------
     Date                 : 07.06.2018
     Copyright            : (C) 2018 Alessandro Pasotti
@@ -37,7 +37,7 @@ class TestQgsLayerDefinition: public QObject
     void cleanup(); // will be called after every testfunction.
 
     /**
-     * test that findLayers()
+     * test findLayers()
      */
     void testFindLayers();
 

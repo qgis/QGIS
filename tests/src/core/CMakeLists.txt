@@ -194,6 +194,7 @@ SET(TESTS
  testqgsmeshlayerrenderer.cpp
  testqgslayerdefinition.cpp
  testqgssqliteutils.cpp
+ testqgsmimedatautils.cpp
    )
 
 IF(WITH_QTWEBKIT)
