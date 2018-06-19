@@ -426,6 +426,11 @@ Angle undefined. Always returns 0.0
     virtual QgsPoint *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsPoint %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

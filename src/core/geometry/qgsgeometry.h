@@ -1248,7 +1248,13 @@ class CORE_EXPORT QgsGeometry
      */
     QString asWkt( int precision = 17 ) const;
 
-    SIP_PYTHON_SPECIAL_REPR( "'<QgsGeometry {}>'.format(self.asWkt())" )
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QString( "<QgsGeometry %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
 
     /**
      * Exports the geometry to a GeoJSON string.

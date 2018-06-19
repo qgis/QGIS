@@ -65,6 +65,11 @@ negative if the point lies outside the polygon.
     virtual QgsPolygon *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsPolygon %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

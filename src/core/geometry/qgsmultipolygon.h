@@ -65,7 +65,13 @@ class CORE_EXPORT QgsMultiPolygon: public QgsMultiSurface
 
     QgsMultiPolygon *createEmptyWithSameType() const override SIP_FACTORY;
 
-    SIP_PYTHON_SPECIAL_REPR( "'<QgsMultiPolygon {}>'.format(self.asWkt())" )
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QString( "<QgsMultiPolygon %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
 
   protected:
 

@@ -253,7 +253,11 @@ Returns true if the circle contains the ``point``.
     virtual QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const;
 
 
-
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsCircle %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 };
 
 /************************************************************************

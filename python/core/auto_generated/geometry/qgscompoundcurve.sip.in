@@ -166,6 +166,11 @@ Appends first point if not already closed.
     virtual QgsCompoundCurve *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsCompoundCurve %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

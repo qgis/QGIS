@@ -1290,6 +1290,11 @@ Exports the geometry to WKT
    precision parameter added in QGIS 2.4
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsGeometry %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
     QString asJson( int precision = 17 ) const;
 %Docstring

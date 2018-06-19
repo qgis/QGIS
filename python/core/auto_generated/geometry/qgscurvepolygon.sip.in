@@ -216,6 +216,11 @@ Returns approximate rotation angle for a vertex. Usually average angle between a
     virtual QgsCurvePolygon *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsCurvePolygon %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

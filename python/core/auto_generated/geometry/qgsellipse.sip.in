@@ -248,6 +248,11 @@ returns a string representation of the ellipse.
 Members will be truncated to the specified precision.
 %End
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsEllipse %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

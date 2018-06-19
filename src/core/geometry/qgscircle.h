@@ -247,8 +247,13 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     QString toString( int pointPrecision = 17, int radiusPrecision = 17, int azimuthPrecision = 2 ) const override;
 
-    SIP_PYTHON_SPECIAL_REPR( "'<QgsPoint {}>'.format(self.toString())" )
-
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QString( "<QgsCircle %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
 };
 
 #endif // QGSCIRCLE_H

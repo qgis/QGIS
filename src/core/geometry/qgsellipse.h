@@ -240,7 +240,13 @@ class CORE_EXPORT QgsEllipse
      */
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 
-    SIP_PYTHON_SPECIAL_REPR( "'<QgsEllipse {}>'.format(self.toString())" )
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QString( "<QgsEllipse %1>" ).arg( sipCpp->toString() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
 
   protected:
     QgsPoint mCenter;

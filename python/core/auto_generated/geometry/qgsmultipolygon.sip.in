@@ -54,6 +54,11 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
     virtual QgsMultiPolygon *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsMultiPolygon %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
   protected:
 

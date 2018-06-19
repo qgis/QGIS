@@ -322,6 +322,11 @@ Converts the rectangle to a 3D box, with the specified
 
     operator QVariant() const;
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QString( "<QgsRectangle %1>" ).arg( sipCpp->asWktCoordinates() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
 
 };
 
