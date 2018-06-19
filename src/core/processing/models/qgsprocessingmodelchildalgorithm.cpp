@@ -58,7 +58,7 @@ QgsProcessingModelChildAlgorithm &QgsProcessingModelChildAlgorithm::operator=( c
 
 const QgsProcessingAlgorithm *QgsProcessingModelChildAlgorithm::algorithm() const
 {
-  return mAlgorithm.get();
+  return mAlgorithm && mAlgorithm->canExecute() ? mAlgorithm.get() : nullptr;
 }
 
 void QgsProcessingModelChildAlgorithm::setModelOutputs( const QMap<QString, QgsProcessingModelOutput> &modelOutputs )
