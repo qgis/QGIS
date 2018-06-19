@@ -178,13 +178,11 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&CRS=EPSG:3857' +
                                  '&FEATURE_COUNT=10' +
                                  '&QUERY_LAYERS=layer0&I=487&J=308',
-                                 'wms_getfeatureinfo-values1-text-xml',
+                                 'wms_getfeatureinfo-values0-text-xml',
                                  'test_project_values.qgs')
 
-    # TODO fix regression in QGIS 3 as the widget values don't get solved and enable test
-    @unittest.expectedFailure
     def testGetFeatureInfoValueRelation(self):
-        """Test GetFeatureInfo resolves "value relation" widget values"""
+        """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
         mypath = self.testdata_path + "test_project_values.qgs"
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer1&styles=&' +
