@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import shutil
 
-from qgis.core import QgsVectorLayer
+from qgis.core import NULL, QgsVectorLayer
 from qgis.testing import start_app, unittest
 
 from processing.tests.TestData import points
@@ -76,6 +76,17 @@ class VectorTest(unittest.TestCase):
         res = vector.values(test_layer, 'id', 2)
         self.assertEqual(res['id'], [1, 2, 3, 4, 5, 6, 7, 8, 9])
         self.assertEqual(res[2], [2, 1, 0, 2, 1, 0, 0, 0, 0])
+
+    def testConvertNulls(self):
+        self.assertEqual(vector.convert_nulls([]), [])
+        self.assertEqual(vector.convert_nulls([], '_'), [])
+        self.assertEqual(vector.convert_nulls([NULL]), [None])
+        self.assertEqual(vector.convert_nulls([NULL], '_'), ['_'])
+        self.assertEqual(vector.convert_nulls([NULL], -1), [-1])
+        self.assertEqual(vector.convert_nulls([1, 2, 3]), [1, 2, 3])
+        self.assertEqual(vector.convert_nulls([1, None, 3]), [1, None, 3])
+        self.assertEqual(vector.convert_nulls([1, NULL, 3, NULL]), [1, None, 3, None])
+        self.assertEqual(vector.convert_nulls([1, NULL, 3, NULL], '_'), [1, '_', 3, '_'])
 
 
 if __name__ == '__main__':
