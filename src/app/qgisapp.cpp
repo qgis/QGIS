@@ -834,7 +834,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   // create undo widget
   startProfile( QStringLiteral( "Undo dock" ) );
   mUndoDock = new QgsDockWidget( tr( "Undo/Redo" ), this );
-  mUndoDock->toggleViewAction()->setShortcut( tr( "Ctrl+5", "Keyboard shortcut: Show undo/redo panel." ) );
+  QShortcut *showUndoDock = new QShortcut( QKeySequence( tr( "Ctrl+5" ) ), this );
+  connect( showUndoDock, &QShortcut::activated, mUndoDock, &QgsDockWidget::toggleUserVisible );
+  showUndoDock->setObjectName( QStringLiteral( "ShowUndoPanel" ) );
+  showUndoDock->setWhatsThis( tr( "Show Undo/Redo Panel" ) );
+
   mUndoWidget = new QgsUndoWidget( mUndoDock, mMapCanvas );
   mUndoWidget->setObjectName( QStringLiteral( "Undo" ) );
   mUndoDock->setWidget( mUndoWidget );
@@ -845,15 +849,25 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Advanced digitize panel" ) );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setWindowTitle( tr( "Advanced Digitizing" ) );
-  mAdvancedDigitizingDockWidget->toggleViewAction()->setShortcut( tr( "Ctrl+4", "Keyboard shortcut: Show advanced digitizing panel." ) );
   mAdvancedDigitizingDockWidget->setObjectName( QStringLiteral( "AdvancedDigitizingTools" ) );
+
+  QShortcut *showAdvancedDigitizingDock = new QShortcut( QKeySequence( tr( "Ctrl+4" ) ), this );
+  connect( showAdvancedDigitizingDock, &QShortcut::activated, mAdvancedDigitizingDockWidget, &QgsDockWidget::toggleUserVisible );
+  showAdvancedDigitizingDock->setObjectName( QStringLiteral( "ShowAdvancedDigitizingPanel" ) );
+  showAdvancedDigitizingDock->setWhatsThis( tr( "Show Advanced Digitizing Panel" ) );
+
   endProfile();
 
   // Statistical Summary dock
   startProfile( QStringLiteral( "Stats dock" ) );
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
   mStatisticalSummaryDockWidget->setObjectName( QStringLiteral( "StatistalSummaryDockWidget" ) );
-  mStatisticalSummaryDockWidget->toggleViewAction()->setShortcut( tr( "Ctrl+6", "Keyboard shortcut: Show statisics panel." ) );
+
+  QShortcut *showStatsDock = new QShortcut( QKeySequence( tr( "Ctrl+6" ) ), this );
+  connect( showStatsDock, &QShortcut::activated, mStatisticalSummaryDockWidget, &QgsDockWidget::toggleUserVisible );
+  showStatsDock->setObjectName( QStringLiteral( "ShowStatisticsPanel" ) );
+  showStatsDock->setWhatsThis( tr( "Show Statistics Panel" ) );
+
   connect( mStatisticalSummaryDockWidget, &QDockWidget::visibilityChanged, mActionStatisticalSummary, &QAction::setChecked );
   endProfile();
 
@@ -861,7 +875,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Bookmarks widget" ) );
   mBookMarksDockWidget = new QgsBookmarks( this );
   mBookMarksDockWidget->setObjectName( QStringLiteral( "BookmarksDockWidget" ) );
-  mBookMarksDockWidget->toggleViewAction()->setShortcut( tr( "Ctrl+7", "Keyboard shortcut: Show bookmarks panel." ) );
+
+  QShortcut *showBookmarksDock = new QShortcut( QKeySequence( tr( "Ctrl+7" ) ), this );
+  connect( showBookmarksDock, &QShortcut::activated, mBookMarksDockWidget, &QgsDockWidget::toggleUserVisible );
+  showBookmarksDock->setObjectName( QStringLiteral( "ShowBookmarksPanel" ) );
+  showBookmarksDock->setWhatsThis( tr( "Show Bookmarks Panel" ) );
+
   connect( mBookMarksDockWidget, &QDockWidget::visibilityChanged, mActionShowBookmarks, &QAction::setChecked );
   endProfile();
 
@@ -931,9 +950,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "Layer Style dock" ) );
   mMapStylingDock = new QgsDockWidget( this );
-  mMapStylingDock->toggleViewAction()->setShortcut( tr( "Ctrl+3", "Keyboard shortcut: Show style panel." ) );
   mMapStylingDock->setWindowTitle( tr( "Layer Styling" ) );
   mMapStylingDock->setObjectName( QStringLiteral( "LayerStyling" ) );
+  QShortcut *showStylingDock = new QShortcut( QKeySequence( tr( "Ctrl+3" ) ), this );
+  connect( showStylingDock, &QShortcut::activated, mMapStylingDock, &QgsDockWidget::toggleUserVisible );
+  showStylingDock->setObjectName( QStringLiteral( "ShowLayerStylingPanel" ) );
+  showStylingDock->setWhatsThis( tr( "Show Style Panel" ) );
+
   mMapStyleWidget = new QgsLayerStylingWidget( mMapCanvas, mMapLayerPanelFactories );
   mMapStylingDock->setWidget( mMapStyleWidget );
   connect( mMapStyleWidget, &QgsLayerStylingWidget::styleChanged, this, &QgisApp::updateLabelToolButtons );
@@ -971,8 +994,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   mBrowserModel = new QgsBrowserModel( this );
   mBrowserWidget = new QgsBrowserDockWidget( tr( "Browser" ), mBrowserModel, this );
-  mBrowserWidget->toggleViewAction()->setShortcut( tr( "Ctrl+2", "Keyboard shortcut: Show browser panel." ) );
   mBrowserWidget->setObjectName( QStringLiteral( "Browser" ) );
+
+  QShortcut *showBrowserDock = new QShortcut( QKeySequence( tr( "Ctrl+2" ) ), this );
+  connect( showBrowserDock, &QShortcut::activated, mBrowserWidget, &QgsDockWidget::toggleUserVisible );
+  showBrowserDock->setObjectName( QStringLiteral( "ShowBrowserPanel" ) );
+  showBrowserDock->setWhatsThis( tr( "Show Browser Panel" ) );
+
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
   connect( this, &QgisApp::newProject, mBrowserWidget, &QgsBrowserDockWidget::updateProjectHome );
@@ -1004,7 +1032,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
   //create the dock widget
   mpGpsDock = new QgsDockWidget( tr( "GPS Information" ), this );
-  mpGpsDock->toggleViewAction()->setShortcut( tr( "Ctrl+0", "Keyboard shortcut: Show GPS information panel." ) );
+
+  QShortcut *showGpsDock = new QShortcut( QKeySequence( tr( "Ctrl+0" ) ), this );
+  connect( showGpsDock, &QShortcut::activated, mpGpsDock, &QgsDockWidget::toggleUserVisible );
+  showGpsDock->setObjectName( QStringLiteral( "ShowGpsPanel" ) );
+  showGpsDock->setWhatsThis( tr( "Show GPS Information Panel" ) );
+
   mpGpsDock->setObjectName( QStringLiteral( "GPSInformation" ) );
   mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
@@ -3476,7 +3509,12 @@ void QgisApp::createOverview()
 //  myOverviewLayout->addWidget(overviewCanvas);
 //  overviewFrame->setLayout(myOverviewLayout);
   mOverviewDock = new QgsDockWidget( tr( "Overview" ), this );
-  mOverviewDock->toggleViewAction()->setShortcut( tr( "Ctrl+8", "Keyboard shortcut: Show overview panel." ) );
+
+  QShortcut *showOverviewDock = new QShortcut( QKeySequence( tr( "Ctrl+8" ) ), this );
+  connect( showOverviewDock, &QShortcut::activated, mOverviewDock, &QgsDockWidget::toggleUserVisible );
+  showOverviewDock->setObjectName( QStringLiteral( "ShowOverviewPanel" ) );
+  showOverviewDock->setWhatsThis( tr( "Show Overview Panel" ) );
+
   mOverviewDock->setObjectName( QStringLiteral( "Overview" ) );
   mOverviewDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mOverviewDock->setWidget( mOverviewCanvas );
@@ -3709,9 +3747,13 @@ void QgisApp::initLayerTreeView()
   mLayerTreeView->setWhatsThis( tr( "Map legend that displays all the layers currently on the map canvas. Click on the checkbox to turn a layer on or off. Double-click on a layer in the legend to customize its appearance and set other properties." ) );
 
   mLayerTreeDock = new QgsDockWidget( tr( "Layers" ), this );
-  mLayerTreeDock->toggleViewAction()->setShortcut( tr( "Ctrl+1", "Keyboard shortcut: Show layers panel." ) );
   mLayerTreeDock->setObjectName( QStringLiteral( "Layers" ) );
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  QShortcut *showLayersTreeDock = new QShortcut( QKeySequence( tr( "Ctrl+1" ) ), this );
+  connect( showLayersTreeDock, &QShortcut::activated, mLayerTreeDock, &QgsDockWidget::toggleUserVisible );
+  showLayersTreeDock->setObjectName( QStringLiteral( "ShowLayersPanel" ) );
+  showLayersTreeDock->setWhatsThis( tr( "Show Layers Panel" ) );
 
   QgsLayerTreeModel *model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
 #ifdef ENABLE_MODELTEST
@@ -3809,9 +3851,13 @@ void QgisApp::initLayerTreeView()
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
   mLayerOrderDock = new QgsDockWidget( tr( "Layer Order" ), this );
-  mLayerOrderDock->toggleViewAction()->setShortcut( tr( "Ctrl+9", "Keyboard shortcut: Show layer order panel." ) );
   mLayerOrderDock->setObjectName( QStringLiteral( "LayerOrder" ) );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  QShortcut *showLayerOrderDock = new QShortcut( QKeySequence( tr( "Ctrl+9" ) ), this );
+  connect( showLayerOrderDock, &QShortcut::activated, mLayerOrderDock, &QgsDockWidget::toggleUserVisible );
+  showLayerOrderDock->setObjectName( QStringLiteral( "ShowLayerOrderPanel" ) );
+  showLayerOrderDock->setWhatsThis( tr( "Show Layer Order Panel" ) );
 
   mLayerOrderDock->setWidget( mMapLayerOrder );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
