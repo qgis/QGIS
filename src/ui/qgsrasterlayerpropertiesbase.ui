@@ -103,10 +103,10 @@
          </item>
          <item>
           <property name="text">
-           <string>Style</string>
+           <string>Symbology</string>
           </property>
           <property name="toolTip">
-           <string>Style</string>
+           <string>Symbology</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
