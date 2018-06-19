@@ -30,11 +30,11 @@ else
 fi
 
 for i in $FILES; do
-	echo $i >&2
+	echo "${i}" >&2
 	author=
 	authordate=
 	eval $(git log --reverse --pretty="export author='%an' authordate=\"\$(date --date='%ai' +'%%B %Y')\"" $i | head -1)
-	basename=$(basename $i)
+	basename=$(basename "${i}")
 	authoryear=${authordate#* }
 
         case $i in
@@ -45,13 +45,13 @@ for i in $FILES; do
 
 	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/gps/qextserialport/*|lib/astyle/*)
 		# Skip third party files
-                echo $f skipped
+                echo "${i} skipped"
                 continue
                 ;;
 
 	esac
 
-	case $author in
+	case "${author}" in
 	morb_au)
 		authorname="Brendan Morley"
 		authoremail="morb at ozemail dot com dot au"
