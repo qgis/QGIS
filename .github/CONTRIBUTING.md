@@ -15,6 +15,14 @@ This can be automated by setting up the pre-commit hook properly.
 
     ln -s ../../scripts/prepare-commit.sh .git/hooks/pre-commit
 
+Windows equivalent for a symlink using PowerShell in elevated priviledges mode from the .git\hooks folder. This will create hardlink which can be used from git-bash shell.
+
+    cmd /c mklink /H pre-commit ..\..\scripts\prepare-commit.sh
+
+Windows also requires all scripts to be in shell path, run this from QGIS repository root to achieve this:
+
+    export PATH=$PATH:scripts/
+
 Getting your pull request merged
 --------------------------------
 
