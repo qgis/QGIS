@@ -45,6 +45,8 @@ Returns true if the dock is both opened and raised to the front (ie not hidden b
 any other tabs.
 
 .. seealso:: :py:func:`setUserVisible`
+
+.. seealso:: :py:func:`toggleUserVisible`
 %End
 
   public slots:
@@ -64,6 +66,21 @@ Sets the dock widget as visible to a user, ie both shown and raised to the front
                 - hiding a dock which is closed has no effect and raises no signals
 
 .. seealso:: :py:func:`isUserVisible`
+
+.. seealso:: :py:func:`toggleUserVisible`
+%End
+
+    void toggleUserVisible();
+%Docstring
+Toggles whether the dock is user visible. If the dock is not currently user
+visible (i.e. opened and activated as a tab) then the dock will be opened
+and raised. If it is currently user visible it will be closed.
+
+.. seealso:: :py:func:`setUserVisible`
+
+.. seealso:: :py:func:`isUserVisible`
+
+.. versionadded:: 3.2
 %End
 
   protected:

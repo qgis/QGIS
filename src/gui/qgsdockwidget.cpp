@@ -47,6 +47,11 @@ void QgsDockWidget::setUserVisible( bool visible )
   }
 }
 
+void QgsDockWidget::toggleUserVisible()
+{
+  setUserVisible( !isUserVisible() );
+}
+
 bool QgsDockWidget::isUserVisible() const
 {
   return mVisibleAndActive;
