@@ -1389,10 +1389,9 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
       QStringList allKeywords;
       for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
       {
-        allKeywords.append( it.value() );
+        allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
       }
-      allKeywords = allKeywords.toSet().toList();
-      const QString keywordString = allKeywords.join( ',' );
+      const QString keywordString = allKeywords.join( ';' );
       GDALSetMetadataItem( outputDS.get(), "KEYWORDS", keywordString.toLocal8Bit().constData(), nullptr );
     }
 
@@ -1568,10 +1567,9 @@ bool QgsLayoutExporter::saveImage( const QImage &image, const QString &imageFile
     QStringList allKeywords;
     for ( auto it = keywords.constBegin(); it != keywords.constEnd(); ++it )
     {
-      allKeywords.append( it.value() );
+      allKeywords.append( QStringLiteral( "%1: %2" ).arg( it.key(), it.value().join( ',' ) ) );
     }
-    allKeywords = allKeywords.toSet().toList();
-    const QString keywordString = allKeywords.join( ',' );
+    const QString keywordString = allKeywords.join( ';' );
     w.setText( "Keywords", keywordString );
   }
   return w.write( image );
