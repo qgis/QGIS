@@ -146,6 +146,14 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
 
     QgsCircularString *createEmptyWithSameType() const override SIP_FACTORY;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
+
   protected:
 
     QgsRectangle calculateBoundingBox() const override;

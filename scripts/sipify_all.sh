@@ -39,6 +39,16 @@ count=0
 
 modules=(core gui analysis server)
 for module in "${modules[@]}"; do
+
+  # clean auto_additions and auto_generated folders
+  rm -rf python/${module}/auto_additions/*.py
+  rm -rf python/${module}/auto_generated/*.py
+  # put back __init__.py
+  echo '"""
+This folder is completed using sipify.pl script
+It is not aimed to be manually edited
+"""' > python/${module}/auto_additions/__init__.py
+
   while read -r sipfile; do
       echo "$sipfile.in"
       header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)

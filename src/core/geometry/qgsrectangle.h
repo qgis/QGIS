@@ -541,6 +541,14 @@ class CORE_EXPORT QgsRectangle
       return QVariant::fromValue( *this );
     }
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
+
   private:
 
     double mXmin = 0.0;

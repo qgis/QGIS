@@ -495,6 +495,14 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsPoint: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
+
   protected:
 
     int childCount() const override;

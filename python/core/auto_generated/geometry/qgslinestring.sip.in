@@ -317,6 +317,12 @@ of the curve.
     virtual QgsLineString *createEmptyWithSameType() const /Factory/;
 
 
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( sipCpp->asWkt() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+%End
+
   protected:
 
     virtual QgsRectangle calculateBoundingBox() const;

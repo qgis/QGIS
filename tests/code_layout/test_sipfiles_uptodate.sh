@@ -16,6 +16,15 @@ modules=(core gui analysis server)
 
 code=0
 for module in "${modules[@]}"; do
+  # clean auto_additions and auto_generated folders
+  rm -rf python/${module}/auto_additions/*.py
+  rm -rf python/${module}/auto_generated/*.py
+  # put back __init__.py
+  echo '"""
+This folder is completed using sipify.pl script
+It is not aimed to be manually edited
+"""' > python/${module}/auto_additions/__init__.py
+
   module_init=${DIR}/python/${module}/__init__.py
   cp ${module_init} ${DIR}/${module}.temp
   while read -r sipfile; do
