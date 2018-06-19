@@ -301,7 +301,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
         md.setAbstract('proj abstract')
-        md.setKeywords({'kw': ['kw1', 'kw2']})
+        md.setKeywords({'kw': ['kw1', 'kw2'], 'KWx': ['kw3', 'kw4']})
         QgsProject.instance().setMetadata(md)
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
@@ -350,7 +350,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
             metadata = d.GetMetadata()
             self.assertEqual(metadata['Author'], 'proj author')
             self.assertEqual(metadata['Created'], '2011-05-03T09:04:05+10:00')
-            self.assertIn(metadata['Keywords'], ('kw1,kw2', 'kw2,kw1'))
+            self.assertEqual(metadata['Keywords'], 'KWx: kw3,kw4;kw: kw1,kw2')
             self.assertEqual(metadata['Subject'], 'proj abstract')
             self.assertEqual(metadata['Title'], 'proj title')
 
@@ -392,7 +392,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         md.setCreationDateTime(QDateTime(QDate(2011, 5, 3), QTime(9, 4, 5), QTimeZone(36000)))
         md.setIdentifier('proj identifier')
         md.setAbstract('proj abstract')
-        md.setKeywords({'kw': ['kw1', 'kw2']})
+        md.setKeywords({'kw': ['kw1', 'kw2'], 'KWx': ['kw3', 'kw4']})
         QgsProject.instance().setMetadata(md)
 
         l = QgsLayout(QgsProject.instance())
@@ -450,7 +450,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         metadata = d.GetMetadata()
         self.assertEqual(metadata['AUTHOR'], 'proj author')
         self.assertEqual(metadata['CREATION_DATE'], "D:20110503090405+10'0'")
-        self.assertIn(metadata['KEYWORDS'], ('kw1,kw2', 'kw2,kw1'))
+        self.assertEqual(metadata['KEYWORDS'], 'KWx: kw3,kw4;kw: kw1,kw2')
         self.assertEqual(metadata['SUBJECT'], 'proj abstract')
         self.assertEqual(metadata['TITLE'], 'proj title')
 
