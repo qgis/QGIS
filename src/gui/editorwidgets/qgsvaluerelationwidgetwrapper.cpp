@@ -230,7 +230,7 @@ void QgsValueRelationWidgetWrapper::setFeature( const QgsFeature &feature )
     // set in the next, which is typically the "down" in a drill-down
     QTimer::singleShot( 0, [ this ]
     {
-      setValue( cache.at( 0 ).key );
+      setValue( mCache.at( 0 ).key );
     } );
   }
 }
