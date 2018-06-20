@@ -452,14 +452,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsAdvancedDigitizingCanvasItem *mCadPaintItem = nullptr;
 
-    CadCapacities mCapacities;
+    CadCapacities mCapacities = nullptr;
 
-    bool mCurrentMapToolSupportsCad;
+    bool mCurrentMapToolSupportsCad = false;
 
     // CAD properties
     //! is CAD currently enabled for current map tool
-    bool mCadEnabled;
-    bool mConstructionMode;
+    bool mCadEnabled = false;
+    bool mConstructionMode = false;
 
     // constraints
     std::unique_ptr< CadConstraint > mAngleConstraint;
@@ -467,14 +467,14 @@ class GUI_EXPORT QgsAdvancedDigitizingDockWidget : public QgsDockWidget, private
     std::unique_ptr< CadConstraint > mXConstraint;
     std::unique_ptr< CadConstraint > mYConstraint;
     AdditionalConstraint mAdditionalConstraint;
-    int mCommonAngleConstraint; // if 0: do not snap to common angles
+    int mCommonAngleConstraint = 90; // if 0: do not snap to common angles
 
     // point list and current snap point / segment
     QList<QgsPointXY> mCadPointList;
     QList<QgsPointXY> mSnappedSegment;
-    bool mSnappedToVertex;
+    bool mSnappedToVertex = false;
 
-    bool mSessionActive;
+    bool mSessionActive = false;
 
     // error message
     std::unique_ptr<QgsMessageBarItem> mErrorMessage;
