@@ -2806,9 +2806,6 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
 
-  FilterFormatDetails shapeFormat;
-  FilterFormatDetails gpkgFormat;
-
   for ( int i = 0; i < drvCount; ++i )
   {
     OGRSFDriverH drv = OGRGetDriver( i );
@@ -2846,41 +2843,27 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         details.driverName = drvName;
         details.filterString = filterString;
 
-        if ( options & SortRecommended )
-        {
-          if ( drvName == QLatin1String( "ESRI Shapefile" ) )
-          {
-            shapeFormat = details;
-            continue;
-          }
-          else if ( drvName == QLatin1String( "GPKG" ) )
-          {
-            gpkgFormat = details;
-            continue;
-          }
-        }
-
         results << details;
       }
     }
   }
 
-  std::sort( results.begin(), results.end(), []( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
+  std::sort( results.begin(), results.end(), [options]( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
   {
-    return a.driverName < b.driverName;
-  } );
+    if ( options & SortRecommended )
+    {
+      if ( a.driverName == QLatin1String( "GPKG" ) )
+        return true; // Make https://twitter.com/shapefiIe a sad little fellow
+      else if ( b.driverName == QLatin1String( "GPKG" ) )
+        return false;
+      else if ( a.driverName == QLatin1String( "ESRI Shapefile" ) )
+        return true;
+      else if ( b.driverName == QLatin1String( "ESRI Shapefile" ) )
+        return false;
+    }
 
-  if ( options & SortRecommended )
-  {
-    if ( !shapeFormat.filterString.isEmpty() )
-    {
-      results.insert( 0, shapeFormat );
-    }
-    if ( !gpkgFormat.filterString.isEmpty() )
-    {
-      results.insert( 0, gpkgFormat );
-    }
-  }
+    return a.driverName.toLower().localeAwareCompare( b.driverName.toLower() ) < 0;
+  } );
 
   return results;
 }
@@ -2966,23 +2949,8 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
       }
     }
   }
-  std::sort( writableDrivers.begin(), writableDrivers.end() );
-  if ( options & SortRecommended )
-  {
-    // recommended order sorting, so we shift certain formats to the top
-    if ( writableDrivers.contains( QStringLiteral( "ESRI Shapefile" ) ) )
-    {
-      writableDrivers.removeAll( QStringLiteral( "ESRI Shapefile" ) );
-      writableDrivers.insert( 0, QStringLiteral( "ESRI Shapefile" ) );
-    }
-    if ( writableDrivers.contains( QStringLiteral( "GPKG" ) ) )
-    {
-      // Make https://twitter.com/shapefiIe a sad little fellow
-      writableDrivers.removeAll( QStringLiteral( "GPKG" ) );
-      writableDrivers.insert( 0, QStringLiteral( "GPKG" ) );
-    }
-  }
 
+  results.reserve( writableDrivers.count() );
   for ( const QString &drvName : qgis::as_const( writableDrivers ) )
   {
     MetaData metadata;
@@ -2994,6 +2962,23 @@ QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( 
       results << details;
     }
   }
+
+  std::sort( results.begin(), results.end(), [options]( const DriverDetails & a, const DriverDetails & b ) -> bool
+  {
+    if ( options & SortRecommended )
+    {
+      if ( a.driverName == QLatin1String( "GPKG" ) )
+        return true; // Make https://twitter.com/shapefiIe a sad little fellow
+      else if ( b.driverName == QLatin1String( "GPKG" ) )
+        return false;
+      else if ( a.driverName == QLatin1String( "ESRI Shapefile" ) )
+        return true;
+      else if ( b.driverName == QLatin1String( "ESRI Shapefile" ) )
+        return false;
+    }
+
+    return a.longName.toLower().localeAwareCompare( b.longName.toLower() ) < 0;
+  } );
   return results;
 }
 

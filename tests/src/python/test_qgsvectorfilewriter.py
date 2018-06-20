@@ -791,6 +791,12 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(drivers[1].longName, 'ESRI Shapefile')
         self.assertEqual(drivers[1].driverName, 'ESRI Shapefile')
         self.assertTrue('ODS' in [f.driverName for f in drivers])
+
+        # ensure that XLSX comes before SQLite, because we should sort on longName, not driverName!
+        ms_xlsx_index = next(i for i, v in enumerate(drivers) if v.driverName == 'XLSX')
+        sqlite_index = next(i for i, v in enumerate(drivers) if v.driverName == 'SQLite')
+        self.assertLess(ms_xlsx_index, sqlite_index)
+
         # alphabetical sorting
         drivers2 = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.VectorFormatOptions())
         self.assertTrue(drivers2[0].longName < drivers2[1].longName)
@@ -822,7 +828,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         formats = QgsVectorFileWriter.fileFilterString()
         self.assertTrue('gpkg' in formats)
         self.assertTrue('shp' in formats)
-        self.assertTrue(formats.index('gpkg') < formats.index('shp'))
+        self.assertLess(formats.index('gpkg'), formats.index('shp'))
         self.assertTrue('ods' in formats)
 
         # alphabetical sorting
