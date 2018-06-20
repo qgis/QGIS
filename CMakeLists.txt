@@ -29,14 +29,16 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 #############################################################
 # Configure CCache if available
-option(USE_CCACHE "Use ccache" ON)
-if (USE_CCACHE)
+IF(NOT MSVC)
+  option(USE_CCACHE "Use ccache" ON)
+  if (USE_CCACHE)
     find_program(CCACHE_FOUND ccache)
     if(CCACHE_FOUND)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
     endif(CCACHE_FOUND)
-endif()
+  endif(USE_CCACHE)
+endif(NOT MSVC)
 
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
