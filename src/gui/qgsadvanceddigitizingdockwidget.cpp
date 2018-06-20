@@ -775,26 +775,38 @@ void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points
 
 bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 {
-  // event for line edits
-  if ( !cadEnabled() || ( event->type() != QEvent::ShortcutOverride && event->type() != QEvent::KeyPress ) )
+  if ( !cadEnabled() )
   {
     return QgsDockWidget::eventFilter( obj, event );
   }
-  QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event );
-  if ( !keyEvent )
+
+  // event for line edits and map canvas
+  // we have to catch both KeyPress events and ShortcutOverride events. This is because
+  // the Ctrl+D and Ctrl+A shortcuts for locking distance/angle clash with the global
+  // "remove layer" and "select all" shortcuts. Catching ShortcutOverride events allows
+  // us to intercept these keystrokes before they are caught by the global shortcuts
+  if ( event->type() == QEvent::ShortcutOverride || event->type() == QEvent::KeyPress )
   {
-    return QgsDockWidget::eventFilter( obj, event );
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      return filterKeyPress( keyEvent );
+    }
   }
-  return filterKeyPress( keyEvent );
+  return QgsDockWidget::eventFilter( obj, event );
 }
 
 bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 {
+  // we need to be careful here -- because this method is called on both KeyPress events AND
+  // ShortcutOverride events, we have to take care that we don't trigger the handling for BOTH
+  // these event types for a single key press. I.e. pressing "A" may first call trigger a
+  // ShortcutOverride event (sometimes, not always!) followed immediately by a KeyPress event.
   QEvent::Type type = e->type();
   switch ( e->key() )
   {
     case Qt::Key_X:
     {
+      // modifer+x ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mXConstraint->toggleLocked();
@@ -810,6 +822,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
           e->accept();
         }
       }
+      // .. but "X" alone ONLY caught for KeyPress events (see comment at start of function)
       else if ( type == QEvent::KeyPress )
       {
         mXLineEdit->setFocus();
@@ -820,6 +833,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_Y:
     {
+      // modifer+y ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mYConstraint->toggleLocked();
@@ -835,6 +849,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
           e->accept();
         }
       }
+      // .. but "y" alone ONLY caught for KeyPress events (see comment at start of function)
       else if ( type == QEvent::KeyPress )
       {
         mYLineEdit->setFocus();
@@ -845,6 +860,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_A:
     {
+      // modifer+a ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( AbsoluteAngle ) )
@@ -863,6 +879,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
           e->accept();
         }
       }
+      // .. but "a" alone ONLY caught for KeyPress events (see comment at start of function)
       else if ( type == QEvent::KeyPress )
       {
         mAngleLineEdit->setFocus();
@@ -873,6 +890,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_D:
     {
+      // modifer+d ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
@@ -882,6 +900,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
           e->accept();
         }
       }
+      // .. but "d" alone ONLY caught for KeyPress events (see comment at start of function)
       else if ( type == QEvent::KeyPress )
       {
         mDistanceLineEdit->setFocus();
