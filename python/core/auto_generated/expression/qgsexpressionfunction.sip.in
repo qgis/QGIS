@@ -38,13 +38,15 @@ Represents a single parameter passed to a function.
 
         Parameter( const QString &name,
                    bool optional = false,
-                   const QVariant &defaultValue = QVariant() );
+                   const QVariant &defaultValue = QVariant(),
+                   bool isSubExpression = false );
 %Docstring
 Constructor for Parameter.
 
 :param name: parameter name, used when named parameter are specified in an expression
 :param optional: set to true if parameter should be optional
 :param defaultValue: default value to use for optional parameters
+:param isSubExpression: set to true if this parameter is a sub-expression
 %End
 
         QString name() const;
@@ -60,6 +62,14 @@ Returns true if the parameter is optional.
         QVariant defaultValue() const;
 %Docstring
 Returns the default value for the parameter.
+%End
+
+        bool isSubExpression() const;
+%Docstring
+Returns true if parameter argument is a separate sub-expression, and
+should not be checked while determining referenced columns for the expression.
+
+.. versionadded:: 3.2
 %End
 
         bool operator==( const QgsExpressionFunction::Parameter &other ) const;
