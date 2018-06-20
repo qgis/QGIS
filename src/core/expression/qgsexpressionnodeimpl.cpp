@@ -965,10 +965,13 @@ QSet<QString> QgsExpressionNodeFunction::referencedColumns() const
     return functionColumns;
   }
 
+  int paramIndex = 0;
   const QList< QgsExpressionNode * > nodeList = mArgs->list();
   for ( QgsExpressionNode *n : nodeList )
   {
-    functionColumns.unite( n->referencedColumns() );
+    if ( fd->parameters().count() <= paramIndex || !fd->parameters().at( paramIndex ).isSubExpression() )
+      functionColumns.unite( n->referencedColumns() );
+    paramIndex++;
   }
 
   return functionColumns;

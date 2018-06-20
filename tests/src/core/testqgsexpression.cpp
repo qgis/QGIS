@@ -1843,6 +1843,16 @@ class TestQgsExpression: public QObject
         refColsSet.insert( col.toLower() );
 
       QCOMPARE( refColsSet, expectedCols );
+
+      expectedCols.clear();
+      expectedCols << QgsFeatureRequest::ALL_ATTRIBUTES
+                   << QStringLiteral( "parent_col1" )
+                   << QStringLiteral( "parent_col2" );
+      // sub expression fields, "child_field", "child_field2" should not be included in referenced columns
+      exp = QgsExpression( QStringLiteral( "relation_aggregate(relation:=\"parent_col1\" || 'my_rel',aggregate:='sum' || \"parent_col2\", expression:=\"child_field\" * \"child_field2\")" ) );
+      QCOMPARE( exp.hasParserError(), false );
+      refCols = exp.referencedColumns();
+      QCOMPARE( refCols, expectedCols );
     }
 
     void referenced_variables()
