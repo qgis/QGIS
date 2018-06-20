@@ -288,41 +288,6 @@ override_dh_auto_install:
 	# Don't ship srs.db, automatically updated in postinst with crssync
 	mv $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs.db $(CURDIR)/debian/tmp/usr/share/qgis/resources/srs-template.db
 
-	# Install menu pixmap
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
-
-	# Install MIME type icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-mime-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-mime.png ; \
-	done
-
-	# Install QGIS file formats icons
-	for file_type in qgs qlr qml qpt; do \
-		for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-			install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes ; \
-			install -o root -g root -m 644 \
-				$(CURDIR)/debian/icons/qgis-$${file_type}$${size}.png \
-				$(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/mimetypes/qgis-$${file_type}.png ; \
-		done ; \
-	done
-
-	# Install application icon
-	for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do \
-		install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps ; \
-		install -o root -g root -m 644 $(CURDIR)/debian/icons/qgis-icon$${size}.png $(CURDIR)/debian/tmp/usr/share/icons/hicolor/$${size}/apps/qgis.png ; \
-	done
-	
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/icons/hicolor/scalable/apps/qgis.svg
-
-	# Install desktop files
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/applications
-	install -o root -g root -m 644 $(CURDIR)/debian/qgis.desktop $(CURDIR)/debian/tmp/usr/share/applications
-
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
