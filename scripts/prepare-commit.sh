@@ -116,15 +116,15 @@ for f in $MODIFIED; do
   # if cpp header
   if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then
     # look if corresponding SIP file
-    sip_include=$(${GP}sed -r 's@^src/(\w+)/.*$@python/\1/\1.sip@' <<< $f )
     sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)/@@; s@\.h$@.sip@' <<<$f )
+    pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sip_file)
     module=$(${GP}sed -r 's@src/(core|gui|analysis|server)/.*$@\1@' <<<$f )
     if grep -Fq "$sip_file" ${TOPLEVEL}/python/${module}/${module}_auto.sip; then
       sip_file=$(${GP}sed -r 's@^src/(core|gui|analysis|server)@\1/auto_generated@; s@\.h$@.sip.in@' <<<$f )
       m=python/$sip_file.$REV.prepare
       touch python/$sip_file
       cp python/$sip_file $m
-      ${TOPLEVEL}/scripts/sipify.pl -s python/$sip_file -p python/${module}/__init__.py $f
+      ${TOPLEVEL}/scripts/sipify.pl -s python/$sip_file -p python/${module}/auto_additions/${pyfile} $f
       if ! diff -u $m python/$sip_file >>$SIPIFYDIFF; then
         echo "python/$sip_file is not up to date"
       fi
