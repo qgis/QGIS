@@ -119,6 +119,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
   private slots:
     void triggerAction();
     void reloadActions();
+    void layerWillBeDeleted();
 
   private:
     void init();
