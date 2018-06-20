@@ -164,6 +164,9 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
 
 int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 {
+  if ( mPages.empty() )
+    return 0;
+
   int pageNumber = 0;
   double startNextPageY = 0;
   Q_FOREACH ( QgsLayoutItemPage *page, mPages )
