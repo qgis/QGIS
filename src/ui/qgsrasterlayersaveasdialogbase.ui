@@ -104,7 +104,7 @@ datasets with maximum width and height specified below.</string>
      <item>
       <widget class="QLabel" name="mSaveAsLabel">
        <property name="text">
-        <string>Save as</string>
+        <string>File name</string>
        </property>
        <property name="buddy">
         <cstring>mFilename</cstring>
