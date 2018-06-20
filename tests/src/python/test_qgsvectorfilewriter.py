@@ -797,6 +797,8 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         sqlite_index = next(i for i, v in enumerate(drivers) if v.driverName == 'SQLite')
         self.assertLess(ms_xlsx_index, sqlite_index)
 
+        self.assertIn('[XLSX]', drivers[ms_xlsx_index].longName)
+
         # alphabetical sorting
         drivers2 = QgsVectorFileWriter.ogrDriverList(QgsVectorFileWriter.VectorFormatOptions())
         self.assertTrue(drivers2[0].longName < drivers2[1].longName)
