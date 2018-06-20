@@ -38,13 +38,7 @@
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
-  , mCurrentMapToolSupportsCad( false )
-  , mCadEnabled( false )
-  , mConstructionMode( false )
   , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 90 ).toInt() )
-  , mSnappedToVertex( false )
-  , mSessionActive( false )
-  , mErrorMessage( nullptr )
 {
   setupUi( this );
 
