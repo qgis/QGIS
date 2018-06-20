@@ -114,7 +114,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   if ( !o2 )
   {
     msg = QStringLiteral( "Update request FAILED for authcfg %1: null object for requestor" ).arg( authcfg );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -125,7 +125,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     if ( !QFile::exists( tokencache ) )
     {
       msg = QStringLiteral( "Token cache removed for authcfg %1: unlinking authenticator" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
       o2->unlink();
     }
   }
@@ -143,7 +143,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     if ( expired )
     {
       msg = QStringLiteral( "Token expired, attempting refresh for authcfg %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
       // Try to get a refresh token first
       // go into local event loop and wait for a fired refresh-related slot
@@ -220,7 +220,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     if ( !o2->linked() )
     {
       msg = QStringLiteral( "Update request FAILED for authcfg %1: requestor could not link app" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -228,7 +228,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
   if ( o2->token().isEmpty() )
   {
     msg = QStringLiteral( "Update request FAILED for authcfg %1: access token is empty" ).arg( authcfg );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -243,13 +243,13 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     case QgsAuthOAuth2Config::Header:
       request.setRawHeader( O2_HTTP_AUTHORIZATION_HEADER, QStringLiteral( "Bearer %1" ).arg( o2->token() ).toAscii() );
       msg = QStringLiteral( "Updated request HEADER with access token for authcfg: %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
       break;
     case QgsAuthOAuth2Config::Form:
       // FIXME: what to do here if the parent request is not POST?
       //        probably have to skip this until auth system support is moved into QgsNetworkAccessManager
       msg = QStringLiteral( "Update request FAILED for authcfg %1: form POST token update is unsupported" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       break;
     case QgsAuthOAuth2Config::Query:
       if ( !query.hasQueryItem( O2_OAUTH2_ACCESS_TOKEN ) )
@@ -263,7 +263,7 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
       {
         msg = QStringLiteral( "Updated request QUERY with access token SKIPPED (existing token) for authcfg: %1" ).arg( authcfg );
       }
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
       break;
   }
 
@@ -284,7 +284,7 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   {
     QString msg = QStringLiteral( "Updated reply with token refresh connection FAILED"
                                   " for authcfg %1: null reply object" ).arg( authcfg );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return false;
   }
   reply->setProperty( "authcfg", authcfg );
@@ -296,7 +296,7 @@ bool QgsAuthOAuth2Method::updateNetworkReply( QNetworkReply *reply, const QStrin
   //         this, &QgsAuthOAuth2Method::onNetworkError, Qt::QueuedConnection );
 
   QString msg = QStringLiteral( "Updated reply with token refresh connection for authcfg: %1" ).arg( authcfg );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   return true;
 }
@@ -311,7 +311,7 @@ void QgsAuthOAuth2Method::onLinkedChanged()
 void QgsAuthOAuth2Method::onLinkingFailed()
 {
   // Login has failed
-  QgsMessageLog::logMessage( tr( "Authenticator linking (login) has failed" ), AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+  QgsMessageLog::logMessage( tr( "Authenticator linking (login) has failed" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
 }
 
 void QgsAuthOAuth2Method::onLinkingSucceeded()
@@ -320,18 +320,18 @@ void QgsAuthOAuth2Method::onLinkingSucceeded()
   if ( !o2 )
   {
     QgsMessageLog::logMessage( tr( "Linking succeeded, but authenticator access FAILED: null object" ),
-                               AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+                               AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return;
   }
 
   if ( !o2->linked() )
   {
     QgsMessageLog::logMessage( tr( "Linking apparently succeeded, but authenticator FAILED to verify it is linked" ),
-                               AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+                               AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return;
   }
 
-  QgsMessageLog::logMessage( tr( "Linking succeeded" ), AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "Linking succeeded" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   //###################### DO NOT LEAVE ME UNCOMMENTED ######################
   //QgsDebugMsg( QStringLiteral( "Access token: %1" ).arg( o2->token() ) );
@@ -357,7 +357,7 @@ void QgsAuthOAuth2Method::onOpenBrowser( const QUrl &url )
   // The user will interact with this browser window to
   // enter login name, password, and authorize your application
   // to access the Twitter account
-  QgsMessageLog::logMessage( tr( "Open browser requested" ), AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "Open browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   QDesktopServices::openUrl( url );
 }
@@ -365,7 +365,7 @@ void QgsAuthOAuth2Method::onOpenBrowser( const QUrl &url )
 void QgsAuthOAuth2Method::onCloseBrowser()
 {
   // Close the browser window opened in openBrowser()
-  QgsMessageLog::logMessage( tr( "Close browser requested" ), AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "Close browser requested" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   // Bring focus back to QGIS app
   if ( qobject_cast<QApplication *>( qApp ) )
@@ -385,10 +385,10 @@ void QgsAuthOAuth2Method::onCloseBrowser()
 
 void QgsAuthOAuth2Method::onReplyFinished()
 {
-  QgsMessageLog::logMessage( tr( "Network reply finished" ), AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( tr( "Network reply finished" ), AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   QgsMessageLog::logMessage( tr( "Results: %1" ).arg( QString( reply->readAll() ) ),
-                             AUTH_METHOD_KEY, QgsMessageLog::INFO );
+                             AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 }
 
 void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
@@ -399,13 +399,13 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   if ( !reply )
   {
     msg = tr( "Network error but no reply object accessible" );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     return;
   }
   if ( err != QNetworkReply::NoError )
   {
     msg = tr( "Network error: %1" ).arg( reply->errorString() );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 
   // TODO: update debug messages to output to QGIS
@@ -413,18 +413,18 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
   int status = reply->attribute( QNetworkRequest::HttpStatusCodeAttribute ).toInt();
   msg = tr( "Network error, HTTP status: %1" ).arg(
           reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute ).toString() );
-  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
   if ( status == 401 )
   {
     msg = tr( "Attempting token refresh..." );
-    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
 
     QString authcfg = reply->property( "authcfg" ).toString();
     if ( authcfg.isEmpty() )
     {
       msg = tr( "Token refresh FAILED: authcfg empty" );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
       return;
     }
 
@@ -438,12 +438,12 @@ void QgsAuthOAuth2Method::onNetworkError( QNetworkReply::NetworkError err )
       o2->refresh();
 
       msg = tr( "Background token refresh underway for authcfg: %1" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::INFO );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Info );
     }
     else
     {
       msg = tr( "Background token refresh FAILED for authcfg %1: could not get authenticator object" ).arg( authcfg );
-      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+      QgsMessageLog::logMessage( msg, AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
     }
   }
 }
@@ -454,7 +454,7 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
   if ( err != QNetworkReply::NoError )
   {
     QgsMessageLog::logMessage( tr( "Token fefresh error: %1" ).arg( reply->errorString() ),
-                               AUTH_METHOD_KEY, QgsMessageLog::WARNING );
+                               AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 }
 

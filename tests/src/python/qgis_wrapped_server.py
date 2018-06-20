@@ -203,12 +203,8 @@ qgs_app = QgsApplication([], False)
 qgs_server = QgsServer()
 
 
-<<<<<<< a929de58a77eb0040b173a59df22ef510cd51023
-if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
-=======
 if QGIS_SERVER_HTTP_BASIC_AUTH:
     from qgis.server import QgsServerFilter
->>>>>>> [oauth2] Added test for resource owner password grant flow
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
@@ -242,7 +238,6 @@ if QGIS_SERVER_HTTP_BASIC_AUTH:
     qgs_server.serverInterface().registerFilter(filter)
 
 
-<<<<<<< a929de58a77eb0040b173a59df22ef510cd51023
 def num2deg(xtile, ytile, zoom):
     """This returns the NW-corner of the square. Use the function with xtile+1 and/or ytile+1
     to get the other corners. With xtile+0.5 & ytile+0.5 it will return the center of the tile."""
@@ -277,7 +272,7 @@ class XYZFilter(QgsServerFilter):
 
 xyzfilter = XYZFilter(qgs_server.serverInterface())
 qgs_server.serverInterface().registerFilter(xyzfilter)
-=======
+
 if QGIS_SERVER_OAUTH2_AUTH:
     from qgis.server import QgsServerFilter
     from oauthlib.oauth2 import RequestValidator, LegacyApplicationServer
@@ -415,7 +410,6 @@ if QGIS_SERVER_OAUTH2_AUTH:
 
     filter = OAuth2Filter(qgs_server.serverInterface())
     qgs_server.serverInterface().registerFilter(filter)
->>>>>>> [oauth2] Added test for resource owner password grant flow
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -424,17 +418,11 @@ class Handler(BaseHTTPRequestHandler):
         # CGI vars:
         headers = {}
         for k, v in self.headers.items():
-<<<<<<< a7fb4238893336c8d5b2b4802f63588175e70c83
             headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
         if not self.path.startswith('http'):
-            self.path = "%s://%s:%s%s" % ('https' if https else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
-        request = QgsBufferServerRequest(self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
-=======
-            headers['HTTP_%s' % k.replace(
-                ' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
+            self.path = "%s://%s:%s%s" % ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, self.server.server_port, self.path)
         request = QgsBufferServerRequest(
             self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
->>>>>>> Pass urlencoded URL to the oauth handler
         response = QgsBufferServerResponse()
         qgs_server.handleRequest(request, response)
 
@@ -461,20 +449,10 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 
 if __name__ == '__main__':
-<<<<<<< a929de58a77eb0040b173a59df22ef510cd51023
     if os.environ.get('MULTITHREADING') == '1':
         server = ThreadedHTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
     else:
         server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
-    if https:
-        server.socket = ssl.wrap_socket(server.socket,
-                                        certfile=QGIS_SERVER_PKI_CERTIFICATE,
-                                        keyfile=QGIS_SERVER_PKI_KEY,
-                                        ca_certs=QGIS_SERVER_PKI_AUTHORITY,
-                                        cert_reqs=ssl.CERT_REQUIRED,
-                                        server_side=True,
-                                        ssl_version=ssl.PROTOCOL_TLSv1)
-=======
     server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
     # HTTPS is enabled if any of PKI or OAuth2 are enabled too
     if HTTPS_ENABLED:
@@ -497,7 +475,6 @@ if __name__ == '__main__':
                 server_side=True,
                 ssl_version=ssl.PROTOCOL_TLSv1)
 
->>>>>>> [oauth2] Added test for resource owner password grant flow
     print('Starting server on %s://%s:%s, use <Ctrl-C> to stop' %
           ('https' if HTTPS_ENABLED else 'http', QGIS_SERVER_HOST, server.server_port), flush=True)
 

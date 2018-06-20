@@ -36,7 +36,7 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
-    QgsAuthManager,
+    QgsApplication,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsRasterLayer,
@@ -87,19 +87,19 @@ def setup_oauth(username, password, token_uri, refresh_token_uri='', authcfg_id=
         "version": 1
     }
 
-    if authcfg_id not in QgsAuthManager.instance().availableAuthMethodConfigs():
+    if authcfg_id not in QgsApplication.authManager().availableAuthMethodConfigs():
         authConfig = QgsAuthMethodConfig('OAuth2')
         authConfig.setId(authcfg_id)
         authConfig.setName(authcfg_name)
         authConfig.setConfig('oauth2config', json.dumps(cfgjson))
-        if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
+        if QgsApplication.authManager().storeAuthenticationConfig(authConfig):
             return authcfg_id
     else:
         authConfig = QgsAuthMethodConfig()
-        QgsAuthManager.instance().loadAuthenticationConfig(authcfg_id, authConfig, True)
+        QgsApplication.authManager().loadAuthenticationConfig(authcfg_id, authConfig, True)
         authConfig.setName(authcfg_name)
         authConfig.setConfig('oauth2config', json.dumps(cfgjson))
-        if QgsAuthManager.instance().updateAuthenticationConfig(authConfig):
+        if QgsApplication.authManager().updateAuthenticationConfig(authConfig):
             return authcfg_id
     return None
 
@@ -109,7 +109,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         assert os.path.isfile(cls.sslrootcert_path)
@@ -178,7 +178,7 @@ class TestAuthManager(unittest.TestCase):
         # This is to test wrong credentials
         cls.wrong_authcfg_id = setup_oauth('wrong', 'wrong', cls.token_uri, cls.refresh_token_uri, str(random.randint(0, 10000000)))
         # Get the authentication configuration instance:
-        cls.auth_config = QgsAuthManager.instance().availableAuthMethodConfigs()[cls.authcfg_id]
+        cls.auth_config = QgsApplication.authManager().availableAuthMethodConfigs()[cls.authcfg_id]
         assert cls.auth_config.isValid()
 
         # Wait for the server process to start
