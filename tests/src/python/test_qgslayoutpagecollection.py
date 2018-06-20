@@ -573,6 +573,9 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         l = QgsLayout(p)
         collection = l.pageCollection()
 
+        # no crash if no pages
+        self.assertEqual(collection.predictPageNumberForPoint(QPointF(1, 1)), 0)
+
         # add a page
         page = QgsLayoutItemPage(l)
         page.setPageSize(QgsLayoutSize(100, 100))
