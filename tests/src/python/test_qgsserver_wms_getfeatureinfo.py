@@ -233,6 +233,21 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo-values2-text-xml',
                                  'test_project_values.qgz')
 
+    # TODO make filter work with gpkg and move test inside testGetFeatureInfoFilter function
+    @unittest.expectedFailure
+    def testGetFeatureInfoFilterGPKG(self):
+        # 'test_project.qgz' ='test_project.qgs' but with a gpkg source + different fid
+        # Regression for #8656 Test getfeatureinfo response xml with gpkg datasource
+        # Mind the gap! (the space in the FILTER expression)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter_gpkg',
+                                 'test_project.qgz')
+
     def testGetFeatureInfoFilter(self):
         # Test getfeatureinfo response xml
 
