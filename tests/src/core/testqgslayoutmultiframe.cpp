@@ -50,6 +50,7 @@ class TestQgsLayoutMultiFrame : public QObject
     void registry();
     void deleteFrame();
     void writeReadXml();
+    void noPageNoCrash();
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -618,6 +619,36 @@ void TestQgsLayoutMultiFrame::writeReadXml()
   QCOMPARE( html2->html(), QStringLiteral( "<blink>hi</blink>" ) );
   QCOMPARE( html2->frameCount(), 1 );
   QCOMPARE( html2->frames(), QList< QgsLayoutFrame * >() << frame2 );
+}
+
+void TestQgsLayoutMultiFrame::noPageNoCrash()
+{
+  QgsProject p;
+
+  // create layout, no pages
+  QgsLayout c( &p );
+  // add an multiframe
+  QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &c );
+  c.addMultiFrame( html );
+  html->setContentMode( QgsLayoutItemHtml::ManualHtml );
+  html->setHtml( QStringLiteral( "<div style=\"height: 2000px\">hi</div>" ) );
+  QgsLayoutFrame *frame = new QgsLayoutFrame( &c, html );
+  frame->attemptSetSceneRect( QRectF( 1, 1, 10, 1 ) );
+  c.addLayoutItem( frame );
+  html->addFrame( frame );
+
+  html->setResizeMode( QgsLayoutMultiFrame::UseExistingFrames );
+  html->recalculateFrameSizes();
+  QCOMPARE( html->frameCount(), 1 );
+  html->setResizeMode( QgsLayoutMultiFrame::ExtendToNextPage );
+  html->recalculateFrameSizes();
+  QCOMPARE( html->frameCount(), 1 );
+  html->setResizeMode( QgsLayoutMultiFrame::RepeatOnEveryPage );
+  html->recalculateFrameSizes();
+  QCOMPARE( html->frameCount(), 1 );
+  html->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
+  html->recalculateFrameSizes();
+  QCOMPARE( html->frameCount(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMultiFrame )
