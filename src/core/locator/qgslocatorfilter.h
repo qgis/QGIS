@@ -117,6 +117,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       Low, //!< Low priority
       Lowest //!< Lowest priority
     };
+    Q_ENUM( Priority )
 
     //! Flags for locator behavior.
     enum Flag
@@ -124,6 +125,7 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       FlagFast = 1 << 1, //!< Filter finds results quickly and can be safely run in the main thread
     };
     Q_DECLARE_FLAGS( Flags, Flag )
+    Q_FLAG( Flags )
 
     /**
      * Constructor for QgsLocatorFilter.
