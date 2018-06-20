@@ -782,8 +782,7 @@ void QgsAdvancedDigitizingDockWidget::setPoints( const QList<QgsPointXY> &points
 bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 {
   // event for line edits
-  Q_UNUSED( obj );
-  if ( event->type() != QEvent::KeyPress )
+  if ( !cadEnabled() || ( event->type() != QEvent::ShortcutOverride && event->type() != QEvent::KeyPress ) )
   {
     return QgsDockWidget::eventFilter( obj, event );
   }
@@ -797,115 +796,135 @@ bool QgsAdvancedDigitizingDockWidget::eventFilter( QObject *obj, QEvent *event )
 
 bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
 {
+  QEvent::Type type = e->type();
   switch ( e->key() )
   {
     case Qt::Key_X:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mXConstraint->toggleLocked();
         emit pointChanged( mCadPointList.value( 0 ) );
+        e->accept();
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mXConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      else if ( type == QEvent::KeyPress )
       {
         mXLineEdit->setFocus();
         mXLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_Y:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mYConstraint->toggleLocked();
         emit pointChanged( mCadPointList.value( 0 ) );
+        e->accept();
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mYConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      else if ( type == QEvent::KeyPress )
       {
         mYLineEdit->setFocus();
         mYLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_A:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( AbsoluteAngle ) )
         {
           mAngleConstraint->toggleLocked();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else if ( e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeAngle ) )
         {
           mAngleConstraint->toggleRelative();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      else if ( type == QEvent::KeyPress )
       {
         mAngleLineEdit->setFocus();
         mAngleLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_D:
     {
-      if ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier )
+      if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
           mDistanceConstraint->toggleLocked();
           emit pointChanged( mCadPointList.value( 0 ) );
+          e->accept();
         }
       }
-      else
+      else if ( type == QEvent::KeyPress )
       {
         mDistanceLineEdit->setFocus();
         mDistanceLineEdit->selectAll();
+        e->accept();
       }
       break;
     }
     case Qt::Key_C:
     {
-      setConstructionMode( !mConstructionMode );
+      if ( type == QEvent::KeyPress )
+      {
+        setConstructionMode( !mConstructionMode );
+        e->accept();
+      }
       break;
     }
     case Qt::Key_P:
     {
-      bool parallel = mParallelButton->isChecked();
-      bool perpendicular = mPerpendicularButton->isChecked();
+      if ( type == QEvent::KeyPress )
+      {
+        bool parallel = mParallelButton->isChecked();
+        bool perpendicular = mPerpendicularButton->isChecked();
 
-      if ( !parallel && !perpendicular )
-      {
-        lockAdditionalConstraint( Perpendicular );
-      }
-      else if ( perpendicular )
-      {
-        lockAdditionalConstraint( Parallel );
-      }
-      else
-      {
-        lockAdditionalConstraint( NoConstraint );
+        if ( !parallel && !perpendicular )
+        {
+          lockAdditionalConstraint( Perpendicular );
+        }
+        else if ( perpendicular )
+        {
+          lockAdditionalConstraint( Parallel );
+        }
+        else
+        {
+          lockAdditionalConstraint( NoConstraint );
+        }
+        e->accept();
       }
       break;
     }
@@ -914,7 +933,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       return false; // continues
     }
   }
-  return true; // stop the event
+  return e->isAccepted();
 }
 
 void QgsAdvancedDigitizingDockWidget::enable()
