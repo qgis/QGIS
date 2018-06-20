@@ -63,7 +63,7 @@ class StatisticsByCategories(QgisAlgorithm):
 
     def tags(self):
         return self.tr('groups,stats,statistics,table,layer,sum,maximum,minimum,mean,average,standard,deviation,'
-                       'count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct,summarygit di').split(',')
+                       'count,distinct,unique,variance,median,quartile,range,majority,minority,histogram,distinct,summary').split(',')
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmBasicStatistics.svg")
