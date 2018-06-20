@@ -67,6 +67,26 @@ static bool tableExists( QgsPostgresConn &conn, const QString &name )
   return res.PQgetvalue( 0, 0 ).toInt() > 0;
 }
 
+static bool createStyleTable( QgsPostgresConn &connection )
+{
+  QgsPostgresResult res( connection.PQexec( "CREATE TABLE layer_styles("
+                         "id SERIAL PRIMARY KEY"
+                         ",f_table_catalog varchar"
+                         ",f_table_schema varchar"
+                         ",f_table_name varchar"
+                         ",f_geometry_column varchar"
+                         ",styleName text"
+                         ",styleQML xml"
+                         ",styleSLD xml"
+                         ",useAsDefault boolean"
+                         ",description text"
+                         ",owner varchar(63)"
+                         ",ui xml"
+                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                         ")" ) );
+  return res.PQresultStatus() == PGRES_COMMAND_OK;
+}
+
 QgsPostgresPrimaryKeyType
 QgsPostgresProvider::pkType( const QgsField &f ) const
 {
@@ -4605,6 +4625,51 @@ QGISEXTERN bool deleteSchema( const QString &schema, const QgsDataSourceUri &uri
   return true;
 }
 
+QGISEXTERN bool styleExists( const QString &uri, const QString &styleName, QString &errCause )
+{
+  QgsDataSourceUri dsUri( uri );
+
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo( false ), false );
+  if ( !conn )
+  {
+    errCause = QObject::tr( "Connection to database failed." );
+    return false;
+  }
+
+  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  {
+    conn->unref();
+    errCause = QObject::tr( "The layer_style table does not exist in the database." );
+    return false;
+  }
+
+  QString defaultStyleName = styleName.isEmpty() ? dsUri.table() : styleName;
+  QString checkQuery = QString( "SELECT styleName"
+                                " FROM layer_styles"
+                                " WHERE f_table_catalog=%1"
+                                " AND f_table_schema=%2"
+                                " AND f_table_name=%3"
+                                " AND f_geometry_column=%4"
+                                " AND styleName=%5" )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                       .arg( QgsPostgresConn::quotedValue( defaultStyleName ) );
+
+  QgsPostgresResult res( conn->PQexec( checkQuery ) );
+  conn->unref();
+  if ( res.PQntuples() > 0 )
+  {
+    return true;
+  }
+  else
+  {
+    errCause = QObject::tr( "The style has not been found in the database." );
+    return false;
+  }
+}
+
 QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
                            const QString &styleName, const QString &styleDescription,
                            const QString &uiFileContent, bool useAsDefault, QString &errCause )
@@ -4620,22 +4685,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
-    QgsPostgresResult res( conn->PQexec( "CREATE TABLE layer_styles("
-                                         "id SERIAL PRIMARY KEY"
-                                         ",f_table_catalog varchar"
-                                         ",f_table_schema varchar"
-                                         ",f_table_name varchar"
-                                         ",f_geometry_column varchar"
-                                         ",styleName text"
-                                         ",styleQML xml"
-                                         ",styleSLD xml"
-                                         ",useAsDefault boolean"
-                                         ",description text"
-                                         ",owner varchar(63)"
-                                         ",ui xml"
-                                         ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                         ")" ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    if ( ! createStyleTable( *conn ) )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
       conn->unref();
@@ -4656,6 +4706,9 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     uiFileValue = QStringLiteral( ",XMLPARSE(DOCUMENT %1)" ).arg( QgsPostgresConn::quotedValue( uiFileContent ) );
   }
 
+  QString defaultStyleName = styleName.isEmpty() ? dsUri.table() : styleName;
+  QString defaultStyleDescription = styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription;
+
   // Note: in the construction of the INSERT and UPDATE strings the qmlStyle and sldStyle values
   // can contain user entered strings, which may themselves include %## values that would be
   // replaced by the QString.arg function.  To ensure that the final SQL string is not corrupt these
@@ -4670,9 +4723,9 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                 .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
-                .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+                .arg( QgsPostgresConn::quotedValue( defaultStyleName ) )
                 .arg( useAsDefault ? "true" : "false" )
-                .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+                .arg( QgsPostgresConn::quotedValue( defaultStyleDescription ) )
                 .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
                 .arg( uiFileColumn )
                 .arg( uiFileValue )
@@ -4680,32 +4733,8 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                 .arg( QgsPostgresConn::quotedValue( qmlStyle ),
                       QgsPostgresConn::quotedValue( sldStyle ) );
 
-  QString checkQuery = QString( "SELECT styleName"
-                                " FROM layer_styles"
-                                " WHERE f_table_catalog=%1"
-                                " AND f_table_schema=%2"
-                                " AND f_table_name=%3"
-                                " AND f_geometry_column=%4"
-                                " AND styleName=%5" )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
-                       .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) );
-
-  QgsPostgresResult res( conn->PQexec( checkQuery ) );
-  if ( res.PQntuples() > 0 )
+  if ( styleExists( uri, defaultStyleName, errCause ) )
   {
-    if ( QMessageBox::question( nullptr, QObject::tr( "Save style in database" ),
-                                QObject::tr( "A style named \"%1\" already exists in the database for this layer. Do you want to overwrite it?" )
-                                .arg( styleName.isEmpty() ? dsUri.table() : styleName ),
-                                QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
-    {
-      errCause = QObject::tr( "Operation aborted. No changes were made in the database" );
-      conn->unref();
-      return false;
-    }
-
     sql = QString( "UPDATE layer_styles"
                    " SET useAsDefault=%1"
                    ",styleQML=XMLPARSE(DOCUMENT %12)"
@@ -4718,13 +4747,13 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                    " AND f_geometry_column=%9"
                    " AND styleName=%10" )
           .arg( useAsDefault ? "true" : "false" )
-          .arg( QgsPostgresConn::quotedValue( styleDescription.isEmpty() ? QDateTime::currentDateTime().toString() : styleDescription ) )
+          .arg( QgsPostgresConn::quotedValue( defaultStyleDescription ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.username() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
           .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
-          .arg( QgsPostgresConn::quotedValue( styleName.isEmpty() ? dsUri.table() : styleName ) )
+          .arg( QgsPostgresConn::quotedValue( defaultStyleName ) )
           // Must be the final .arg replacement - see above
           .arg( QgsPostgresConn::quotedValue( qmlStyle ),
                 QgsPostgresConn::quotedValue( sldStyle ) );
@@ -4745,7 +4774,7 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     sql = QStringLiteral( "BEGIN; %1; %2; COMMIT;" ).arg( removeDefaultSql, sql );
   }
 
-  res = conn->PQexec( sql );
+  QgsPostgresResult res( conn->PQexec( sql ) );
 
   bool saved = res.PQresultStatus() == PGRES_COMMAND_OK;
   if ( !saved )

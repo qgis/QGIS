@@ -782,6 +782,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void resolveReferences( QgsProject *project ) override;
 
     /**
+     * Check if the named style exists in the database.
+     * \param name Name of the style to check.
+     * \param msgError A reason why the style might not exist in the DB.
+     * \returns If the style is present or not.
+     * \since QGIS 3.2
+     */
+    virtual bool styleExistsInDatabase( const QString &name, QString &msgError SIP_OUT );
+
+    /**
      * Save named and sld style of the layer to the style table in the db.
      * \param name
      * \param description

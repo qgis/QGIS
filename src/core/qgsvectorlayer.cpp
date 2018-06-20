@@ -110,6 +110,12 @@ typedef bool saveStyle_t(
   QString &errCause
 );
 
+typedef bool styleExistsInDatabase_t(
+  const QString &uri,
+  const QString &styleName,
+  QString &errCause
+);
+
 typedef QString loadStyle_t(
   const QString &uri,
   QString &errCause
@@ -4343,6 +4349,23 @@ bool QgsVectorLayer::deleteStyleFromDatabase( const QString &styleId, QString &m
   return deleteStyleByIdMethod( mDataSource, styleId, msgError );
 }
 
+bool QgsVectorLayer::styleExistsInDatabase( const QString &name, QString &msgError )
+{
+  std::unique_ptr<QLibrary> myLib( QgsProviderRegistry::instance()->createProviderLibrary( mProviderKey ) );
+  if ( !myLib )
+  {
+    msgError = QObject::tr( "Unable to load %1 provider" ).arg( mProviderKey );
+    return false;
+  }
+
+  styleExistsInDatabase_t *styleExistsExternalMethod = reinterpret_cast< styleExistsInDatabase_t * >( cast_to_fptr( myLib->resolve( "styleExists" ) ) );
+  if ( !styleExistsExternalMethod )
+  {
+    msgError = QObject::tr( "Provider %1 has no %2 method" ).arg( mProviderKey, QStringLiteral( "styleExists" ) );
+    return false;
+  }
+  return styleExistsExternalMethod( mDataSource, name, msgError );
+}
 
 void QgsVectorLayer::saveStyleToDatabase( const QString &name, const QString &description,
     bool useAsDefault, const QString &uiFileContent, QString &msgError )
