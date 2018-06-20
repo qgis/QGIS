@@ -19,7 +19,7 @@
   <releases>
     <release version="3.0" />
   </releases>
-  <launchable type="desktop-id">qgis.desktop</launchable>
+  <launchable type="desktop-id">org.qgis.qgis.desktop</launchable>
   <provides>
     <binary>qgis</binary>
   </provides>
