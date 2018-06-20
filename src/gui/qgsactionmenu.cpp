@@ -47,6 +47,7 @@ void QgsActionMenu::init()
   connect( mLayer, &QgsVectorLayer::editingStarted, this, &QgsActionMenu::reloadActions );
   connect( mLayer, &QgsVectorLayer::editingStopped, this, &QgsActionMenu::reloadActions );
   connect( mLayer, &QgsVectorLayer::readOnlyChanged, this, &QgsActionMenu::reloadActions );
+  connect( mLayer, &QgsMapLayer::willBeDeleted, this, &QgsActionMenu::layerWillBeDeleted );
 
   reloadActions();
 }
@@ -165,6 +166,15 @@ void QgsActionMenu::reloadActions()
   }
 
   emit reinit();
+}
+
+void QgsActionMenu::layerWillBeDeleted()
+{
+  // here we are just making sure that we are not going to have reloadActions() called again
+  // with a dangling pointer to a layer when actions get removed on QGIS exit
+  clear();
+  mLayer = nullptr;
+  disconnect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
 }
 
 
