@@ -1853,7 +1853,7 @@ class QgsVectorFileWriterMetadataContainer
       driverMetadata.insert( QStringLiteral( "XLSX" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "MS Office Open XML spreadsheet" ),
-                               QObject::tr( "MS Office Open XML spreadsheet" ),
+                               QObject::tr( "MS Office Open XML spreadsheet [XLSX]" ),
                                QStringLiteral( "*.xlsx" ),
                                QStringLiteral( "xlsx" ),
                                datasetOptions,
@@ -1893,7 +1893,7 @@ class QgsVectorFileWriterMetadataContainer
       driverMetadata.insert( QStringLiteral( "ODS" ),
                              QgsVectorFileWriter::MetaData(
                                QStringLiteral( "Open Document Spreadsheet" ),
-                               QObject::tr( "Open Document Spreadsheet" ),
+                               QObject::tr( "Open Document Spreadsheet [ODS]" ),
                                QStringLiteral( "*.ods" ),
                                QStringLiteral( "ods" ),
                                datasetOptions,
