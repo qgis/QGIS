@@ -56,11 +56,11 @@ while getopts ":rdl:" opt; do
       ;;
   esac
 done
-shift $(expr $OPTIND - 1)
+shift $(($OPTIND - 1))
 
 if [ $# -ne 0 ]; then
   EXCLUDE=$(${GP}sed -e 's/\s*#.*$//' -e '/^\s*$/d' $AGIGNORE | tr '\n' '|' | ${GP}sed -e 's/|$//')
-  INPUTFILES=$(echo $@ | tr -s '[[:blank:]]' '\n' | ${GP}egrep -iv "$EXCLUDE" | tr '\n' ' ' )
+  INPUTFILES=$(echo "$@" | tr -s '[[:blank:]]' '\n' | ${GP}egrep -iv "$EXCLUDE" | tr '\n' ' ' )
   if [[ -z $INPUTFILES  ]]; then
     exit 0
   fi
@@ -84,7 +84,7 @@ declare -A GLOBREP_IGNORE=()
 
 ERRORFOUND=NO
 
-for I in $(seq -f '%02g' 0  $(($SPLIT-1)) ) ; do
+for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
   ( [[ "$INTERACTIVE" =~ YES ]] || [[ "$TRAVIS" =~ true ]] ) && printf "Progress: %d/%d\r" $(( I + 1 )) $SPLIT
   SPELLFILE=spelling$I~
   ${GP}sed -i '/^#/d' $SPELLFILE
