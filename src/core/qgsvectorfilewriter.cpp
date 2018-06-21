@@ -2839,9 +2839,17 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         if ( filterString.isEmpty() )
           continue;
 
+        MetaData metadata;
+        QStringList globs;
+        if ( driverMetadata( drvName, metadata ) && !metadata.glob.isEmpty() )
+        {
+          globs << metadata.glob.toLower();
+        }
+
         FilterFormatDetails details;
         details.driverName = drvName;
         details.filterString = filterString;
+        details.globs = globs;
 
         results << details;
       }
