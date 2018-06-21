@@ -10,7 +10,7 @@ if [[ "$OSTYPE" =~ darwin* ]]; then
   GP=g
 fi
 
-pushd ${DIR} > /dev/null
+pushd ${DIR} > /dev/null || exit
 
 modules=(core gui analysis server)
 
@@ -57,6 +57,6 @@ It is not aimed to be manually edited
 done
 
 
-popd > /dev/null
+popd > /dev/null || exit
 
 exit $code
