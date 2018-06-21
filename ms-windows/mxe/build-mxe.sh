@@ -35,9 +35,9 @@ PYDEPLOY=${DIR}/deploy.py
 MXE=${HOME}/dev/mxe/
 
 # Directory for build
-BUILD_DIR=`pwd`/build-mxe
+BUILD_DIR=$(pwd)/build-mxe
 # Directory where the artifact will be saved
-RELEASE_DIR=`pwd`/release-mxe
+RELEASE_DIR=$(pwd)/release-mxe
 
 # End configuration
 
@@ -97,7 +97,7 @@ __TXT__
 # Make the zip
 
 cd ${RELEASE_DIR}/..
-ZIP_NAME=mxe-release-`date +%Y-%m-%d-%H-%I-%S`.zip
+ZIP_NAME=mxe-release-$(date +%Y-%m-%d-%H-%I-%S).zip
 zip -r ${ZIP_NAME} $(basename ${RELEASE_DIR})
 cp ${ZIP_NAME} ${DIR}
 
