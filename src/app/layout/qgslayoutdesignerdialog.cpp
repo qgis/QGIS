@@ -120,7 +120,7 @@ QgsMessageBar *QgsAppLayoutDesignerInterface::messageBar()
   return mDesigner->messageBar();
 }
 
-void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> items )
+void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> &items )
 {
   mDesigner->selectItems( items );
 }

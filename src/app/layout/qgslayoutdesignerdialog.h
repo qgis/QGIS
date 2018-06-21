@@ -59,7 +59,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsMasterLayoutInterface *masterLayout() override;
     QgsLayoutView *view() override;
     QgsMessageBar *messageBar() override;
-    void selectItems( QList< QgsLayoutItem * > items ) override;
+    void selectItems( const QList< QgsLayoutItem * > &items ) override;
 
   public slots:
 
