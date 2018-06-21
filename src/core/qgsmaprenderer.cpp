@@ -1268,6 +1268,15 @@ const QgsMapSettings& QgsMapRenderer::mapSettings()
   mMapSettings.setCrsTransformEnabled( hasCrsTransformEnabled() );
   mMapSettings.setDestinationCrs( destinationCrs() );
   mMapSettings.setMapUnits( mapUnits() );
+
+  // set selection color
+  QgsProject* prj = QgsProject::instance();
+  int myRed = prj->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
+  int myGreen = prj->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
+  int myBlue = prj->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
+  int myAlpha = prj->readNumEntry( "Gui", "/SelectionColorAlphaPart", 255 );
+  mMapSettings.setSelectionColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+
   return mMapSettings;
 }
 
