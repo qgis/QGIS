@@ -616,10 +616,11 @@ void QgsGeometryCheckerResultTab::checkRemovedLayer( const QStringList &ids )
   bool requiredLayersRemoved = false;
   for ( const QString &layerId : mChecker->getContext()->featurePools.keys() )
   {
-    if ( ids.contains( layerId ) && isEnabled() )
+    if ( ids.contains( layerId ) )
     {
       mChecker->getContext()->featurePools[layerId]->clearLayer();
-      requiredLayersRemoved = true;
+      if ( isEnabled() )
+        requiredLayersRemoved = true;
     }
   }
   if ( requiredLayersRemoved )

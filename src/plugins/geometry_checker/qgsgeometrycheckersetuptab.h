@@ -34,6 +34,12 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent = nullptr );
     ~QgsGeometryCheckerSetupTab() override;
 
+    /**
+     * Indicates whether the geometry checker is currently running its checks in the background.
+     * Useful to figure out whether it is safe to close the dialog and thus destroy the checker.
+     */
+    bool isRunningInBackground() const { return mIsRunningInBackground; }
+
   signals:
     void checkerStarted( QgsGeometryChecker *checker );
     void checkerFinished( bool );
@@ -45,6 +51,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;
     QMutex m_errorListMutex;
+    bool mIsRunningInBackground = false;
 
     QList<QgsVectorLayer *> getSelectedLayers();
 
