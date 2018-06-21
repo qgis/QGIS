@@ -73,7 +73,7 @@ do
 	sort -u $FILE3 >> $FILE1
 	SORTING=false
   fi
-  mv $FILE1 $file
+  mv $FILE1 "$file"
   rm -f $FILE1 $FILE2 $FILE3
 done
 
