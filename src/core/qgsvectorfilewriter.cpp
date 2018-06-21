@@ -2843,7 +2843,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         QStringList globs;
         if ( driverMetadata( drvName, metadata ) && !metadata.glob.isEmpty() )
         {
-          globs << metadata.glob.toLower();
+          globs = metadata.glob.toLower().split( ' ' );
         }
 
         FilterFormatDetails details;
@@ -2870,7 +2870,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         return false;
     }
 
-    return a.driverName.toLower().localeAwareCompare( b.driverName.toLower() ) < 0;
+    return a.filterString.toLower().localeAwareCompare( b.filterString.toLower() ) < 0;
   } );
 
   return results;
@@ -2879,21 +2879,43 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
 QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOptions options )
 {
   const auto formats = supportedFiltersAndFormats( options );
-  QStringList extensions;
+  QSet< QString > extensions;
 
-  QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
+  const QRegularExpression rx( QStringLiteral( "\\*\\.(.*)$" ) );
 
   for ( const FilterFormatDetails &format : formats )
   {
-    QString ext = format.filterString;
-    QRegularExpressionMatch match = rx.match( ext );
-    if ( !match.hasMatch() )
-      continue;
+    for ( const QString &glob : format.globs )
+    {
+      const QRegularExpressionMatch match = rx.match( glob );
+      if ( !match.hasMatch() )
+        continue;
 
-    QString matched = match.captured( 1 );
-    extensions << matched;
+      const QString matched = match.captured( 1 );
+      extensions.insert( matched );
+    }
   }
-  return extensions;
+
+  QStringList extensionList = extensions.toList();
+
+  std::sort( extensionList.begin(), extensionList.end(), [options]( const QString & a, const QString & b ) -> bool
+  {
+    if ( options & SortRecommended )
+    {
+      if ( a == QLatin1String( "gpkg" ) )
+        return true; // Make https://twitter.com/shapefiIe a sad little fellow
+      else if ( b == QLatin1String( "gpkg" ) )
+        return false;
+      else if ( a == QLatin1String( "shp" ) )
+        return true;
+      else if ( b == QLatin1String( "shp" ) )
+        return false;
+    }
+
+    return a.toLower().localeAwareCompare( b.toLower() ) < 0;
+  } );
+
+  return extensionList;
 }
 
 QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( const VectorFormatOptions options )

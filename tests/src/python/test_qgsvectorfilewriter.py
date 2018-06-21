@@ -775,6 +775,9 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(formats[1].globs, ['*.shp'])
         self.assertTrue('ODS' in [f.driverName for f in formats])
 
+        interlis_format = [f for f in formats if f.driverName == 'Interlis 2'][0]
+        self.assertEqual(interlis_format.globs, ['*.xtf', '*.xml', '*.ili'])
+
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFiltersAndFormats(QgsVectorFileWriter.VectorFormatOptions())
         self.assertTrue(formats2[0].driverName < formats2[1].driverName)
@@ -818,12 +821,19 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(formats[0], 'gpkg')
         self.assertEqual(formats[1], 'shp')
         self.assertTrue('ods' in formats)
+        self.assertTrue('xtf' in formats)
+        self.assertTrue('ili' in formats)
+
+        for i in range(2, len(formats) - 1):
+            self.assertLess(formats[i].lower(), formats[i + 1].lower())
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.VectorFormatOptions())
         self.assertTrue(formats2[0] < formats2[1])
         self.assertCountEqual(formats, formats2)
         self.assertNotEqual(formats2[0], 'gpkg')
+        for i in range(0, len(formats2) - 1):
+            self.assertLess(formats2[i].lower(), formats2[i + 1].lower())
 
         formats = QgsVectorFileWriter.supportedFormatExtensions(QgsVectorFileWriter.SkipNonSpatialFormats)
         self.assertFalse('ods' in formats)
@@ -834,10 +844,16 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertTrue('shp' in formats)
         self.assertLess(formats.index('gpkg'), formats.index('shp'))
         self.assertTrue('ods' in formats)
+        parts = formats.split(';;')
+        for i in range(2, len(parts) - 1):
+            self.assertLess(parts[i].lower(), parts[i + 1].lower())
 
         # alphabetical sorting
         formats2 = QgsVectorFileWriter.fileFilterString(QgsVectorFileWriter.VectorFormatOptions())
         self.assertNotEqual(formats.index('gpkg'), formats2.index('gpkg'))
+        parts = formats2.split(';;')
+        for i in range(len(parts) - 1):
+            self.assertLess(parts[i].lower(), parts[i + 1].lower())
 
         # hide non spatial
         formats = QgsVectorFileWriter.fileFilterString(QgsVectorFileWriter.SkipNonSpatialFormats)
