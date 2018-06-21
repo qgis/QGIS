@@ -231,6 +231,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, QSizeF s
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, mDrawSelection );
+  jobMapSettings.setSelectionColor( ms.selectionColor() );
   jobMapSettings.setFlag( QgsMapSettings::RenderPartialOutput, false );
 
   if ( mComposition->plotStyle() == QgsComposition::Print ||
