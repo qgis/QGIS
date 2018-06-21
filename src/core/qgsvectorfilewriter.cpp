@@ -2815,13 +2815,13 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
       GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
-      char **driverMetadata = nullptr;
+      char **metadata = nullptr;
       if ( gdalDriver )
       {
-        driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+        metadata = GDALGetMetadata( gdalDriver, nullptr );
       }
 
-      bool nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
+      bool nonSpatialFormat = CSLFetchBoolean( metadata, GDAL_DCAP_NONSPATIAL, false );
 #else
       bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
 #endif
