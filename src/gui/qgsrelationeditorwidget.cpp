@@ -489,6 +489,7 @@ void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 {
   QgsVectorLayer *layer = mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer();
   layer->deleteFeatures( featureids );
+  updateUi();
 }
 
 void QgsRelationEditorWidget::unlinkFeature( const QgsFeatureId featureid )
