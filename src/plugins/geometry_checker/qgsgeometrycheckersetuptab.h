@@ -34,6 +34,8 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent = nullptr );
     ~QgsGeometryCheckerSetupTab() override;
 
+    bool isRunningInBackground() const { return mIsRunningInBackground; }
+
   signals:
     void checkerStarted( QgsGeometryChecker *checker );
     void checkerFinished( bool );
@@ -45,6 +47,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;
     QMutex m_errorListMutex;
+    bool mIsRunningInBackground = false;
 
     QList<QgsVectorLayer *> getSelectedLayers();
 

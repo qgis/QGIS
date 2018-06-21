@@ -467,10 +467,14 @@ void QgsGeometryCheckerSetupTab::runChecks()
   connect( mAbortButton, &QAbstractButton::clicked, &futureWatcher, &QFutureWatcherBase::cancel );
   connect( mAbortButton, &QAbstractButton::clicked, this, &QgsGeometryCheckerSetupTab::showCancelFeedback );
 
+  mIsRunningInBackground = true;
+
   int maxSteps = 0;
   futureWatcher.setFuture( checker->execute( &maxSteps ) );
   ui.progressBar->setRange( 0, maxSteps );
   evLoop.exec();
+
+  mIsRunningInBackground = false;
 
   // Restore window
   unsetCursor();
