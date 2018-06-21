@@ -62,14 +62,14 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     /**
      * Creates a color ramp shader
-     * \param colorRamp vector color ramp
+     * \param colorRamp vector color ramp. Ownership is transferred to the shader.
      * \param colorRampType type of color ramp shader
      * \param classificationMode classification mode
      * \param classes number of classes
      * \param clip clip out of range values
      * \param extent extent used in classification (only used in quantile mode)
      */
-    void createShader( QgsColorRamp *colorRamp = nullptr,
+    void createShader( QgsColorRamp *colorRamp SIP_TRANSFER = nullptr,
                        QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
                        QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
                        int classes = 0,

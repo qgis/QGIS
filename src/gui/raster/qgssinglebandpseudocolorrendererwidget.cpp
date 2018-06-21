@@ -348,10 +348,10 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
     return;
   }
 
-  QgsSingleBandPseudoColorRenderer *pr = new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentBand(), nullptr );
+  std::unique_ptr<QgsSingleBandPseudoColorRenderer> pr( new QgsSingleBandPseudoColorRenderer( mRasterLayer->dataProvider(), mBandComboBox->currentBand(), nullptr ) );
   pr->setClassificationMin( lineEditValue( mMinLineEdit ) );
   pr->setClassificationMax( lineEditValue( mMaxLineEdit ) );
-  pr->createShader( ramp.get(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
+  pr->createShader( ramp.release(), static_cast< QgsColorRampShader::Type >( mColorInterpolationComboBox->currentData().toInt() ), static_cast< QgsColorRampShader::ClassificationMode >( mClassificationModeComboBox->currentData().toInt() ), mNumberOfEntriesSpinBox->value(), mClipCheckBox->isChecked(), minMaxWidget()->extent() );
 
   const QgsRasterShader *rasterShader = pr->shader();
   if ( rasterShader )
@@ -362,13 +362,12 @@ void QgsSingleBandPseudoColorRendererWidget::classify()
       mColormapTreeWidget->clear();
 
       const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader->colorRampItemList();
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
-      for ( ; it != colorRampItemList.end(); ++it )
+      for ( const QgsColorRampShader::ColorRampItem &item : colorRampItemList )
       {
         QgsTreeWidgetItemObject *newItem = new QgsTreeWidgetItemObject( mColormapTreeWidget );
-        newItem->setText( ValueColumn, QString::number( it->value, 'g', 15 ) );
-        newItem->setBackground( ColorColumn, QBrush( it->color ) );
-        newItem->setText( LabelColumn, it->label );
+        newItem->setText( ValueColumn, QString::number( item.value, 'g', 15 ) );
+        newItem->setBackground( ColorColumn, QBrush( item.color ) );
+        newItem->setText( LabelColumn, item.label );
         newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
         connect( newItem, &QgsTreeWidgetItemObject::itemEdited,
                  this, &QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemEdited );
