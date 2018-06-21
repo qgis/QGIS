@@ -540,6 +540,30 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
     return nullptr;
   }
 
+  // load layers for legends before loaded legends
+  const QHash< QString, QDomElement > &projectLayerElements = mProjectParser->projectLayerElementsById();
+  QDomNodeList treeLayerNodeList = compositionElem.elementsByTagName( "layer-tree-layer" );
+  for ( int i = 0; i < treeLayerNodeList.size(); ++i )
+  {
+    QDomElement treeLayerElem = treeLayerNodeList.at( i ).toElement();
+    QString layerId = treeLayerElem.attribute( "id" );
+    QgsMapLayer * layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    if ( layer )
+    {
+      continue;
+    }
+
+    QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElements.find( layerId );
+    if ( layerElemIt != projectLayerElements.constEnd() )
+    {
+      layer = mProjectParser->createLayerFromElement( layerElemIt.value(), true );
+    }
+    if ( layer )
+    {
+      QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    }
+  }
+
   composition->addItemsFromXML( compositionElem, *( mProjectParser->xmlDocument() ) );
 
   labelList.clear();
@@ -576,11 +600,12 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
       if ( legend->autoUpdateModel() )
       {
         model->setRootGroup( projectLayerTreeGroup() );
+        legend->synchronizeWithModel();
       }
       // if the legend has no map
       // we will load all layers
       const QgsComposerMap* map = legend->composerMap();
-      if ( !map )
+      if ( !map || ( !legend->autoUpdateModel() && !legend->legendFilterByMapEnabled() ) )
       {
         QgsLayerTreeGroup* root = model->rootGroup();
         QStringList layerIds = root->findLayerIds();
@@ -602,7 +627,6 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
           layer = nodeLayer->layer();
           if ( !layer )
           {
-            const QHash< QString, QDomElement > &projectLayerElements = mProjectParser->projectLayerElementsById();
             QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElements.find( layerId );
             if ( layerElemIt != projectLayerElements.constEnd() )
             {
@@ -2436,6 +2460,7 @@ QgsLayerTreeGroup* QgsWMSProjectParser::projectLayerTreeGroup() const
     QgsLayerTreeUtils::readOldLegend( rootGroup, mProjectParser->legendElem() );
     return rootGroup;
   }
+
   return QgsLayerTreeGroup::readXML( layerTreeElem );
 }
 
