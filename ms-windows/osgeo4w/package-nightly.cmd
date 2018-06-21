@@ -74,7 +74,7 @@ set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
 set GRASS_VERSIONS=%GRASS7_VERSION%
 
 set TAR=tar.exe
-if exist "c:\cygwin\bin\tar.exe" set TAR=c:\cygwin64\bin\tar.exe
+if exist "c:\cygwin\bin\tar.exe" set TAR=c:\cygwin\bin\tar.exe
 if exist "c:\cygwin64\bin\tar.exe" set TAR=c:\cygwin64\bin\tar.exe
 
 PROMPT qgis%VERSION%$g
