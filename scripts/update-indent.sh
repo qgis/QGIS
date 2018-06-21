@@ -52,7 +52,7 @@ fi
 echo "Checking changes between $REV0 and $REV1"
 
 ASTYLEDIFF=astyle.r$REV0-r$REV1.diff
->$ASTYLEDIFF
+true > $ASTYLEDIFF
 
 # reformat
 for f in $MODIFIED; do

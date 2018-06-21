@@ -65,7 +65,7 @@ REV=$(git log -n1 --pretty=%H)
 git diff >sha-$REV.diff
 
 ASTYLEDIFF=astyle.$REV.diff
->$ASTYLEDIFF
+true > $ASTYLEDIFF
 
 # reformat
 i=0
@@ -111,7 +111,7 @@ fi
 
 # verify SIP files
 SIPIFYDIFF=sipify.$REV.diff
->$SIPIFYDIFF
+true > $SIPIFYDIFF
 for f in $MODIFIED; do
   # if cpp header
   if [[ $f =~ ^src\/(core|gui|analysis|server)\/.*\.h$ ]]; then

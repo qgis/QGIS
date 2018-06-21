@@ -16,7 +16,7 @@ fi
 set -e
 
 ASTYLEDIFF=/tmp/astyle.diff
->$ASTYLEDIFF
+true > $ASTYLEDIFF
 
 
 if [[ ! -z  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
