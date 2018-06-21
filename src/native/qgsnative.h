@@ -20,6 +20,8 @@
 
 #include "qgis_native.h"
 
+class QString;
+
 /**
  * \class QgsNative
  * \ingroup native
@@ -37,6 +39,17 @@ class NATIVE_EXPORT QgsNative
      * Brings the QGIS app to front. The default implementation does nothing.
      */
     virtual void currentAppActivateIgnoringOtherApps();
+
+    /**
+     * Opens the desktop file explorer at the folder containing \a path,
+     * and (if possible) scrolls to and pre-selects the file at \a path itself.
+     *
+     * The default implementation just calls the QDesktopServices method to open the folder,
+     * without selecting the specified file.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void openFileExplorerAndSelectFile( const QString &path );
 };
 
 #endif // QGSNATIVE_H

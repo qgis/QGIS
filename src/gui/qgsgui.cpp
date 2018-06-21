@@ -25,6 +25,8 @@
 #include "qgslayoutviewrubberband.h"
 #ifdef Q_OS_MACX
 #include "qgsmacnative.h"
+#elif defined (Q_OS_WIN)
+#include "qgswinnative.h"
 #else
 #include "qgsnative.h"
 #endif
@@ -112,6 +114,8 @@ QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
   mNative = new QgsMacNative();
+#elif defined (Q_OS_WIN)
+  mNative = new QgsWinNative();
 #else
   mNative = new QgsNative();
 #endif
