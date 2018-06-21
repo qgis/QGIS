@@ -806,7 +806,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
   {
     case Qt::Key_X:
     {
-      // modifer+x ONLY caught for ShortcutOverride events...
+      // modifier+x ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mXConstraint->toggleLocked();
@@ -833,7 +833,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_Y:
     {
-      // modifer+y ONLY caught for ShortcutOverride events...
+      // modifier+y ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         mYConstraint->toggleLocked();
@@ -860,7 +860,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_A:
     {
-      // modifer+a ONLY caught for ShortcutOverride events...
+      // modifier+a ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( AbsoluteAngle ) )
@@ -890,7 +890,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
     }
     case Qt::Key_D:
     {
-      // modifer+d ONLY caught for ShortcutOverride events...
+      // modifier+d ONLY caught for ShortcutOverride events...
       if ( type == QEvent::ShortcutOverride && ( e->modifiers() == Qt::AltModifier || e->modifiers() == Qt::ControlModifier ) )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
