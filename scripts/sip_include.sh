@@ -58,9 +58,9 @@ for module in "${modules[@]}"; do
       #echo "src/${module}/$header not found"
       continue
     fi
-    if ! egrep -xq '^(#define +)?SIP_NO_FILE' src/${module}/${header}; then
+    if ! grep -xq -E '^(#define +)?SIP_NO_FILE' src/${module}/${header}; then
       sip=$(${GP}sed -r 's/(.*)\.h$/\1.sip/' <<< ${header})
-      if_cond=$(egrep -x '^(#define +)?SIP_IF_MODULE\((.*)\)$' src/${module}/${header} | \
+      if_cond=$(grep -x -E '^(#define +)?SIP_IF_MODULE\((.*)\)$' src/${module}/${header} | \
         ${GP}sed -r -e 's/(#define +)?SIP_IF_MODULE\((.*)\)/%If (\2)/')
       if [[ ! -z $if_cond ]]; then
         echo "$if_cond" >> $file

@@ -23,7 +23,7 @@ do
 	fi
 done
 
-for i in $(git --no-pager grep "::[a-zA-Z0-9_]*V2" $codepaths | perl -pe 's#^.*::([a-zA-Z0-9_]*)V2([a-zA-Z0-9_]*).*$#$1V2$2#' | egrep -v "^Qgs|SslV2" | sort -u)
+for i in $(git --no-pager grep "::[a-zA-Z0-9_]*V2" $codepaths | perl -pe 's#^.*::([a-zA-Z0-9_]*)V2([a-zA-Z0-9_]*).*$#$1V2$2#' | grep -v -E "^Qgs|SslV2" | sort -u)
 do
 	src=$i
 	dst=${src/V2/}

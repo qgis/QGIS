@@ -16,5 +16,5 @@
 
 
 licensecheck -r . |
-	egrep -v "\/debian\/|\.\/python\/ext-libs|\.\/ms-windows\/osgeo4w\/untgz\/|\.\/src\/app\/gps\/qwtpolar-|\.\/src\/app\/gps\/qwtpolar-1.0|: BSD \(3 clause\)|: GPL \(v[23] or later\)$|: LGPL \(v2 or later\)$|: MIT\/X11 \(BSD like\)$|: Apache \(v2\.0\) GPL \(v2 or later\)$|: LGPL$|: Apache \(v2\.0\)$|: zlib\/libpng$|: GPL LGPL$|GENERATED FILE" |
+	grep -v -E "\/debian\/|\.\/python\/ext-libs|\.\/ms-windows\/osgeo4w\/untgz\/|\.\/src\/app\/gps\/qwtpolar-|\.\/src\/app\/gps\/qwtpolar-1.0|: BSD \(3 clause\)|: GPL \(v[23] or later\)$|: LGPL \(v2 or later\)$|: MIT\/X11 \(BSD like\)$|: Apache \(v2\.0\) GPL \(v2 or later\)$|: LGPL$|: Apache \(v2\.0\)$|: zlib\/libpng$|: GPL LGPL$|GENERATED FILE" |
 	sed -e "s/:.*$//"
