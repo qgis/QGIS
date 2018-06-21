@@ -517,6 +517,12 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
       //! Filter string for file picker dialogs
       QString filterString;
+
+      /**
+       * Matching glob patterns for format, e.g. *.shp.
+       * \since QGIS 3.2
+       */
+      QStringList globs;
     };
 
     /**

@@ -418,6 +418,8 @@ Create a new vector file writer
       QString driverName;
 
       QString filterString;
+
+      QStringList globs;
     };
 
     static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
