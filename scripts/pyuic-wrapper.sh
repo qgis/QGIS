@@ -15,7 +15,6 @@
 ###########################################################################
 
 
-PYUIC=$1
 LD_LIBRARY_PATH=$2:$LD_LIBRARY_PATH
 PYTHONPATH=$3:$PYTHONPATH
 PYTHON=$4
