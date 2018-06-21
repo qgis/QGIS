@@ -536,7 +536,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 
     /**
-     * Returns a list of file extensions for supported formats.
+     * Returns a list of file extensions for supported formats, e.g "shp", "gpkg".
      *
      * The \a options argument can be used to control the sorting and filtering of
      * returned formats.
