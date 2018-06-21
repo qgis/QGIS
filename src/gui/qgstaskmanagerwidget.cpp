@@ -78,7 +78,7 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
 
     QProgressBar *progressBar = new QProgressBar();
     progressBar->setAutoFillBackground( true );
-    progressBar->setRange(0, 0);
+    progressBar->setRange( 0, 0 );
     connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress )
     {
       //until first progress report, we show a progress bar of interderminant length
