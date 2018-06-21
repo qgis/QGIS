@@ -132,7 +132,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     /**
      * Selects the specified \a items.
      */
-    void selectItems( QList< QgsLayoutItem * > items );
+    void selectItems( const QList<QgsLayoutItem *> &items );
 
     /**
      * Returns the designer's message bar.
@@ -309,7 +309,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void addPages();
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
-    void undoRedoOccurredForItems( QSet< QString > itemUuids );
+    void undoRedoOccurredForItems( const QSet< QString > &itemUuids );
     void saveAsTemplate();
     void addItemsFromTemplate();
     void duplicate();

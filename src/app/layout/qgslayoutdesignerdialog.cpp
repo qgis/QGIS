@@ -246,7 +246,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionOptions, &QAction::triggered, this, [ = ]
   {
-    QgisApp::instance()->showOptionsDialog( this, QString( "mOptionsPageComposer" ) );
+    QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageComposer" ) );
   } );
 
   mView = new QgsLayoutView();
@@ -322,7 +322,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionsToolbar->addWidget( resizeToolButton );
 
   QToolButton *atlasExportToolButton = new QToolButton( mAtlasToolbar );
-  atlasExportToolButton->setIcon( QgsApplication::getThemeIcon( "mActionExport.svg" ) );
+  atlasExportToolButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionExport.svg" ) ) );
   atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
   atlasExportToolButton->setAutoRaise( true );
   atlasExportToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -1462,7 +1462,7 @@ void QgsLayoutDesignerDialog::updateStatusZoom()
     zoomLevel = mView->transform().m11() * 100 / scale100;
   }
   whileBlocking( mStatusZoomCombo )->lineEdit()->setText( tr( "%1%" ).arg( zoomLevel, 0, 'f', 1 ) );
-  whileBlocking( mStatusZoomSlider )->setValue( zoomLevel );
+  whileBlocking( mStatusZoomSlider )->setValue( static_cast< int >( zoomLevel ) );
 }
 
 void QgsLayoutDesignerDialog::updateStatusCursorPos( QPointF position )
@@ -1544,7 +1544,7 @@ void QgsLayoutDesignerDialog::dockVisibilityChanged( bool visible )
   }
 }
 
-void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> itemUuids )
+void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> &itemUuids )
 {
   mBlockItemOptions = true;
 
@@ -2327,7 +2327,7 @@ void QgsLayoutDesignerDialog::printAtlas()
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
-    progressDialog->setValue( progress );
+    progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -2498,7 +2498,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
-    progressDialog->setValue( progress );
+    progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -2649,7 +2649,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
-    progressDialog->setValue( progress );
+    progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -2856,7 +2856,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
-    progressDialog->setValue( progress );
+    progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -3499,12 +3499,12 @@ void QgsLayoutDesignerDialog::restoreWindowState()
 
   if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QByteArray::fromRawData( reinterpret_cast< const char * >( defaultLayerDesignerUIstate ), sizeof defaultLayerDesignerUIstate ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( "restore of layout UI state failed" );
+    QgsDebugMsg( QStringLiteral( "restore of layout UI state failed" ) );
   }
   // restore window geometry
   if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QgsSettings::App ).toByteArray() ) )
   {
-    QgsDebugMsg( "restore of layout UI geometry failed" );
+    QgsDebugMsg( QStringLiteral( "restore of layout UI geometry failed" ) );
     // default to 80% of screen size, at 10% from top left corner
     resize( QDesktopWidget().availableGeometry( this ).size() * 0.8 );
     QSize pos = QDesktopWidget().availableGeometry( this ).size() * 0.1;
@@ -3727,11 +3727,11 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   // Image size
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
   QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
-  int width = ( int )( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
-  int height = ( int )( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  int width = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  int height = static_cast< int >( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
   int memuse = width * height * 3 / 1000000;  // pixmap + image
-  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
-  QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
+  QgsDebugMsg( QStringLiteral( "Image %1x%2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QStringLiteral( "memuse = %1" ).arg( memuse ) );
 
   if ( memuse > 400 )   // about 4500x4500
   {
@@ -4165,7 +4165,7 @@ void QgsLayoutDesignerDialog::updateWindowTitle()
   setWindowTitle( title );
 }
 
-void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
+void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> &items )
 {
   for ( QGraphicsItem *item : items )
   {
