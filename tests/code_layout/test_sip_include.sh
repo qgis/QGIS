@@ -3,12 +3,6 @@
 DIR=$(git rev-parse --show-toplevel)
 REV=$(git log -n1 --pretty=%H)
 
-# GNU prefix command for mac os support (gsed, gsplit)
-GP=
-if [[ "$OSTYPE" =~ darwin* ]]; then
-  GP=g
-fi
-
 pushd ${DIR} > /dev/null || exit
 
 code=0

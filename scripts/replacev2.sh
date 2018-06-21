@@ -3,7 +3,6 @@
 set -e
 
 codepaths=$(echo python/{analysis,console,core,custom_widgets,gui,plugins,pyplugin_installer,server,sip_helpers,testing} src/ tests/)
-repl=
 
 s=$(mktemp -t skipped.XXXX.log)
 r=$(mktemp -t repl.XXXX.pl)
