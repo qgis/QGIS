@@ -622,7 +622,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   QImage *image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   image->fill( 0 );
 
-  if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 )
+  int maxWidth  = mCaps.mCapabilities.service.maxWidth == 0 ? std::numeric_limits<int>::max() : mCaps.mCapabilities.service.maxWidth;
+  int maxHeight = mCaps.mCapabilities.service.maxHeight == 0 ? std::numeric_limits<int>::max() : mCaps.mCapabilities.service.maxHeight;
+
+  if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 && pixelWidth <= maxWidth && pixelHeight <= maxHeight )
   {
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
 
@@ -655,16 +658,19 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       tileMode = mTileLayer->tileMode;
     }
-    else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
+    else if ( ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 ) || pixelWidth > maxWidth || pixelHeight > maxHeight )
     {
+      int w = mSettings.mMaxWidth != 0 && mSettings.mMaxWidth < maxWidth ? mSettings.mMaxWidth : maxWidth;
+      int h = mSettings.mMaxHeight != 0 && mSettings.mMaxHeight < maxHeight ? mSettings.mMaxHeight : maxHeight;
+
       // this is an ordinary WMS server, but the user requested tiled approach
       // so we will pretend it is a WMS-C server with just one tile matrix
       tempTm.reset( new QgsWmtsTileMatrix );
       tempTm->topLeft      = QgsPointXY( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
-      tempTm->tileWidth    = mSettings.mMaxWidth;
-      tempTm->tileHeight   = mSettings.mMaxHeight;
-      tempTm->matrixWidth  = std::ceil( mLayerExtent.width() / mSettings.mMaxWidth / vres );
-      tempTm->matrixHeight = std::ceil( mLayerExtent.height() / mSettings.mMaxHeight / vres );
+      tempTm->tileWidth    = w;
+      tempTm->tileHeight   = h;
+      tempTm->matrixWidth  = std::ceil( mLayerExtent.width() / w / vres );
+      tempTm->matrixHeight = std::ceil( mLayerExtent.height() / h / vres );
       tempTm->tres = vres;
       tm = tempTm.get();
 
