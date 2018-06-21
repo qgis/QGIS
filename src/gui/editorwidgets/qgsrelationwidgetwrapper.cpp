@@ -46,6 +46,14 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
     mWidget->setVisible( visible );
 }
 
+void QgsRelationWidgetWrapper::aboutToSave()
+{
+  mRelation.referencingLayer()->isModified();
+
+  if ( mNmRelation.isValid() )
+    mNmRelation.referencedLayer()->isModified();
+}
+
 QgsRelation QgsRelationWidgetWrapper::relation() const
 {
   return mRelation;
@@ -96,14 +104,14 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
 
   w->setEditorContext( myContext );
 
-  QgsRelation nmrel = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
+  mNmRelation = QgsProject::instance()->relationManager()->relation( config( QStringLiteral( "nm-rel" ) ).toString() );
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
   do
   {
     if ( ( ctx->relation().name() == mRelation.name() && ctx->formMode() == QgsAttributeEditorContext::Embed )
-         || ( nmrel.isValid() && ctx->relation().name() == nmrel.name() ) )
+         || ( mNmRelation.isValid() && ctx->relation().name() == mNmRelation.name() ) )
     {
       w->setVisible( false );
       break;
@@ -113,7 +121,7 @@ void QgsRelationWidgetWrapper::initWidget( QWidget *editor )
   while ( ctx );
 
 
-  w->setRelations( mRelation, nmrel );
+  w->setRelations( mRelation, mNmRelation );
 
   mWidget = w;
 }

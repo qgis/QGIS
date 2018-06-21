@@ -290,7 +290,7 @@ bool QgsAttributeForm::saveEdits()
     QgsAttributes src = mFeature.attributes();
     QgsAttributes dst = mFeature.attributes();
 
-    Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
+    for ( QgsWidgetWrapper *ww : qgis::as_const( mWidgets ) )
     {
       QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
       if ( eww )
@@ -587,6 +587,11 @@ bool QgsAttributeForm::save()
 {
   if ( mIsSaving )
     return true;
+
+  for ( QgsWidgetWrapper *wrapper : qgis::as_const( mWidgets ) )
+  {
+    wrapper->notifyAboutToSave();
+  }
 
   // only do the dirty checks when editing an existing feature - for new
   // features we need to add them even if the attributes are unchanged from the initial

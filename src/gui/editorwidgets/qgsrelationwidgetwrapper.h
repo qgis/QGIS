@@ -103,7 +103,9 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     void setVisible( bool visible );
 
   private:
+    void aboutToSave() override;
     QgsRelation mRelation;
+    QgsRelation mNmRelation;
     QgsRelationEditorWidget *mWidget = nullptr;
 };
 

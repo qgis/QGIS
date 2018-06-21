@@ -190,6 +190,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     void setDataDefinedProperties( const QgsPropertyCollection &collection ) { mPropertyCollection = collection; }
 
+    /**
+     * Notify this widget, that the containing form is about to save and
+     * that any pending changes should be pushed to the edit buffer or they
+     * might be lost.
+     *
+     * \since QGIS 3.2
+     */
+    void notifyAboutToSave();
+
   protected:
 
     /**
@@ -234,6 +243,15 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void setEnabled( bool enabled );
 
   private:
+
+    /**
+     * Called when the containing attribute form is about to save.
+     * Use this to push any widget states to the edit buffer.
+     *
+     * \since QGIS 3.2
+     */
+    virtual void aboutToSave();
+
     QgsAttributeEditorContext mContext;
     QVariantMap mConfig;
     QWidget *mWidget = nullptr;
