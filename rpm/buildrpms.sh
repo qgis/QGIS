@@ -87,7 +87,7 @@ then
   source version.cfg
   if [ "$build_only" -ne "1" ]
   then
-    let relver+=1
+    (( relver+=1 ))
     echo "relver=$relver" > version.cfg
   fi
   timestamp=0
