@@ -251,25 +251,25 @@ class CORE_EXPORT QgsSettings : public QObject
         QByteArray ba = value( key, metaEnum.valueToKey( defaultValue ) ).toString().toUtf8();
         const char *vs = ba.data();
         v = static_cast<T>( metaEnum.keyToValue( vs, &ok ) );
+        if ( ok )
+          return v;
       }
-      if ( !ok )
+
+      // if failed, try to read as int (old behavior)
+      // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
+      // then the method could be marked as const
+      v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
+      if ( metaEnum.isValid() )
       {
-        // if failed, try to read as int (old behavior)
-        // this code shall be removed later (probably after QGIS 3.4 LTR for 3.6)
-        // then the method could be marked as const
-        v = static_cast<T>( value( key, static_cast<int>( defaultValue ), section ).toInt( &ok ) );
-        if ( metaEnum.isValid() )
+        if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
         {
-          if ( !ok || !metaEnum.valueToKey( static_cast<int>( v ) ) )
-          {
-            v = defaultValue;
-          }
-          else
-          {
-            // found setting as an integer
-            // convert the setting to the new form (string)
-            setEnumValue( key, v, section );
-          }
+          v = defaultValue;
+        }
+        else
+        {
+          // found setting as an integer
+          // convert the setting to the new form (string)
+          setEnumValue( key, v, section );
         }
       }
 
