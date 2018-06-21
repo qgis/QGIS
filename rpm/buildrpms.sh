@@ -43,6 +43,7 @@ then
     mock_args="--old-chroot"
 fi
 
+relver=1
 compile_spec_only=0
 build_only=0
 srpm_only=0
@@ -82,13 +83,14 @@ then
   # Get next release version number and increment after
   if [ ! -f version.cfg ]
   then
-    echo "relver=1" > version.cfg
-  fi
-  source version.cfg
-  if [ "$build_only" -ne "1" ]
-  then
-    (( relver+=1 ))
     echo "relver=$relver" > version.cfg
+  else
+    source version.cfg
+    if [ "$build_only" -ne "1" ]
+    then
+      (( relver+=1 ))
+      echo "relver=$relver" > version.cfg
+    fi
   fi
   timestamp=0
 else
@@ -139,7 +141,7 @@ then
     --define "_relver $relver" \
     --define "_version $version" \
     --define "_timestamp $timestamp" \
-    --resultdir=$OUTDIR $mock_args -ne 0;
+    --resultdir=$OUTDIR $mock_args
   then
     print_error "Creating source package failed"
     exit 1
@@ -171,7 +173,7 @@ do :
     --define "_relver $relver" \
     --define "_version $version" \
     --define "_timestamp $timestamp" \
-    --resultdir=$OUTDIR/$arch $mock_args -eq 0;
+    --resultdir=$OUTDIR/$arch $mock_args
   then
     # Add to package list
     packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"

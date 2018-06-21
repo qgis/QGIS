@@ -18,11 +18,7 @@
 %define builddate %(date '+%a %b %d %Y')
 %endif
 
-%if 0%{?fedora} >= 27
 %define grass grass74
-%else
-%define grass grass72
-%endif
 
 Name:           qgis
 Version:        %{_version}
