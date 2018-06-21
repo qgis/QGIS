@@ -6,7 +6,7 @@ then
 fi
 
 mkdir build
-cd build
+cd build || exit
 cmake ..
 #xvfb-run --auto-servernum --server-num=1 --server-args="-screen 0 1024x768x24" make Experimental || true
 make Experimental || true

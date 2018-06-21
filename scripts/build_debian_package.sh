@@ -26,7 +26,7 @@ fi
 
 if [ -d `pwd`/debian ]
 then
-  cd debian
+  cd debian || exit
   svn update
   cd ..
 else

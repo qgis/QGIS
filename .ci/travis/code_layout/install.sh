@@ -17,8 +17,8 @@
 export CORES=2
 
 mkdir build
-pushd build
+pushd build || exit
 
 cmake -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON ..
 
-popd
+popd || exit
