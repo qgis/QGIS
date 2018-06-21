@@ -111,7 +111,7 @@ minor=$(grep -e 'SET(CPACK_PACKAGE_VERSION_MINOR' ../CMakeLists.txt |
 patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
         sed -r 's/.*\"([0-9]+)\".*/\1/g')
 
-version=$(echo $major.$minor.$patch)
+version=$major.$minor.$patch
 
 print_info "Building version $version-$relver"
 if [ "$build_only" -ne "1" ]
