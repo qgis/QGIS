@@ -52,7 +52,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
     class CORE_EXPORT Rule
     {
       public:
-        //! takes ownership of settings
+        //! takes ownership of settings, settings may be nullptr
         Rule( QgsPalLayerSettings *settings SIP_TRANSFER, int maximumScale = 0, int minimumScale = 0, const QString &filterExp = QString(), const QString &description = QString(), bool elseRule = false );
         ~Rule();
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
         /**
          * Gets the labeling settings. May return a null pointer.
          */
-        QgsPalLayerSettings *settings() const { return mSettings; }
+        QgsPalLayerSettings *settings() const { return mSettings.get(); }
 
         /**
          * Determines if scale based labeling is active
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
       private:
         Rule *mParent; // parent rule (NULL only for root rule)
-        QgsPalLayerSettings *mSettings = nullptr;
+        std::unique_ptr<QgsPalLayerSettings> mSettings;
         double mMaximumScale = 0;
         double mMinimumScale = 0;
         QString mFilterExp, mDescription;
@@ -336,8 +336,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
         QString mRuleKey; // string used for unique identification of rule within labeling
 
-        // temporary
-        QgsExpression *mFilter = nullptr;
+        std::unique_ptr<QgsExpression> mFilter;
 
     };
 
