@@ -110,11 +110,12 @@ if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" ]; then
 fi
 
 echo Updating python translations
-cd python
-pylupdate5 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
-perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
-rm python-i18n.ts
-cd ..
+(
+	cd python
+	pylupdate5 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+	perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
+	rm python-i18n.ts
+)
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
 	pylupdate5 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
