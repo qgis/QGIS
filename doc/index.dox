@@ -24,7 +24,7 @@ this documentation or a <a href="qgis.qch">Qt help file</a>
 for offline use.
 
 A Python version of the documentation is available
-<a href="https://python.qgis.org/api">here</a>.
+<a href="https://qgis.org/pyqgis/master">here</a>.
 
 \section index_APIStability Earlier versions of the API
 
