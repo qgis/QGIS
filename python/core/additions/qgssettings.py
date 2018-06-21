@@ -19,6 +19,7 @@
 
 from .metaenum import metaEnumFromValue
 from qgis.core import QgsSettings
+import qgis  # required to get base class of enums
 
 
 def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.NoSection):
