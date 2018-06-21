@@ -499,7 +499,7 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) 
   {
     QgsPalLayerSettings *settings = rule->settings();
 
-    if ( settings->drawLabels )
+    if ( settings && settings->drawLabels )
     {
       QDomDocument doc = parent.ownerDocument();
 
