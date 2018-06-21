@@ -24,6 +24,7 @@ IF(APPLE)
   ENDFOREACH(_lib ${APPLE_LIB_LIST})
 ENDIF(APPLE)
 
+
 #############################################################
 # sources
 
@@ -44,6 +45,15 @@ IF(APPLE)
   )
 ENDIF(APPLE)
 
+IF(WIN32)
+  SET(QGIS_APP_WIN32_SRCS
+    win/qgswinnative.cpp
+  )
+  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+    ${QGIS_APP_WIN32_SRCS}
+  )
+ENDIF(WIN32)
+
 SET(QGIS_NATIVE_HDRS
   qgsnative.h
 )
@@ -56,6 +66,12 @@ IF(APPLE)
     mac/cocoainitializer.h
   )
 ENDIF(APPLE)
+
+IF(WIN32)
+  SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+     win/qgswinnative.h
+  )
+ENDIF(WIN32)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -100,8 +116,15 @@ IF(NOT ANDROID)
   )
 ENDIF(NOT ANDROID)
 
-TARGET_LINK_LIBRARIES(qgis_native "${NATIVE_LINK_LIBS}")
+TARGET_LINK_LIBRARIES(qgis_native
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Gui_LIBRARIES}
+    "${NATIVE_LINK_LIBS}"
+    )
 
+IF (WIN32)
+  TARGET_LINK_LIBRARIES(qgis_native shell32)
+ENDIF (WIN32)
 # install
 
 INSTALL(TARGETS qgis_native

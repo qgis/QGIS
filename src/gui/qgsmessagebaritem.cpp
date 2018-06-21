@@ -18,11 +18,13 @@
 #include "qgsapplication.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
-
+#include "qgsgui.h"
+#include "qgsnative.h"
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QTextBrowser>
 #include <QDesktopServices>
+#include <QFile>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
@@ -269,5 +271,9 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
 
 void QgsMessageBarItem::urlClicked( const QUrl &url )
 {
-  QDesktopServices::openUrl( url );
+  const bool isFile = QFile::exists( url.toLocalFile() );
+  if ( isFile )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }

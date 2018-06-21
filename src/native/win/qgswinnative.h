@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgsnative.cpp - abstracted interface to native system calls
+    qgswinnative.h - abstracted interface to native Mac objective-c
                              -------------------
-    begin                : January 2017
-    copyright            : (C) 2017 by Matthias Kuhn
-    email                : matthias@opengis.ch
+    begin                : January 2014
+    copyright            : (C) 2014 by Larry Shaffer
+    email                : larrys at dakotacarto dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,19 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMACNATIVE_H
+#define QGSMACNATIVE_H
+
 #include "qgsnative.h"
-#include <QString>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QFileInfo>
+#include <windows.h>
+#include <shlobj.h>
+#pragma comment(lib,"Shell32.lib")
 
-void QgsNative::currentAppActivateIgnoringOtherApps()
+class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
-}
+  public:
+    void openFileExplorerAndSelectFile( const QString &path ) override;
+};
 
-void QgsNative::openFileExplorerAndSelectFile( const QString &path )
-{
-  QFileInfo fi( path );
-  QString folder = fi.path();
-  QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
-}
+#endif // QGSMACNATIVE_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsnative.cpp - abstracted interface to native system calls
+    qgswinnative.cpp - abstracted interface to native system calls
                              -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Matthias Kuhn
@@ -15,19 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnative.h"
+#include "qgswinnative.h"
 #include <QString>
-#include <QDesktopServices>
-#include <QUrl>
-#include <QFileInfo>
+#include <QDir>
 
-void QgsNative::currentAppActivateIgnoringOtherApps()
+void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
-}
-
-void QgsNative::openFileExplorerAndSelectFile( const QString &path )
-{
-  QFileInfo fi( path );
-  QString folder = fi.path();
-  QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+  const QString nativePath = QDir::toNativeSeparators( path );
+  ITEMIDLIST *pidl = ILCreateFromPath( nativePath.toUtf8().constData() );
+  if ( pidl )
+  {
+    SHOpenFolderAndSelectItems( pidl, 0, 0, 0 );
+    ILFree( pidl );
+  }
 }

@@ -26,9 +26,11 @@
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
+#include "qgsgui.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgsnative.h"
 #include "qgsprojectlayergroupdialog.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -246,9 +248,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   connect( mButtonOpenProjectFolder, &QToolButton::clicked, this, [ = ]
   {
-    QFileInfo fi( QgsProject::instance()->fileName() );
-    QString folder = fi.path();
-    QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+    QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( QgsProject::instance()->fileName() );
   } );
 
   // get the manner in which the number of decimal places in the mouse
