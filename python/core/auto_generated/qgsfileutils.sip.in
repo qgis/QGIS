@@ -76,6 +76,14 @@ for filenames with an '_' character.
 
    This method strips slashes from the filename, so it is safe to call with file names only, not complete paths.
 %End
+
+    static QString findClosestExistingPath( const QString &path );
+%Docstring
+Returns the top-most existing folder from ``path``. E.g. if ``path`` is "/home/user/projects/2018/P4343"
+and "/home/user/projects" exists but no "2018" subfolder exists, then the function will return "/home/user/projects".
+
+.. versionadded:: 3.2
+%End
 };
 
 /************************************************************************

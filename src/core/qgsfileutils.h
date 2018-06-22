@@ -78,6 +78,14 @@ class CORE_EXPORT QgsFileUtils
      * \warning This method strips slashes from the filename, so it is safe to call with file names only, not complete paths.
      */
     static QString stringToSafeFilename( const QString &string );
+
+    /**
+     * Returns the top-most existing folder from \a path. E.g. if \a path is "/home/user/projects/2018/P4343"
+     * and "/home/user/projects" exists but no "2018" subfolder exists, then the function will return "/home/user/projects".
+     *
+     * \since QGIS 3.2
+     */
+    static QString findClosestExistingPath( const QString &path );
 };
 
 #endif // QGSFILEUTILS_H

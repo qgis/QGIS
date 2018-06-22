@@ -15,6 +15,8 @@
 #include "qgsfileutils.h"
 #include <QObject>
 #include <QRegularExpression>
+#include <QFileInfo>
+#include <QDir>
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
 {
@@ -29,7 +31,7 @@ QString QgsFileUtils::representFileSize( qint64 bytes )
     unit = i.next();
     bytes /= 1024.0;
   }
-  return QString( "%1 %2" ).arg( QString::number( bytes ), unit );
+  return QStringLiteral( "%1 %2" ).arg( QString::number( bytes ), unit );
 }
 
 QStringList QgsFileUtils::extensionsFromFilter( const QString &filter )
@@ -86,8 +88,29 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
 
 QString QgsFileUtils::stringToSafeFilename( const QString &string )
 {
-  QRegularExpression rx( "[/\\\\\\?%\\*\\:\\|\"<>]" );
+  QRegularExpression rx( QStringLiteral( "[/\\\\\\?%\\*\\:\\|\"<>]" ) );
   QString s = string;
   s.replace( rx, QStringLiteral( "_" ) );
   return s;
+}
+
+QString QgsFileUtils::findClosestExistingPath( const QString &path )
+{
+  QDir currentPath;
+  QFileInfo fi( path );
+  if ( fi.isFile() )
+    currentPath = fi.dir();
+  else
+    currentPath = QDir( path );
+
+  while ( !currentPath.exists() )
+  {
+    const QString parentPath = QDir::cleanPath( currentPath.path() + QStringLiteral( "/.." ) );
+    if ( parentPath.isEmpty() || parentPath == '.' )
+      return QString();
+    currentPath = QDir( parentPath );
+  }
+
+  const QString res = QDir::cleanPath( currentPath.path() );
+  return res == '.' ? QString() : res;
 }
