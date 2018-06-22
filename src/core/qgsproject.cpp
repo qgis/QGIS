@@ -612,7 +612,7 @@ void QgsProject::clear()
 // basically a debugging tool to dump property list values
 void dump_( const QgsProjectPropertyKey &topQgsPropertyKey )
 {
-  QgsDebugMsg( "current properties:" );
+  QgsDebugMsg( QStringLiteral( "current properties:" ) );
   topQgsPropertyKey.dump();
 }
 
@@ -660,13 +660,13 @@ void _getProperties( const QDomDocument &doc, QgsProjectPropertyKey &project_pro
 
   if ( scopes.count() < 1 )
   {
-    QgsDebugMsg( "empty ``properties'' XML tag ... bailing" );
+    QgsDebugMsg( QStringLiteral( "empty ``properties'' XML tag ... bailing" ) );
     return;
   }
 
   if ( ! project_properties.readXml( propertiesElem ) )
   {
-    QgsDebugMsg( "Project_properties.readXml() failed" );
+    QgsDebugMsg( QStringLiteral( "Project_properties.readXml() failed" ) );
   }
 }
 
@@ -683,7 +683,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( "unable to find title element" );
+    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
     return;
   }
 
@@ -691,7 +691,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !titleNode.hasChildNodes() ) // if not, then there's no actual text
   {
-    QgsDebugMsg( "unable to find title element" );
+    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
     return;
   }
 
@@ -699,7 +699,7 @@ static void _getTitle( const QDomDocument &doc, QString &title )
 
   if ( !titleTextNode.isText() )
   {
-    QgsDebugMsg( "unable to find title element" );
+    QgsDebugMsg( QStringLiteral( "unable to find title element" ) );
     return;
   }
 
@@ -715,7 +715,7 @@ QgsProjectVersion getVersion( const QDomDocument &doc )
 
   if ( !nl.count() )
   {
-    QgsDebugMsg( " unable to find qgis element in project file" );
+    QgsDebugMsg( QStringLiteral( " unable to find qgis element in project file" ) );
     return QgsProjectVersion( 0, 0, 0, QString() );
   }
 
@@ -839,7 +839,7 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
 
   if ( !mapLayer )
   {
-    QgsDebugMsg( "Unable to create layer" );
+    QgsDebugMsg( QStringLiteral( "Unable to create layer" ) );
 
     return false;
   }
@@ -976,7 +976,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
     // Shows a warning when an old project file is read.
     emit oldProjectVersionWarning( fileVersion.text() );
-    QgsDebugMsg( "Emitting oldProjectVersionWarning(oldVersion)." );
+    QgsDebugMsg( QStringLiteral( "Emitting oldProjectVersionWarning(oldVersion)." ) );
 
     projectFile.updateRevision( thisVersion );
   }
@@ -1124,7 +1124,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   // review the integrity of the retrieved map layers
   if ( !clean )
   {
-    QgsDebugMsg( "Unable to get map layers from project file." );
+    QgsDebugMsg( QStringLiteral( "Unable to get map layers from project file." ) );
 
     if ( !brokenNodes.isEmpty() )
     {
@@ -1551,15 +1551,15 @@ bool QgsProject::writeProjectFile( const QString &filename )
   qgisNode.appendChild( titleNode );
 
   QDomElement transactionNode = doc->createElement( QStringLiteral( "autotransaction" ) );
-  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? "1" : "0" );
+  transactionNode.setAttribute( QStringLiteral( "active" ), mAutoTransaction ? '1' : '0' );
   qgisNode.appendChild( transactionNode );
 
   QDomElement evaluateDefaultValuesNode = doc->createElement( QStringLiteral( "evaluateDefaultValues" ) );
-  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? "1" : "0" );
+  evaluateDefaultValuesNode.setAttribute( QStringLiteral( "active" ), mEvaluateDefaultValues ? '1' : '0' );
   qgisNode.appendChild( evaluateDefaultValuesNode );
 
   QDomElement trustNode = doc->createElement( QStringLiteral( "trust" ) );
-  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? "1" : "0" );
+  trustNode.setAttribute( QStringLiteral( "active" ), mTrustLayerMetadata ? '1' : '0' );
   qgisNode.appendChild( trustNode );
 
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
@@ -1643,7 +1643,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   dump_( mProperties );
 
-  QgsDebugMsg( QString( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
+  QgsDebugMsg( QStringLiteral( "there are %1 property scopes" ).arg( static_cast<int>( mProperties.count() ) ) );
 
   if ( !mProperties.isEmpty() ) // only worry about properties if we
     // actually have any properties
@@ -2691,6 +2691,7 @@ QSet<QgsMapLayer *> QgsProject::requiredLayers() const
 void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
 {
   QStringList layerIds;
+  layerIds.reserve( layers.count() );
   for ( QgsMapLayer *layer : layers )
   {
     layerIds << layer->id();
