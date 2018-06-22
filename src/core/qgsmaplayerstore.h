@@ -59,6 +59,12 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
     % MethodCode
     sipRes = sipCpp->count();
     % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
 #endif
 
     /**
