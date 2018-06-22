@@ -784,6 +784,16 @@ bool QgsOracleProvider::loadFields()
       // date types are incorrectly detected as datetime
       type = QVariant::Date;
     }
+    else if ( type == QVariant::Double && field.precision() == 0 )
+    {
+      // integer are Double with null precision
+      type = QVariant::Int;
+    }
+    else if ( type == QVariant::LongLong && field.precision() == 0 )
+    {
+      // integer are longlong with null precision
+      type = QVariant::Int;
+    }
 
     mAttributeFields.append( QgsField( field.name(), type, types.value( field.name() ), field.length(), field.precision(), comments.value( field.name() ) ) );
     mDefaultValues.append( defvalues.value( field.name(), QVariant() ) );
