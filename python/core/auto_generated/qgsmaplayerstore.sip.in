@@ -46,6 +46,12 @@ Returns the number of layers contained in the store.
     sipRes = sipCpp->count();
 %End
 
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+%MethodCode
+    sipRes = true;
+%End
+
     QgsMapLayer *mapLayer( const QString &id ) const;
 %Docstring
 Retrieve a pointer to a layer by layer ``id``.

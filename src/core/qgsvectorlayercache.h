@@ -276,6 +276,12 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
     % MethodCode
     sipRes = sipCpp->featureCount();
     % End
+
+    //! Ensures that bool(obj) returns true (otherwise __len__() would be used)
+    int __bool__() const;
+    % MethodCode
+    sipRes = true;
+    % End
 #endif
 
     /**
