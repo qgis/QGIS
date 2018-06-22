@@ -123,7 +123,7 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
   const QString res = QDir::cleanPath( currentPath.absolutePath() );
 
   if ( res == QDir::currentPath() )
-      return QString(); // avoid default to binary folder if a filename alone is specified
+    return QString(); // avoid default to binary folder if a filename alone is specified
 
   return res == '.' ? QString() : res;
 }
