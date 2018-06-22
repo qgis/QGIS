@@ -1,8 +1,20 @@
-qgis (3.1.0) UNRELEASED; urgency=medium
+qgis (3.3.0) UNRELEASED; urgency=medium
+
+  * New development version 3.3 after branch of 3.2
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 22 Jun 2018 14:15:23 +0200
+
+qgis (3.2.0) unstable; urgency=medium
+
+  * Release of 3.2.0
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 22 Jun 2018 14:15:22 +0200
+
+qgis (3.1.0) unstable; urgency=medium
 
   * New development version 3.1 after branch of 3.0
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 23 Feb 2018 13:10:59 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 22 Jun 2018 14:14:17 +0200
 
 qgis (3.0.0) unstable; urgency=medium
 
