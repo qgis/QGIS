@@ -599,8 +599,9 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
 #endif
       if ( legend->autoUpdateModel() )
       {
+        legend->setAutoUpdateModel( false );
         model->setRootGroup( projectLayerTreeGroup() );
-        legend->synchronizeWithModel();
+        legend->updateLegend();
       }
       // if the legend has no map
       // we will load all layers
@@ -2460,6 +2461,41 @@ QgsLayerTreeGroup* QgsWMSProjectParser::projectLayerTreeGroup() const
     QgsLayerTreeUtils::readOldLegend( rootGroup, mProjectParser->legendElem() );
     return rootGroup;
   }
+
+  /*const QDomDocument* projectDoc = mProjectParser->xmlDocument();
+  if ( projectDoc )
+  {
+  QDomElement qgisElem = projectDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+  QDomElement layerTreeElem = qgisElem.firstChildElement( "layer-tree-group" );*/
+  if ( layerTreeElem.isNull() )
+  {
+    const QHash< QString, QDomElement > &projectLayerElements = mProjectParser->projectLayerElementsById();
+    QDomNodeList treeLayerNodeList = layerTreeElem.elementsByTagName( "layer-tree-layer" );
+    for ( int i = 0; i < treeLayerNodeList.size(); ++i )
+    {
+      QDomElement treeLayerElem = treeLayerNodeList.at( i ).toElement();
+      QString layerId = treeLayerElem.attribute( "id" );
+      QgsMapLayer * layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+      if ( layer )
+      {
+        continue;
+      }
+
+      QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElements.find( layerId );
+      if ( layerElemIt != projectLayerElements.constEnd() )
+      {
+        layer = mProjectParser->createLayerFromElement( layerElemIt.value(), true );
+      }
+      if ( layer )
+      {
+        QgsMapLayerRegistry::instance()->addMapLayer( layer );
+      }
+    }
+  }
+  /*}
+  }*/
 
   return QgsLayerTreeGroup::readXML( layerTreeElem );
 }
