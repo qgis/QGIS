@@ -1645,7 +1645,7 @@ QString QgsProcessingParameterExtent::valueAsPythonString( const QVariant &value
   p.insert( name(), value );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   if ( layer )
-    return QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' );
+    return QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) );
 
   return QgsProcessingParameterDefinition::valueAsPythonString( value, context );
 }
@@ -2418,7 +2418,7 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QVariantMap p;
   p.insert( name(), val );
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
-  return layer ? QgsProcessingUtils::normalizeLayerSource( layer->source() ).prepend( '\'' ).append( '\'' ) : QString();
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) ) : QString();
 }
 
 QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -2631,7 +2631,7 @@ QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value
 
   QString s = value.toString();
   s.replace( '\n', QStringLiteral( "\\n" ) );
-  return s.prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( s );
 }
 
 QString QgsProcessingParameterString::asScriptCode() const
@@ -2716,7 +2716,7 @@ QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &v
 
   QString s = value.toString();
   s.replace( '\n', QStringLiteral( "\\n" ) );
-  return s.prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( s );
 }
 
 QStringList QgsProcessingParameterExpression::dependsOnOtherParameters() const
@@ -3155,7 +3155,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
         // prefer to use layer source instead of id if possible (since it's persistent)
         if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context ) ) )
           layerString = layer->source();
-        return layerString.prepend( '\'' ).append( '\'' );
+        return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
     }
     else
@@ -3172,10 +3172,10 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
   }
   else if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
   {
-    return layer->source().prepend( '\'' ).append( '\'' );
+    return QgsProcessingUtils::stringToPythonLiteral( layer->source() );
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingParameterFeatureSource::asScriptCode() const
@@ -3334,7 +3334,7 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
     }
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingParameterFeatureSink::asScriptCode() const
@@ -3559,7 +3559,7 @@ QString QgsProcessingParameterRasterDestination::valueAsPythonString( const QVar
     }
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutputDefinition() const
@@ -3675,7 +3675,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
     }
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QgsProcessingOutputDefinition *QgsProcessingParameterFileDestination::toOutputDefinition() const
@@ -3898,7 +3898,7 @@ QString QgsProcessingParameterVectorDestination::valueAsPythonString( const QVar
     }
   }
 
-  return value.toString().prepend( '\'' ).append( '\'' );
+  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
 QString QgsProcessingParameterVectorDestination::asScriptCode() const
