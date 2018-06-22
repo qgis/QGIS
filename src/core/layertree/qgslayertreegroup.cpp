@@ -193,6 +193,9 @@ void QgsLayerTreeGroup::removeAllChildren()
 
 QgsLayerTreeLayer *QgsLayerTreeGroup::findLayer( QgsMapLayer *layer ) const
 {
+  if ( !layer )
+    return nullptr;
+
   return findLayer( layer->id() );
 }
 
