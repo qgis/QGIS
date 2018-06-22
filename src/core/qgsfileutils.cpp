@@ -114,7 +114,7 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
     if ( visited.contains( parentPath ) )
       return QString(); // break circular links
 
-    if ( parentPath.isEmpty() || parentPath == '.' )
+    if ( parentPath.isEmpty() || parentPath == QStringLiteral( "." ) )
       return QString();
     currentPath = QDir( parentPath );
     visited << parentPath;
@@ -125,5 +125,5 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
   if ( res == QDir::currentPath() )
     return QString(); // avoid default to binary folder if a filename alone is specified
 
-  return res == '.' ? QString() : res;
+  return res == QStringLiteral( "." ) ? QString() : res;
 }
