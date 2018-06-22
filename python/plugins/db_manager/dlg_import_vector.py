@@ -334,7 +334,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
                     options['layerName'] = table
                 else:
                     uri = self.outUri.uri(False)
-
+                # defaulting dropStringConstraints option to 'True' till this option is not added to UI
+                options['dropStringConstraints'] = True
                 if self.chkDropTable.isChecked():
                     options['overwrite'] = True
 
