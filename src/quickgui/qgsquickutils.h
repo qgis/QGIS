@@ -24,8 +24,11 @@
 #include "qgsmessagelog.h"
 
 #include "qgsquickmapsettings.h"
+#include "qgsquickfeaturelayerpair.h"
 #include "qgis_quick.h"
+#include "qgsfeature.h"
 
+class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 
 /**
@@ -72,6 +75,15 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE void logMessage( const QString &message,
                                  const QString &tag = QString( "QgsQuick" ),
                                  Qgis::MessageLevel level = Qgis::Warning );
+
+    /**
+      * QgsQuickFeatureLayerPair factory for tuple of QgsFeature and QgsVectorLayer used in QgsQUick library.
+      * \param feature QgsFeature linked to new QgsQuickFeature instance.
+      * \param layer QgsVectorLayer which the feature belongs to, optional.
+      *
+      * \since QGIS 3.4
+      */
+    Q_INVOKABLE QgsQuickFeatureLayerPair featureFactory( const QgsFeature &feature, QgsVectorLayer *layer = nullptr ) const;
 
     /**
      * Returns a string with information about screen size and resolution

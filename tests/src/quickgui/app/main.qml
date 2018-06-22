@@ -32,10 +32,24 @@ ApplicationWindow {
     mapSettings.project: __project
     mapSettings.layers: __layers
 
+    QgsQuick.IdentifyKit {
+      id: identifyKit
+      mapSettings: mapCanvas.mapSettings
+    }
+
     onClicked: {
       var screenPoint = Qt.point(mouse.x, mouse.y)
-      console.log("clicked:" + screenPoint)
+      var res = identifyKit.identifyOne(screenPoint);
+      highlight.featureLayerPair = res
     }
+  }
+
+  QgsQuick.FeatureHighlight {
+    anchors.fill: mapCanvas
+    id: highlight
+    color: "red"
+    mapSettings: mapCanvas.mapSettings
+    z: 1
   }
 
   Drawer {

@@ -18,7 +18,9 @@
 #include "qgis.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 
+#include "qgsquickfeaturelayerpair.h"
 #include "qgsquickmapsettings.h"
 #include "qgsquickutils.h"
 #include "qgsunittypes.h"
@@ -50,6 +52,11 @@ double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int
 void QgsQuickUtils::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
   QgsMessageLog::logMessage( message, tag, level );
+}
+
+QgsQuickFeatureLayerPair QgsQuickUtils::featureFactory( const QgsFeature &feature, QgsVectorLayer *layer ) const
+{
+  return QgsQuickFeatureLayerPair( feature, layer );
 }
 
 QString QgsQuickUtils::dumpScreenInfo() const

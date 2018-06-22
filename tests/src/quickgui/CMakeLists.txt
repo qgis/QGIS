@@ -78,6 +78,7 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(qgsquickidentifykit testqgsquickidentifykit.cpp)
 ADD_QGIS_TEST(qgsquickutils testqgsquickutils.cpp)
 ADD_QGIS_TEST(qgsquickscalebarkit testqgsquickscalebarkit.cpp)
 

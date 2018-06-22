@@ -10,6 +10,12 @@ SET(QGIS_CORE_SRCS
   ${CMAKE_SOURCE_DIR}/external/nmea/time.c
   ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
 
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
@@ -291,6 +297,7 @@ SET(QGIS_CORE_SRCS
   qgsstringstatisticalsummary.cpp
   qgsstringutils.cpp
   qgstaskmanager.cpp
+  qgstessellator.cpp
   qgstextlabelfeature.cpp
   qgstextrenderer.cpp
   qgstolerance.cpp
@@ -811,6 +818,8 @@ SET(QGIS_CORE_HDRS
   expression/qgsexpressionnodeimpl.h
   expression/qgsexpressionfunction.h
 
+  qgstessellator.h
+
   qgis.h
   qgis_sip.h
   qgsaction.h
@@ -1204,6 +1213,7 @@ INCLUDE_DIRECTORIES(
   metadata
   mesh
   ${CMAKE_SOURCE_DIR}/external/nmea
+  ${CMAKE_SOURCE_DIR}/external/poly2tri
 )
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/external/qextserialport)

@@ -1,19 +1,29 @@
 ############################################################
 # sources
 SET(QGIS_QUICK_GUI_MOC_HDRS
+  qgsquickfeaturelayerpair.h
+  qgsquickfeaturehighlight.h
+  qgsquickidentifykit.h
   qgsquickmapcanvasmap.h
   qgsquickmapsettings.h
+  qgsquickmaptransform.h
   qgsquickmessagelogmodel.h
   qgsquickscalebarkit.h
   qgsquickutils.h
 )
 
 SET(QGIS_QUICK_GUI_HDRS
+  qgsquickhighlightsgnode.h
 )
 
 SET(QGIS_QUICK_GUI_SRC
+  qgsquickfeaturelayerpair.cpp
+  qgsquickfeaturehighlight.cpp
+  qgsquickhighlightsgnode.cpp
+  qgsquickidentifykit.cpp
   qgsquickmapcanvasmap.cpp
   qgsquickmapsettings.cpp
+  qgsquickmaptransform.cpp
   qgsquickmessagelogmodel.cpp
   qgsquickscalebarkit.cpp
   qgsquickutils.cpp

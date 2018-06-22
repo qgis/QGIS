@@ -16,16 +16,18 @@
 #ifndef QGSTESSELLATOR_H
 #define QGSTESSELLATOR_H
 
-#include "qgis_3d.h"
+#include "qgis_core.h"
+#include "qgis.h"
 
 class QgsPolygon;
 class QgsMultiPolygon;
 
 #include <QVector>
 #include <memory>
+#include "qgspoint.h"
 
 /**
- * \ingroup 3d
+ * \ingroup core
  * Class that takes care of tessellation of polygons into triangles.
  *
  * It is expected that client code will create the tessellator object, then repeatedly call
@@ -33,9 +35,9 @@ class QgsMultiPolygon;
  *
  * Optionally provides extrusion by adding triangles that serve as walls when extrusion height is non-zero.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.4 (since QGIS 3.0 in QGIS_3D library)
  */
-class _3D_EXPORT QgsTessellator
+class CORE_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
@@ -44,15 +46,23 @@ class _3D_EXPORT QgsTessellator
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
-    //! Returns array of triangle vertex data
+    /**
+     * Returns array of triangle vertex data
+     *
+     * Vertice coordinates are stored as (x, z, -y)
+     */
     QVector<float> data() const { return mData; }
+
+    //! Returns the number of vertices stored in the output data array
+    int dataVerticesCount() const;
+
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
 
     /**
      * Returns the triangulation as a multipolygon geometry.
      */
-    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const;
+    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const SIP_SKIP;
 
   private:
     double mOriginX = 0, mOriginY = 0;

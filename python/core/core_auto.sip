@@ -3,6 +3,7 @@
 %Include auto_generated/expression/qgsexpressionnode.sip
 %Include auto_generated/expression/qgsexpressionnodeimpl.sip
 %Include auto_generated/expression/qgsexpressionfunction.sip
+%Include auto_generated/qgstessellator.sip
 %Include auto_generated/qgis.sip
 %Include auto_generated/qgsaction.sip
 %Include auto_generated/qgsactionscope.sip
