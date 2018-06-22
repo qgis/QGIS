@@ -75,7 +75,7 @@
            <item>
             <widget class="QLabel" name="mIdLabel">
              <property name="text">
-              <string>Label text set in qgsmetadatawidget.cpp</string>
+              <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -382,7 +382,7 @@
        <item>
         <widget class="QLabel" name="mLabelCategories">
          <property name="text">
-          <string>Label text set in qgsmetadatawidget.cpp</string>
+          <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -552,7 +552,7 @@
        <item>
         <widget class="QLabel" name="labelKeywords">
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Label text set in qgsmetadatawidget.cpp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string notr="true">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Label text set in qgsmetadatawidget.cpp&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -669,7 +669,7 @@
             <x>0</x>
             <y>0</y>
             <width>800</width>
-            <height>634</height>
+            <height>637</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1052,7 +1052,7 @@
        <item>
         <widget class="QLabel" name="mLabelContact">
          <property name="text">
-          <string>Label text set in qgsmetadatawidget.cpp</string>
+          <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -1075,7 +1075,7 @@
               <x>0</x>
               <y>0</y>
               <width>778</width>
-              <height>586</height>
+              <height>592</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
@@ -1179,17 +1179,17 @@
                </item>
                <item>
                 <property name="text">
-                 <string>custodian</string>
+                 <string notr="true">custodian</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>distributor</string>
+                 <string notr="true">distributor</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>owner</string>
+                 <string notr="true">owner</string>
                 </property>
                </item>
               </widget>
@@ -1334,7 +1334,7 @@
           <string>a list of online resources associated with the resource.</string>
          </property>
          <property name="text">
-          <string>Label text set in qgsmetadatawidget.cpp</string>
+          <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
          </property>
         </widget>
        </item>
@@ -1406,7 +1406,7 @@
        <item>
         <widget class="QLabel" name="mLabelHistory">
          <property name="text">
-          <string>Label text set in qgsmetadatawidget.cpp</string>
+          <string notr="true">Label text set in qgsmetadatawidget.cpp</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -1512,6 +1512,7 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>lineEditParentId</tabstop>
+  <tabstop>comboEncoding</tabstop>
   <tabstop>lineEditIdentifier</tabstop>
   <tabstop>btnAutoSource</tabstop>
   <tabstop>lineEditTitle</tabstop>
@@ -1520,7 +1521,6 @@
   <tabstop>mCreationDateTimeEdit</tabstop>
   <tabstop>comboLanguage</tabstop>
   <tabstop>textEditAbstract</tabstop>
-  <tabstop>comboEncoding</tabstop>
   <tabstop>btnAutoEncoding</tabstop>
   <tabstop>listDefaultCategories</tabstop>
   <tabstop>btnAddDefaultCategory</tabstop>
@@ -1548,16 +1548,16 @@
   <tabstop>dateTimeFrom</tabstop>
   <tabstop>dateTimeTo</tabstop>
   <tabstop>panelDetails</tabstop>
-  <tabstop>lineEditContactPosition</tabstop>
   <tabstop>lineEditContactName</tabstop>
+  <tabstop>comboContactRole</tabstop>
   <tabstop>lineEditContactOrganization</tabstop>
+  <tabstop>lineEditContactPosition</tabstop>
+  <tabstop>lineEditContactEmail</tabstop>
   <tabstop>lineEditContactVoice</tabstop>
   <tabstop>lineEditContactFax</tabstop>
-  <tabstop>comboContactRole</tabstop>
-  <tabstop>lineEditContactEmail</tabstop>
-  <tabstop>tabAddresses</tabstop>
   <tabstop>btnAddAddress</tabstop>
   <tabstop>btnRemoveAddress</tabstop>
+  <tabstop>tabAddresses</tabstop>
   <tabstop>btnAddLink</tabstop>
   <tabstop>btnRemoveLink</tabstop>
   <tabstop>tabLinks</tabstop>
@@ -1567,34 +1567,6 @@
   <tabstop>resultsCheckMetadata</tabstop>
  </tabstops>
  <resources>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
-  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>
