@@ -502,6 +502,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QString reportTypeString();
     void updateActionNames( QgsMasterLayoutInterface::Type type );
 
+    QString defaultExportPath() const;
+    void setLastExportPath( const QString &path ) const;
+
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

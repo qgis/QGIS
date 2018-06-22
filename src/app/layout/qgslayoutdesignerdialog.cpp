@@ -1831,13 +1831,16 @@ void QgsLayoutDesignerDialog::exportToRaster()
   if ( !showFileSizeWarning() )
     return;
 
-  QgsSettings s;
-  QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
+  QString outputFileName;
   QgsLayoutAtlas *printAtlas = atlas();
+  QString lastUsedDir = defaultExportPath();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    QString lastUsedDir = s.value( QStringLiteral( "lastSaveAsImageDir" ), QDir::homePath(), QgsSettings::App ).toString();
     outputFileName = QDir( lastUsedDir ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) );
+  }
+  else
+  {
+    outputFileName = QDir( lastUsedDir ).filePath( QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) );
   }
 
 #ifdef Q_OS_MAC
@@ -1851,6 +1854,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
   {
     return;
   }
+
+  setLastExportPath( fileNExt.first );
 
   QgsLayoutExporter::ImageExportSettings settings;
   QSize imageSize;
@@ -1921,19 +1926,17 @@ void QgsLayoutDesignerDialog::exportToPdf()
     showForceVectorWarning();
   }
 
-  QgsSettings settings;
-  QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
-  QFileInfo file( lastUsedFile );
+  const QString exportPath = defaultExportPath();
   QString outputFileName;
 
   QgsLayoutAtlas *printAtlas = atlas();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
+    outputFileName = QDir( exportPath ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
   }
   else
   {
-    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
+    outputFileName = exportPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
   }
 
 #ifdef Q_OS_MAC
@@ -1956,7 +1959,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     outputFileName += QLatin1String( ".pdf" );
   }
 
-  settings.setValue( QStringLiteral( "lastSaveAsPdfFile" ), outputFileName, QgsSettings::App );
+  setLastExportPath( outputFileName );
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
@@ -2025,19 +2028,17 @@ void QgsLayoutDesignerDialog::exportToSvg()
 
   showSvgExportWarning();
 
-  QgsSettings settings;
-  QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ), QgsSettings::App ).toString();
-  QFileInfo file( lastUsedFile );
+  const QString defaultPath = defaultExportPath();
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
   QgsLayoutAtlas *printAtlas = atlas();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() + QStringLiteral( ".svg" ) ) );
+    outputFileName = QDir( defaultPath ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() + QStringLiteral( ".svg" ) ) );
   }
   else
   {
-    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
+    outputFileName = defaultPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
   }
 
 #ifdef Q_OS_MAC
@@ -2061,7 +2062,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   }
 
   bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
-  settings.setValue( QStringLiteral( "lastSaveAsSvgFile" ), outputFileName, QgsSettings::App );
+  setLastExportPath( outputFileName );
 
   QgsLayoutExporter::SvgExportSettings svgSettings;
   bool exportAsText = false;
@@ -2437,8 +2438,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
   }
 
-  QgsSettings s;
-  QString lastUsedDir = s.value( QStringLiteral( "lastSaveAtlasAsImagesDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  QString lastUsedDir = defaultExportPath();
 
   QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
   dlg.setFileMode( QFileDialog::Directory );
@@ -2461,7 +2461,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   {
     return;
   }
-  s.setValue( QStringLiteral( "lastSaveAtlasAsImagesDir" ), dir, QgsSettings::App );
+  setLastExportPath( dir );
 
   // test directory (if it exists and is writable)
   if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
@@ -2592,8 +2592,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
   }
 
-  QgsSettings s;
-  QString lastUsedDir = s.value( QStringLiteral( "lastSaveAtlasAsSvgDir" ), QDir::homePath(), QgsSettings::App ).toString();
+  QString lastUsedDir = defaultExportPath();
 
   QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
   dlg.setFileMode( QFileDialog::Directory );
@@ -2619,7 +2618,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   {
     return;
   }
-  s.setValue( QStringLiteral( "lastSaveAtlasAsSvgDir" ), dir, QgsSettings::App );
+  setLastExportPath( dir );
 
   // test directory (if it exists and is writable)
   if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
@@ -2754,13 +2753,11 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
 
   QString outputFileName;
-  QgsSettings settings;
   QString dir;
   if ( singleFile )
   {
-    QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
-    QFileInfo file( lastUsedFile );
-    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
+    const QString defaultPath = defaultExportPath();
+    outputFileName = defaultPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
 
 #ifdef Q_OS_MAC
     QgisApp::instance()->activateWindow();
@@ -2781,7 +2778,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     {
       outputFileName += QLatin1String( ".pdf" );
     }
-    settings.setValue( QStringLiteral( "lastSaveAsPdfFile" ), outputFileName, QgsSettings::App );
+    setLastExportPath( outputFileName );
   }
   else
   {
@@ -2800,7 +2797,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     }
 
 
-    QString lastUsedDir = settings.value( QStringLiteral( "lastSaveAtlasAsPdfDir" ), QDir::homePath(), QgsSettings::App ).toString();
+    const QString lastUsedDir = defaultExportPath();
 
     QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
     dlg.setFileMode( QFileDialog::Directory );
@@ -2826,7 +2823,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     {
       return;
     }
-    settings.setValue( QStringLiteral( "lastSaveAtlasAsPdfDir" ), dir, QgsSettings::App );
+    setLastExportPath( dir );
 
     // test directory (if it exists and is writable)
     if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
@@ -2950,7 +2947,6 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
 
 void QgsLayoutDesignerDialog::exportReportToRaster()
 {
-  QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
   QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save Report As" ), outputFileName );
@@ -2960,6 +2956,8 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   {
     return;
   }
+
+  setLastExportPath( fileNExt.first );
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -3051,10 +3049,8 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 {
   showSvgExportWarning();
 
-  QgsSettings settings;
-  QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ), QgsSettings::App ).toString();
-  QFileInfo file( lastUsedFile );
-  QString outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
+  const QString defaultPath = defaultExportPath();
+  QString outputFileName = defaultPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
 
   outputFileName = QFileDialog::getSaveFileName(
                      this,
@@ -3076,7 +3072,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   this->raise();
 #endif
   bool prevSettingLabelsAsOutlines = mMasterLayout->layoutProject()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
-  settings.setValue( QStringLiteral( "lastSaveAsSvgFile" ), outputFileName, QgsSettings::App );
+  setLastExportPath( outputFileName );
 
   QgsLayoutExporter::SvgExportSettings svgSettings;
   bool exportAsText = false;
@@ -3179,12 +3175,9 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
 void QgsLayoutDesignerDialog::exportReportToPdf()
 {
-  QgsSettings settings;
+  const QString defaultPath = defaultExportPath();
 
-  QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
-  QFileInfo file( lastUsedFile );
-
-  QString outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
+  QString outputFileName = defaultPath + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -3205,7 +3198,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   {
     outputFileName += QLatin1String( ".pdf" );
   }
-  settings.setValue( QStringLiteral( "lastSaveAsPdfFile" ), outputFileName, QgsSettings::App );
+  setLastExportPath( outputFileName );
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
@@ -4149,6 +4142,36 @@ void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type 
       mActionNewLayout->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionNewReport.svg" ) ) );
       break;
   }
+}
+
+QString QgsLayoutDesignerDialog::defaultExportPath() const
+{
+  // first priority - last export folder saved in project
+  const QString projectLastExportPath = QgsFileUtils::findClosestExistingPath( QgsProject::instance()->readEntry( QStringLiteral( "Layouts" ), QStringLiteral( "/lastLayoutExportDir" ), QString() ) );
+  if ( !projectLastExportPath.isEmpty() )
+    return projectLastExportPath;
+
+  // second priority - project home path
+  const QString projectHome = QgsFileUtils::findClosestExistingPath( QgsProject::instance()->homePath() );
+  if ( !projectHome.isEmpty() )
+    return projectHome;
+
+  // last priority - app setting last export folder, with homepath as backup
+  QgsSettings s;
+  return QgsFileUtils::findClosestExistingPath( s.value( QStringLiteral( "lastLayoutExportDir" ), QDir::homePath(), QgsSettings::App ).toString() );
+}
+
+void QgsLayoutDesignerDialog::setLastExportPath( const QString &path ) const
+{
+  QFileInfo fi( path );
+  QString savePath;
+  if ( fi.isFile() )
+    savePath = fi.path();
+  else
+    savePath = path;
+
+  QgsProject::instance()->writeEntry( QStringLiteral( "Layouts" ), QStringLiteral( "/lastLayoutExportDir" ), savePath );
+  QgsSettings().setValue( QStringLiteral( "lastLayoutExportDir" ), savePath, QgsSettings::App );
 }
 
 void QgsLayoutDesignerDialog::updateWindowTitle()

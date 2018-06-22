@@ -96,6 +96,9 @@ QString QgsFileUtils::stringToSafeFilename( const QString &string )
 
 QString QgsFileUtils::findClosestExistingPath( const QString &path )
 {
+  if ( path.isEmpty() )
+    return QString();
+
   QDir currentPath;
   QFileInfo fi( path );
   if ( fi.isFile() )
