@@ -69,11 +69,11 @@ class PostGISExecuteAndLoadSQL(QgisAlgorithm):
         self.addParameter(db_param)
         self.addParameter(QgsProcessingParameterString(
             self.SQL,
-            self.tr('SQL query (must return unique id and geom field)'),
+            self.tr('SQL query'),
             multiLine=True))
         self.addParameter(QgsProcessingParameterString(
             self.ID_FIELD,
-            self.tr('ID field name'),
+            self.tr('Unique ID field name'),
             defaultValue='id'))
         self.addParameter(QgsProcessingParameterString(
             self.GEOMETRY_FIELD,
