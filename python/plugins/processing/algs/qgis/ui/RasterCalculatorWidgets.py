@@ -86,7 +86,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
         self.filledExpression = None
         self.options = options
         self.expression = expression
-        self.variables = set(re.findall('\[.*?\]', expression))
+        self.variables = set(re.findall(r'\[.*?\]', expression))
         self.comboBoxes = {}
         for variable in self.variables:
             label = QLabel(variable[1:-1])
