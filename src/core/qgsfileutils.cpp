@@ -17,6 +17,7 @@
 #include <QRegularExpression>
 #include <QFileInfo>
 #include <QDir>
+#include <QSet>
 
 QString QgsFileUtils::representFileSize( qint64 bytes )
 {
@@ -106,12 +107,17 @@ QString QgsFileUtils::findClosestExistingPath( const QString &path )
   else
     currentPath = QDir( path );
 
+  QSet< QString > visited;
   while ( !currentPath.exists() )
   {
     const QString parentPath = QDir::cleanPath( currentPath.path() + QStringLiteral( "/.." ) );
+    if ( visited.contains( parentPath ) )
+      return QString(); // break circular links
+
     if ( parentPath.isEmpty() || parentPath == '.' )
       return QString();
     currentPath = QDir( parentPath );
+    visited << parentPath;
   }
 
   const QString res = QDir::cleanPath( currentPath.path() );
