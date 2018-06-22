@@ -48,6 +48,9 @@ void QgsRelationWidgetWrapper::setVisible( bool visible )
 
 void QgsRelationWidgetWrapper::aboutToSave()
 {
+  // Calling isModified() will emit a beforeModifiedCheck()
+  // signal that will make the embedded form to send any
+  // outstanding widget changes to the edit buffer
   mRelation.referencingLayer()->isModified();
 
   if ( mNmRelation.isValid() )
