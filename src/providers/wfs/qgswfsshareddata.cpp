@@ -978,7 +978,7 @@ void QgsWFSSharedData::endOfDownload( bool success, int featureCount,
     pushError( errorMsgOut );
   }
 
-  bool bDownloadLimit = truncatedResponse || ( !mCaps.supportsPaging && featureCount == mMaxFeatures && mMaxFeatures > 0 );
+  bool bDownloadLimit = truncatedResponse || ( featureCount >= mMaxFeatures && mMaxFeatures > 0 );
 
   mDownloadFinished = true;
   if ( success && !mRect.isEmpty() )

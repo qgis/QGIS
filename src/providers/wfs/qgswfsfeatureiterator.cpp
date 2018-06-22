@@ -480,6 +480,10 @@ void QgsWFSFeatureDownloader::run( bool serializeFeatures, int maxFeatures )
     success = true;
     QgsGmlStreamingParser *parser = mShared->createParser();
 
+    if ( maxTotalFeatures > 0 && mTotalDownloadedFeatureCount >= maxTotalFeatures )
+    {
+      break;
+    }
     int maxFeaturesThisRequest = static_cast<int>(
                                    std::min( maxTotalFeatures - mTotalDownloadedFeatureCount,
                                        static_cast<qint64>( std::numeric_limits<int>::max() ) ) );
