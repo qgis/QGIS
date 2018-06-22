@@ -721,6 +721,14 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
   return mSource->getFeatures( req );
 }
 
+QgsFeatureSource::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() const
+{
+  if ( !mTransformErrorCallback && !mInvalidGeometryCallback && mInvalidGeometryCheck == QgsFeatureRequest::GeometryNoCheck )
+    return mSource->hasFeatures();
+  else
+    return QgsFeatureSource::FeaturesMaybeAvailable;
+}
+
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
 {
   QgsFeatureRequest req( request );

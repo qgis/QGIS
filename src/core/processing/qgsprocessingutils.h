@@ -317,6 +317,8 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      */
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request, Flags flags ) const;
 
+    QgsFeatureSource::FeatureAvailability hasFeatures() const override;
+
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsFields fields() const override;
