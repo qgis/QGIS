@@ -17,7 +17,7 @@
 
   <project_group>QGIS</project_group>
   <releases>
-    <release version="3.0" />
+    <release version="3.2" date="2018-06-22" />
   </releases>
   <launchable type="desktop-id">org.qgis.qgis.desktop</launchable>
   <provides>
