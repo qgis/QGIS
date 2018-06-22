@@ -137,11 +137,11 @@ then
 
   print_info "Creating source package"
   # Build source package
-  if mock --buildsrpm --spec qgis.spec --sources ./sources \
-    --define "_relver $relver" \
-    --define "_version $version" \
-    --define "_timestamp $timestamp" \
-    --resultdir=$OUTDIR $mock_args
+  if ! mock --buildsrpm --spec qgis.spec --sources ./sources \
+       --define "_relver $relver" \
+       --define "_version $version" \
+       --define "_timestamp $timestamp" \
+       --resultdir=$OUTDIR $mock_args
   then
     print_error "Creating source package failed"
     exit 1
@@ -169,11 +169,11 @@ do :
   fi
   mkdir $OUTDIR/$arch
 
-  if mock -r $arch --rebuild $OUTDIR/$srpm \
-    --define "_relver $relver" \
-    --define "_version $version" \
-    --define "_timestamp $timestamp" \
-    --resultdir=$OUTDIR/$arch $mock_args
+  if ! mock -r $arch --rebuild $OUTDIR/$srpm \
+       --define "_relver $relver" \
+       --define "_version $version" \
+       --define "_timestamp $timestamp" \
+       --resultdir=$OUTDIR/$arch $mock_args
   then
     # Add to package list
     packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
