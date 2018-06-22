@@ -158,6 +158,11 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      */
     bool lastSavePointIsDirty() const { return mLastSavePointIsDirty; }
 
+///@cond PRIVATE
+    // For internal use only, or by QgsTransactionGroup
+    static QString connectionString( const QString &layerName ) SIP_SKIP;
+///@endcond
+
   signals:
 
     /**
@@ -187,6 +192,8 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     bool mLastSavePointIsDirty;
 
     void setLayerTransactionIds( QgsTransaction *transaction );
+
+    static QString removeLayerIdOrName( const QString &str );
 
     virtual bool beginTransaction( QString &error, int statementTimeout ) = 0;
     virtual bool commitTransaction( QString &error ) = 0;

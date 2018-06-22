@@ -146,6 +146,7 @@ returns the last created savepoint
 .. versionadded:: 3.0
 %End
 
+
   signals:
 
     void afterRollback();

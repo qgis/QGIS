@@ -37,6 +37,7 @@ email                : sherman at mrcc.com
 #include "qgsgeopackagedataitems.h"
 #include "qgswkbtypes.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgsogrtransaction.h"
 
 #ifdef HAVE_GUI
 #include "qgssourceselectprovider.h"
@@ -562,6 +563,18 @@ QString QgsOgrProvider::dataSourceUri( bool expandAuthConfig ) const
   {
     return QgsDataProvider::dataSourceUri( );
   }
+}
+
+QgsTransaction *QgsOgrProvider::transaction() const
+{
+  return static_cast<QgsTransaction *>( mTransaction );
+}
+
+void QgsOgrProvider::setTransaction( QgsTransaction *transaction )
+{
+  QgsDebugMsg( QString( "set transaction %1" ).arg( transaction != nullptr ) );
+  // static_cast since layers cannot be added to a transaction of a non-matching provider
+  mTransaction = static_cast<QgsOgrTransaction *>( transaction );
 }
 
 QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
@@ -1545,6 +1558,9 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( returnvalue )
     clearMinMaxCache();
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return returnvalue;
 }
 
@@ -1688,6 +1704,9 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     }
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return returnvalue;
 }
 
@@ -1722,6 +1741,10 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
     }
   }
   loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return res;
 }
 
@@ -1769,13 +1792,17 @@ bool QgsOgrProvider::renameAttributes( const QgsFieldNameMap &renamedAttributes 
     }
   }
   loadFields();
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   return result;
 }
 
 bool QgsOgrProvider::startTransaction()
 {
   bool inTransaction = false;
-  if ( mOgrLayer->TestCapability( OLCTransactions ) )
+  if ( mTransaction == nullptr && mOgrLayer->TestCapability( OLCTransactions ) )
   {
     // A transaction might already be active, so be robust on failed
     // StartTransaction.
@@ -2025,6 +2052,9 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     commitTransaction();
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   if ( mOgrLayer->SyncToDisk() != OGRERR_NONE )
   {
     pushError( tr( "OGR error syncing to disk: %1" ).arg( CPLGetLastErrorMsg() ) );
@@ -2104,6 +2134,9 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
   {
     commitTransaction();
   }
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
 
   QgsOgrConnPool::instance()->invalidateConnections( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
   return syncToDisc();
@@ -2207,6 +2240,9 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
     commitTransaction();
   }
 
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
+
   if ( !syncToDisc() )
   {
     returnvalue = false;
@@ -2231,6 +2267,9 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
     pushError( tr( "OGR error deleting feature %1: %2" ).arg( id ).arg( CPLGetLastErrorMsg() ) );
     return false;
   }
+
+  if ( mTransaction )
+    mTransaction->dirtyLastSavePoint();
 
   mShapefileMayBeCorrupted = true;
 
@@ -2449,6 +2488,12 @@ void QgsOgrProvider::computeCapabilities()
     if ( mOgrLayer->TestCapability( "CurveGeometries" ) )
     {
       ability |= CircularGeometries;
+    }
+
+    if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+    {
+      //supports transactions
+      ability |= TransactionSupport;
     }
   }
 
@@ -4376,6 +4421,29 @@ void QgsOgrProviderUtils::invalidateCachedDatasets( const QString &dsName )
   }
 }
 
+
+QgsOgrDatasetSharedPtr QgsOgrProviderUtils::getAlreadyOpenedDataset( const QString &dsName )
+{
+  QMutexLocker locker( &sGlobalMutex );
+  for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
+  {
+    auto ident = iter.key();
+    if ( ident.dsName == dsName && ident.updateMode )
+    {
+      // Browse through this list, to look for the first available DatasetWithLayers*
+      // instance that is in update mode (hoping there's only one...)
+      auto &datasetList = iter.value();
+      for ( const auto &ds : datasetList )
+      {
+        Q_ASSERT( ds->refCount > 0 );
+        return QgsOgrDataset::create( ident, ds );
+      }
+    }
+  }
+  return nullptr;
+}
+
+
 QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     int layerIndex,
     QString &errCause )
@@ -5015,6 +5083,45 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer,
   return QgsOgrLayer::CreateForSql( ident, sql, baseLayer->ds, hSqlLayer );
 }
 
+void QgsOgrProviderUtils::releaseInternal( const DatasetIdentification &ident,
+    DatasetWithLayers *ds,
+    bool removeFromDatasetList )
+{
+
+  ds->refCount --;
+  if ( ds->refCount == 0 )
+  {
+    Q_ASSERT( ds->setLayers.isEmpty() );
+
+    if ( removeFromDatasetList )
+    {
+      auto iter = sMapSharedDS.find( ident );
+      if ( iter != sMapSharedDS.end() )
+      {
+        auto &datasetList = iter.value();
+        int i = 0;
+
+        // Normally there should be a match, except for datasets that
+        // have been invalidated
+        Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *dsIter, datasetList )
+        {
+          if ( dsIter == ds )
+          {
+            datasetList.removeAt( i );
+            break;
+          }
+          i ++;
+        }
+
+        if ( datasetList.isEmpty() )
+          sMapSharedDS.erase( iter );
+      }
+    }
+    QgsOgrProviderUtils::GDALCloseWrapper( ds->hDS );
+    delete ds;
+  }
+}
+
 void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
 {
   if ( !layer )
@@ -5032,40 +5139,69 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
     GDALDatasetReleaseResultSet( layer->ds->hDS, layer->hLayer );
   }
 
-  layer->ds->refCount --;
-  if ( layer->ds->refCount == 0 )
-  {
-    Q_ASSERT( layer->ds->setLayers.isEmpty() );
+  releaseInternal( layer->ident, layer->ds,  !layer->isSqlLayer );
 
-    if ( !layer->isSqlLayer )
-    {
-      auto iter = sMapSharedDS.find( layer->ident );
-      if ( iter != sMapSharedDS.end() )
-      {
-        auto &datasetList = iter.value();
-        int i = 0;
-
-        // Normally there should be a match, except for datasets that
-        // have been invalidated
-        Q_FOREACH ( QgsOgrProviderUtils::DatasetWithLayers *ds, datasetList )
-        {
-          if ( ds == layer->ds )
-          {
-            datasetList.removeAt( i );
-            break;
-          }
-          i ++;
-        }
-
-        if ( datasetList.isEmpty() )
-          sMapSharedDS.erase( iter );
-      }
-    }
-    QgsOgrProviderUtils::GDALCloseWrapper( layer->ds->hDS );
-    delete layer->ds;
-  }
   delete layer;
   layer = nullptr;
+}
+
+
+void QgsOgrProviderUtils::releaseDataset( QgsOgrDataset *&ds )
+{
+  if ( !ds )
+    return;
+
+  QMutexLocker locker( &sGlobalMutex );
+  releaseInternal( ds->mIdent, ds->mDs, true );
+  delete ds;
+  ds = nullptr;
+}
+
+
+QgsOgrDatasetSharedPtr QgsOgrDataset::create( const QgsOgrProviderUtils::DatasetIdentification &ident,
+    QgsOgrProviderUtils::DatasetWithLayers *ds )
+{
+  QgsOgrDatasetSharedPtr dsRet = QgsOgrDatasetSharedPtr( new QgsOgrDataset(), QgsOgrProviderUtils::releaseDataset );
+  dsRet->mIdent = ident;
+  dsRet->mDs = ds;
+  dsRet->mDs->refCount ++;
+  return dsRet;
+}
+
+bool QgsOgrDataset::executeSQLNoReturn( const QString &sql )
+{
+  QMutexLocker locker( &mutex() );
+  CPLErrorReset();
+  OGRLayerH hSqlLayer = GDALDatasetExecuteSQL(
+                          mDs->hDS, sql.toUtf8().constData(), nullptr, nullptr );
+  bool ret = CPLGetLastErrorType() == CE_None;
+  GDALDatasetReleaseResultSet( mDs->hDS, hSqlLayer );
+  return ret;
+}
+
+
+OGRLayerH QgsOgrDataset::createSQLResultLayer( QTextCodec *encoding, const QString &layerName, int layerIndex )
+{
+  QMutexLocker locker( &mutex() );
+
+  OGRLayerH layer;
+  if ( !layerName.isEmpty() )
+  {
+    layer = GDALDatasetGetLayerByName( mDs->hDS, layerName.toUtf8().constData() );
+  }
+  else
+  {
+    layer = GDALDatasetGetLayer( mDs->hDS, layerIndex );
+  }
+  if ( !layer )
+    return nullptr;
+  return QgsOgrProviderUtils::setSubsetString( layer, mDs->hDS, encoding, QString(), false, nullptr );
+}
+
+void QgsOgrDataset::releaseResultSet( OGRLayerH hSqlLayer )
+{
+  QMutexLocker locker( &mutex() );
+  GDALDatasetReleaseResultSet( mDs->hDS, hSqlLayer );
 }
 
 QgsOgrLayer::QgsOgrLayer()
@@ -6215,4 +6351,17 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer )
 {
   QgsOgrProviderUtils::release( layer );
+}
+
+QGISEXTERN QgsTransaction *createTransaction( const QString &connString )
+{
+  auto ds = QgsOgrProviderUtils::getAlreadyOpenedDataset( connString );
+  if ( !ds )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Cannot open transaction on %1, since it is is not currently opened" ).arg( connString ),
+                               QObject::tr( "OGR" ), Qgis::Critical );
+    return nullptr;
+  }
+
+  return new QgsOgrTransaction( connString, ds );
 }

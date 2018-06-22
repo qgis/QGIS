@@ -33,6 +33,7 @@ class QgsOgrFeatureIterator;
 #include <gdal.h>
 
 class QgsOgrLayer;
+class QgsOgrTransaction;
 
 /**
  * Releases a QgsOgrLayer
@@ -146,6 +147,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     QString name() const override;
     QString description() const override;
+    QgsTransaction *transaction() const override;
     bool doesStrictFeatureTypeCheck() const override;
 
     //! Returns OGR geometry type
@@ -319,7 +321,19 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void setupProxy();
 #endif
 
+    QgsOgrTransaction *mTransaction = nullptr;
+
+    void setTransaction( QgsTransaction *transaction ) override;
+
 };
+
+class QgsOgrDataset;
+
+/**
+ * Scoped QgsOgrDataset.
+ */
+using QgsOgrDatasetSharedPtr = std::shared_ptr< QgsOgrDataset>;
+
 
 /**
   \class QgsOgrProviderUtils
@@ -327,6 +341,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
   */
 class QgsOgrProviderUtils
 {
+    friend class QgsOgrDataset;
     friend class QgsOgrLayer;
 
     //! Identifies a dataset by name, updateMode and options
@@ -372,6 +387,10 @@ class QgsOgrProviderUtils
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
+    static void releaseInternal( const DatasetIdentification &ident,
+                                 DatasetWithLayers *ds,
+                                 bool removeFromDatasetList );
+
   public:
 
     //! Inject credentials into the dsName (if any)
@@ -398,6 +417,9 @@ class QgsOgrProviderUtils
 
     //! Wrapper for GDALClose()
     static void GDALCloseWrapper( GDALDatasetH mhDS );
+
+    //! Return a QgsOgrDataset wrapping an already opened GDALDataset. Typical use: by QgsOgrTransaction
+    static QgsOgrDatasetSharedPtr getAlreadyOpenedDataset( const QString &dsName );
 
     //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer.
     static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
@@ -432,6 +454,9 @@ class QgsOgrProviderUtils
     //! Release a QgsOgrLayer*
     static void release( QgsOgrLayer *&layer );
 
+    //! Release a QgsOgrDataset*
+    static void releaseDataset( QgsOgrDataset *&ds );
+
     //! Make sure that the existing pool of opened datasets on dsName is not accessible for new getLayer() attempts
     static void invalidateCachedDatasets( const QString &dsName );
 
@@ -447,6 +472,34 @@ class QgsOgrProviderUtils
     //! Converts a OGR WKB type to the corresponding QGIS wkb type
     static QgsWkbTypes::Type qgisTypeFromOgrType( OGRwkbGeometryType type );
 
+};
+
+
+/**
+  \class QgsOgrDataset
+  \brief Wrap a GDALDatasetH object in a thread-safe way
+  */
+class QgsOgrDataset
+{
+    friend class QgsOgrProviderUtils;
+    QgsOgrProviderUtils::DatasetIdentification mIdent;
+    QgsOgrProviderUtils::DatasetWithLayers *mDs;
+
+    QgsOgrDataset() = default;
+    ~QgsOgrDataset() = default;
+
+  public:
+
+    static QgsOgrDatasetSharedPtr create( const QgsOgrProviderUtils::DatasetIdentification &ident,
+                                          QgsOgrProviderUtils::DatasetWithLayers *ds );
+
+    QMutex &mutex() { return mDs->mutex; }
+
+    bool executeSQLNoReturn( const QString &sql );
+
+    OGRLayerH createSQLResultLayer( QTextCodec *encoding, const QString &layerName, int layerIndex );
+
+    void releaseResultSet( OGRLayerH hSqlLayer );
 };
 
 
@@ -504,7 +557,7 @@ class QgsOgrLayer
     QgsOgrProviderUtils::DatasetIdentification ident;
     bool isSqlLayer = false;
     QString layerName;
-    QString sql;
+    QString sql; // not really used. Just set at QgsOgrLayer::CreateForLayer() time
     QgsOgrProviderUtils::DatasetWithLayers *ds = nullptr;
     OGRLayerH hLayer = nullptr;
     QgsOgrFeatureDefn oFDefn;
@@ -624,7 +677,7 @@ class QgsOgrLayer
     //! Wrapper of GDALDatasetReleaseResultSet( GDALDatasetExecuteSQL( ... ) )
     void ExecuteSQLNoReturn( const QByteArray &sql );
 
-    //! Wrapper of GDALDatasetExecuteSQL(). Returned layer must be released with QgsOgrProviderUtils::release()
+    //! Wrapper of GDALDatasetExecuteSQL().
     QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
 };
 
