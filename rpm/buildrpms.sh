@@ -175,11 +175,11 @@ do :
        --define "_timestamp $timestamp" \
        --resultdir=$OUTDIR/$arch $mock_args
   then
-    # Add to package list
-    packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
-  else
     print_error "Package creation for $arch failed. Abort"
     exit 1
+  else
+    # Add to package list
+    packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
   fi
 done
 
