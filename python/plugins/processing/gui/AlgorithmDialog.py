@@ -97,7 +97,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             if not param.isDestination():
                 wrapper = self.mainWidget().wrappers[param.name()]
                 value = None
-                if wrapper.widget:
+                if wrapper.widget is not None:
                     value = wrapper.value()
                     parameters[param.name()] = value
 
