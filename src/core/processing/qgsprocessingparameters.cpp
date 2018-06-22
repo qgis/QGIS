@@ -3155,7 +3155,7 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
         // prefer to use layer source instead of id if possible (since it's persistent)
         if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context ) ) )
           layerString = layer->source();
-        return layerString.prepend( '\'' ).append( '\'' );
+        return QgsProcessingUtils::stringToPythonLiteral( layerString );
       }
     }
     else
