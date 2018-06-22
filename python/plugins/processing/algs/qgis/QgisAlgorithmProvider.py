@@ -32,6 +32,7 @@ try:
     # importing plotly throws Python warnings from within the library - filter these out
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=ResourceWarning)
+        warnings.filterwarnings("ignore", category=ImportWarning)
         import plotly  # NOQA
         hasPlotly = True
 except:
