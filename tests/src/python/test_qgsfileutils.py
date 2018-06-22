@@ -66,6 +66,8 @@ class TestQgsFileUtils(unittest.TestCase):
     def testFindClosestExistingPath(self):
         self.assertEqual(QgsFileUtils.findClosestExistingPath(''), '')
         self.assertEqual(QgsFileUtils.findClosestExistingPath('.'), '')
+        self.assertEqual(QgsFileUtils.findClosestExistingPath('just_a_filename'), '')
+        self.assertEqual(QgsFileUtils.findClosestExistingPath('just_a_filename.txt'), '')
         self.assertEqual(QgsFileUtils.findClosestExistingPath('a_very_unlikely_path_to_really_exist/because/no_one_would_have_a_folder_called/MapInfo is the bestest/'), '')
         # sorry anyone not on linux!
         self.assertEqual(QgsFileUtils.findClosestExistingPath('/usr/youve_been_hacked/by_the_l77t_krew'), '/usr')
@@ -75,9 +77,9 @@ class TestQgsFileUtils(unittest.TestCase):
         with open(file, 'wt') as f:
             f.write('\n')
 
-        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')), base_path) # non-existant file
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'a file name.bmp')), base_path) # non-existent file
         self.assertEqual(QgsFileUtils.findClosestExistingPath(file), base_path) # real file!
-        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'non/existant/subfolder')), base_path)
+        self.assertEqual(QgsFileUtils.findClosestExistingPath(os.path.join(base_path, 'non/existent/subfolder')), base_path)
 
         sub_folder1 = os.path.join(base_path, 'subfolder1')
         os.mkdir(sub_folder1)
