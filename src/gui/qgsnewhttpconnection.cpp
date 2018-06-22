@@ -62,10 +62,16 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbDpiMode->addItem( tr( "GeoServer" ) );
 
   cmbVersion->clear();
-  cmbVersion->addItem( tr( "Auto-detect" ) );
+  cmbVersion->addItem( tr( "Maximum" ) );
   cmbVersion->addItem( tr( "1.0" ) );
   cmbVersion->addItem( tr( "1.1" ) );
   cmbVersion->addItem( tr( "2.0" ) );
+  connect( cmbVersion,
+           static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
+
+  connect( cbxWfsFeaturePaging, &QCheckBox::stateChanged,
+           this, &QgsNewHttpConnection::wfsFeaturePagingStateChanged );
 
   if ( !connectionName.isEmpty() )
   {
@@ -86,6 +92,7 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mAuthSettings->setPassword( settings.value( credentialsKey + "/password" ).toString() );
     mAuthSettings->setConfigId( settings.value( credentialsKey + "/authcfg" ).toString() );
   }
+  mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 
   if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
   {
@@ -148,6 +155,20 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   nameChanged( connectionName );
 }
 
+void QgsNewHttpConnection::wfsVersionCurrentIndexChanged( int index )
+{
+  cbxWfsFeaturePaging->setEnabled( index == 0 || index == 3 );
+  lblPageSize->setEnabled( index == 0 || index == 3 );
+  txtPageSize->setEnabled( index == 0 || index == 3 );
+  cbxWfsIgnoreAxisOrientation->setEnabled( index != 1 );
+}
+
+void QgsNewHttpConnection::wfsFeaturePagingStateChanged( int state )
+{
+  lblPageSize->setEnabled( state == Qt::Checked );
+  txtPageSize->setEnabled( state == Qt::Checked );
+}
+
 QString QgsNewHttpConnection::name() const
 {
   return txtName->text();
@@ -168,6 +189,7 @@ void QgsNewHttpConnection::urlChanged( const QString &text )
 {
   Q_UNUSED( text );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
+  mWfsVersionDetectButton->setDisabled( txtUrl->text().isEmpty() );
 }
 
 void QgsNewHttpConnection::updateOkButtonState()
@@ -207,6 +229,26 @@ bool QgsNewHttpConnection::validate()
 QPushButton *QgsNewHttpConnection::testConnectButton()
 {
   return mTestConnectionButton;
+}
+
+QPushButton *QgsNewHttpConnection::wfsVersionDetectButton()
+{
+  return mWfsVersionDetectButton;
+}
+
+QComboBox *QgsNewHttpConnection::wfsVersionComboBox()
+{
+  return cmbVersion;
+}
+
+QCheckBox *QgsNewHttpConnection::wfsPagingEnabledCheckBox()
+{
+  return cbxWfsFeaturePaging;
+}
+
+QLineEdit *QgsNewHttpConnection::wfsPageSizeLineEdit()
+{
+  return txtPageSize;
 }
 
 QString QgsNewHttpConnection::wfsSettingsKey( const QString &base, const QString &connectionName ) const
@@ -266,24 +308,18 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
 
   txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
   txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
+
+  bool pagingEnabled = settings.value( wfsKey + "/pagingenabled", true ).toBool();
+  txtPageSize->setText( settings.value( wfsKey + "/pagesize" ).toString() );
+  cbxWfsFeaturePaging->setChecked( pagingEnabled );
+
+  txtPageSize->setEnabled( pagingEnabled );
+  lblPageSize->setEnabled( pagingEnabled );
+  cbxWfsFeaturePaging->setEnabled( pagingEnabled );
 }
 
-void QgsNewHttpConnection::accept()
+QUrl QgsNewHttpConnection::urlTrimmed() const
 {
-  QgsSettings settings;
-  QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
-
-  if ( !validate() )
-    return;
-
-  // on rename delete original entry first
-  if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
-  {
-    settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
-    settings.sync();
-  }
 
   QUrl url( txtUrl->text().trimmed() );
   const QList< QPair<QByteArray, QByteArray> > &items = url.encodedQueryItems();
@@ -306,7 +342,27 @@ void QgsNewHttpConnection::accept()
   {
     url.setEncodedPath( "/" );
   }
+  return url;
+}
 
+void QgsNewHttpConnection::accept()
+{
+  QgsSettings settings;
+  QString key = mBaseKey + txtName->text();
+  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
+
+  if ( !validate() )
+    return;
+
+  // on rename delete original entry first
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
+  {
+    settings.remove( mBaseKey + mOriginalConnName );
+    settings.remove( "qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
+    settings.sync();
+  }
+
+  QUrl url( urlTrimmed() );
   settings.setValue( key + "/url", url.toString() );
 
   QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
@@ -374,6 +430,9 @@ void QgsNewHttpConnection::accept()
     settings.setValue( wfsKey + "/version", version );
 
     settings.setValue( wfsKey + "/maxnumfeatures", txtMaxNumFeatures->text() );
+
+    settings.setValue( wfsKey + "/pagesize", txtPageSize->text() );
+    settings.setValue( wfsKey + "/pagingenabled", cbxWfsFeaturePaging->isChecked() );
   }
 
   settings.setValue( credentialsKey + "/username", mAuthSettings->username() );

@@ -33,9 +33,11 @@ SET (WFS_MOC_HDRS
 IF (WITH_GUI)
   SET(WFS_SRCS ${WFS_SRCS}
     qgswfssourceselect.cpp
+    qgswfsnewconnection.cpp
   )
   SET(WFS_MOC_HDRS ${WFS_MOC_HDRS}
     qgswfssourceselect.h
+    qgswfsnewconnection.h
   )
 ENDIF ()
 
