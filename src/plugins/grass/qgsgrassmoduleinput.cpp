@@ -17,6 +17,7 @@
 #include <QCompleter>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QHeaderView>
 #include <QHBoxLayout>
 #include <QIcon>
 #include <QLatin1String>
