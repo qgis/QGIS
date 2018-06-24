@@ -25,7 +25,7 @@ Constructor for QgsRelationWidgetWrapper
 
     bool showLabel() const;
 %Docstring
-Defines if a title lable should be shown for this widget.
+Defines if a title label should be shown for this widget.
 Only has an effect after widget() has been called at least once.
 
 .. versionadded:: 2.18
@@ -33,7 +33,7 @@ Only has an effect after widget() has been called at least once.
 
     void setShowLabel( bool showLabel );
 %Docstring
-Defines if a title lable should be shown for this widget.
+Defines if a title label should be shown for this widget.
 Only has an effect after widget() has been called at least once.
 
 .. versionadded:: 2.18

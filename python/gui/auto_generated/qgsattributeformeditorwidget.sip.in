@@ -68,7 +68,7 @@ Set the constraint status for this widget.
 
     void setConstraintResultVisible( bool editable );
 %Docstring
-Set the constraint result lable visible or invisible according to the layer editable status
+Set the constraint result label visible or invisible according to the layer editable status
 %End
 
   public slots:
