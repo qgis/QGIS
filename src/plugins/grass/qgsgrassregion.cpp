@@ -27,6 +27,8 @@
 
 #include <QButtonGroup>
 #include <QColorDialog>
+#include <QDoubleValidator>
+#include <QIntValidator>
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QRubberBand>
