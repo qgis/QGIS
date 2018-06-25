@@ -94,10 +94,25 @@ QgsQuickFeatureLayerPair QgsQuickUtils::featureFactory( const QgsFeature &featur
   return QgsQuickFeatureLayerPair( feature, layer );
 }
 
-QUrl QgsQuickUtils::getThemeIcon( const QString &name )
+const QUrl QgsQuickUtils::getThemeIcon( const QString &name ) const
+{
   QString path = QStringLiteral( "qrc:/%1.svg" ).arg( name );
   QgsDebugMsg( QStringLiteral( "Using icon %1 from %2" ).arg( name, path ) );
   return QUrl( path );
+}
+
+QgsUnitTypes::SystemOfMeasurement QgsQuickUtils::systemOfMeasurementFactory( const QString &type )
+{
+  if ( type == QStringLiteral( "Metric" ) )
+    return QgsUnitTypes::MetricSystem;
+
+  if ( type == QStringLiteral( "Imperial" ) )
+    return QgsUnitTypes::ImperialSystem;
+
+  if ( type == QStringLiteral( "USCS" ) )
+    return QgsUnitTypes::USCSSystem;
+
+  return QgsUnitTypes::UnknownSystem;
 }
 
 QString QgsQuickUtils::formatPoint(
@@ -109,30 +124,151 @@ QString QgsQuickUtils::formatPoint(
   return QgsCoordinateFormatter::format( point, format, decimals, flags );
 }
 
-QString QgsQuickUtils::formatDistance( double distance, QgsUnitTypes::DistanceUnit units, int decimals )
+QString QgsQuickUtils::formatDistance( double distance,
+                                       QgsUnitTypes::DistanceUnit units,
+                                       int decimals,
+                                       QgsUnitTypes::SystemOfMeasurement destSystem )
 {
-  double dist = distance * QgsUnitTypes::fromUnitToUnitFactor( units, QgsUnitTypes::DistanceMeters );
+  double destDistance;
+  QgsUnitTypes::DistanceUnit destUnits;
 
-  if ( dist < 0 )
+  humanReadableDistance( distance, units, destSystem, destDistance, destUnits );
+
+  return QStringLiteral( "%1 %2" )
+         .arg( QString::number( destDistance, 'f', decimals ) )
+         .arg( QgsUnitTypes::toAbbreviatedString( destUnits ) );
+}
+
+
+void QgsQuickUtils::humanReadableDistance( double srcDistance, QgsUnitTypes::DistanceUnit srcUnits,
+    QgsUnitTypes::SystemOfMeasurement destSystem,
+    double &destDistance, QgsUnitTypes::DistanceUnit &destUnits )
+{
+  if ( ( destSystem == QgsUnitTypes::MetricSystem ) || ( destSystem == QgsUnitTypes::UnknownSystem ) )
   {
-    return QStringLiteral( "0 %1" ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters ) );
+    return formatToMetricDistance( srcDistance, srcUnits, destDistance, destUnits );
   }
-
-  if ( dist > 1000 )
+  else if ( destSystem == QgsUnitTypes::ImperialSystem )
   {
-    return QStringLiteral( "%1 %2" ).arg( QString::number( dist / 1000.0, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceKilometers ) );
+    return formatToImperialDistance( srcDistance, srcUnits, destDistance, destUnits );
+  }
+  else if ( destSystem == QgsUnitTypes::USCSSystem )
+  {
+    return formatToUSCSDistance( srcDistance, srcUnits, destDistance, destUnits );
   }
   else
   {
-    if ( dist > 1 )
-    {
-      return QStringLiteral( "%1 %2" ).arg( QString::number( dist, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters ) );
-    }
-    else
-    {
-      return QStringLiteral( "%1 %2" ).arg( QString::number( dist * 1000, 'f', decimals ) ).arg( QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMillimeters ) );
-    }
+    Q_ASSERT( false ); //should never happen
   }
+}
+
+void QgsQuickUtils::formatToMetricDistance( double srcDistance,
+    QgsUnitTypes::DistanceUnit srcUnits,
+    double &destDistance,
+    QgsUnitTypes::DistanceUnit &destUnits )
+{
+  double dist = srcDistance * QgsUnitTypes::fromUnitToUnitFactor( srcUnits, QgsUnitTypes::DistanceMillimeters );
+  if ( dist < 0 )
+  {
+    destDistance = 0;
+    destUnits = QgsUnitTypes::DistanceMillimeters;
+    return;
+  }
+
+  double mmToKm = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceKilometers, QgsUnitTypes::DistanceMillimeters );
+  if ( dist > mmToKm )
+  {
+    destDistance = dist / mmToKm;
+    destUnits = QgsUnitTypes::DistanceKilometers;
+    return;
+  }
+
+  double mmToM = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMeters, QgsUnitTypes::DistanceMillimeters );
+  if ( dist > mmToM )
+  {
+    destDistance = dist / mmToM;
+    destUnits = QgsUnitTypes::DistanceMeters;
+    return;
+  }
+
+  double mmToCm = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceCentimeters, QgsUnitTypes::DistanceMillimeters );
+  if ( dist > mmToCm )
+  {
+    destDistance = dist / mmToCm;
+    destUnits = QgsUnitTypes::DistanceCentimeters;
+    return;
+  }
+
+  destDistance = dist;
+  destUnits = QgsUnitTypes::DistanceMillimeters;
+}
+
+void QgsQuickUtils::formatToImperialDistance( double srcDistance,
+    QgsUnitTypes::DistanceUnit srcUnits,
+    double &destDistance,
+    QgsUnitTypes::DistanceUnit &destUnits )
+{
+  double dist = srcDistance * QgsUnitTypes::fromUnitToUnitFactor( srcUnits, QgsUnitTypes::DistanceFeet );
+  if ( dist < 0 )
+  {
+    destDistance = 0;
+    destUnits = QgsUnitTypes::DistanceFeet;
+    return;
+  }
+
+  double feetToMile = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceMiles, QgsUnitTypes::DistanceFeet );
+  if ( dist > feetToMile )
+  {
+    destDistance = dist / feetToMile;
+    destUnits = QgsUnitTypes::DistanceMiles;
+    return;
+  }
+
+  double feetToYard = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceYards, QgsUnitTypes::DistanceFeet );
+  if ( dist > feetToYard )
+  {
+    destDistance = dist / feetToYard;
+    destUnits = QgsUnitTypes::DistanceYards;
+    return;
+  }
+
+  destDistance = dist;
+  destUnits = QgsUnitTypes::DistanceFeet;
+  return;
+}
+
+void QgsQuickUtils::formatToUSCSDistance( double srcDistance,
+    QgsUnitTypes::DistanceUnit srcUnits,
+    double &destDistance,
+    QgsUnitTypes::DistanceUnit &destUnits )
+{
+  double dist = srcDistance * QgsUnitTypes::fromUnitToUnitFactor( srcUnits, QgsUnitTypes::DistanceFeet );
+  if ( dist < 0 )
+  {
+    destDistance = 0;
+    destUnits = QgsUnitTypes::DistanceFeet;
+    return;
+  }
+
+  double feetToMile = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceNauticalMiles, QgsUnitTypes::DistanceFeet );
+  if ( dist > feetToMile )
+  {
+    destDistance = dist / feetToMile;
+    destUnits = QgsUnitTypes::DistanceNauticalMiles;
+    return;
+  }
+
+  double feetToYard = QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::DistanceYards, QgsUnitTypes::DistanceFeet );
+  if ( dist > feetToYard )
+  {
+    destDistance = dist / feetToYard;
+    destUnits = QgsUnitTypes::DistanceYards;
+    return;
+  }
+
+  destDistance = dist;
+  destUnits = QgsUnitTypes::DistanceFeet;
+  return;
 }
 
 QString QgsQuickUtils::dumpScreenInfo() const

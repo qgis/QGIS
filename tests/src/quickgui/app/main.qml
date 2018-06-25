@@ -76,13 +76,25 @@ ApplicationWindow {
     }
   }
 
-  /** Scale Bar */
+  /** Scale Bar in metric units*/
   QgsQuick.ScaleBar {
     id: scaleBar
     y: window.height - height
     height: 50 * QgsQuick.Utils.dp
     mapSettings: mapCanvas.mapSettings
     preferredWidth: 115 * QgsQuick.Utils.dp
+    z: 1
+  }
+
+  /** Scale Bar in imperial units*/
+  QgsQuick.ScaleBar {
+    id: scaleBarImperialUnits
+    y: window.height - height
+    x: window.width/2
+    height: scaleBar.height
+    mapSettings: mapCanvas.mapSettings
+    preferredWidth: scaleBar.preferredWidth
+    systemOfMeasurement: QgsQuick.Utils.systemOfMeasurementFactory("Imperial")
     z: 1
   }
 

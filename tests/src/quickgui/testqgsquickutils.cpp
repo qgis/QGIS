@@ -116,13 +116,24 @@ void TestQgsQuickUtils::formatDistance()
   QVERIFY( dist2str == "700.2 m" );
 
   dist2str = utils.formatDistance( 0.22, QgsUnitTypes::DistanceMeters, 0 );
-  QVERIFY( dist2str == "220 mm" );
+  QVERIFY( dist2str == "22 cm" );
 
   dist2str = utils.formatDistance( -0.22, QgsUnitTypes::DistanceMeters, 0 );
-  QVERIFY( dist2str == "0 m" );
+  QVERIFY( dist2str == "0 mm" );
 
   dist2str = utils.formatDistance( 1.222234, QgsUnitTypes::DistanceKilometers,  2 );
   QVERIFY( dist2str == "1.22 km" );
+
+  /////////////////////////////////////////////////////////
+  dist2str = utils.formatDistance( 6000, QgsUnitTypes::DistanceFeet, 1, QgsUnitTypes::ImperialSystem );
+  QVERIFY( dist2str == "1.1 mi" );
+
+  dist2str = utils.formatDistance( 5, QgsUnitTypes::DistanceFeet, 1, QgsUnitTypes::ImperialSystem );
+  QVERIFY( dist2str == "1.7 yd" );
+
+  /////////////////////////////////////////////////////////
+  dist2str = utils.formatDistance( 7000, QgsUnitTypes::DistanceFeet, 1, QgsUnitTypes::USCSSystem );
+  QVERIFY( dist2str == "1.2 NM" );
 }
 
 QGSTEST_MAIN( TestQgsQuickUtils )

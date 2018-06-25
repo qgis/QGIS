@@ -134,7 +134,19 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE const QUrl getThemeIcon( const QString &name );
+    Q_INVOKABLE const QUrl getThemeIcon( const QString &name ) const;
+
+    /**
+      * QgsUnitTypes::SystemOfMeasurement factory
+      * for input type parameter:
+      *    "Metric": QgsUnitTypes::MetricSystem
+      *    "Imperial": QgsUnitTypes::ImperialSystem
+      *    "USCS": QgsUnitTypes::USCSSystem
+      *    else: QgsUnitTypes::UnknownSystem
+      *
+      * \since QGIS 3.4
+      */
+    Q_INVOKABLE static QgsUnitTypes::SystemOfMeasurement systemOfMeasurementFactory( const QString &type );
 
     /**
      * \copydoc QgsCoordinateFormatter::format()
@@ -148,24 +160,66 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       QgsCoordinateFormatter::FormatFlags flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
 
     /**
-      * Converts distance in meters to human readable
+      * Converts distance to human readable distance
       *
-      * The resulting units is determined automatically
+      * This is useful for scalebar texts or output of the GPS accuracy
+      *
+      * The resulting units are determined automatically,
+      * based on requested system of measurement.
       * e.g. 1222.234 m is converted to 1.2 km
       *
       * \param distance distance in units
       * \param units units of dist
       * \param decimals decimal to use
-      * \returns string represetation of dist
+      * \param destSystem system of measurement of the result
+      * \returns string represetation of dist in desired destSystem. For distance less than 0, 0 is returned.
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE static QString formatDistance( double distance, QgsUnitTypes::DistanceUnit units, int decimals = 1 );
+    Q_INVOKABLE static QString formatDistance( double distance,
+        QgsUnitTypes::DistanceUnit units,
+        int decimals,
+        QgsUnitTypes::SystemOfMeasurement destSystem = QgsUnitTypes::MetricSystem );
+
+    /**
+      * Converts distance to human readable distance in destination system of measurement
+      *
+      * \sa QgsQuickUtils::formatDistance()
+      *
+      * \param srcDistance distance in units
+      * \param srcUnits units of dist
+      * \param destSystem system of measurement of the result
+      * \param destDistance output: distance if desired system of measurement
+      * \param destUnits output: unit of destDistance
+      *
+      * \since QGIS 3.4
+      */
+    static void humanReadableDistance( double srcDistance,
+                                       QgsUnitTypes::DistanceUnit srcUnits,
+                                       QgsUnitTypes::SystemOfMeasurement destSystem,
+                                       double &destDistance,
+                                       QgsUnitTypes::DistanceUnit &destUnits );
 
     //! Returns a string with information about screen size and resolution - useful for debugging
     QString dumpScreenInfo() const;
 
   private:
+    static void formatToMetricDistance( double srcDistance,
+                                        QgsUnitTypes::DistanceUnit srcUnits,
+                                        double &destDistance,
+                                        QgsUnitTypes::DistanceUnit &destUnits );
+
+    static void formatToImperialDistance( double srcDistance,
+                                          QgsUnitTypes::DistanceUnit srcUnits,
+                                          double &destDistance,
+                                          QgsUnitTypes::DistanceUnit &destUnits );
+
+    static void formatToUSCSDistance( double srcDistance,
+                                      QgsUnitTypes::DistanceUnit srcUnits,
+                                      double &destDistance,
+                                      QgsUnitTypes::DistanceUnit &destUnits );
+
+
     static qreal calculateScreenDensity();
 
     qreal mScreenDensity;

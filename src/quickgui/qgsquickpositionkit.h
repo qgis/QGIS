@@ -162,7 +162,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
     /**
      * Coordinate reference system of position - WGS84 (constant)
      */
-    QgsCoordinateReferenceSystem positionCRS() const;
+    Q_INVOKABLE QgsCoordinateReferenceSystem positionCRS() const;
 
     /**
      * Use simulated GPS source.

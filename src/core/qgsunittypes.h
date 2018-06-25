@@ -39,6 +39,14 @@ class CORE_EXPORT QgsUnitTypes
     Q_GADGET
 
   public:
+    enum SystemOfMeasurement
+    {
+      UnknownSystem = 0, //!< Unknown system of measurement
+      MetricSystem, //!< International System of Units (SI)
+      ImperialSystem, //!< British Imperial
+      USCSSystem //!< United States customary system
+    };
+
     //! Units of distance
     enum DistanceUnit
     {
