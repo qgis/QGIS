@@ -1,0 +1,43 @@
+# Number of days of inactivity before an issue becomes stale
+daysUntilStale: 14
+# Number of days of inactivity before a stale issue is closed
+daysUntilClose: 7
+# Issues with these labels will never be considered stale
+exemptLabels:
+  - pinned
+  - security
+# Label to use when marking an issue as stale
+staleLabel: stale
+# Comment to post when marking an issue as stale. Set to `false` to disable
+markComment: >
+  This pull request has been automatically marked as stale because it has not
+  had activity in 14 days.
+  If you think this pull request should be merged, please check
+
+  - that all unit tests are passing
+
+  - that all comments by reviewers have been addressed
+
+  - that there is enough information for reviewers, in particular
+
+    - link to any issues which this pull request fixes
+
+    - add a description of workflows which this pull request fixes
+
+    - add screenshots if applicable
+
+  - that you have written unit tests where possible
+
+  In case you should have any uncertainty, please leave a comment and we will
+  happy to help you proceed with this pull request.
+
+  If there is no further activity on this pull request, it will be closed in a
+  week.
+
+# Comment to post when closing a stale issue. Set to `false` to disable
+closeComment: >
+  This pull request has been automatically closed because it has not had any
+  activity in 21 days.
+  If this pull request should be reconsidered, please follow the guidelines in
+  the previous comment and reopen this pull request.
+
