@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="256" height="256" viewBox="0, 0, 256, 256">
-  <g id="Background">
-    <rect x="0" y="0" width="256" height="256" fill="#FFFFFF"/>
-  </g>
   <defs>
     <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="200.788" y1="249.007" x2="197.17" y2="11.232">
       <stop offset="0" stop-color="#589632"/>
@@ -14,7 +11,6 @@
       <stop offset="1" stop-color="#93B023"/>
     </linearGradient>
   </defs>
-  <g id="Background"/>
   <g id="Layer_1">
     <path d="M137.607,136.899 L172.044,136.899 L142.898,108.083 L107.19,108.083 L107.19,142.392 L137.607,172.708 z" fill="#EE7913" id="polygon3"/>
     <path d="M248.061,212.048 L186.618,151.306 L152.01,151.306 L152.01,187.067 L210.891,245.749 L248.061,245.749 z" fill="url(#Gradient_1)" id="polygon10"/>
