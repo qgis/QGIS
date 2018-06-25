@@ -101,6 +101,7 @@ from .PoleOfInaccessibility import PoleOfInaccessibility
 from .Polygonize import Polygonize
 from .PolygonsToLines import PolygonsToLines
 from .PostGISExecuteSQL import PostGISExecuteSQL
+from .PostGISExecuteAndLoadSQL import PostGISExecuteAndLoadSQL
 from .RandomExtract import RandomExtract
 from .RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from .RandomPointsAlongLines import RandomPointsAlongLines
@@ -216,6 +217,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 Polygonize(),
                 PolygonsToLines(),
                 PostGISExecuteSQL(),
+                PostGISExecuteAndLoadSQL(),
                 RandomExtract(),
                 RandomExtractWithinSubsets(),
                 RandomPointsAlongLines(),
