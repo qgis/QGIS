@@ -39,6 +39,7 @@ class CORE_EXPORT QgsUnitTypes
     Q_GADGET
 
   public:
+    //! Systems of unit measurement
     enum SystemOfMeasurement
     {
       UnknownSystem = 0, //!< Unknown system of measurement

@@ -88,7 +88,7 @@ void QgsQuickCoordinateTransformer::updatePosition()
   // If Z is NaN, coordinate transformation (proj4) will
   // also set X and Y to NaN. But we also want to get projected
   // coords if we do not have any Z coordinate.
-  if ( qIsNaN( z ) )
+  if ( std::isnan( z ) )
   {
     z = 0;
   }
