@@ -100,11 +100,13 @@ QGIS_SERVER_PKI_USERNAME=Gerardus QGIS_SERVER_PORT=47547 QGIS_SERVER_HOST=localh
 OAuth2:
 
 QGIS_SERVER_PORT=8443 \
-    QGIS_SERVER_HOST=localhost \
-    QGIS_SERVER_OAUTH2_AUTHORITY=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/chain_subissuer-issuer-root.pem  \
-    QGIS_SERVER_OAUTH2_CERTIFICATE=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/localhost_ssl_cert.pem \
-    QGIS_SERVER_OAUTH2_KEY=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/localhost_ssl_key.pem \
-    python3 /home/$USER/dev/QGIS/tests/src/python/qgis_wrapped_server.py
+    QGIS_SERVER_HOST=127.0.0.1 \
+    QGIS_SERVER_OAUTH2_AUTHORITY=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/chains_subissuer-issuer-root_issuer2-root2.pem \
+    QGIS_SERVER_OAUTH2_CERTIFICATE=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/127_0_0_1_ssl_cert.pem \
+    QGIS_SERVER_OAUTH2_KEY=/home/$USER/dev/QGIS/tests/testdata/auth_system/certs_keys/127_0_0_1_ssl_key.pem \
+    python3 \
+    /home/$USER/dev/QGIS/tests/src/python/qgis_wrapped_server.py
+
 
 
 .. note:: This program is free software; you can redistribute it and/or modify
@@ -453,7 +455,6 @@ if __name__ == '__main__':
         server = ThreadedHTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
     else:
         server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
-    server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
     # HTTPS is enabled if any of PKI or OAuth2 are enabled too
     if HTTPS_ENABLED:
         if QGIS_SERVER_OAUTH2_AUTH:
