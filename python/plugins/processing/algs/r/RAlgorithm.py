@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import types
 
 from qgis.PyQt.QtGui import QIcon
 
@@ -499,12 +500,20 @@ class RAlgorithm(GeoAlgorithm):
                     commands.append(param.name + '= NULL')
                 else:
                     commands.append(param.name + ' = "' + param.value + '"')
-            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField, ParameterString,
+            elif isinstance(param, (ParameterTableField, ParameterTableMultipleField,
                                     ParameterFile)):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
                 else:
                     commands.append(param.name + '="' + param.value + '"')
+            elif isinstance(param, ParameterString):
+                if param.value is None:
+                    commands.append(param.name + '= NULL')
+                elif type(param.value) == types.StringType:
+                    commands.append(param.name + '="' + param.value + '"')
+                else:
+                    c = unicode(param.name) + u'="' + unicode(param.value) + u'"'
+                    commands.append(c.encode('utf8'))
             elif isinstance(param, (ParameterNumber, ParameterSelection)):
                 if param.value is None:
                     commands.append(param.name + '= NULL')
