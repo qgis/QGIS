@@ -107,7 +107,7 @@ RUN  apt-get update \
     termcolor \
     owslib \
     oauthlib \
-  && apt-get autoremove -y python3-pip python2.7 \
+    pyopenssl \
   && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
