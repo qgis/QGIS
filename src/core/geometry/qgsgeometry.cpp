@@ -1870,6 +1870,12 @@ QgsGeometry QgsGeometry::centroid() const
     return QgsGeometry();
   }
 
+  // avoid calling geos for trivial point centroids
+  if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
+  {
+    return *this;
+  }
+
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
