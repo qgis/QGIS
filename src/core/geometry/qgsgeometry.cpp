@@ -1873,7 +1873,10 @@ QgsGeometry QgsGeometry::centroid() const
   // avoid calling geos for trivial point centroids
   if ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::Point )
   {
-    return *this;
+    QgsGeometry c = *this;
+    c.get()->dropZValue();
+    c.get()->dropMValue();
+    return c;
   }
 
   QgsGeos geos( d->geometry.get() );
