@@ -23,6 +23,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
+QgsFeatureSource::FeatureAvailability QgsFeatureSource::hasFeatures() const
+{
+  return FeaturesMaybeAvailable;
+}
+
 QSet<QVariant> QgsFeatureSource::uniqueValues( int fieldIndex, int limit ) const
 {
   if ( fieldIndex < 0 || fieldIndex >= fields().count() )

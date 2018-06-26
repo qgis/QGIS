@@ -3190,6 +3190,19 @@ long QgsPostgresProvider::featureCount() const
   return num;
 }
 
+bool QgsPostgresProvider::empty() const
+{
+  QString sql = QStringLiteral( "SELECT EXISTS (SELECT * FROM %1%2 LIMIT 1)" ).arg( mQuery, filterWhereClause() );
+  QgsPostgresResult res( connectionRO()->PQexec( sql ) );
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    pushError( res.PQresultErrorMessage() );
+    return false;
+  }
+
+  return res.PQgetvalue( 0, 0 ) != 't';
+}
+
 QgsRectangle QgsPostgresProvider::extent() const
 {
   if ( mGeometryColumn.isNull() )

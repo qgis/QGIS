@@ -931,6 +931,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     long featureCount( const QString &legendKey ) const;
 
     /**
+     * Determines if this vector layer has features.
+     *
+     * \warning when a layer is editable and some features
+     * have been deleted, this will return
+     * QgsFeatureSource::FeatureAvailability::FeaturesMayBeAvailable
+     * to avoid a potentially expensive call to the dataprovider.
+     *
+     * \since QGIS 3.4
+     */
+    FeatureAvailability hasFeatures() const override;
+
+    /**
      * Update the data source of the layer. The layer's renderer and legend will be preserved only
      * if the geometry type of the new data source matches the current geometry type of the layer.
      * \param dataSource new layer data source

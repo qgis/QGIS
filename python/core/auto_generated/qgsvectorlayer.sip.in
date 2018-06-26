@@ -943,6 +943,21 @@ calculated by countSymbolFeatures()
 :return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
+    virtual FeatureAvailability hasFeatures() const;
+
+%Docstring
+Determines if this vector layer has features.
+
+.. warning::
+
+   when a layer is editable and some features
+   have been deleted, this will return
+   QgsFeatureSource.FeatureAvailability.FeaturesMayBeAvailable
+   to avoid a potentially expensive call to the dataprovider.
+
+.. versionadded:: 3.4
+%End
+
  void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false ) /Deprecated/;
 %Docstring
 Update the data source of the layer. The layer's renderer and legend will be preserved only

@@ -46,6 +46,27 @@ QString QgsVectorDataProvider::storageType() const
   return QStringLiteral( "Generic vector file" );
 }
 
+bool QgsVectorDataProvider::empty() const
+{
+  QgsFeature f;
+  QgsFeatureRequest request;
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  request.setFlags( QgsFeatureRequest::NoGeometry );
+  request.setLimit( 1 );
+  if ( getFeatures( request ).nextFeature( f ) )
+    return false;
+  else
+    return true;
+}
+
+QgsFeatureSource::FeatureAvailability QgsVectorDataProvider::hasFeatures() const
+{
+  if ( empty() )
+    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+  else
+    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+}
+
 QgsCoordinateReferenceSystem QgsVectorDataProvider::sourceCrs() const
 {
   return crs();

@@ -704,6 +704,8 @@ long QgsVectorLayer::featureCount( const QString &legendKey ) const
   return mSymbolFeatureCountMap.value( legendKey );
 }
 
+
+
 QgsVectorLayerFeatureCounter *QgsVectorLayer::countSymbolFeatures()
 {
   if ( mSymbolFeatureCounted || mFeatureCounter )
@@ -2764,6 +2766,25 @@ long QgsVectorLayer::featureCount() const
 {
   return mDataProvider->featureCount() +
          ( mEditBuffer ? mEditBuffer->mAddedFeatures.size() - mEditBuffer->mDeletedFeatureIds.size() : 0 );
+}
+
+QgsFeatureSource::FeatureAvailability QgsVectorLayer::hasFeatures() const
+{
+  const QgsFeatureIds deletedFeatures( mEditBuffer ? mEditBuffer->deletedFeatureIds() : QgsFeatureIds() );
+  const QgsFeatureMap addedFeatures( mEditBuffer ? mEditBuffer->addedFeatures() : QgsFeatureMap() );
+
+  if ( mEditBuffer && !deletedFeatures.empty() )
+  {
+    if ( addedFeatures.size() > deletedFeatures.size() )
+      return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
+    else
+      return QgsFeatureSource::FeatureAvailability::FeaturesMaybeAvailable;
+  }
+
+  if ( ( !mEditBuffer || addedFeatures.empty() ) && mDataProvider->empty() )
+    return QgsFeatureSource::FeatureAvailability::NoFeaturesAvailable;
+  else
+    return QgsFeatureSource::FeatureAvailability::FeaturesAvailable;
 }
 
 bool QgsVectorLayer::commitChanges()

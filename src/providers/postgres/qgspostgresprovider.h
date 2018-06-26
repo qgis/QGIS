@@ -110,6 +110,16 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     long featureCount() const override;
 
     /**
+     * Determines if there is at least one feature available on this table.
+     *
+     * \note In contrast to the featureCount() method, this method is not
+     *       affected by estimated metadata.
+     *
+     * \since QGIS 3.4
+     */
+    bool empty() const override;
+
+    /**
      * Returns a string representation of the endian-ness for the layer
      */
     static QString endianString();

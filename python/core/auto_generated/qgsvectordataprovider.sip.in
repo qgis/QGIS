@@ -124,6 +124,26 @@ Number of features in the layer
 :return: long containing number of features
 %End
 
+    virtual bool empty() const;
+%Docstring
+Returns true if the layer contains at least one feature.
+
+.. versionadded:: 3.4
+%End
+
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
+%Docstring
+Will always return FeatureAvailability.FeaturesAvailable or
+FeatureAvailability.NoFeaturesAvailable.
+
+Calls empty() internally. Providers should override empty()
+instead if they provide an optimized version of this call.
+
+.. seealso:: :py:func:`empty`
+
+.. versionadded:: 3.4
+%End
+
     virtual QgsFields fields() const = 0;
 
 %Docstring

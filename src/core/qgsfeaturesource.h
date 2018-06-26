@@ -38,6 +38,22 @@ class CORE_EXPORT QgsFeatureSource
 {
   public:
 
+    /**
+     * Possible return value for hasFeatures() to determine if a source is empty.
+     * It is implemented as a three-value logic, so it can return if
+     * there are features available for sure, if there are no features
+     * available for sure or if there might be features available but
+     * there is no guarantee for this.
+     *
+     * \since QGIS 3.4
+     */
+    enum FeatureAvailability
+    {
+      NoFeaturesAvailable, //!< There are certainly no features available in this source
+      FeaturesAvailable, //!< There is at least one feature available in this source
+      FeaturesMaybeAvailable //!< There may be features available in this source
+    };
+
     virtual ~QgsFeatureSource() = default;
 
     /**
@@ -84,6 +100,13 @@ class CORE_EXPORT QgsFeatureSource
      * if the feature count is unknown.
      */
     virtual long featureCount() const = 0;
+
+    /**
+     * Determines if there are any features available in the source.
+     *
+     * \since QGIS 3.2
+     */
+    virtual FeatureAvailability hasFeatures() const;
 
     /**
      * Returns the set of unique values contained within the specified \a fieldIndex from this source.
@@ -150,7 +173,6 @@ class CORE_EXPORT QgsFeatureSource
      */
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
                                  QgsFeedback *feedback = nullptr ) SIP_FACTORY;
-
 };
 
 Q_DECLARE_METATYPE( QgsFeatureSource * )

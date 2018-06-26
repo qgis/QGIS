@@ -164,6 +164,25 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     long featureCount() const override = 0;
 
     /**
+     * Returns true if the layer contains at least one feature.
+     *
+     * \since QGIS 3.4
+     */
+    virtual bool empty() const;
+
+    /**
+     * Will always return FeatureAvailability::FeaturesAvailable or
+     * FeatureAvailability::NoFeaturesAvailable.
+     *
+     * Calls empty() internally. Providers should override empty()
+     * instead if they provide an optimized version of this call.
+     *
+     * \see empty()
+     * \since QGIS 3.4
+     */
+    virtual QgsFeatureSource::FeatureAvailability hasFeatures() const final;
+
+    /**
      * Returns the fields associated with this data provider.
      */
     QgsFields fields() const override = 0;

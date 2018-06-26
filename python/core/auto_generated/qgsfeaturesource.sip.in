@@ -23,6 +23,13 @@ An interface for objects which provide features via a getFeatures method.
 %End
   public:
 
+    enum FeatureAvailability
+    {
+      NoFeaturesAvailable,
+      FeaturesAvailable,
+      FeaturesMaybeAvailable
+    };
+
     virtual ~QgsFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
@@ -66,6 +73,13 @@ if the feature count is unknown.
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.
+%End
+
+    virtual FeatureAvailability hasFeatures() const;
+%Docstring
+Determines if there are any features available in the source.
+
+.. versionadded:: 3.2
 %End
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
@@ -139,7 +153,6 @@ for its ownership.
 
 .. versionadded:: 3.0
 %End
-
 };
 
 
