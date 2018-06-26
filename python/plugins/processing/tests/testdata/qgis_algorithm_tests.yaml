@@ -5660,4 +5660,56 @@ tests:
         name: expected/vectorize.gml
         type: vector
 
+  - algorithm: native:kmeansclustering
+    name: K means, points, 3 clusters
+    params:
+      CLUSTERS: 3
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_points_3.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, points, 5 clusters
+    params:
+      CLUSTERS: 5
+      FIELD_NAME: CLUSTER_ID5
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_points_5.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, lines
+    params:
+      CLUSTERS: 2
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_lines.gml
+        type: vector
+
+  - algorithm: native:kmeansclustering
+    name: K means, polys
+    params:
+      CLUSTERS: 2
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/kmeans_polys.gml
+        type: vector
+
 # See ../README.md for a description of the file format

@@ -25,6 +25,7 @@
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmimportphotos.h"
 #include "qgsalgorithmtransform.h"
+#include "qgsalgorithmkmeansclustering.h"
 
 class TestQgsProcessingAlgs: public QObject
 {
@@ -41,6 +42,7 @@ class TestQgsProcessingAlgs: public QObject
     void parseGeoTags();
     void featureFilterAlg();
     void transformAlg();
+    void kmeansCluster();
 
   private:
 
@@ -433,6 +435,64 @@ void TestQgsProcessingAlgs::transformAlg()
   QVariantMap results = alg->run( parameters, *context, &feedback, &ok );
   Q_UNUSED( results );
   QVERIFY( ok );
+}
+
+void TestQgsProcessingAlgs::kmeansCluster()
+{
+  // make some features
+  std::vector< QgsKMeansClusteringAlgorithm::Feature > features;
+  std::vector< QgsPointXY > centers( 2 );
+
+  // no features, no crash
+  int k = 2;
+  QgsKMeansClusteringAlgorithm::initClusters( features, centers, k, nullptr );
+  QgsKMeansClusteringAlgorithm::calculateKMeans( features, centers, k, nullptr );
+
+  // features < clusters
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 1, 5 ) ) );
+  QgsKMeansClusteringAlgorithm::initClusters( features, centers, k, nullptr );
+  QgsKMeansClusteringAlgorithm::calculateKMeans( features, centers, k, nullptr );
+  QCOMPARE( features[ 0 ].cluster, 0 );
+
+  // features == clusters
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 11, 5 ) ) );
+  QgsKMeansClusteringAlgorithm::initClusters( features, centers, k, nullptr );
+  QgsKMeansClusteringAlgorithm::calculateKMeans( features, centers, k, nullptr );
+  QCOMPARE( features[ 0 ].cluster, 1 );
+  QCOMPARE( features[ 1 ].cluster, 0 );
+
+  // features > clusters
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 13, 3 ) ) );
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 13, 13 ) ) );
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 23, 6 ) ) );
+  k = 2;
+  QgsKMeansClusteringAlgorithm::initClusters( features, centers, k, nullptr );
+  QgsKMeansClusteringAlgorithm::calculateKMeans( features, centers, k, nullptr );
+  QCOMPARE( features[ 0 ].cluster, 1 );
+  QCOMPARE( features[ 1 ].cluster, 1 );
+  QCOMPARE( features[ 2 ].cluster, 0 );
+  QCOMPARE( features[ 3 ].cluster, 0 );
+  QCOMPARE( features[ 4 ].cluster, 0 );
+
+  // repeat above, with 3 clusters
+  k = 3;
+  centers.resize( 3 );
+  QgsKMeansClusteringAlgorithm::initClusters( features, centers, k, nullptr );
+  QgsKMeansClusteringAlgorithm::calculateKMeans( features, centers, k, nullptr );
+  QCOMPARE( features[ 0 ].cluster, 1 );
+  QCOMPARE( features[ 1 ].cluster, 2 );
+  QCOMPARE( features[ 2 ].cluster, 2 );
+  QCOMPARE( features[ 3 ].cluster, 2 );
+  QCOMPARE( features[ 4 ].cluster, 0 );
+
+  // with identical points
+  features.clear();
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 1, 5 ) ) );
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 1, 5 ) ) );
+  features.emplace_back( QgsKMeansClusteringAlgorithm::Feature( QgsPointXY( 1, 5 ) ) );
+  QCOMPARE( features[ 0 ].cluster, -1 );
+  QCOMPARE( features[ 1 ].cluster, -1 );
+  QCOMPARE( features[ 2 ].cluster, -1 );
 }
 
 
