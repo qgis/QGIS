@@ -2143,7 +2143,7 @@ tests:
   - algorithm: qgis:deletecolumn
     name: Delete columns (multiple)
     params:
-      COLUMN: floatval;name
+      COLUMN: floatval;name;xxxxxx
       INPUT:
         name: polys.gml
         type: vector
