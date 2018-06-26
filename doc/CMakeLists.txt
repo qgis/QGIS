@@ -57,6 +57,8 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/3d
       ${CMAKE_SOURCE_DIR}/src/core/annotations
       ${CMAKE_SOURCE_DIR}/src/core/auth
+      ${CMAKE_SOURCE_DIR}/src/auth
+      ${CMAKE_SOURCE_DIR}/src/auth/oauth2
       ${CMAKE_SOURCE_DIR}/src/core/diagram
       ${CMAKE_SOURCE_DIR}/src/core/dxf
       ${CMAKE_SOURCE_DIR}/src/core/effects

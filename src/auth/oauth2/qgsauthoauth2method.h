@@ -27,6 +27,10 @@
 
 class QgsO2;
 
+/**
+ * The QgsAuthOAuth2Method class handles all network connection operation for the OAuth2 authentication plugin
+ * \ingroup auth_plugins
+ */
 class QgsAuthOAuth2Method : public QgsAuthMethod
 {
     Q_OBJECT
@@ -35,35 +39,51 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     explicit QgsAuthOAuth2Method();
     ~QgsAuthOAuth2Method();
 
-    // QgsAuthMethod interface
+    //! OAuth2 method key
     QString key() const override;
 
+    //! OAuth2 method description
     QString description() const override;
 
+    //! Human readable description
     QString displayDescription() const override;
 
+    //! Update network \a request with given \a authcfg and optional \a dataprovider
     bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
                                const QString &dataprovider = QString() ) override;
 
+    //! Update network \a reply with given \a authcfg and optional \a dataprovider
     bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
                              const QString &dataprovider ) override;
 
+    //! Update data source \a connectionItems with given \a authcfg and optional \a dataprovider
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                    const QString &dataprovider = QString() ) override;
 
+    //! Clear cached configuration for given \a authcfg
     void clearCachedConfig( const QString &authcfg ) override;
 
+    //! Update OAuth2 method configuration with \a config
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
   public slots:
+
+    //! Triggered when linked condition has changed
     void onLinkedChanged();
+    //! Triggered when linking operation failed
     void onLinkingFailed();
+    //! Triggered when linking operation succeeded
     void onLinkingSucceeded();
 
+    //! Triggered when the browser needs to be opened at \a url
     void onOpenBrowser( const QUrl &url );
+    //! Triggered on browser close
     void onCloseBrowser();
+    //! Triggered on reply finished
     void onReplyFinished();
+    //! Triggered on network error
     void onNetworkError( QNetworkReply::NetworkError err );
+    //! Triggered on refresh finished
     void onRefreshFinished( QNetworkReply::NetworkError err );
 
   private:

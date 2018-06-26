@@ -27,13 +27,7 @@
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
-  , mOAuthConfigCustom( nullptr )
   , mDefinedConfigsCache( QgsStringMap() )
-  , mParentName( nullptr )
-  , mValid( false )
-  , mCurTab( 0 )
-  , mPrevPersistToken( false )
-  , btnTokenClear( nullptr )
 {
   setupUi( this );
 
@@ -52,13 +46,9 @@ QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
 
   setupConnections();
 
-  loadFromOAuthConfig( mOAuthConfigCustom );
+  loadFromOAuthConfig( mOAuthConfigCustom.get() );
 }
 
-QgsAuthOAuth2Edit::~QgsAuthOAuth2Edit()
-{
-  deleteConfigObjs();
-}
 
 void QgsAuthOAuth2Edit::initGui()
 {
@@ -160,26 +150,26 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( cmbbxGrantFlow, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsAuthOAuth2Edit::updateGrantFlow ); // also updates GUI
   connect( pteDescription, &QPlainTextEdit::textChanged, this, &QgsAuthOAuth2Edit::descriptionChanged );
-  connect( leRequestUrl, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setRequestUrl );
-  connect( leTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setTokenUrl );
-  connect( leRefreshTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setRefreshTokenUrl );
-  connect( leRedirectUrl, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setRedirectUrl );
+  connect( leRequestUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestUrl );
+  connect( leTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setTokenUrl );
+  connect( leRefreshTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRefreshTokenUrl );
+  connect( leRedirectUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectUrl );
   connect( spnbxRedirectPort, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
-           mOAuthConfigCustom, &QgsAuthOAuth2Config::setRedirectPort );
-  connect( leClientId, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setClientId );
-  connect( leClientSecret, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setClientSecret );
-  connect( leUsername, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setUsername );
-  connect( lePassword, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setPassword );
-  connect( leScope, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setScope );
-  connect( leState, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setState );
-  connect( leApiKey, &QLineEdit::textChanged, mOAuthConfigCustom, &QgsAuthOAuth2Config::setApiKey );
-  connect( chkbxTokenPersist, &QCheckBox::toggled, mOAuthConfigCustom, &QgsAuthOAuth2Config::setPersistToken );
+           mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectPort );
+  connect( leClientId, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientId );
+  connect( leClientSecret, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientSecret );
+  connect( leUsername, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setUsername );
+  connect( lePassword, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setPassword );
+  connect( leScope, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setScope );
+  connect( leState, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setState );
+  connect( leApiKey, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setApiKey );
+  connect( chkbxTokenPersist, &QCheckBox::toggled, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setPersistToken );
   connect( cmbbxAccessMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsAuthOAuth2Edit::updateConfigAccessMethod );
   connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
-           mOAuthConfigCustom, &QgsAuthOAuth2Config::setRequestTimeout );
+           mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
 
-  connect( mOAuthConfigCustom, &QgsAuthOAuth2Config::validityChanged, this, &QgsAuthOAuth2Edit::configValidityChanged );
+  connect( mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::validityChanged, this, &QgsAuthOAuth2Edit::configValidityChanged );
 
   if ( mParentName )
   {
@@ -286,7 +276,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
       //###################### DO NOT LEAVE ME UNCOMMENTED #####################
 
       // could only be loading defaults at this point
-      loadFromOAuthConfig( mOAuthConfigCustom );
+      loadFromOAuthConfig( mOAuthConfigCustom.get() );
 
       mPrevPersistToken = mOAuthConfigCustom->persistToken();
     }
@@ -361,7 +351,7 @@ void QgsAuthOAuth2Edit::clearConfig()
   // reload predefined table
   loadDefinedConfigs();
 
-  loadFromOAuthConfig( mOAuthConfigCustom );
+  loadFromOAuthConfig( mOAuthConfigCustom.get() );
 }
 
 // slot
@@ -571,16 +561,11 @@ void QgsAuthOAuth2Edit::getDefinedCustomDir()
 
 void QgsAuthOAuth2Edit::initConfigObjs()
 {
-  mOAuthConfigCustom = new QgsAuthOAuth2Config( this );
+  mOAuthConfigCustom = qgis::make_unique<QgsAuthOAuth2Config>( nullptr );
   mOAuthConfigCustom->setConfigType( QgsAuthOAuth2Config::Custom );
   mOAuthConfigCustom->setToDefaults();
 }
 
-void QgsAuthOAuth2Edit::deleteConfigObjs()
-{
-  delete mOAuthConfigCustom;
-  mOAuthConfigCustom = nullptr;
-}
 
 bool QgsAuthOAuth2Edit::hasTokenCacheFile()
 {
@@ -710,14 +695,16 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
 
   lblRequestUrl->setVisible( !resowner );
   leRequestUrl->setVisible( !resowner );
-  if ( resowner ) leRequestUrl->setText( QString() );
+  if ( resowner )
+    leRequestUrl->setText( QString() );
 
   lblRedirectUrl->setVisible( !resowner );
   frameRedirectUrl->setVisible( !resowner );
 
   lblClientSecret->setVisible( !implicit );
   leClientSecret->setVisible( !implicit );
-  if ( implicit ) leClientSecret->setText( QString() );
+  if ( implicit )
+    leClientSecret->setText( QString() );
 
   leClientId->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
   leClientSecret->setPlaceholderText( resowner ? tr( "Optional" ) : tr( "Required" ) );
@@ -725,10 +712,12 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
 
   lblUsername->setVisible( resowner );
   leUsername->setVisible( resowner );
-  if ( !resowner ) leUsername->setText( QString() );
+  if ( !resowner )
+    leUsername->setText( QString() );
   lblPassword->setVisible( resowner );
   lePassword->setVisible( resowner );
-  if ( !resowner ) lePassword->setText( QString() );
+  if ( !resowner )
+    lePassword->setText( QString() );
 }
 
 // slot
@@ -762,7 +751,7 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
     mOAuthConfigCustom->setName( mParentName->text() );
   }
 
-  if ( !QgsAuthOAuth2Config::writeOAuth2Config( configpath, mOAuthConfigCustom,
+  if ( !QgsAuthOAuth2Config::writeOAuth2Config( configpath, mOAuthConfigCustom.get(),
        QgsAuthOAuth2Config::JSON, true ) )
   {
     QgsDebugMsg( QStringLiteral( "FAILED to export OAuth2 config file" ) );

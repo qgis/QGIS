@@ -23,23 +23,39 @@
 #include "qgsauthoauth2config.h"
 
 
+/**
+ * The QgsAuthOAuth2Edit class allows editing of an OAuth2 authentication configuration
+ * \ingroup auth_plugins
+ */
 class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edit
 {
     Q_OBJECT
 
   public:
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
-    virtual ~QgsAuthOAuth2Edit();
+    virtual ~QgsAuthOAuth2Edit() = default;
 
+    /**
+     * Validate current configuration
+     * \return true if current configuration is valid
+     */
     bool validateConfig() override;
 
+    /**
+     * Current configuration
+     * \return current configuration map
+     */
     QgsStringMap configMap() const override;
 
   public slots:
+
+    //! Load the configuration from \a configMap
     void loadConfig( const QgsStringMap &configmap ) override;
 
+    //! Reset configuration to defaults
     void resetConfig() override;
 
+    //! Clear configuration
     void clearConfig() override;
 
   private slots:
@@ -91,7 +107,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     QString parentConfigId() const;
 
     void initConfigObjs();
-    void deleteConfigObjs();
 
     bool hasTokenCacheFile();
 
@@ -105,15 +120,15 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     QString currentDefinedConfig() const { return mDefinedId; }
 
-    QgsAuthOAuth2Config *mOAuthConfigCustom;
+    std::unique_ptr<QgsAuthOAuth2Config> mOAuthConfigCustom;
     QgsStringMap mDefinedConfigsCache;
     QString mDefinedId;
-    QLineEdit *mParentName;
+    QLineEdit *mParentName = nullptr;
     QgsStringMap mConfigMap;
-    bool mValid;
-    int mCurTab;
-    bool mPrevPersistToken;
-    QToolButton *btnTokenClear;
+    bool mValid = false;
+    int mCurTab = 0;
+    bool mPrevPersistToken = false;
+    QToolButton *btnTokenClear = nullptr;
 };
 
 #endif // QGSAUTHOAUTH2EDIT_H

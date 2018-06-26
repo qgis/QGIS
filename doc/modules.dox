@@ -42,3 +42,14 @@ Contains classes related to implementation of QGIS plugins.
 The QgsQuick library is built on top of the CORE library and Qt Quick/QML framework. It adds reusable GUI Quick Components, mainly for mobile devices.
 
 */
+
+
+
+*/
+
+/** @defgroup auth_plugins Authentication plugins
+
+The QGIS authentication manager uses authentication plugins to provide most common authentication methods.
+
+*/
+

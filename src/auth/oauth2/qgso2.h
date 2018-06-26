@@ -29,15 +29,27 @@ class QgsO2: public O2
     Q_OBJECT
 
   public:
+
+    /**
+     * Construct QgsO2
+     * \param authcfg authentication configuration id
+     * \param oauth2config OAuth2 configuration
+     * \param parent
+     * \param manager QGIS network access manager instance
+     */
     explicit QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config = nullptr,
                     QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr );
 
     ~QgsO2();
 
+    //! Authentication configuration id
     QString authcfg() const { return mAuthcfg; }
+    //! OAuth2 configuration
     QgsAuthOAuth2Config *oauth2config() { return mOAuth2Config; }
 
   public slots:
+
+    //! Clear all properties
     void clearProperties();
 
   private:
