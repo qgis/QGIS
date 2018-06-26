@@ -257,6 +257,11 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
     mToggleEditingButton->setEnabled( false );
   }
 
+  if ( mNmRelation.isValid() )
+    mZoomToFeatureButton->setVisible( mNmRelation.referencedLayer()->isSpatial() );
+  else
+    mZoomToFeatureButton->setVisible( mRelation.referencingLayer()->isSpatial() );
+
   setObjectName( QStringLiteral( "referenced/" ) + mRelation.name() );
 
   updateUi();
