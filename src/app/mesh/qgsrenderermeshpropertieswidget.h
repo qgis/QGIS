@@ -28,7 +28,7 @@ class QgsMeshLayer;
 class QgsMapCanvas;
 
 /**
- * Widget for renderer properties of the mesh, countours (scalars)
+ * Widget for renderer properties of the mesh, contours (scalars)
  * and vectors data associated with the mesh layer
  */
 class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererMeshPropsWidgetBase
