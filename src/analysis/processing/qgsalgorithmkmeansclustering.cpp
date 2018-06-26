@@ -60,7 +60,7 @@ void QgsKMeansClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 QString QgsKMeansClusteringAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Calculates the 2D distance based k-means cluster number for each input feature.\n\n"
-                      "If input geometries are line or polygons, the clustering is based on the centroid of the feature." );
+                      "If input geometries are lines or polygons, the clustering is based on the centroid of the feature." );
 }
 
 QgsKMeansClusteringAlgorithm *QgsKMeansClusteringAlgorithm::createInstance() const
@@ -229,7 +229,7 @@ void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, s
   }
 
   // By now two points should be found and be not the same
-  Q_ASSERT( p1 != p2 && maxDistance >= 0 );
+  // Q_ASSERT( p1 != p2 && maxDistance >= 0 );
 
   // Accept these two points as our initial centers
   centers[0] = points[p1].point;
