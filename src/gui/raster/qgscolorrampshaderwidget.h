@@ -45,6 +45,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
   public:
 
+    //! Creates new color ramp shader widget
     QgsColorRampShaderWidget( QWidget *parent = nullptr );
 
     //! Allows quantile classification mode for raster layers
@@ -61,17 +62,18 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
     //! Returns shared function used in the renderer
     QgsColorRampShader shader() const;
+
     //! Sets widget state from the color ramp shader
     void setFromShader( const QgsColorRampShader &colorRampShader );
 
   signals:
-    //! color ramp tree has changed
+    //! Color ramp tree has changed
     void minMaxChangedFromTree( double min, double max );
 
-    //! widget changed
+    //! Widget changed
     void widgetChanged();
 
-    //! classification mode changed
+    //! Classification mode changed
     void classificationModeChanged( QgsColorRampShader::ClassificationMode mode );
 
   public slots:
@@ -81,10 +83,11 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
      */
     void classify();
 
-    //! called when the color ramp tree has changed
+    //! Loads min and max values from color ramp tree
     void loadMinMaxFromTree();
 
   protected:
+    //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
   private:

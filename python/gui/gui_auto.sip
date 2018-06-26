@@ -206,6 +206,7 @@
 %Include auto_generated/qgsvariableeditorwidget.sip
 %Include auto_generated/qgsvscrollarea.sip
 %Include auto_generated/qgsfiledownloaderdialog.sip
+%Include auto_generated/raster/qgscolorrampshaderwidget.sip
 %Include auto_generated/raster/qgsmultibandcolorrendererwidget.sip
 %Include auto_generated/raster/qgspalettedrendererwidget.sip
 %Include auto_generated/raster/qgsrasterbandcombobox.sip
