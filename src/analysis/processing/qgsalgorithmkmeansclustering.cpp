@@ -182,7 +182,7 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
 void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, const int k, QgsProcessingFeedback *feedback )
 {
-  ulong n = points.size();
+  std::size_t n = points.size();
   if ( n == 0 )
     return;
 
@@ -195,12 +195,12 @@ void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, s
 
   long duplicateCount = 1;
   // initially scan for two most distance points from each other, p1 and p2
-  ulong p1 = 0;
-  ulong p2 = 0;
+  std::size_t p1 = 0;
+  std::size_t p2 = 0;
   double distanceP1 = 0;
   double distanceP2 = 0;
   double maxDistance = -1;
-  for ( ulong i = 1; i < n; i++ )
+  for ( std::size_t i = 1; i < n; i++ )
   {
     distanceP1 = points[i].point.sqrDist( points[p1].point );
     distanceP2 = points[i].point.sqrDist( points[p2].point );
@@ -238,7 +238,7 @@ void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, s
     std::vector< double > distances( n );
 
     // initialize array with distance to first object
-    for ( ulong j = 0; j < n; j++ )
+    for ( std::size_t j = 0; j < n; j++ )
     {
       distances[j] = points[j].point.sqrDist( centers[0] );
     }
@@ -248,11 +248,11 @@ void QgsKMeansClusteringAlgorithm::initClusters( std::vector<Feature> &points, s
     // loop i on clusters, skip 0 and 1 as found already
     for ( int i = 2; i < k; i++ )
     {
-      ulong candidateCenter = 0;
+      std::size_t candidateCenter = 0;
       double maxDistance = std::numeric_limits<double>::lowest();
 
       // loop j on points
-      for ( ulong j = 0; j < n; j++ )
+      for ( std::size_t j = 0; j < n; j++ )
       {
         // accepted clusters are already marked with distance = -1
         if ( distances[j] < 0 )
@@ -312,8 +312,8 @@ void QgsKMeansClusteringAlgorithm::calculateKMeans( std::vector<QgsKMeansCluster
 void QgsKMeansClusteringAlgorithm::findNearest( std::vector<QgsKMeansClusteringAlgorithm::Feature> &points, const std::vector<QgsPointXY> &centers, const int k, bool &changed )
 {
   changed = false;
-  ulong n = points.size();
-  for ( ulong i = 0; i < n; i++ )
+  std::size_t n = points.size();
+  for ( std::size_t i = 0; i < n; i++ )
   {
     Feature &point = points[i];
 
