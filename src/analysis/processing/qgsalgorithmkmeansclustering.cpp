@@ -109,16 +109,19 @@ QVariantMap QgsKMeansClusteringAlgorithm::processAlgorithm( const QVariantMap &p
     if ( !feat.hasGeometry() )
       continue;
 
-    n++;
-
     QgsPointXY point;
     if ( QgsWkbTypes::flatType( feat.geometry().wkbType() ) == QgsWkbTypes::Point )
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( feat.geometry().constGet() ) );
     else
     {
       QgsGeometry centroid = feat.geometry().centroid();
+      if ( !centroid )
+        continue; // centroid failed, e.g. empty linestring
+
       point = QgsPointXY( *qgsgeometry_cast< const QgsPoint * >( centroid.constGet() ) );
     }
+
+    n++;
 
     idToObj.insert( feat.id(), clusterFeatures.size() );
     clusterFeatures.emplace_back( Feature( point ) );
