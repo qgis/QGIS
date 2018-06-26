@@ -723,10 +723,14 @@ QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequ
 
 QgsFeatureSource::FeatureAvailability QgsProcessingFeatureSource::hasFeatures() const
 {
-  if ( !mTransformErrorCallback && !mInvalidGeometryCallback && mInvalidGeometryCheck == QgsFeatureRequest::GeometryNoCheck )
-    return mSource->hasFeatures();
+  FeatureAvailability sourceAvailability = mSource->hasFeatures();
+  if ( sourceAvailability == NoFeaturesAvailable )
+    return NoFeaturesAvailable; // never going to be features if underlying source has no features
+  else if ( mInvalidGeometryCheck == QgsFeatureRequest::GeometryNoCheck )
+    return sourceAvailability;
   else
-    return QgsFeatureSource::FeaturesMaybeAvailable;
+    // we don't know... source has features, but these may be filtered out by invalid geometry check
+    return FeaturesMaybeAvailable;
 }
 
 QgsFeatureIterator QgsProcessingFeatureSource::getFeatures( const QgsFeatureRequest &request ) const
