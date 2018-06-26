@@ -838,6 +838,25 @@ SET(QGIS_GUI_HDRS
 
   symbology/qgssymbolwidgetcontext.h
 )
+
+Find_Package(Qt5Qml)
+
+IF(Qt5Qml_FOUND)
+ADD_DEFINITIONS(-DWITH_QML)
+SET(QGIS_GUI_MOC_HDRS
+  ${QGIS_GUI_MOC_HDRS}
+  editorwidgets/qgsqmlwidgetwrapper.h
+  qgsqmlwidget.h
+)
+
+SET(QGIS_GUI_SRCS
+  ${QGIS_GUI_SRCS}
+  editorwidgets/qgsqmlwidgetwrapper.cpp
+  qgsqmlwidget.cpp
+)
+
+ENDIF(Qt5Qml_FOUND)
+
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
 

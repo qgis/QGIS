@@ -37,6 +37,7 @@
 #include "qgsgui.h"
 #include "qgsvectorlayerjoinbuffer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgsqmlwidgetwrapper.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -1709,9 +1710,9 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       int row = 0;
       int column = 0;
 
-      QList<QgsAttributeEditorElement *> children = container->children();
+      const QList<QgsAttributeEditorElement *> children = container->children();
 
-      Q_FOREACH ( QgsAttributeEditorElement *childDef, children )
+      for ( QgsAttributeEditorElement *childDef : children )
       {
         WidgetInfo widgetInfo = createWidgetFromDef( childDef, myContainer, vl, context );
 
@@ -1764,6 +1765,25 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       gbLayout->addWidget( spacer, ++row, 0 );
       gbLayout->setRowStretch( row, 1 );
 
+      newWidgetInfo.labelText = QString();
+      newWidgetInfo.labelOnTop = true;
+      break;
+    }
+
+    case QgsAttributeEditorElement::AeTypeQmlElement:
+    {
+      const QgsAttributeEditorQmlElement *elementDef = static_cast<const QgsAttributeEditorQmlElement *>( widgetDef );
+
+      QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
+      qmlWrapper->setConfig( mLayer->editFormConfig().widgetConfig( "TODO NAME??" ) );
+      qmlWrapper->setContext( context );
+
+      // QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
+
+      mWidgets.append( qmlWrapper );
+      // mFormWidgets.append( formWidget );
+
+      newWidgetInfo.widget = qmlWrapper->widget();
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;

@@ -32,6 +32,7 @@ class QgsVectorLayer;
 // so RTTI for casting is available in the whole module.
 % ModuleCode
 #include "qgsrelationwidgetwrapper.h"
+#include "qgsqmlwidgetwrapper.h"
 % End
 #endif
 
@@ -56,6 +57,8 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
       sipType = sipType_QgsEditorWidgetWrapper;
     else if ( qobject_cast<QgsRelationWidgetWrapper *>( sipCpp ) )
       sipType = sipType_QgsRelationWidgetWrapper;
+    else if ( qobject_cast<QgsQmlWidgetWrapper *>( sipCpp ) )
+      sipType = sipType_QgsQmlWidgetWrapper;
     else
       sipType = 0;
     SIP_END

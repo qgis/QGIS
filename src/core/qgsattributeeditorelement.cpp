@@ -150,3 +150,24 @@ void QgsAttributeEditorRelation::setShowUnlinkButton( bool showUnlinkButton )
 {
   mShowUnlinkButton = showUnlinkButton;
 }
+
+QString QgsAttributeEditorQmlElement::qmlCode() const
+{
+  return mQmlCode;
+}
+
+void QgsAttributeEditorQmlElement::setQmlCode( const QString &qmlCode )
+{
+  mQmlCode = qmlCode;
+}
+
+void QgsAttributeEditorQmlElement::saveConfiguration( QDomElement &elem ) const
+{
+  QDomText codeElem = elem.ownerDocument().createTextNode( mQmlCode );
+  elem.appendChild( codeElem );
+}
+
+QString QgsAttributeEditorQmlElement::typeIdentifier() const
+{
+  return QStringLiteral( "attributeEditorQmlElement" );
+}

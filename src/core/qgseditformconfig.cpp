@@ -61,9 +61,9 @@ void QgsEditFormConfig::setFields( const QgsFields &fields )
 
 void QgsEditFormConfig::onRelationsLoaded()
 {
-  QList<QgsAttributeEditorElement *> relations = d->mInvisibleRootContainer->findElements( QgsAttributeEditorElement::AeTypeRelation );
+  const QList<QgsAttributeEditorElement *> relations = d->mInvisibleRootContainer->findElements( QgsAttributeEditorElement::AeTypeRelation );
 
-  Q_FOREACH ( QgsAttributeEditorElement *relElem, relations )
+  for ( QgsAttributeEditorElement *relElem : relations )
   {
     QgsAttributeEditorRelation *rel = dynamic_cast< QgsAttributeEditorRelation * >( relElem );
     if ( !rel )
@@ -599,7 +599,9 @@ QgsAttributeEditorElement *QgsAttributeEditorContainer::clone( QgsAttributeEdito
 {
   QgsAttributeEditorContainer *element = new QgsAttributeEditorContainer( name(), parent );
 
-  Q_FOREACH ( QgsAttributeEditorElement *child, children() )
+  const auto childElements = children();
+
+  for ( QgsAttributeEditorElement *child : childElements )
   {
     element->addChildElement( child->clone( element ) );
   }

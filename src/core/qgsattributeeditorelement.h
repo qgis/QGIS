@@ -61,7 +61,8 @@ class CORE_EXPORT QgsAttributeEditorElement SIP_ABSTRACT
       AeTypeContainer, //!< A container
       AeTypeField,     //!< A field
       AeTypeRelation,  //!< A relation
-      AeTypeInvalid    //!< Invalid
+      AeTypeInvalid,   //!< Invalid
+      AeTypeQmlElement //!< A QML element
     };
 
     /**
@@ -411,5 +412,20 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
     bool mShowUnlinkButton = true;
 };
 
+class CORE_EXPORT QgsAttributeEditorQmlElement : public QgsAttributeEditorElement
+{
+  public:
+    QgsAttributeEditorQmlElement( QgsAttributeEditorElement *parent )
+      : QgsAttributeEditorElement( AeTypeQmlElement, "TODO NAME", parent )
+    {}
+
+    QString qmlCode() const;
+    void setQmlCode( const QString &qmlCode );
+
+  private:
+    void saveConfiguration( QDomElement &elem ) const override;
+    QString typeIdentifier() const override;
+    QString mQmlCode;
+};
 
 #endif // QGSATTRIBUTEEDITORELEMENT_H
