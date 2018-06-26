@@ -26,12 +26,15 @@
 /**
  * The QgsAuthOAuth2Edit class allows editing of an OAuth2 authentication configuration
  * \ingroup auth_plugins
+ * \since QGIS 3.4
  */
 class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edit
 {
     Q_OBJECT
 
   public:
+
+    //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
     virtual ~QgsAuthOAuth2Edit() = default;
 

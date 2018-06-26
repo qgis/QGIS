@@ -22,6 +22,8 @@ class QgsAuthOAuth2Config;
 /**
  * QGIS-specific subclass of O2 lib's base OAuth 2.0 authenticator.
  * Adds support for QGIS authentication system.
+ * \ingroup auth_plugins
+ * \since QGIS 3.4
  */
 class QgsO2: public O2
 {

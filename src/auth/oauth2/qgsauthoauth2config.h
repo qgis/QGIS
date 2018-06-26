@@ -25,6 +25,7 @@
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin
  * \ingroup auth_plugins
+ * \since QGIS 3.4
  */
 class QgsAuthOAuth2Config : public QObject
 {
@@ -87,6 +88,7 @@ class QgsAuthOAuth2Config : public QObject
       Query,
     };
 
+    //! Construct a QgsAuthOAuth2Config instance
     explicit QgsAuthOAuth2Config( QObject *parent = nullptr );
 
     //! Unique ID
@@ -143,7 +145,7 @@ class QgsAuthOAuth2Config : public QObject
     //! API key
     QString apiKey() const { return mApiKey; }
 
-    //! Return true if the token is persistant
+    //! Returns true if the token is persistent
     bool persistToken() const { return mPersistToken; }
 
     //! Access method
@@ -173,7 +175,7 @@ class QgsAuthOAuth2Config : public QObject
     //! Save a config to a string (e.g. JSON)
     QByteArray saveConfigTxt( ConfigFormat format = JSON, bool pretty = false, bool *ok = nullptr ) const;
 
-    //! Return the configuration as a QVariant map
+    //! Configuration as a QVariant map
     QVariantMap mappedProperties() const;
 
     /**
@@ -339,7 +341,7 @@ class QgsAuthOAuth2Config : public QObject
     void apiKeyChanged( const QString & );
 
     // advanced
-    //! Emitted when configuration persiste token flag has changed
+    //! Emitted when configuration persist token flag has changed
     void persistTokenChanged( bool );
     //! Emitted when configuration access method has changed
     void accessMethodChanged( AccessMethod );

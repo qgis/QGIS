@@ -30,6 +30,7 @@ class QgsO2;
 /**
  * The QgsAuthOAuth2Method class handles all network connection operation for the OAuth2 authentication plugin
  * \ingroup auth_plugins
+ * \since QGIS 3.4
  */
 class QgsAuthOAuth2Method : public QgsAuthMethod
 {
