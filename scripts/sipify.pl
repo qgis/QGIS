@@ -958,6 +958,7 @@ while ($LINE_IDX < $LINE_COUNT){
     do {no warnings 'uninitialized';
         $LINE =~ s/^(\s*template\s*<)(?:class|typename) (\w+>)(.*)$/$1$2$3/;
         $LINE =~ s/\s*\boverride\b//;
+        $LINE =~ s/\s*\bfinal\b//;
         $LINE =~ s/\s*\bextern \b//;
         $LINE =~ s/\s*\bMAYBE_UNUSED \b//;
         $LINE =~ s/\s*\bNODISCARD \b//;
