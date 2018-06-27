@@ -157,10 +157,11 @@ void QgsCameraController::setViewport( const QRect &viewport )
   emit viewportChanged();
 }
 
-void QgsCameraController::setCameraData( float x, float y, float dist, float pitch, float yaw )
+void QgsCameraController::setCameraData( float x, float y, float elev, float dist, float pitch, float yaw )
 {
   mCameraData.x = x;
   mCameraData.y = y;
+  mCameraData.elev = elev;
   mCameraData.dist = dist;
   mCameraData.pitch = pitch;
   mCameraData.yaw = yaw;
@@ -305,7 +306,7 @@ void QgsCameraController::resetView( float distance )
 
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
-  setCameraData( worldX, worldY, distance, 0, yaw );
+  setCameraData( worldX, worldY, 0, distance, 0, yaw );
   // a basic setup to make frustum depth range long enough that it does not cull everything
   mCamera->setNearPlane( distance / 2 );
   mCamera->setFarPlane( distance * 2 );
@@ -318,9 +319,11 @@ QgsVector3D QgsCameraController::lookingAtPoint() const
   return QgsVector3D( mCameraData.x, 0, mCameraData.y );
 }
 
-void QgsCameraController::setLookingAtPoint( const QgsVector3D &point )
+void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dist )
 {
-  setCameraData( point.x(), point.z(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
+  if ( dist < 0 )
+    dist = mCameraData.dist;
+  setCameraData( point.x(), point.z(), point.y(), dist, mCameraData.pitch, mCameraData.yaw );
   emit cameraChanged();
 }
 
@@ -329,6 +332,7 @@ QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
   QDomElement elemCamera = doc.createElement( "camera" );
   elemCamera.setAttribute( QStringLiteral( "x" ), mCameraData.x );
   elemCamera.setAttribute( QStringLiteral( "y" ), mCameraData.y );
+  elemCamera.setAttribute( QStringLiteral( "elev" ), mCameraData.elev );
   elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraData.dist );
   elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraData.pitch );
   elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraData.yaw );
@@ -339,10 +343,11 @@ void QgsCameraController::readXml( const QDomElement &elem )
 {
   float x = elem.attribute( QStringLiteral( "x" ) ).toFloat();
   float y = elem.attribute( QStringLiteral( "y" ) ).toFloat();
+  float elev = elem.attribute( QStringLiteral( "elev" ) ).toFloat();
   float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
   float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
   float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
-  setCameraData( x, y, dist, pitch, yaw );
+  setCameraData( x, y, elev, dist, pitch, yaw );
 }
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
