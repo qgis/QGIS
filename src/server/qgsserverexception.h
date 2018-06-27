@@ -105,5 +105,20 @@ class SERVER_EXPORT QgsOgcServiceException
     QString mVersion;
 };
 
+/**
+ * \ingroup server
+ * \class  QgsBadRequestException
+ * \brief Exception thrown in case of malformed request
+ */
+#ifndef SIP_RUN
+class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
+{
+  public:
+    QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
+      : QgsOgcServiceException( code, message, locator, 400 )
+    {}
+};
+#endif
+
 #endif
 

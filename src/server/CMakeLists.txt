@@ -30,6 +30,7 @@ SET(QGIS_SERVER_SRCS
   qgsfilterrestorer.cpp
   qgsrequesthandler.cpp
   qgsserver.cpp
+  qgsserverparameters.cpp
   qgsserverexception.cpp
   qgsserverinterface.cpp
   qgsserverinterfaceimpl.cpp
@@ -56,6 +57,7 @@ SET (QGIS_SERVER_MOC_HDRS
   qgsconfigcache.h
   qgsserverlogger.h
   qgsserversettings.h
+  qgsserverparameters.h
 )
 
 
