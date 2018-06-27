@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="mScalarMinLabel">
        <property name="text">
-        <string>min</string>
+        <string>Min</string>
        </property>
       </widget>
      </item>
@@ -33,7 +33,7 @@
      <item>
       <widget class="QLabel" name="mScalarMaxLabel">
        <property name="text">
-        <string>max</string>
+        <string>Max</string>
        </property>
       </widget>
      </item>

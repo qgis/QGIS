@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
-    <height>71</height>
+    <width>279</width>
+    <height>84</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,23 +15,19 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2">
    <item>
-    <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox"/>
-   </item>
-   <item>
-    <widget class="QgsColorButton" name="mColorWidget"/>
-   </item>
-   <item>
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Line Width and Color</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox"/>
+      </item>
+      <item>
+       <widget class="QgsColorButton" name="mColorWidget"/>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

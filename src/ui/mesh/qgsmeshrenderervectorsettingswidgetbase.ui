@@ -15,14 +15,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox"/>
-     </item>
-     <item>
-      <widget class="QgsColorButton" name="mColorWidget"/>
-     </item>
-    </layout>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Line Width and Color</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox"/>
+      </item>
+      <item>
+       <widget class="QgsColorButton" name="mColorWidget"/>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="filterByMagGroupBox">

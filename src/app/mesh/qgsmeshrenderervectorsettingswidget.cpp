@@ -73,11 +73,11 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   settings.setFilterMax( val );
 
   // arrow head
-  val = filterValue( mHeadWidthLineEdit->text(), settings.arrowHeadWidthRatio() );
-  settings.setArrowHeadWidthRatio( val );
+  val = filterValue( mHeadWidthLineEdit->text(), settings.arrowHeadWidthRatio() * 100.0 );
+  settings.setArrowHeadWidthRatio( val / 100.0 );
 
-  val = filterValue( mHeadLengthLineEdit->text(), settings.arrowHeadLengthRatio() );
-  settings.setArrowHeadLengthRatio( val );
+  val = filterValue( mHeadLengthLineEdit->text(), settings.arrowHeadLengthRatio() * 100.0 );
+  settings.setArrowHeadLengthRatio( val / 100.0 );
 
   // shaft length
   auto method = static_cast<QgsMeshRendererVectorSettings::ArrowScalingMethod>( mShaftLengthComboBox->currentIndex() );
@@ -125,8 +125,8 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   }
 
   // arrow head
-  mHeadWidthLineEdit->setText( QString::number( settings.arrowHeadWidthRatio() ) );
-  mHeadLengthLineEdit->setText( QString::number( settings.arrowHeadLengthRatio() ) );
+  mHeadWidthLineEdit->setText( QString::number( settings.arrowHeadWidthRatio() * 100.0 ) );
+  mHeadLengthLineEdit->setText( QString::number( settings.arrowHeadLengthRatio() * 100.0 ) );
 
   // shaft length
   mShaftLengthComboBox->setCurrentIndex( settings.shaftLengthMethod() );

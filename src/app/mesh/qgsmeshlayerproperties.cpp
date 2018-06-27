@@ -149,7 +149,7 @@ void QgsMeshLayerProperties::addDataset()
   if ( ok )
   {
     syncToLayer();
-    QgsDebugMsg( "datasets added to the mesh layer" );
+    QMessageBox::information( this, tr( "Load mesh datasets" ), tr( "Datasets successfully added to the mesh layer" ) );
   }
   else
   {

@@ -148,12 +148,20 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata( int datasetIndex )
     const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
     QString msg;
     msg += QStringLiteral( "<table>" );
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( tr( "is on vertices" ) ).arg( meta.isOnVertices() );
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( tr( "is vector" ) ).arg( meta.isVector() );
+
+    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+           .arg( tr( "Is on vertices" ) )
+           .arg( meta.isOnVertices() ? tr( "Yes" ) : tr( "No" ) );
+
+    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+           .arg( tr( "Is vector" ) )
+           .arg( meta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+
     for ( auto it = meta.extraOptions().constBegin(); it != meta.extraOptions().constEnd(); ++it )
     {
       msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
     }
+
     msg += QStringLiteral( "</table>" );
     mActiveDatasetMetadata->setText( msg );
   }
