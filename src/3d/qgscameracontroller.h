@@ -67,7 +67,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Returns the point in the world coordinates towards which the camera is looking
     QgsVector3D lookingAtPoint() const;
     //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
-    void setLookingAtPoint( const QgsVector3D &point );
+    void setLookingAtPoint( const QgsVector3D &point, float distance = -1 );
 
     //! Writes camera configuration to the given DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
@@ -75,7 +75,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void readXml( const QDomElement &elem );
 
   private:
-    void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
+    void setCameraData( float x, float y, float elev, float dist, float pitch = 0, float yaw = 0 );
 
   signals:
     //! Emitted when camera has been updated
@@ -97,14 +97,14 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     struct CameraData
     {
-      float x = 0, y = 0;  // ground point towards which the camera is looking
+      float x = 0, y = 0, elev = 0;  // ground point towards which the camera is looking
       float dist = 40;  // distance of camera from the point it is looking at
       float pitch = 0; // aircraft nose up/down (0 = looking straight down to the plane). angle in degrees
       float yaw = 0;   // aircraft nose left/right. angle in degrees
 
       bool operator==( const CameraData &other ) const
       {
-        return x == other.x && y == other.y && dist == other.dist && pitch == other.pitch && yaw == other.yaw;
+        return x == other.x && y == other.y && elev == other.elev && dist == other.dist && pitch == other.pitch && yaw == other.yaw;
       }
       bool operator!=( const CameraData &other ) const
       {
@@ -119,8 +119,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
         // - y grows towards camera
         // so a point on the plane (x',y') is transformed to (x,-z) in our 3D world
         camera->setUpVector( QVector3D( 0, 0, -1 ) );
-        camera->setPosition( QVector3D( x, dist, y ) );
-        camera->setViewCenter( QVector3D( x, 0, y ) );
+        camera->setPosition( QVector3D( x, dist + elev, y ) );
+        camera->setViewCenter( QVector3D( x, elev, y ) );
         camera->rotateAboutViewCenter( QQuaternion::fromEulerAngles( pitch, yaw, 0 ) );
       }
 

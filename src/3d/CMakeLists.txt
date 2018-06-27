@@ -8,6 +8,7 @@ SET(QGIS_3D_SRCS
   qgs3dutils.cpp
   qgscameracontroller.cpp
   qgsphongmaterialsettings.cpp
+  qgsraycastingutils_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
@@ -74,6 +75,7 @@ SET(QGIS_3D_HDRS
   qgs3dutils.h
   qgscameracontroller.h
   qgsphongmaterialsettings.h
+  qgsraycastingutils_p.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h

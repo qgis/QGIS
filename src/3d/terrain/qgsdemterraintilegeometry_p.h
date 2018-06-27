@@ -41,6 +41,10 @@ namespace Qt3DRender
 
 } // Qt3DRender
 
+namespace QgsRayCastingUtils
+{
+  class Ray3D;
+}
 
 /**
  * \ingroup 3d
@@ -56,6 +60,8 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
      * heightMap is array of float values with one height value for each vertex
      */
     explicit DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
+
+    bool rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint );
 
   private:
     void init();

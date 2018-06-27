@@ -34,6 +34,7 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
+#include "qgsraycastingutils_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsvectorlayer.h"
@@ -253,6 +254,22 @@ void Qgs3DMapScene::onCameraChanged()
     // set near/far plane - with some tolerance in front/behind expected near/far planes
     camera->setFarPlane( ffar * 2 );
     camera->setNearPlane( fnear / 2 );
+
+    // figure out our distance from terrain and update the camera's view center
+    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
+    QVector3D intersectionPoint;
+    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForViewportAndCamera(
+                                      mCameraController->viewport().size(),
+                                      mCameraController->viewport().center(),
+                                      QRectF( 0.0, 0.0, 1.0, 1.0 ),
+                                      mCameraController->camera() );
+    if ( mTerrain->rayIntersection( ray, intersectionPoint ) )
+    {
+      float dist = ( intersectionPoint - mCameraController->camera()->position() ).length();
+      mCameraController->blockSignals( true );
+      mCameraController->setLookingAtPoint( QgsVector3D( intersectionPoint.x(), intersectionPoint.y(), intersectionPoint.z() ), dist );
+      mCameraController->blockSignals( false );
+    }
   }
   else
     qDebug() << "no terrain - not setting near/far plane";
