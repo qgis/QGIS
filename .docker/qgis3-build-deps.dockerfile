@@ -106,6 +106,8 @@ RUN  apt-get update \
     future \
     termcolor \
     owslib \
+    oauthlib \
+    pyopenssl \
   && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases

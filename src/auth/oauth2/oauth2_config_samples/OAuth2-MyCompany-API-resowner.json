@@ -1,0 +1,26 @@
+{
+    "accessMethod": 0,
+    "apiKey": "",
+    "clientId": "",
+    "clientSecret": "",
+    "configType": 1,
+    "description": "Example MyCompany API OAuth2 resource owner grant flow configuration",
+    "grantFlow": 2,
+    "id": "napx73n",
+    "name": "OAuth2 - MyCompany API - res owner",
+    "objectName": "",
+    "password": "Ntfpp2hAN4FT",
+    "persistToken": true,
+    "queryPairs": {
+    },
+    "redirectPort": 7070,
+    "redirectUrl": "",
+    "refreshTokenUrl": "",
+    "requestTimeout": 30,
+    "requestUrl": "",
+    "scope": "",
+    "state": "",
+    "tokenUrl": "https://api.mycompany.io/v1/token/oauth",
+    "username": "username@domain.com",
+    "version": 1
+}
