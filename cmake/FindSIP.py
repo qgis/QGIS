@@ -39,7 +39,7 @@ print("sip_version_str:%s" % sipcfg.sip_version_str)
 print("sip_bin:%s" % sipcfg.sip_bin)
 print("default_sip_dir:%s" % sipcfg.default_sip_dir)
 print("sip_inc_dir:%s" % sipcfg.sip_inc_dir)
-if sipcfg.sip_version >= int('04130a',16):
+if sipcfg.sip_version >= int('04130a', 16):
     print("sip_mod_dir:%s" % sipcfg.sip_mod_dir)
 else:
     print("sip_module_dir:%s" % sipcfg.sip_module_dir)
