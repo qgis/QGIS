@@ -104,6 +104,9 @@ HINTS[26]="Use std::unique_ptr instead"
 KEYWORDS[27]="QSharedPointer"
 HINTS[27]="Use std::shared_ptr instead"
 
+KEYWORDS[28]="QOverload"
+HINTS[28]="Use qgis::overload instead"
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 
