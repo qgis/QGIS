@@ -83,7 +83,8 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mpLastLayer = nullptr;
 
   mLastGpsPosition = QgsPointXY( 0.0, 0.0 );
-  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 ); mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lat = nmea_degree2radian( 0.0 );
+  mLastNmeaPosition.lon = nmea_degree2radian( 0.0 );
 
   mpMapMarker = nullptr;
   mpRubberBand = nullptr;
@@ -684,7 +685,8 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
   if ( validFlag )
   {
     myNewCenter = QgsPointXY( info.longitude, info.latitude );
-    newNmeaPosition.lat = nmea_degree2radian( info.latitude ); newNmeaPosition.lon = nmea_degree2radian( info.longitude );
+    newNmeaPosition.lat = nmea_degree2radian( info.latitude );
+    newNmeaPosition.lon = nmea_degree2radian( info.longitude );
   }
   else
   {
@@ -1205,7 +1207,7 @@ void QgsGpsInformationWidget::setDistanceThreshold( int distance )
   mDistanceThreshold = distance;
 }
 
-void QgsGpsInformationWidget::cboAcquisitionIntervalActivated( const QString   &text )
+void QgsGpsInformationWidget::cboAcquisitionIntervalActivated( const QString &text )
 {
   if ( text == "…" )
   {
@@ -1219,7 +1221,7 @@ void QgsGpsInformationWidget::cboAcquisitionIntervalActivated( const QString   &
   }
 }
 
-void QgsGpsInformationWidget::cboDistanceThresholdActivated( const QString   &text )
+void QgsGpsInformationWidget::cboDistanceThresholdActivated( const QString &text )
 {
   if ( text == "…" )
   {

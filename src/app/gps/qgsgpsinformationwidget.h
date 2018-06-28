@@ -119,7 +119,8 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     QColor mTrackColor;
     QIntValidator *mAcquisitionIntValidator = nullptr;
     QIntValidator *mDistanceThresholdValidator = nullptr;
-    QLineEdit *mAcIntervalEdit = nullptr, *mDistThresholdEdit = nullptr;
+    QLineEdit *mAcIntervalEdit = nullptr;
+    QLineEdit *mDistThresholdEdit = nullptr;
     nmeaPOS mLastNmeaPosition;
     std::unique_ptr<QTimer> mAcquisitionTimer;
     bool mAcquisitionEnabled = true;
