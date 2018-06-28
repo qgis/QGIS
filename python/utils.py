@@ -667,7 +667,9 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
         level = 0
 
     if 'PyQt4' in name:
-        raise ImportError('Cannot import PyQt4 classes - this would cause a crash!')
+        msg = 'Importing PyQt4 classes would cause a crash, ' \
+              'please use PyQt5 in "{}"'.format(name)
+        raise ImportError(msg)
 
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
