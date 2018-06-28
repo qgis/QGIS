@@ -233,12 +233,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     QgsPointXY center() const;
 
-    /**
-     * Returns the last cursor position on the canvas in geographical coordinates
-     * \since QGIS 3.4
-     */
-    QgsPointXY cursorPoint() const;
-
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
 
@@ -1014,6 +1008,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     bool mUsePreviewJobs = false;
 
     QHash< QString, int > mLastLayerRenderTime;
+
+    /**
+     * Returns the last cursor position on the canvas in geographical coordinates
+     * \since QGIS 3.4
+     */
+    QgsPointXY cursorPoint() const;
 
     /**
      * Force a resize of the map canvas item

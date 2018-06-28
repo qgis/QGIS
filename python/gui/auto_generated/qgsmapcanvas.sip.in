@@ -206,13 +206,6 @@ Gets map center, in geographical coordinates
 .. versionadded:: 2.8
 %End
 
-    QgsPointXY cursorPoint() const;
-%Docstring
-Returns the last cursor position on the canvas in geographical coordinates
-
-.. versionadded:: 3.4
-%End
-
     void zoomToFullExtent();
 %Docstring
 Zoom to the full extent of all layers
@@ -618,6 +611,8 @@ context scope for the canvas.
 
 .. seealso:: :py:func:`expressionContextScope`
 
+.. seealso:: :py:func:`defaultExpressionContextScope`
+
 .. versionadded:: 2.12
 %End
 
@@ -629,13 +624,19 @@ overrides for expression evaluation for the map canvas render.
 
 .. seealso:: :py:func:`setExpressionContextScope`
 
+.. seealso:: :py:func:`defaultExpressionContextScope`
+
 .. versionadded:: 2.12
 %End
 
 
-    QgsExpressionContextScope *scope() /Factory/;
+    QgsExpressionContextScope *defaultExpressionContextScope() /Factory/;
 %Docstring
 Creates a new scope which contains default variables and functions relating to the map canvas.
+
+.. seealso:: :py:func:`expressionContextScope`
+
+.. seealso:: :py:func:`setExpressionContextScope`
 
 .. versionadded:: 3.4
 %End
