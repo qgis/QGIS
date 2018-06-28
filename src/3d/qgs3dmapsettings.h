@@ -227,6 +227,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void setShowTerrainTilesInfo( bool enabled );
     //! Returns whether to display extra tile info on top of terrain tiles (for debugging)
     bool showTerrainTilesInfo() const { return mShowTerrainTileInfo; }
+
+    /**
+     * Sets whether to show camera's view center as a sphere (for debugging)
+     * \since QGIS 3.4
+     */
+    void setShowCameraViewCenter( bool enabled );
+
+    /**
+     * Returns whether to show camera's view center as a sphere (for debugging)
+     * \since QGIS 3.4
+     */
+    bool showCameraViewCenter() const { return mShowCameraViewCenter; }
     //! Sets whether to display labels on terrain tiles
     void setShowLabels( bool enabled );
     //! Returns whether to display labels on terrain tiles
@@ -253,6 +265,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showTerrainBoundingBoxesChanged();
     //! Emitted when the flag whether terrain's tile info is shown has changed
     void showTerrainTilesInfoChanged();
+
+    /**
+     * Emitted when the flag whether camera's view center is shown has changed
+     * \since QGIS 3.4
+     */
+    void showCameraViewCenterChanged();
     //! Emitted when the flag whether labels are displayed on terrain tiles has changed
     void showLabelsChanged();
 
@@ -269,6 +287,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
     bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
     bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
     bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object

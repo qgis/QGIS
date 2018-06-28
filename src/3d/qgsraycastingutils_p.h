@@ -109,7 +109,7 @@ namespace QgsRayCastingUtils
    * \since QGIS 3.4
    */
   Ray3D rayForViewportAndCamera( const QSize &area,
-                                 const QPoint &pos,
+                                 const QPointF &pos,
                                  const QRectF &relativeViewport,
                                  const Qt3DRender::QCamera *camera );
 }

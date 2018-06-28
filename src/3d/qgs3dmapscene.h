@@ -83,6 +83,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
   private:
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
+    void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
 
   private:
     const Qgs3DMapSettings &mMap;
@@ -93,6 +94,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Forward renderer provided by 3D window
     Qt3DExtras::QForwardRenderer *mForwardRenderer = nullptr;
     QList<QgsChunkedEntity *> mChunkEntities;
+    //! Entity that shows view center - useful for debugging camera issues
+    Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;

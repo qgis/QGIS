@@ -302,7 +302,7 @@ static QRect windowViewport( const QSize &area, const QRectF &relativeViewport )
   return relativeViewport.toRect();
 }
 
-static QgsRayCastingUtils::Ray3D intersectionRay( const QPoint &pos, const QMatrix4x4 &viewMatrix,
+static QgsRayCastingUtils::Ray3D intersectionRay( const QPointF &pos, const QMatrix4x4 &viewMatrix,
     const QMatrix4x4 &projectionMatrix, const QRect &viewport )
 {
   QVector3D nearPos = QVector3D( pos.x(), pos.y(), 0.0f );
@@ -320,7 +320,7 @@ namespace QgsRayCastingUtils
 {
 
   Ray3D rayForViewportAndCamera( const QSize &area,
-                                 const QPoint &pos,
+                                 const QPointF &pos,
                                  const QRectF &relativeViewport,
                                  const Qt3DRender::QCamera *camera )
   {
@@ -330,7 +330,7 @@ namespace QgsRayCastingUtils
     const QRect viewport = windowViewport( area, relativeViewport );
 
     // In GL the y is inverted compared to Qt
-    const QPoint glCorrectPos = QPoint( pos.x(), area.isValid() ? area.height() - pos.y() : pos.y() );
+    const QPointF glCorrectPos = QPointF( pos.x(), area.isValid() ? area.height() - pos.y() : pos.y() );
     const auto ray = intersectionRay( glCorrectPos, viewMatrix, projectionMatrix, viewport );
     return ray;
   }

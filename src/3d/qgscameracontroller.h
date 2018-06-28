@@ -25,6 +25,7 @@
 class QDomDocument;
 class QDomElement;
 
+class QgsTerrainEntity;
 class QgsVector3D;
 
 /**
@@ -48,9 +49,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
     /**
      * Connects to object picker attached to terrain entity. Called internally from 3D scene.
-     * This allows camera controller understand how far from the camera is the terrain under mouse cursor
+     * This allows camera controller understand how far from the camera is the terrain under mouse cursor.
+     * Also it allows adjustment of camera's view center to a point on terrain.
      */
-    void addTerrainPicker( Qt3DRender::QObjectPicker *picker );
+    void setTerrainEntity( QgsTerrainEntity *te );
+
     //! Assigns camera that should be controlled by this class. Called internally from 3D scene.
     void setCamera( Qt3DRender::QCamera *camera );
     //! Sets viewport rectangle. Called internally from 3D canvas. Allows conversion of mouse coordinates.
@@ -94,6 +97,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QRect mViewport;
     //! height of terrain when mouse button was last pressed - for camera control
     float mLastPressedHeight = 0;
+
+    QPointer<QgsTerrainEntity> mTerrainEntity;
 
     struct CameraData
     {
