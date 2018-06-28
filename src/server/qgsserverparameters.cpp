@@ -18,47 +18,69 @@
 #include "qgsserverparameters.h"
 #include "qgsserverexception.h"
 
+//
+// QgsServerParameterDefinition
+//
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type type,
+    const QVariant defaultValue )
+  : mType( type )
+  , mDefaultValue( defaultValue )
+{
+}
+
+QString QgsServerParameterDefinition::typeName() const
+{
+  return  QVariant::typeToName( mType );
+}
+
+bool QgsServerParameterDefinition::isValid() const
+{
+  return mValue.canConvert( mType );
+}
+
+void QgsServerParameterDefinition::raiseError( const QString &msg )
+{
+  throw QgsBadRequestException( QStringLiteral( "Invalid Parameter" ), msg );
+}
+
+//
+// QgsServerParameter
+//
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
+                                        const QVariant::Type type, const QVariant defaultValue )
+  : QgsServerParameterDefinition( type, defaultValue )
+  , mName( name )
+{
+}
+
+QString QgsServerParameter::name( QgsServerParameter::Name name )
+{
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+  return metaEnum.valueToKey( name );
+}
+
+QgsServerParameter::Name QgsServerParameter::name( const QString &name )
+{
+  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+  return ( QgsServerParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+}
+
+void QgsServerParameter::raiseError() const
+{
+  const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( name( mName ), mValue.toString(), typeName() );
+  QgsServerParameterDefinition::raiseError( msg );
+}
+
+//
+// QgsServerParameters
+//
 QgsServerParameters::QgsServerParameters()
 {
-  const Parameter pService = { ParameterName::SERVICE,
-                               QVariant::String,
-                               QVariant( "" ),
-                               QVariant(),
-                               false
-                             };
-  save( pService );
-
-  const Parameter pRequest = { ParameterName::REQUEST,
-                               QVariant::String,
-                               QVariant( "" ),
-                               QVariant(),
-                               false
-                             };
-  save( pRequest );
-
-  const Parameter pVersion = { ParameterName::VERSION_SERVICE,
-                               QVariant::String,
-                               QVariant( "" ),
-                               QVariant(),
-                               false
-                             };
-  save( pVersion );
-
-  const Parameter pMap = { ParameterName::MAP,
-                           QVariant::String,
-                           QVariant( "" ),
-                           QVariant(),
-                           false
-                         };
-  save( pMap );
-
-  const Parameter pFile = { ParameterName::FILE_NAME,
-                            QVariant::String,
-                            QVariant( "" ),
-                            QVariant(),
-                            false
-                          };
-  save( pFile );
+  save( QgsServerParameter( QgsServerParameter::SERVICE ) );
+  save( QgsServerParameter( QgsServerParameter::REQUEST ) );
+  save( QgsServerParameter( QgsServerParameter::VERSION_SERVICE ) );
+  save( QgsServerParameter( QgsServerParameter::MAP ) );
+  save( QgsServerParameter( QgsServerParameter::FILE_NAME ) );
 }
 
 QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
@@ -67,7 +89,7 @@ QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
   load( query );
 }
 
-void QgsServerParameters::save( const Parameter &parameter )
+void QgsServerParameters::save( const QgsServerParameter &parameter )
 {
   mParameters[ parameter.mName ] = parameter;
 }
@@ -99,7 +121,7 @@ void QgsServerParameters::remove( const QString &key )
   }
   else
   {
-    ParameterName paramName = name( key );
+    QgsServerParameter::Name paramName = QgsServerParameter::name( key );
     if ( mParameters.contains( paramName ) )
     {
       mParameters.take( paramName );
@@ -109,22 +131,22 @@ void QgsServerParameters::remove( const QString &key )
 
 QString QgsServerParameters::map() const
 {
-  return value( ParameterName::MAP ).toString();
+  return value( QgsServerParameter::MAP ).toString();
 }
 
 QString QgsServerParameters::version() const
 {
-  return value( ParameterName::VERSION_SERVICE ).toString();
+  return value( QgsServerParameter::VERSION_SERVICE ).toString();
 }
 
 QString QgsServerParameters::fileName() const
 {
-  return value( ParameterName::FILE_NAME ).toString();
+  return value( QgsServerParameter::FILE_NAME ).toString();
 }
 
 QString QgsServerParameters::service() const
 {
-  QString serviceValue = value( ParameterName::SERVICE ).toString();
+  QString serviceValue = value( QgsServerParameter::SERVICE ).toString();
 
   if ( serviceValue.isEmpty() )
   {
@@ -143,14 +165,12 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 {
   QMap<QString, QString> params = mUnmanagedParameters;
 
-  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-
   for ( auto parameter : mParameters.toStdMap() )
   {
     if ( ! parameter.second.mDefined )
       continue;
 
-    const QString paramName = name( parameter.first );
+    const QString paramName = QgsServerParameter::name( parameter.first );
     params[paramName] = parameter.second.mValue.toString();
   }
 
@@ -159,15 +179,15 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 
 QString QgsServerParameters::request() const
 {
-  return value( ParameterName::REQUEST ).toString();
+  return value( QgsServerParameter::REQUEST ).toString();
 }
 
 QString QgsServerParameters::value( const QString &key ) const
 {
-  return value( name( key ) ).toString();
+  return value( QgsServerParameter::name( key ) ).toString();
 }
 
-QVariant QgsServerParameters::value( ParameterName name ) const
+QVariant QgsServerParameters::value( QgsServerParameter::Name name ) const
 {
   return mParameters[name].mValue;
 }
@@ -179,19 +199,16 @@ void QgsServerParameters::load( const QUrlQuery &query )
   cleanQuery.setQuery( query.query().replace( '+', QStringLiteral( "%20" ) ) );
 
   // load parameters
-  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-
   for ( const auto &item : cleanQuery.queryItems( QUrl::FullyDecoded ) )
   {
-    const ParameterName paramName = name( item.first );
-    if ( paramName >= 0 )
+    const QgsServerParameter::Name name = QgsServerParameter::name( item.first );
+    if ( name >= 0 )
     {
-      const QVariant value( item.second );
-      mParameters[paramName].mValue = value;
-      mParameters[paramName].mDefined = true;
-      if ( !value.canConvert( mParameters[paramName].mType ) )
+      mParameters[name].mValue = item.second;
+      mParameters[name].mDefined = true;
+      if ( ! mParameters[name].isValid() )
       {
-        raiseError( paramName );
+        mParameters[name].raiseError();
       }
     }
     else
@@ -205,30 +222,4 @@ void QgsServerParameters::clear()
 {
   mParameters.clear();
   mUnmanagedParameters.clear();
-}
-
-QString QgsServerParameters::name( ParameterName name ) const
-{
-  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-  return metaEnum.valueToKey( name );
-}
-
-QgsServerParameters::ParameterName QgsServerParameters::name( const QString &key ) const
-{
-  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
-  return ( ParameterName ) metaEnum.keyToValue( key.toUpper().toStdString().c_str() );
-}
-
-void QgsServerParameters::raiseError( ParameterName paramName ) const
-{
-  const QString value = mParameters[paramName].mValue.toString();
-  const QString param = name( paramName );
-  const QString type = QVariant::typeToName( mParameters[paramName].mType );
-  const QString msg = QString( "%1 ('%2') cannot be converted into %3" ).arg( param, value, type );
-  raiseError( msg );
-}
-
-void QgsServerParameters::raiseError( const QString &msg ) const
-{
-  throw QgsBadRequestException( QStringLiteral( "Invalid WMS Parameter" ), msg );
 }

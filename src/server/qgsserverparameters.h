@@ -24,6 +24,52 @@
 #include <QUrlQuery>
 #include "qgis_server.h"
 
+class SERVER_EXPORT QgsServerParameterDefinition
+{
+  public:
+    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+                                  const QVariant defaultValue = QVariant( "" ) );
+
+    QString typeName() const;
+
+    bool isValid() const;
+
+    static void raiseError( const QString &msg );
+
+    QVariant::Type mType;
+    QVariant mValue;
+    QVariant mDefaultValue;
+    bool mDefined = false;
+};
+
+class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
+{
+    Q_GADGET
+
+  public:
+    enum Name
+    {
+      UNKNOWN,
+      SERVICE,
+      VERSION_SERVICE, // conflict with #define VERSION
+      REQUEST,
+      MAP,
+      FILE_NAME
+    };
+    Q_ENUM( Name )
+
+    QgsServerParameter( const QgsServerParameter::Name name = Name::UNKNOWN,
+                        const QVariant::Type type = QVariant::String,
+                        const QVariant defaultValue = QVariant( "" ) );
+
+    void raiseError() const;
+
+    static QString name( QgsServerParameter::Name );
+    static QgsServerParameter::Name name( const QString &name );
+
+    QgsServerParameter::Name mName;
+};
+
 /**
  * QgsServerParameters provides an interface to retrieve and manipulate
  * global parameters received from the client.
@@ -34,24 +80,6 @@ class SERVER_EXPORT QgsServerParameters
     Q_GADGET
 
   public:
-    enum ParameterName
-    {
-      SERVICE,
-      VERSION_SERVICE, // should be VERSION, but there's a conflict with #define VERSION
-      REQUEST,
-      MAP,
-      FILE_NAME
-    };
-    Q_ENUM( ParameterName )
-
-    struct Parameter
-    {
-      ParameterName mName;
-      QVariant::Type mType;
-      QVariant mDefaultValue;
-      QVariant mValue;
-      bool mDefined;
-    };
 
     /**
      * Constructor.
@@ -139,16 +167,10 @@ class SERVER_EXPORT QgsServerParameters
     QString version() const;
 
   private:
-    void save( const Parameter &parameter );
-    QVariant value( ParameterName name ) const;
+    void save( const QgsServerParameter &parameter );
+    QVariant value( QgsServerParameter::Name name ) const;
 
-    ParameterName name( const QString &name ) const;
-    QString name( ParameterName name ) const;
-
-    void raiseError( ParameterName name ) const;
-    void raiseError( const QString &msg ) const;
-
-    QMap<ParameterName, Parameter> mParameters;
+    QMap<QgsServerParameter::Name, QgsServerParameter> mParameters;
     QMap<QString, QString> mUnmanagedParameters;
 };
 
