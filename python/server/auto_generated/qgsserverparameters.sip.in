@@ -1,0 +1,148 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverparameters.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsServerParameters
+{
+%Docstring
+QgsServerParameters provides an interface to retrieve and manipulate
+global parameters received from the client.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+    enum ParameterName
+    {
+      SERVICE,
+      VERSION_SERVICE,
+      REQUEST,
+      MAP,
+      FILE_NAME
+    };
+
+    struct Parameter
+    {
+      ParameterName mName;
+      QVariant::Type mType;
+      QVariant mDefaultValue;
+      QVariant mValue;
+      bool mDefined;
+    };
+
+    QgsServerParameters();
+%Docstring
+Constructor.
+%End
+
+    QgsServerParameters( const QUrlQuery &query );
+%Docstring
+Constructor.
+%End
+
+    void load( const QUrlQuery &query );
+%Docstring
+Loads new parameters.
+
+:param query: url query
+%End
+
+    void clear();
+%Docstring
+Removes all parameters.
+%End
+
+    void add( const QString &key, const QString &value );
+%Docstring
+Adds a parameter.
+
+:param key: the name of the parameter
+:param value: the value of the parameter
+%End
+
+    void remove( const QString &key );
+%Docstring
+Removes a parameter.
+
+:param key: the name of the parameter
+%End
+
+    QString value( const QString &key ) const;
+%Docstring
+Returns the value of a parameter.
+
+:param key: the name of the parameter
+%End
+
+    QUrlQuery urlQuery() const;
+%Docstring
+Returns a url query with underlying parameters.
+%End
+
+    QMap<QString, QString> toMap() const;
+%Docstring
+Returns all parameters in a map.
+%End
+
+    QString service() const;
+%Docstring
+Returns SERVICE parameter as a string or an empty string if not
+defined.
+
+:return: service
+%End
+
+    QString request() const;
+%Docstring
+Returns REQUEST parameter as a string or an empty string if not
+defined.
+
+:return: request
+%End
+
+    QString map() const;
+%Docstring
+Returns MAP parameter as a string or an empty string if not
+defined.
+
+:return: map
+%End
+
+    QString fileName() const;
+%Docstring
+Returns  FILE_NAME parameter as a string or an empty string if not
+defined.
+
+:return: filename
+%End
+
+    QString version() const;
+%Docstring
+Returns VERSION parameter as a string or an empty string if not
+defined.
+
+:return: version
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverparameters.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
