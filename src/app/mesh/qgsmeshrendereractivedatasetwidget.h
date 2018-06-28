@@ -26,7 +26,9 @@ class QgsMeshLayer;
 /**
  * Widget for selection of active dataset group from tree view.
  * Also selects the active scalar and vector dataset by slider
- * and whether mesh rendering is enabled by checkboxes.
+ *
+ * At the moment, it is not possible to select different vector and
+ * scalar dataset
  */
 class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui::QgsMeshRendererActiveDatasetWidgetBase
 {
@@ -50,12 +52,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Gets index of the selected/active vector dataset
     int activeVectorDataset() const;
 
-    //! Returns whether rendering of the native mesh is enabled
-    bool isNativeMeshEnabled() const;
-
-    //! Returns whether rendering of the triangular mesh is enabled
-    bool isTriangularMeshEnabled() const;
-
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
 
@@ -67,28 +63,20 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     //! Emitted when active vector dataset changed
     void activeVectorDatasetChanged( int index );
 
-    //! Emitted when rendering of the native mesh changed
-    void nativeMeshEnabledChanged( bool on );
-
-    //! Emitted when rendering of the triangular mesh changed
-    void triangularMeshEnabledChanged( bool on );
-
     //! Emitted when any settings related to rendering changed
     void widgetChanged();
 
   private slots:
     void onActiveGroupChanged();
     void onActiveDatasetChanged( int value );
-    void onScalarChecked( int toggle );
-    void onVectorChecked( int toggle );
-    void onNativeMeshChecked( int toggle );
-    void onTringularMeshChecked( int toggle );
     void updateMetadata( int datasetIndex );
 
   private:
     int datasetIndex() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
+    int mActiveScalarDataset = -1;
+    int mActiveVectorDataset = -1;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

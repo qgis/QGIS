@@ -281,6 +281,44 @@ void QgsMeshDatasetGroupTreeView::syncToLayer()
 
   mModel.setupModelData( mGroups.keys() );
 
-  if ( mGroups.size() > 0 )
-    setCurrentIndex( mModel.index( 0, 0 ) );
+  int index = setActiveGroupFromActiveDataset();
+
+  if ( mGroups.size() > index )
+    setCurrentIndex( mModel.index( index, 0 ) );
+}
+
+int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
+{
+  // find active dataset
+  int activeDataset = -1;
+  if ( mMeshLayer )
+  {
+    activeDataset = mMeshLayer->activeScalarDataset();
+    if ( activeDataset == -1 )
+      activeDataset = mMeshLayer->activeVectorDataset();
+  }
+
+  // find group that contains active dataset
+  int index = 0;
+  if ( activeDataset > -1 )
+  {
+    for ( auto it = mGroups.constBegin(); it != mGroups.constEnd(); ++it )
+    {
+      int datasetIndex = it.value().indexOf( activeDataset );
+      if ( datasetIndex > -1 )
+      {
+        mActiveGroup = it.key();
+        return index;
+      }
+      else
+      {
+        ++index;
+      }
+    }
+  }
+
+
+  // not found return first item in the list
+  mActiveGroup = QString();
+  return 0;
 }

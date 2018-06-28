@@ -26,10 +26,6 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
   setupUi( this );
   connect( mDatasetGroupTreeView, &QgsMeshDatasetGroupTreeView::activeGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged );
   connect( mDatasetSlider, &QSlider::valueChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged );
-  connect( mDisplayScalarsCheckBox, &QCheckBox::stateChanged, this, &QgsMeshRendererActiveDatasetWidget::onScalarChecked );
-  connect( mDisplayVectorsCheckBox, &QCheckBox::stateChanged, this, &QgsMeshRendererActiveDatasetWidget::onVectorChecked );
-  connect( mDisplayNativeMeshCheckBox, &QCheckBox::stateChanged, this, &QgsMeshRendererActiveDatasetWidget::onNativeMeshChecked );
-  connect( mDisplayTriangularMeshCheckBox, &QCheckBox::stateChanged, this, &QgsMeshRendererActiveDatasetWidget::onTringularMeshChecked );
 }
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
@@ -39,40 +35,19 @@ void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
     mMeshLayer = layer;
   }
 
+  mDatasetGroupTreeView->setLayer( layer );
   setEnabled( mMeshLayer );
   syncToLayer();
-
-  mDatasetGroupTreeView->setLayer( layer );
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
 {
-  if ( isEnabled() &&
-       mDisplayScalarsCheckBox->isEnabled() &&
-       mDisplayScalarsCheckBox->isChecked() )
-    return datasetIndex();
-  else
-    return -1;
+  return mActiveScalarDataset;
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeVectorDataset() const
 {
-  if ( isEnabled() &&
-       mDisplayVectorsCheckBox->isEnabled() &&
-       mDisplayVectorsCheckBox->isChecked() )
-    return  datasetIndex();
-  else
-    return -1;
-}
-
-bool QgsMeshRendererActiveDatasetWidget::isNativeMeshEnabled() const
-{
-  return isEnabled() && mDisplayNativeMeshCheckBox->isChecked();
-}
-
-bool QgsMeshRendererActiveDatasetWidget::isTriangularMeshEnabled() const
-{
-  return isEnabled() && mDisplayTriangularMeshCheckBox->isChecked();
+  return mActiveVectorDataset;
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
@@ -88,17 +63,16 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 {
   int datasetIndex = -1;
   const QVector<int> datasets = mDatasetGroupTreeView->datasetsInActiveGroup();
-  if ( datasets.size() < value || !mMeshLayer || !mMeshLayer->dataProvider() )
-  {
-    mDisplayScalarsCheckBox->setEnabled( false );
-    mDisplayVectorsCheckBox->setEnabled( false );
-  }
-  else
+  mActiveScalarDataset = -1;
+  mActiveVectorDataset = -1;
+
+  if ( datasets.size() > value && mMeshLayer && mMeshLayer->dataProvider() )
   {
     datasetIndex = datasets[value];
     const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
-    mDisplayScalarsCheckBox->setEnabled( true );
-    mDisplayVectorsCheckBox->setEnabled( meta.isVector() );
+    mActiveScalarDataset = datasetIndex;
+    if ( meta.isVector() )
+      mActiveVectorDataset = datasetIndex;
   }
 
   updateMetadata( datasetIndex );
@@ -109,39 +83,11 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
   emit widgetChanged();
 }
 
-void QgsMeshRendererActiveDatasetWidget::onScalarChecked( int toggle )
-{
-  Q_UNUSED( toggle );
-  emit activeScalarDatasetChanged( activeScalarDataset() );
-  emit widgetChanged();
-}
-
-void QgsMeshRendererActiveDatasetWidget::onVectorChecked( int toggle )
-{
-  Q_UNUSED( toggle );
-  emit activeVectorDatasetChanged( activeVectorDataset() );
-  emit widgetChanged();
-}
-
-void QgsMeshRendererActiveDatasetWidget::onNativeMeshChecked( int toggle )
-{
-  Q_UNUSED( toggle );
-  emit nativeMeshEnabledChanged( isNativeMeshEnabled() );
-  emit widgetChanged();
-}
-
-void QgsMeshRendererActiveDatasetWidget::onTringularMeshChecked( int toggle )
-{
-  Q_UNUSED( toggle );
-  emit triangularMeshEnabledChanged( isTriangularMeshEnabled() );
-  emit widgetChanged();
-}
-
 void QgsMeshRendererActiveDatasetWidget::updateMetadata( int datasetIndex )
 {
   if ( datasetIndex == -1 )
   {
-    mActiveDatasetMetadata->setText( tr( "N/A" ) );
+    mActiveDatasetMetadata->setText( tr( "No dataset selected" ) );
   }
   else
   {
@@ -186,9 +132,15 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 
   if ( mMeshLayer )
   {
-    whileBlocking( mDisplayNativeMeshCheckBox )->setChecked( mMeshLayer->rendererNativeMeshSettings().isEnabled() );
-    whileBlocking( mDisplayTriangularMeshCheckBox )->setChecked( mMeshLayer->rendererTriangularMeshSettings().isEnabled() );
-    whileBlocking( mDisplayScalarsCheckBox )->setChecked( mMeshLayer->activeScalarDataset() != -1 );
-    whileBlocking( mDisplayVectorsCheckBox )->setChecked( mMeshLayer->activeVectorDataset() != -1 );
+    mActiveScalarDataset = mMeshLayer->activeScalarDataset();
+    mActiveVectorDataset = mMeshLayer->activeVectorDataset();
   }
+  else
+  {
+    mActiveScalarDataset = -1;
+    mActiveVectorDataset = -1;
+  }
+
+  if ( mActiveScalarDataset != -1 )
+    whileBlocking( mDatasetSlider )->setValue( mActiveScalarDataset );
 }

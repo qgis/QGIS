@@ -126,6 +126,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
 
   private:
     void extractGroups();
+    int setActiveGroupFromActiveDataset();
 
     QgsMeshDatasetGroupTreeModel mModel;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned

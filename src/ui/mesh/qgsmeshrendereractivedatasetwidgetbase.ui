@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>254</width>
-    <height>304</height>
+    <width>319</width>
+    <height>317</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,45 +46,6 @@
       <number>1</number>
      </property>
     </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Display</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QCheckBox" name="mDisplayScalarsCheckBox">
-       <property name="text">
-        <string>Contours</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QCheckBox" name="mDisplayVectorsCheckBox">
-       <property name="text">
-        <string> Vectors</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="mDisplayNativeMeshCheckBox">
-       <property name="text">
-        <string> Mesh</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="mDisplayTriangularMeshCheckBox">
-       <property name="text">
-        <string> Triangular Mesh</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="QgsCollapsibleGroupBox" name="mActiveDatasetMetadataGroup">
