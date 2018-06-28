@@ -61,16 +61,6 @@
    <item row="6" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QPushButton" name="btnAddCategories">
-       <property name="toolTip">
-        <string>Add all missing categories from column or expression unique values</string>
-       </property>
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btnAddCategory">
        <property name="toolTip">
         <string>Add categories manually</string>
@@ -117,6 +107,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnAdvanced">
+       <property name="toolTip">
+        <string>Advanced options</string>
+       </property>
        <property name="text">
         <string>Advanced</string>
        </property>
@@ -151,7 +144,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
      <property name="maximumSize">
       <size>
        <width>500</width>
@@ -198,6 +191,16 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="btnAddCategories">
+     <property name="toolTip">
+      <string>Add all missing categories from column or expression unique values</string>
+     </property>
+     <property name="text">
+      <string>Classify</string>
+     </property>
+    </widget>
+   </item>
   </layout>
   <zorder>viewCategories</zorder>
   <zorder>btnChangeCategorizedSymbol</zorder>
@@ -206,6 +209,7 @@
   <zorder>mExpressionWidget</zorder>
   <zorder>label_3</zorder>
   <zorder>btnColorRamp</zorder>
+  <zorder>btnAddCategories</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -226,7 +230,6 @@
   <tabstop>btnChangeCategorizedSymbol</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
-  <tabstop>btnAddCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>

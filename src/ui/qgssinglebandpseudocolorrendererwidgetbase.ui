@@ -14,9 +14,58 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
     <number>3</number>
    </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
+   <item row="11" column="0" colspan="2">
+    <widget class="QTreeWidget" name="mColormapTreeWidget">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>250</height>
+      </size>
+     </property>
+     <attribute name="headerDefaultSectionSize">
+      <number>70</number>
+     </attribute>
+     <attribute name="headerMinimumSectionSize">
+      <number>10</number>
+     </attribute>
+     <attribute name="headerStretchLastSection">
+      <bool>true</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string>Value</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Color</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Label</string>
+      </property>
+     </column>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mBandLabel">
      <property name="text">
@@ -56,6 +105,9 @@ suffix</string>
    <item row="0" column="1">
     <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
    </item>
+   <item row="4" column="1">
+    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
+   </item>
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="minMaxHorizontalLayout">
      <item>
@@ -91,9 +143,6 @@ suffix</string>
       <widget class="QLineEdit" name="mMaxLineEdit"/>
      </item>
     </layout>
-   </item>
-   <item row="4" column="1">
-    <widget class="QComboBox" name="mColorInterpolationComboBox"/>
    </item>
    <item row="5" column="1">
     <widget class="QgsColorRampButton" name="btnColorRamp">
@@ -164,58 +213,8 @@ suffix</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="0" colspan="2">
-    <widget class="QTreeWidget" name="mColormapTreeWidget">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>250</height>
-      </size>
-     </property>
-     <attribute name="headerDefaultSectionSize">
-      <number>70</number>
-     </attribute>
-     <attribute name="headerMinimumSectionSize">
-      <number>10</number>
-     </attribute>
-     <attribute name="headerStretchLastSection">
-      <bool>true</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string>Value</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Color</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Label</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="2">
+   <item row="13" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QPushButton" name="mClassifyButton">
-       <property name="toolTip">
-        <string>Calculate all classes</string>
-       </property>
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QPushButton" name="mAddEntryButton">
        <property name="toolTip">
@@ -286,7 +285,7 @@ suffix</string>
      </item>
     </layout>
    </item>
-   <item row="13" column="0" colspan="2">
+   <item row="14" column="0" colspan="2">
     <widget class="QCheckBox" name="mClipCheckBox">
      <property name="toolTip">
       <string>If checked, any pixels with a value out of range will not be rendered</string>
@@ -298,6 +297,16 @@ suffix</string>
    </item>
    <item row="2" column="0" colspan="2">
     <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
+   </item>
+   <item row="10" column="1">
+    <widget class="QPushButton" name="mClassifyButton">
+     <property name="toolTip">
+      <string>Calculate all classes</string>
+     </property>
+     <property name="text">
+      <string>Classify</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -322,7 +331,6 @@ suffix</string>
   <tabstop>mNumberOfEntriesSpinBox</tabstop>
   <tabstop>mUnitLineEdit</tabstop>
   <tabstop>mColormapTreeWidget</tabstop>
-  <tabstop>mClassifyButton</tabstop>
   <tabstop>mAddEntryButton</tabstop>
   <tabstop>mDeleteEntryButton</tabstop>
   <tabstop>mLoadFromBandButton</tabstop>

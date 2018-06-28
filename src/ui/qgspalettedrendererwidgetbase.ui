@@ -27,17 +27,7 @@
     <number>3</number>
    </property>
    <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,0,0,1,0">
-     <item>
-      <widget class="QPushButton" name="mClassifyButton">
-       <property name="toolTip">
-        <string>Adds all missing unique values from the raster</string>
-       </property>
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1,0,0">
      <item>
       <widget class="QPushButton" name="mAddEntryButton">
        <property name="sizePolicy">
@@ -143,22 +133,6 @@
      <property name="topMargin">
       <number>0</number>
      </property>
-     <item row="0" column="0">
-      <widget class="QLabel" name="mBandLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Band</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
-     </item>
      <item row="1" column="1">
       <widget class="QgsColorRampButton" name="btnColorRamp">
        <property name="sizePolicy">
@@ -194,28 +168,53 @@
        </property>
       </widget>
      </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="mBandLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Band</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="QPushButton" name="mClassifyButton">
+       <property name="toolTip">
+        <string>Adds all missing unique values from the raster</string>
+       </property>
+       <property name="text">
+        <string>Classify</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>raster/qgsrasterbandcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mBandComboBox</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>mTreeView</tabstop>
-  <tabstop>mClassifyButton</tabstop>
   <tabstop>mAddEntryButton</tabstop>
   <tabstop>mDeleteEntryButton</tabstop>
   <tabstop>mButtonDeleteAll</tabstop>

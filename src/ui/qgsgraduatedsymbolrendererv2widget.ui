@@ -6,11 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>434</width>
+    <width>442</width>
     <height>554</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="15" column="1">
+    <widget class="QPushButton" name="btnGraduatedClassify">
+     <property name="text">
+      <string>Classify</string>
+     </property>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -84,13 +91,6 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QPushButton" name="btnGraduatedClassify">
-           <property name="text">
-            <string>Classify</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="btnGraduatedAdd">
            <property name="toolTip">
             <string>Add class manually</string>
@@ -137,6 +137,9 @@
          </item>
          <item>
           <widget class="QPushButton" name="btnAdvanced">
+           <property name="toolTip">
+            <string>Advanced options</string>
+           </property>
            <property name="text">
             <string>Advanced</string>
            </property>
@@ -195,7 +198,7 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -235,7 +238,7 @@
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -267,7 +270,7 @@
        <property name="value">
         <double>10.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -302,19 +305,6 @@
     <widget class="QLabel" name="label_4">
      <property name="text">
       <string>Column</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="1">
-    <widget class="QgsUnitSelectionWidget" name="mSizeUnitWidget" native="true">
-     <property name="minimumSize">
-      <size>
-       <width>14</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -492,12 +482,6 @@ Negative rounds to powers of 10</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsUnitSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsunitselectionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsGraduatedHistogramWidget</class>
    <extends>QWidget</extends>
    <header>qgsgraduatedhistogramwidget.h</header>
@@ -514,12 +498,10 @@ Negative rounds to powers of 10</string>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>minSizeSpinBox</tabstop>
   <tabstop>maxSizeSpinBox</tabstop>
-  <tabstop>mSizeUnitWidget</tabstop>
   <tabstop>cboGraduatedMode</tabstop>
   <tabstop>spinGraduatedClasses</tabstop>
   <tabstop>tabWidget</tabstop>
   <tabstop>viewGraduated</tabstop>
-  <tabstop>btnGraduatedClassify</tabstop>
   <tabstop>btnGraduatedAdd</tabstop>
   <tabstop>btnGraduatedDelete</tabstop>
   <tabstop>btnDeleteAllClasses</tabstop>
