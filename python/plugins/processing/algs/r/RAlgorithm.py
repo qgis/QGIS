@@ -158,24 +158,15 @@ class RAlgorithm(GeoAlgorithm):
             self.passFileNames = True
             return
         tokens = line.split('=')
-        desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
             self.group = self.i18n_group = tokens[0]
             return
         if tokens[1].lower().strip() == 'name':
             self.name = self.i18n_name = tokens[0]
             return
-
         if tokens[1].lower().strip().startswith('output'):
             outToken = tokens[1].strip()[len('output') + 1:]
             out = self.processOutputParameterToken(outToken)
-
-        elif tokens[1].lower().strip().startswith('optional'):
-            optToken = tokens[1].strip()[len('optional') + 1:]
-            param = self.processInputParameterToken(optToken, tokens[0])
-            if param:
-                param.optional = True
-
         else:
             param = self.processInputParameterToken(tokens[1], tokens[0])
 
@@ -191,8 +182,18 @@ class RAlgorithm(GeoAlgorithm):
 
     def processInputParameterToken(self, token, name):
         param = None
+        optional = False
+        isAdvanced = False
 
         desc = self.createDescriptiveName(name)
+
+        tokens = token.lower().strip().split(' ')
+        if "optional" in tokens[0]:
+            optional = True
+        if "advanced" in tokens[0]:
+            isAdvanced = True
+        if optional or isAdvanced:
+            token = (' ').join(tokens[1:])
 
         if token.lower().strip().startswith('raster'):
             param = ParameterRaster(name, desc, False)
@@ -280,6 +281,10 @@ class RAlgorithm(GeoAlgorithm):
                 param = ParameterCrs(name, desc, default)
             else:
                 param = ParameterCrs(name, desc)
+
+        if param is not None:
+            param.optional = optional
+            param.isAdvanced = isAdvanced
 
         return param
 
