@@ -659,9 +659,18 @@ _plugin_modules = {}
 
 
 def _import(name, globals={}, locals={}, fromlist=[], level=None):
-    """ wrapper around builtin import that keeps track of loaded plugin modules """
+    """
+    Wrapper around builtin import that keeps track of loaded plugin modules and blocks
+    certain unsafe imports
+    """
     if level is None:
         level = 0
+
+    if 'PyQt4' in name:
+        msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
+              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
+        raise ImportError(msg)
+
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:
