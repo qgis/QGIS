@@ -303,10 +303,7 @@ static bool intersectionDemTriangles( const QByteArray &vertexBuf, const QByteAr
 
 bool DemTerrainTileGeometry::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QMatrix4x4 &worldTransform, QVector3D &intersectionPoint )
 {
-  // TODO: optimize this so we do not recreate vertex/index buffer every time!!!
-  QByteArray vertexBuf = ( *mVertexBuffer->dataGenerator() )();
-  QByteArray indexBuf = ( *mIndexBuffer->dataGenerator() )();
-  return intersectionDemTriangles( vertexBuf, indexBuf, ray, worldTransform, intersectionPoint );
+  return intersectionDemTriangles( mVertexBuffer->data(), mIndexBuffer->data(), ray, worldTransform, intersectionPoint );
 }
 
 void DemTerrainTileGeometry::init()
@@ -357,8 +354,10 @@ void DemTerrainTileGeometry::init()
   // Each primitive has 3 vertives
   mIndexAttribute->setCount( faces * 3 );
 
-  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) ); // skip-keyword-check
-  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution, mHeightMap ) ); // skip-keyword-check
+  // switched to setting data instead of just setting data generators because we also need the buffers
+  // available for ray-mesh intersections and we can't access the private copy of data in Qt (if there is any)
+  mVertexBuffer->setData( PlaneVertexBufferFunctor( mResolution, mSkirtHeight, mHeightMap )() );
+  mIndexBuffer->setData( PlaneIndexBufferFunctor( mResolution, mHeightMap )() );
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );
