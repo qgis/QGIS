@@ -79,6 +79,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
 
   private:
     void setCameraData( float x, float y, float elev, float dist, float pitch = 0, float yaw = 0 );
+    void rotateCamera( float diffPitch, float diffYaw );
 
   signals:
     //! Emitted when camera has been updated

@@ -239,6 +239,31 @@ QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport
 }
 
 
+void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
+{
+  // Is it always going to be love/hate relationship with quaternions???
+  // This quaternion combines two rotations:
+  // - first it undoes the previously applied rotation so we have do not have any rotation compared to world coords
+  // - then it applies new rotation
+  // (We can't just apply our euler angles difference because the camera may be already rotated)
+  QQuaternion q = QQuaternion::fromEulerAngles( mCameraData.pitch + diffPitch, mCameraData.yaw + diffYaw, 0 ) *
+                  QQuaternion::fromEulerAngles( mCameraData.pitch, mCameraData.yaw, 0 ).conjugated();
+
+  // get camera's view vector, rotate it to get new view center
+  QVector3D position = mCamera->position();
+  QVector3D viewCenter = mCamera->viewCenter();
+  QVector3D viewVector = viewCenter - position;
+  QVector3D cameraToCenter = q * viewVector;
+  viewCenter = position + cameraToCenter;
+
+  mCameraData.x = viewCenter.x();
+  mCameraData.y = viewCenter.z();
+  mCameraData.elev = viewCenter.y();
+  mCameraData.pitch += diffPitch;
+  mCameraData.yaw += diffYaw;
+}
+
+
 void QgsCameraController::frameTriggered( float dt )
 {
   if ( mCamera == nullptr )
@@ -262,7 +287,7 @@ void QgsCameraController::frameTriggered( float dt )
   float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
   float telev = mTelevAxis->value() * dt * 300;
 
-  if ( !mShiftAction->isActive() && ( tx || ty ) )
+  if ( !mShiftAction->isActive() && !mCtrlAction->isActive() && ( tx || ty ) )
   {
     // moving with keyboard - take into account yaw of camera
     float t = sqrt( tx * tx + ty * ty );
@@ -275,15 +300,29 @@ void QgsCameraController::frameTriggered( float dt )
 
   if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
-    // rotate/tilt using mouse
+    // rotate/tilt using mouse (camera moves as it rotates around its view center)
     mCameraData.pitch += dy;
     mCameraData.yaw -= dx / 2;
   }
   else if ( mShiftAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
   {
-    // rotate/tilt using keyboard
+    // rotate/tilt using keyboard (camera moves as it rotates around its view center)
     mCameraData.pitch -= mTyAxis->value();   // down key = moving camera toward terrain
     mCameraData.yaw -= mTxAxis->value();     // right key = moving camera clockwise
+  }
+  else if ( mCtrlAction->isActive() && mLeftMouseButtonAction->isActive() )
+  {
+    // rotate/tilt using mouse (camera stays at one position as it rotates)
+    float diffPitch = 0.2 * dy;
+    float diffYaw = 0.2 * -dx / 2;
+    rotateCamera( diffPitch, diffYaw );
+  }
+  else if ( mCtrlAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
+  {
+    // rotate/tilt using keyboard (camera stays at one position as it rotates)
+    float diffPitch = mTyAxis->value();   // down key = rotating camera down
+    float diffYaw = -mTxAxis->value();    // right key = rotating camera to the right
+    rotateCamera( diffPitch, diffYaw );
   }
   else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
   {
