@@ -667,8 +667,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
         level = 0
 
     if 'PyQt4' in name:
-        msg = 'Importing PyQt4 classes would cause a crash, ' \
-              'please use PyQt5 in "{}"'.format(name)
+        msg = 'PyQt4 classes cannot be imported in QGIS 3.x.\n' \
+              'Use {} or the version independent {} import instead.'.format(name.replace('PyQt4', 'PyQt5'), name.replace('PyQt4', 'qgis.PyQt'))
         raise ImportError(msg)
 
     mod = _builtin_import(name, globals, locals, fromlist, level)
