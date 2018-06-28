@@ -3200,7 +3200,7 @@ bool QgsPostgresProvider::empty() const
     return false;
   }
 
-  return res.PQgetvalue( 0, 0 ) != 't';
+  return res.PQgetvalue( 0, 0 ) != QLatin1String( "t" );
 }
 
 QgsRectangle QgsPostgresProvider::extent() const
