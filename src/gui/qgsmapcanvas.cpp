@@ -466,7 +466,7 @@ QgsMapLayer *QgsMapCanvas::currentLayer()
   return mCurrentLayer;
 }
 
-QgsExpressionContextScope *QgsMapCanvas::scope()
+QgsExpressionContextScope *QgsMapCanvas::defaultExpressionContextScope()
 {
   QgsExpressionContextScope *s = new QgsExpressionContextScope( QObject::tr( "Map Canvas" ) );
   s->setVariable( QStringLiteral( "canvas_cursor_point" ), QgsGeometry::fromPointXY( cursorPoint() ), true );
@@ -517,7 +517,7 @@ void QgsMapCanvas::refreshMap()
                     << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
                     << QgsExpressionContextUtils::atlasScope( nullptr )
                     << QgsExpressionContextUtils::mapSettingsScope( mSettings )
-                    << scope()
+                    << defaultExpressionContextScope()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
