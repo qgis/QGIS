@@ -42,12 +42,12 @@ QgsCoordinateReferenceSystem QgsQuickUtils::coordinateReferenceSystemFromEpsgId(
   return QgsCoordinateReferenceSystem::fromEpsgId( epsg );
 }
 
-QgsPointXY QgsQuickUtils::pointXYFactory( double x, double y ) const
+QgsPointXY QgsQuickUtils::pointXY( double x, double y ) const
 {
   return QgsPointXY( x, y );
 }
 
-QgsPoint QgsQuickUtils::pointFactory( double x, double y, double z, double m ) const
+QgsPoint QgsQuickUtils::point( double x, double y, double z, double m ) const
 {
   return QgsPoint( x, y, z, m );
 }

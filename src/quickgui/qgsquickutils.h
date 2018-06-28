@@ -84,14 +84,14 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPointXY pointXYFactory( double x, double y ) const;
+    Q_INVOKABLE QgsPointXY pointXY( double x, double y ) const;
 
     /**
       * Creates QgsPoint in QML
       *
       * \since QGIS 3.4
       */
-    Q_INVOKABLE QgsPoint pointFactory( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
+    Q_INVOKABLE QgsPoint point( double x, double y, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) const;
 
     /**
       * Converts QGeoCoordinate to QgsPoint

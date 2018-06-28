@@ -72,11 +72,11 @@ void TestQgsQuickUtils::screenUnitsToMeters()
 
 void TestQgsQuickUtils::transformedPoint()
 {
-  QgsPointXY pointXY = utils.pointXYFactory( 49.9, 16.3 );
+  QgsPointXY pointXY = utils.pointXY( 49.9, 16.3 );
   QGSCOMPARENEAR( pointXY.x(), 49.9, 1e-4 );
   QGSCOMPARENEAR( pointXY.y(), 16.3, 1e-4 );
 
-  QgsPoint point = utils.pointFactory( 1.0, -1.0 );
+  QgsPoint point = utils.point( 1.0, -1.0 );
   QGSCOMPARENEAR( point.x(), 1.0, 1e-4 );
   QGSCOMPARENEAR( point.y(), -1.0, 1e-4 );
 
