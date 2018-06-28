@@ -175,6 +175,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DInput::QButtonAxisInput *mKeyboardTyPosInput = nullptr;
     Qt3DInput::QButtonAxisInput *mKeyboardTxNegInput = nullptr;
     Qt3DInput::QButtonAxisInput *mKeyboardTyNegInput = nullptr;
+
+    Qt3DInput::QAxis *mTelevAxis = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTelevPosInput = nullptr;
+    Qt3DInput::QButtonAxisInput *mKeyboardTelevNegInput = nullptr;
 };
 
 #endif // QGSCAMERACONTROLLER_H

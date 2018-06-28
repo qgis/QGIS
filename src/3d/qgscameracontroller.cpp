@@ -49,6 +49,9 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   , mKeyboardTyPosInput( new Qt3DInput::QButtonAxisInput() )
   , mKeyboardTxNegInput( new Qt3DInput::QButtonAxisInput() )
   , mKeyboardTyNegInput( new Qt3DInput::QButtonAxisInput() )
+  , mTelevAxis( new Qt3DInput::QAxis() )
+  , mKeyboardTelevPosInput( new Qt3DInput::QButtonAxisInput() )
+  , mKeyboardTelevNegInput( new Qt3DInput::QButtonAxisInput() )
 {
 
   // not using QAxis + QAnalogAxisInput for mouse X,Y because
@@ -115,6 +118,18 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mKeyboardTyNegInput->setSourceDevice( mKeyboardDevice );
   mTyAxis->addInput( mKeyboardTyNegInput );
 
+  // Keyboard Neg Telev
+  mKeyboardTelevNegInput->setButtons( QVector<int>() << Qt::Key_PageDown );
+  mKeyboardTelevNegInput->setScale( -1.0f );
+  mKeyboardTelevNegInput->setSourceDevice( mKeyboardDevice );
+  mTelevAxis->addInput( mKeyboardTelevNegInput );
+
+  // Keyboard Pos Telev
+  mKeyboardTelevPosInput->setButtons( QVector<int>() << Qt::Key_PageUp );
+  mKeyboardTelevPosInput->setScale( 1.0f );
+  mKeyboardTelevPosInput->setSourceDevice( mKeyboardDevice );
+  mTelevAxis->addInput( mKeyboardTelevPosInput );
+
   mLogicalDevice->addAction( mLeftMouseButtonAction );
   mLogicalDevice->addAction( mMiddleMouseButtonAction );
   mLogicalDevice->addAction( mRightMouseButtonAction );
@@ -123,6 +138,7 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mLogicalDevice->addAxis( mWheelAxis );
   mLogicalDevice->addAxis( mTxAxis );
   mLogicalDevice->addAxis( mTyAxis );
+  mLogicalDevice->addAxis( mTelevAxis );
 
   // Disable the logical device when the entity is disabled
   connect( this, &Qt3DCore::QEntity::enabledChanged,
@@ -244,6 +260,7 @@ void QgsCameraController::frameTriggered( float dt )
 
   float tx = mTxAxis->value() * dt * mCameraData.dist * 1.5;
   float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
+  float telev = mTelevAxis->value() * dt * 300;
 
   if ( !mShiftAction->isActive() && ( tx || ty ) )
   {
@@ -281,6 +298,9 @@ void QgsCameraController::frameTriggered( float dt )
     mCameraData.x -= p2.x() - p1.x();
     mCameraData.y -= p2.y() - p1.y();
   }
+
+  if ( telev != 0 )
+    mCameraData.elev += telev;
 
   if ( std::isnan( mCameraData.x ) || std::isnan( mCameraData.y ) )
   {
