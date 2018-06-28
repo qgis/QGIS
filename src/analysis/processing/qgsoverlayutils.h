@@ -17,6 +17,7 @@
 #define QGSOVERLAYUTILS_H
 
 #include <QList>
+#include "qgswkbtypes.h"
 
 #define SIP_NO_FILE
 
@@ -27,6 +28,7 @@ class QgsFeatureSink;
 class QgsFields;
 class QgsProcessingContext;
 class QgsProcessingFeedback;
+class QgsGeometry;
 
 namespace QgsOverlayUtils
 {
@@ -42,6 +44,9 @@ namespace QgsOverlayUtils
   void difference( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, DifferenceOutput outputAttrs );
 
   void intersection( const QgsFeatureSource &sourceA, const QgsFeatureSource &sourceB, QgsFeatureSink &sink, QgsProcessingContext &context, QgsProcessingFeedback *feedback, int &count, int totalCount, const QList<int> &fieldIndicesA, const QList<int> &fieldIndicesB );
+
+  //! Makes sure that what came out from intersection of two geometries is good to be used in the output
+  bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType );
 
   /**
    * Copies features from the source to the sink and resolves overlaps: for each pair of overlapping features A and B

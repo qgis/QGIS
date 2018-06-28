@@ -20,8 +20,7 @@
 
 ///@cond PRIVATE
 
-//! Makes sure that what came out from intersection of two geometries is good to be used in the output
-static bool sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
+bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, QgsWkbTypes::GeometryType geometryType )
 {
   if ( geom.isNull() )
   {

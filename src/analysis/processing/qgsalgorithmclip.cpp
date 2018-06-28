@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmclip.h"
 #include "qgsgeometryengine.h"
+#include "qgsoverlayutils.h"
 
 ///@cond PRIVATE
 
@@ -78,6 +79,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
   QString dest;
+  QgsWkbTypes::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
   std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::multiType( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
@@ -183,6 +185,9 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
         // clip geometry totally contains feature geometry, so no need to perform intersection
         newGeometry = inputFeature.geometry();
       }
+
+      if ( !QgsOverlayUtils::sanitizeIntersectionResult( newGeometry, sinkType ) )
+        continue;
 
       QgsFeature outputFeature;
       outputFeature.setGeometry( newGeometry );
