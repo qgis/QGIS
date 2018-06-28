@@ -23,6 +23,7 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QSkyboxEntity>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DLogic/QFrameAction>
 
 #include <QTimer>
@@ -34,7 +35,6 @@
 #include "qgscameracontroller.h"
 #include "qgschunkedentity_p.h"
 #include "qgschunknode_p.h"
-#include "qgsraycastingutils_p.h"
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsvectorlayer.h"
@@ -73,6 +73,8 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   mCameraController->setViewport( viewportRect );
   mCameraController->setCamera( camera );
   mCameraController->resetView( 1000 );
+
+  addCameraViewCenterEntity( camera );
 
   // create terrain entity
 
@@ -255,21 +257,6 @@ void Qgs3DMapScene::onCameraChanged()
     camera->setFarPlane( ffar * 2 );
     camera->setNearPlane( fnear / 2 );
 
-    // figure out our distance from terrain and update the camera's view center
-    // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
-    QVector3D intersectionPoint;
-    QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForViewportAndCamera(
-                                      mCameraController->viewport().size(),
-                                      mCameraController->viewport().center(),
-                                      QRectF( 0.0, 0.0, 1.0, 1.0 ),
-                                      mCameraController->camera() );
-    if ( mTerrain->rayIntersection( ray, intersectionPoint ) )
-    {
-      float dist = ( intersectionPoint - mCameraController->camera()->position() ).length();
-      mCameraController->blockSignals( true );
-      mCameraController->setLookingAtPoint( QgsVector3D( intersectionPoint.x(), intersectionPoint.y(), intersectionPoint.z() ), dist );
-      mCameraController->blockSignals( false );
-    }
   }
   else
     qDebug() << "no terrain - not setting near/far plane";
@@ -321,7 +308,7 @@ void Qgs3DMapScene::createTerrainDeferred()
   if ( mMap.showTerrainBoundingBoxes() )
     mTerrain->setShowBoundingBoxes( true );
 
-  mCameraController->addTerrainPicker( mTerrain->terrainPicker() );
+  mCameraController->setTerrainEntity( mTerrain );
 
   mChunkEntities << mTerrain;
 
@@ -434,4 +421,32 @@ void Qgs3DMapScene::removeLayerEntity( QgsMapLayer *layer )
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     disconnect( vlayer, &QgsVectorLayer::selectionChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );
   }
+}
+
+void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
+{
+  mEntityCameraViewCenter = new Qt3DCore::QEntity;
+
+  Qt3DCore::QTransform *trCameraViewCenter = new Qt3DCore::QTransform;
+  mEntityCameraViewCenter->addComponent( trCameraViewCenter );
+  connect( camera, &Qt3DRender::QCamera::viewCenterChanged, this, [trCameraViewCenter, camera]
+  {
+    trCameraViewCenter->setTranslation( camera->viewCenter() );
+  } );
+
+  Qt3DExtras::QPhongMaterial *materialCameraViewCenter = new Qt3DExtras::QPhongMaterial;
+  materialCameraViewCenter->setAmbient( Qt::red );
+  mEntityCameraViewCenter->addComponent( materialCameraViewCenter );
+
+  Qt3DExtras::QSphereMesh *rendererCameraViewCenter = new Qt3DExtras::QSphereMesh;
+  rendererCameraViewCenter->setRadius( 10 );
+  mEntityCameraViewCenter->addComponent( rendererCameraViewCenter );
+
+  mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+  mEntityCameraViewCenter->setParent( this );
+
+  connect( &mMap, &Qgs3DMapSettings::showCameraViewCenterChanged, this, [this]
+  {
+    mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
+  } );
 }

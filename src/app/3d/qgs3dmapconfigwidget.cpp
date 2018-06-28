@@ -60,6 +60,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   chkShowLabels->setChecked( mMap->showLabels() );
   chkShowTileInfo->setChecked( mMap->showTerrainTilesInfo() );
   chkShowBoundingBoxes->setChecked( mMap->showTerrainBoundingBoxes() );
+  chkShowCameraViewCenter->setChecked( mMap->showCameraViewCenter() );
 
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
   connect( spinMapResolution, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &Qgs3DMapConfigWidget::updateMaxZoomLevel );
@@ -125,6 +126,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setShowLabels( chkShowLabels->isChecked() );
   mMap->setShowTerrainTilesInfo( chkShowTileInfo->isChecked() );
   mMap->setShowTerrainBoundingBoxes( chkShowBoundingBoxes->isChecked() );
+  mMap->setShowCameraViewCenter( chkShowCameraViewCenter->isChecked() );
 }
 
 void Qgs3DMapConfigWidget::onTerrainLayerChanged()

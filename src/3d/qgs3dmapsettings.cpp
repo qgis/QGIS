@@ -38,6 +38,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mMaxTerrainGroundError( other.mMaxTerrainGroundError )
   , mShowTerrainBoundingBoxes( other.mShowTerrainBoundingBoxes )
   , mShowTerrainTileInfo( other.mShowTerrainTileInfo )
+  , mShowCameraViewCenter( other.mShowCameraViewCenter )
   , mLayers( other.mLayers )
   , mSkyboxEnabled( other.mSkyboxEnabled )
   , mSkyboxFileBase( other.mSkyboxFileBase )
@@ -133,6 +134,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QDomElement elemDebug = elem.firstChildElement( "debug" );
   mShowTerrainBoundingBoxes = elemDebug.attribute( "bounding-boxes", "0" ).toInt();
   mShowTerrainTileInfo = elemDebug.attribute( "terrain-tile-info", "0" ).toInt();
+  mShowCameraViewCenter = elemDebug.attribute( "camera-view-center", "0" ).toInt();
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -189,6 +191,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elemDebug = doc.createElement( "debug" );
   elemDebug.setAttribute( "bounding-boxes", mShowTerrainBoundingBoxes ? 1 : 0 );
   elemDebug.setAttribute( "terrain-tile-info", mShowTerrainTileInfo ? 1 : 0 );
+  elemDebug.setAttribute( "camera-view-center", mShowCameraViewCenter ? 1 : 0 );
   elem.appendChild( elemDebug );
 
   return elem;
@@ -375,6 +378,15 @@ void Qgs3DMapSettings::setShowTerrainTilesInfo( bool enabled )
 
   mShowTerrainTileInfo = enabled;
   emit showTerrainTilesInfoChanged();
+}
+
+void Qgs3DMapSettings::setShowCameraViewCenter( bool enabled )
+{
+  if ( mShowCameraViewCenter == enabled )
+    return;
+
+  mShowCameraViewCenter = enabled;
+  emit showCameraViewCenterChanged();
 }
 
 void Qgs3DMapSettings::setShowLabels( bool enabled )

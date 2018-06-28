@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
+#include "qgsraycastingutils_p.h"
+#include "qgsterrainentity_p.h"
 #include "qgsvector3d.h"
 
 #include "qgis.h"
@@ -129,10 +131,12 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   addComponent( mLogicalDevice );
 }
 
-void QgsCameraController::addTerrainPicker( Qt3DRender::QObjectPicker *picker )
+void QgsCameraController::setTerrainEntity( QgsTerrainEntity *te )
 {
+  mTerrainEntity = te;
+
   // object picker for terrain for correct map panning
-  connect( picker, &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
+  connect( te->terrainPicker(), &Qt3DRender::QObjectPicker::pressed, this, &QgsCameraController::onPickerMousePressed );
 }
 
 void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
@@ -295,6 +299,25 @@ void QgsCameraController::frameTriggered( float dt )
   if ( mCameraData != oldCamData )
   {
     mCameraData.setCamera( mCamera );
+
+    bool viewCenterChanged = ( mCameraData.x != oldCamData.x || mCameraData.y != oldCamData.y || mCameraData.elev != oldCamData.elev );
+    if ( mTerrainEntity && viewCenterChanged )
+    {
+      // figure out our distance from terrain and update the camera's view center
+      // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
+      QVector3D intersectionPoint;
+      QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForViewportAndCamera( mViewport.size(), QPointF( mViewport.width() / 2., mViewport.height() / 2. ), QRectF( 0.0, 0.0, 1.0, 1.0 ), mCamera );
+      if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
+      {
+        float dist = ( intersectionPoint - mCamera->position() ).length();
+        mCameraData.dist = dist;
+        mCameraData.x = intersectionPoint.x();
+        mCameraData.y = intersectionPoint.z();
+        mCameraData.elev = intersectionPoint.y();
+        mCameraData.setCamera( mCamera );
+      }
+    }
+
     emit cameraChanged();
   }
 }

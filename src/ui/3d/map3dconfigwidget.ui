@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>775</height>
+    <height>830</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -183,6 +183,13 @@
     <widget class="QCheckBox" name="chkShowBoundingBoxes">
      <property name="text">
       <string>Show bounding boxes</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="chkShowCameraViewCenter">
+     <property name="text">
+      <string>Show camera's view center</string>
      </property>
     </widget>
    </item>
