@@ -47,45 +47,23 @@ void QgsMeshRendererMeshSettings::setColor( const QColor &color )
   mColor = color;
 }
 
-QColor QgsMeshRendererScalarSettings::maxColor() const
+
+QgsColorRampShader QgsMeshRendererScalarSettings::colorRampShader() const
 {
-  return mMaxColor;
+  return mColorRampShader;
+
 }
 
-void QgsMeshRendererScalarSettings::setMaxColor( const QColor &maxColor )
+void QgsMeshRendererScalarSettings::setColorRampShader( const QgsColorRampShader &shader )
 {
-  mMaxColor = maxColor;
+  mColorRampShader = shader;
 }
 
-QColor QgsMeshRendererScalarSettings::minColor() const
+bool QgsMeshRendererScalarSettings::isEnabled() const
 {
-  return mMinColor;
+  return !mColorRampShader.isEmpty();
 }
 
-void QgsMeshRendererScalarSettings::setMinColor( const QColor &minColor )
-{
-  mMinColor = minColor;
-}
-
-double QgsMeshRendererScalarSettings::minValue() const
-{
-  return mMinValue;
-}
-
-void QgsMeshRendererScalarSettings::setMinValue( double minValue )
-{
-  mMinValue = minValue;
-}
-
-double QgsMeshRendererScalarSettings::maxValue() const
-{
-  return mMaxValue;
-}
-
-void QgsMeshRendererScalarSettings::setMaxValue( double maxValue )
-{
-  mMaxValue = maxValue;
-}
 
 double QgsMeshRendererVectorSettings::lineWidth() const
 {

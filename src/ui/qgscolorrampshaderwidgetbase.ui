@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsSingleBandPseudoColorRendererWidgetBase</class>
- <widget class="QWidget" name="QgsSingleBandPseudoColorRendererWidgetBase">
+ <class>QgsColorRampShaderWidgetBase</class>
+ <widget class="QWidget" name="QgsColorRampShaderWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -26,7 +26,7 @@
    <property name="bottomMargin">
     <number>3</number>
    </property>
-   <item row="6" column="0" colspan="5">
+   <item row="3" column="0" colspan="3">
     <widget class="QTreeWidget" name="mColormapTreeWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -66,7 +66,14 @@
      </column>
     </widget>
    </item>
-   <item row="4" column="1" colspan="4">
+   <item row="1" column="0">
+    <widget class="QLabel" name="mColorInterpolationLabel_2">
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
     <widget class="QgsColorRampButton" name="btnColorRamp">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -88,63 +95,17 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mColorInterpolationLabel_2">
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QLineEdit" name="mMaxLineEdit"/>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="mMinLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Min</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="4">
+   <item row="0" column="1" colspan="2">
     <widget class="QComboBox" name="mColorInterpolationComboBox"/>
    </item>
-   <item row="0" column="1" colspan="4">
-    <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
-   </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="mBandLabel">
-     <property name="text">
-      <string>Band</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QLabel" name="mMaxLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Max</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
     <widget class="QLabel" name="mColorInterpolationLabel">
      <property name="text">
       <string>Interpolation</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="5">
+   <item row="5" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QPushButton" name="mClassifyButton">
@@ -223,10 +184,7 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="2">
-    <widget class="QLineEdit" name="mMinLineEdit"/>
-   </item>
-   <item row="9" column="0" colspan="5">
+   <item row="6" column="0" colspan="3">
     <widget class="QCheckBox" name="mClipCheckBox">
      <property name="toolTip">
       <string>If checked, any pixels with a value out of range will not be rendered</string>
@@ -236,7 +194,7 @@
      </property>
     </widget>
    </item>
-   <item row="7" column="0" colspan="5">
+   <item row="4" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
       <widget class="QLabel" name="mClassificationModeLabel">
@@ -289,17 +247,14 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="1" colspan="4">
+   <item row="2" column="1" colspan="2">
     <widget class="QLineEdit" name="mUnitLineEdit">
      <property name="toolTip">
       <string>Unit suffix</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" colspan="5">
-    <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
-   </item>
-   <item row="5" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="mUnitLabel">
      <property name="text">
       <string>Label unit
@@ -311,11 +266,6 @@ suffix</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRasterBandComboBox</class>
-   <extends>QComboBox</extends>
-   <header>raster/qgsrasterbandcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorrampbutton.h</header>
@@ -323,9 +273,6 @@ suffix</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mBandComboBox</tabstop>
-  <tabstop>mMinLineEdit</tabstop>
-  <tabstop>mMaxLineEdit</tabstop>
   <tabstop>mColorInterpolationComboBox</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>mUnitLineEdit</tabstop>

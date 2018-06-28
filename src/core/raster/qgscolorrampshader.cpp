@@ -50,12 +50,18 @@ QgsColorRampShader::QgsColorRampShader( const QgsColorRampShader &other )
   , mLUTInitialized( other.mLUTInitialized )
   , mClip( other.mClip )
 {
-  mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( other.sourceColorRamp() )
+    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  mColorRampItemList = other.mColorRampItemList;
 }
 
 QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &other )
 {
-  mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  if ( other.sourceColorRamp() )
+    mSourceColorRamp.reset( other.sourceColorRamp()->clone() );
+  else
+    mSourceColorRamp.reset();
+
   mColorRampType = other.mColorRampType;
   mClassificationMode = other.mClassificationMode;
   mLUT = other.mLUT;
@@ -63,6 +69,7 @@ QgsColorRampShader &QgsColorRampShader::operator=( const QgsColorRampShader &oth
   mLUTFactor = other.mLUTFactor;
   mLUTInitialized = other.mLUTInitialized;
   mClip = other.mClip;
+  mColorRampItemList = other.mColorRampItemList;
   return *this;
 }
 
@@ -91,6 +98,11 @@ void QgsColorRampShader::setColorRampItemList( const QList<QgsColorRampShader::C
 void QgsColorRampShader::setColorRampType( QgsColorRampShader::Type colorRampType )
 {
   mColorRampType = colorRampType;
+}
+
+bool QgsColorRampShader::isEmpty() const
+{
+  return mColorRampItemList.isEmpty();
 }
 
 void QgsColorRampShader::setColorRampType( const QString &type )

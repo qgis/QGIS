@@ -42,9 +42,15 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
     QgsRasterRenderer *renderer() override;
+
+    //! Returns shader function used in the renderer. Caller takes ownership and deletes it.
+    QgsColorRampShader *shaderFunction() const SIP_FACTORY;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
     void doComputations() override;
     QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
+
+    //! Returns the current raster band number
+    int currentBand() const;
 
     void setFromRenderer( const QgsRasterRenderer *r );
 

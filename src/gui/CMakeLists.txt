@@ -1,4 +1,5 @@
 SET(QGIS_GUI_SRCS
+  raster/qgscolorrampshaderwidget.cpp
   raster/qgsmultibandcolorrendererwidget.cpp
   raster/qgspalettedrendererwidget.cpp
   raster/qgsrasterbandcombobox.cpp
@@ -541,6 +542,7 @@ SET(QGIS_GUI_MOC_HDRS
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
 
+  raster/qgscolorrampshaderwidget.h
   raster/qgsmultibandcolorrendererwidget.h
   raster/qgspalettedrendererwidget.h
   raster/qgsrasterbandcombobox.h

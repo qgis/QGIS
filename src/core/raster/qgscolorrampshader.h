@@ -117,6 +117,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setColorRampType( QgsColorRampShader::Type colorRampType );
 
     /**
+     * Whether the color ramp contains any items
+     * \since QGIS 3.4
+     */
+    bool isEmpty() const;
+
+    /**
      * Gets the source color ramp
      * \see setSourceColorRamp()
      * \since QGIS 3.0

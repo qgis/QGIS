@@ -227,6 +227,8 @@ or read on demand
     virtual bool addDataset( const QString &uri ) = 0;
 %Docstring
 Associate dataset with the mesh
+
+emits dataChanged when successful
 %End
 
     virtual int datasetCount() const = 0;
