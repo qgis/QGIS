@@ -50,6 +50,7 @@ class SERVER_EXPORT QgsServerParameters
       QVariant::Type mType;
       QVariant mDefaultValue;
       QVariant mValue;
+      bool mDefined;
     };
 
     /**

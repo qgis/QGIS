@@ -23,35 +23,40 @@ QgsServerParameters::QgsServerParameters()
   const Parameter pService = { ParameterName::SERVICE,
                                QVariant::String,
                                QVariant( "" ),
-                               QVariant()
+                               QVariant(),
+                               false
                              };
   save( pService );
 
   const Parameter pRequest = { ParameterName::REQUEST,
                                QVariant::String,
                                QVariant( "" ),
-                               QVariant()
+                               QVariant(),
+                               false
                              };
   save( pRequest );
 
   const Parameter pVersion = { ParameterName::VERSION_SERVICE,
                                QVariant::String,
                                QVariant( "" ),
-                               QVariant()
+                               QVariant(),
+                               false
                              };
-  save( pService );
+  save( pVersion );
 
   const Parameter pMap = { ParameterName::MAP,
                            QVariant::String,
                            QVariant( "" ),
-                           QVariant()
+                           QVariant(),
+                           false
                          };
   save( pMap );
 
   const Parameter pFile = { ParameterName::FILE_NAME,
                             QVariant::String,
                             QVariant( "" ),
-                            QVariant()
+                            QVariant(),
+                            false
                           };
   save( pFile );
 }
@@ -142,8 +147,11 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 
   for ( auto parameter : mParameters.toStdMap() )
   {
-    const QString name = metaEnum.valueToKey( parameter.first );
-    params[name] = parameter.second.mValue.toString();
+    if ( ! parameter.second.mDefined )
+      continue;
+
+    const QString paramName = name( parameter.first );
+    params[paramName] = parameter.second.mValue.toString();
   }
 
   return params;
@@ -180,7 +188,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
     {
       const QVariant value( item.second );
       mParameters[paramName].mValue = value;
-
+      mParameters[paramName].mDefined = true;
       if ( !value.canConvert( mParameters[paramName].mType ) )
       {
         raiseError( paramName );
