@@ -27,15 +27,14 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
   setupUi( this );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
-  connect( mLineWidthSpinBox, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            this, &QgsMeshRendererVectorSettingsWidget::widgetChanged );
 
-  connect( mShaftLengthComboBox, QOverload<int>::of( &QComboBox::currentIndexChanged ),
+  connect( mShaftLengthComboBox, qgis::overload<int>::of( &QComboBox::currentIndexChanged ),
            mShaftOptionsStackedWidget, &QStackedWidget::setCurrentIndex );
-
   QVector<QLineEdit *> widgets;
   widgets << mMinMagLineEdit << mMaxMagLineEdit
           << mHeadWidthLineEdit << mHeadLengthLineEdit

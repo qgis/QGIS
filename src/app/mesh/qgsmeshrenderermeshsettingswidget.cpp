@@ -34,7 +34,7 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
   setupUi( this );
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
-  connect( mLineWidthSpinBox, QOverload<double>::of( &QgsDoubleSpinBox::valueChanged ),
+  connect( mLineWidthSpinBox, qgis::overload<double>::of( &QgsDoubleSpinBox::valueChanged ),
            this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
 }
 
