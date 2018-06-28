@@ -43,6 +43,7 @@ from copy import deepcopy
 
 from qgis.core import (QgsVectorLayer,
                        QgsRasterLayer,
+                       QgsCoordinateReferenceSystem,
                        QgsFeatureRequest,
                        QgsMapLayer,
                        QgsProject,
@@ -85,6 +86,16 @@ class AlgorithmsTest(object):
         """
         self.vector_layer_params = {}
         QgsProject.instance().removeAllMapLayers()
+
+        if 'project_crs' in defs:
+            QgsProject.instance().setCrs(QgsCoordinateReferenceSystem(defs['project_crs']))
+        else:
+            QgsProject.instance().setCrs(QgsCoordinateReferenceSystem())
+
+        if 'ellipsoid' in defs:
+            QgsProject.instance().setEllipsoid(defs['ellipsoid'])
+        else:
+            QgsProject.instance().setEllipsoid('')
 
         params = self.load_params(defs['params'])
 
