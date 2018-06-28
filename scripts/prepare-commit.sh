@@ -74,11 +74,6 @@ for f in $MODIFIED; do
   (( i++ )) || true
 
   case "$f" in
-  src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|src/3d/poly2tri/*)
-    echo "$f" skipped
-    continue
-    ;;
-
   *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
     ;;
 

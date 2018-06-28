@@ -43,7 +43,7 @@ for i in $FILES; do
 		author=volayaf
 		;;
 
-	src/app/gps/qwtpolar-*|src/app/qtmain_android.cpp|src/core/gps/qextserialport/*|lib/astyle/*)
+	src/app/qtmain_android.cpp)
 		# Skip third party files
                 echo "${i} skipped"
                 continue
