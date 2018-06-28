@@ -39,7 +39,6 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QVariant::Type mType;
     QVariant mValue;
     QVariant mDefaultValue;
-    bool mDefined = false;
 };
 
 class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
@@ -58,7 +57,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
     };
     Q_ENUM( Name )
 
-    QgsServerParameter( const QgsServerParameter::Name name = Name::UNKNOWN,
+    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
                         const QVariant::Type type = QVariant::String,
                         const QVariant defaultValue = QVariant( "" ) );
 

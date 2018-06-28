@@ -167,7 +167,7 @@ QMap<QString, QString> QgsServerParameters::toMap() const
 
   for ( auto parameter : mParameters.toStdMap() )
   {
-    if ( ! parameter.second.mDefined )
+    if ( parameter.second.mValue.isNull() )
       continue;
 
     const QString paramName = QgsServerParameter::name( parameter.first );
@@ -205,7 +205,6 @@ void QgsServerParameters::load( const QUrlQuery &query )
     if ( name >= 0 )
     {
       mParameters[name].mValue = item.second;
-      mParameters[name].mDefined = true;
       if ( ! mParameters[name].isValid() )
       {
         mParameters[name].raiseError();
