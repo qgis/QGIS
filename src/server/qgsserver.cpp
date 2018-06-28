@@ -303,8 +303,8 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   {
     try
     {
-      const QgsServerParameters params( request.parameters() );
-      printRequestParameters( request.parameters(), logLevel );
+      const QgsServerParameters params = request.serverParameters();
+      printRequestParameters( params.toMap(), logLevel );
 
       //Config file path
       if ( ! project )

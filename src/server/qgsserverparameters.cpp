@@ -56,15 +56,50 @@ QgsServerParameters::QgsServerParameters()
   save( pFile );
 }
 
-QgsServerParameters::QgsServerParameters( const QgsServerRequest::Parameters &parameters )
+QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
   : QgsServerParameters()
 {
-  load( parameters );
+  load( query );
 }
 
 void QgsServerParameters::save( const Parameter &parameter )
 {
   mParameters[ parameter.mName ] = parameter;
+}
+
+void QgsServerParameters::add( const QString &key, const QString &value )
+{
+  QUrlQuery query;
+  query.addQueryItem( key, value );
+  load( query );
+}
+
+QUrlQuery QgsServerParameters::urlQuery() const
+{
+  QUrlQuery query;
+
+  for ( auto param : toMap().toStdMap() )
+  {
+    query.addQueryItem( param.first, param.second );
+  }
+
+  return query;
+}
+
+void QgsServerParameters::remove( const QString &key )
+{
+  if ( mUnmanagedParameters.contains( key ) )
+  {
+    mUnmanagedParameters.take( key );
+  }
+  else
+  {
+    ParameterName paramName = name( key );
+    if ( mParameters.contains( paramName ) )
+    {
+      mParameters.take( paramName );
+    }
+  }
 }
 
 QString QgsServerParameters::map() const
@@ -99,9 +134,29 @@ QString QgsServerParameters::service() const
   return serviceValue;
 }
 
+QMap<QString, QString> QgsServerParameters::toMap() const
+{
+  QMap<QString, QString> params = mUnmanagedParameters;
+
+  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
+
+  for ( auto parameter : mParameters.toStdMap() )
+  {
+    const QString name = metaEnum.valueToKey( parameter.first );
+    params[name] = parameter.second.mValue.toString();
+  }
+
+  return params;
+}
+
 QString QgsServerParameters::request() const
 {
   return value( ParameterName::REQUEST ).toString();
+}
+
+QString QgsServerParameters::value( const QString &key ) const
+{
+  return value( name( key ) ).toString();
 }
 
 QVariant QgsServerParameters::value( ParameterName name ) const
@@ -109,34 +164,46 @@ QVariant QgsServerParameters::value( ParameterName name ) const
   return mParameters[name].mValue;
 }
 
-void QgsServerParameters::load( const QgsServerRequest::Parameters &parameters )
+void QgsServerParameters::load( const QUrlQuery &query )
 {
   const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
 
-  for ( const QString &key : parameters.keys() )
+  for ( const auto &item : query.queryItems() )
   {
-    const ParameterName name = ( ParameterName ) metaEnum.keyToValue( key.toStdString().c_str() );
-    if ( name >= 0 )
+    const ParameterName paramName = name( item.first );
+    if ( paramName >= 0 )
     {
-      const QVariant value( parameters[key] );
-      mParameters[name].mValue = value;
+      const QVariant value( item.second );
+      mParameters[paramName].mValue = value;
 
-      if ( !value.canConvert( mParameters[name].mType ) )
+      if ( !value.canConvert( mParameters[paramName].mType ) )
       {
-        raiseError( name );
+        raiseError( paramName );
       }
     }
     else
     {
-      mUnmanagedParameters[key] = parameters[key];
+      mUnmanagedParameters[item.first.toUpper()] = item.second;
     }
   }
+}
+
+void QgsServerParameters::clear()
+{
+  mParameters.clear();
+  mUnmanagedParameters.clear();
 }
 
 QString QgsServerParameters::name( ParameterName name ) const
 {
   const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
   return metaEnum.valueToKey( name );
+}
+
+QgsServerParameters::ParameterName QgsServerParameters::name( const QString &key ) const
+{
+  const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
+  return ( ParameterName ) metaEnum.keyToValue( key.toUpper().toStdString().c_str() );
 }
 
 void QgsServerParameters::raiseError( ParameterName paramName ) const

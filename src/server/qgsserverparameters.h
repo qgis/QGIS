@@ -21,15 +21,15 @@
 #include <QMap>
 #include <QObject>
 #include <QMetaEnum>
-
-#include "qgsserverrequest.h"
+#include <QUrlQuery>
+#include "qgis_server.h"
 
 /**
  * QgsServerParameters provides an interface to retrieve and manipulate
  * global parameters received from the client.
  * \since QGIS 3.4
  */
-class QgsServerParameters
+class SERVER_EXPORT QgsServerParameters
 {
     Q_GADGET
 
@@ -59,15 +59,48 @@ class QgsServerParameters
 
     /**
      * Constructor.
-     * \param map of parameters where keys are parameters' names.
      */
-    QgsServerParameters( const QgsServerRequest::Parameters &parameters );
+    QgsServerParameters( const QUrlQuery &query );
 
     /**
      * Loads new parameters.
-     * \param map of parameters
+     * \param query url query
      */
-    void load( const QgsServerRequest::Parameters &parameters );
+    void load( const QUrlQuery &query );
+
+    /**
+     * Removes all parameters.
+     */
+    void clear();
+
+    /**
+     * Adds a parameter.
+     * \param key the name of the parameter
+     * \param value the value of the parameter
+     */
+    void add( const QString &key, const QString &value );
+
+    /**
+     * Removes a parameter.
+     * \param key the name of the parameter
+     */
+    void remove( const QString &key );
+
+    /**
+     * Returns the value of a parameter.
+     * \param key the name of the parameter
+     */
+    QString value( const QString &key ) const;
+
+    /**
+     * Returns a url query with underlying parameters.
+     */
+    QUrlQuery urlQuery() const;
+
+    /**
+     * Returns all parameters in a map.
+     */
+    QMap<QString, QString> toMap() const;
 
     /**
      * Returns SERVICE parameter as a string or an empty string if not
@@ -107,6 +140,8 @@ class QgsServerParameters
   private:
     void save( const Parameter &parameter );
     QVariant value( ParameterName name ) const;
+
+    ParameterName name( const QString &name ) const;
     QString name( ParameterName name ) const;
 
     void raiseError( ParameterName name ) const;
