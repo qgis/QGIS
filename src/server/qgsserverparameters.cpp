@@ -166,9 +166,14 @@ QVariant QgsServerParameters::value( ParameterName name ) const
 
 void QgsServerParameters::load( const QUrlQuery &query )
 {
+  // clean query string first
+  QUrlQuery cleanQuery( query );
+  cleanQuery.setQuery( query.query().replace( '+', QStringLiteral( "%20" ) ) );
+
+  // load parameters
   const QMetaEnum metaEnum( QMetaEnum::fromType<ParameterName>() );
 
-  for ( const auto &item : query.queryItems() )
+  for ( const auto &item : cleanQuery.queryItems( QUrl::FullyDecoded ) )
   {
     const ParameterName paramName = name( item.first );
     if ( paramName >= 0 )
