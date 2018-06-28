@@ -135,6 +135,9 @@ class Processing(object):
         if context is None:
             context = dataobjects.createContext(feedback)
 
+        if context.feedback() is None:
+            context.setFeedback(feedback)
+
         ok, msg = alg.checkParameterValues(parameters, context)
         if not ok:
             msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
