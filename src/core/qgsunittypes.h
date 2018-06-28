@@ -47,6 +47,7 @@ class CORE_EXPORT QgsUnitTypes
       ImperialSystem, //!< British Imperial
       USCSSystem //!< United States customary system
     };
+    Q_ENUM( SystemOfMeasurement )
 
     //! Units of distance
     enum DistanceUnit

@@ -101,20 +101,6 @@ const QUrl QgsQuickUtils::getThemeIcon( const QString &name ) const
   return QUrl( path );
 }
 
-QgsUnitTypes::SystemOfMeasurement QgsQuickUtils::systemOfMeasurementFactory( const QString &type )
-{
-  if ( type == QStringLiteral( "Metric" ) )
-    return QgsUnitTypes::MetricSystem;
-
-  if ( type == QStringLiteral( "Imperial" ) )
-    return QgsUnitTypes::ImperialSystem;
-
-  if ( type == QStringLiteral( "USCS" ) )
-    return QgsUnitTypes::USCSSystem;
-
-  return QgsUnitTypes::UnknownSystem;
-}
-
 QString QgsQuickUtils::formatPoint(
   const QgsPoint &point,
   QgsCoordinateFormatter::Format format,

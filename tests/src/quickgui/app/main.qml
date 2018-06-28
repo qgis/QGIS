@@ -94,7 +94,7 @@ ApplicationWindow {
     height: scaleBar.height
     mapSettings: mapCanvas.mapSettings
     preferredWidth: scaleBar.preferredWidth
-    systemOfMeasurement: QgsQuick.Utils.systemOfMeasurementFactory("Imperial")
+    systemOfMeasurement: QgsQuick.QgsUnitTypes.ImperialSystem
     z: 1
   }
 

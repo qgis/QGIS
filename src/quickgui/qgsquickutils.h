@@ -137,18 +137,6 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
     Q_INVOKABLE const QUrl getThemeIcon( const QString &name ) const;
 
     /**
-      * QgsUnitTypes::SystemOfMeasurement factory
-      * for input type parameter:
-      *    "Metric": QgsUnitTypes::MetricSystem
-      *    "Imperial": QgsUnitTypes::ImperialSystem
-      *    "USCS": QgsUnitTypes::USCSSystem
-      *    else: QgsUnitTypes::UnknownSystem
-      *
-      * \since QGIS 3.4
-      */
-    Q_INVOKABLE static QgsUnitTypes::SystemOfMeasurement systemOfMeasurementFactory( const QString &type );
-
-    /**
      * \copydoc QgsCoordinateFormatter::format()
      *
      * \since QGIS 3.4
