@@ -438,7 +438,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
   }
 }
 
-bool QgsServerParameters::loadParameter( const QPair<QString, QString> &item )
+bool QgsServerParameters::loadParameter( const QPair<QString, QString> & )
 {
   return false;
 }
