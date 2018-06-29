@@ -721,7 +721,7 @@ gray = no data
             <number>4</number>
            </property>
            <item row="0" column="0">
-            <widget class="QGroupBox" name="mDeviceGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mDeviceGroupBox">
              <property name="title">
               <string>Connection</string>
              </property>
@@ -889,7 +889,7 @@ gray = no data
             </widget>
            </item>
            <item row="3" column="0">
-            <widget class="QGroupBox" name="mGroupShowMarker">
+            <widget class="QgsCollapsibleGroupBox" name="mGroupShowMarker">
              <property name="title">
               <string>Cursor</string>
              </property>
@@ -906,17 +906,7 @@ gray = no data
               <property name="verticalSpacing">
                <number>2</number>
               </property>
-              <item row="2" column="0">
-               <widget class="QComboBox" name="mCboAcquisitionInterval"/>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="label_6">
-                <property name="text">
-                 <string>sec.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
+              <item row="1" column="2">
                <widget class="QLabel" name="label_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -929,7 +919,7 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
+              <item row="1" column="1">
                <spacer name="horizontalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -942,7 +932,7 @@ gray = no data
                 </property>
                </spacer>
               </item>
-              <item row="0" column="0" colspan="4">
+              <item row="0" column="0" colspan="3">
                <widget class="QSlider" name="mSliderMarkerSize">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -986,48 +976,11 @@ gray = no data
                 </property>
                </widget>
               </item>
-              <item row="2" column="3">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>m.</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QComboBox" name="mCboDistanceThreshold"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_8">
-                <property name="text">
-                 <string>Acquisition Interval</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <spacer name="horizontalSpacer_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Distance threshold</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
            <item row="6" column="0">
-            <widget class="QGroupBox" name="mLogFileGroupBox">
+            <widget class="QgsCollapsibleGroupBox" name="mLogFileGroupBox">
              <property name="enabled">
               <bool>true</bool>
              </property>
@@ -1041,7 +994,7 @@ gray = no data
               <string>save GPS data (NMEA sentences) to a file</string>
              </property>
              <property name="title">
-              <string>Log File</string>
+              <string>Log file</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1101,7 +1054,7 @@ gray = no data
             </widget>
            </item>
            <item row="5" column="0">
-            <widget class="QGroupBox" name="groupBox">
+            <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
              <property name="title">
               <string>Map centering</string>
              </property>
@@ -1118,7 +1071,7 @@ gray = no data
               <item row="1" column="0">
                <widget class="QRadioButton" name="radRecenterWhenNeeded">
                 <property name="text">
-                 <string>when leaving</string>
+                 <string>When leaving</string>
                 </property>
                </widget>
               </item>
@@ -1160,14 +1113,14 @@ gray = no data
               <item row="3" column="0">
                <widget class="QRadioButton" name="radNeverRecenter">
                 <property name="text">
-                 <string>never</string>
+                 <string>Never</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QRadioButton" name="radRecenterMap">
                 <property name="text">
-                 <string>always</string>
+                 <string>Always</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>
@@ -1178,7 +1131,7 @@ gray = no data
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QGroupBox" name="groupBox_2">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
              <property name="title">
               <string>Digitizing</string>
              </property>
@@ -1254,6 +1207,35 @@ gray = no data
              </layout>
             </widget>
            </item>
+           <item row="4" column="0">
+            <widget class="QgsCollapsibleGroupBox" name="groupBox_4">
+             <property name="title">
+              <string>Filtering</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
+              <item row="1" column="1">
+               <widget class="QComboBox" name="mCboDistanceThreshold"/>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>Distance threshold (meters)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>Acquisition interval (seconds)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="mCboAcquisitionInterval"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -1297,6 +1279,18 @@ gray = no data
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mBtnCloseFeature</tabstop>
@@ -1308,6 +1302,32 @@ gray = no data
   <tabstop>mBtnOptions</tabstop>
   <tabstop>mBtnDebug</tabstop>
   <tabstop>mConnectButton</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mRadAutodetect</tabstop>
+  <tabstop>mRadInternal</tabstop>
+  <tabstop>mRadUserPath</tabstop>
+  <tabstop>mCboDevices</tabstop>
+  <tabstop>mBtnRefreshDevices</tabstop>
+  <tabstop>mRadGpsd</tabstop>
+  <tabstop>mGpsdHost</tabstop>
+  <tabstop>mGpsdPort</tabstop>
+  <tabstop>mGpsdDevice</tabstop>
+  <tabstop>mCbxAutoCommit</tabstop>
+  <tabstop>mCbxAutoAddVertices</tabstop>
+  <tabstop>mSpinTrackWidth</tabstop>
+  <tabstop>mBtnTrackColor</tabstop>
+  <tabstop>mGroupShowMarker</tabstop>
+  <tabstop>mSliderMarkerSize</tabstop>
+  <tabstop>mCboAcquisitionInterval</tabstop>
+  <tabstop>mCboDistanceThreshold</tabstop>
+  <tabstop>radRecenterMap</tabstop>
+  <tabstop>radRecenterWhenNeeded</tabstop>
+  <tabstop>mSpinMapExtentMultiplier</tabstop>
+  <tabstop>radNeverRecenter</tabstop>
+  <tabstop>mLogFileGroupBox</tabstop>
+  <tabstop>mTxtLogFile</tabstop>
+  <tabstop>mBtnLogFile</tabstop>
+  <tabstop>mGPSPlainTextEdit</tabstop>
   <tabstop>scrollArea_2</tabstop>
   <tabstop>mTxtLatitude</tabstop>
   <tabstop>mTxtLongitude</tabstop>
@@ -1325,30 +1345,6 @@ gray = no data
   <tabstop>mTxtQuality</tabstop>
   <tabstop>mTxtStatus</tabstop>
   <tabstop>mTxtSatellitesUsed</tabstop>
-  <tabstop>mBtnRefreshDevices</tabstop>
-  <tabstop>mGPSPlainTextEdit</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mRadAutodetect</tabstop>
-  <tabstop>mRadInternal</tabstop>
-  <tabstop>mRadUserPath</tabstop>
-  <tabstop>mCboDevices</tabstop>
-  <tabstop>mRadGpsd</tabstop>
-  <tabstop>mGpsdHost</tabstop>
-  <tabstop>mGpsdPort</tabstop>
-  <tabstop>mGpsdDevice</tabstop>
-  <tabstop>mCbxAutoCommit</tabstop>
-  <tabstop>mCbxAutoAddVertices</tabstop>
-  <tabstop>mSpinTrackWidth</tabstop>
-  <tabstop>mBtnTrackColor</tabstop>
-  <tabstop>mGroupShowMarker</tabstop>
-  <tabstop>mSliderMarkerSize</tabstop>
-  <tabstop>radRecenterMap</tabstop>
-  <tabstop>radRecenterWhenNeeded</tabstop>
-  <tabstop>mSpinMapExtentMultiplier</tabstop>
-  <tabstop>radNeverRecenter</tabstop>
-  <tabstop>mLogFileGroupBox</tabstop>
-  <tabstop>mTxtLogFile</tabstop>
-  <tabstop>mBtnLogFile</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
