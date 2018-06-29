@@ -61,6 +61,11 @@
 #include <QPixmap>
 #include <QPen>
 
+
+const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
+const int MAXDISTANCETHRESHOLD = 200; // max gps distance threshold (in meters)
+
+
 QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent, Qt::WindowFlags f )
   : QWidget( parent, f )
   , mpCanvas( thepCanvas )
@@ -263,8 +268,6 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mDistanceThresholdValidator = new QIntValidator( 0, MAXDISTANCETHRESHOLD, this );
   mAcquisitionTimer = std::unique_ptr<QTimer>( new QTimer( this ) );
   mAcquisitionTimer->setSingleShot( true );
-  mCboAcquisitionInterval->setInsertPolicy( QComboBox::NoInsert );
-  mCboDistanceThreshold->setInsertPolicy( QComboBox::NoInsert );
   mCboAcquisitionInterval->addItem( QStringLiteral( "0" ), 0 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "2" ), 2 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "5" ), 5 );
@@ -272,30 +275,21 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mCboAcquisitionInterval->addItem( QStringLiteral( "15" ), 15 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "30" ), 30 );
   mCboAcquisitionInterval->addItem( QStringLiteral( "60" ), 60 );
-  mCboAcquisitionInterval->addItem( tr( "…" ) );
   mCboDistanceThreshold->addItem( QStringLiteral( "0" ), 0 );
   mCboDistanceThreshold->addItem( QStringLiteral( "3" ), 3 );
   mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
   mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
   mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
-  mCboDistanceThreshold->addItem( tr( "…" ) );
   mCboAcquisitionInterval->setCurrentIndex( 0 );
   mCboAcquisitionInterval->setCurrentIndex( 0 );
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
-  connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::activated ),
-           this, &QgsGpsInformationWidget::cboAcquisitionIntervalActivated );
-  connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::activated ),
-           this, &QgsGpsInformationWidget::cboDistanceThresholdActivated );
-  mAcIntervalEdit = new QLineEdit;
-  mDistThresholdEdit = new QLineEdit;
-  mAcIntervalEdit->setValidator( mAcquisitionIntValidator );
-  mDistThresholdEdit->setValidator( mDistanceThresholdValidator );
-  connect( mAcIntervalEdit, &QLineEdit::editingFinished,
+  connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
-  connect( mDistThresholdEdit, &QLineEdit::editingFinished,
+  connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
-
+  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
+  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -1193,7 +1187,7 @@ void QgsGpsInformationWidget::showStatusBarMessage( const QString &msg )
 {
   QgisApp::instance()->statusBarIface()->showMessage( msg );
 }
-void QgsGpsInformationWidget::setAcquisitionInterval( int interval )
+void QgsGpsInformationWidget::setAcquisitionInterval( uint interval )
 {
   mAcquisitionInterval = interval * 1000;
   if ( mAcquisitionTimer->isActive() )
@@ -1202,48 +1196,19 @@ void QgsGpsInformationWidget::setAcquisitionInterval( int interval )
   switchAcquisition();
 
 }
-void QgsGpsInformationWidget::setDistanceThreshold( int distance )
+void QgsGpsInformationWidget::setDistanceThreshold( uint distance )
 {
   mDistanceThreshold = distance;
 }
 
-void QgsGpsInformationWidget::cboAcquisitionIntervalActivated( const QString &text )
-{
-  if ( text == "…" )
-  {
-    mCboAcquisitionInterval->setEditable( true );
-    mCboAcquisitionInterval->setLineEdit( mAcIntervalEdit );
-    mCboAcquisitionInterval->clearEditText();
-  }
-  else
-  {
-    setAcquisitionInterval( text.toInt() );
-  }
-}
-
-void QgsGpsInformationWidget::cboDistanceThresholdActivated( const QString &text )
-{
-  if ( text == "…" )
-  {
-    mCboDistanceThreshold->setEditable( true );
-    mCboDistanceThreshold->setLineEdit( mDistThresholdEdit );
-    mCboDistanceThreshold->clearEditText();
-
-  }
-  else
-  {
-    setDistanceThreshold( text.toInt() );
-  }
-}
-
 void QgsGpsInformationWidget::cboAcquisitionIntervalEdited()
 {
-  setAcquisitionInterval( mAcIntervalEdit->text().toInt() );
+  setAcquisitionInterval( mCboAcquisitionInterval->currentText().toUInt() );
 }
 
 void QgsGpsInformationWidget::cboDistanceThresholdEdited()
 {
-  setDistanceThreshold( mDistThresholdEdit->text().toInt() );
+  setDistanceThreshold( mCboDistanceThreshold->currentText().toUInt() );
 }
 
 void QgsGpsInformationWidget::switchAcquisition()
