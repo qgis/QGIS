@@ -15,6 +15,7 @@
 
 #include "qgsraycastingutils_p.h"
 
+#include "qgis.h"
 #include "qgsaabb.h"
 
 #include <Qt3DRender/QCamera>
@@ -233,6 +234,22 @@ namespace QgsRayCastingUtils
     return intersection( b, ray( r ) );
   }
 
+  // copied from https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
+  bool rayPlaneIntersection( const Ray3D &r, const Plane3D &plane, QVector3D &pt )
+  {
+    float denom = QVector3D::dotProduct( plane.normal, r.direction() );
+    if ( abs( denom ) > 0.0001f ) // your favorite epsilon
+    {
+      float t = QVector3D::dotProduct( plane.center - r.origin(), plane.normal ) / denom;
+      if ( t >= 0 )
+      {
+        pt = r.point( t );
+        return true; // you might want to allow an epsilon here too
+      }
+    }
+    return false;
+  }
+
 // copied from intersectsSegmentTriangle() from qt3d/src/render/backend/triangleboundingvolume.cpp
 // by KDAB, licensed under the terms of LGPL
   bool rayTriangleIntersection( const Ray3D &ray,
@@ -302,9 +319,15 @@ static QRect windowViewport( const QSize &area, const QRectF &relativeViewport )
   return relativeViewport.toRect();
 }
 
+
 static QgsRayCastingUtils::Ray3D intersectionRay( const QPointF &pos, const QMatrix4x4 &viewMatrix,
     const QMatrix4x4 &projectionMatrix, const QRect &viewport )
 {
+  // if something seems wrong slightly off with the returned intersection rays,
+  // it may be the case that unproject() has hit qFuzzyIsNull() condition inside
+  // which has IMHO the threshold too high (1e-5) and can give problems when
+  // the camera is ~50km away or further.
+
   QVector3D nearPos = QVector3D( pos.x(), pos.y(), 0.0f );
   nearPos = nearPos.unproject( viewMatrix, projectionMatrix, viewport );
   QVector3D farPos = QVector3D( pos.x(), pos.y(), 1.0f );
@@ -326,13 +349,36 @@ namespace QgsRayCastingUtils
   {
     QMatrix4x4 viewMatrix = camera->viewMatrix();
     QMatrix4x4 projectionMatrix = camera->projectionMatrix();
-    //viewMatrixForCamera(cameraId, viewMatrix, projectionMatrix);
     const QRect viewport = windowViewport( area, relativeViewport );
 
     // In GL the y is inverted compared to Qt
     const QPointF glCorrectPos = QPointF( pos.x(), area.isValid() ? area.height() - pos.y() : pos.y() );
     const auto ray = intersectionRay( glCorrectPos, viewMatrix, projectionMatrix, viewport );
     return ray;
+  }
+
+  Ray3D rayForCameraCenter( const Qt3DRender::QCamera *camera )
+  {
+    QMatrix4x4 inverse = QMatrix4x4( camera->projectionMatrix() * camera->viewMatrix() ).inverted();
+
+    QVector4D vNear( 0.0, 0.0, -1.0, 1.0 );
+    QVector4D vFar( 0.0, 0.0, 1.0, 1.0 );
+    QVector4D nearPos4D = inverse * vNear;
+    QVector4D farPos4D = inverse * vFar;
+
+    // the cases below hopefully should not happen and the check is here just as the last resort
+    // (with sensible camera matrix we should not hit singularities)
+    if ( qgsFloatNear( nearPos4D.w(), 0, 1e-10 ) )
+      nearPos4D.setW( 1 );
+    if ( qgsFloatNear( farPos4D.w(), 0, 1e-10 ) )
+      farPos4D.setW( 1 );
+
+    QVector3D nearPos( ( nearPos4D / nearPos4D.w() ).toVector3D() );
+    QVector3D farPos( ( farPos4D / farPos4D.w() ).toVector3D() );
+
+    return QgsRayCastingUtils::Ray3D( nearPos,
+                                      ( farPos - nearPos ).normalized(),
+                                      ( farPos - nearPos ).length() );
   }
 
 }

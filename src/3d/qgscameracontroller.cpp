@@ -370,7 +370,7 @@ void QgsCameraController::frameTriggered( float dt )
       // figure out our distance from terrain and update the camera's view center
       // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
       QVector3D intersectionPoint;
-      QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForViewportAndCamera( mViewport.size(), QPointF( mViewport.width() / 2., mViewport.height() / 2. ), QRectF( 0.0, 0.0, 1.0, 1.0 ), mCamera );
+      QgsRayCastingUtils::Ray3D ray = QgsRayCastingUtils::rayForCameraCenter( mCamera );
       if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
       {
         float dist = ( intersectionPoint - mCamera->position() ).length();
