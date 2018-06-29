@@ -1030,6 +1030,9 @@ gray = no data
               </item>
               <item row="0" column="1">
                <widget class="QPushButton" name="mBtnLogFile">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>23</horstretch>
@@ -1214,7 +1217,11 @@ gray = no data
              </property>
              <layout class="QGridLayout" name="gridLayout_14" columnstretch="0,1">
               <item row="1" column="1">
-               <widget class="QComboBox" name="mCboDistanceThreshold"/>
+               <widget class="QComboBox" name="mCboDistanceThreshold">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_9">
@@ -1231,7 +1238,11 @@ gray = no data
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="mCboAcquisitionInterval"/>
+               <widget class="QComboBox" name="mCboAcquisitionInterval">
+                <property name="editable">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
