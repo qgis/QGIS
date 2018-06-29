@@ -268,7 +268,7 @@ class DnDTree : public QTreeWidget
     // QTreeWidget interface
   protected:
     QStringList mimeTypes() const override;
-    QMimeData *mimeData( QList<QTreeWidgetItem *> items ) const override;
+    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
 
   private slots:

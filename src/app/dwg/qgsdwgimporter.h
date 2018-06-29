@@ -57,7 +57,7 @@ class QgsDwgImporter : public DRW_Interface
 
     void addBlock( const DRW_Block &data ) override;
 
-    void setBlock( int handle ) override;
+    void setBlock( const int handle ) override;
 
     //! Called to end the current block
     void endBlock() override;
