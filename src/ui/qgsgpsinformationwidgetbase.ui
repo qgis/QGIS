@@ -29,31 +29,9 @@
    <property name="verticalSpacing">
     <number>2</number>
    </property>
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="50,0">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <item>
-      <widget class="QPushButton" name="mBtnCloseFeature">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&amp;Add feature</string>
-       </property>
-      </widget>
-     </item>
-     <item>
+   <item row="0" column="0">
+    <layout class="QGridLayout" name="gridLayout_15">
+     <item row="0" column="1">
       <widget class="QLabel" name="mLblStatusIndicator">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
@@ -93,17 +71,23 @@ gray = no data
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_6">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <property name="bottomMargin">
-      <number>4</number>
-     </property>
-     <item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="mBtnCloseFeature">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Add feature</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
       <widget class="QPushButton" name="mBtnAddVertex">
        <property name="enabled">
         <bool>false</bool>
@@ -119,19 +103,13 @@ gray = no data
        </property>
       </widget>
      </item>
-     <item>
+     <item row="1" column="1">
       <widget class="QToolButton" name="mBtnResetFeature">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>32</width>
-         <height>0</height>
-        </size>
        </property>
        <property name="toolTip">
         <string>Reset track</string>
@@ -147,113 +125,7 @@ gray = no data
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>2</number>
-     </property>
-     <item>
-      <widget class="QToolButton" name="mBtnPosition">
-       <property name="toolTip">
-        <string>Position</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBtnSignal">
-       <property name="toolTip">
-        <string>Signal</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/gpsicons/barchart.svg</normaloff>:/images/themes/default/gpsicons/barchart.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBtnSatellites">
-       <property name="toolTip">
-        <string>Satellite</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/gpsicons/polarchart.svg</normaloff>:/images/themes/default/gpsicons/polarchart.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBtnOptions">
-       <property name="toolTip">
-        <string>Options</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mBtnDebug">
-       <property name="toolTip">
-        <string>Debug</string>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../../images/images.qrc">
-         <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mConnectButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&amp;Connect</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0">
+   <item row="2" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
       <number>3</number>
@@ -274,6 +146,9 @@ gray = no data
        </property>
        <item row="0" column="0">
         <widget class="QgsScrollArea" name="scrollArea_2">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -282,8 +157,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>113</width>
-            <height>392</height>
+            <width>214</width>
+            <height>505</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -692,6 +567,9 @@ gray = no data
        </property>
        <item row="0" column="0">
         <widget class="QgsScrollArea" name="scrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -700,8 +578,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>270</width>
-            <height>564</height>
+            <width>241</width>
+            <height>696</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -1280,6 +1158,112 @@ gray = no data
       </layout>
      </widget>
     </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QToolButton" name="mBtnPosition">
+       <property name="toolTip">
+        <string>Position</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnSignal">
+       <property name="toolTip">
+        <string>Signal</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/gpsicons/barchart.svg</normaloff>:/images/themes/default/gpsicons/barchart.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnSatellites">
+       <property name="toolTip">
+        <string>Satellite</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/gpsicons/polarchart.svg</normaloff>:/images/themes/default/gpsicons/polarchart.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnOptions">
+       <property name="toolTip">
+        <string>Options</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnDebug">
+       <property name="toolTip">
+        <string>Debug</string>
+       </property>
+       <property name="text">
+        <string>…</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mConnectButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&amp;Connect</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
