@@ -72,11 +72,15 @@ class VoronoiPolygons(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterDistance(self.BUFFER, self.tr('Buffer region'), parentParameterName=self.INPUT,
-                                                         minValue=0.0, maxValue=9999999999, defaultValue=0.0))
+        self.addParameter(QgsProcessingParameterFeatureSource(
+            self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(
+            QgsProcessingParameterNumber(
+                self.BUFFER, self.tr('Buffer region (% of extent)'),
+                minValue=0.0, maxValue=9999999999, defaultValue=0.0))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
+        self.addParameter(QgsProcessingParameterFeatureSink(
+            self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
         return 'voronoipolygons'
@@ -87,13 +91,15 @@ class VoronoiPolygons(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT))
 
         buf = self.parameterAsDouble(parameters, self.BUFFER, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
         if sink is None:
-            raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
+            raise QgsProcessingException(
+                self.invalidSinkError(parameters, self.OUTPUT))
 
         outFeat = QgsFeature()
         extent = source.sourceExtent()
@@ -145,7 +151,8 @@ class VoronoiPolygons(QgisAlgorithm):
 
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
             inFeat = next(source.getFeatures(request))
-            lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
+            lines = self.clip_voronoi(
+                edges, c, width, height, extent, extraX, extraY)
 
             geom = QgsGeometry.fromMultiPointXY(lines)
             geom = QgsGeometry(geom.convexHull())
