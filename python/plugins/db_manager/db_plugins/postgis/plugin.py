@@ -29,15 +29,13 @@ from .connector import PostGisDBConnector
 from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
     TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
 import re
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -48,7 +46,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/postgis/icon")
+        return QgsApplication.getThemeIcon("/mIconPostgis.svg")
 
     @classmethod
     def typeName(self):
