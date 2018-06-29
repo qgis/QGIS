@@ -26,6 +26,14 @@ Helper functions for various unit types.
     static const QMetaObject staticMetaObject;
 
   public:
+    enum SystemOfMeasurement
+    {
+      UnknownSystem,
+      MetricSystem,
+      ImperialSystem,
+      USCSSystem
+    };
+
     enum DistanceUnit
     {
       DistanceMeters,

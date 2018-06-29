@@ -82,16 +82,14 @@ void QgsQuickScaleBarKit::updateScaleBar()
   if ( !mMapSettings )
     return;
 
-  double dist = QgsQuickUtils().screenUnitsToMeters( mMapSettings, mPreferredWidth ); // meters
-  if ( dist > 1000.0 )
-  {
-    dist = dist / 1000.0; // meters to kilometers
-    mUnits = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceKilometers );
-  }
-  else
-  {
-    mUnits = QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::DistanceMeters );
-  }
+  double distInMeters = QgsQuickUtils().screenUnitsToMeters( mMapSettings, mPreferredWidth ); // meters
+  double dist;
+  QgsUnitTypes::DistanceUnit distUnits;
+  QgsQuickUtils().humanReadableDistance( distInMeters, QgsUnitTypes::DistanceMeters,
+                                         mSystemOfMeasurement,
+                                         dist, distUnits );
+
+  mUnits = QgsUnitTypes::toAbbreviatedString( distUnits );
 
   // we want to show nice round distances e.g. 200 km instead of e.g. 273 km
   // so we determine which "nice" number to use and also update the scale bar
