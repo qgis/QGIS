@@ -715,13 +715,49 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       mTxtDateTime->setText( info.utcDateTime.toString( mDateTimeFormat ) );  //user specified format string for testing the millisecond part of time
     }
-    mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
-    mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+    if ( std::isfinite( info.speed ))
+    {
+      mTxtSpeed->setEnabled( true );
+      mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
+    }
+    else
+    {
+      mTxtSpeed->setEnabled( false );
+      mTxtSpeed->setText( tr( "Not available" ) );
+    }
+    if ( std::isfinite( info.direction ))
+    {
+      mTxtDirection->setEnabled( true );
+      mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
+    }
+    else
+    {
+      mTxtDirection->setEnabled( false );
+      mTxtDirection->setText( tr( "Not available" ) );
+    }
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
-    mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
-    mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
+    if ( std::isfinite( info.hacc ))
+    {
+      mTxtHacc->setEnabled( true );
+      mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+    }
+    else
+    {
+      mTxtHacc->setEnabled( false );
+      mTxtHacc->setText( tr( "Not available" ) );
+    }
+    if ( std::isfinite( info.vacc ))
+    {
+      mTxtVacc->setEnabled( true );
+      mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
+    }
+    else
+    {
+      mTxtVacc->setEnabled( false );
+      mTxtVacc->setText( tr( "Not available" ) );
+    }
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : QLatin1String( "" ) ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : QLatin1String( "" ) ); // allowing for anything else
