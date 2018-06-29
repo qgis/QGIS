@@ -188,7 +188,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mpPlot->replot();
 
   mBtnTrackColor->setAllowOpacity( true );
-  mBtnTrackColor->setColorDialogTitle( tr("Track Color") );
+  mBtnTrackColor->setColorDialogTitle( tr( "Track Color" ) );
   // Restore state
   QgsSettings mySettings;
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
@@ -370,7 +370,7 @@ void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
   }
 }
 
-void QgsGpsInformationWidget::trackColorChanged( const QColor& color )
+void QgsGpsInformationWidget::trackColorChanged( const QColor &color )
 {
   if ( color.isValid() )  // check that a color was picked
   {
@@ -717,7 +717,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     {
       mTxtDateTime->setText( info.utcDateTime.toString( mDateTimeFormat ) );  //user specified format string for testing the millisecond part of time
     }
-    if ( std::isfinite( info.speed ))
+    if ( std::isfinite( info.speed ) )
     {
       mTxtSpeed->setEnabled( true );
       mTxtSpeed->setText( tr( "%1 km/h" ).arg( info.speed, 0, 'f', 1 ) );
@@ -727,7 +727,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       mTxtSpeed->setEnabled( false );
       mTxtSpeed->setText( tr( "Not available" ) );
     }
-    if ( std::isfinite( info.direction ))
+    if ( std::isfinite( info.direction ) )
     {
       mTxtDirection->setEnabled( true );
       mTxtDirection->setText( QString::number( info.direction, 'f', 1 ) + QStringLiteral( "°" ) );
@@ -740,7 +740,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
-    if ( std::isfinite( info.hacc ))
+    if ( std::isfinite( info.hacc ) )
     {
       mTxtHacc->setEnabled( true );
       mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
@@ -750,7 +750,7 @@ void QgsGpsInformationWidget::displayGPSInformation( const QgsGpsInformation &in
       mTxtHacc->setEnabled( false );
       mTxtHacc->setText( tr( "Not available" ) );
     }
-    if ( std::isfinite( info.vacc ))
+    if ( std::isfinite( info.vacc ) )
     {
       mTxtVacc->setEnabled( true );
       mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
