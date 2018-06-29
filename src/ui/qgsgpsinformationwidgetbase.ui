@@ -1031,46 +1031,59 @@ gray = no data
                 <property name="title">
                  <string>Track</string>
                 </property>
-                <layout class="QVBoxLayout" name="verticalLayout">
-                 <property name="spacing">
-                  <number>2</number>
-                 </property>
+                <layout class="QGridLayout" name="gridLayout_16" columnstretch="0,1">
                  <property name="topMargin">
                   <number>2</number>
                  </property>
                  <property name="bottomMargin">
                   <number>4</number>
                  </property>
-                 <item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_6">
+                   <property name="text">
+                    <string>Line width</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="mSpinTrackWidth">
+                   <property name="toolTip">
+                    <string>Track width in pixels</string>
+                   </property>
+                   <property name="suffix">
+                    <string> px</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0" colspan="2">
                   <widget class="QCheckBox" name="mCbxAutoAddVertices">
                    <property name="text">
                     <string>Automatically add points</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <layout class="QHBoxLayout" name="horizontalLayout_7">
-                   <item>
-                    <widget class="QSpinBox" name="mSpinTrackWidth">
-                     <property name="toolTip">
-                      <string>Track width in pixels</string>
-                     </property>
-                     <property name="suffix">
-                      <string> width</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QPushButton" name="mBtnTrackColor">
-                     <property name="styleSheet">
-                      <string/>
-                     </property>
-                     <property name="text">
-                      <string>Color</string>
-                     </property>
-                    </widget>
-                   </item>
-                  </layout>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_7">
+                   <property name="text">
+                    <string>Line color</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QgsColorButton" name="mBtnTrackColor">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="styleSheet">
+                    <string/>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -1300,6 +1313,11 @@ gray = no data
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

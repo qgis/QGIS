@@ -72,7 +72,7 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
 {
   setupUi( this );
   connect( mConnectButton, &QPushButton::toggled, this, &QgsGpsInformationWidget::mConnectButton_toggled );
-  connect( mBtnTrackColor, &QPushButton::clicked, this, &QgsGpsInformationWidget::mBtnTrackColor_clicked );
+  connect( mBtnTrackColor, &QgsColorButton::colorChanged, this, &QgsGpsInformationWidget::trackColorChanged );
   connect( mSpinTrackWidth, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsGpsInformationWidget::mSpinTrackWidth_valueChanged );
   connect( mBtnPosition, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnPosition_clicked );
   connect( mBtnSignal, &QToolButton::clicked, this, &QgsGpsInformationWidget::mBtnSignal_clicked );
@@ -187,12 +187,14 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
 #endif
   mpPlot->replot();
 
+  mBtnTrackColor->setAllowOpacity( true );
+  mBtnTrackColor->setColorDialogTitle( tr("Track Color") );
   // Restore state
   QgsSettings mySettings;
   mGroupShowMarker->setChecked( mySettings.value( QStringLiteral( "gps/showMarker" ), "true" ).toBool() );
   mSliderMarkerSize->setValue( mySettings.value( QStringLiteral( "gps/markerSize" ), "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( QStringLiteral( "gps/trackWidth" ), "2" ).toInt() );
-  mTrackColor = mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>();
+  mBtnTrackColor->setColor( mySettings.value( QStringLiteral( "gps/trackColor" ), QColor( Qt::red ) ).value<QColor>() );
   QString myPortMode = mySettings.value( QStringLiteral( "gps/portMode" ), "scanPorts" ).toString();
 
   mSpinMapExtentMultiplier->setValue( mySettings.value( QStringLiteral( "gps/mapExtentMultiplier" ), "50" ).toInt() );
@@ -311,7 +313,7 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   QgsSettings mySettings;
   mySettings.setValue( QStringLiteral( "gps/lastPort" ), mCboDevices->currentData().toString() );
   mySettings.setValue( QStringLiteral( "gps/trackWidth" ), mSpinTrackWidth->value() );
-  mySettings.setValue( QStringLiteral( "gps/trackColor" ), mTrackColor );
+  mySettings.setValue( QStringLiteral( "gps/trackColor" ), mBtnTrackColor->color() );
   mySettings.setValue( QStringLiteral( "gps/markerSize" ), mSliderMarkerSize->value() );
   mySettings.setValue( QStringLiteral( "gps/showMarker" ), mGroupShowMarker->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
@@ -364,18 +366,18 @@ void QgsGpsInformationWidget::mSpinTrackWidth_valueChanged( int value )
   if ( mpRubberBand )
   {
     mpRubberBand->setWidth( value );
+    mpRubberBand->update();
   }
 }
 
-void QgsGpsInformationWidget::mBtnTrackColor_clicked()
+void QgsGpsInformationWidget::trackColorChanged( const QColor& color )
 {
-  QColor myColor = QColorDialog::getColor( mTrackColor, this );
-  if ( myColor.isValid() )  // check that a color was picked
+  if ( color.isValid() )  // check that a color was picked
   {
-    mTrackColor = myColor;
     if ( mpRubberBand )
     {
-      mpRubberBand->setColor( myColor );
+      mpRubberBand->setColor( color );
+      mpRubberBand->update();
     }
   }
 }
@@ -1096,7 +1098,7 @@ void QgsGpsInformationWidget::createRubberBand()
     delete mpRubberBand;
   }
   mpRubberBand = new QgsRubberBand( mpCanvas, QgsWkbTypes::LineGeometry );
-  mpRubberBand->setColor( mTrackColor );
+  mpRubberBand->setColor( mBtnTrackColor->color() );
   mpRubberBand->setWidth( mSpinTrackWidth->value() );
   mpRubberBand->show();
 }

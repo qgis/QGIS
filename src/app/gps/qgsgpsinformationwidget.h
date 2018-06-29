@@ -57,7 +57,7 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
 //   void setTrackColor(); // no longer used
-    void mBtnTrackColor_clicked();
+    void trackColorChanged( const QColor &color );
     void mSpinTrackWidth_valueChanged( int value );
     void mBtnPosition_clicked();
     void mBtnSignal_clicked();
@@ -112,7 +112,6 @@ class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidg
     QgsVectorLayer *mpLastLayer = nullptr;
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
-    QColor mTrackColor;
     QIntValidator *mAcquisitionIntValidator = nullptr;
     QIntValidator *mDistanceThresholdValidator = nullptr;
     nmeaPOS mLastNmeaPosition;
