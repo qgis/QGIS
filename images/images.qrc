@@ -468,6 +468,7 @@
         <file>themes/default/mIconTimerContinue.svg</file>
         <file>themes/default/mIconTimerPause.svg</file>
         <file>themes/default/mIconTreeView.svg</file>
+        <file>themes/default/mIconVirtualLayer.svg</file>
         <file>themes/default/mIconWcs.svg</file>
         <file>themes/default/mIconWfs.svg</file>
         <file>themes/default/mIconWms.svg</file>

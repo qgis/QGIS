@@ -27,14 +27,11 @@ from .connector import GPKGDBConnector
 from qgis.PyQt.QtCore import Qt, QFileInfo, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
-from qgis.core import Qgis, QgsDataSourceUri, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsDataSourceUri, QgsSettings
 from qgis.gui import QgsMessageBar
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
     InvalidDataException
-
-from . import resources_rc
-hasattr(resources_rc, 'foo')
 
 
 def classFactory():
@@ -45,7 +42,7 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/gpkg/icon")
+        return QgsApplication.getThemeIcon("/mGeoPackage.svg")
 
     @classmethod
     def typeName(self):

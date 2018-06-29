@@ -24,11 +24,9 @@ from .connector import VLayerConnector
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
+from qgis.core import QgsApplication, QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -39,7 +37,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/vlayers/icon")
+        return QgsApplication.getThemeIcon("/mIconVirtualLayer.svg")
 
     @classmethod
     def typeName(self):
