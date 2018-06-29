@@ -73,7 +73,7 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
-        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), parentParameterName=self.INPUT,
+        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region (% of extent)'), parentParameterName=self.INPUT,
                                                          minValue=0.0, maxValue=9999999999, defaultValue=0.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
