@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QMetaEnum>
 #include <QUrlQuery>
+#include <QColor>
+#include "qgsgeometry.h"
 #include "qgis_server.h"
 
 class SERVER_EXPORT QgsServerParameterDefinition
@@ -31,8 +33,19 @@ class SERVER_EXPORT QgsServerParameterDefinition
                                   const QVariant defaultValue = QVariant( "" ) );
 
     QString typeName() const;
+    virtual bool isValid() const;
 
-    bool isValid() const;
+    QString toString() const;
+    QStringList toStringList( char delimiter = ',' ) const;
+    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+    QList<float> toFloatList( bool &ok, char delimiter = ',' ) const;
+    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+    QgsRectangle toRectangle( bool &ok ) const;
+    int toInt( bool &ok ) const;
+    double toDouble( bool &ok ) const;
+    bool toBool() const;
+    QColor toColor( bool &ok ) const;
 
     static void raiseError( const QString &msg );
 
@@ -63,7 +76,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
 
     void raiseError() const;
 
-    static QString name( QgsServerParameter::Name );
+    static QString name( const QgsServerParameter::Name name );
     static QgsServerParameter::Name name( const QString &name );
 
     QgsServerParameter::Name mName;
@@ -164,6 +177,9 @@ class SERVER_EXPORT QgsServerParameters
      * \returns version
      */
     QString version() const;
+
+  protected:
+    virtual bool loadParameter( const QPair<QString, QString> &item );
 
   private:
     void save( const QgsServerParameter &parameter );

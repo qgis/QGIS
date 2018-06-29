@@ -127,15 +127,14 @@ namespace QgsWms
 
   QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
                             const QgsProject *project,
-                            const QgsServerRequest::Parameters &parameters )
-    : mParameters( parameters )
+                            const QgsWmsParameters &parameters )
+    : mWmsParameters( parameters )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     , mAccessControl( serverIface->accessControls() )
 #endif
     , mSettings( *serverIface->serverSettings() )
     , mProject( project )
   {
-    mWmsParameters.load( parameters );
     mWmsParameters.dump();
 
     initRestrictedLayers();
@@ -1402,7 +1401,7 @@ namespace QgsWms
     {
       searchRect = layerFilterGeom->boundingBox();
     }
-    else if ( mParameters.contains( QStringLiteral( "BBOX" ) ) )
+    else if ( !mWmsParameters.bbox().isEmpty() )
     {
       searchRect = layerRect;
     }
@@ -2267,21 +2266,15 @@ namespace QgsWms
 
   int QgsRenderer::getImageQuality() const
   {
-
     // First taken from QGIS project
     int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
 
     // Then checks if a parameter is given, if so use it instead
-    if ( mParameters.contains( QStringLiteral( "IMAGE_QUALITY" ) ) )
+    if ( !mWmsParameters.imageQuality().isEmpty() )
     {
-      bool conversionSuccess;
-      int imageQualityParameter;
-      imageQualityParameter = mParameters[ QStringLiteral( "IMAGE_QUALITY" )].toInt( &conversionSuccess );
-      if ( conversionSuccess )
-      {
-        imageQuality = imageQualityParameter;
-      }
+      imageQuality = mWmsParameters.imageQualityAsInt();
     }
+
     return imageQuality;
   }
 

@@ -27,8 +27,8 @@
 #include "qgswmsserviceexception.h"
 #include "qgsserverrequest.h"
 #include "qgslegendsettings.h"
-#include "qgsgeometry.h"
 #include "qgsprojectversion.h"
+#include "qgsserverparameters.h"
 
 namespace QgsWms
 {
@@ -74,14 +74,15 @@ namespace QgsWms
    * \brief Interface to retrieve and manipulate WMS parameters received from the client.
    * \since QGIS 3.0
    */
-  class QgsWmsParameters
+  class QgsWmsParameter : public QgsServerParameterDefinition
   {
       Q_GADGET
 
     public:
       //! Available parameters for WMS requests
-      enum ParameterName
+      enum Name
       {
+        UNKNOWN,
         BOXSPACE,
         CRS,
         SRS,
@@ -89,6 +90,7 @@ namespace QgsWms
         HEIGHT,
         BBOX,
         ICONLABELSPACE,
+        IMAGE_QUALITY,
         ITEMFONTFAMILY,
         ITEMFONTBOLD,
         ITEMFONTITALIC,
@@ -147,7 +149,37 @@ namespace QgsWms
         WITH_GEOMETRY,
         WITH_MAPTIP
       };
-      Q_ENUM( ParameterName )
+      Q_ENUM( Name )
+
+      QgsWmsParameter( const QgsWmsParameter::Name name = QgsWmsParameter::UNKNOWN,
+                       const QVariant::Type type = QVariant::String,
+                       const QVariant defaultValue = QVariant( "" ) );
+
+      bool isValid() const override;
+
+      QList<QgsGeometry> toGeomList( const char delimiter = ',' ) const;
+      QList<int> toIntList( const char delimiter = ',' ) const;
+      QList<float> toFloatList( const char delimiter = ',' ) const;
+      QList<QColor> toColorList( const char delimiter = ',' ) const;
+      QgsRectangle toRectangle() const;
+      int toInt() const;
+      double toDouble() const;
+      QColor toColor() const;
+
+      void raiseError() const;
+
+      static QString name( const QgsWmsParameter::Name );
+      static QgsWmsParameter::Name name( const QString &name );
+
+      QgsWmsParameter::Name mName;
+      int mId = -1;
+  };
+
+  class QgsWmsParameters : public QgsServerParameters
+  {
+      Q_GADGET
+
+    public:
 
       //! Output format for the response
       enum Format
@@ -161,19 +193,13 @@ namespace QgsWms
         GML
       };
 
-      struct Parameter
-      {
-        ParameterName mName;
-        QVariant::Type mType;
-        QVariant mDefaultValue;
-        QVariant mValue;
-      };
-
       /**
        * Constructor for WMS parameters with specific values.
        * \param parameters Map of parameters where keys are parameters' names.
        */
-      QgsWmsParameters( const QgsServerRequest::Parameters &parameters );
+      // QgsWmsParameters( const QgsServerRequest::Parameters &parameters );
+
+      QgsWmsParameters( const QgsServerParameters &parameters );
 
       /**
        * Constructor for WMS parameters with default values only.
@@ -184,7 +210,7 @@ namespace QgsWms
        * Loads new parameters.
        * \param parameters Map of parameters
        */
-      void load( const QgsServerRequest::Parameters &parameters );
+      // void load( const QgsServerRequest::Parameters &parameters );
 
       /**
        * Dumps parameters.
@@ -342,16 +368,20 @@ namespace QgsWms
        */
       bool infoFormatIsImage() const;
 
+      QString imageQuality() const;
+
+      int imageQualityAsInt() const;
+
       /**
        * Returns infoFormat. If the INFO_FORMAT parameter is not used, then the
-       *  default value is text/plain.
+       * default value is text/plain.
        * \returns infoFormat
        */
       Format infoFormat() const;
 
       /**
        * Returns the infoFormat version for GML. If the INFO_FORMAT is not GML,
-       *  then the default value is -1.
+       * then the default value is -1.
        * \returns infoFormat version
        */
       int infoFormatVersion() const;
@@ -364,8 +394,8 @@ namespace QgsWms
 
       /**
        * Returns I parameter as an int or its default value if not
-       *  defined. An exception is raised if I is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if I is defined and cannot be
+       * converted.
        * \returns i parameter
        * \throws QgsBadRequestException
        */
@@ -597,8 +627,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERFONTBOLD as a boolean or its default value if not
-       * defined. An exception is raised if an
-       * invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns layerFontBold
        * \throws QgsBadRequestException
        */
@@ -940,52 +969,18 @@ namespace QgsWms
       bool withMapTip() const;
 
     private:
-      QString name( ParameterName name ) const;
-      void raiseError( ParameterName name ) const;
-      void raiseError( ParameterName name, int mapId ) const;
+      bool loadParameter( const QPair<QString, QString> &parameter ) override;
+
+      void save( const QgsWmsParameter &parameter, bool multi = false );
+
+      QgsWmsParameter idParameter( QgsWmsParameter::Name name, int id ) const;
+
       void raiseError( const QString &msg ) const;
-      void initParameters();
-      void save( const Parameter &parameter );
-      QVariant value( ParameterName name ) const;
-      QVariant defaultValue( ParameterName name ) const;
-      void save( const Parameter &parameter, int mapId );
-      QVariant value( ParameterName name, int mapId ) const;
-      QVariant defaultValue( ParameterName name, int mapId ) const;
       void log( const QString &msg ) const;
-      double toDouble( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
-      double toDouble( ParameterName name ) const;
-      double toDouble( ParameterName name, int mapId ) const;
-      bool toBool( const QVariant &value, const QVariant &defaultValue ) const;
-      bool toBool( ParameterName name ) const;
-      bool toBool( ParameterName name, int mapId ) const;
-      int toInt( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
-      int toInt( ParameterName name ) const;
-      int toInt( ParameterName name, int mapId ) const;
-      QColor toColor( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
-      QColor toColor( ParameterName name ) const;
-      QColor toColor( ParameterName name, int mapId ) const;
-      QgsRectangle toRectangle( const QVariant &value, bool *error = Q_NULLPTR ) const;
-      QgsRectangle toRectangle( ParameterName name ) const;
-      QgsRectangle toRectangle( ParameterName name, int mapId ) const;
-      QStringList toStringList( ParameterName name, char delimiter = ',' ) const;
-      QStringList toStringList( ParameterName name, int mapId, char delimiter = ',' ) const;
-      QList<int> toIntList( const QStringList &l, bool *error = Q_NULLPTR ) const;
-      QList<int> toIntList( const QStringList &l, ParameterName name ) const;
-      QList<int> toIntList( const QStringList &l, ParameterName name, int mapId ) const;
-      QList<float> toFloatList( const QStringList &l, bool *error = Q_NULLPTR ) const;
-      QList<float> toFloatList( const QStringList &l, ParameterName name ) const;
-      QList<float> toFloatList( const QStringList &l, ParameterName name, int mapId ) const;
-      QList<QColor> toColorList( const QStringList &l, bool *error = Q_NULLPTR ) const;
-      QList<QColor> toColorList( const QStringList &l, ParameterName name ) const;
-      QList<QColor> toColorList( const QStringList &l, ParameterName name, int mapId ) const;
-      QList<QgsGeometry> toGeomList( const QStringList &l, bool *error = Q_NULLPTR ) const;
-      QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name ) const;
-      QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name, int mapId ) const;
+
       QMultiMap<QString, QString> getLayerFilters( const QStringList &layers ) const;
 
-      QgsServerRequest::Parameters mRequestParameters;
-      QMap<ParameterName, Parameter> mParameters;
-      QMap<int, QMap<ParameterName, Parameter>> mComposerParameters;
+      QMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
       QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };
