@@ -1,6 +1,8 @@
 ADD_SUBDIRECTORY(../../external/libdxfrw dwg/libdxfrw)
 
 SET(QGIS_APP_SRCS
+  ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
+
   qgisapp.cpp
   qgisappinterface.cpp
   qgisappstylesheet.cpp
