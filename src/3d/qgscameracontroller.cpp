@@ -241,6 +241,11 @@ QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
+  if ( mCameraData.pitch + diffPitch > 80 )
+    diffPitch = 80 - mCameraData.pitch;  // prevent going under the plane
+  if ( mCameraData.pitch + diffPitch < 0 )
+    diffPitch = 0 - mCameraData.pitch;   // prevent going over the head
+
   // Is it always going to be love/hate relationship with quaternions???
   // This quaternion combines two rotations:
   // - first it undoes the previously applied rotation so we have do not have any rotation compared to world coords
