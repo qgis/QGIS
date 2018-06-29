@@ -280,16 +280,18 @@ QgsGpsInformationWidget::QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWid
   mCboDistanceThreshold->addItem( QStringLiteral( "5" ), 5 );
   mCboDistanceThreshold->addItem( QStringLiteral( "10" ), 10 );
   mCboDistanceThreshold->addItem( QStringLiteral( "15" ), 15 );
-  mCboAcquisitionInterval->setCurrentIndex( 0 );
-  mCboAcquisitionInterval->setCurrentIndex( 0 );
+
+  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
+  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
+  mCboAcquisitionInterval->setCurrentText( mySettings.value( QStringLiteral( "gps/acquisitionInterval" ), 0 ).toString() );
+  mCboDistanceThreshold->setCurrentText( mySettings.value( QStringLiteral( "gps/distanceThreshold" ), 0 ).toString() );
+
   connect( mAcquisitionTimer.get(), &QTimer::timeout,
            this, &QgsGpsInformationWidget::switchAcquisition );
   connect( mCboAcquisitionInterval, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboAcquisitionIntervalEdited );
   connect( mCboDistanceThreshold, qgis::overload< const QString & >::of( &QComboBox::currentTextChanged ),
            this, &QgsGpsInformationWidget::cboDistanceThresholdEdited );
-  mCboAcquisitionInterval->setValidator( mAcquisitionIntValidator );
-  mCboDistanceThreshold->setValidator( mDistanceThresholdValidator );
 }
 
 QgsGpsInformationWidget::~QgsGpsInformationWidget()
@@ -314,6 +316,8 @@ QgsGpsInformationWidget::~QgsGpsInformationWidget()
   mySettings.setValue( QStringLiteral( "gps/showMarker" ), mGroupShowMarker->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoAddVertices" ), mCbxAutoAddVertices->isChecked() );
   mySettings.setValue( QStringLiteral( "gps/autoCommit" ), mCbxAutoCommit->isChecked() );
+  mySettings.setValue( QStringLiteral( "gps/acquisitionInterval" ), mCboAcquisitionInterval->currentText() );
+  mySettings.setValue( QStringLiteral( "gps/distanceThreshold" ), mCboDistanceThreshold->currentText() );
 
   mySettings.setValue( QStringLiteral( "gps/mapExtentMultiplier" ), mSpinMapExtentMultiplier->value() );
 
