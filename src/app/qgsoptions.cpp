@@ -906,16 +906,22 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString mySystemLocale = QLocale().name();
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+  bool omitGroupSeparator = mSettings->value( QStringLiteral( "locale/omitGroupSeparator" ), false ).toBool();
+  QString myGlobalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), QString() ).toString();
   QStringList myI18nList = i18nList();
   Q_FOREACH ( const QString &l, myI18nList )
   {
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
+    cboTranslation->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
+    cboGlobalLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
-  cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
+  cboTranslation->setCurrentIndex( cboTranslation->findData( myUserLocale ) );
+  cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( myGlobalLocale ) );
   bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   grpLocale->setChecked( myLocaleOverrideFlag );
+  cbOmitGroupSeparator->setChecked( omitGroupSeparator );
+
 
   //set elements in digitizing tab
   mLineWidthSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
@@ -1586,8 +1592,12 @@ void QgsOptions::saveOptions()
   //
   // Locale settings
   //
-  mSettings->setValue( QStringLiteral( "locale/userLocale" ), cboLocale->currentData().toString() );
+  mSettings->setValue( QStringLiteral( "locale/userLocale" ), cboTranslation->currentData().toString() );
   mSettings->setValue( QStringLiteral( "locale/overrideFlag" ), grpLocale->isChecked() );
+  mSettings->setValue( QStringLiteral( "locale/globalLocale" ), cboGlobalLocale->currentData( ).toString() );
+
+  // Number settings
+  mSettings->setValue( QStringLiteral( "locale/omitGroupSeparator" ), cbOmitGroupSeparator->isChecked( ) );
 
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
