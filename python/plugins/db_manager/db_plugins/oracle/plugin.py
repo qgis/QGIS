@@ -32,15 +32,13 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
-from qgis.core import QgsVectorLayer, NULL, QgsSettings
+from qgis.core import QgsApplication QgsVectorLayer, NULL, QgsSettings
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
     TableIndex, TableTrigger
 
 from qgis.core import QgsCredentials
-
-from . import resources_rc  # NOQA
 
 
 def classFactory():
@@ -51,7 +49,7 @@ class OracleDBPlugin(DBPlugin):
 
     @classmethod
     def icon(self):
-        return QIcon(":/db_manager/oracle/icon")
+        return QgsApplication.getThemeIcon("/mIconOracle.svg")
 
     @classmethod
     def typeName(self):
