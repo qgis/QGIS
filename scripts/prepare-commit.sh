@@ -59,10 +59,11 @@ fi
 
 if [[ -n "$QGIS_CHECK_SPELLING" && -x "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh ]]; then "${TOPLEVEL}"/scripts/spell_check/check_spelling.sh "$MODIFIED"; fi
 
+FILES_CHANGED=0
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)
-git diff >sha-"$REV".diff
+#git diff >sha-"$REV".diff
 
 ASTYLEDIFF=astyle.$REV.diff
 true > "$ASTYLEDIFF"
@@ -96,9 +97,11 @@ if [ -s "$ASTYLEDIFF" ]; then
   if tty -s; then
     # review astyle changes
     colordiff <"$ASTYLEDIFF" | less -r
+    rm "$ASTYLEDIFF"
   else
     echo "Files changed (see $ASTYLEDIFF)"
   fi
+  FILES_CHANGED=1
 else
   rm "$ASTYLEDIFF"
 fi
@@ -131,17 +134,15 @@ if [[ -s "$SIPIFYDIFF" ]]; then
   if tty -s; then
     # review astyle changes
     colordiff <"$SIPIFYDIFF" | less -r
+    rm "$SIPIFYDIFF"
   else
     echo "Files changed (see $ASTYLEDIFF)"
   fi
-  exit 1
+  FILES_CHANGED=1
 else
   rm "$SIPIFYDIFF"
 fi
-if [ -s "$ASTYLEDIFF" ]; then
-    exit 1
-fi
 
-exit 0
+exit $FILES_CHANGED
 
 # vim: set ts=2 expandtab :
