@@ -350,7 +350,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>843</width>
-                <height>855</height>
+                <height>885</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -381,7 +381,7 @@
                     <item row="2" column="0">
                      <widget class="QLabel" name="label_52">
                       <property name="text">
-                       <string>Locale (affects numbers representation)</string>
+                       <string>Locale (numbers, date and currency formats)</string>
                       </property>
                      </widget>
                     </item>
@@ -414,6 +414,16 @@
                     </property>
                     <property name="text">
                      <string>Detected active locale on your system</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="lblLocaleSample">
+                    <property name="styleSheet">
+                     <string notr="true">QLabel {background-color: #ffffff; }</string>
+                    </property>
+                    <property name="text">
+                     <string>Sample text for locale formatting</string>
                     </property>
                    </widget>
                   </item>
@@ -1061,7 +1071,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>544</width>
-                <height>1096</height>
+                <height>1094</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3194,7 +3204,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>613</width>
-                <height>646</height>
+                <height>636</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
