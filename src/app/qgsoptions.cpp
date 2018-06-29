@@ -96,6 +96,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
+  connect( cboGlobalLocale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ]( int ) { updateSampleLocaleText( ); } );
+  connect( cbOmitGroupSeparator, &QCheckBox::toggled, this, [ = ]( bool ) { updateSampleLocaleText(); } );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -2363,6 +2365,24 @@ void QgsOptions::refreshSchemeComboBox()
     mColorSchemesComboBox->addItem( ( *schemeIt )->schemeName() );
   }
   mColorSchemesComboBox->blockSignals( false );
+}
+
+void QgsOptions::updateSampleLocaleText()
+{
+  QLocale locale( cboGlobalLocale->currentData( ).toString() );
+  if ( cbOmitGroupSeparator->isChecked( ) )
+  {
+    locale.setNumberOptions( locale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    locale.setNumberOptions( locale.numberOptions() &= ! QLocale::NumberOption::OmitGroupSeparator );
+  }
+  lblLocaleSample->setText( tr( "Sample date: %1 money: %2 int: %3 float: %4" ).arg(
+                              QDate::currentDate().toString( locale.dateFormat( QLocale::FormatType::ShortFormat ) ),
+                              locale.toCurrencyString( 1000.00 ),
+                              locale.toString( 1000 ),
+                              locale.toString( 1000.00, 'f', 2 ) ) );
 }
 
 void QgsOptions::updateActionsForCurrentColorScheme( QgsColorScheme *scheme )
