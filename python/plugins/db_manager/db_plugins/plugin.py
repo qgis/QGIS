@@ -27,7 +27,7 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -90,6 +90,9 @@ class DBPlugin(QObject):
 
     def __del__(self):
         pass  # print "DBPlugin.__del__", self.connName
+
+    def connectionIcon(self):
+        return QgsApplication.getThemeIcon("/mIconDbSchema.svg")
 
     def connectionName(self):
         return self.connName
