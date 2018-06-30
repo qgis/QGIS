@@ -182,7 +182,7 @@ class SpatiaLiteDBConnector(DBConnector):
                       "sql_statements_log", "vector_layers", "vector_layers_auth", "vector_layers_field_infos", "vector_layers_statistics",
                       "views_geometry_columns_auth", "views_geometry_columns_field_infos", "views_geometry_columns_statistics",
                       "virts_geometry_columns_auth", "virts_geometry_columns_field_infos", "virts_geometry_columns_statistics",
-                      "ElementaryGeometries"
+                      "virts_layer_statistics", "views_layer_statistics", "ElementaryGeometries"
                       ]
 
         try:
