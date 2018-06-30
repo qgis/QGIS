@@ -1543,7 +1543,7 @@ QString QgsProcessingParameterMapLayer::valueAsPythonString( const QVariant &val
   p.insert( name(), val );
   QgsMapLayer *layer = QgsProcessingParameters::parameterAsLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
-         : QString();
+         : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
 QgsProcessingParameterMapLayer *QgsProcessingParameterMapLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -2418,7 +2418,8 @@ QString QgsProcessingParameterRasterLayer::valueAsPythonString( const QVariant &
   QVariantMap p;
   p.insert( name(), val );
   QgsRasterLayer *layer = QgsProcessingParameters::parameterAsRasterLayer( this, p, context );
-  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) ) : QString();
+  return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
+         : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
 QgsProcessingParameterRasterLayer *QgsProcessingParameterRasterLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -2630,7 +2631,6 @@ QString QgsProcessingParameterString::valueAsPythonString( const QVariant &value
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
   QString s = value.toString();
-  s.replace( '\n', QStringLiteral( "\\n" ) );
   return QgsProcessingUtils::stringToPythonLiteral( s );
 }
 
@@ -2715,7 +2715,6 @@ QString QgsProcessingParameterExpression::valueAsPythonString( const QVariant &v
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
   QString s = value.toString();
-  s.replace( '\n', QStringLiteral( "\\n" ) );
   return QgsProcessingUtils::stringToPythonLiteral( s );
 }
 
@@ -2819,7 +2818,7 @@ QString QgsProcessingParameterVectorLayer::valueAsPythonString( const QVariant &
   p.insert( name(), val );
   QgsVectorLayer *layer = QgsProcessingParameters::parameterAsVectorLayer( this, p, context );
   return layer ? QgsProcessingUtils::stringToPythonLiteral( QgsProcessingUtils::normalizeLayerSource( layer->source() ) )
-         : QString();
+         : QgsProcessingUtils::stringToPythonLiteral( val.toString() );
 }
 
 QList<int> QgsProcessingParameterLimitedDataTypes::dataTypes() const
@@ -3326,7 +3325,7 @@ QString QgsProcessingParameterFeatureSink::valueAsPythonString( const QVariant &
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
     else
     {
@@ -3551,7 +3550,7 @@ QString QgsProcessingParameterRasterDestination::valueAsPythonString( const QVar
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
     else
     {
@@ -3667,7 +3666,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
     else
     {
@@ -3890,7 +3889,7 @@ QString QgsProcessingParameterVectorDestination::valueAsPythonString( const QVar
     QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
     if ( fromVar.sink.propertyType() == QgsProperty::StaticProperty )
     {
-      return QStringLiteral( "'%1'" ).arg( fromVar.sink.staticValue().toString() );
+      return QgsProcessingUtils::stringToPythonLiteral( fromVar.sink.staticValue().toString() );
     }
     else
     {
