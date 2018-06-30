@@ -26,7 +26,7 @@ from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsF
 
 
 def register_function(function, arg_count, group, usesgeometry=False,
-                      referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], **kwargs):
+                      referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], handlesnull=False, **kwargs):
     """
     Register a Python function to be used as a expression function.
 
@@ -51,18 +51,20 @@ def register_function(function, arg_count, group, usesgeometry=False,
     :param arg_count:
     :param group:
     :param usesgeometry:
+    :param handlesnull:
     :return:
     """
 
     class QgsPyExpressionFunction(QgsExpressionFunction):
 
         def __init__(self, func, name, args, group, helptext='', usesGeometry=True,
-                     referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
+                     referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False, handlesNull=False):
             QgsExpressionFunction.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs
             self.uses_geometry = usesGeometry
             self.referenced_columns = referencedColumns
+            self.handles_null = handlesNull
 
         def func(self, values, context, parent, node):
             feature = None
@@ -89,6 +91,9 @@ def register_function(function, arg_count, group, usesgeometry=False,
 
         def referencedColumns(self, node):
             return self.referenced_columns
+
+        def handlesNull(self):
+            return self.handles_null
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
@@ -119,7 +124,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
     f = QgsPyExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns,
-                                expandargs)
+                                expandargs, handlesnull)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
