@@ -156,6 +156,9 @@ class ConnectionItem(TreeItem):
             return self.getItemData().connectionName()
         return None
 
+    def icon(self):
+        return self.getItemData().connectionIcon()
+
     def populate(self):
         if self.populated:
             return True
