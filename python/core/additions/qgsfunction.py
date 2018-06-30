@@ -22,7 +22,7 @@ import inspect
 import string
 from builtins import str
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest
+from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest, Qgis
 
 
 def register_function(function, arg_count, group, usesgeometry=False,
