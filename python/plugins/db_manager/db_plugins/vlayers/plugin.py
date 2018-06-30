@@ -60,7 +60,7 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def connections(self):
-        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'QGIS layers'))]
+        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'Project layers'))]
 
     def databasesFactory(self, connection, uri):
         return FakeDatabase(connection, uri)
