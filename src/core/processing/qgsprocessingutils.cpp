@@ -310,6 +310,10 @@ QString QgsProcessingUtils::normalizeLayerSource( const QString &source )
 QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
 {
   QString s = string;
+  s.replace( '\\', QStringLiteral( "\\\\" ) );
+  s.replace( '\n', QStringLiteral( "\\n" ) );
+  s.replace( '\r', QStringLiteral( "\\r" ) );
+  s.replace( '\t', QStringLiteral( "\\t" ) );
   s.replace( '"', QStringLiteral( "\\\"" ) );
   s.replace( '\'', QStringLiteral( "\\\'" ) );
   s = s.prepend( '\'' ).append( '\'' );
