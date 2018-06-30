@@ -241,8 +241,8 @@ QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
-  if ( mCameraData.pitch + diffPitch > 80 )
-    diffPitch = 80 - mCameraData.pitch;  // prevent going under the plane
+  if ( mCameraData.pitch + diffPitch > 180 )
+    diffPitch = 180 - mCameraData.pitch;  // prevent going over the head
   if ( mCameraData.pitch + diffPitch < 0 )
     diffPitch = 0 - mCameraData.pitch;   // prevent going over the head
 
@@ -353,8 +353,8 @@ void QgsCameraController::frameTriggered( float dt )
     mCameraData.x = mCameraData.y = 0;
   }
 
-  if ( mCameraData.pitch > 80 )
-    mCameraData.pitch = 80;  // prevent going under the plane
+  if ( mCameraData.pitch > 180 )
+    mCameraData.pitch = 180;  // prevent going over the head
   if ( mCameraData.pitch < 0 )
     mCameraData.pitch = 0;   // prevent going over the head
   if ( mCameraData.dist < 10 )
