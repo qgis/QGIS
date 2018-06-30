@@ -39,6 +39,9 @@ class VLayerDBPlugin(DBPlugin):
     def icon(self):
         return QgsApplication.getThemeIcon("/mIconVirtualLayer.svg")
 
+    def connectionIcon(self):
+        return QgsApplication.getThemeIcon("/providerQgis.svg")
+
     @classmethod
     def typeName(self):
         return 'vlayers'
