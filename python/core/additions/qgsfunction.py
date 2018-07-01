@@ -50,8 +50,8 @@ def register_function(function, arg_count, group, usesgeometry=False,
     :param function:
     :param arg_count:
     :param group:
-    :param usesgeometry:
-    :param handlesnull:
+    :param usesgeometry: 
+    :param handlesnull: Needs to be set to True if this function has does not always return NULL if any parameter is NULL. Default False.
     :return:
     """
 
@@ -136,6 +136,19 @@ def register_function(function, arg_count, group, usesgeometry=False,
 def qgsfunction(args='auto', group='custom', **kwargs):
     """
     Decorator function used to define a user expression function.
+
+    :param args: Number of parameters, set to 'auto' to accept a variable length of parameters.
+    :param group: The expression group to which this expression should be added.
+    :param \**kwargs:
+        See below
+
+    :Keyword Arguments:
+        * *referenced_columns* (``list``) --
+          An array of field names on which this expression works. Can be set to ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. By default empty.
+        * *usesgeometry* (``bool``) --
+          Defines if this expression requires the geometry. By default False.
+        * *handlesnull* (``bool``) --
+          Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
 
     Example:
       @qgsfunction(2, 'test'):
