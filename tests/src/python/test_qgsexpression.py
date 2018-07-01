@@ -67,6 +67,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     def referenced_columns_set(values, feature, parent):
         return 2
 
+    @qgsfunction(args=-1, group='testing', register=False, handlesnull=True)
+    def null_mean(values, feature, parent):
+        vals = [val for val in values if val != NULL]
+        return sum(vals) / len(vals)
+
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
 
@@ -160,6 +165,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+
+    def testHandlesNull(self):
+        QgsExpression.registerFunction(self.handles_null)
+        exp = QgsExpression('null_mean(1, 2, NULL, 3)')
+        self.assertEqual(set(exp.evaluate()), 2)
 
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
