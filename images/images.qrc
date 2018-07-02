@@ -242,7 +242,6 @@
         <file>themes/default/mActionDeleteRing.svg</file>
         <file>themes/default/mActionDeleteSelected.svg</file>
         <file>themes/default/mActionDeselectAll.svg</file>
-        <file>themes/default/mActionDraw.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
         <file>themes/default/mActionDuplicateComposer.svg</file>
         <file>themes/default/mActionEditCopy.svg</file>
@@ -322,6 +321,7 @@
         <file>themes/default/mActionRaiseItems.svg</file>
         <file>themes/default/mActionRedo.svg</file>
         <file>themes/default/mActionRefresh.svg</file>
+        <file>themes/default/mActionReload.svg</file>
         <file>themes/default/mActionRemove.svg</file>
         <file>themes/default/mActionRemoveAllFromOverview.svg</file>
         <file>themes/default/mActionRemoveLayer.svg</file>

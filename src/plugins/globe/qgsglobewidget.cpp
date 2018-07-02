@@ -49,7 +49,7 @@ QgsGlobeWidget::QgsGlobeWidget( QgisInterface *iface, QWidget *parent )
   QToolButton *refreshButton = new QToolButton( this );
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Reload scene" ) );
-  refreshButton->setIcon( QIcon( ":/images/themes/default/mActionRefresh.svg" ) );
+  refreshButton->setIcon( QIcon( ":/images/themes/default/mActionReload.svg" ) );
   refreshButton->setIconSize( QSize( 16, 16 ) );
   connect( refreshButton, SIGNAL( clicked() ), this, SIGNAL( refresh() ) );
 
