@@ -306,6 +306,12 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     void addProvider( QgsProcessingProvider *provider );
 
+    /**
+     * Returns true if \a provider is a "top-level" provider, which shows
+     * groups directly under the root node and not under a provider child node.
+     */
+    static bool isTopLevelProvider( QgsProcessingProvider *provider );
+
 };
 
 
@@ -330,7 +336,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      */
     explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr );
 
-    // bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+//    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 
   private:

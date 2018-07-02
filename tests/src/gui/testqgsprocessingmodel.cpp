@@ -208,6 +208,27 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a3 );
   QCOMPARE( model.algorithmForIndex( model.index( 1, 0, groupIndex ) ), a4 );
 
+  // provider with algs with no groups
+  DummyAlgorithm *a5 = new DummyAlgorithm( "a5", "group1" );
+  DummyAlgorithm *a6 = new DummyAlgorithm( "a6", QString() );
+  DummyAlgorithm *a7 = new DummyAlgorithm( "a7", "group2" );
+  DummyProvider *p5 = new DummyProvider( "p5", "provider5", QList< QgsProcessingAlgorithm * >() << a5 << a6 << a7 );
+  registry.addProvider( p5 );
+  QModelIndex p5ProviderIndex = model.indexForProvider( p5 );
+  QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
+
+  groupIndex = model.index( 0, 0, p5ProviderIndex );
+  QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
+  QCOMPARE( model.rowCount( groupIndex ), 1 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a5 );
+
+  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, p5ProviderIndex ) ), a6 );
+
+  groupIndex = model.index( 2, 0, p5ProviderIndex );
+  QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
+  QCOMPARE( model.rowCount( groupIndex ), 1 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a7 );
+
   // qgis native algorithms put groups at top level
   QgsProcessingRegistry registry2;
   QgsProcessingToolboxModel model2( nullptr, &registry2 );
@@ -233,6 +254,12 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group2Index ) ), qgisA2 );
   QCOMPARE( model2.rowCount( group3Index ), 1 );
   QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group3Index ) ), qgisA4 );
+
+  // remove a provider
+
+
+  // reload provider
+
 }
 
 void TestQgsProcessingModel::testProxyModel()
