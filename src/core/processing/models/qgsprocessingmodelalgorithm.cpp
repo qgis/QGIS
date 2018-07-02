@@ -851,6 +851,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   mModelName = map.value( QStringLiteral( "model_name" ) ).toString();
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
+  mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
 
   mChildAlgorithms.clear();

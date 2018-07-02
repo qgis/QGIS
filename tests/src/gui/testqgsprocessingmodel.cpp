@@ -56,10 +56,11 @@ class DummyProvider : public QgsProcessingProvider
     }
 
     QString id() const override { return mId; }
+    bool isActive() const override { return mActive; }
 
     QString name() const override { return mName; }
     QString longName() const override { return QStringLiteral( "long name %1" ).arg( mName );}
-
+    bool mActive = true;
   protected:
     void loadAlgorithms() override
     {
@@ -68,6 +69,7 @@ class DummyProvider : public QgsProcessingProvider
     }
     QString mId;
     QString mName;
+
     QList< QgsProcessingAlgorithm *> mAlgs;
 
 };
@@ -338,6 +340,14 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model.data( model.index( 2, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
   QCOMPARE( model.data( model.index( 3, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( model.rowCount(), 4 );
+
+  // inactive provider - should not be visible
+  DummyAlgorithm *qgisA31 = new DummyAlgorithm( "a3", "group1" );
+  DummyProvider *p3 = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << qgisA31 );
+  p3->mActive = false;
+  registry.addProvider( p3 );
+  QCOMPARE( model.rowCount(), 4 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModel )
