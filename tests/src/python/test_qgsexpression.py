@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -66,6 +66,11 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
     @qgsfunction(args=0, group='testing', register=False, referenced_columns=['a', 'b'])
     def referenced_columns_set(values, feature, parent):
         return 2
+
+    @qgsfunction(args=-1, group='testing', register=False, handlesnull=True)
+    def null_mean(values, feature, parent):
+        vals = [val for val in values if val != NULL]
+        return sum(vals) / len(vals)
 
     def tearDown(self):
         QgsExpression.unregisterFunction('testfun')
@@ -160,6 +165,14 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         QgsExpression.registerFunction(self.referenced_columns_set)
         exp = QgsExpression('referenced_columns_set()')
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
+
+    def testHandlesNull(self):
+        context = QgsExpressionContext()
+        QgsExpression.registerFunction(self.null_mean)
+        exp = QgsExpression('null_mean(1, 2, NULL, 3)')
+        result = exp.evaluate(context)
+        self.assertFalse(exp.hasEvalError())
+        self.assertEqual(result, 2)
 
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
