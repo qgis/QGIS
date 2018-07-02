@@ -51,7 +51,7 @@ def register_function(function, arg_count, group, usesgeometry=False,
     :param arg_count:
     :param group:
     :param usesgeometry: 
-    :param handlesnull: Needs to be set to True if this function has does not always return NULL if any parameter is NULL. Default False.
+    :param handlesnull: Needs to be set to True if this function does not always return NULL if any parameter is NULL. Default False.
     :return:
     """
 
