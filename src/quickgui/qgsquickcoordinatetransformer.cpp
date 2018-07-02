@@ -76,7 +76,14 @@ void QgsQuickCoordinateTransformer::setSourceCrs( const QgsCoordinateReferenceSy
 
 void QgsQuickCoordinateTransformer::setTransformContext( const QgsCoordinateTransformContext &context )
 {
-  mCoordinateTransform.setContext( context );
+  mTransformContext = context;
+  mCoordinateTransform.setContext( mTransformContext );
+  emit transformContextChanged();
+}
+
+QgsCoordinateTransformContext QgsQuickCoordinateTransformer::transformContext() const
+{
+  return mTransformContext;
 }
 
 void QgsQuickCoordinateTransformer::updatePosition()
