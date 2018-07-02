@@ -50,6 +50,7 @@ class TestQgsGdalProvider : public QObject
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
     void mask();
+    void bandName(); // test band name based on `gtiff` tags (#7317)
 
   private:
     QString mTestDataDir;
@@ -217,6 +218,20 @@ void TestQgsGdalProvider::mask()
     QgsRasterBlock *block = rp->block( 4, rect, 162, 150 );
     QVERIFY( block );
     delete block;
+  }
+  delete provider;
+}
+
+void TestQgsGdalProvider::bandName()
+{
+  QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
+  QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
+  QVERIFY( rp );
+  if ( rp )
+  {
+    qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
+    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1 / wvln=1.234 (um)" ) );
   }
   delete provider;
 }
