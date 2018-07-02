@@ -292,7 +292,6 @@ namespace QgsWms
 
     private:
 
-      QgsServerRequest::Parameters mParameters;
       const QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS

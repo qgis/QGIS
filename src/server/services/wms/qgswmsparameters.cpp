@@ -393,6 +393,21 @@ namespace QgsWms
     const QgsWmsParameter pFilterGeom( QgsWmsParameter::FILTER_GEOM );
     save( pFilterGeom );
 
+    const QgsWmsParameter pPolygTol( QgsWmsParameter::FI_POLYGON_TOLERANCE,
+                                     QVariant::Double,
+                                     QVariant( 0.0 ) );
+    save( pPolygTol );
+
+    const QgsWmsParameter pLineTol( QgsWmsParameter::FI_LINE_TOLERANCE,
+                                    QVariant::Double,
+                                    QVariant( 0.0 ) );
+    save( pLineTol );
+
+    const QgsWmsParameter pPointTol( QgsWmsParameter::FI_POINT_TOLERANCE,
+                                     QVariant::Double,
+                                     QVariant( 0.0 ) );
+    save( pPointTol );
+
     const QgsWmsParameter pSelection( QgsWmsParameter::SELECTION );
     save( pSelection );
 
@@ -914,6 +929,36 @@ namespace QgsWms
   QString QgsWmsParameters::itemFontBold() const
   {
     return mWmsParameters[ QgsWmsParameter::ITEMFONTBOLD ].toString();
+  }
+
+  QString QgsWmsParameters::polygonTolerance() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_POLYGON_TOLERANCE ].toString();
+  }
+
+  QString QgsWmsParameters::lineTolerance() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_LINE_TOLERANCE ].toString();
+  }
+
+  QString QgsWmsParameters::pointTolerance() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_POINT_TOLERANCE ].toString();
+  }
+
+  int QgsWmsParameters::polygonToleranceAsInt() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_POLYGON_TOLERANCE ].toInt();
+  }
+
+  int QgsWmsParameters::lineToleranceAsInt() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_LINE_TOLERANCE ].toInt();
+  }
+
+  int QgsWmsParameters::pointToleranceAsInt() const
+  {
+    return mWmsParameters[ QgsWmsParameter::FI_POINT_TOLERANCE ].toInt();
   }
 
   bool QgsWmsParameters::itemFontBoldAsBool() const

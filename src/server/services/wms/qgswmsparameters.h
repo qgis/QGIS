@@ -116,6 +116,9 @@ namespace QgsWms
         SYMBOLWIDTH,
         OPACITIES,
         SLD,
+        FI_POLYGON_TOLERANCE,
+        FI_LINE_TOLERANCE,
+        FI_POINT_TOLERANCE,
         FILTER,
         FILTER_GEOM,
         FORMAT,
@@ -345,6 +348,18 @@ namespace QgsWms
        * \returns layer parameters
        */
       QList<QgsWmsParametersLayer> layersParameters() const;
+
+      QString polygonTolerance() const;
+
+      QString lineTolerance() const;
+
+      QString pointTolerance() const;
+
+      int polygonToleranceAsInt() const;
+
+      int lineToleranceAsInt() const;
+
+      int pointToleranceAsInt() const;
 
       /**
        * Returns FORMAT parameter as a string.
