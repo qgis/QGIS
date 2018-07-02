@@ -358,19 +358,23 @@ bool QgsRasterLayerSaveAsDialog::addToCanvas() const
 
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
-  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
-  QString defaultExt;
-  if ( !extensions.empty() )
-  {
-    defaultExt = extensions.at( 0 );
-  }
-
-  // ensure the user never omits the extension from the file name
   QString fileName = mFilename->filePath();
-  QFileInfo fi( fileName );
-  if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+
+  if ( mFilename->storageMode() != QgsFileWidget::GetDirectory )
   {
-    fileName += '.' + defaultExt;
+    QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+    QString defaultExt;
+    if ( !extensions.empty() )
+    {
+      defaultExt = extensions.at( 0 );
+    }
+
+    // ensure the user never omits the extension from the file name
+    QFileInfo fi( fileName );
+    if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+    {
+      fileName += '.' + defaultExt;
+    }
   }
 
   return fileName;
