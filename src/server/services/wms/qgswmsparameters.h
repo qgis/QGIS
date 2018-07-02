@@ -147,7 +147,8 @@ namespace QgsWms
         GRID_INTERVAL_X,
         GRID_INTERVAL_Y,
         WITH_GEOMETRY,
-        WITH_MAPTIP
+        WITH_MAPTIP,
+        WMTVER
       };
       Q_ENUM( Name )
 
@@ -159,7 +160,7 @@ namespace QgsWms
 
       QList<QgsGeometry> toGeomList( const char delimiter = ',' ) const;
       QList<int> toIntList( const char delimiter = ',' ) const;
-      QList<float> toFloatList( const char delimiter = ',' ) const;
+      QList<double> toDoubleList( const char delimiter = ',' ) const;
       QList<QColor> toColorList( const char delimiter = ',' ) const;
       QgsRectangle toRectangle() const;
       int toInt() const;
@@ -265,6 +266,8 @@ namespace QgsWms
        * \returns version
        */
       QgsProjectVersion versionAsNumber() const;
+
+      bool versionIsValid( const QString version ) const;
 
       /**
        * Returns BBOX if defined or an empty string.
@@ -856,7 +859,7 @@ namespace QgsWms
        * \returns highlight label buffer size
        * \throws QgsBadRequestException
        */
-      QList<float> highlightLabelBufferSizeAsFloat() const;
+      QList<double> highlightLabelBufferSizeAsFloat() const;
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERCOLOR as a list of string.
@@ -967,6 +970,8 @@ namespace QgsWms
        * \returns true if maptip information is requested for feature info response
        */
       bool withMapTip() const;
+
+      QString wmtver() const;
 
     private:
       bool loadParameter( const QPair<QString, QString> &parameter ) override;

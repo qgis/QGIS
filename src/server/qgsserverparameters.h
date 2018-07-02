@@ -38,7 +38,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QString toString() const;
     QStringList toStringList( char delimiter = ',' ) const;
     QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
-    QList<float> toFloatList( bool &ok, char delimiter = ',' ) const;
+    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
     QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
     QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
     QgsRectangle toRectangle( bool &ok ) const;

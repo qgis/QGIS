@@ -139,24 +139,24 @@ QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimit
   return ints;
 }
 
-QList<float> QgsServerParameterDefinition::toFloatList( bool &ok, const char delimiter ) const
+QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter ) const
 {
   ok = true;
-  QList<float> floats;
+  QList<double> vals;
 
   for ( const auto &part : toStringList( delimiter ) )
   {
-    const float val = part.toFloat( &ok );
+    const double val = part.toDouble( &ok );
 
     if ( !ok )
     {
-      return QList<float>();
+      return QList<double>();
     }
 
-    floats.append( val );
+    vals.append( val );
   }
 
-  return floats;
+  return vals;
 }
 
 QgsRectangle QgsServerParameterDefinition::toRectangle( bool &ok ) const
