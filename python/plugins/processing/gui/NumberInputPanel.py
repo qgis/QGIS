@@ -224,7 +224,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             value, ok = value.source.valueAsString(context.expressionContext())
         if isinstance(value, str):
             value = QgsProcessingUtils.mapLayerFromString(value, context)
-        if value is None:
+        if value is None or not isinstance(value, QgsMapLayer):
             return None
 
         # need to return layer with ownership - otherwise layer may be deleted when context
