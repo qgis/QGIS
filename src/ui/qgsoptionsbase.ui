@@ -399,9 +399,9 @@
                      <widget class="QComboBox" name="cboGlobalLocale"/>
                     </item>
                     <item row="3" column="1">
-                     <widget class="QCheckBox" name="cbOmitGroupSeparator">
+                     <widget class="QCheckBox" name="cbShowGroupSeparator">
                       <property name="text">
-                       <string>Omit group (thousand) separator</string>
+                       <string>Show group (thousand) separator</string>
                       </property>
                      </widget>
                     </item>
