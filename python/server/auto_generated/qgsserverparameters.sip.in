@@ -137,6 +137,8 @@ Removes a parameter.
 :param key: the name of the parameter
 %End
 
+    void remove( QgsServerParameter::Name name );
+
     QString value( const QString &key ) const;
 %Docstring
 Returns the value of a parameter.
