@@ -90,6 +90,12 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     QList<QgsProcessingToolboxModelNode *> children() const { return mChildren; } SIP_SKIP
 
     /**
+     * Removes the specified \a node from this node's children, and gives
+     * ownership back to the caller.
+     */
+    QgsProcessingToolboxModelNode *takeChild( QgsProcessingToolboxModelNode *node );
+
+    /**
      * Tries to find a child node belonging to this node, which corresponds to
      * a group node with the given group \a id. Returns nullptr if no matching
      * child group node was found.
@@ -140,8 +146,14 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
      */
     QgsProcessingProvider *provider();
 
+    /**
+     * Returns the provider ID.
+     */
+    QString providerId() const { return mProviderId; }
+
   private:
 
+    QString mProviderId;
     QgsProcessingProvider *mProvider = nullptr;
 
 };
@@ -279,6 +291,15 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     QgsProcessingProvider *providerForIndex( const QModelIndex &index ) const;
 
     /**
+     * Returns the provider ID which corresponds to a given \a index, or
+     * an empty string if the index does not represent a provider.
+     *
+     * \see algorithmForIndex()
+     * \see indexForProvider()
+     */
+    QString providerIdForIndex( const QModelIndex &index ) const;
+
+    /**
      * Returns the algorithm which corresponds to a given \a index, or
      * a nullptr if the index does not represent an algorithm.
      *
@@ -295,10 +316,10 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     bool isAlgorithm( const QModelIndex &index ) const;
 
     /**
-     * Returns the index corresponding to the specified \a provider.
+     * Returns the index corresponding to the specified \a providerId.
      * \see providerForIndex()
      */
-    QModelIndex indexForProvider( QgsProcessingProvider *provider ) const;
+    QModelIndex indexForProvider( const QString &providerId ) const;
 
     /**
      * Returns the index corresponding to the parent of a given node.
@@ -309,6 +330,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
     void rebuild();
     void providerAdded( const QString &id );
+    void providerRemoved( const QString &id );
 
   private:
 
@@ -319,10 +341,10 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     void addProvider( QgsProcessingProvider *provider );
 
     /**
-     * Returns true if \a provider is a "top-level" provider, which shows
+     * Returns true if \a providerId is a "top-level" provider, which shows
      * groups directly under the root node and not under a provider child node.
      */
-    static bool isTopLevelProvider( QgsProcessingProvider *provider );
+    static bool isTopLevelProvider( const QString &providerId );
 
     /**
      * Returns a formatted tooltip for an \a algorithm.
