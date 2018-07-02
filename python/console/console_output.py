@@ -61,7 +61,7 @@ class writeOut(object):
         self.move_cursor_to_end()
 
         if self.style != "_traceback":
-            QCoreApplication.processEvents()
+            self.sO.repaint()
 
         if self.fire_keyboard_interrupt:
             self.fire_keyboard_interrupt = False
