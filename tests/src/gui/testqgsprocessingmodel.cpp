@@ -133,7 +133,7 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( model.index( 0, 0, QModelIndex() ).isValid() );
   QCOMPARE( model.providerForIndex( model.index( 0, 0, QModelIndex() ) ), p1 );
   QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
-  QCOMPARE( model.indexForProvider( p1 ), model.index( 0, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 0, 0, QModelIndex() ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
   QCOMPARE( model.rowCount( model.index( 0, 0, QModelIndex() ) ), 0 );
   QVERIFY( !model.hasChildren( model.index( 0, 0, QModelIndex() ) ) );
@@ -152,8 +152,8 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.providerForIndex( model.index( 0, 0, QModelIndex() ) ), p1 );
   QCOMPARE( model.providerForIndex( model.index( 1, 0, QModelIndex() ) ), p2 );
   QVERIFY( !model.providerForIndex( model.index( 2, 0, QModelIndex() ) ) );
-  QCOMPARE( model.indexForProvider( p1 ), model.index( 0, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p2 ), model.index( 1, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 0, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 1, 0, QModelIndex() ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
   QVERIFY( !model.hasChildren( model.index( 1, 0, QModelIndex() ) ) );
 
@@ -174,9 +174,9 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( model.hasChildren() );
   QVERIFY( model.index( 2, 0, QModelIndex() ).isValid() );
   QCOMPARE( model.providerForIndex( model.index( 2, 0, QModelIndex() ) ), p3 );
-  QCOMPARE( model.indexForProvider( p1 ), model.index( 0, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p2 ), model.index( 1, 0, QModelIndex() ) );
-  QCOMPARE( model.indexForProvider( p3 ), model.index( 2, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p1->id() ), model.index( 0, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p2->id() ), model.index( 1, 0, QModelIndex() ) );
+  QCOMPARE( model.indexForProvider( p3->id() ), model.index( 2, 0, QModelIndex() ) );
   QCOMPARE( model.rowCount( model.index( 1, 0, QModelIndex() ) ), 0 );
   QCOMPARE( model.rowCount( model.index( 2, 0, QModelIndex() ) ), 2 );
   QVERIFY( !model.hasChildren( model.index( 1, 0, QModelIndex() ) ) );
@@ -216,7 +216,7 @@ void TestQgsProcessingModel::testModel()
   DummyAlgorithm *a4 = new DummyAlgorithm( "a4", "group1" );
   DummyProvider *p4 = new DummyProvider( "p4", "provider4", QList< QgsProcessingAlgorithm * >() << a3 << a4 );
   registry.addProvider( p4 );
-  QModelIndex p4ProviderIndex = model.indexForProvider( p4 );
+  QModelIndex p4ProviderIndex = model.indexForProvider( p4->id() );
   QModelIndex groupIndex = model.index( 0, 0, p4ProviderIndex );
   QCOMPARE( model.rowCount( groupIndex ), 2 );
   QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p4:a3" ) );
@@ -229,7 +229,7 @@ void TestQgsProcessingModel::testModel()
   DummyProvider *p5 = new DummyProvider( "p5", "provider5", QList< QgsProcessingAlgorithm * >() << a5 << a6 << a7 );
   registry.addProvider( p5 );
   QCOMPARE( model.rowCount(), 5 );
-  QModelIndex p5ProviderIndex = model.indexForProvider( p5 );
+  QModelIndex p5ProviderIndex = model.indexForProvider( p5->id() );
   QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
 
   groupIndex = model.index( 0, 0, p5ProviderIndex );
@@ -247,7 +247,7 @@ void TestQgsProcessingModel::testModel()
   // reload provider
   p5->refreshAlgorithms();
   QCOMPARE( model.rowCount(), 5 );
-  p5ProviderIndex = model.indexForProvider( p5 );
+  p5ProviderIndex = model.indexForProvider( p5->id() );
   QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
 
   groupIndex = model.index( 0, 0, p5ProviderIndex );
@@ -261,7 +261,7 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p5:a7" ) );
 
   p3->refreshAlgorithms();
-  providerIndex = model.indexForProvider( p3 );
+  providerIndex = model.indexForProvider( p3->id() );
   group1Index = model.index( 0, 0, providerIndex );
   QCOMPARE( model.rowCount( group1Index ), 1 );
   alg1Index = model.index( 0, 0, group1Index );
@@ -276,21 +276,15 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.rowCount(), 4 );
   QVERIFY( model.index( 0, 0, QModelIndex() ).isValid() );
   QCOMPARE( model.providerForIndex( model.index( 0, 0, QModelIndex() ) ), p2 );
-  //shhh - p1 is actually a dangling pointer here. That's fine for tests!
-  QVERIFY( !model.indexForProvider( p1 ).isValid() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   registry.removeProvider( p5 );
   QCOMPARE( model.rowCount(), 3 );
-  QVERIFY( !model.indexForProvider( p5 ).isValid() );
   registry.removeProvider( p2 );
   QCOMPARE( model.rowCount(), 2 );
-  QVERIFY( !model.indexForProvider( p2 ).isValid() );
   registry.removeProvider( p3 );
   QCOMPARE( model.rowCount(), 1 );
-  QVERIFY( !model.indexForProvider( p3 ).isValid() );
   registry.removeProvider( p4 );
   QCOMPARE( model.rowCount(), 0 );
-  QVERIFY( !model.indexForProvider( p4 ).isValid() );
   QCOMPARE( model.columnCount(), 1 );
   QVERIFY( !model.hasChildren() );
   QVERIFY( !model.providerForIndex( model.index( 0, 0, QModelIndex() ) ) );

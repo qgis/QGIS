@@ -31,6 +31,11 @@ QgsProcessingToolboxModelNode::~QgsProcessingToolboxModelNode()
   deleteChildren();
 }
 
+QgsProcessingToolboxModelNode *QgsProcessingToolboxModelNode::takeChild( QgsProcessingToolboxModelNode *node )
+{
+  return mChildren.takeAt( mChildren.indexOf( node ) );
+}
+
 QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroupNode( const QString &groupId )
 {
   for ( QgsProcessingToolboxModelNode *node : qgis::as_const( mChildren ) )
@@ -67,7 +72,8 @@ void QgsProcessingToolboxModelNode::deleteChildren()
 //
 
 QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider )
-  : mProvider( provider )
+  : mProviderId( provider->id() )
+  , mProvider( provider )
 {}
 
 QgsProcessingProvider *QgsProcessingToolboxModelProviderNode::provider()
@@ -109,7 +115,7 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   rebuild();
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::providerAdded );
-  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
+  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
 }
 
 void QgsProcessingToolboxModel::rebuild()
@@ -132,9 +138,44 @@ void QgsProcessingToolboxModel::providerAdded( const QString &id )
   if ( !provider )
     return;
 
-  beginResetModel();
-  addProvider( provider );
-  endResetModel();
+  if ( !isTopLevelProvider( id ) )
+  {
+    int previousRowCount = rowCount();
+    beginInsertRows( QModelIndex(), previousRowCount + 1, previousRowCount + 1 );
+    addProvider( provider );
+    endInsertRows();
+  }
+  else
+  {
+    //native providers use top level groups - that's too hard for us to
+    //work out exactly what's going to change, so just reset the model
+    beginResetModel();
+    addProvider( provider );
+    endResetModel();
+  }
+}
+
+void QgsProcessingToolboxModel::providerRemoved( const QString &id )
+{
+  if ( isTopLevelProvider( id ) )
+  {
+    // native providers use top level groups - so we can't
+    // work out what to remove. Just rebuild the whole model instead.
+    rebuild();
+  }
+  else
+  {
+    // can't retrieve the provider - it's been deleted!
+    // so find node by id
+    QModelIndex index = indexForProvider( id );
+    QgsProcessingToolboxModelNode *node = index2node( index );
+    if ( !node )
+      return;
+
+    beginRemoveRows( QModelIndex(), index.row(), index.row() );
+    delete mRootNode->takeChild( node );
+    endRemoveRows();
+  }
 }
 
 QgsProcessingToolboxModelNode *QgsProcessingToolboxModel::index2node( const QModelIndex &index ) const
@@ -163,7 +204,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, &QgsProcessingToolboxModel::rebuild, Qt::UniqueConnection );
 
   QgsProcessingToolboxModelNode *parentNode = nullptr;
-  if ( !isTopLevelProvider( provider ) )
+  if ( !isTopLevelProvider( provider->id() ) )
   {
     std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
     parentNode = node.get();
@@ -198,11 +239,11 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   }
 }
 
-bool QgsProcessingToolboxModel::isTopLevelProvider( QgsProcessingProvider *provider )
+bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 {
-  return provider->id() == QLatin1String( "qgis" ) ||
-         provider->id() == QLatin1String( "native" ) ||
-         provider->id() == QLatin1String( "3d" );
+  return providerId == QLatin1String( "qgis" ) ||
+         providerId == QLatin1String( "native" ) ||
+         providerId == QLatin1String( "3d" );
 }
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
@@ -368,6 +409,15 @@ QgsProcessingProvider *QgsProcessingToolboxModel::providerForIndex( const QModel
   return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->provider();
 }
 
+QString QgsProcessingToolboxModel::providerIdForIndex( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeProvider )
+    return nullptr;
+
+  return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->providerId();
+}
+
 const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );
@@ -383,27 +433,24 @@ bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
   return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm );
 }
 
-QModelIndex QgsProcessingToolboxModel::indexForProvider( QgsProcessingProvider *provider ) const
+QModelIndex QgsProcessingToolboxModel::indexForProvider( const QString &providerId ) const
 {
-  if ( !provider )
-    return QModelIndex();
-
-  std::function< QModelIndex( const QModelIndex &parent, QgsProcessingProvider *provider ) > findIndex = [&]( const QModelIndex & parent, QgsProcessingProvider * provider )->QModelIndex
+  std::function< QModelIndex( const QModelIndex &parent, const QString &providerId ) > findIndex = [&]( const QModelIndex & parent, const QString & providerId )->QModelIndex
   {
     for ( int row = 0; row < rowCount( parent ); ++row )
     {
       QModelIndex current = index( row, 0, parent );
-      if ( providerForIndex( current ) == provider )
+      if ( providerIdForIndex( current ) == providerId )
         return current;
 
-      QModelIndex checkChildren = findIndex( current, provider );
+      QModelIndex checkChildren = findIndex( current, providerId );
       if ( checkChildren.isValid() )
         return checkChildren;
     }
     return QModelIndex();
   };
 
-  return findIndex( QModelIndex(), provider );
+  return findIndex( QModelIndex(), providerId );
 }
 
 QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolboxModelNode *parentNode ) const
