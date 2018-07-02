@@ -138,7 +138,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     int minval = min.toInt();
     if ( allowNull )
     {
-      int stepval = step.toInt();
+      int stepval = step.isValid() ? step.toInt() : 1;
       minval -= stepval;
       mIntSpinBox->setValue( minval );
       mIntSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
