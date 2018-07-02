@@ -29,7 +29,8 @@ from qgis.testing import start_app, unittest
 from qgis.core import (QgsApplication,
                        QgsCoordinateReferenceSystem,
                        QgsProcessingParameterMatrix,
-                       QgsVectorLayer)
+                       QgsVectorLayer,
+                       QgsProject)
 from qgis.analysis import QgsNativeAlgorithms
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -152,10 +153,20 @@ class WrappersTest(unittest.TestCase):
         widget.setUnitParameterValue(vl)
         self.assertEqual(widget.label.text(), 'meters')
         self.assertFalse(widget.warning_label.isVisible())
-        vl = QgsVectorLayer("Polygon?crs=epsg:4326&field=pk:int", "vl", "memory")
-        widget.setUnitParameterValue(vl)
+        vl2 = QgsVectorLayer("Polygon?crs=epsg:4326&field=pk:int", "vl", "memory")
+        widget.setUnitParameterValue(vl2)
         self.assertEqual(widget.label.text(), 'degrees')
         self.assertTrue(widget.warning_label.isVisible())
+
+        # unresolvable values
+        widget.setUnitParameterValue(vl.id())
+        self.assertEqual(widget.label.text(), '<unknown>')
+        self.assertFalse(widget.warning_label.isVisible())
+        # resolvable text value
+        QgsProject.instance().addMapLayer(vl)
+        widget.setUnitParameterValue(vl.id())
+        self.assertEqual(widget.label.text(), 'meters')
+        self.assertFalse(widget.warning_label.isVisible())
 
         widget.deleteLater()
 
