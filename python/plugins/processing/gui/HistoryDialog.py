@@ -33,7 +33,7 @@ from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QAction, QPushButton, QDialogButtonBox, QStyle, QMessageBox, QFileDialog, QMenu, QTreeWidgetItem
 from qgis.PyQt.QtGui import QIcon
 from processing.gui import TestTools
-from processing.core.ProcessingLog import ProcessingLog
+from processing.core.ProcessingLog import ProcessingLog, LOG_SEPARATOR
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -125,7 +125,7 @@ class HistoryDialog(BASE, WIDGET):
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-            self.text.setText(item.entry.text.replace('|', '\n'))
+            self.text.setText(item.entry.text.replace(LOG_SEPARATOR, '\n'))
 
     def createTest(self):
         item = self.tree.currentItem()
@@ -150,4 +150,4 @@ class TreeLogEntryItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, '[' + entry.date + '] ' + entry.text.split('|')[0])
+        self.setText(0, '[' + entry.date + '] ' + entry.text.split(LOG_SEPARATOR)[0])
