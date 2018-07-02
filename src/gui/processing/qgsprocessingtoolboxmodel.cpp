@@ -205,6 +205,15 @@ bool QgsProcessingToolboxModel::isTopLevelProvider( QgsProcessingProvider *provi
          provider->id() == QLatin1String( "3d" );
 }
 
+QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
+{
+  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>" ).arg(
+           algorithm->displayName(),
+           !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
+           QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) )
+         );
+}
+
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
@@ -257,7 +266,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       if ( provider )
         return provider->longName();
       else if ( algorithm )
-        return algorithm->displayName();
+        return toolTipForAlgorithm( algorithm );
       else if ( groupNode )
         return groupNode->name();
       else
