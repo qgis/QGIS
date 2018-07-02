@@ -1144,8 +1144,15 @@ int main( int argc, char *argv[] )
   QString i18nPath = QgsApplication::i18nPath();
   QString myUserTranslation = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
   QString myGlobalLocale = mySettings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
-  bool myOmitGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/omitGroupSeparator" ), true ).toBool();
+  bool myShowGroupSeparatorFlag = false; // Default to false
   bool myLocaleOverrideFlag = mySettings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+
+  // Override Show Group Separator if the global override flag is set
+  if ( myLocaleOverrideFlag )
+  {
+    // Default to false again
+    myShowGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
+  }
 
   //
   // Priority of translation is:
@@ -1183,19 +1190,16 @@ int main( int argc, char *argv[] )
   }
 
   // Number settings
-  if ( myLocaleOverrideFlag )
+  QLocale currentLocale;
+  if ( myShowGroupSeparatorFlag )
   {
-    QLocale currentLocale;
-    if ( myOmitGroupSeparatorFlag )
-    {
-      currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
-    }
-    else
-    {
-      currentLocale.setNumberOptions( currentLocale.numberOptions() &= ! QLocale::NumberOption::OmitGroupSeparator );
-    }
-    QLocale::setDefault( currentLocale );
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= !QLocale::NumberOption::OmitGroupSeparator );
   }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
 
 
   QTranslator qgistor( nullptr );

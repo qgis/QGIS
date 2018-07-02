@@ -97,7 +97,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
   connect( cboGlobalLocale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ]( int ) { updateSampleLocaleText( ); } );
-  connect( cbOmitGroupSeparator, &QCheckBox::toggled, this, [ = ]( bool ) { updateSampleLocaleText(); } );
+  connect( cbShowGroupSeparator, &QCheckBox::toggled, this, [ = ]( bool ) { updateSampleLocaleText(); } );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -908,7 +908,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString mySystemLocale = QLocale().name();
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
   QString myUserLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
-  bool omitGroupSeparator = mSettings->value( QStringLiteral( "locale/omitGroupSeparator" ), false ).toBool();
+  bool showGroupSeparator = mSettings->value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
   QString myGlobalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), QString() ).toString();
   QStringList myI18nList = i18nList();
   Q_FOREACH ( const QString &l, myI18nList )
@@ -922,7 +922,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( myGlobalLocale ) );
   bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   grpLocale->setChecked( myLocaleOverrideFlag );
-  cbOmitGroupSeparator->setChecked( omitGroupSeparator );
+  cbShowGroupSeparator->setChecked( showGroupSeparator );
 
 
   //set elements in digitizing tab
@@ -1599,7 +1599,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "locale/globalLocale" ), cboGlobalLocale->currentData( ).toString() );
 
   // Number settings
-  mSettings->setValue( QStringLiteral( "locale/omitGroupSeparator" ), cbOmitGroupSeparator->isChecked( ) );
+  mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
 
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )
@@ -2370,13 +2370,13 @@ void QgsOptions::refreshSchemeComboBox()
 void QgsOptions::updateSampleLocaleText()
 {
   QLocale locale( cboGlobalLocale->currentData( ).toString() );
-  if ( cbOmitGroupSeparator->isChecked( ) )
+  if ( cbShowGroupSeparator->isChecked( ) )
   {
-    locale.setNumberOptions( locale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+    locale.setNumberOptions( locale.numberOptions() &= ! QLocale::NumberOption::OmitGroupSeparator );
   }
   else
   {
-    locale.setNumberOptions( locale.numberOptions() &= ! QLocale::NumberOption::OmitGroupSeparator );
+    locale.setNumberOptions( locale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
   }
   lblLocaleSample->setText( tr( "Sample date: %1 money: %2 int: %3 float: %4" ).arg(
                               QDate::currentDate().toString( locale.dateFormat( QLocale::FormatType::ShortFormat ) ),
