@@ -24,6 +24,7 @@
 #include "qgsogcutils.h"
 #include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
+#include "qgswfsparameters.h"
 
 namespace QgsWfs
 {
@@ -44,14 +45,14 @@ namespace QgsWfs
     if ( href.isEmpty() )
     {
       QUrl url = request.url();
-      QUrlQuery q( url );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      QgsWfsParameters params;
+      params.load( QUrlQuery( url ) );
+      params.remove( QgsServerParameter::REQUEST );
+      params.remove( QgsServerParameter::VERSION_SERVICE );
+      params.remove( QgsServerParameter::SERVICE );
 
-      url.setQuery( q );
+      url.setQuery( params.urlQuery() );
       href = url.toString( QUrl::FullyDecoded );
     }
 
