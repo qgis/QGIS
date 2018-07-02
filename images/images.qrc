@@ -234,6 +234,7 @@
         <file>themes/default/mActionConditionalFormatting.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCreateMemory.svg</file>
+        <file>themes/default/mActionCreateTable.svg</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
@@ -241,6 +242,7 @@
         <file>themes/default/mActionDeletePart.svg</file>
         <file>themes/default/mActionDeleteRing.svg</file>
         <file>themes/default/mActionDeleteSelected.svg</file>
+        <file>themes/default/mActionDeleteTable.svg</file>
         <file>themes/default/mActionDeselectAll.svg</file>
         <file>themes/default/mActionDraw.svg</file>
         <file>themes/default/mActionDuplicateLayer.svg</file>
@@ -248,6 +250,7 @@
         <file>themes/default/mActionEditCopy.svg</file>
         <file>themes/default/mActionEditCut.svg</file>
         <file>themes/default/mActionEditPaste.svg</file>
+        <file>themes/default/mActionEditTable.svg</file>
         <file>themes/default/mActionExpandNewTree.svg</file>
         <file>themes/default/mActionExpandTree.svg</file>
         <file>themes/default/mActionFileExit.svg</file>

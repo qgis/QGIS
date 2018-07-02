@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import Qgis, QgsSettings, QgsMapLayer
+from qgis.core import Qgis, QgsApplication, QgsSettings, QgsMapLayer
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -429,7 +429,7 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_DbMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
+        self.actionRefresh = self.menuDb.addAction(QgsApplication.getThemeIcon("/mActionDraw.svg"), self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
         self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
@@ -463,5 +463,11 @@ class DBManager(QMainWindow):
         # add actions to the toolbar
         self.toolBar.addAction(self.actionRefresh)
         self.toolBar.addAction(self.actionSqlWindow)
+        self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport)
         self.toolBar.addAction(self.actionExport)
+
+        widget = self.toolBar.widgetForAction(self.actionImport)
+        widget.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        widget = self.toolBar.widgetForAction(self.actionExport)
+        widget.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
