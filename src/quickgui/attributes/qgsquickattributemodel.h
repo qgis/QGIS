@@ -33,7 +33,7 @@
  * gets a row in the model. Also supports CRUD operations
  * related to layer and feature pair.
  *
- * On top of the QgsFeature attibutes, support for "remember"
+ * On top of the QgsFeature attributes, support for "remember"
  * attribute is added. Remember attribute is used for
  * quick addition of the multiple features to the same layer.
  * A new feature can use "remembered" attribute values from

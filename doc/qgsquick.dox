@@ -15,7 +15,7 @@ QGIS Quick consists of a Qt plugin that provides the QML components and of a sha
 \subsubsection qgsquick_overview_widgets_mapcanvas MapCanvas
 \subsubsection qgsquick_overview_widgets_featureform FeatureForm
 A form listing attributes of a given feature. It supports basic edit field widgets for types such as edit text, map value,
-check box,  date/time picker or external resource (photo capture).
+checkbox,  date/time picker or external resource (photo capture).
 \subsubsection qgsquick_overview_widgets_positionmarker PositionMarker
 The element refers to current position according gps location device connected to it. It holds information about longitude, latitude, altitude,
 direction of the movement and accuracy of the signal. See also QgsQuickPositionKit.
