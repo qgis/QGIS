@@ -304,6 +304,8 @@ registry attached to QgsApplication.processingRegistry() will be used
 by the model.
 %End
 
+    virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 

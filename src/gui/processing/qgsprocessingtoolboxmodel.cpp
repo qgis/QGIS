@@ -420,6 +420,21 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   sort( 0 );
 }
 
+bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
+{
+  QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+  if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
+  {
+    return provider->isActive(); // and has visible children!!
+  }
+
+  // TODO
+  // check flags - hide from toolbox/modeler
+  // check search string
+  // check group has visible children
+  return true;
+}
+
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, QgsProcessingToolboxModel::RoleNodeType ).toInt() );
