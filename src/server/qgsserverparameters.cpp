@@ -260,14 +260,28 @@ QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
 
 QString QgsServerParameter::name( const QgsServerParameter::Name name )
 {
-  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
-  return metaEnum.valueToKey( name );
+  if ( name == QgsServerParameter::VERSION_SERVICE )
+  {
+    return QStringLiteral( "VERSION" );
+  }
+  else
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+    return metaEnum.valueToKey( name );
+  }
 }
 
 QgsServerParameter::Name QgsServerParameter::name( const QString &name )
 {
-  const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
-  return ( QgsServerParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+  if ( name.compare( QStringLiteral( "VERSION" ) ) == 0 )
+  {
+    return QgsServerParameter::VERSION_SERVICE;
+  }
+  else
+  {
+    const QMetaEnum metaEnum( QMetaEnum::fromType<QgsServerParameter::Name>() );
+    return ( QgsServerParameter::Name ) metaEnum.keyToValue( name.toUpper().toStdString().c_str() );
+  }
 }
 
 void QgsServerParameter::raiseError() const
@@ -316,6 +330,11 @@ QUrlQuery QgsServerParameters::urlQuery() const
   }
 
   return query;
+}
+
+void QgsServerParameters::remove( QgsServerParameter::Name name )
+{
+  remove( QgsServerParameter::name( name ) );
 }
 
 void QgsServerParameters::remove( const QString &key )

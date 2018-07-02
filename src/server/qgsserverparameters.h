@@ -127,6 +127,8 @@ class SERVER_EXPORT QgsServerParameters
      */
     void remove( const QString &key );
 
+    void remove( QgsServerParameter::Name name );
+
     /**
      * Returns the value of a parameter.
      * \param key the name of the parameter
