@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtCore import QVariant
 from qgis.testing import unittest
 from qgis.utils import qgsfunction
-from qgis.core import QgsExpression, QgsFeatureRequest
+from qgis.core import QgsExpression, QgsFeatureRequest, QgsExpressionContext, NULL
 
 
 class TestQgsExpressionCustomFunctions(unittest.TestCase):
@@ -167,9 +167,12 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
 
     def testHandlesNull(self):
+        context = QgsExpressionContext()
         QgsExpression.registerFunction(self.null_mean)
         exp = QgsExpression('null_mean(1, 2, NULL, 3)')
-        self.assertEqual(set(exp.evaluate()), 2)
+        result = exp.evaluate(context)
+        self.assertFalse(exp.hasEvalError())
+        self.assertEqual(result, 2)
 
     def testCantOverrideBuiltinsWithUnregister(self):
         success = QgsExpression.unregisterFunction("sqrt")
