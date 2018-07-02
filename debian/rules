@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial yakkety zesty artful bionic"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch buster xenial bionic cosmic"))
 	DISTRIBUTION := sid
 endif
 

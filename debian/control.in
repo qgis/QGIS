@@ -13,7 +13,7 @@ Build-Depends:
  libexpat1-dev,
  libfcgi-dev,
  libgdal-dev (>= 1.11),
-#sid buster stretch xenial yakkety zesty artful bionic# libgsl-dev,
+#sid buster stretch xenial bionic cosmic# libgsl-dev,
  libgeos-dev (>= 3.0.0),
  libpq-dev,
  libproj-dev,
@@ -38,13 +38,13 @@ Build-Depends:
  graphviz,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#sid buster artful bionic# libosgearth-dev,
-#artful bionic# qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#sid buster bionic cosmic# libosgearth-dev,
+#bionic cosmic# qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
 #oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid buster stretch xenial yakkety zesty artful bionic#Standards-Version: 3.9.7
-#                   xenial yakkety zesty artful bionic#XS-Python-Version: current
+#sid buster stretch xenial bionic cosmic#Standards-Version: 3.9.7
+#                   xenial bionic cosmic#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -146,19 +146,19 @@ Description: QGIS - shared native gui library
  .
  This package contains the shared native gui library.
 
-#artful bionic#Package: libqgis-3d{QGIS_ABI}
-#artful bionic#Architecture: any
-#artful bionic#Section: libs
-#artful bionic#Depends:
-#artful bionic# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
-#artful bionic# ${shlibs:Depends},
-#artful bionic# ${misc:Depends}
-#artful bionic#Description: QGIS - shared 3d library
-#artful bionic# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#artful bionic# display databases of geographic information.
-#artful bionic# .
-#artful bionic# This package contains the shared 3d library.
-#artful bionic#
+#bionic cosmic#Package: libqgis-3d{QGIS_ABI}
+#bionic cosmic#Architecture: any
+#bionic cosmic#Section: libs
+#bionic cosmic#Depends:
+#bionic cosmic# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#bionic cosmic# ${shlibs:Depends},
+#bionic cosmic# ${misc:Depends}
+#bionic cosmic#Description: QGIS - shared 3d library
+#bionic cosmic# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#bionic cosmic# display databases of geographic information.
+#bionic cosmic# .
+#bionic cosmic# This package contains the shared 3d library.
+#bionic cosmic#
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -215,7 +215,7 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#sid buster stretch xenial yakkety zesty artful bionic# libgsl-dev,
+#sid buster stretch xenial bionic cosmic# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
