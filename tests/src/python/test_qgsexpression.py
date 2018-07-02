@@ -167,7 +167,7 @@ class TestQgsExpressionCustomFunctions(unittest.TestCase):
         self.assertEqual(set(exp.referencedColumns()), set(['a', 'b']))
 
     def testHandlesNull(self):
-        QgsExpression.registerFunction(self.handles_null)
+        QgsExpression.registerFunction(self.null_mean)
         exp = QgsExpression('null_mean(1, 2, NULL, 3)')
         self.assertEqual(set(exp.evaluate()), 2)
 
