@@ -143,6 +143,8 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         super(NumberInputPanel, self).__init__(None)
         self.setupUi(self)
 
+        self.layer = None
+
         self.spnValue.setExpressionsEnabled(True)
 
         self.param = param
@@ -211,7 +213,8 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     def setDynamicLayer(self, layer):
         try:
-            self.btnDataDefined.setVectorLayer(self.getLayerFromValue(layer))
+            self.layer = self.getLayerFromValue(layer)
+            self.btnDataDefined.setVectorLayer(self.layer)
         except:
             pass
 
@@ -221,7 +224,14 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             value, ok = value.source.valueAsString(context.expressionContext())
         if isinstance(value, str):
             value = QgsProcessingUtils.mapLayerFromString(value, context)
-        return value
+        if value is None:
+            return None
+
+        # need to return layer with ownership - otherwise layer may be deleted when context
+        # goes out of scope
+        new_layer = context.takeResultLayer(value.id())
+        # if we got ownership, return that - otherwise just return the layer (which may be owned by the project)
+        return new_layer if new_layer is not None else value
 
     def getValue(self):
         if self.btnDataDefined is not None and self.btnDataDefined.isActive():
