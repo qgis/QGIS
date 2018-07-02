@@ -241,17 +241,17 @@ class ORDatabase(Database):
         mainWindow.registerAction(action, None, self.deleteActionSlot)
         action.setShortcuts(QKeySequence.Delete)
 
-        action = QAction(QIcon(":/db_manager/actions/create_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionCreateTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Create Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.createTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/edit_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionEditTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.editTableActionSlot)
-        action = QAction(QIcon(":/db_manager/actions/del_table"),
+        action = QAction(QgsApplication.getThemeIcon("/mActionDeleteTable.svg"),
                          QApplication.translate(
                              "DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate(
