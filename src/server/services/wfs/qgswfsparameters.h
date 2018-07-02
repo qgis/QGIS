@@ -26,6 +26,7 @@
 #include "qgswfsserviceexception.h"
 #include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
+#include "qgsserverparameters.h"
 
 namespace QgsWfs
 {
@@ -36,14 +37,15 @@ namespace QgsWfs
    * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
    * \since QGIS 3.0
    */
-  class QgsWfsParameters
+  class QgsWfsParameter : public QgsServerParameterDefinition
   {
       Q_GADGET
 
     public:
       //! Available parameters for WFS requests
-      enum ParameterName
+      enum Name
       {
+        UNKNOWN,
         OUTPUTFORMAT,
         RESULTTYPE,
         PROPERTYNAME,
@@ -58,7 +60,29 @@ namespace QgsWfs
         EXP_FILTER,
         GEOMETRYNAME
       };
-      Q_ENUM( ParameterName )
+      Q_ENUM( Name )
+
+      QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN,
+                       const QVariant::Type type = QVariant::String,
+                       const QVariant defaultValue = QVariant( "" ) );
+
+      int toInt() const;
+      QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
+      QgsRectangle toRectangle() const;
+
+      void raiseError() const;
+
+      static QString name( const QgsWfsParameter::Name );
+      static QgsWfsParameter::Name name( const QString &name );
+
+      QgsWfsParameter::Name mName;
+  };
+
+  class QgsWfsParameters : public QgsServerParameters
+  {
+      Q_GADGET
+
+    public:
 
       //! Output format for the response
       enum Format
@@ -77,19 +101,12 @@ namespace QgsWfs
         HITS
       };
 
-      struct Parameter
-      {
-        ParameterName mName;
-        QVariant::Type mType;
-        QVariant mDefaultValue;
-        QVariant mValue;
-      };
-
       /**
        * Constructor for WFS parameters with specific values.
        * \param parameters Map of parameters where keys are parameters' names.
        */
-      QgsWfsParameters( const QgsServerRequest::Parameters &parameters );
+      // QgsWfsParameters( const QgsServerRequest::Parameters &parameters );
+      QgsWfsParameters( const QgsServerParameters &parameters );
 
       /**
        * Constructor for WFS parameters with default values only.
@@ -246,23 +263,13 @@ namespace QgsWfs
       QString geometryNameAsString() const;
 
     private:
-      QString name( ParameterName name ) const;
-      void raiseError( ParameterName name ) const;
-      void raiseError( const QString &msg ) const;
-      QVariant value( ParameterName name ) const;
-      QVariant defaultValue( ParameterName name ) const;
-      void log( const QString &msg ) const;
-      void save( const Parameter &parameter );
-      int toInt( const QVariant &value, const QVariant &defaultValue, bool *error = Q_NULLPTR ) const;
-      int toInt( ParameterName name ) const;
-      QgsRectangle toRectangle( const QVariant &value, bool *error = Q_NULLPTR ) const;
-      QgsRectangle toRectangle( ParameterName p ) const;
-      QStringList toStringList( ParameterName p, char delimiter = ',' ) const;
-      QStringList toStringListWithExp( ParameterName p, const QString &exp = "\\(([^()]+)\\)" ) const;
+      bool loadParameter( const QPair<QString, QString> &parameter ) override;
+      void save( const QgsWfsParameter &parameter );
 
-      QgsServerRequest::Parameters mRequestParameters;
-      QMap<ParameterName, Parameter> mParameters;
+      void log( const QString &msg ) const;
+
       QList<QgsProjectVersion> mVersions;
+      QMap<QgsWfsParameter::Name, QgsWfsParameter> mWfsParameters;
   };
 }
 
