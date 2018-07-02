@@ -53,7 +53,7 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
     Q_PROPERTY( QgsCoordinateReferenceSystem sourceCrs READ sourceCrs WRITE setSourceCrs NOTIFY sourceCrsChanged )
 
     //! Transformation context, can be set from QgsQuickMapSettings::transformContext()
-    Q_PROPERTY( QgsCoordinateTransformContext transformContext WRITE setTransformContext )
+    Q_PROPERTY( QgsCoordinateTransformContext transformContext READ transformContext WRITE setTransformContext NOTIFY transformContextChanged )
 
   public:
     //! Creates new coordinate transformer
@@ -83,6 +83,9 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
     //!\copydoc QgsQuickCoordinateTransformer::transformContext
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    //!\copydoc QgsQuickCoordinateTransformer::transformContext
+    QgsCoordinateTransformContext transformContext() const;
+
   signals:
     //!\copydoc QgsQuickCoordinateTransformer::projectedPosition
     void projectedPositionChanged();
@@ -105,6 +108,7 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
     QgsPoint mProjectedPosition;
     QgsPoint mSourcePosition;
     QgsCoordinateTransform mCoordinateTransform;
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif // QGSQUICKCOORDINATETRANSFORMER_H
