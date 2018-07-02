@@ -9,6 +9,80 @@
 
 
 
+class QgsServerParameterDefinition
+{
+%Docstring
+*************************************************************************
+
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+
+**************************************************************************
+%End
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+    QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
+                                  const QVariant defaultValue = QVariant( "" ) );
+
+    QString typeName() const;
+    virtual bool isValid() const;
+
+    QString toString() const;
+    QStringList toStringList( char delimiter = ',' ) const;
+    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+    QgsRectangle toRectangle( bool &ok ) const;
+    int toInt( bool &ok ) const;
+    double toDouble( bool &ok ) const;
+    bool toBool() const;
+    QColor toColor( bool &ok ) const;
+
+    static void raiseError( const QString &msg );
+
+    QVariant::Type mType;
+    QVariant mValue;
+    QVariant mDefaultValue;
+};
+
+class QgsServerParameter : QgsServerParameterDefinition
+{
+
+%TypeHeaderCode
+#include "qgsserverparameters.h"
+%End
+  public:
+    static const QMetaObject staticMetaObject;
+
+  public:
+    enum Name
+    {
+      UNKNOWN,
+      SERVICE,
+      VERSION_SERVICE,
+      REQUEST,
+      MAP,
+      FILE_NAME
+    };
+
+    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
+                        const QVariant::Type type = QVariant::String,
+                        const QVariant defaultValue = QVariant( "" ) );
+
+    void raiseError() const;
+
+    static QString name( const QgsServerParameter::Name name );
+    static QgsServerParameter::Name name( const QString &name );
+
+    QgsServerParameter::Name mName;
+};
+
 class QgsServerParameters
 {
 %Docstring
@@ -25,23 +99,6 @@ global parameters received from the client.
     static const QMetaObject staticMetaObject;
 
   public:
-    enum ParameterName
-    {
-      SERVICE,
-      VERSION_SERVICE,
-      REQUEST,
-      MAP,
-      FILE_NAME
-    };
-
-    struct Parameter
-    {
-      ParameterName mName;
-      QVariant::Type mType;
-      QVariant mDefaultValue;
-      QVariant mValue;
-      bool mDefined;
-    };
 
     QgsServerParameters();
 %Docstring
@@ -136,6 +193,9 @@ defined.
 
 :return: version
 %End
+
+  protected:
+    virtual bool loadParameter( const QPair<QString, QString> &item );
 
 };
 
