@@ -231,7 +231,7 @@ void TestQgsGdalProvider::bandName()
   if ( rp )
   {
     qDebug() << "Band Name 1: " << rp->generateBandName( 1 );
-    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1 / wvln = 1.234 (um)" ) );
+    QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1 / wvln=1.234 (um)" ) );
   }
   delete provider;
 }
