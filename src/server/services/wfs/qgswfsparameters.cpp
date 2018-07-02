@@ -51,7 +51,7 @@ namespace QgsWfs
     const QStringList corners = mValue.toString().split( ',' );
     if ( corners.size() == 5 )
     {
-      value = value.chopped( corners[4].size() + 1 );
+      value.resize( value.size() - corners[4].size() - 1 );
     }
 
     QgsServerParameterDefinition param;
