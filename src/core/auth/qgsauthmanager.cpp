@@ -1937,7 +1937,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
   QString certpem( cert.toPem() );
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QString( "INSERT INTO %1 (id, host, cert, config) "
+  query.prepare( QString( "INSERT OR REPLACE INTO %1 (id, host, cert, config) "
                           "VALUES (:id, :host, :cert, :config)" ).arg( authDatabaseServersTable() ) );
 
   query.bindValue( QStringLiteral( ":id" ), id );
