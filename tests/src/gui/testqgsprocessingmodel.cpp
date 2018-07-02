@@ -50,6 +50,10 @@ class DummyProvider : public QgsProcessingProvider
     {
 
     }
+    ~DummyProvider() override
+    {
+      qDeleteAll( mAlgs );
+    }
 
     QString id() const override { return mId; }
 
@@ -60,8 +64,7 @@ class DummyProvider : public QgsProcessingProvider
     void loadAlgorithms() override
     {
       for ( QgsProcessingAlgorithm *alg : mAlgs )
-        addAlgorithm( alg );
-      mAlgs.clear();
+        addAlgorithm( alg->create() );
     }
     QString mId;
     QString mName;
@@ -187,7 +190,7 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( !model.providerForIndex( alg1Index ) );
   QCOMPARE( model.data( alg1Index, Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
   QCOMPARE( model.data( alg1Index, Qt::ToolTipRole ).toString(), QStringLiteral( "a1" ) );
-  QCOMPARE( model.algorithmForIndex( alg1Index ), a1 );
+  QCOMPARE( model.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p3:a1" ) );
 
   QModelIndex group2Index = model.index( 1, 0, providerIndex );
   QCOMPARE( model.rowCount( group2Index ), 1 );
@@ -195,7 +198,7 @@ void TestQgsProcessingModel::testModel()
   QModelIndex alg2Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
   QCOMPARE( model.data( alg2Index, Qt::ToolTipRole ).toString(), QStringLiteral( "a2" ) );
-  QCOMPARE( model.algorithmForIndex( alg2Index ), a2 );
+  QCOMPARE( model.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p3:a2" ) );
 
   // combined groups
   DummyAlgorithm *a3 = new DummyAlgorithm( "a3", "group1" );
@@ -205,8 +208,8 @@ void TestQgsProcessingModel::testModel()
   QModelIndex p4ProviderIndex = model.indexForProvider( p4 );
   QModelIndex groupIndex = model.index( 0, 0, p4ProviderIndex );
   QCOMPARE( model.rowCount( groupIndex ), 2 );
-  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a3 );
-  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, groupIndex ) ), a4 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p4:a3" ) );
+  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, groupIndex ) )->id(), QStringLiteral( "p4:a4" ) );
 
   // provider with algs with no groups
   DummyAlgorithm *a5 = new DummyAlgorithm( "a5", "group1" );
@@ -214,20 +217,74 @@ void TestQgsProcessingModel::testModel()
   DummyAlgorithm *a7 = new DummyAlgorithm( "a7", "group2" );
   DummyProvider *p5 = new DummyProvider( "p5", "provider5", QList< QgsProcessingAlgorithm * >() << a5 << a6 << a7 );
   registry.addProvider( p5 );
+  QCOMPARE( model.rowCount(), 5 );
   QModelIndex p5ProviderIndex = model.indexForProvider( p5 );
   QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
 
   groupIndex = model.index( 0, 0, p5ProviderIndex );
   QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model.rowCount( groupIndex ), 1 );
-  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a5 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p5:a5" ) );
 
-  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, p5ProviderIndex ) ), a6 );
+  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, p5ProviderIndex ) )->id(), QStringLiteral( "p5:a6" ) );
 
   groupIndex = model.index( 2, 0, p5ProviderIndex );
   QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model.rowCount( groupIndex ), 1 );
-  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) ), a7 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p5:a7" ) );
+
+  // reload provider
+  p5->refreshAlgorithms();
+  QCOMPARE( model.rowCount(), 5 );
+  p5ProviderIndex = model.indexForProvider( p5 );
+  QCOMPARE( model.rowCount( p5ProviderIndex ), 3 );
+
+  groupIndex = model.index( 0, 0, p5ProviderIndex );
+  QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
+  QCOMPARE( model.rowCount( groupIndex ), 1 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p5:a5" ) );
+  QCOMPARE( model.algorithmForIndex( model.index( 1, 0, p5ProviderIndex ) )->id(), QStringLiteral( "p5:a6" ) );
+  groupIndex = model.index( 2, 0, p5ProviderIndex );
+  QCOMPARE( model.data( groupIndex, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
+  QCOMPARE( model.rowCount( groupIndex ), 1 );
+  QCOMPARE( model.algorithmForIndex( model.index( 0, 0, groupIndex ) )->id(), QStringLiteral( "p5:a7" ) );
+
+  p3->refreshAlgorithms();
+  providerIndex = model.indexForProvider( p3 );
+  group1Index = model.index( 0, 0, providerIndex );
+  QCOMPARE( model.rowCount( group1Index ), 1 );
+  alg1Index = model.index( 0, 0, group1Index );
+  QCOMPARE( model.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p3:a1" ) );
+  group2Index = model.index( 1, 0, providerIndex );
+  QCOMPARE( model.rowCount( group2Index ), 1 );
+  alg2Index = model.index( 0, 0, group2Index );
+  QCOMPARE( model.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p3:a2" ) );
+
+  // remove a provider
+  registry.removeProvider( p1 );
+  QCOMPARE( model.rowCount(), 4 );
+  QVERIFY( model.index( 0, 0, QModelIndex() ).isValid() );
+  QCOMPARE( model.providerForIndex( model.index( 0, 0, QModelIndex() ) ), p2 );
+  //shhh - p1 is actually a dangling pointer here. That's fine for tests!
+  QVERIFY( !model.indexForProvider( p1 ).isValid() );
+  QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  registry.removeProvider( p5 );
+  QCOMPARE( model.rowCount(), 3 );
+  QVERIFY( !model.indexForProvider( p5 ).isValid() );
+  registry.removeProvider( p2 );
+  QCOMPARE( model.rowCount(), 2 );
+  QVERIFY( !model.indexForProvider( p2 ).isValid() );
+  registry.removeProvider( p3 );
+  QCOMPARE( model.rowCount(), 1 );
+  QVERIFY( !model.indexForProvider( p3 ).isValid() );
+  registry.removeProvider( p4 );
+  QCOMPARE( model.rowCount(), 0 );
+  QVERIFY( !model.indexForProvider( p4 ).isValid() );
+  QCOMPARE( model.columnCount(), 1 );
+  QVERIFY( !model.hasChildren() );
+  QVERIFY( !model.providerForIndex( model.index( 0, 0, QModelIndex() ) ) );
+  QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
+  QVERIFY( !model.indexForProvider( nullptr ).isValid() );
 
   // qgis native algorithms put groups at top level
   QgsProcessingRegistry registry2;
@@ -248,18 +305,12 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model2.data( group3Index, Qt::DisplayRole ).toString(), QStringLiteral( "group3" ) );
 
   QCOMPARE( model2.rowCount( group1Index ), 2 );
-  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group1Index ) ), qgisA1 );
-  QCOMPARE( model2.algorithmForIndex( model2.index( 1, 0, group1Index ) ), qgisA3 );
+  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group1Index ) )->id(), QStringLiteral( "qgis:a1" ) );
+  QCOMPARE( model2.algorithmForIndex( model2.index( 1, 0, group1Index ) )->id(), QStringLiteral( "qgis:a3" ) );
   QCOMPARE( model2.rowCount( group2Index ), 1 );
-  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group2Index ) ), qgisA2 );
+  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group2Index ) )->id(), QStringLiteral( "qgis:a2" ) );
   QCOMPARE( model2.rowCount( group3Index ), 1 );
-  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group3Index ) ), qgisA4 );
-
-  // remove a provider
-
-
-  // reload provider
-
+  QCOMPARE( model2.algorithmForIndex( model2.index( 0, 0, group3Index ) )->id(), QStringLiteral( "qgis:a4" ) );
 }
 
 void TestQgsProcessingModel::testProxyModel()
