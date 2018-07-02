@@ -195,7 +195,7 @@ defined.
 %End
 
   protected:
-    virtual bool loadParameter( const QPair<QString, QString> &item );
+    virtual bool loadParameter( const QString &name, const QString &value );
 
 
 };

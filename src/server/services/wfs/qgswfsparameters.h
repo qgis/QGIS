@@ -263,7 +263,7 @@ namespace QgsWfs
       QString geometryNameAsString() const;
 
     private:
-      bool loadParameter( const QPair<QString, QString> &parameter ) override;
+      bool loadParameter( const QString &name, const QString &key ) override;
       void save( const QgsWfsParameter &parameter );
 
       void log( const QString &msg ) const;

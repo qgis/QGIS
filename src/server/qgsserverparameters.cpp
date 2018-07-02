@@ -431,14 +431,14 @@ void QgsServerParameters::load( const QUrlQuery &query )
         mParameters[name].raiseError();
       }
     }
-    else if ( ! loadParameter( item ) )
+    else if ( ! loadParameter( item.first, item.second ) )
     {
       mUnmanagedParameters[item.first.toUpper()] = item.second;
     }
   }
 }
 
-bool QgsServerParameters::loadParameter( const QPair<QString, QString> & )
+bool QgsServerParameters::loadParameter( const QString &, const QString & )
 {
   return false;
 }

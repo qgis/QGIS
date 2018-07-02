@@ -991,7 +991,7 @@ namespace QgsWms
       QString layoutParameter( const QString &id, bool &ok ) const;
 
     private:
-      bool loadParameter( const QPair<QString, QString> &parameter ) override;
+      bool loadParameter( const QString &name, const QString &value ) override;
 
       void save( const QgsWmsParameter &parameter, bool multi = false );
 

@@ -179,7 +179,7 @@ class SERVER_EXPORT QgsServerParameters
     QString version() const;
 
   protected:
-    virtual bool loadParameter( const QPair<QString, QString> &item );
+    virtual bool loadParameter( const QString &name, const QString &value );
 
     QMap<QString, QString> mUnmanagedParameters;
 

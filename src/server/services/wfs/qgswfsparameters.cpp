@@ -173,15 +173,14 @@ namespace QgsWfs
     load( parameters.urlQuery() );
   }
 
-  bool QgsWfsParameters::loadParameter( const QPair<QString, QString> &parameter )
+  bool QgsWfsParameters::loadParameter( const QString &key, const QString &value )
   {
     bool loaded = false;
 
-    const QString key = parameter.first;
     const QgsWfsParameter::Name name = QgsWfsParameter::name( key );
     if ( name >= 0 )
     {
-      mWfsParameters[name].mValue = parameter.second;
+      mWfsParameters[name].mValue = value;
       if ( ! mWfsParameters[name].isValid() )
       {
         mWfsParameters[name].raiseError();

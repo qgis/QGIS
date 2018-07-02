@@ -472,11 +472,10 @@ namespace QgsWms
     load( parameters.urlQuery() );
   }
 
-  bool QgsWmsParameters::loadParameter( const QPair<QString, QString> &parameter )
+  bool QgsWmsParameters::loadParameter( const QString &key, const QString &value )
   {
     bool loaded = false;
 
-    const QString key = parameter.first;
     const QRegExp composerParamRegExp( QStringLiteral( "^MAP\\d+:" ) );
     if ( key.contains( composerParamRegExp ) )
     {
@@ -487,7 +486,7 @@ namespace QgsWms
       if ( name >= 0 )
       {
         QgsWmsParameter param = mWmsParameters[name];
-        param.mValue = parameter.second;
+        param.mValue = value;
         param.mId = mapId;
 
         if ( ! param.isValid() )
@@ -504,7 +503,7 @@ namespace QgsWms
       const QgsWmsParameter::Name name = QgsWmsParameter::name( key );
       if ( name >= 0 )
       {
-        mWmsParameters[name].mValue = parameter.second;
+        mWmsParameters[name].mValue = value;
         if ( ! mWmsParameters[name].isValid() )
         {
           mWmsParameters[name].raiseError();
@@ -519,7 +518,7 @@ namespace QgsWms
         {
           QString id = key.left( separator );
           QString param = key.right( key.length() - separator - 1 );
-          mExternalWMSParameters[id].insert( param, parameter.second );
+          mExternalWMSParameters[id].insert( param, value );
 
           loaded = true;
         }
