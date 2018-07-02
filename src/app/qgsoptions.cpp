@@ -903,7 +903,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mOffsetYSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetY" ), 0, QgsSettings::Gui ).toDouble() );
 
   //
-  // Locale settings
+  // Translation and locale settings
   //
   QString mySystemLocale = QLocale().name();
   lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
@@ -916,8 +916,24 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
     cboTranslation->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
-    cboGlobalLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
+
+  const QList<QLocale> allLocales = QLocale::matchingLocales(
+                                      QLocale::AnyLanguage,
+                                      QLocale::AnyScript,
+                                      QLocale::AnyCountry );
+
+  QSet<QString> addedLocales;
+  for ( const auto &l : allLocales )
+  {
+    // Do not add duplicates (like en_US)
+    if ( ! addedLocales.contains( l.name() ) )
+    {
+      cboGlobalLocale->addItem( QStringLiteral( "%1 %2 (%3)" ).arg( QLocale::languageToString( l.language() ), QLocale::countryToString( l.country() ), l.name() ), l.name() );
+      addedLocales.insert( l.name() );
+    }
+  }
+
   cboTranslation->setCurrentIndex( cboTranslation->findData( myUserLocale ) );
   cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( myGlobalLocale ) );
   bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
