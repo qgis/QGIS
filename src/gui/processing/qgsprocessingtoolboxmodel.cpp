@@ -160,7 +160,7 @@ QModelIndex QgsProcessingToolboxModel::node2index( QgsProcessingToolboxModelNode
 void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 {
   QgsProcessingToolboxModelNode *parentNode = nullptr;
-  if ( provider->id() != "qgis" && provider->id() != "native" && provider->id() != "3d" )
+  if ( !isTopLevelProvider( provider ) )
   {
     std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
     parentNode = node.get();
@@ -174,24 +174,38 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   const QList< const QgsProcessingAlgorithm * > algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    const QString groupId = algorithm->groupId();
-    QgsProcessingToolboxModelGroupNode *groupNode = parentNode->getChildGroupNode( groupId );
-    if ( !groupNode )
-    {
-      groupNode = new QgsProcessingToolboxModelGroupNode( algorithm->groupId(), algorithm->group() );
-      parentNode->addChildNode( groupNode );
-    }
-
     std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
-    groupNode->addChildNode( algorithmNode.release() );
+
+    const QString groupId = algorithm->groupId();
+    if ( !groupId.isEmpty() )
+    {
+      QgsProcessingToolboxModelGroupNode *groupNode = parentNode->getChildGroupNode( groupId );
+      if ( !groupNode )
+      {
+        groupNode = new QgsProcessingToolboxModelGroupNode( algorithm->groupId(), algorithm->group() );
+        parentNode->addChildNode( groupNode );
+      }
+      groupNode->addChildNode( algorithmNode.release() );
+    }
+    else
+    {
+      // "top level" algorithm - no group
+      parentNode->addChildNode( algorithmNode.release() );
+    }
   }
 }
 
+bool QgsProcessingToolboxModel::isTopLevelProvider( QgsProcessingProvider *provider )
+{
+  return provider->id() == QLatin1String( "qgis" ) ||
+         provider->id() == QLatin1String( "native" ) ||
+         provider->id() == QLatin1String( "3d" );
+}
 
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
-    return 0;
+    return nullptr;
 
   return QAbstractItemModel::flags( index );
 }
@@ -274,7 +288,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
         case 0:
         {
           if ( algorithm )
-            return algorithm->flags();
+            return static_cast< int >( algorithm->flags() );
           else
             return QVariant();
         }
