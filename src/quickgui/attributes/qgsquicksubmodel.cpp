@@ -124,7 +124,7 @@ void QgsQuickSubModel::setModel( QAbstractItemModel *model )
 
 void QgsQuickSubModel::onRowsAboutToBeInserted( const QModelIndex &parent, int first, int last )
 {
-  emit beginInsertRows( mapFromSource( parent ), first, last );
+  beginInsertRows( mapFromSource( parent ), first, last );
 }
 
 void QgsQuickSubModel::onRowsInserted( const QModelIndex &parent, int first, int last )
@@ -132,12 +132,12 @@ void QgsQuickSubModel::onRowsInserted( const QModelIndex &parent, int first, int
   Q_UNUSED( parent )
   Q_UNUSED( first )
   Q_UNUSED( last )
-  emit endInsertRows();
+  endInsertRows();
 }
 
 void QgsQuickSubModel::onRowsAboutToBeRemoved( const QModelIndex &parent, int first, int last )
 {
-  emit beginRemoveRows( mapFromSource( parent ), first, last );
+  beginRemoveRows( mapFromSource( parent ), first, last );
 }
 
 void QgsQuickSubModel::onRowsRemoved( const QModelIndex &parent, int first, int last )
@@ -145,7 +145,7 @@ void QgsQuickSubModel::onRowsRemoved( const QModelIndex &parent, int first, int 
   Q_UNUSED( parent )
   Q_UNUSED( first )
   Q_UNUSED( last )
-  emit endRemoveRows();
+  endRemoveRows();
 }
 
 void QgsQuickSubModel::onModelAboutToBeReset()
