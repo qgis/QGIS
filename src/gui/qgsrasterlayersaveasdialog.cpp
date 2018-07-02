@@ -133,8 +133,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   // don't restore nodata, it needs user input
   // pyramids are not necessarily built every time
 
-  mTilesGroupBox->hide();
-
   mCrsSelector->setLayerCrs( mLayerCrs );
   //default to layer CRS - see https://issues.qgis.org/issues/14209 for discussion
   mCrsSelector->setCrs( mLayerCrs );
@@ -163,14 +161,17 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
 
   if ( mTileModeCheckBox->isChecked() )
   {
+    mTilesGroupBox->show();
     mFilename->setStorageMode( QgsFileWidget::GetDirectory );
-    mFilename->setDialogTitle( tr( "Select output directory" ) );
+    mFilename->setDialogTitle( tr( "Select Output Directory" ) );
   }
   else
   {
+    mTilesGroupBox->hide();
     mFilename->setStorageMode( QgsFileWidget::SaveFile );
     mFilename->setDialogTitle( tr( "Save Layer As" ) );
   }
+
   mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
   connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
   {
@@ -711,7 +712,7 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
     // Show / hide tile options
     mTilesGroupBox->show();
     mFilename->setStorageMode( QgsFileWidget::GetDirectory );
-    mFilename->setDialogTitle( tr( "Select output directory" ) );
+    mFilename->setDialogTitle( tr( "Select Output Directory" ) );
   }
   else
   {
