@@ -223,6 +223,10 @@ of this model.
     {
       RoleNodeType,
       RoleAlgorithmFlags,
+      RoleAlgorithmId,
+      RoleAlgorithmName,
+      RoleAlgorithmShortDescription,
+      RoleAlgorithmTags,
     };
 
     QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0 );
@@ -359,6 +363,24 @@ Set ``filters`` that affect how toolbox content is filtered.
 Returns any filters that affect how toolbox content is filtered.
 
 .. seealso:: :py:func:`setFilters`
+%End
+
+    void setFilterString( const QString &filter );
+%Docstring
+Sets a ``filter`` string, such that only algorithms matching the
+specified string will be shown.
+
+Matches are performed using a variety of tests, including checking
+against the algorithm name, short description, tags, etc.
+
+.. seealso:: :py:func:`filterString`
+%End
+
+    QString filterString() const;
+%Docstring
+Returns the current filter string, if set.
+
+.. seealso:: :py:func:`setFilterString`
 %End
 
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;

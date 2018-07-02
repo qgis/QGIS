@@ -250,6 +250,10 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     {
       RoleNodeType = Qt::UserRole, //!< Corresponds to the node's type
       RoleAlgorithmFlags, //!< Returns the node's algorithm flags, for algorithm nodes
+      RoleAlgorithmId, //!< Algorithm ID, for algorithm nodes
+      RoleAlgorithmName, //!< Untranslated algorithm name, for algorithm nodes
+      RoleAlgorithmShortDescription, //!< Short algorithm description, for algorithm nodes
+      RoleAlgorithmTags, //!< List of algorithm tags, for algorithm nodes
     };
 
     /**
@@ -398,8 +402,23 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      */
     Filters filters() const { return mFilters; }
 
-
+    /**
+     * Sets a \a filter string, such that only algorithms matching the
+     * specified string will be shown.
+     *
+     * Matches are performed using a variety of tests, including checking
+     * against the algorithm name, short description, tags, etc.
+     *
+     * \see filterString()
+    */
     void setFilterString( const QString &filter );
+
+    /**
+     * Returns the current filter string, if set.
+     *
+     * \see setFilterString()
+     */
+    QString filterString() const { return mFilterString; }
 
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
