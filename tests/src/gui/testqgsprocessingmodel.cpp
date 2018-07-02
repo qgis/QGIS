@@ -191,7 +191,7 @@ void TestQgsProcessingModel::testModel()
   QModelIndex alg1Index = model.index( 0, 0, group1Index );
   QVERIFY( !model.providerForIndex( alg1Index ) );
   QCOMPARE( model.data( alg1Index, Qt::DisplayRole ).toString(), QStringLiteral( "a1" ) );
-  QCOMPARE( model.data( alg1Index, Qt::ToolTipRole ).toString(), QStringLiteral( "a1" ) );
+  QCOMPARE( model.data( alg1Index, Qt::ToolTipRole ).toString(), QStringLiteral( "<p><b>a1</b></p><p>Algorithm ID: \u2018<i>p3:a1</i>\u2019</p>" ) );
   QCOMPARE( model.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p3:a1" ) );
 
   QModelIndex group2Index = model.index( 1, 0, providerIndex );
@@ -199,7 +199,7 @@ void TestQgsProcessingModel::testModel()
   QVERIFY( model.hasChildren( group2Index ) );
   QModelIndex alg2Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.data( alg2Index, Qt::DisplayRole ).toString(), QStringLiteral( "a2" ) );
-  QCOMPARE( model.data( alg2Index, Qt::ToolTipRole ).toString(), QStringLiteral( "a2" ) );
+  QCOMPARE( model.data( alg2Index, Qt::ToolTipRole ).toString(), QStringLiteral( "<p><b>a2</b></p><p>Algorithm ID: \u2018<i>p3:a2</i>\u2019</p>" ) );
   QCOMPARE( model.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p3:a2" ) );
 
   // combined groups

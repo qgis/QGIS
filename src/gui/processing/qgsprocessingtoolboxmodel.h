@@ -312,6 +312,11 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      */
     static bool isTopLevelProvider( QgsProcessingProvider *provider );
 
+    /**
+     * Returns a formatted tooltip for an \a algorithm.
+     */
+    static QString toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm );
+
 };
 
 
