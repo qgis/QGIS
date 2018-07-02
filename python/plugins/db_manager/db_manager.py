@@ -56,6 +56,8 @@ class DBManager(QMainWindow):
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
         self.toolBar.setIconSize(self.iface.iconSize())
+        self.toolBarOrientation()
+        self.toolBar.orientationChanged.connect(self.toolBarOrientation)
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
         self.tree.model().dataChanged.connect(self.iface.reloadConnections)
@@ -356,6 +358,16 @@ class DBManager(QMainWindow):
             self.tabs.removeTab(index)
             widget.deleteLater()
 
+    def toolBarOrientation(self):
+        button_style = Qt.ToolButtonIconOnly
+        if self.toolBar.orientation() == Qt.Horizontal:
+            button_style = Qt.ToolButtonTextBesideIcon
+
+        widget = self.toolBar.widgetForAction(self.actionImport)
+        widget.setToolButtonStyle(button_style)
+        widget = self.toolBar.widgetForAction(self.actionExport)
+        widget.setToolButtonStyle(button_style)
+
     def setupUi(self):
         self.setWindowTitle(self.tr("DB Manager"))
         self.setWindowIcon(QIcon(":/db_manager/icon"))
@@ -466,8 +478,3 @@ class DBManager(QMainWindow):
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionImport)
         self.toolBar.addAction(self.actionExport)
-
-        widget = self.toolBar.widgetForAction(self.actionImport)
-        widget.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        widget = self.toolBar.widgetForAction(self.actionExport)
-        widget.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
