@@ -198,6 +198,7 @@ SET(QGIS_GUI_SRCS
   processing/qgsprocessingconfigurationwidgets.cpp
   processing/qgsprocessingguiregistry.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
+  processing/qgsprocessingtoolboxmodel.cpp
 
   qgisinterface.cpp
   qgsactionmenu.cpp
@@ -719,6 +720,7 @@ SET(QGIS_GUI_MOC_HDRS
   processing/qgsprocessingalgorithmdialogbase.h
   processing/qgsprocessingconfigurationwidgets.h
   processing/qgsprocessingrecentalgorithmlog.h
+  processing/qgsprocessingtoolboxmodel.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
