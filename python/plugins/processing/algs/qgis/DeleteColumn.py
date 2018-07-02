@@ -25,6 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import QCoreApplication
+
 from qgis.core import (QgsProcessingParameterField,
                        QgsProcessing,
                        QgsProcessingFeatureSource)
@@ -74,7 +76,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
             for f in self.fields_to_delete:
                 index = source.fields().lookupField(f)
                 if index < 0:
-                    feedback.pushInfo(self.tr('Field “{}” does not exist in input layer').format(f))
+                    feedback.pushInfo(QCoreApplication.translate('DeleteColumn', 'Field “{}” does not exist in input layer').format(f))
 
         return super().prepareAlgorithm(parameters, context, feedback)
 
