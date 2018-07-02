@@ -118,7 +118,7 @@ if [ $action = push ]; then
 	tx pull -s -l none
 	if ! [ -f "i18n/qgis_en.ts" ]; then
 		echo Download of source translation failed
-		exit
+		exit 1
 	fi
 elif [ $action = pull ]; then
 	rm i18n/qgis_*.ts
@@ -176,7 +176,16 @@ perl -i.bak -ne 'print unless /^\s+<location.*qgs(expression|contexthelp)_texts\
 
 if [ $action = push ]; then
 	echo Pushing translation...
-	tx push -s
+	fail=1
+	for i in $(seq 10); do
+		tx push -s && fail=0 && break
+		echo Retrying...
+		sleep 10
+	done
+	if (( fail )); then
+		echo "Could not push translations"
+		exit 1
+	fi
 else
 	echo Updating TRANSLATORS File
 	./scripts/tsstat.pl >doc/TRANSLATORS
