@@ -109,6 +109,7 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   rebuild();
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::providerAdded );
+  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
 }
 
 void QgsProcessingToolboxModel::rebuild()
@@ -159,6 +160,8 @@ QModelIndex QgsProcessingToolboxModel::node2index( QgsProcessingToolboxModelNode
 
 void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 {
+  connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, &QgsProcessingToolboxModel::rebuild, Qt::UniqueConnection );
+
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider ) )
   {
