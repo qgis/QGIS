@@ -1031,6 +1031,20 @@ namespace QgsWms
     return settings;
   }
 
+  QString QgsWmsParameters::layoutParameter( const QString &id, bool &ok ) const
+  {
+    QString label;
+    ok = false;
+
+    if ( mUnmanagedParameters.contains( id.toUpper() ) )
+    {
+      label = mUnmanagedParameters[id.toUpper()];
+      ok = true;
+    }
+
+    return label;
+  }
+
   QStringList QgsWmsParameters::highlightLabelString() const
   {
     return mWmsParameters[ QgsWmsParameter::HIGHLIGHT_LABELSTRING ].toStringList( ';' );

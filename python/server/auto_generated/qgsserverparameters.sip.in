@@ -197,6 +197,7 @@ defined.
   protected:
     virtual bool loadParameter( const QPair<QString, QString> &item );
 
+
 };
 
 /************************************************************************

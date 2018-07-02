@@ -973,6 +973,8 @@ namespace QgsWms
 
       QString wmtver() const;
 
+      QString layoutParameter( const QString &id, bool &ok ) const;
+
     private:
       bool loadParameter( const QPair<QString, QString> &parameter ) override;
 

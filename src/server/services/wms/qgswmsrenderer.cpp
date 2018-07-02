@@ -525,11 +525,13 @@ namespace QgsWms
     c->layoutItems<QgsLayoutItemLabel>( labels );
     for ( const auto &label : qgis::as_const( labels ) )
     {
-      QString labelId = label->id().toUpper();
-      if ( !mParameters.contains( labelId ) )
+      bool ok = false;
+      const QString labelId = label->id();
+      const QString labelParam = mWmsParameters.layoutParameter( labelId, ok );
+
+      if ( !ok )
         continue;
 
-      QString labelParam = mParameters[ labelId ];
       if ( labelParam.isEmpty() )
       {
         //remove exported labels referenced in the request
@@ -549,15 +551,18 @@ namespace QgsWms
     {
       if ( html->frameCount() == 0 )
         continue;
+
       QgsLayoutFrame *htmlFrame = html->frame( 0 );
-      QString htmlId = htmlFrame->id().toUpper();
-      if ( !mParameters.contains( htmlId ) )
+      bool ok = false;
+      const QString htmlId = htmlFrame->id();
+      const QString url = mWmsParameters.layoutParameter( htmlId, ok );
+
+      if ( !ok )
       {
         html->update();
         continue;
       }
 
-      QString url = mParameters[ htmlId ];
       //remove exported Htmls referenced in the request
       //but with empty string
       if ( url.isEmpty() )

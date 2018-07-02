@@ -181,12 +181,13 @@ class SERVER_EXPORT QgsServerParameters
   protected:
     virtual bool loadParameter( const QPair<QString, QString> &item );
 
+    QMap<QString, QString> mUnmanagedParameters;
+
   private:
     void save( const QgsServerParameter &parameter );
     QVariant value( QgsServerParameter::Name name ) const;
 
     QMap<QgsServerParameter::Name, QgsServerParameter> mParameters;
-    QMap<QString, QString> mUnmanagedParameters;
 };
 
 #endif
