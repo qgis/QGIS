@@ -351,6 +351,70 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
+    case RoleAlgorithmId:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( algorithm )
+            return algorithm->id();
+          else
+            return QVariant();
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
+    case RoleAlgorithmName:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( algorithm )
+            return algorithm->name();
+          else
+            return QVariant();
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
+    case RoleAlgorithmTags:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( algorithm )
+            return algorithm->tags();
+          else
+            return QVariant();
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
+    case RoleAlgorithmShortDescription:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( algorithm )
+            return algorithm->shortDescription();
+          else
+            return QVariant();
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
     default:
       return QVariant();
   }
@@ -499,6 +563,48 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
+    if ( !mFilterString.trimmed().isEmpty() )
+    {
+      const QString algId = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmId ).toString();
+      const QString algName = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmName ).toString();
+      const QStringList algTags = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmTags ).toStringList();
+      const QString shortDesc = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmShortDescription ).toString();
+
+      QStringList parentText;
+      QModelIndex parent = sourceIndex.parent();
+      while ( parent.isValid() )
+      {
+        const QStringList parentParts = sourceModel()->data( parent, Qt::DisplayRole ).toString().split( ' ' );
+        if ( !parentParts.empty() )
+          parentText.append( parentParts );
+        parent = parent.parent();
+      }
+
+      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
+
+      QStringList partsToSearch = sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
+      partsToSearch << algId << algName;
+      partsToSearch.append( algTags );
+      if ( !shortDesc.isEmpty() )
+        partsToSearch.append( shortDesc.split( ' ' ) );
+      partsToSearch.append( parentText );
+
+      for ( const QString &part : partsToMatch )
+      {
+        bool found = false;
+        for ( const QString &partToSearch : qgis::as_const( partsToSearch ) )
+        {
+          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false; // couldn't find a match for this word, so hide algorithm
+      }
+    }
+
     if ( mFilters & FilterModeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;
