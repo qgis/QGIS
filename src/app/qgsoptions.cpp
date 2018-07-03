@@ -1104,16 +1104,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
-    mGPUInfoTextBrowser->setText( QStringLiteral( "An OpenCL compatible device was not found on your system.<br>"
-                                  "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                  "Please check your logs for further details." ) );
+    mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
+                                      "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                      "Please check your logs for further details." ) );
   }
 
 
 #else
 
-  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( QStringLiteral( "GPU" ), Qt::MatchExactly ).first() );
-  mOptionsStackedWidget->removeWidget( mOptionsPageGPU );
+  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( tr( "Acceleration" ), Qt::MatchExactly ).first() );
+  mOptionsStackedWidget->removeWidget( mOptionsPageAcceleration );
 
 
 #endif
