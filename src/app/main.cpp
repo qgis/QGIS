@@ -1193,7 +1193,7 @@ int main( int argc, char *argv[] )
   QLocale currentLocale;
   if ( myShowGroupSeparatorFlag )
   {
-    currentLocale.setNumberOptions( currentLocale.numberOptions() &= !QLocale::NumberOption::OmitGroupSeparator );
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   }
   else
   {

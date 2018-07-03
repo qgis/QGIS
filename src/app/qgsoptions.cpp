@@ -96,7 +96,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mCustomVariablesChkBx, &QCheckBox::toggled, this, &QgsOptions::mCustomVariablesChkBx_toggled );
   connect( mCurrentVariablesQGISChxBx, &QCheckBox::toggled, this, &QgsOptions::mCurrentVariablesQGISChxBx_toggled );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOptions::showHelp );
-  connect( cboGlobalLocale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), [ = ]( int ) { updateSampleLocaleText( ); } );
+  connect( cboGlobalLocale, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), [ = ]( int ) { updateSampleLocaleText( ); } );
   connect( cbShowGroupSeparator, &QCheckBox::toggled, this, [ = ]( bool ) { updateSampleLocaleText(); } );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
@@ -674,30 +674,30 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mRasterCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * mSettings->value( QStringLiteral( "/Raster/cumulativeCutUpper" ), QString::number( QgsRasterMinMaxOrigin::CUMULATIVE_CUT_UPPER ) ).toDouble() );
 
   //set the color for selections
-  int myRed = mSettings->value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
-  int myGreen = mSettings->value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
-  int myBlue = mSettings->value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
-  int myAlpha = mSettings->value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
-  pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  int red = mSettings->value( QStringLiteral( "/qgis/default_selection_color_red" ), 255 ).toInt();
+  int green = mSettings->value( QStringLiteral( "/qgis/default_selection_color_green" ), 255 ).toInt();
+  int blue = mSettings->value( QStringLiteral( "/qgis/default_selection_color_blue" ), 0 ).toInt();
+  int alpha = mSettings->value( QStringLiteral( "/qgis/default_selection_color_alpha" ), 255 ).toInt();
+  pbnSelectionColor->setColor( QColor( red, green, blue, alpha ) );
   pbnSelectionColor->setColorDialogTitle( tr( "Set Selection Color" ) );
   pbnSelectionColor->setAllowOpacity( true );
   pbnSelectionColor->setContext( QStringLiteral( "gui" ) );
   pbnSelectionColor->setDefaultColor( QColor( 255, 255, 0, 255 ) );
 
   //set the default color for canvas background
-  myRed = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
-  myGreen = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
-  myBlue = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
-  pbnCanvasColor->setColor( QColor( myRed, myGreen, myBlue ) );
+  red = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_red" ), 255 ).toInt();
+  green = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_green" ), 255 ).toInt();
+  blue = mSettings->value( QStringLiteral( "/qgis/default_canvas_color_blue" ), 255 ).toInt();
+  pbnCanvasColor->setColor( QColor( red, green, blue ) );
   pbnCanvasColor->setColorDialogTitle( tr( "Set Canvas Color" ) );
   pbnCanvasColor->setContext( QStringLiteral( "gui" ) );
   pbnCanvasColor->setDefaultColor( Qt::white );
 
   // set the default color for the measure tool
-  myRed = mSettings->value( QStringLiteral( "/qgis/default_measure_color_red" ), 222 ).toInt();
-  myGreen = mSettings->value( QStringLiteral( "/qgis/default_measure_color_green" ), 155 ).toInt();
-  myBlue = mSettings->value( QStringLiteral( "/qgis/default_measure_color_blue" ), 67 ).toInt();
-  pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
+  red = mSettings->value( QStringLiteral( "/qgis/default_measure_color_red" ), 222 ).toInt();
+  green = mSettings->value( QStringLiteral( "/qgis/default_measure_color_green" ), 155 ).toInt();
+  blue = mSettings->value( QStringLiteral( "/qgis/default_measure_color_blue" ), 67 ).toInt();
+  pbnMeasureColor->setColor( QColor( red, green, blue ) );
   pbnMeasureColor->setColorDialogTitle( tr( "Set Measuring Tool Color" ) );
   pbnMeasureColor->setContext( QStringLiteral( "gui" ) );
   pbnMeasureColor->setDefaultColor( QColor( 222, 155, 67 ) );
@@ -905,13 +905,13 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //
   // Translation and locale settings
   //
-  QString mySystemLocale = QLocale().name();
-  lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( mySystemLocale ) );
-  QString myUserLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+  QString systemLocale = QLocale().name();
+  lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( systemLocale ) );
+  QString userLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
   bool showGroupSeparator = mSettings->value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
-  QString myGlobalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), QString() ).toString();
-  QStringList myI18nList = i18nList();
-  Q_FOREACH ( const QString &l, myI18nList )
+  QString globalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), QLocale().name() ).toString();
+  const QStringList curentI18nList( i18nList() );
+  for ( const auto &l : curentI18nList )
   {
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
@@ -934,29 +934,29 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     }
   }
 
-  cboTranslation->setCurrentIndex( cboTranslation->findData( myUserLocale ) );
-  cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( myGlobalLocale ) );
-  bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
-  grpLocale->setChecked( myLocaleOverrideFlag );
+  cboTranslation->setCurrentIndex( cboTranslation->findData( userLocale ) );
+  cboGlobalLocale->setCurrentIndex( cboGlobalLocale->findData( globalLocale ) );
+  bool localeOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+  grpLocale->setChecked( localeOverrideFlag );
   cbShowGroupSeparator->setChecked( showGroupSeparator );
 
 
   //set elements in digitizing tab
   mLineWidthSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/line_width" ), 1 ).toInt() );
-  myRed = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt();
-  myGreen = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt();
-  myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
-  myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
-  mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  red = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_red" ), 255 ).toInt();
+  green = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_green" ), 0 ).toInt();
+  blue = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_blue" ), 0 ).toInt();
+  alpha = mSettings->value( QStringLiteral( "/qgis/digitizing/line_color_alpha" ), 200 ).toInt();
+  mLineColorToolButton->setColor( QColor( red, green, blue, alpha ) );
   mLineColorToolButton->setAllowOpacity( true );
   mLineColorToolButton->setContext( QStringLiteral( "gui" ) );
   mLineColorToolButton->setDefaultColor( QColor( 255, 0, 0, 200 ) );
 
-  myRed = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt();
-  myGreen = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt();
-  myBlue = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt();
-  myAlpha = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt();
-  mFillColorToolButton->setColor( QColor( myRed, myGreen, myBlue, myAlpha ) );
+  red = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_red" ), 255 ).toInt();
+  green = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_green" ), 0 ).toInt();
+  blue = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_blue" ), 0 ).toInt();
+  alpha = mSettings->value( QStringLiteral( "/qgis/digitizing/fill_color_alpha" ), 30 ).toInt();
+  mFillColorToolButton->setColor( QColor( red, green, blue, alpha ) );
   mFillColorToolButton->setAllowOpacity( true );
   mFillColorToolButton->setContext( QStringLiteral( "gui" ) );
   mFillColorToolButton->setDefaultColor( QColor( 255, 0, 0, 30 ) );
@@ -2388,7 +2388,7 @@ void QgsOptions::updateSampleLocaleText()
   QLocale locale( cboGlobalLocale->currentData( ).toString() );
   if ( cbShowGroupSeparator->isChecked( ) )
   {
-    locale.setNumberOptions( locale.numberOptions() &= ! QLocale::NumberOption::OmitGroupSeparator );
+    locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
   }
   else
   {
