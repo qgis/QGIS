@@ -156,7 +156,19 @@ Sets the destination coordinate reference system.
 Sets the ``context`` in which the coordinate transform should be
 calculated.
 
+.. seealso:: :py:func:`context`
+
 .. versionadded:: 3.0
+%End
+
+    QgsCoordinateTransformContext context() const;
+%Docstring
+Returns the context in which the coordinate transform will be
+calculated.
+
+.. seealso:: :py:func:`setContext`
+
+.. versionadded:: 3.4
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
