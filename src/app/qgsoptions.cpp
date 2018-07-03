@@ -905,11 +905,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //
   // Translation and locale settings
   //
-  QString systemLocale = QLocale().name();
-  lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( systemLocale ) );
-  QString userLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+  QString currentLocale = QLocale().name();
+  lblSystemLocale->setText( tr( "Detected active locale on your system: %1" ).arg( currentLocale ) );
+  QString userLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString( ) ).toString();
   bool showGroupSeparator = mSettings->value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
-  QString globalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), QLocale().name() ).toString();
+  QString globalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), currentLocale ).toString();
   const QStringList curentI18nList( i18nList() );
   for ( const auto &l : curentI18nList )
   {
