@@ -479,7 +479,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
         # check new values
         self.assertTrue(vl.getFeatures('id=1').nextFeature(f))
-        self.assertEqual(f.attributes(), [1, 1, NULL])
+        self.assertEqual(f.attributes(), [1, 1, 0])
 
     def testTransactionTuple(self):
         # create a vector layer based on postgres
