@@ -191,7 +191,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 {
   if ( context.feature() )
   {
-    QgsExpressionContext &expressionContext = context.renderContext().expressionContext();
+    QgsRenderContext renderContext = context.renderContext();
+    QgsExpressionContext &expressionContext = renderContext.expressionContext();
 
     QgsFeature f = expressionContext.feature();
     QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
@@ -201,7 +202,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context )
 
     subSymbolExpressionContextScope->setFeature( f );
 
-    mSymbol->renderFeature( f, context.renderContext(), -1, context.selected() );
+    mSymbol->renderFeature( f, renderContext, -1, context.selected() );
   }
 }
 
