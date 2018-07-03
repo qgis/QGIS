@@ -688,6 +688,27 @@ class ExpressionContextScopePopper
 
     QgsExpressionContext *context = nullptr;
 };
+
+/**
+ * RAII class to restore original geometry on a render context on destruction
+ */
+class GeometryRestorer
+{
+  public:
+    GeometryRestorer( QgsRenderContext &context )
+      : mContext( context ),
+        mGeometry( context.geometry() )
+    {}
+
+    ~GeometryRestorer()
+    {
+      mContext.setGeometry( mGeometry );
+    }
+
+  private:
+    QgsRenderContext &mContext;
+    const QgsAbstractGeometry *mGeometry;
+};
 ///@endcond PRIVATE
 
 void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker, int currentVertexMarkerType, int currentVertexMarkerSize )
@@ -698,6 +719,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
     return;
   }
 
+  GeometryRestorer geomRestorer( context );
   QgsGeometry segmentizedGeometry = geom;
   bool usingSegmentizedGeometry = false;
   context.setGeometry( geom.constGet() );
