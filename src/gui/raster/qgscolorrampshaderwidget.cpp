@@ -90,6 +90,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mClassifyButton, &QPushButton::clicked, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( btnColorRamp, &QgsColorRampButton::colorRampChanged, this, &QgsColorRampShaderWidget::applyColorRamp );
   connect( mNumberOfEntriesSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsColorRampShaderWidget::classify );
+  connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
 }
 
 void QgsColorRampShaderWidget::initForUseWithRasterLayer()
@@ -99,13 +100,22 @@ void QgsColorRampShaderWidget::initForUseWithRasterLayer()
   mLoadFromBandButton->setVisible( bool( mRasterDataProvider ) ); // only for raster version
 }
 
-void QgsColorRampShaderWidget::setRasterBand( QgsRasterDataProvider *dp,
-    int band,
-    const QgsRectangle &extent )
+void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp )
 {
   mRasterDataProvider = dp;
+  loadMinMaxFromTree();
+}
+
+void QgsColorRampShaderWidget::setRasterBand( int band )
+{
   mBand = band;
+  loadMinMaxFromTree();
+}
+
+void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
+{
   mExtent = extent;
+  loadMinMaxFromTree();
 }
 
 QgsColorRampShader QgsColorRampShaderWidget::shader() const
@@ -682,9 +692,7 @@ void QgsColorRampShaderWidget::setMinMaxAndClassify( double min, double max )
 {
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {
-    mMin = min;
-    mMax = max;
-
+    setMinMax( min, max );
     classify();
   }
 }
@@ -695,6 +703,18 @@ void QgsColorRampShaderWidget::setMinMax( double min, double max )
   mMax = max;
   resetClassifyButton();
 }
+
+double QgsColorRampShaderWidget::min() const
+{
+  return mMin;
+}
+
+double QgsColorRampShaderWidget::max() const
+{
+  return mMax;
+}
+
+
 
 void QgsColorRampShaderWidget::loadMinMaxFromTree()
 {

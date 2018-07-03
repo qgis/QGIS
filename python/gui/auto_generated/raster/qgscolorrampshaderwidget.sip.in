@@ -37,9 +37,19 @@ Creates new color ramp shader widget
 Allows quantile classification mode for raster layers
 %End
 
-    void setRasterBand( QgsRasterDataProvider *dp, int band, const QgsRectangle &extent );
+    void setRasterDataProvider( QgsRasterDataProvider *dp );
 %Docstring
-Associates raster with the widget
+Associates raster with the widget, only when used for raster layer
+%End
+
+    void setRasterBand( int band );
+%Docstring
+Sets raster band, only when used for raster layer
+%End
+
+    void setExtent( const QgsRectangle &extent );
+%Docstring
+Sets extent, only when used for raster layer
 %End
 
     void setMinMaxAndClassify( double min, double max );
@@ -50,6 +60,16 @@ Sets min max and classify color tree
     void setMinMax( double min, double max );
 %Docstring
 Sets min max
+%End
+
+    double min() const;
+%Docstring
+Gets min value
+%End
+
+    double max() const;
+%Docstring
+Gets max value
 %End
 
     QgsColorRampShader shader() const;
