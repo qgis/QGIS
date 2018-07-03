@@ -175,9 +175,18 @@ class CORE_EXPORT QgsCoordinateTransform
     /**
      * Sets the \a context in which the coordinate transform should be
      * calculated.
+     * \see context()
      * \since QGIS 3.0
      */
     void setContext( const QgsCoordinateTransformContext &context );
+
+    /**
+     * Returns the context in which the coordinate transform will be
+     * calculated.
+     * \see setContext()
+     * \since QGIS 3.4
+     */
+    QgsCoordinateTransformContext context() const;
 
     /**
      * Returns the source coordinate reference system, which the transform will

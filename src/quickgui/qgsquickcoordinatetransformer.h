@@ -108,7 +108,6 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
     QgsPoint mProjectedPosition;
     QgsPoint mSourcePosition;
     QgsCoordinateTransform mCoordinateTransform;
-    QgsCoordinateTransformContext mTransformContext;
 };
 
 #endif // QGSQUICKCOORDINATETRANSFORMER_H

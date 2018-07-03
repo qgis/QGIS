@@ -185,6 +185,11 @@ void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &co
   }
 }
 
+QgsCoordinateTransformContext QgsCoordinateTransform::context() const
+{
+  return mContext;
+}
+
 QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
 {
   return d->mSourceCRS;
