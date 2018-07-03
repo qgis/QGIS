@@ -287,6 +287,18 @@
             <normaloff>:/images/themes/default/mIconWarning.svg</normaloff>:/images/themes/default/mIconWarning.svg</iconset>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>GPU</string>
+          </property>
+          <property name="toolTip">
+           <string>Configure GPU for processing algorithms</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconGPU.svg</normaloff>:/images/themes/default/mIconGPU.svg</iconset>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -320,7 +332,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>16</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1070,7 +1082,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>544</width>
+                <width>843</width>
                 <height>1094</height>
                </rect>
               </property>
@@ -5304,6 +5316,47 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
               </item>
              </layout>
             </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsPageGPU">
+          <layout class="QVBoxLayout" name="verticalLayout_29">
+           <item>
+            <widget class="QLabel" name="label_53">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some of the internal C++ processing core algorithms can take advantage of an OpenCL compatible GPU to increase the performances.&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;QGIS support is highly experimental and can crash QGIS because of bugs in the underlying libraries, enable at your own risk!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="mGPUInfoLabel">
+             <property name="text">
+              <string>Placemark for OpenCL information results (mGPUInfoLabel)</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mGPUEnableCheckBox">
+             <property name="text">
+              <string>Enable OpenCL GPU acceleration</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

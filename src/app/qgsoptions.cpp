@@ -51,6 +51,10 @@
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
 
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QColorDialog>
@@ -1075,6 +1079,43 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mAdditionalOptionWidgets << page;
     mOptionsStackedWidget->addWidget( page );
   }
+
+#ifdef HAVE_OPENCL
+
+  // Setup OpenCL (GPU) widget
+  mGPUEnableCheckBox->setChecked( QgsOpenClUtils::enabled( ) );
+  if ( QgsOpenClUtils::available( ) )
+  {
+    mGPUEnableCheckBox->setEnabled( true );
+    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU found on your system:<br>"
+                                            "Name: <b>%1</b><br>"
+                                            "Vendor: <b>%2</b><br>"
+                                            "Profile: <b>%3</b><br>"
+                                            "Version: <b>%4</b><br>"
+                                          ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ) )
+                          );
+    connect( mGPUEnableCheckBox, &QCheckBox::toggled, this, []( bool status )
+    {
+      QgsOpenClUtils::setEnabled( status );
+    }, Qt::UniqueConnection );
+  }
+  else
+  {
+    mGPUEnableCheckBox->setEnabled( false );
+    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system. You may need to install additional libraries in order to enable OpenCL." ) );
+  }
+
+
+#else
+
+  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( QStringLiteral( "GPU" ), Qt::MatchExactly ).first() );
+  mOptionsStackedWidget->removeWidget( mOptionsPageGPU );
+
+
+#endif
 
   connect( pbnEditCreateOptions, &QAbstractButton::pressed, this, &QgsOptions::editCreateOptions );
   connect( pbnEditPyramidsOptions, &QAbstractButton::pressed, this, &QgsOptions::editPyramidsOptions );

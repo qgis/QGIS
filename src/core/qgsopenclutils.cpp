@@ -114,10 +114,30 @@ void QgsOpenClUtils::setSourcePath( const QString &value )
   sSourcePath = value;
 }
 
+QString QgsOpenClUtils::deviceInfo( const Info infoType )
+{
+  if ( available( ) )
+  {
+    switch ( infoType )
+    {
+      case Info::Vendor:
+        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_VENDOR>() );
+      case Info::Profile:
+        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_PROFILE>() );
+      case Info::Version:
+        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_VERSION>() );
+      case Info::Name:
+      default:
+        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_NAME>() );
+    }
+  }
+  return QString();
+}
+
 
 bool QgsOpenClUtils::enabled()
 {
-  return QgsSettings().value( SETTINGS_KEY, true, QgsSettings::Section::Core ).toBool();
+  return QgsSettings().value( SETTINGS_KEY, false, QgsSettings::Section::Core ).toBool();
 }
 
 bool QgsOpenClUtils::available()

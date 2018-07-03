@@ -23,7 +23,6 @@
 #define CL_HPP_TARGET_OPENCL_VERSION 110
 #include <CL/cl2.hpp>
 
-
 #include "qgis_core.h"
 #include "qgis.h"
 
@@ -51,6 +50,14 @@ class CORE_EXPORT QgsOpenClUtils
       Throw   // Write errors in the message log and re-throw exceptions
     };
 
+    enum Info
+    {
+      Name = CL_DEVICE_NAME,
+      Vendor = CL_DEVICE_VENDOR,
+      Version = CL_DEVICE_VERSION,
+      Profile = CL_DEVICE_PROFILE
+    };
+
     static bool enabled();
     static bool available();
     static void setEnabled( bool enabled );
@@ -63,6 +70,7 @@ class CORE_EXPORT QgsOpenClUtils
     static cl::Context context();
     static QString sourcePath();
     static void setSourcePath( const QString &value );
+    static QString deviceInfo( const Info infoType = Info::Name );
 
     /**
      * Tiny smart-pointer-like wrapper around CPLMalloc and CPLFree: this is needed because
