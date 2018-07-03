@@ -1142,8 +1142,17 @@ int main( int argc, char *argv[] )
   /* Translation file for QGIS.
    */
   QString i18nPath = QgsApplication::i18nPath();
-  QString myUserLocale = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
+  QString myUserTranslation = mySettings.value( QStringLiteral( "locale/userLocale" ), "" ).toString();
+  QString myGlobalLocale = mySettings.value( QStringLiteral( "locale/globalLocale" ), "" ).toString();
+  bool myShowGroupSeparatorFlag = false; // Default to false
   bool myLocaleOverrideFlag = mySettings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
+
+  // Override Show Group Separator if the global override flag is set
+  if ( myLocaleOverrideFlag )
+  {
+    // Default to false again
+    myShowGroupSeparatorFlag = mySettings.value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
+  }
 
   //
   // Priority of translation is:
@@ -1160,7 +1169,7 @@ int main( int argc, char *argv[] )
   }
   else
   {
-    if ( !myLocaleOverrideFlag || myUserLocale.isEmpty() )
+    if ( !myLocaleOverrideFlag || myUserTranslation.isEmpty() )
     {
       myTranslationCode = QLocale().name();
       //setting the locale/userLocale when the --lang= option is not set will allow third party
@@ -1169,9 +1178,29 @@ int main( int argc, char *argv[] )
     }
     else
     {
-      myTranslationCode = myUserLocale;
+      myTranslationCode = myUserTranslation;
     }
   }
+
+  // Global locale settings
+  if ( myLocaleOverrideFlag && ! myGlobalLocale.isEmpty( ) )
+  {
+    QLocale currentLocale( myGlobalLocale );
+    QLocale::setDefault( currentLocale );
+  }
+
+  // Number settings
+  QLocale currentLocale;
+  if ( myShowGroupSeparatorFlag )
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  }
+  else
+  {
+    currentLocale.setNumberOptions( currentLocale.numberOptions() |= QLocale::NumberOption::OmitGroupSeparator );
+  }
+  QLocale::setDefault( currentLocale );
+
 
   QTranslator qgistor( nullptr );
   QTranslator qttor( nullptr );
