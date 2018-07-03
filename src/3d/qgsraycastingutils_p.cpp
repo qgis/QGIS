@@ -238,7 +238,7 @@ namespace QgsRayCastingUtils
   bool rayPlaneIntersection( const Ray3D &r, const Plane3D &plane, QVector3D &pt )
   {
     float denom = QVector3D::dotProduct( plane.normal, r.direction() );
-    if ( abs( denom ) > 0.0001f ) // your favorite epsilon
+    if ( std::abs( denom ) > 0.0001f ) // your favorite epsilon
     {
       float t = QVector3D::dotProduct( plane.center - r.origin(), plane.normal ) / denom;
       if ( t >= 0 )
