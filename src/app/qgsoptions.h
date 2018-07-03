@@ -255,6 +255,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void refreshSchemeComboBox();
 
+    void updateSampleLocaleText();
+
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
