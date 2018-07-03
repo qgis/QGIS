@@ -65,25 +65,21 @@ QgsRuleBasedLabeling::Rule::Rule( QgsPalLayerSettings *settings, int scaleMinDen
   , mIsActive( true )
 
 {
-  mRuleKey = QUuid::createUuid().toString();
   initFilter();
 }
 
 QgsRuleBasedLabeling::Rule::~Rule()
 {
-  delete mSettings;
-  delete mFilter;
   qDeleteAll( mChildren );
   // do NOT delete parent
 }
 
 void QgsRuleBasedLabeling::Rule::setSettings( QgsPalLayerSettings *settings )
 {
-  if ( mSettings == settings )
+  if ( mSettings.get() == settings )
     return;
 
-  delete mSettings;
-  mSettings = settings;
+  mSettings.reset( settings );
 }
 
 QgsRuleBasedLabeling::RuleList QgsRuleBasedLabeling::Rule::descendants() const
@@ -102,16 +98,15 @@ void QgsRuleBasedLabeling::Rule::initFilter()
   if ( mElseRule || mFilterExp.compare( QLatin1String( "ELSE" ), Qt::CaseInsensitive ) == 0 )
   {
     mElseRule = true;
-    mFilter = nullptr;
+    mFilter.reset( nullptr );
   }
   else if ( !mFilterExp.isEmpty() )
   {
-    delete mFilter;
-    mFilter = new QgsExpression( mFilterExp );
+    mFilter.reset( new QgsExpression( mFilterExp ) );
   }
   else
   {
-    mFilter = nullptr;
+    mFilter.reset( nullptr );
   }
 }
 
@@ -204,7 +199,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
 
 QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::clone() const
 {
-  QgsPalLayerSettings *s = mSettings ? new QgsPalLayerSettings( *mSettings ) : nullptr;
+  QgsPalLayerSettings *s = mSettings.get() ? new QgsPalLayerSettings( *mSettings ) : nullptr;
   Rule *newrule = new Rule( s, mMaximumScale, mMinimumScale, mFilterExp, mDescription );
   newrule->setActive( mIsActive );
   // clone children
@@ -286,7 +281,7 @@ void QgsRuleBasedLabeling::Rule::createSubProviders( QgsVectorLayer *layer, QgsR
   if ( mSettings )
   {
     // add provider!
-    QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings );
+    QgsVectorLayerLabelProvider *p = provider->createProvider( layer, mRuleKey, false, mSettings.get() );
     delete subProviders.value( this, nullptr );
     subProviders[this] = p;
   }
@@ -499,7 +494,7 @@ void QgsRuleBasedLabeling::toSld( QDomNode &parent, const QgsStringMap &props ) 
   {
     QgsPalLayerSettings *settings = rule->settings();
 
-    if ( settings->drawLabels )
+    if ( settings && settings->drawLabels )
     {
       QDomDocument doc = parent.ownerDocument();
 
