@@ -910,8 +910,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   QString userLocale = mSettings->value( QStringLiteral( "locale/userLocale" ), QString( ) ).toString();
   bool showGroupSeparator = mSettings->value( QStringLiteral( "locale/showGroupSeparator" ), false ).toBool();
   QString globalLocale = mSettings->value( QStringLiteral( "locale/globalLocale" ), currentLocale ).toString();
-  const QStringList curentI18nList( i18nList() );
-  for ( const auto &l : curentI18nList )
+  const QStringList language18nList( i18nList() );
+  for ( const auto &l : language18nList )
   {
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
