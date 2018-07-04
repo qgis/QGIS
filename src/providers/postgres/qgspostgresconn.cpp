@@ -1790,7 +1790,6 @@ QgsDataSourceUri QgsPostgresConn::connUri( const QString &connName )
 
   if ( !authcfg.isEmpty() )
   {
-    username.clear();
     password.clear();
   }
 

@@ -80,22 +80,21 @@ bool QgsDb2ConnectionItem::ConnInfoFromParameters(
                + "dbname='" + database + "' ";
   }
 
+  if ( !username.isEmpty() )
+  {
+    connInfo += "user='" + username + "' ";
+  }
+
   if ( !authcfg.isEmpty() )
   {
     connInfo += "authcfg='" + authcfg + "' ";
   }
-  else  // include user and password if authcfg is empty
+  else  if ( !password.isEmpty() )
   {
-    if ( !username.isEmpty() )
-    {
-      connInfo += "user='" + username + "' ";
-    }
-
-    if ( !password.isEmpty() )
-    {
-      connInfo += "password='" + password + "' ";
-    }
+    // include user and password if authcfg is empty
+    connInfo += "password='" + password + "' ";
   }
+
   QgsDebugMsg( "connInfo: '" + connInfo + "'" );
   return true;
 }
