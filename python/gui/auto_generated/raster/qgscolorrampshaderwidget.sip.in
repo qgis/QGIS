@@ -32,7 +32,7 @@ The other mode is used to style mesh layer contours (scalar datasets)
 Creates new color ramp shader widget
 %End
 
-    void initForUseWithRasterLayer();
+    void initializeForUseWithRasterLayer();
 %Docstring
 Allows quantile classification mode for raster layers
 %End
@@ -52,22 +52,22 @@ Sets raster band, only when used for raster layer
 Sets extent, only when used for raster layer
 %End
 
-    void setMinMaxAndClassify( double min, double max );
+    void setMinimumMaximumAndClassify( double minimum, double maximum );
 %Docstring
 Sets min max and classify color tree
 %End
 
-    void setMinMax( double min, double max );
+    void setMinimumMaximum( double minimum, double maximum );
 %Docstring
 Sets min max
 %End
 
-    double min() const;
+    double minimum() const;
 %Docstring
 Gets min value
 %End
 
-    double max() const;
+    double maximum() const;
 %Docstring
 Gets max value
 %End
@@ -83,7 +83,7 @@ Sets widget state from the color ramp shader
 %End
 
   signals:
-    void minMaxChangedFromTree( double min, double max );
+    void minimumMaximumChangedFromTree( double minimum, double maximum );
 %Docstring
 Color ramp tree has changed
 %End
@@ -105,7 +105,7 @@ Classification mode changed
 Executes the single band pseudo raster classification
 %End
 
-    void loadMinMaxFromTree();
+    void loadMinimumMaximumFromTree();
 %Docstring
 Loads min and max values from color ramp tree
 %End

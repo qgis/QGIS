@@ -48,7 +48,7 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
 
   setupUi( this );
 
-  mColorRampShaderWidget->initForUseWithRasterLayer();
+  mColorRampShaderWidget->initializeForUseWithRasterLayer();
 
   connect( mMinLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandPseudoColorRendererWidget::mMinLineEdit_textChanged );
   connect( mMaxLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandPseudoColorRendererWidget::mMaxLineEdit_textChanged );
@@ -99,10 +99,10 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
     mMinMaxWidget->doComputations();
   }
 
-  whileBlocking( mColorRampShaderWidget )->setMinMax( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
 
   connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsSingleBandPseudoColorRendererWidget::bandChanged );
-  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::minMaxChangedFromTree, this, &QgsSingleBandPseudoColorRendererWidget::loadMinMaxFromTree );
+  connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::minimumMaximumChangedFromTree, this, &QgsSingleBandPseudoColorRendererWidget::loadMinMaxFromTree );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsSingleBandPseudoColorRendererWidget::widgetChanged );
 }
 
@@ -110,7 +110,7 @@ QgsRasterRenderer *QgsSingleBandPseudoColorRendererWidget::renderer()
 {
   QgsRasterShader *rasterShader = new QgsRasterShader();
 
-  mColorRampShaderWidget->setMinMax( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  mColorRampShaderWidget->setMinimumMaximum( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
   mColorRampShaderWidget->setExtent( mMinMaxWidget->extent() );
 
   QgsColorRampShader *fcn = new QgsColorRampShader( mColorRampShaderWidget->shader() );
@@ -221,7 +221,7 @@ void QgsSingleBandPseudoColorRendererWidget::loadMinMax( int bandNo, double min,
   if ( oldMin != min || oldMax != max )
   {
     mColorRampShaderWidget->setRasterBand( bandNo );
-    mColorRampShaderWidget->setMinMax( min, max );
+    mColorRampShaderWidget->setMinimumMaximum( min, max );
     mColorRampShaderWidget->classify();
   }
 }
@@ -258,23 +258,23 @@ double QgsSingleBandPseudoColorRendererWidget::lineEditValue( const QLineEdit *l
 void QgsSingleBandPseudoColorRendererWidget::mMinLineEdit_textEdited( const QString & )
 {
   minMaxModified();
-  whileBlocking( mColorRampShaderWidget )->setMinMaxAndClassify( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::mMaxLineEdit_textEdited( const QString & )
 {
   minMaxModified();
-  whileBlocking( mColorRampShaderWidget )->setMinMaxAndClassify( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  whileBlocking( mColorRampShaderWidget )->setMinimumMaximumAndClassify( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::mMinLineEdit_textChanged( const QString & )
 {
-  whileBlocking( mColorRampShaderWidget )->setMinMax( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
 }
 
 void QgsSingleBandPseudoColorRendererWidget::mMaxLineEdit_textChanged( const QString & )
 {
-  whileBlocking( mColorRampShaderWidget )->setMinMax( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
+  whileBlocking( mColorRampShaderWidget )->setMinimumMaximum( lineEditValue( mMinLineEdit ), lineEditValue( mMaxLineEdit ) );
 }
 
 

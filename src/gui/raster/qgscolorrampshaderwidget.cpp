@@ -93,7 +93,7 @@ QgsColorRampShaderWidget::QgsColorRampShaderWidget( QWidget *parent )
   connect( mClipCheckBox, &QAbstractButton::toggled, this, &QgsColorRampShaderWidget::widgetChanged );
 }
 
-void QgsColorRampShaderWidget::initForUseWithRasterLayer()
+void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
 {
   Q_ASSERT( mClassificationModeComboBox->findData( QgsColorRampShader::Quantile < 0 ) );
   mClassificationModeComboBox->addItem( tr( "Quantile" ), QgsColorRampShader::Quantile );
@@ -103,19 +103,19 @@ void QgsColorRampShaderWidget::initForUseWithRasterLayer()
 void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp )
 {
   mRasterDataProvider = dp;
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
 }
 
 void QgsColorRampShaderWidget::setRasterBand( int band )
 {
   mBand = band;
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
 }
 
 void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
 {
   mExtent = extent;
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
 }
 
 QgsColorRampShader QgsColorRampShaderWidget::shader() const
@@ -275,7 +275,7 @@ void QgsColorRampShaderWidget::mAddEntryButton_clicked()
   mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
   autoLabel();
 
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
   emit widgetChanged();
 }
 
@@ -293,7 +293,7 @@ void QgsColorRampShaderWidget::mDeleteEntryButton_clicked()
     delete item;
   }
 
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
   emit widgetChanged();
 }
 
@@ -410,7 +410,7 @@ void QgsColorRampShaderWidget::mLoadFromBandButton_clicked()
     QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 has no entries." ).arg( mBand ) );
   }
 
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
   emit widgetChanged();
 }
 
@@ -502,7 +502,7 @@ void QgsColorRampShaderWidget::mLoadFromFileButton_clicked()
     QMessageBox::warning( this, tr( "Load Color Map from File" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
   }
 
-  loadMinMaxFromTree();
+  loadMinimumMaximumFromTree();
   emit widgetChanged();
 }
 
@@ -587,7 +587,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemDoubleClicked( QTreeWidge
     if ( newColor.isValid() )
     {
       item->setBackground( ColorColumn, QBrush( newColor ) );
-      loadMinMaxFromTree();
+      loadMinimumMaximumFromTree();
       emit widgetChanged();
     }
   }
@@ -611,7 +611,7 @@ void QgsColorRampShaderWidget::mColormapTreeWidget_itemEdited( QTreeWidgetItem *
     mColormapTreeWidget->sortItems( ValueColumn, Qt::AscendingOrder );
     autoLabel();
 
-    loadMinMaxFromTree();
+    loadMinimumMaximumFromTree();
 
     emit widgetChanged();
   }
@@ -688,35 +688,35 @@ void QgsColorRampShaderWidget::mColorInterpolationComboBox_currentIndexChanged( 
   emit widgetChanged();
 }
 
-void QgsColorRampShaderWidget::setMinMaxAndClassify( double min, double max )
+void QgsColorRampShaderWidget::setMinimumMaximumAndClassify( double min, double max )
 {
   if ( !qgsDoubleNear( mMin, min ) || !qgsDoubleNear( mMax, max ) )
   {
-    setMinMax( min, max );
+    setMinimumMaximum( min, max );
     classify();
   }
 }
 
-void QgsColorRampShaderWidget::setMinMax( double min, double max )
+void QgsColorRampShaderWidget::setMinimumMaximum( double min, double max )
 {
   mMin = min;
   mMax = max;
   resetClassifyButton();
 }
 
-double QgsColorRampShaderWidget::min() const
+double QgsColorRampShaderWidget::minimum() const
 {
   return mMin;
 }
 
-double QgsColorRampShaderWidget::max() const
+double QgsColorRampShaderWidget::maximum() const
 {
   return mMax;
 }
 
 
 
-void QgsColorRampShaderWidget::loadMinMaxFromTree()
+void QgsColorRampShaderWidget::loadMinimumMaximumFromTree()
 {
   QTreeWidgetItem *item = mColormapTreeWidget->topLevelItem( 0 );
   if ( !item )
@@ -732,7 +732,7 @@ void QgsColorRampShaderWidget::loadMinMaxFromTree()
   {
     mMin = min;
     mMax = max;
-    emit minMaxChangedFromTree( min, max );
+    emit minimumMaximumChangedFromTree( min, max );
   }
 }
 
@@ -764,7 +764,7 @@ void QgsColorRampShaderWidget::changeColor()
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
 
-    loadMinMaxFromTree();
+    loadMinimumMaximumFromTree();
     emit widgetChanged();
   }
 }
@@ -792,7 +792,7 @@ void QgsColorRampShaderWidget::changeOpacity()
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
 
-    loadMinMaxFromTree();
+    loadMinimumMaximumFromTree();
     emit widgetChanged();
   }
 }
