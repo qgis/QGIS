@@ -18,6 +18,7 @@
 
 #include <QVector3D>
 #include <QQuaternion>
+#include "qgsvector3d.h"
 
 namespace Qt3DCore
 {
@@ -42,8 +43,11 @@ class Qgs3DAnimationSettings
     struct Keyframe
     {
       float time;            //!< Relative time of the keyframe in seconds
-      QVector3D position;    //!< Position of the camera
-      QQuaternion rotation;  //!< Rotation of the camera
+
+      QgsVector3D point;  //!< Point towards which the camera is looking in 3D world coords
+      float dist;   //!< Distance of the camera from the focal point
+      float pitch;  //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
+      float yaw;    //!< Horizontal rotation around the focal point in degrees
     };
 
     typedef QVector<Keyframe> Keyframes;
@@ -54,13 +58,15 @@ class Qgs3DAnimationSettings
     //! Returns duration of the whole animation in seconds
     float duration() const;
 
-    //! Returns a new object that contains Qt3D animation according to the keyframes
-    Qt3DAnimation::QKeyframeAnimation *createAnimation( Qt3DCore::QNode *parent ) const;
+    //! Interpolates camera position and rotation at the given point in time
+    Keyframe interpolate( float time ) const;
 
     // TODO: read/write routines
 
   private:
     Keyframes mKeyframes;
 };
+
+Q_DECLARE_METATYPE( Qgs3DAnimationSettings::Keyframe )
 
 #endif // QGS3DANIMATIONSETTINGS_H

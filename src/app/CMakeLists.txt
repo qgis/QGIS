@@ -763,7 +763,6 @@ ENDIF(ENABLE_MODELTEST)
 IF (WITH_3D)
   TARGET_LINK_LIBRARIES(qgis_app
     qgis_3d
-    Qt5::3DAnimation
   )
 ENDIF (WITH_3D)
 

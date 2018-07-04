@@ -17,8 +17,8 @@
 
 #include "qgs3danimationsettings.h"
 #include "qgsapplication.h"
+#include "qgscameracontroller.h"
 
-#include <Qt3DAnimation/QAnimationController>
 #include <Qt3DRender/QCamera>
 #include <QTimer>
 
@@ -38,8 +38,6 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   mAnimationTimer->setInterval( 10 );
   connect( mAnimationTimer, &QTimer::timeout, this, &Qgs3DAnimationWidget::onAnimationTimer );
 
-  mAnimationController = new Qt3DAnimation::QAnimationController( this );
-
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
 
@@ -48,11 +46,15 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( cboKeyframe, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onKeyframeChanged );
 }
 
-void Qgs3DAnimationWidget::setCamera( Qt3DRender::QCamera *camera )
+Qgs3DAnimationWidget::~Qgs3DAnimationWidget() = default;
+
+
+void Qgs3DAnimationWidget::setCameraController( QgsCameraController *cameraController )
 {
-  mCamera = camera;
-  connect( mCamera, &Qt3DRender::QCamera::viewMatrixChanged, this, &Qgs3DAnimationWidget::onCameraViewMatrixChanged );
+  mCameraController = cameraController;
+  connect( mCameraController, &QgsCameraController::cameraChanged, this, &Qgs3DAnimationWidget::onCameraChanged );
 }
+
 
 void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSettings )
 {
@@ -63,9 +65,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
   {
     cboKeyframe->addItem( QString( "%1 s" ).arg( keyframe.time ) );
     int lastIndex = cboKeyframe->count() - 1;
-    cboKeyframe->setItemData( lastIndex, keyframe.time, Qt::UserRole + 1 );
-    cboKeyframe->setItemData( lastIndex, keyframe.position, Qt::UserRole + 2 );
-    cboKeyframe->setItemData( lastIndex, keyframe.rotation, Qt::UserRole + 3 );
+    cboKeyframe->setItemData( lastIndex, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( keyframe ), Qt::UserRole + 1 );
   }
 
   initializeController( animSettings );
@@ -73,16 +73,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
 
 void Qgs3DAnimationWidget::initializeController( const Qgs3DAnimationSettings &animSettings )
 {
-  // set up animation in the controller
-  Qt3DAnimation::QAnimationGroup *group = new Qt3DAnimation::QAnimationGroup;
-  Qt3DAnimation::QKeyframeAnimation *animation = animSettings.createAnimation( nullptr ); // TODO: who deletes transforms?
-  animation->setParent( group );
-  animation->setTarget( mCamera->transform() );
-  group->addAnimation( animation ); // does not delete animations later
-
-  QVector<Qt3DAnimation::QAnimationGroup *> groups;
-  groups << group;
-  mAnimationController->setAnimationGroups( groups ); // does not delete groups later
+  mAnimationSettings.reset( new Qgs3DAnimationSettings( animSettings ) );
 
   sliderTime->setMaximum( animSettings.duration() * 100 );
 }
@@ -91,15 +82,11 @@ Qgs3DAnimationSettings Qgs3DAnimationWidget::animation() const
 {
   Qgs3DAnimationSettings animSettings;
   Qgs3DAnimationSettings::Keyframes keyframes;
-  qDebug() << "---";
   for ( int i = 1; i < cboKeyframe->count(); ++i )
   {
     Qgs3DAnimationSettings::Keyframe kf;
-    kf.time = cboKeyframe->itemData( i, Qt::UserRole + 1 ).toFloat();
-    kf.position = cboKeyframe->itemData( i, Qt::UserRole + 2 ).value<QVector3D>();
-    kf.rotation = cboKeyframe->itemData( i, Qt::UserRole + 3 ).value<QQuaternion>();
+    kf = cboKeyframe->itemData( i, Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
     keyframes << kf;
-    qDebug() << "keyframe" << kf.time << kf.position << kf.rotation;
   }
   animSettings.setKeyframes( keyframes );
   return animSettings;
@@ -111,11 +98,17 @@ void Qgs3DAnimationWidget::setDefaultAnimation()
   Qgs3DAnimationSettings::Keyframes kf;
   Qgs3DAnimationSettings::Keyframe f1, f2;
   f1.time = 0;
-  f1.position = mCamera->transform()->translation();
-  f1.rotation = mCamera->transform()->rotation();
+  f1.point = mCameraController->lookingAtPoint();
+  f1.dist = mCameraController->distance();
+  f1.pitch = mCameraController->pitch();
+  f1.yaw = mCameraController->yaw();
+
   f2.time = 5;
-  f2.position = f1.position + QVector3D( 0, 0, f1.position.z() / 2 );
-  f2.rotation = f1.rotation;
+  f2.point = f1.point;
+  f2.dist = f1.dist * 2;
+  f2.pitch = f1.pitch;
+  f2.yaw = f1.yaw;
+
   kf << f1 << f2;
   animSettings.setKeyframes( kf );
 
@@ -143,20 +136,30 @@ void Qgs3DAnimationWidget::onAnimationTimer()
   sliderTime->setValue( sliderTime->value() >= duration ? 0 : sliderTime->value() + 1 );
 }
 
+
 void Qgs3DAnimationWidget::onSliderValueChanged()
 {
-  mAnimationController->setPosition( sliderTime->value() / 100. );
+  // make sure we do not have an active keyframe
+  if ( cboKeyframe->currentIndex() != 0 )
+    cboKeyframe->setCurrentIndex( 0 );
+
+  Qgs3DAnimationSettings::Keyframe kf = mAnimationSettings->interpolate( sliderTime->value() / 100. );
+  mCameraController->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 }
 
-void Qgs3DAnimationWidget::onCameraViewMatrixChanged()
+void Qgs3DAnimationWidget::onCameraChanged()
 {
   if ( cboKeyframe->currentIndex() <= 0 )
     return;
 
   // update keyframe's camera position/rotation
   int i = cboKeyframe->currentIndex();
-  cboKeyframe->setItemData( i, mCamera->transform()->translation(), Qt::UserRole + 2 );
-  cboKeyframe->setItemData( i, mCamera->transform()->rotation(), Qt::UserRole + 3 );
+  Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( i, Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
+  kf.point = mCameraController->lookingAtPoint();
+  kf.dist = mCameraController->distance();
+  kf.pitch = mCameraController->pitch();
+  kf.yaw = mCameraController->yaw();
+  cboKeyframe->setItemData( i, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( kf ), Qt::UserRole + 1 );
 
   initializeController( animation() );
 }
@@ -167,6 +170,8 @@ void Qgs3DAnimationWidget::onKeyframeChanged()
     return;
 
   // jump to the camera view of the keyframe
-  float time = cboKeyframe->itemData( cboKeyframe->currentIndex(), Qt::UserRole + 1 ).toFloat();
-  sliderTime->setValue( time * 100 );
+  Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( cboKeyframe->currentIndex(), Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
+
+  whileBlocking( sliderTime )->setValue( kf.time * 100 );
+  mCameraController->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 }
