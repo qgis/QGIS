@@ -21,6 +21,7 @@
 class QLabel;
 class QProgressBar;
 
+class Qgs3DAnimationWidget;
 class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
 class QgsMapCanvas;
@@ -43,6 +44,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void resetView();
     void configure();
     void saveAsImage();
+    void toggleAnimations();
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -50,6 +52,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;
+    Qgs3DAnimationWidget *mAnimationWidget = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
     QProgressBar *mProgressPendingJobs = nullptr;
     QLabel *mLabelPendingJobs = nullptr;

@@ -22,6 +22,8 @@
 #include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
+#include "qgs3danimationsettings.h"
+#include "qgs3danimationwidget.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 
@@ -47,6 +49,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
                       tr( "Save as Image…" ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
                       tr( "Configure…" ), this, &Qgs3DMapCanvasDockWidget::configure );
+  QAction *actionAnim = toolBar->addAction( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ),
+                        tr( "Animations" ), this, &Qgs3DMapCanvasDockWidget::toggleAnimations );
+  actionAnim->setCheckable( true );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
@@ -61,6 +66,9 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   mProgressPendingJobs = new QProgressBar( this );
   mProgressPendingJobs->setRange( 0, 0 );
 
+  mAnimationWidget = new Qgs3DAnimationWidget( this );
+  mAnimationWidget->setVisible( false );
+
   QHBoxLayout *topLayout = new QHBoxLayout;
   topLayout->setContentsMargins( 0, 0, 0, 0 );
   topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
@@ -74,6 +82,7 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   layout->setSpacing( 0 );
   layout->addLayout( topLayout );
   layout->addWidget( mCanvas );
+  layout->addWidget( mAnimationWidget );
 
   contentsWidget->setLayout( layout );
 
@@ -91,11 +100,30 @@ void Qgs3DMapCanvasDockWidget::saveAsImage()
   }
 }
 
+void Qgs3DMapCanvasDockWidget::toggleAnimations()
+{
+  if ( mAnimationWidget->isVisible() )
+  {
+    mAnimationWidget->setVisible( false );
+    return;
+  }
+
+  mAnimationWidget->setVisible( true );
+
+  // create a dummy animation when first started - better to have something than nothing...
+  if ( mAnimationWidget->animation().duration() == 0 )
+  {
+    mAnimationWidget->setDefaultAnimation();
+  }
+}
+
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
 
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
+
+  mAnimationWidget->setCamera( mCanvas->scene()->cameraController()->camera() );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )

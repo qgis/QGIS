@@ -434,6 +434,8 @@ SET (QGIS_APP_MOC_HDRS
 IF (WITH_3D)
   SET(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
+    3d/qgs3danimationsettings.cpp
+    3d/qgs3danimationwidget.cpp
     3d/qgs3dmapcanvas.cpp
     3d/qgs3dmapcanvasdockwidget.cpp
     3d/qgs3dmapconfigwidget.cpp
@@ -446,6 +448,7 @@ IF (WITH_3D)
 
   SET (QGIS_APP_MOC_HDRS
     ${QGIS_APP_MOC_HDRS}
+    3d/qgs3danimationwidget.h
     3d/qgs3dmapcanvas.h
     3d/qgs3dmapcanvasdockwidget.h
     3d/qgs3dmapconfigwidget.h
@@ -760,6 +763,7 @@ ENDIF(ENABLE_MODELTEST)
 IF (WITH_3D)
   TARGET_LINK_LIBRARIES(qgis_app
     qgis_3d
+    Qt5::3DAnimation
   )
 ENDIF (WITH_3D)
 
