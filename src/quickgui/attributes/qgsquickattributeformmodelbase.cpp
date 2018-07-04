@@ -119,7 +119,7 @@ void QgsQuickAttributeFormModelBase::onLayerChanged()
 
   if ( mLayer )
   {
-    QgsAttributeEditorContainer *root;
+    QgsAttributeEditorContainer *root = nullptr;
     mTemporaryContainer = nullptr;
 
     if ( mLayer->editFormConfig().layout() == QgsEditFormConfig::TabLayout )

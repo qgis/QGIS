@@ -116,7 +116,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-    QgsQuickAttributeFormModelBase *mSourceModel; //not owned
+    QgsQuickAttributeFormModelBase *mSourceModel = nullptr; //not owned
 };
 
 #endif // QGSQUICKATTRIBUTEFORMMODEL_H
