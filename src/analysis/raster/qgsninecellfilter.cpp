@@ -233,6 +233,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 >>>>>>> Use OpenCL command queue
   QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
 
+<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
+=======
+  cl_int errorCode = 0;
+
+>>>>>>> [opencl] Test with image2d
   // Cast to float (because double just crashes on some GPUs)
   std::vector<float> rasterParams;
 
@@ -349,7 +354,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
 
     // TODO: There is room for further optimization here: instead of replacing the buffers
-    //       we could just replace just hthe new one (the top row) and switch the order
+    //       we could just replace just the new one (the top row) and switch the order
     //       of buffer arguments in the kernell call.
     errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
                                         sizeof( float ) * ( xSize + 2 ), scanLine1.get() );

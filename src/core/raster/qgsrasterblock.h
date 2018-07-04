@@ -238,7 +238,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \returns true if value is no data */
-    bool isNoData( int row, int column )
+    bool isNoData( int row, int column ) const
     {
       return isNoData( static_cast< qgssize >( row ) * mWidth + column );
     }
@@ -248,7 +248,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \param row row index
      *  \param column column index
      *  \returns true if value is no data */
-    bool isNoData( qgssize row, qgssize column )
+    bool isNoData( qgssize row, qgssize column ) const
     {
       return isNoData( row * static_cast< qgssize >( mWidth ) + column );
     }
@@ -257,7 +257,7 @@ class CORE_EXPORT QgsRasterBlock
      * \brief Check if value at position is no data
      *  \param index data matrix index (long type in Python)
      *  \returns true if value is no data */
-    bool isNoData( qgssize index )
+    bool isNoData( qgssize index ) const
     {
       if ( !mHasNoDataValue && !mNoDataBitmap )
         return false;

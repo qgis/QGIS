@@ -1087,6 +1087,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   if ( QgsOpenClUtils::available( ) )
   {
     mGPUEnableCheckBox->setEnabled( true );
+<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
 
     for ( const auto &dev : QgsOpenClUtils::devices( ) )
     {
@@ -1100,13 +1101,38 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
     infoUpdater( -1 );
+=======
+    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU found on your system:<br>"
+                                            "Name: <b>%1</b><br>"
+                                            "Vendor: <b>%2</b><br>"
+                                            "Profile: <b>%3</b><br>"
+                                            "Version: <b>%4</b><br>"
+                                            "Image support: <b>%5</b><br>"
+                                            "Max image2d width: <b>%6</b><br>"
+                                            "Max image2d height: <b>%7</b><br>"
+                                          ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight )
+                                               )
+                          );
+>>>>>>> [opencl] Test with image2d
   }
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
+<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
     mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
                                       "You may need to install additional libraries in order to enable OpenCL.<br>"
                                       "Please check your logs for further details." ) );
+=======
+    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system.<br>"
+                                            "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                            "Please check your logs for further details." ) );
+>>>>>>> [opencl] Test with image2d
   }
 
 
@@ -1662,8 +1688,12 @@ void QgsOptions::saveOptions()
 #ifdef HAVE_OPENCL
   // OpenCL settings
   QgsOpenClUtils::setEnabled( mGPUEnableCheckBox->isChecked() );
+<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
   QString preferredDevice( mOpenClDevicesCombo->currentData().toString() );
   QgsOpenClUtils::storePreferredDevice( preferredDevice );
+=======
+
+>>>>>>> [opencl] Test with image2d
 #endif
 
   // Gdal skip driver list
