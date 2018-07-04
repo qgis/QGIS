@@ -125,8 +125,11 @@ class RandomExtractWithinSubsets(QgisAlgorithm):
             classes[attrs[index]].append(feature)
             feedback.setProgress(int(i * total))
 
-        for subset in classes.values():
+        for k, subset in classes.items():
             selValue = value if method != 1 else int(round(value * len(subset), 0))
+            if selValue > len(subset):
+                selValue = len(subset)
+                feedback.reportError(self.tr('Subset "{}" is smaller than requested number of features.'.format(k)))
             selran.extend(random.sample(subset, selValue))
 
         total = 100.0 / featureCount if featureCount else 1
