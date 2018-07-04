@@ -15,12 +15,10 @@
 
 #include "qgs3danimationsettings.h"
 
-#include <Qt3DAnimation/QKeyframeAnimation>
-#include <Qt3DAnimation/QAnimationGroup>
+#include <QEasingCurve>
 
 Qgs3DAnimationSettings::Qgs3DAnimationSettings()
 {
-
 }
 
 float Qgs3DAnimationSettings::duration() const
@@ -28,26 +26,53 @@ float Qgs3DAnimationSettings::duration() const
   return mKeyframes.isEmpty() ? 0 : mKeyframes.constLast().time;
 }
 
-Qt3DAnimation::QKeyframeAnimation *Qgs3DAnimationSettings::createAnimation( Qt3DCore::QNode *parent ) const
+Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time ) const
 {
-  Qt3DAnimation::QKeyframeAnimation *animation = new Qt3DAnimation::QKeyframeAnimation;
+  Q_ASSERT( !mKeyframes.isEmpty() );
 
-  QVector<float> framePositions;
-  QVector<Qt3DCore::QTransform *> transforms;
-  for ( const Keyframe &keyframe : mKeyframes )
+  if ( time < 0 )
   {
-    framePositions << keyframe.time;
-    Qt3DCore::QTransform *t = new Qt3DCore::QTransform( parent );
-    t->setTranslation( keyframe.position );
-    t->setRotation( keyframe.rotation );
-    transforms << t;
+    return mKeyframes.first();
   }
+  else if ( time >= duration() )
+  {
+    return mKeyframes.last();
+  }
+  else
+  {
+    for ( int i = 0; i < mKeyframes.size() - 1; i++ )
+    {
+      const Keyframe &k0 = mKeyframes.at( i );
+      const Keyframe &k1 = mKeyframes.at( i + 1 );
+      if ( time >= k0.time && time < k1.time )
+      {
+        float ip = ( time - k0.time ) / ( k1.time - k0.time );
+        float eIp = QEasingCurve( QEasingCurve::InOutQuad ).valueForProgress( ip );
+        float eIip = 1.0f - eIp;
 
-  animation->setKeyframes( transforms );
-  animation->setFramePositions( framePositions );
+        Keyframe kf;
+        kf.time = time;
+        kf.point.set( k0.point.x() * eIip + k1.point.x() * eIp,
+                      k0.point.y() * eIip + k1.point.y() * eIp,
+                      k0.point.z() * eIip + k1.point.z() * eIp );
+        kf.dist = k0.dist * eIip + k1.dist * eIp;
+        kf.pitch = k0.pitch * eIip + k1.pitch * eIp;
 
-  //animation->setTarget(cam->transform());
-  // animation->setEasing(QEasingCurve(QEasingCurve::InOutQuad));
+        // always use shorter angle
+        float yaw0 = fmod( k0.yaw, 360 ), yaw1 = fmod( k1.yaw, 360 );
+        if ( std::abs( yaw0 - yaw1 ) > 180 )
+        {
+          if ( yaw0 < yaw1 )
+            yaw0 += 360;
+          else
+            yaw1 += 360;
+        }
 
-  return animation;
+        kf.yaw = yaw0 * eIip + yaw1 * eIp;
+        return kf;
+      }
+    }
+  }
+  Q_ASSERT( false );
+  return Keyframe();
 }

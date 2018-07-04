@@ -72,6 +72,12 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
     void setLookingAtPoint( const QgsVector3D &point, float distance = -1 );
 
+    void setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
+
+    float distance() const { return mCameraData.dist; }
+    float pitch() const { return mCameraData.pitch; }
+    float yaw() const { return mCameraData.yaw; }
+
     //! Writes camera configuration to the given DOM element
     QDomElement writeXml( QDomDocument &doc ) const;
     //! Reads camera configuration from the given DOM element

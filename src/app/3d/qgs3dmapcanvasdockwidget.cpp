@@ -123,7 +123,7 @@ void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 
   connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
 
-  mAnimationWidget->setCamera( mCanvas->scene()->cameraController()->camera() );
+  mAnimationWidget->setCameraController( mCanvas->scene()->cameraController() );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )

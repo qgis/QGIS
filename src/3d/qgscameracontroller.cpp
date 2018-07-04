@@ -403,7 +403,7 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
 
 QgsVector3D QgsCameraController::lookingAtPoint() const
 {
-  return QgsVector3D( mCameraData.x, 0, mCameraData.y );
+  return QgsVector3D( mCameraData.x, mCameraData.elev, mCameraData.y );
 }
 
 void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dist )
@@ -411,6 +411,12 @@ void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dis
   if ( dist < 0 )
     dist = mCameraData.dist;
   setCameraData( point.x(), point.z(), point.y(), dist, mCameraData.pitch, mCameraData.yaw );
+  emit cameraChanged();
+}
+
+void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw )
+{
+  setCameraData( point.x(), point.z(), point.y(), distance, pitch, yaw );
   emit cameraChanged();
 }
 

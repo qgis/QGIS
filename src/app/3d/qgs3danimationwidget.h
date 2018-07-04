@@ -17,27 +17,22 @@
 #define QGS3DANIMATIONWIDGET_H
 
 #include <QWidget>
+#include <memory>
 
 #include "ui_animation3dwidget.h"
 
-namespace Qt3DRender
-{
-  class QCamera;
-}
-namespace Qt3DAnimation
-{
-  class QAnimationController;
-}
 
 class Qgs3DAnimationSettings;
+class QgsCameraController;
 
 class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
 {
     Q_OBJECT
   public:
     explicit Qgs3DAnimationWidget( QWidget *parent = nullptr );
+    ~Qgs3DAnimationWidget();
 
-    void setCamera( Qt3DRender::QCamera *camera );
+    void setCameraController( QgsCameraController *cameraController );
 
     void setAnimation( const Qgs3DAnimationSettings &animation );
     Qgs3DAnimationSettings animation() const;
@@ -50,16 +45,16 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void onPlayPause();
     void onAnimationTimer();
     void onSliderValueChanged();
-    void onCameraViewMatrixChanged();
+    void onCameraChanged();
     void onKeyframeChanged();
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );
 
   private:
+    std::unique_ptr<Qgs3DAnimationSettings> mAnimationSettings;
+    QgsCameraController *mCameraController;
     QTimer *mAnimationTimer = nullptr;
-    Qt3DAnimation::QAnimationController *mAnimationController = nullptr;
-    Qt3DRender::QCamera *mCamera = nullptr;   //!< Camera (not owned)
 };
 
 #endif // QGS3DANIMATIONWIDGET_H
