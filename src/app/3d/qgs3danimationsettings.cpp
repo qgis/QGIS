@@ -16,6 +16,7 @@
 #include "qgs3danimationsettings.h"
 
 #include <QEasingCurve>
+#include <QDomDocument>
 
 Qgs3DAnimationSettings::Qgs3DAnimationSettings()
 {
@@ -40,6 +41,11 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
   }
   else
   {
+    // TODO: make easing curves configurable.
+    // QEasingCurve is probably not flexible enough, we may need more granular
+    // control with Bezier curves to allow smooth transition at keyframes
+    QEasingCurve easing( QEasingCurve::InOutQuad );
+
     for ( int i = 0; i < mKeyframes.size() - 1; i++ )
     {
       const Keyframe &k0 = mKeyframes.at( i );
@@ -47,7 +53,7 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
       if ( time >= k0.time && time < k1.time )
       {
         float ip = ( time - k0.time ) / ( k1.time - k0.time );
-        float eIp = QEasingCurve( QEasingCurve::InOutQuad ).valueForProgress( ip );
+        float eIp = easing.valueForProgress( ip );
         float eIip = 1.0f - eIp;
 
         Keyframe kf;
@@ -75,4 +81,49 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
   }
   Q_ASSERT( false );
   return Keyframe();
+}
+
+void Qgs3DAnimationSettings::readXml( const QDomElement &elem )
+{
+  mKeyframes.clear();
+
+  QDomElement elemKeyframes = elem.firstChildElement( "keyframes" );
+  QDomElement elemKeyframe = elemKeyframes.firstChildElement( "keyframe" );
+  while ( !elemKeyframe.isNull() )
+  {
+    Keyframe kf;
+    kf.time = elemKeyframe.attribute( "time" ).toFloat();
+    kf.point.set( elemKeyframe.attribute( "x" ).toDouble(),
+                  elemKeyframe.attribute( "y" ).toDouble(),
+                  elemKeyframe.attribute( "z" ).toDouble() );
+    kf.dist = elemKeyframe.attribute( "dist" ).toFloat();
+    kf.pitch = elemKeyframe.attribute( "pitch" ).toFloat();
+    kf.yaw = elemKeyframe.attribute( "yaw" ).toFloat();
+    mKeyframes.append( kf );
+    elemKeyframe = elemKeyframe.nextSiblingElement( "keyframe" );
+  }
+}
+
+QDomElement Qgs3DAnimationSettings::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elem = doc.createElement( "animation3d" );
+
+  QDomElement elemKeyframes = doc.createElement( "keyframes" );
+
+  for ( const Keyframe &keyframe : mKeyframes )
+  {
+    QDomElement elemKeyframe = doc.createElement( "keyframe" );
+    elemKeyframe.setAttribute( "time", keyframe.time );
+    elemKeyframe.setAttribute( "x", keyframe.point.x() );
+    elemKeyframe.setAttribute( "y", keyframe.point.y() );
+    elemKeyframe.setAttribute( "z", keyframe.point.z() );
+    elemKeyframe.setAttribute( "dist", keyframe.dist );
+    elemKeyframe.setAttribute( "pitch", keyframe.pitch );
+    elemKeyframe.setAttribute( "yaw", keyframe.yaw );
+    elemKeyframes.appendChild( elemKeyframe );
+  }
+
+  elem.appendChild( elemKeyframes );
+
+  return elem;
 }

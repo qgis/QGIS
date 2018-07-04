@@ -82,6 +82,8 @@
 
 #ifdef HAVE_3D
 #include "qgsabstract3drenderer.h"
+#include "qgs3danimationsettings.h"
+#include "qgs3danimationwidget.h"
 #include "qgs3dmapcanvasdockwidget.h"
 #include "qgs3drendererregistry.h"
 #include "qgs3dmapcanvas.h"
@@ -12865,6 +12867,8 @@ void QgisApp::writeProject( QDomDocument &doc )
     elem3DMap.appendChild( elem3DMapSettings );
     QDomElement elemCamera = w->mapCanvas3D()->cameraController()->writeXml( doc );
     elem3DMap.appendChild( elemCamera );
+    QDomElement elemAnimation = w->animationWidget()->animation().writeXml( doc );
+    elem3DMap.appendChild( elemAnimation );
     writeDockWidgetSettings( w, elem3DMap );
     elem3DMaps.appendChild( elem3DMap );
   }
@@ -13020,6 +13024,14 @@ void QgisApp::readProject( const QDomDocument &doc )
       if ( !elemCamera.isNull() )
       {
         mapCanvasDock3D->mapCanvas3D()->cameraController()->readXml( elemCamera );
+      }
+
+      QDomElement elemAnimation = elem3DMap.firstChildElement( QStringLiteral( "animation3d" ) );
+      if ( !elemAnimation.isNull() )
+      {
+        Qgs3DAnimationSettings animationSettings;
+        animationSettings.readXml( elemAnimation );
+        mapCanvasDock3D->animationWidget()->setAnimation( animationSettings );
       }
 
       elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );

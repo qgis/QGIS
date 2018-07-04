@@ -16,19 +16,13 @@
 #ifndef QGS3DANIMATIONSETTINGS_H
 #define QGS3DANIMATIONSETTINGS_H
 
-#include <QVector3D>
-#include <QQuaternion>
 #include "qgsvector3d.h"
 
-namespace Qt3DCore
-{
-  class QNode;
-}
+#include <QVector>
 
-namespace Qt3DAnimation
-{
-  class QKeyframeAnimation;
-}
+class QDomDocument;
+class QDomElement;
+class QgsReadWriteContext;
 
 /**
  * Class that holds information about animation in 3D view. The animation is defined
@@ -61,7 +55,10 @@ class Qgs3DAnimationSettings
     //! Interpolates camera position and rotation at the given point in time
     Keyframe interpolate( float time ) const;
 
-    // TODO: read/write routines
+    //! Reads configuration from a DOM element previously written by writeXml()
+    void readXml( const QDomElement &elem );
+    //! Writes configuration to a DOM element, to be used later with readXml()
+    QDomElement writeXml( QDomDocument &doc ) const;
 
   private:
     Keyframes mKeyframes;
