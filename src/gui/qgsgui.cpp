@@ -32,6 +32,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
 #include "qgslogger.h"
+#include "qgsprocessingrecentalgorithmlog.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -79,6 +80,11 @@ QgsProcessingGuiRegistry *QgsGui::processingGuiRegistry()
   return instance()->mProcessingGuiRegistry;
 }
 
+QgsProcessingRecentAlgorithmLog *QgsGui::processingRecentAlgorithmLog()
+{
+  return instance()->mProcessingRecentAlgorithmLog;
+}
+
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
@@ -91,6 +97,7 @@ void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 QgsGui::~QgsGui()
 {
   delete mProcessingGuiRegistry;
+  delete mProcessingRecentAlgorithmLog;
   delete mLayoutItemGuiRegistry;
   delete mLayerTreeEmbeddedWidgetRegistry;
   delete mEditorWidgetRegistry;
@@ -116,5 +123,6 @@ QgsGui::QgsGui()
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
   mWidgetStateHelper = new QgsWidgetStateHelper();
+  mProcessingRecentAlgorithmLog = new QgsProcessingRecentAlgorithmLog();
   mProcessingGuiRegistry = new QgsProcessingGuiRegistry();
 }

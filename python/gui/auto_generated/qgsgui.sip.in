@@ -69,6 +69,13 @@ Returns the global processing gui registry, used for registering the GUI behavio
 .. versionadded:: 3.2
 %End
 
+    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+%Docstring
+Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
+
+.. versionadded:: 3.4
+%End
+
     static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
 %Docstring
 Register the widget to allow its position to be automatically saved and restored when open and closed.
