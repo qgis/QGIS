@@ -3923,6 +3923,21 @@ tests:
         name: points_weighted.gml
         compare: false
 
+  - algorithm: qgis:randomextractwithinsubsets
+    name: Random extract within subset (subset smaller than number)
+    params:
+      FIELD: id2
+      INPUT:
+        name: points.gml
+        type: vector
+      METHOD: 0
+      NUMBER: 3
+    results:
+      OUTPUT:
+        type: vector
+        name: points.gml
+        compare: false
+
   - algorithm: qgis:heatmapkerneldensityestimation
     name: Heatmap (Kernel density estimation)
     params:
@@ -5355,6 +5370,7 @@ tests:
         compare:
           fields:
             fid: skip
+
   - algorithm: native:difference
     name: Test Difference B - A (basic)
     params:
