@@ -39,6 +39,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
     void setMainCanvas( QgsMapCanvas *canvas );
 
     Qgs3DMapCanvas *mapCanvas3D() { return mCanvas; }
+    Qgs3DAnimationWidget *animationWidget() { return mAnimationWidget; }
 
   private slots:
     void resetView();
