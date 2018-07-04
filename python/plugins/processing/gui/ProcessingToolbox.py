@@ -35,7 +35,8 @@ from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction, QTreeWidgetItem, QL
 from qgis.utils import iface
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm)
-from qgis.gui import QgsDockWidget
+from qgis.gui import (QgsGui,
+                      QgsDockWidget)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.ProcessingLog import ProcessingLog
@@ -107,6 +108,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
+        QgsGui.instance().processingRecentAlgorithmLog().changed.connect(self.addRecentAlgorithms)
         settingsWatcher.settingsChanged.connect(self.fillTree)
 
     def showDisabled(self):
@@ -349,11 +351,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                     except:
                         pass
                     canvas.setMapTool(prevMapTool)
-                if dlg.wasExecuted():
-                    showRecent = ProcessingConfig.getSetting(
-                        ProcessingConfig.SHOW_RECENT_ALGORITHMS)
-                    if showRecent:
-                        self.addRecentAlgorithms(True)
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
@@ -366,11 +363,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.fillTreeUsingProviders()
         self.addRecentAlgorithms(False)
 
-    def addRecentAlgorithms(self, updating):
+    def addRecentAlgorithms(self, updating=True):
         showRecent = ProcessingConfig.getSetting(
             ProcessingConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
-            recent = ProcessingLog.getRecentAlgorithms()
+            recent = QgsGui.instance().processingRecentAlgorithmLog().recentAlgorithmIds()
             if len(recent) != 0:
                 found = False
                 if updating:
@@ -382,8 +379,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used'))
-                for algname in recent:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(algname)
+                for algorithm_id in recent:
+                    alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
                     if alg is not None:
                         algItem = TreeAlgorithmItem(alg)
                         recentItem.addChild(algItem)

@@ -42,7 +42,7 @@ from qgis.core import (Qgis,
                        QgsProject,
                        QgsMessageLog,
                        QgsProcessingOutputLayerDefinition)
-from qgis.gui import QgsEncodingFileDialog
+from qgis.gui import QgsEncodingFileDialog, QgsGui
 from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -240,6 +240,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
 
                 context = dataobjects.createContext()
                 ProcessingLog.addToLog(self.alg.asPythonCommand(parameters, context))
+                QgsGui.instance().processingRecentAlgorithmLog().push(self.alg.id())
 
                 self.executed, results = execute(self.alg, parameters, context, self.feedback)
                 self.setPercentage(0)
