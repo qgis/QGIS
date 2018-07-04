@@ -138,7 +138,7 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
                     break
 
                 selValue = value if method != 1 else int(round(value * len(subset), 0))
-                selran.extend(random.sample(subset, selValue))
+                selran.extend(random.sample(subset, min(selValue, len(subset))))
 
             layer.selectByIds(selran)
         else:
