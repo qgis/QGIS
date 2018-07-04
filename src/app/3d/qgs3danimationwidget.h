@@ -47,6 +47,9 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void onSliderValueChanged();
     void onCameraChanged();
     void onKeyframeChanged();
+    void onAddKeyframe();
+    void onRemoveKeyframe();
+    void onEditKeyframe();
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );
