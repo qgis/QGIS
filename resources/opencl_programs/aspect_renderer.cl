@@ -1,11 +1,12 @@
 #include "calcfirstder.cl"
 
+// Aspect renderer for QGIS
+
 __kernel void processNineCellWindow( __global float *scanLine1,
                                      __global float *scanLine2,
                                      __global float *scanLine3,
-                                     __global float *resultLine,
-                                     __global float *rasterParams //  [ mInputNodataValue, mOutputNodataValue, mZFactor, mCellSizeX, mCellSizeY ]
-
+                                     __global uchar4 *resultLine,
+                                     __global float *rasterParams
                        ) {
 
   // Get the index of the current element
@@ -26,14 +27,27 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                              );
 
 
-  if ( derX == rasterParams[1] || derY == rasterParams[1] )
+  float res;
+  if ( derX == rasterParams[1] || derY == rasterParams[1] ||
+       ( derX == 0.0f && derY == 0.0f) )
   {
-    resultLine[i] = rasterParams[1];
+    res = rasterParams[1];
   }
   else
   {
-    float res = sqrt( derX * derX + derY * derY );
-    res = atanpi( res );
-    resultLine[i] = res * 180.0;
+    // 180.0 / M_PI = 57.29577951308232
+    float aspect = atan2( derX, derY ) * 57.29577951308232;
+    if ( aspect < 0 )
+        res = 90.0f - aspect;
+    else if (aspect > 90.0f)
+        // 360 + 90 = 450
+        res = 450.0f - aspect;
+    else
+        res = 90.0 - aspect;
   }
+
+  res = res / 360 * 255;
+
+  resultLine[i] = (uchar4)(res, res, res, 255);
 }
+
