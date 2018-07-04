@@ -205,7 +205,7 @@ void QgsPgNewConnection::testConnection()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
                       Qgis::Info );
 
     // free pg connection resources

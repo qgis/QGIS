@@ -176,7 +176,7 @@ bool QgsDb2NewConnection::testConnection()
   if ( errMsg.isEmpty() )
   {
     QgsDebugMsg( "connection open succeeded " + connInfo );
-    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtName->text() ),
                       Qgis::Info );
     return true;
   }
