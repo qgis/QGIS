@@ -425,6 +425,11 @@ class FeatureSourceTestCase(object):
         fids = [f.id() for f in self.source.getFeatures()]
         self.assertEqual(len(fids), 5)
 
+        # empty list = no features
+        request = QgsFeatureRequest().setFilterFids([])
+        result = set([f.id() for f in self.source.getFeatures(request)])
+        self.assertFalse(result)
+
         request = QgsFeatureRequest().setFilterFids([fids[0], fids[2]])
         result = set([f.id() for f in self.source.getFeatures(request)])
         all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
