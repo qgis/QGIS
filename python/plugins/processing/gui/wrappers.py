@@ -864,10 +864,10 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             self.combo = QComboBox()
             layers = self.getAvailableLayers()
             self.combo.setEditable(True)
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.addItem(self.NOT_SELECTED, self.NOT_SET_OPTION)
             for layer in layers:
                 self.combo.addItem(self.dialog.resolveValueDescription(layer), layer)
-            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                self.combo.setEditText("")
 
             widget = QWidget()
             layout = QHBoxLayout()
