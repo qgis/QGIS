@@ -55,7 +55,10 @@ class CORE_EXPORT QgsOpenClUtils
       Name = CL_DEVICE_NAME,
       Vendor = CL_DEVICE_VENDOR,
       Version = CL_DEVICE_VERSION,
-      Profile = CL_DEVICE_PROFILE
+      Profile = CL_DEVICE_PROFILE,
+      ImageSupport = CL_DEVICE_IMAGE_SUPPORT,
+      Image2dMaxWidth = CL_DEVICE_IMAGE2D_MAX_WIDTH,
+      Image2dMaxHeight = CL_DEVICE_IMAGE2D_MAX_HEIGHT
     };
 
     static bool enabled();
@@ -67,6 +70,14 @@ class CORE_EXPORT QgsOpenClUtils
     static QLatin1String LOGMESSAGE_TAG;
     static QString errorText( const int errorCode );
     static cl::Program buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior = Catch );
+
+    /**
+     * Context factory
+     *
+     * \return a new context for the default device or an invalid context if
+     *         no device were identified or OpenCL support is not available
+     *         and enabled
+     */
     static cl::Context context();
     static QString sourcePath();
     static void setSourcePath( const QString &value );

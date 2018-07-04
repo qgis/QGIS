@@ -1092,20 +1092,25 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                             "Vendor: <b>%2</b><br>"
                                             "Profile: <b>%3</b><br>"
                                             "Version: <b>%4</b><br>"
+                                            "Image support: <b>%5</b><br>"
+                                            "Max image2d width: <b>%6</b><br>"
+                                            "Max image2d height: <b>%7</b><br>"
                                           ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ) )
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight )
+                                               )
                           );
-    connect( mGPUEnableCheckBox, &QCheckBox::toggled, this, []( bool status )
-    {
-      QgsOpenClUtils::setEnabled( status );
-    }, Qt::UniqueConnection );
   }
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
-    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system. You may need to install additional libraries in order to enable OpenCL." ) );
+    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system.<br>"
+                                            "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                            "Please check your logs for further details." ) );
   }
 
 
@@ -1657,6 +1662,12 @@ void QgsOptions::saveOptions()
 
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
+
+#ifdef HAVE_OPENCL
+  // OpenCL settings
+  QgsOpenClUtils::setEnabled( mGPUEnableCheckBox->isChecked() );
+
+#endif
 
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )

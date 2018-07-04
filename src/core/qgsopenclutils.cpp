@@ -126,6 +126,12 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType )
         return QString::fromStdString( sDevice.getInfo<CL_DEVICE_PROFILE>() );
       case Info::Version:
         return QString::fromStdString( sDevice.getInfo<CL_DEVICE_VERSION>() );
+      case Info::ImageSupport:
+        return sDevice.getInfo<CL_DEVICE_IMAGE_SUPPORT>() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
+      case Info::Image2dMaxHeight:
+        return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_HEIGHT>() );
+      case Info::Image2dMaxWidth:
+        return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_WIDTH>() );
       case Info::Name:
       default:
         return QString::fromStdString( sDevice.getInfo<CL_DEVICE_NAME>() );
@@ -150,6 +156,8 @@ void QgsOpenClUtils::setEnabled( bool enabled )
 {
   QgsSettings().setValue( SETTINGS_KEY, enabled, QgsSettings::Section::Core );
 }
+
+
 
 QString QgsOpenClUtils::sourceFromPath( const QString &path )
 {
