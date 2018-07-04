@@ -746,11 +746,12 @@ int main( int argc, char *argv[] )
   /////////////////////////////////////////////////////////////////////
   if ( sProjectFileName.isEmpty() )
   {
-    // check for a .qgs
+    // check for a .qgs/z
     for ( int i = 0; i < args.size(); i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( args[i] ).absoluteFilePath() );
-      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) ||
+           arg.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) )
       {
         sProjectFileName = arg;
         break;
@@ -1288,8 +1289,9 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( layerName ) );
     // don't load anything with a .qgs extension - these are project files
-    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive )
-         && !QgsZipUtils::isZipFile( layerName ) )
+    if ( !layerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) &&
+         !layerName.endsWith( QLatin1String( ".qgz" ), Qt::CaseInsensitive ) &&
+         !QgsZipUtils::isZipFile( layerName ) )
     {
       qgis->openLayer( layerName );
     }
