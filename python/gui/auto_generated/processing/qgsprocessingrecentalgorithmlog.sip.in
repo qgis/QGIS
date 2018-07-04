@@ -1,0 +1,72 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingrecentalgorithmlog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsProcessingRecentAlgorithmLog : QObject
+{
+%Docstring
+A log for tracking recently used processing algorithms.
+
+QgsProcessingRecentAlgorithmLog is not usually directly created, instead
+use the instance accessible through :py:func:`QgsGui.processingRecentAlgorithmLog()`
+
+The log contents are saved and restored via QgsSettings.
+
+.. note::
+
+   Not stable API
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingrecentalgorithmlog.h"
+%End
+  public:
+
+    QgsProcessingRecentAlgorithmLog( QObject *parent = 0 );
+%Docstring
+Constructor for QgsProcessingRecentAlgorithmLog, with the specified
+``parent`` object.
+%End
+
+    QStringList recentAlgorithmIds() const;
+%Docstring
+Returns a list of the IDs of recently used processing algorithms, where the
+first item in the list is the most recently used algorithm.
+%End
+
+    void push( const QString &id );
+%Docstring
+Pushes the algorithm with matching ``id`` to the top of the recently used
+algorithm list.
+
+If this changes the list of recent algorithm IDs then the changed() signal
+will be emitted.
+%End
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when the list of recently used algorithms is changed, e.g. when
+a new algorithm ID is pushed to the list (see push()).
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingrecentalgorithmlog.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

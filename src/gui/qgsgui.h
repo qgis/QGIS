@@ -31,6 +31,7 @@ class QgsNative;
 class QgsLayoutItemGuiRegistry;
 class QgsWidgetStateHelper;
 class QgsProcessingGuiRegistry;
+class QgsProcessingRecentAlgorithmLog;
 
 /**
  * \ingroup gui
@@ -97,6 +98,12 @@ class GUI_EXPORT QgsGui
     static QgsProcessingGuiRegistry *processingGuiRegistry();
 
     /**
+     * Returns the global processing recent algorithm log, used for tracking recently used processing algorithms.
+     * \since QGIS 3.4
+     */
+    static QgsProcessingRecentAlgorithmLog *processingRecentAlgorithmLog();
+
+    /**
      * Register the widget to allow its position to be automatically saved and restored when open and closed.
      * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
      */
@@ -117,6 +124,7 @@ class GUI_EXPORT QgsGui
     QgsMapLayerActionRegistry *mMapLayerActionRegistry = nullptr;
     QgsLayoutItemGuiRegistry *mLayoutItemGuiRegistry = nullptr;
     QgsProcessingGuiRegistry *mProcessingGuiRegistry = nullptr;
+    QgsProcessingRecentAlgorithmLog *mProcessingRecentAlgorithmLog = nullptr;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
