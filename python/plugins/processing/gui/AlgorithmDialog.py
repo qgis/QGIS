@@ -44,7 +44,8 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingAlgorithm)
-from qgis.gui import (QgsMessageBar,
+from qgis.gui import (QgsGui,
+                      QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
 from qgis.utils import iface
 
@@ -188,6 +189,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 command = self.algorithm().asPythonCommand(parameters, context)
                 if command:
                     ProcessingLog.addToLog(command)
+                QgsGui.instance().processingRecentAlgorithmLog().push(self.algorithm().id())
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
 
                 def on_complete(ok, results):
