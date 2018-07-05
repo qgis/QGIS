@@ -120,6 +120,10 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     }
   }
 
+  mDetectTypes=true;
+  if ( url.hasQueryItem( QStringLiteral( "detectTypes" ) ) )
+    mDetectTypes = ! url.queryItemValue( QStringLiteral( "detectTypes" ) ).toLower().startsWith( 'n' );
+
   if ( url.hasQueryItem( QStringLiteral( "decimalPoint" ) ) )
     mDecimalPoint = url.queryItemValue( QStringLiteral( "decimalPoint" ) );
 
@@ -225,7 +229,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
   QgsDebugMsg( QString( "Field type string: %1" ).arg( strTypeList ) );
 
   int pos = 0;
-  QRegExp reType( "(integer|real|string|date|datetime|time)" );
+  QRegExp reType( "(integer|real|double|string|date|datetime|time)" );
 
   while ( ( pos = reType.indexIn( strTypeList, pos ) ) != -1 )
   {
@@ -240,10 +244,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( const QString &filenam
     // *message=tr("Reading field types from %1").arg(csvtInfo.fileName());
   }
 
-
   return types;
-
-
 }
 
 void QgsDelimitedTextProvider::resetCachedSubset() const
@@ -556,6 +557,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         couldBeDouble[i] = true;
       }
 
+      if( ! mDetectTypes )
+      {
+          continue;
+      }
+
       // Now test for still valid possible types for the field
       // Types are possible until first record which cannot be parsed
 
@@ -603,39 +609,39 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     QString typeName = QStringLiteral( "text" );
     if ( i < csvtTypes.size() )
     {
-      if ( csvtTypes[i] == QLatin1String( "integer" ) )
-      {
-        fieldType = QVariant::Int;
-        typeName = QStringLiteral( "integer" );
-      }
-      else if ( csvtTypes[i] == QLatin1String( "long" ) || csvtTypes[i] == QLatin1String( "longlong" ) || csvtTypes[i] == QLatin1String( "int8" ) )
-      {
-        fieldType = QVariant::LongLong; //QVariant doesn't support long
-        typeName = QStringLiteral( "longlong" );
-      }
-      else if ( csvtTypes[i] == QLatin1String( "real" ) || csvtTypes[i] == QLatin1String( "double" ) )
-      {
-        fieldType = QVariant::Double;
-        typeName = QStringLiteral( "double" );
-      }
+      typeName = csvtTypes[i];
     }
-    else if ( i < couldBeInt.size() )
+    else if ( mDetectTypes && i < couldBeInt.size() )
     {
       if ( couldBeInt[i] )
       {
-        fieldType = QVariant::Int;
         typeName = QStringLiteral( "integer" );
       }
       else if ( couldBeLongLong[i] )
       {
-        fieldType = QVariant::LongLong;
         typeName = QStringLiteral( "longlong" );
       }
       else if ( couldBeDouble[i] )
       {
-        fieldType = QVariant::Double;
         typeName = QStringLiteral( "double" );
       }
+    }
+    if( typeName == QStringLiteral( "integer" ) )
+    {
+      fieldType = QVariant::Int;
+    }
+    else if ( typeName == QStringLiteral( "longlong" ) )
+    {
+      fieldType = QVariant::LongLong;
+    }
+    else if(  typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
+    {
+      typeName = QStringLiteral( "double" );
+      fieldType = QVariant::Double;
+    }
+    else
+    {
+      typeName = QStringLiteral( "text" );
     }
     attributeFields.append( QgsField( fieldNames[i], fieldType, typeName ) );
   }
