@@ -106,6 +106,16 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QToolButton" name="btnRepeat">
+       <property name="toolTip">
+        <string>Repeat</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
   </layout>

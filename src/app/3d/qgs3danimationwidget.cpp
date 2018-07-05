@@ -33,6 +33,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   btnEditKeyframe->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnPlayPause->setIcon( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ) );
   btnDuplicateKeyframe->setIcon( QIcon( QgsApplication::iconPath( "mActionEditCopy.svg" ) ) );
+  btnRepeat->setIcon( QIcon( QgsApplication::iconPath( "mActionRefresh.svg" ) ) );
 
   cboKeyframe->addItem( tr( "<none>" ) );
 
@@ -47,6 +48,8 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
 
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
+
+  btnRepeat->setCheckable( true );
 
   connect( sliderTime, &QSlider::valueChanged, this, &Qgs3DAnimationWidget::onSliderValueChanged );
 
@@ -139,8 +142,21 @@ void Qgs3DAnimationWidget::onPlayPause()
 
 void Qgs3DAnimationWidget::onAnimationTimer()
 {
-  float duration = sliderTime->maximum();
-  sliderTime->setValue( sliderTime->value() >= duration ? 0 : sliderTime->value() + 1 );
+  if ( sliderTime->value() >= sliderTime->maximum() )
+  {
+    if ( btnRepeat->isChecked() )
+      sliderTime->setValue( 0 );
+    else
+    {
+      // stop playback
+      onPlayPause();
+      btnPlayPause->setChecked( false );
+    }
+  }
+  else
+  {
+    sliderTime->setValue( sliderTime->value() + 1 );
+  }
 }
 
 
@@ -173,7 +189,12 @@ void Qgs3DAnimationWidget::onCameraChanged()
 
 void Qgs3DAnimationWidget::onKeyframeChanged()
 {
-  if ( cboKeyframe->currentIndex() <= 0 )
+  bool hasKeyframe = cboKeyframe->currentIndex() > 0;
+  btnRemoveKeyframe->setEnabled( hasKeyframe );
+  btnEditKeyframe->setEnabled( hasKeyframe );
+  btnDuplicateKeyframe->setEnabled( hasKeyframe );
+
+  if ( !hasKeyframe )
     return;
 
   // jump to the camera view of the keyframe
