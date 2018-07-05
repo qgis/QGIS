@@ -285,7 +285,7 @@ class Database(DbItemObject):
                     q = 1
                     while "_subq_%d_" % q in sql:
                         q += 1
-                    sql = "SELECT %s AS _uid_,* FROM (%s) AS _subq_%d_" % (uniqueFct, sql, q)
+                    sql = u"SELECT %s AS _uid_,* FROM (%s\n) AS _subq_%d_" % (uniqueFct, sql, q)
                     uniqueCol = "_uid_"
 
         uri = self.uri()
