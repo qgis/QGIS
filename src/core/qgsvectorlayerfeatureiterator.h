@@ -341,8 +341,8 @@ class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
 
 };
 
-///@endcond
-
 #endif
+
+///@endcond
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H
