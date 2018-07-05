@@ -72,10 +72,32 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
     void setLookingAtPoint( const QgsVector3D &point, float distance = -1 );
 
+    /**
+     * Sets the complete camera configuration: the point towards it is looking (in 3D world coordinates), the distance
+     * of the camera from the point, pitch angle in degrees (0 = looking from the top, 90 = looking from the side) and
+     * yaw angle in degrees.
+     * \since QGIS 3.4
+     */
     void setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw );
 
+    /**
+     * Returns distance of the camera from the point it is looking at.
+     * \since QGIS 3.4
+     */
     float distance() const { return mCameraData.dist; }
+
+    /**
+     * Returns pitch angle in degrees (0 = looking from the top, 90 = looking from the side).
+     * The angle should range from 0 to 180.
+     * \since QGIS 3.4
+     */
     float pitch() const { return mCameraData.pitch; }
+
+    /**
+     * Returns yaw angle in degrees.  Yaw value of zero means the camera is pointing towards north.
+     * The angle should range from 0 to 360.
+     * \since QGIS 3.4
+     */
     float yaw() const { return mCameraData.yaw; }
 
     //! Writes camera configuration to the given DOM element
