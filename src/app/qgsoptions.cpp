@@ -1110,13 +1110,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                             "Image support: <b>%5</b><br>"
                                             "Max image2d width: <b>%6</b><br>"
                                             "Max image2d height: <b>%7</b><br>"
+                                            "Max mem alloc size: <b>%8</b><br>"
                                           ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport ),
                                               QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight )
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight ),
+                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize )
                                                )
                           );
 >>>>>>> [opencl] Test with image2d
