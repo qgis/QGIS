@@ -113,9 +113,13 @@ class CORE_EXPORT QgsOpenClUtils
      */
     static cl::Context context();
 
-
+    //! Return the base path to OpenCL program directory
     static QString sourcePath();
+
+    //! Set the  base path to OpenCL program directory
     static void setSourcePath( const QString &value );
+
+    //! Return \a infoType information about the default device
     static QString deviceInfo( const Info infoType = Info::Name );
 
     /**
