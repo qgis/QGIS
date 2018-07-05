@@ -35,17 +35,8 @@ __kernel void processNineCellWindow( __global float *scanLine1,
     }
     else
     {
-      // 180.0 / M_PI = 57.29577951308232
-      float aspect = atan2( derX, derY ) * 57.29577951308232;
-      if ( aspect < 0 )
-          aspect = 90.0f - aspect;
-      else if (aspect > 90.0f)
-          // 360 + 90 = 450
-          aspect = 450.0f - aspect;
-      else
-          aspect = 90.0 - aspect;
-      // aspect = aspect / 360 * 255; // for display
-      aspect = radians( aspect );
+      float aspect = atan2( derX, - derY );
+      // aspect = aspect * M_PI * 255; // for display
 
       float slope = sqrt( derX * derX + derY * derY );
       slope = atan( slope );

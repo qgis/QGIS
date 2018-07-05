@@ -58,7 +58,8 @@ class CORE_EXPORT QgsOpenClUtils
       Profile = CL_DEVICE_PROFILE,
       ImageSupport = CL_DEVICE_IMAGE_SUPPORT,
       Image2dMaxWidth = CL_DEVICE_IMAGE2D_MAX_WIDTH,
-      Image2dMaxHeight = CL_DEVICE_IMAGE2D_MAX_HEIGHT
+      Image2dMaxHeight = CL_DEVICE_IMAGE2D_MAX_HEIGHT,
+      MaxMemAllocSize = CL_DEVICE_MAX_MEM_ALLOC_SIZE
     };
 
     static bool enabled();

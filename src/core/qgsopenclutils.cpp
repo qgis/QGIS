@@ -130,6 +130,8 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType )
         return sDevice.getInfo<CL_DEVICE_IMAGE_SUPPORT>() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
       case Info::Image2dMaxHeight:
         return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_HEIGHT>() );
+      case Info::MaxMemAllocSize:
+        return QString::number( sDevice.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() );
       case Info::Image2dMaxWidth:
         return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_WIDTH>() );
       case Info::Name:
