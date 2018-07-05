@@ -145,6 +145,8 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   QUrl url = mFile->url();
 
+  url.addQueryItem( QStringLiteral( "detectTypes" ), cbxDetectTypes->isChecked() ? QStringLiteral("yes") : QStringLiteral("no") );
+
   if ( cbxPointIsComma->isChecked() )
   {
     url.addQueryItem( QStringLiteral( "decimalPoint" ), QStringLiteral( "," ) );
@@ -192,9 +194,9 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   }
 
-  if ( ! geomTypeNone->isChecked() ) url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? "yes" : "no" );
-  url.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? "yes" : "no" );
-  url.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? "yes" : "no" );
+  if ( ! geomTypeNone->isChecked() ) url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral("yes") : QStringLiteral("no") );
+  url.addQueryItem( QStringLiteral( "subsetIndex" ), cbxSubsetIndex->isChecked() ? QStringLiteral("yes") : QStringLiteral("no") );
+  url.addQueryItem( QStringLiteral( "watchFile" ), cbxWatchFile->isChecked() ? QStringLiteral("yes") : QStringLiteral("no") );
 
   // store the settings
   saveSettings();
@@ -284,6 +286,7 @@ void QgsDelimitedTextSourceSelect::loadSettings( const QString &subkey, bool loa
 
   rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
   cbxUseHeader->setChecked( settings.value( key + "/useHeader", "true" ) != "false" );
+  cbxDetectTypes->setChecked( settings.value( key + "/detectTypes", "true" ) != "false" );
   cbxTrimFields->setChecked( settings.value( key + "/trimFields", "false" ) == "true" );
   cbxSkipEmptyFields->setChecked( settings.value( key + "/skipEmptyFields", "false" ) == "true" );
   cbxPointIsComma->setChecked( settings.value( key + "/decimalPoint", "." ).toString().contains( ',' ) );
@@ -329,6 +332,7 @@ void QgsDelimitedTextSourceSelect::saveSettings( const QString &subkey, bool sav
   settings.setValue( key + "/delimiterRegexp", txtDelimiterRegexp->text() );
   settings.setValue( key + "/startFrom", rowCounter->value() );
   settings.setValue( key + "/useHeader", cbxUseHeader->isChecked() ? "true" : "false" );
+  settings.setValue( key + "/detectTypes", cbxDetectTypes->isChecked() ? "true" : "false" );
   settings.setValue( key + "/trimFields", cbxTrimFields->isChecked() ? "true" : "false" );
   settings.setValue( key + "/skipEmptyFields", cbxSkipEmptyFields->isChecked() ? "true" : "false" );
   settings.setValue( key + "/decimalPoint", cbxPointIsComma->isChecked() ? "," : "." );

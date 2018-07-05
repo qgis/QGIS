@@ -337,7 +337,7 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
             print((prefix + '    ' + repr(msg) + ','))
         print((prefix + '    ]'))
         print('    return wanted')
-        print()
+        print('',flush=True)
 
     def recordDifference(self, record1, record2):
         # Compare a record defined as a dictionary
@@ -802,6 +802,21 @@ class TestQgsDelimitedTextProviderOther(unittest.TestCase):
         # x/y containing some null geometries
         filename = 'test14666.csv'
         params = {'yField': 'y', 'xField': 'x', 'type': 'csv', 'delimiter': '\\t'}
+        requests = None
+        self.runTest(filename, requests, **params)
+     
+    def test_041_no_detect_type(self):
+        # CSV file parsing
+        # Skip lines
+        filename = 'testtypes.csv'
+        params = {'yField': 'lat', 'xField': 'lon', 'type': 'csv', 'detectTypes': 'no'}
+        requests = None
+        self.runTest(filename, requests, **params)
+
+    def test_042_no_detect_types_csvt(self):
+        # CSVT field types
+        filename = 'testcsvt.csv'
+        params = {'geomType': 'none', 'type': 'csv', 'detectTypes': 'no' }
         requests = None
         self.runTest(filename, requests, **params)
 
