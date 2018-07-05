@@ -50,9 +50,12 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void onAddKeyframe();
     void onRemoveKeyframe();
     void onEditKeyframe();
+    void onDuplicateKeyframe();
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );
+    float askForKeyframeTime( float defaultTime, bool *ok );
+    int findIndexForKeyframe( float time );
 
   private:
     std::unique_ptr<Qgs3DAnimationSettings> mAnimationSettings;

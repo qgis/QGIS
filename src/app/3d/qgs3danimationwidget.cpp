@@ -32,6 +32,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   btnRemoveKeyframe->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   btnEditKeyframe->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnPlayPause->setIcon( QIcon( QgsApplication::iconPath( "mTaskRunning.svg" ) ) );
+  btnDuplicateKeyframe->setIcon( QIcon( QgsApplication::iconPath( "mActionEditCopy.svg" ) ) );
 
   cboKeyframe->addItem( tr( "<none>" ) );
 
@@ -42,6 +43,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( btnAddKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onAddKeyframe );
   connect( btnRemoveKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onRemoveKeyframe );
   connect( btnEditKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onEditKeyframe );
+  connect( btnDuplicateKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onDuplicateKeyframe );
 
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
@@ -181,27 +183,47 @@ void Qgs3DAnimationWidget::onKeyframeChanged()
   mCameraController->setLookingAtPoint( kf.point, kf.dist, kf.pitch, kf.yaw );
 }
 
-
-void Qgs3DAnimationWidget::onAddKeyframe()
+int Qgs3DAnimationWidget::findIndexForKeyframe( float time )
 {
-  bool ok;
-  double t = QInputDialog::getDouble( this, tr( "Add keyframe" ), tr( "Keyframe time [seconds]:" ), sliderTime->value() / 100., 0, 9999, 2, &ok );
-  if ( !ok )
-    return;
+  int newIndex = 0;
+  for ( const Qgs3DAnimationSettings::Keyframe &keyframe : mAnimationSettings->keyFrames() )
+  {
+    if ( keyframe.time > time )
+      break;
+    newIndex++;
+  }
+  return newIndex;
+}
+
+float Qgs3DAnimationWidget::askForKeyframeTime( float defaultTime, bool *ok )
+{
+  double t = QInputDialog::getDouble( this, tr( "Keyframe time" ), tr( "Keyframe time [seconds]:" ), defaultTime, 0, 9999, 2, ok );
+  if ( !*ok )
+    return 0;
 
   // figure out position of this keyframe
-  int index = 0;
   for ( const Qgs3DAnimationSettings::Keyframe &keyframe : mAnimationSettings->keyFrames() )
   {
     if ( keyframe.time == t )
     {
-      QMessageBox::warning( this, tr( "Add keyframe" ), tr( "There is already a keyframe at the given time" ) );
-      return;
+      QMessageBox::warning( this, tr( "Keyframe time" ), tr( "There is already a keyframe at the given time" ) );
+      *ok = false;
+      return 0;
     }
-    if ( keyframe.time > t )
-      break;
-    index++;
   }
+
+  *ok = true;
+  return t;
+}
+
+void Qgs3DAnimationWidget::onAddKeyframe()
+{
+  bool ok;
+  float t = askForKeyframeTime( sliderTime->value() / 100., &ok );
+  if ( !ok )
+    return;
+
+  int index = findIndexForKeyframe( t );
 
   Qgs3DAnimationSettings::Keyframe kf;
   kf.time = t;
@@ -239,19 +261,9 @@ void Qgs3DAnimationWidget::onEditKeyframe()
   Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( index, Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
 
   bool ok;
-  double t = QInputDialog::getDouble( this, tr( "Edit keyframe" ), tr( "Keyframe time [seconds]:" ), kf.time, 0, 9999, 2, &ok );
+  float t = askForKeyframeTime( kf.time, &ok );
   if ( !ok )
     return;
-
-  // figure out position of this keyframe
-  for ( const Qgs3DAnimationSettings::Keyframe &keyframe : mAnimationSettings->keyFrames() )
-  {
-    if ( keyframe.time == t )
-    {
-      QMessageBox::warning( this, tr( "Edit keyframe" ), tr( "There is already a keyframe at the given time" ) );
-      return;
-    }
-  }
 
   cboKeyframe->setCurrentIndex( 0 );
   cboKeyframe->removeItem( index );
@@ -259,13 +271,33 @@ void Qgs3DAnimationWidget::onEditKeyframe()
   initializeController( animation() );
 
   // figure out position of this keyframe
-  int newIndex = 0;
-  for ( const Qgs3DAnimationSettings::Keyframe &keyframe : mAnimationSettings->keyFrames() )
-  {
-    if ( keyframe.time > t )
-      break;
-    newIndex++;
-  }
+  int newIndex = findIndexForKeyframe( t );
+
+  kf.time = t;
+
+  cboKeyframe->insertItem( newIndex + 1, QString( "%1 s" ).arg( kf.time ) );
+  cboKeyframe->setItemData( newIndex + 1, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( kf ), Qt::UserRole + 1 );
+
+  initializeController( animation() );
+
+  cboKeyframe->setCurrentIndex( newIndex + 1 );
+}
+
+void Qgs3DAnimationWidget::onDuplicateKeyframe()
+{
+  int index = cboKeyframe->currentIndex();
+  if ( index <= 0 )
+    return;
+
+  Qgs3DAnimationSettings::Keyframe kf = cboKeyframe->itemData( index, Qt::UserRole + 1 ).value<Qgs3DAnimationSettings::Keyframe>();
+
+  bool ok;
+  float t = askForKeyframeTime( kf.time, &ok );
+  if ( !ok )
+    return;
+
+  // figure out position of this keyframe
+  int newIndex = findIndexForKeyframe( t );
 
   kf.time = t;
 
