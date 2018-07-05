@@ -186,9 +186,9 @@ QString QgsOpenClUtils::sourceFromBaseName( const QString &baseName )
   return sourceFromPath( path );
 }
 
-QString QgsOpenClUtils::buildLog( cl::BuildError &e )
+QString QgsOpenClUtils::buildLog( cl::BuildError &error )
 {
-  cl::BuildLogType build_logs = e.getBuildLog();
+  cl::BuildLogType build_logs = error.getBuildLog();
   QString build_log;
   if ( build_logs.size() > 0 )
     build_log = QString::fromStdString( build_logs[0].second );
