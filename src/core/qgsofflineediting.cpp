@@ -83,7 +83,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
     return false;
   }
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
-  if ( createSpatialiteDB( dbPath, gpkg ) )
+  if ( createOfflineDb( dbPath, gpkg ) )
   {
     spatialite_database_unique_ptr database;
     int rc = database.open( dbPath );
@@ -385,7 +385,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   spatial_ref_sys_init( sqlite_handle, 0 );
 }
 
-bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath, bool gpkg )
+bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, bool gpkg )
 {
   int ret;
   char *errMsg = nullptr;

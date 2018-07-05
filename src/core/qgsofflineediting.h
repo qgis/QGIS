@@ -107,7 +107,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
   private:
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
-    bool createSpatialiteDB( const QString &offlineDbPath, bool gpkg = false );
+    bool createOfflineDb( const QString &offlineDbPath, bool gpkg = false );
     void createLoggingTables( sqlite3 *db );
 
     QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, bool gpkg );
