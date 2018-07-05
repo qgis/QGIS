@@ -138,9 +138,9 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   std::vector<float> a_vec = {1, 10, 100};
   std::vector<float> b_vec = {1, 10, 100};
   std::vector<float> c_vec = {-1, -1, -1};
-  cl::Buffer a_buf( a_vec.begin(), a_vec.end(), true );
-  cl::Buffer b_buf( b_vec.begin(), b_vec.end(), true );
-  cl::Buffer c_buf( c_vec.begin(), c_vec.end(), false );
+  cl::Buffer a_buf( queue, a_vec.begin(), a_vec.end(), true );
+  cl::Buffer b_buf( queue, b_vec.begin(), b_vec.end(), true );
+  cl::Buffer c_buf( queue, c_vec.begin(), c_vec.end(), false );
 
   cl::Program program = QgsOpenClUtils::buildProgram( ctx, QString::fromStdString( source() ) );
 
@@ -160,7 +160,7 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
           c_buf
         );
 
-  cl::copy( c_buf, c_vec.begin(), c_vec.end() );
+  cl::copy( queue, c_buf, c_vec.begin(), c_vec.end() );
   for ( size_t i = 0; i < c_vec.size(); ++i )
   {
     QCOMPARE( c_vec[i], a_vec[i] + b_vec[i] );
