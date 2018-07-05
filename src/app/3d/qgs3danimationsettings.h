@@ -36,17 +36,18 @@ class Qgs3DAnimationSettings
     //! keyframe definition
     struct Keyframe
     {
-      float time;            //!< Relative time of the keyframe in seconds
-
-      QgsVector3D point;  //!< Point towards which the camera is looking in 3D world coords
-      float dist;   //!< Distance of the camera from the focal point
-      float pitch;  //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
-      float yaw;    //!< Horizontal rotation around the focal point in degrees
+      float time = 0;    //!< Relative time of the keyframe in seconds
+      QgsVector3D point; //!< Point towards which the camera is looking in 3D world coords
+      float dist = 0;    //!< Distance of the camera from the focal point
+      float pitch = 0;   //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
+      float yaw = 0;     //!< Horizontal rotation around the focal point in degrees
     };
 
     typedef QVector<Keyframe> Keyframes;
 
+    //! Configures keyframes of the animation. It is expected that the keyframes are ordered according to their time.
     void setKeyframes( const Keyframes &keyframes ) { mKeyframes = keyframes; }
+    //! Returns keyframes of the animation
     Keyframes keyFrames() const { return mKeyframes; }
 
     //! Returns duration of the whole animation in seconds
