@@ -29,13 +29,14 @@ float Qgs3DAnimationSettings::duration() const
 
 Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time ) const
 {
-  Q_ASSERT( !mKeyframes.isEmpty() );
+  if ( mKeyframes.isEmpty() )
+    return Keyframe();
 
-  if ( time < 0 )
+  if ( time < mKeyframes.constFirst().time )
   {
     return mKeyframes.first();
   }
-  else if ( time >= duration() )
+  else if ( time >= mKeyframes.constLast().time )
   {
     return mKeyframes.last();
   }
@@ -44,7 +45,7 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
     // TODO: make easing curves configurable.
     // QEasingCurve is probably not flexible enough, we may need more granular
     // control with Bezier curves to allow smooth transition at keyframes
-    QEasingCurve easing( QEasingCurve::InOutQuad );
+    QEasingCurve easing( QEasingCurve::Linear );
 
     for ( int i = 0; i < mKeyframes.size() - 1; i++ )
     {
