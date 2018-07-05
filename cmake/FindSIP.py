@@ -43,4 +43,4 @@ if hasattr(sipcfg, "sip_mod_dir"):
     print("sip_mod_dir:%s" % sipcfg.sip_mod_dir)
 else:
     # SIP 4.19.10+ has no sipcfg.sip_mod_dir
-    print("sip_mod_dir:%s" % sipcfg.sip_module_dir)
+    print("sip_module_dir:%s" % sipcfg.sip_module_dir)
