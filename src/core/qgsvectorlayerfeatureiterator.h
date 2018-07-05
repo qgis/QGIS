@@ -318,4 +318,31 @@ class CORE_EXPORT QgsVectorLayerSelectedFeatureSource : public QgsFeatureSource,
 
 };
 
+///@cond PRIVATE
+
+#ifndef SIP_RUN
+class QgsVectorLayerSelectedFeatureIterator : public QgsAbstractFeatureIterator
+{
+  public:
+
+    QgsVectorLayerSelectedFeatureIterator( const QgsFeatureIds &selectedFeatureIds,
+                                           const QgsFeatureRequest &request,
+                                           QgsVectorLayerFeatureSource &source );
+
+    bool rewind() override;
+    bool close() override;
+
+  protected:
+    bool fetchFeature( QgsFeature &f ) override;
+
+  private:
+    QgsFeatureIds mSelectedFeatureIds;
+    QgsFeatureIterator mIterator;
+
+};
+
+///@endcond
+
+#endif
+
 #endif // QGSVECTORLAYERFEATUREITERATOR_H
