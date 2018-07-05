@@ -202,7 +202,7 @@ class ORDatabase(Database):
         uri = self.uri()
         con = self.database().connector
 
-        uri.setDataSource(u"", u"({})".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
+        uri.setDataSource(u"", u"({}\n)".format(sql), geomCol, filter, uniqueCol.strip(u'"'))
         if avoidSelectById:
             uri.disableSelectAtId(True)
         provider = self.dbplugin().providerName()
@@ -212,7 +212,7 @@ class ORDatabase(Database):
         if not vlayer.isValid():
 
             wkbType, srid = con.getTableMainGeomType(
-                u"({})".format(sql), geomCol)
+                u"({}\n)".format(sql), geomCol)
             uri.setWkbType(wkbType)
             if srid:
                 uri.setSrid(str(srid))
