@@ -217,6 +217,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
 <<<<<<< 16a49cddaa18cb6d0b12335fe24c68cda183e1c0
   cl::CommandQueue queue( ctx );
 
@@ -238,6 +239,14 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl_int errorCode = 0;
 
 >>>>>>> [opencl] Test with image2d
+=======
+  cl::CommandQueue queue( ctx );
+
+  //keep only three scanlines in memory at a time, make room for initial and final nodata
+  QgsOpenClUtils::CPLAllocator<float> scanLine( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
+
+>>>>>>> [opencl] Reduce memory footprint and optimize
   // Cast to float (because double just crashes on some GPUs)
   std::vector<float> rasterParams;
 
@@ -252,14 +261,21 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   addExtraRasterParams( rasterParams );
 
   std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   std::size_t inputSize( sizeof( float ) * ( xSize ) );
+=======
+>>>>>>> [opencl] Reduce memory footprint and optimize
 
   cl::Buffer rasterParamsBuffer( queue, rasterParams.begin(), rasterParams.end(), true, false, nullptr );
   cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine3Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   cl::Buffer *scanLineBuffer[3] = {&scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer};
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
+=======
+  cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, nullptr );
+>>>>>>> [opencl] Reduce memory footprint and optimize
 
   // Create a program from the kernel source
   cl::Program program( QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
@@ -273,9 +289,12 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
                 cl::Buffer &
                 > ( program, "processNineCellWindow" );
 
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   // Rotate buffer index
   std::vector<int> rowIndex = {0, 1, 2};
 
+=======
+>>>>>>> [opencl] Reduce memory footprint and optimize
   // values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
@@ -291,14 +310,19 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( i == 0 )
     {
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Fill scanline 1 with (input) nodata for the values above the first row and
       // feed scanline2 with the first actual data row
+=======
+      // Fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
+>>>>>>> [opencl] Reduce memory footprint and optimize
       for ( int a = 0; a < xSize + 2 ; ++a )
       {
         scanLine[a] = mInputNodataValue;
       }
       queue.enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Read scanline2: first real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
@@ -319,6 +343,17 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
       // Read scanline3: second real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+=======
+      // Read scanline2
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
+      queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
+
+      // Read scanline3
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+>>>>>>> [opencl] Reduce memory footprint and optimize
       {
         QgsDebugMsg( "Raster IO Error" );
       }
@@ -327,22 +362,36 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     else
     {
       // Normally fetch only scanLine3 and move forward one row
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Read scanline 3, fill the last row with nodata values if it's the last iteration
+=======
+      queue.enqueueCopyBuffer( scanLine2Buffer, scanLine1Buffer, 0, 0, bufferSize, nullptr, nullptr );
+      queue.enqueueCopyBuffer( scanLine3Buffer, scanLine2Buffer, 0, 0, bufferSize, nullptr, nullptr );
+
+      // Read scanline 3
+>>>>>>> [opencl] Reduce memory footprint and optimize
       if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
       {
         for ( int a = 0; a < xSize + 2; ++a )
         {
           scanLine[a] = mInputNodataValue;
         }
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
       else // Read line i + 1 and put it into scanline 3
         // Overwrite from input, skip first and last
+=======
+        queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+      }
+      else // Overwrite from input, skip first and last
+>>>>>>> [opencl] Reduce memory footprint and optimize
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
           QgsDebugMsg( "Raster IO Error" );
         }
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
     }
@@ -363,6 +412,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     errorCode = cl::enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0,
                                         sizeof( float ) * ( xSize + 2 ), scanLine3.get() );
 >>>>>>> Use OpenCL command queue
+=======
+        queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+      }
+    }
+>>>>>>> [opencl] Reduce memory footprint and optimize
 
     kernel( cl::EnqueueArgs(
               queue,
@@ -375,7 +429,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
             rasterParamsBuffer
           );
 
+<<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
     queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, inputSize, resultLine.get() );
+=======
+    queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine.get() );
+>>>>>>> [opencl] Reduce memory footprint and optimize
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
