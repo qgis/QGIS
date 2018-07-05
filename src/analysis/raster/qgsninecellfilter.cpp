@@ -52,8 +52,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
       }
       catch ( cl::Error &e )
       {
-        QString err = QObject::tr( "Error %1 running OpenCL program in %2" )
-                      .arg( QgsOpenClUtils::errorText( e.err() ), QString::fromStdString( e.what() ) );
+        QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ) ).arg( QgsOpenClUtils::errorText( e.err( ) ) );
         QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::Critical );
         throw QgsProcessingException( err );
       }
@@ -209,16 +208,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   // Prepare context and queue
   cl::Context ctx = QgsOpenClUtils::context();
-  cl::Context::setDefault( ctx );
   cl::CommandQueue queue( ctx );
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
-  QgsOpenClUtils::CPLAllocator<float> scanLine1( xSize + 2 );
-  QgsOpenClUtils::CPLAllocator<float> scanLine2( xSize + 2 );
-  QgsOpenClUtils::CPLAllocator<float> scanLine3( xSize + 2 );
+  QgsOpenClUtils::CPLAllocator<float> scanLine( xSize + 2 );
   QgsOpenClUtils::CPLAllocator<float> resultLine( xSize );
-
-  cl_int errorCode = 0;
 
   // Cast to float (because double just crashes on some GPUs)
   std::vector<float> rasterParams;
@@ -231,12 +225,13 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
   addExtraRasterParams( rasterParams );
 
+  std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
 
-  cl::Buffer rasterParamsBuffer( rasterParams.begin(), rasterParams.end(), true, false, &errorCode );
-  cl::Buffer scanLine1Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-  cl::Buffer scanLine2Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-  cl::Buffer scanLine3Buffer( CL_MEM_READ_ONLY, sizeof( float ) * ( xSize + 2 ), nullptr, &errorCode );
-  cl::Buffer resultLineBuffer( CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, &errorCode );
+  cl::Buffer rasterParamsBuffer( queue, rasterParams.begin(), rasterParams.end(), true, false, nullptr );
+  cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
+  cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
+  cl::Buffer scanLine3Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
+  cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, nullptr );
 
   // Create a program from the kernel source
   cl::Program program( QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
@@ -250,7 +245,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
                 cl::Buffer &
                 > ( program, "processNineCellWindow" );
 
-  //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
+  // values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
     if ( feedback && feedback->isCanceled() )
@@ -265,54 +260,51 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( i == 0 )
     {
-      //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
+      // Fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
       for ( int a = 0; a < xSize + 2 ; ++a )
       {
-        scanLine1[a] = mInputNodataValue;
+        scanLine[a] = mInputNodataValue;
       }
+      queue.enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
+
       // Read scanline2
-      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
         QgsDebugMsg( "Raster IO Error" );
       }
-    }
-    else
-    {
-      //normally fetch only scanLine3 and release scanline 1 if we move forward one row
-      scanLine1.reset( scanLine2.release() );
-      scanLine2.reset( scanLine3.release() );
-      scanLine3.reset( xSize + 2 );
-    }
+      queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
-    // Read scanline 3
-    if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
-    {
-      for ( int a = 0; a < xSize + 2; ++a )
-      {
-        scanLine3[a] = mInputNodataValue;
-      }
-    }
-    else
-    {
-      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      // Read scanline3
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
         QgsDebugMsg( "Raster IO Error" );
       }
+      queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
     }
-    // Set first and last extra colums to nodata
-    scanLine1[0] = scanLine1[xSize + 1] = mInputNodataValue;
-    scanLine2[0] = scanLine2[xSize + 1] = mInputNodataValue;
-    scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
+    else
+    {
+      // Normally fetch only scanLine3 and move forward one row
+      queue.enqueueCopyBuffer( scanLine2Buffer, scanLine1Buffer, 0, 0, bufferSize, nullptr, nullptr );
+      queue.enqueueCopyBuffer( scanLine3Buffer, scanLine2Buffer, 0, 0, bufferSize, nullptr, nullptr );
 
-    // TODO: There is room for further optimization here: instead of replacing the buffers
-    //       we could just replace just the new one (the top row) and switch the order
-    //       of buffer arguments in the kernell call.
-    errorCode = cl::enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0,
-                                        sizeof( float ) * ( xSize + 2 ), scanLine1.get() );
-    errorCode = cl::enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0,
-                                        sizeof( float ) * ( xSize + 2 ), scanLine2.get() );
-    errorCode = cl::enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0,
-                                        sizeof( float ) * ( xSize + 2 ), scanLine3.get() );
+      // Read scanline 3
+      if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
+      {
+        for ( int a = 0; a < xSize + 2; ++a )
+        {
+          scanLine[a] = mInputNodataValue;
+        }
+        queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+      }
+      else // Overwrite from input, skip first and last
+      {
+        if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+        {
+          QgsDebugMsg( "Raster IO Error" );
+        }
+        queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+      }
+    }
 
     kernel( cl::EnqueueArgs(
               queue,
@@ -325,7 +317,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
             rasterParamsBuffer
           );
 
-    cl::enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine.get() );
+    queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine.get() );
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
@@ -393,9 +385,10 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   }
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
-  float *scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
-  float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
-  float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+  std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
+  float *scanLine1 = ( float * ) CPLMalloc( bufferSize );
+  float *scanLine2 = ( float * ) CPLMalloc( bufferSize );
+  float *scanLine3 = ( float * ) CPLMalloc( bufferSize );
 
   float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
@@ -431,7 +424,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
       CPLFree( scanLine1 );
       scanLine1 = scanLine2;
       scanLine2 = scanLine3;
-      scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * ( xSize + 2 ) );
+      scanLine3 = ( float * ) CPLMalloc( bufferSize );
     }
 
     // Read scanline 3
