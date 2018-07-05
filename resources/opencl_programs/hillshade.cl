@@ -6,7 +6,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                                        __global float *scanLine3,
                                        __global uchar4 *resultLine, // This is an image BGRA !
                                        __global float *rasterParams //  [ mInputNodataValue, mOutputNodataValue, mZFactor, mCellSizeX, mCellSizeY,
-                                                                    //    azimuthRad, cosZenithRad, sinZenithRad ]
+                                                                    //    azimuthRad, cosZenithRad, sinZenithRad, mOpacity ]
 
                          ) {
 
@@ -31,7 +31,7 @@ __kernel void processNineCellWindow( __global float *scanLine1,
     float res;
     if ( derX == rasterParams[1] || derY == rasterParams[1] )
     {
-      res = rasterParams[1];
+      res = 255.0f;
     }
     else
     {
@@ -49,6 +49,9 @@ __kernel void processNineCellWindow( __global float *scanLine1,
 
     }
 
-    resultLine[i] = (uchar4)(res, res, res, 255);
+    // Opacity
+    res = res * rasterParams[7];
+
+    resultLine[i] = (uchar4)(res, res, res, 255 * rasterParams[7]);
 
 }
