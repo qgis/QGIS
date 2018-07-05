@@ -6,50 +6,11 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>378</width>
-    <height>368</height>
+    <width>381</width>
+    <height>566</height>
    </rect>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Column</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
-     <property name="maximumSize">
-      <size>
-       <width>500</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_9">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Symbol</string>
-     </property>
-    </widget>
-   </item>
    <item row="1" column="1">
     <widget class="QPushButton" name="btnChangeCategorizedSymbol">
      <property name="sizePolicy">
@@ -63,46 +24,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_10">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Color ramp</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QgsColorRampButton" name="btnColorRamp">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>120</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0" colspan="2">
+   <item row="5" column="0" colspan="2">
     <widget class="QTreeView" name="viewCategories">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
@@ -136,19 +58,12 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
+   <item row="6" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QPushButton" name="btnAddCategories">
-       <property name="text">
-        <string>Classify</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QPushButton" name="btnAddCategory">
        <property name="toolTip">
-        <string>Add</string>
+        <string>Add categories manually</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -159,7 +74,7 @@
      <item>
       <widget class="QPushButton" name="btnDeleteCategories">
        <property name="toolTip">
-        <string>Delete</string>
+        <string>Remove selected categories</string>
        </property>
        <property name="icon">
         <iconset resource="../../images/images.qrc">
@@ -169,6 +84,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnDeleteAllCategories">
+       <property name="toolTip">
+        <string>Remove all categories</string>
+       </property>
        <property name="text">
         <string>Delete all</string>
        </property>
@@ -189,12 +107,99 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnAdvanced">
+       <property name="toolTip">
+        <string>Advanced options</string>
+       </property>
        <property name="text">
         <string>Advanced</string>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Column</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_10">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Color ramp</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QgsFieldExpressionWidget" name="mExpressionWidget" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>500</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Symbol</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QgsColorRampButton" name="btnColorRamp">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>120</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="btnAddCategories">
+     <property name="toolTip">
+      <string>Add all missing categories from column or expression unique values</string>
+     </property>
+     <property name="text">
+      <string>Classify</string>
+     </property>
+    </widget>
    </item>
   </layout>
   <zorder>viewCategories</zorder>
@@ -203,12 +208,14 @@
   <zorder>label_10</zorder>
   <zorder>mExpressionWidget</zorder>
   <zorder>label_3</zorder>
+  <zorder>btnColorRamp</zorder>
+  <zorder>btnAddCategories</zorder>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -222,12 +229,11 @@
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>btnChangeCategorizedSymbol</tabstop>
   <tabstop>btnColorRamp</tabstop>
-  <tabstop>btnAddCategories</tabstop>
+  <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnAdvanced</tabstop>
-  <tabstop>viewCategories</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

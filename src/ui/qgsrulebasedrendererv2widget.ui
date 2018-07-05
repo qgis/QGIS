@@ -11,16 +11,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -73,7 +64,7 @@
      <item>
       <widget class="QPushButton" name="btnRemoveRule">
        <property name="toolTip">
-        <string>Remove selected rules</string>
+        <string>Remove selected rule(s)</string>
        </property>
        <property name="text">
         <string/>
