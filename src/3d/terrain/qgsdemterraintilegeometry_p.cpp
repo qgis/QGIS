@@ -101,20 +101,20 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
   return bufferBytes;
 }
 
-inline int ijToHeightMapIndex( int i, int j, int numVerticesX, int numVerticesZ )
+inline int ijToHeightMapIndex( int i, int j, int resX, int resZ )
 {
-  i = qBound( 1, i, numVerticesX - 1 ) - 1;
-  j = qBound( 1, j, numVerticesZ - 1 ) - 1;
-  return j * ( numVerticesX - 2 ) + i;
+  i = qBound( 1, i, resX ) - 1;
+  j = qBound( 1, j, resZ ) - 1;
+  return j * resX + i;
 }
 
 
-static bool hasNoData( int i, int j, const float *heightMap, int numVerticesX, int numVerticesZ )
+static bool hasNoData( int i, int j, const float *heightMap, int resX, int resZ )
 {
-  return std::isnan( heightMap[ ijToHeightMapIndex( i, j, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i, j + 1, numVerticesX, numVerticesZ ) ] ) ||
-         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j + 1, numVerticesX, numVerticesZ ) ] );
+  return std::isnan( heightMap[ ijToHeightMapIndex( i, j, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i, j + 1, resX, resZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j + 1, resX, resZ ) ] );
 }
 
 static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
@@ -142,7 +142,7 @@ static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
     // Iterate over x
     for ( int i = 0; i < numVerticesX - 1; ++i )
     {
-      if ( hasNoData( i, j, heightMapFloat, numVerticesX, numVerticesZ ) )
+      if ( hasNoData( i, j, heightMapFloat, res, res ) )
       {
         // at least one corner of the quad has no-data value
         // so let's make two invalid triangles
