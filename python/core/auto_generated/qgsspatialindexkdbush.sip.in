@@ -65,15 +65,15 @@ Copy constructor
 
     ~QgsSpatialIndexKDBush();
 
-    QList<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
+    QSet<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
 %Docstring
-Returns a list of features which fall within the specified ``rectangle``.
+Returns the set of features which fall within the specified ``rectangle``.
 %End
 
 
-    QList<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
+    QSet<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
 %Docstring
-Returns a list of features which are within the given search ``radius``
+Returns the set of features which are within the given search ``radius``
 of ``point``.
 %End
 
@@ -84,6 +84,11 @@ Fetches the point from the index with matching ``id`` and stores it in ``point``
 
 Returns true if the point was found, or false if no matching feature ID is present
 in the index.
+%End
+
+    qgssize size() const;
+%Docstring
+Returns the size of the index, i.e. the number of points contained within the index.
 %End
 
 };

@@ -83,9 +83,9 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     ~QgsSpatialIndexKDBush();
 
     /**
-     * Returns a list of features which fall within the specified \a rectangle.
+     * Returns the set of features which fall within the specified \a rectangle.
      */
-    QList<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
+    QSet<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
 
     /**
      * Calls a \a visitor function for all features which fall within the specified \a rectangle.
@@ -95,10 +95,10 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     void intersect( const QgsRectangle &rectangle, const std::function<void( QgsFeatureId )> &visitor ) const SIP_SKIP;
 
     /**
-     * Returns a list of features which are within the given search \a radius
+     * Returns the set of features which are within the given search \a radius
      * of \a point.
      */
-    QList<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
+    QSet<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
 
     /**
      * Calls a \a visitor function for all features which are within the given search \a radius
@@ -115,6 +115,11 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      * in the index.
      */
     bool point( QgsFeatureId id, QgsPointXY &point ) const;
+
+    /**
+     * Returns the size of the index, i.e. the number of points contained within the index.
+     */
+    qgssize size() const;
 
   private:
 
