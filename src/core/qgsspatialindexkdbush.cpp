@@ -16,91 +16,59 @@
  ***************************************************************************/
 
 #include "qgsspatialindexkdbush.h"
-#include "kdbush.hpp"
+#include "qgsspatialindexkdbush_p.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsfeaturesource.h"
 
-class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatureId >
-{
-  public:
-
-    explicit PointXYKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
-    {
-      fillFromIterator( fi, feedback );
-    }
-
-    explicit PointXYKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
-    {
-      points.reserve( source.featureCount() );
-      ids.reserve( source.featureCount() );
-      QgsFeatureIterator it = source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
-      fillFromIterator( it, feedback );
-    }
-
-    void fillFromIterator( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
-    {
-      QgsFeatureId size = 0;
-
-      QgsFeature f;
-      while ( fi.nextFeature( f ) )
-      {
-        if ( feedback && feedback->isCanceled() )
-          return;
-
-        if ( !f.hasGeometry() )
-          continue;
-
-        if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == QgsWkbTypes::Point )
-        {
-          const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() );
-          points.emplace_back( point->x(), point->y() );
-        }
-        else
-        {
-          // not a point
-          continue;
-        }
-
-        ids.push_back( f.id() );
-        size++;
-      }
-
-      sortKD( 0, size - 1, 0 );
-    }
-
-};
-
-//
-// QgsSpatialIndexKDBush
-//
-
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback )
-  : mIndex( qgis::make_unique < PointXYKDBush >( fi, feedback ) )
+  : d( new QgsSpatialIndexKDBushPrivate( fi, feedback ) )
 {
 
 }
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
-  : mIndex( qgis::make_unique < PointXYKDBush >( source, feedback ) )
+  : d( new QgsSpatialIndexKDBushPrivate( source, feedback ) )
 {
 }
 
-QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush() = default;
+QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other )
+{
+  d = other.d;
+  d->ref.ref();
+}
+
+QgsSpatialIndexKDBush &QgsSpatialIndexKDBush::operator=( const QgsSpatialIndexKDBush &other )
+{
+  if ( !d->ref.deref() )
+  {
+    delete d;
+  }
+
+  d = other.d;
+  d->ref.ref();
+  return *this;
+}
+
+QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
+{
+  if ( !d->ref.deref() )
+    delete d;
+}
 
 QList<QgsFeatureId> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
   QList<QgsFeatureId> result;
-  mIndex->within( point.x(), point.y(), radius, [&result]( const QgsFeatureId id ) { result << id; } );
+  d->index->within( point.x(), point.y(), radius, [&result]( const QgsFeatureId id ) { result << id; } );
   return result;
 }
 
 QList<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle ) const
 {
   QList<QgsFeatureId> result;
-  mIndex->range( rectangle.xMinimum(),
-                 rectangle.yMinimum(),
-                 rectangle.xMaximum(),
+  d->index->range( rectangle.xMinimum(),
+                   rectangle.yMinimum(),
+                   rectangle.xMaximum(),
   rectangle.yMaximum(), [&result]( const QgsFeatureId id ) { result << id; } );
   return result;
 }

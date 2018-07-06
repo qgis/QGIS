@@ -914,6 +914,7 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgsspatialindexkdbush.h
+  qgsspatialindexkdbush_p.h
   qgsspatialiteutils.h
   qgssqlstatement.h
   qgssqliteutils.h
