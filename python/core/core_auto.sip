@@ -113,6 +113,7 @@
 %Include auto_generated/qgssnappingutils.sip
 %Include auto_generated/qgsspatialindex.sip
 %Include auto_generated/qgsspatialindexkdbush.sip
+%Include auto_generated/qgsspatialindexkdbushdata.sip
 %Include auto_generated/qgssqlstatement.sip
 %Include auto_generated/qgsstatisticalsummary.sip
 %Include auto_generated/qgsstringstatisticalsummary.sip

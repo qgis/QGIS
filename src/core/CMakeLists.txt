@@ -915,6 +915,7 @@ SET(QGIS_CORE_HDRS
   qgsspatialindex.h
   qgsspatialindexkdbush.h
   qgsspatialindexkdbush_p.h
+  qgsspatialindexkdbushdata.h
   qgsspatialiteutils.h
   qgssqlstatement.h
   qgssqliteutils.h
