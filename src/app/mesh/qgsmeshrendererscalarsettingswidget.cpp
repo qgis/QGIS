@@ -79,14 +79,14 @@ void QgsMeshRendererScalarSettingsWidget::minMaxChanged()
 {
   double min = lineEditValue( mScalarMinLineEdit );
   double max = lineEditValue( mScalarMaxLineEdit );
-  mScalarColorRampShaderWidget->setMinMax( min, max );
+  mScalarColorRampShaderWidget->setMinimumMaximum( min, max );
 }
 
 void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
 {
   double min = lineEditValue( mScalarMinLineEdit );
   double max = lineEditValue( mScalarMaxLineEdit );
-  mScalarColorRampShaderWidget->setMinMaxAndClassify( min, max );
+  mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
@@ -95,7 +95,7 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   calcMinMax( mActiveDataset, min, max );
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
-  mScalarColorRampShaderWidget->setMinMaxAndClassify( min, max );
+  mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
 void QgsMeshRendererScalarSettingsWidget::setActiveDataset( int activeDataset )

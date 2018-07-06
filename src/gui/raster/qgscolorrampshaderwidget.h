@@ -49,16 +49,28 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     QgsColorRampShaderWidget( QWidget *parent = nullptr );
 
     //! Allows quantile classification mode for raster layers
-    void initForUseWithRasterLayer();
+    void initializeForUseWithRasterLayer();
 
-    //! Associates raster with the widget
-    void setRasterBand( QgsRasterDataProvider *dp, int band, const QgsRectangle &extent );
+    //! Associates raster with the widget, only when used for raster layer
+    void setRasterDataProvider( QgsRasterDataProvider *dp );
+
+    //! Sets raster band, only when used for raster layer
+    void setRasterBand( int band );
+
+    //! Sets extent, only when used for raster layer
+    void setExtent( const QgsRectangle &extent );
 
     //! Sets min max and classify color tree
-    void setMinMaxAndClassify( double min, double max );
+    void setMinimumMaximumAndClassify( double minimum, double maximum );
 
     //! Sets min max
-    void setMinMax( double min, double max );
+    void setMinimumMaximum( double minimum, double maximum );
+
+    //! Gets min value
+    double minimum() const;
+
+    //! Gets max value
+    double maximum() const;
 
     //! Returns shared function used in the renderer
     QgsColorRampShader shader() const;
@@ -68,7 +80,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
   signals:
     //! Color ramp tree has changed
-    void minMaxChangedFromTree( double min, double max );
+    void minimumMaximumChangedFromTree( double minimum, double maximum );
 
     //! Widget changed
     void widgetChanged();
@@ -84,7 +96,7 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void classify();
 
     //! Loads min and max values from color ramp tree
-    void loadMinMaxFromTree();
+    void loadMinimumMaximumFromTree();
 
   protected:
     //! Populates color ramp tree from ramp items
@@ -101,8 +113,8 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
 
     /**
      * Generate labels from the values in the color map.
-     *  Skip labels which were manually edited (black text).
-     *  Text of generated labels is made gray
+     * Skip labels which were manually edited (black text).
+     * Text of generated labels is made gray
      */
     void autoLabel();
 
