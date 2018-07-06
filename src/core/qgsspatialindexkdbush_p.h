@@ -86,6 +86,19 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
       sortKD( 0, size - 1, 0 );
     }
 
+    bool point( QgsFeatureId id, QgsPointXY &point ) const
+    {
+      auto iter = std::find_if( ids.begin(), ids.end(), [id]( QgsFeatureId f ) { return id == f; } );
+      size_t index = std::distance( ids.begin(), iter );
+      if ( index == ids.size() )
+      {
+        return false;
+      }
+
+      point = QgsPointXY( points[ index ].first, points[index].second );
+      return true;
+    }
+
 };
 
 class QgsSpatialIndexKDBushPrivate
