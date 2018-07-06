@@ -6,6 +6,7 @@ Content-Type: text/xml; charset=utf-8
   <ows:Title>QGIS TestProject</ows:Title>
   <ows:Abstract><![CDATA[Some UTF8 text èòù]]></ows:Abstract>
   <ows:ServiceType>WFS</ows:ServiceType>
+  <ows:ServiceTypeVersion>1.1.0</ows:ServiceTypeVersion>
   <ows:Fees>None</ows:Fees>
   <ows:AccessConstraints>None</ows:AccessConstraints>
  </ows:ServiceIdentification>
