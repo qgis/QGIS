@@ -4496,8 +4496,8 @@ void QgsSpatiaLiteProvider::getViewSpatialIndexName()
   {
     for ( i = 1; i <= rows; i++ )
     {
-      mIndexTable = results[( i * columns ) + 0];
-      mIndexGeometry = results[( i * columns ) + 1];
+      mIndexTable = QString::fromUtf8(( const char * ) results[( i * columns ) + 0] );
+      mIndexGeometry = QString::fromUtf8(( const char * ) results[( i * columns ) + 1] );
       mSpatialIndexRTree = true;
     }
   }
@@ -4660,8 +4660,8 @@ bool QgsSpatiaLiteProvider::getViewGeometryDetails()
       QString fType = results[( i * columns ) + 0];
       QString xSrid = results[( i * columns ) + 1];
       QString spatialIndex = results[( i * columns ) + 2];
-      mIndexTable = results[( i * columns ) + 3];
-      mIndexGeometry = results[( i * columns ) + 4];
+      mIndexTable = QString::fromUtf8(( const char * ) results[( i * columns ) + 3] );
+      mIndexGeometry = QString::fromUtf8(( const char * ) results[( i * columns ) + 4] );
 
       if ( fType == "POINT" )
       {
