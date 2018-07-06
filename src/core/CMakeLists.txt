@@ -2,6 +2,8 @@
 # sources
 
 SET(QGIS_CORE_SRCS
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include/kdbush.hpp
+
   ${CMAKE_SOURCE_DIR}/external/nmea/context.c
   ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
   ${CMAKE_SOURCE_DIR}/external/nmea/info.c
@@ -288,6 +290,7 @@ SET(QGIS_CORE_SRCS
   qgssimplifymethod.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgsspatialindexkdbush.cpp
   qgssqlexpressioncompiler.cpp
   qgssqliteexpressioncompiler.cpp
   qgssqlstatement.cpp
@@ -910,6 +913,7 @@ SET(QGIS_CORE_HDRS
   qgssimplifymethod.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgsspatialindexkdbush.h
   qgsspatialiteutils.h
   qgssqlstatement.h
   qgssqliteutils.h
@@ -1184,6 +1188,7 @@ INCLUDE_DIRECTORIES(
   symbology
   metadata
   mesh
+  ${CMAKE_SOURCE_DIR}/external/kdbush/include
   ${CMAKE_SOURCE_DIR}/external/nmea
   ${CMAKE_SOURCE_DIR}/external/poly2tri
 )

@@ -60,6 +60,8 @@ class QgsFeatureSource;
  * \note While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
  * class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
  * be used across multiple threads.
+ *
+ * \see QgsSpatialIndexKDBush, which is an optimised non-mutable index for point geometries only.
  */
 class CORE_EXPORT QgsSpatialIndex
 {

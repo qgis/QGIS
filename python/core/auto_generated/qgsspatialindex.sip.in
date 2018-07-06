@@ -27,6 +27,8 @@ QgsSpatialIndex objects are implicitly shared and can be inexpensively copied.
    While the underlying libspatialindex is not thread safe on some platforms, the QgsSpatialIndex
    class implements its own locks and accordingly, a single QgsSpatialIndex object can safely
    be used across multiple threads.
+
+.. seealso:: :py:class:`QgsSpatialIndexKDBush`
 %End
 
 %TypeHeaderCode
