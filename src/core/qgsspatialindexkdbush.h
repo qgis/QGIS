@@ -41,6 +41,7 @@ class QgsRectangle;
  * - supports single point features only (no multipoints)
  * - is static (features cannot be added or removed from the index after construction)
  * - is much faster!
+ * - allows direct retrieval of the original feature's points, without requiring additional feature requests
  * - supports true "distance based" searches, i.e. return all points within a radius
  * from a search point
  *
