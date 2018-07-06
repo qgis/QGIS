@@ -187,8 +187,8 @@ namespace QgsWfs
     //Service type version
     QDomElement serviceTypeVersionElem = doc.createElement( QStringLiteral( "ows:ServiceTypeVersion" ) );
     QDomText serviceTypeVersionText = doc.createTextNode( "1.1.0" );
-    serviceTypeElem.appendChild( serviceTypeText );
-    serviceElem.appendChild( serviceTypeElem );
+    serviceTypeVersionElem.appendChild( serviceTypeVersionText );
+    serviceElem.appendChild( serviceTypeVersionElem );
 
     QDomElement feesElem = doc.createElement( QStringLiteral( "ows:Fees" ) );
     QDomText feesText = doc.createTextNode( "None" );
