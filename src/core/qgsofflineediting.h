@@ -64,7 +64,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * \param layerIds List of layer names to convert
      * \param onlySelected Only copy selected features from layers where a selection is present
      */
-    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType dbContainerType = SpatiaLite );
+    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite );
 
     //! Returns true if current project is offline
     bool isOfflineProject() const;
@@ -113,10 +113,10 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
   private:
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
-    bool createOfflineDb( const QString &offlineDbPath, ContainerType dbContainerType = SpatiaLite );
+    bool createOfflineDb( const QString &offlineDbPath, ContainerType containerType = SpatiaLite );
     void createLoggingTables( sqlite3 *db );
 
-    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType dbContainerType = SpatiaLite );
+    QgsVectorLayer *copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType = SpatiaLite );
 
     void applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo );
     void applyFeaturesAdded( QgsVectorLayer *offlineLayer, QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId );

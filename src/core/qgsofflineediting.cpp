@@ -76,14 +76,14 @@ QgsOfflineEditing::QgsOfflineEditing()
  *  - remove remote layers
  *  - mark as offline project
  */
-bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType dbContainerType )
+bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
 {
   if ( layerIds.isEmpty() )
   {
     return false;
   }
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
-  if ( createOfflineDb( dbPath, dbContainerType ) )
+  if ( createOfflineDb( dbPath, containerType ) )
   {
     spatialite_database_unique_ptr database;
     int rc = database.open( dbPath );
@@ -138,7 +138,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, dbContainerType );
+          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, containerType );
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -385,7 +385,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   spatial_ref_sys_init( sqlite_handle, 0 );
 }
 
-bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, ContainerType dbContainerType )
+bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, ContainerType containerType )
 {
   int ret;
   char *errMsg = nullptr;
@@ -407,7 +407,7 @@ bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, Container
   QString dbPath = newDb.fileName();
 
   // creating geopackage
-  if ( dbContainerType == GPKG )
+  if ( containerType == GPKG )
   {
     OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
     if ( !hGpkgDriver )
@@ -492,7 +492,7 @@ void QgsOfflineEditing::createLoggingTables( sqlite3 *db )
   */
 }
 
-QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType dbContainerType )
+QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType )
 {
   if ( !layer )
     return nullptr;
@@ -503,7 +503,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // new layer
   QgsVectorLayer *newLayer = nullptr;
 
-  if ( dbContainerType != GPKG )
+  if ( containerType != GPKG )
   {
     // create table
     QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
