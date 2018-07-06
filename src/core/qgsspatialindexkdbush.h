@@ -88,10 +88,33 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     QList<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
 
     /**
+     * Calls a \a visitor function for all features which fall within the specified \a rectangle.
+     *
+     * \note Not available in Python bindings
+     */
+    void intersect( const QgsRectangle &rectangle, const std::function<void( QgsFeatureId )> &visitor ) const SIP_SKIP;
+
+    /**
      * Returns a list of features which are within the given search \a radius
      * of \a point.
      */
     QList<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
+
+    /**
+     * Calls a \a visitor function for all features which are within the given search \a radius
+     * of \a point.
+     *
+     * \note Not available in Python bindings
+     */
+    void within( const QgsPointXY &point, double radius, const std::function<void( QgsFeatureId )> &visitor ) SIP_SKIP;
+
+    /**
+     * Fetches the point from the index with matching \a id and stores it in \a point.
+     *
+     * Returns true if the point was found, or false if no matching feature ID is present
+     * in the index.
+     */
+    bool point( QgsFeatureId id, QgsPointXY &point ) const;
 
   private:
 

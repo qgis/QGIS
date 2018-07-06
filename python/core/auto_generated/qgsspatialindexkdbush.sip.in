@@ -23,6 +23,8 @@ Compared to QgsSpatialIndex, this index:
 - supports true "distance based" searches, i.e. return all points within a radius
 from a search point
 
+QgsSpatialIndexKDBush objects are implicitly shared and can be inexpensively copied.
+
 .. seealso:: :py:class:`QgsSpatialIndex`
 
 .. versionadded:: 3.4
@@ -68,10 +70,20 @@ Copy constructor
 Returns a list of features which fall within the specified ``rectangle``.
 %End
 
+
     QList<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
 %Docstring
 Returns a list of features which are within the given search ``radius``
 of ``point``.
+%End
+
+
+    bool point( QgsFeatureId id, QgsPointXY &point ) const;
+%Docstring
+Fetches the point from the index with matching ``id`` and stores it in ``point``.
+
+Returns true if the point was found, or false if no matching feature ID is present
+in the index.
 %End
 
 };

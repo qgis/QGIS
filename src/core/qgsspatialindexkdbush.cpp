@@ -63,6 +63,16 @@ QList<QgsFeatureId> QgsSpatialIndexKDBush::within( const QgsPointXY &point, doub
   return result;
 }
 
+void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( QgsFeatureId )> &visitor )
+{
+  d->index->within( point.x(), point.y(), radius, visitor );
+}
+
+bool QgsSpatialIndexKDBush::point( QgsFeatureId id, QgsPointXY &point ) const
+{
+  return d->index->point( id, point );
+}
+
 QList<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle ) const
 {
   QList<QgsFeatureId> result;
@@ -71,4 +81,12 @@ QList<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectan
                    rectangle.xMaximum(),
   rectangle.yMaximum(), [&result]( const QgsFeatureId id ) { result << id; } );
   return result;
+}
+
+void QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle, const std::function<void ( QgsFeatureId )> &visitor ) const
+{
+  d->index->range( rectangle.xMinimum(),
+                   rectangle.yMinimum(),
+                   rectangle.xMaximum(),
+                   rectangle.yMaximum(), visitor );
 }
