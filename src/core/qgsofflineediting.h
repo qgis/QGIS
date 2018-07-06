@@ -49,6 +49,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
       UpdateGeometries
     };
 
+    //! Type of offline database container file
     enum ContainerType
     {
       SpatiaLite,
