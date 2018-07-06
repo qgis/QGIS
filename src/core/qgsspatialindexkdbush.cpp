@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 #include "qgsspatialindexkdbush.h"
-#include "qgsspatialindexkdbush_p.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsfeaturesource.h"
+#include "qgsspatialindexkdbush_p.h"
 
 QgsSpatialIndexKDBush::QgsSpatialIndexKDBush( QgsFeatureIterator &fi, QgsFeedback *feedback )
   : d( new QgsSpatialIndexKDBushPrivate( fi, feedback ) )
@@ -59,11 +59,11 @@ QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
 QSet<QgsFeatureId> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
   QSet<QgsFeatureId> result;
-  d->index->within( point.x(), point.y(), radius, [&result]( const QgsFeatureId id ) { result.insert( id ); } );
+  d->index->within( point.x(), point.y(), radius, [&result]( const QgsSpatialIndexKDBushData & p ) { result.insert( p.id ); } );
   return result;
 }
 
-void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( QgsFeatureId )> &visitor )
+void QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor )
 {
   d->index->within( point.x(), point.y(), radius, visitor );
 }
@@ -84,11 +84,11 @@ QSet<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectang
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
                    rectangle.xMaximum(),
-  rectangle.yMaximum(), [&result]( const QgsFeatureId id ) { result << id; } );
+  rectangle.yMaximum(), [&result]( const QgsSpatialIndexKDBushData & p ) { result << p.id; } );
   return result;
 }
 
-void QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle, const std::function<void ( QgsFeatureId )> &visitor ) const
+void QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const
 {
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),

@@ -32,7 +32,7 @@
 //
 
 #include "qgsfeature.h"
-
+#include "qgsspatialindexkdbushdata.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsfeaturesource.h"
@@ -40,7 +40,8 @@
 #include <QList>
 #include "kdbush.hpp"
 
-class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatureId >
+
+class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpatialIndexKDBushData, std::size_t >
 {
   public:
 
@@ -52,14 +53,13 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
     explicit PointXYKDBush( const QgsFeatureSource &source, QgsFeedback *feedback )
     {
       points.reserve( source.featureCount() );
-      ids.reserve( source.featureCount() );
       QgsFeatureIterator it = source.getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
       fillFromIterator( it, feedback );
     }
 
     void fillFromIterator( QgsFeatureIterator &fi, QgsFeedback *feedback = nullptr )
     {
-      QgsFeatureId size = 0;
+      std::size_t size = 0;
 
       QgsFeature f;
       while ( fi.nextFeature( f ) )
@@ -73,8 +73,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
         if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == QgsWkbTypes::Point )
         {
           const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() );
-          points.emplace_back( point->x(), point->y() );
-          mIdToPoint[ f.id() ] = QgsPointXY( point->x(), point->y() );
+          points.emplace_back( QgsSpatialIndexKDBushData( f.id(), point->x(), point->y() ) );
         }
         else
         {
@@ -82,20 +81,23 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
           continue;
         }
 
-        ids.push_back( f.id() );
         size++;
       }
+
+      if ( size == 0 )
+        return;
 
       sortKD( 0, size - 1, 0 );
     }
 
     bool point( QgsFeatureId id, QgsPointXY &point ) const
     {
-      auto it = mIdToPoint.constFind( id );
-      if ( it == mIdToPoint.constEnd() )
+      auto it = std::find_if( points.begin(), points.end(),
+      [id]( const QgsSpatialIndexKDBushData & d ) { return d.id == id; } );
+      if ( it == points.end() )
         return false;
 
-      point = *it;
+      point = QgsPointXY( it->coords.first, it->coords.second );
       return true;
     }
 
@@ -103,10 +105,6 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
     {
       return points.size();
     }
-
-  private:
-
-    QHash< QgsFeatureId, QgsPointXY > mIdToPoint;
 
 };
 

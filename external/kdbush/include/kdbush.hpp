@@ -16,7 +16,7 @@ struct nth {
     }
 };
 
-template <typename TPoint, typename TIndex = std::size_t>
+template <typename TPoint, typename TContainer, typename TIndex = std::size_t>
 class KDBush {
 
 public:
@@ -54,12 +54,12 @@ public:
         if (size == 0) return;
 
         points.reserve(size);
-        ids.reserve(size);
+        //ids.reserve(size);
 
         TIndex i = 0;
         for (auto p = points_begin; p != points_end; p++) {
             points.emplace_back(nth<0, TPoint>::get(*p), nth<1, TPoint>::get(*p));
-            ids.push_back(i++);
+            //ids.push_back(i++);
         }
 
         sortKD(0, size - 1, 0);
@@ -71,17 +71,17 @@ public:
                const TNumber maxX,
                const TNumber maxY,
                const TVisitor &visitor) {
-        range(minX, minY, maxX, maxY, visitor, 0, static_cast<TIndex>(ids.size() - 1), 0);
+        range(minX, minY, maxX, maxY, visitor, 0, static_cast<TIndex>(points.size() - 1), 0);
     }
 
     template <typename TVisitor>
     void within(const TNumber qx, const TNumber qy, const TNumber r, const TVisitor &visitor) {
-        within(qx, qy, r, visitor, 0, static_cast<TIndex>(ids.size() - 1), 0);
+        within(qx, qy, r, visitor, 0, static_cast<TIndex>(points.size() - 1), 0);
     }
 
 protected:
-    std::vector<TIndex> ids;
-    std::vector<std::pair<TNumber, TNumber>> points;
+    //std::vector<TIndex> ids;
+    std::vector<TContainer> points;
     std::uint8_t nodeSize;
 
     template <typename TVisitor>
@@ -93,21 +93,23 @@ protected:
                const TIndex left,
                const TIndex right,
                const std::uint8_t axis) {
+        if ( points.empty() )
+            return;
 
         if (right - left <= nodeSize) {
             for (auto i = left; i <= right; i++) {
-                const TNumber x = std::get<0>(points[i]);
-                const TNumber y = std::get<1>(points[i]);
-                if (x >= minX && x <= maxX && y >= minY && y <= maxY) visitor(ids[i]);
+                const TNumber x = std::get<0>(points[i].coords);
+                const TNumber y = std::get<1>(points[i].coords);
+                if (x >= minX && x <= maxX && y >= minY && y <= maxY) visitor(points[i]);
             }
             return;
         }
 
         const TIndex m = (left + right) >> 1;
-        const TNumber x = std::get<0>(points[m]);
-        const TNumber y = std::get<1>(points[m]);
+        const TNumber x = std::get<0>(points[m].coords);
+        const TNumber y = std::get<1>(points[m].coords);
 
-        if (x >= minX && x <= maxX && y >= minY && y <= maxY) visitor(ids[m]);
+        if (x >= minX && x <= maxX && y >= minY && y <= maxY) visitor(points[m]);
 
         if (axis == 0 ? minX <= x : minY <= y)
             range(minX, minY, maxX, maxY, visitor, left, m - 1, (axis + 1) % 2);
@@ -125,22 +127,25 @@ protected:
                 const TIndex right,
                 const std::uint8_t axis) {
 
+        if ( points.empty() )
+            return;
+
         const TNumber r2 = r * r;
 
         if (right - left <= nodeSize) {
             for (auto i = left; i <= right; i++) {
-                const TNumber x = std::get<0>(points[i]);
-                const TNumber y = std::get<1>(points[i]);
-                if (sqDist(x, y, qx, qy) <= r2) visitor(ids[i]);
+                const TNumber x = std::get<0>(points[i].coords);
+                const TNumber y = std::get<1>(points[i].coords);
+                if (sqDist(x, y, qx, qy) <= r2) visitor(points[i]);
             }
             return;
         }
 
         const TIndex m = (left + right) >> 1;
-        const TNumber x = std::get<0>(points[m]);
-        const TNumber y = std::get<1>(points[m]);
+        const TNumber x = std::get<0>(points[m].coords);
+        const TNumber y = std::get<1>(points[m].coords);
 
-        if (sqDist(x, y, qx, qy) <= r2) visitor(ids[m]);
+        if (sqDist(x, y, qx, qy) <= r2) visitor(points[m]);
 
         if (axis == 0 ? qx - r <= x : qy - r <= y)
             within(qx, qy, r, visitor, left, m - 1, (axis + 1) % 2);
@@ -175,20 +180,20 @@ protected:
                 select<I>(k, std::max(left, TIndex(r)), std::min(right, TIndex(r + s)));
             }
 
-            const TNumber t = std::get<I>(points[k]);
+            const TNumber t = std::get<I>(points[k].coords);
             TIndex i = left;
             TIndex j = right;
 
             swapItem(left, k);
-            if (std::get<I>(points[right]) > t) swapItem(left, right);
+            if (std::get<I>(points[right].coords) > t) swapItem(left, right);
 
             while (i < j) {
                 swapItem(i++, j--);
-                while (std::get<I>(points[i]) < t) i++;
-                while (std::get<I>(points[j]) > t) j--;
+                while (std::get<I>(points[i].coords) < t) i++;
+                while (std::get<I>(points[j].coords) > t) j--;
             }
 
-            if (std::get<I>(points[left]) == t)
+            if (std::get<I>(points[left].coords) == t)
                 swapItem(left, j);
             else {
                 swapItem(++j, right);
@@ -200,7 +205,7 @@ protected:
     }
 
     void swapItem(const TIndex i, const TIndex j) {
-        std::iter_swap(ids.begin() + static_cast<std::int32_t>(i), ids.begin() + static_cast<std::int32_t>(j));
+        // std::iter_swap(ids.begin() + static_cast<std::int32_t>(i), ids.begin() + static_cast<std::int32_t>(j));
         std::iter_swap(points.begin() + static_cast<std::int32_t>(i), points.begin() + static_cast<std::int32_t>(j));
     }
 

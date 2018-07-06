@@ -27,6 +27,7 @@ class QgsRectangle;
 
 #include "qgis_core.h"
 #include "qgsfeature.h"
+#include "qgsspatialindexkdbushdata.h"
 #include <memory>
 #include <QList>
 
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      *
      * \note Not available in Python bindings
      */
-    void intersect( const QgsRectangle &rectangle, const std::function<void( QgsFeatureId )> &visitor ) const SIP_SKIP;
+    void intersect( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const SIP_SKIP;
 
     /**
      * Returns the set of features which are within the given search \a radius
@@ -106,7 +107,7 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      *
      * \note Not available in Python bindings
      */
-    void within( const QgsPointXY &point, double radius, const std::function<void( QgsFeatureId )> &visitor ) SIP_SKIP;
+    void within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) SIP_SKIP;
 
     /**
      * Fetches the point from the index with matching \a id and stores it in \a point.
