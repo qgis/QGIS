@@ -66,6 +66,8 @@ namespace QgsWfs
                        const QVariant::Type type = QVariant::String,
                        const QVariant defaultValue = QVariant( "" ) );
 
+      virtual ~QgsWfsParameter() = default;
+
       int toInt() const;
       QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
       QgsRectangle toRectangle() const;
@@ -112,6 +114,8 @@ namespace QgsWfs
        * Constructor for WFS parameters with default values only.
         */
       QgsWfsParameters();
+
+      virtual ~QgsWfsParameters() = default;
 
       /**
        * Loads new parameters.

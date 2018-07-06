@@ -29,6 +29,8 @@ the Free Software Foundation; either version 2 of the License, or     *
     QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
                                   const QVariant defaultValue = QVariant( "" ) );
 
+    virtual ~QgsServerParameterDefinition();
+
     QString typeName() const;
     virtual bool isValid() const;
 
@@ -109,6 +111,8 @@ Constructor.
 %Docstring
 Constructor.
 %End
+
+    virtual ~QgsServerParameters();
 
     void load( const QUrlQuery &query );
 %Docstring

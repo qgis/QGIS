@@ -32,6 +32,8 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
                                   const QVariant defaultValue = QVariant( "" ) );
 
+    virtual ~QgsServerParameterDefinition() = default;
+
     QString typeName() const;
     virtual bool isValid() const;
 
@@ -102,6 +104,8 @@ class SERVER_EXPORT QgsServerParameters
      * Constructor.
      */
     QgsServerParameters( const QUrlQuery &query );
+
+    virtual ~QgsServerParameters() = default;
 
     /**
      * Loads new parameters.

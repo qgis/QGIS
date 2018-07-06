@@ -159,6 +159,8 @@ namespace QgsWms
                        const QVariant::Type type = QVariant::String,
                        const QVariant defaultValue = QVariant( "" ) );
 
+      virtual ~QgsWmsParameter() = default;
+
       bool isValid() const override;
 
       QList<QgsGeometry> toGeomList( const char delimiter = ',' ) const;
@@ -209,6 +211,8 @@ namespace QgsWms
        * Constructor for WMS parameters with default values only.
         */
       QgsWmsParameters();
+
+      virtual ~QgsWmsParameters() = default;
 
       /**
        * Loads new parameters.
