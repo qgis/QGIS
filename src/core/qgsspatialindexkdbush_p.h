@@ -90,17 +90,6 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsSpati
       sortKD( 0, size - 1, 0 );
     }
 
-    bool point( QgsFeatureId id, QgsPointXY &point ) const
-    {
-      auto it = std::find_if( points.begin(), points.end(),
-      [id]( const QgsSpatialIndexKDBushData & d ) { return d.id == id; } );
-      if ( it == points.end() )
-        return false;
-
-      point = QgsPointXY( it->coords.first, it->coords.second );
-      return true;
-    }
-
     std::size_t size() const
     {
       return points.size();

@@ -51,6 +51,18 @@ static QList<QgsFeature> _pointFeatures()
   return feats;
 }
 
+bool testContains( const QList<QgsSpatialIndexKDBushData> &data, QgsFeatureId id, const QgsPointXY &point )
+{
+  for ( const QgsSpatialIndexKDBushData &d : data )
+  {
+    if ( d.id == id )
+    {
+      return d.point() == point;
+    }
+  }
+  return false;
+}
+
 class TestQgsSpatialIndexKdBush : public QObject
 {
     Q_OBJECT
@@ -75,42 +87,30 @@ class TestQgsSpatialIndexKdBush : public QObject
       QgsSpatialIndexKDBush index( *vl->dataProvider() );
       QCOMPARE( index.size(), 4 );
 
-      QSet<QgsFeatureId> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QVERIFY( fids.contains( 1 ) );
+      QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
-      QSet<QgsFeatureId> fids2 = index.intersect( QgsRectangle( -10, -10, 0, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids2 = index.intersect( QgsRectangle( -10, -10, 0, 10 ) );
       QCOMPARE( fids2.count(), 2 );
-      QVERIFY( fids2.contains( 2 ) );
-      QVERIFY( fids2.contains( 3 ) );
+      QVERIFY( testContains( fids2, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids2, 3, QgsPointXY( -1, -1 ) ) );
 
-      QSet<QgsFeatureId> fids3 = index.within( QgsPointXY( 0, 0 ), 2 );
+      QList<QgsSpatialIndexKDBushData> fids3 = index.within( QgsPointXY( 0, 0 ), 2 );
       QCOMPARE( fids3.count(), 4 );
-      QVERIFY( fids3.contains( 1 ) );
-      QVERIFY( fids3.contains( 2 ) );
-      QVERIFY( fids3.contains( 3 ) );
-      QVERIFY( fids3.contains( 4 ) );
+      QVERIFY( testContains( fids3, 1, QgsPointXY( 1, 1 ) ) );
+      QVERIFY( testContains( fids3, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids3, 3, QgsPointXY( -1, -1 ) ) );
+      QVERIFY( testContains( fids3, 4, QgsPointXY( 1, -1 ) ) );
 
-      QSet<QgsFeatureId> fids4 = index.within( QgsPointXY( 0, 0 ), 1 );
+      QList<QgsSpatialIndexKDBushData> fids4 = index.within( QgsPointXY( 0, 0 ), 1 );
       QCOMPARE( fids4.count(), 0 );
 
-      QSet<QgsFeatureId> fids5 = index.within( QgsPointXY( -1, -1 ), 2.1 );
+      QList<QgsSpatialIndexKDBushData> fids5 = index.within( QgsPointXY( -1, -1 ), 2.1 );
       QCOMPARE( fids5.count(), 3 );
-      QVERIFY( fids5.contains( 2 ) );
-      QVERIFY( fids5.contains( 3 ) );
-      QVERIFY( fids5.contains( 4 ) );
-
-      QgsPointXY p;
-      QVERIFY( !index.point( -1, p ) );
-      QVERIFY( !index.point( 5, p ) );
-      QVERIFY( index.point( 1, p ) );
-      QCOMPARE( p, QgsPointXY( 1, 1 ) );
-      QVERIFY( index.point( 2, p ) );
-      QCOMPARE( p, QgsPointXY( -1, 1 ) );
-      QVERIFY( index.point( 3, p ) );
-      QCOMPARE( p, QgsPointXY( -1, -1 ) );
-      QVERIFY( index.point( 4, p ) );
-      QCOMPARE( p, QgsPointXY( 1, -1 ) );
+      QVERIFY( testContains( fids5, 2, QgsPointXY( -1, 1 ) ) );
+      QVERIFY( testContains( fids5, 3, QgsPointXY( -1, -1 ) ) );
+      QVERIFY( testContains( fids5, 4, QgsPointXY( 1, -1 ) ) );
     }
 
     void testCopy()
@@ -128,9 +128,9 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( index->d->ref == 2 );
 
       // test that copied index works
-      QSet<QgsFeatureId> fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QVERIFY( fids.contains( 1 ) );
+      QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
       // check that the index is still shared
       QVERIFY( index->d == indexCopy->d );
@@ -141,7 +141,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       // test that copied index still works
       fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QVERIFY( fids.contains( 1 ) );
+      QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
       QVERIFY( indexCopy->d->ref == 1 );
 
       // assignment operator
@@ -157,7 +157,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( index3.d->ref == 2 );
       fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QVERIFY( fids.contains( 1 ) );
+      QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
       indexCopy.reset();
       QVERIFY( index3.d->ref == 1 );
