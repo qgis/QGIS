@@ -85,7 +85,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
       QgsSpatialIndexKDBush index( *vl->dataProvider() );
-      QCOMPARE( index.size(), 4 );
+      QVERIFY( index.size() == 4 );
 
       QList<QgsSpatialIndexKDBushData> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
