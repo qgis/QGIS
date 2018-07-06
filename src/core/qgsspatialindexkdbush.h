@@ -84,9 +84,9 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     ~QgsSpatialIndexKDBush();
 
     /**
-     * Returns the set of features which fall within the specified \a rectangle.
+     * Returns the list of features which fall within the specified \a rectangle.
      */
-    QSet<QgsFeatureId> intersect( const QgsRectangle &rectangle ) const;
+    QList<QgsSpatialIndexKDBushData> intersect( const QgsRectangle &rectangle ) const;
 
     /**
      * Calls a \a visitor function for all features which fall within the specified \a rectangle.
@@ -96,10 +96,10 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     void intersect( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const SIP_SKIP;
 
     /**
-     * Returns the set of features which are within the given search \a radius
+     * Returns the list of features which are within the given search \a radius
      * of \a point.
      */
-    QSet<QgsFeatureId> within( const QgsPointXY &point, double radius ) const;
+    QList<QgsSpatialIndexKDBushData> within( const QgsPointXY &point, double radius ) const;
 
     /**
      * Calls a \a visitor function for all features which are within the given search \a radius
@@ -108,14 +108,6 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      * \note Not available in Python bindings
      */
     void within( const QgsPointXY &point, double radius, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) SIP_SKIP;
-
-    /**
-     * Fetches the point from the index with matching \a id and stores it in \a point.
-     *
-     * Returns true if the point was found, or false if no matching feature ID is present
-     * in the index.
-     */
-    bool point( QgsFeatureId id, QgsPointXY &point ) const;
 
     /**
      * Returns the size of the index, i.e. the number of points contained within the index.
