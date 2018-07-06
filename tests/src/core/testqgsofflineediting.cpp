@@ -103,7 +103,7 @@ void TestQgsOfflineEditing::createSpatialiteAndSynchronizeBack()
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
 
   //convert
-  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, false );
+  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::SpatiaLite );
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );
@@ -126,7 +126,7 @@ void TestQgsOfflineEditing::createGeopackageAndSynchronizeBack()
   QCOMPARE( mpLayer->fields().size(), numberOfFields );
 
   //convert
-  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, true );
+  mOfflineEditing->convertToOfflineProject( offlineDataPath, offlineDbFile, layerIds, false, QgsOfflineEditing::GPKG );
 
   mpLayer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayers().first() );
   QCOMPARE( mpLayer->name(), QStringLiteral( "points (offline)" ) );

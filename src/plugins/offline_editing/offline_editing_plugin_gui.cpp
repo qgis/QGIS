@@ -146,14 +146,17 @@ bool QgsOfflineEditingPluginGui::onlySelected() const
   return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
-bool QgsOfflineEditingPluginGui::isGeopackage() const
+QgsOfflineEditing::ContainerType QgsOfflineEditingPluginGui::dbContainerType() const
 {
-  return mSelectDatatypeCombo->currentIndex() == 0;
+  if ( mSelectDatatypeCombo->currentIndex() == 0 )
+    return QgsOfflineEditing::GPKG;
+  else
+    return QgsOfflineEditing::SpatiaLite;
 }
 
 void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
-  if ( isGeopackage() )
+  if ( dbContainerType() == QgsOfflineEditing::GPKG )
   {
     //GeoPackage
     QString fileName = QFileDialog::getSaveFileName( this,
