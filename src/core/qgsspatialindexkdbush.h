@@ -22,7 +22,7 @@ class QgsPointXY;
 class QgsFeatureIterator;
 class QgsFeedback;
 class QgsFeatureSource;
-class PointXYKDBush;
+class QgsSpatialIndexKDBushPrivate;
 class QgsRectangle;
 
 #include "qgis_core.h"
@@ -42,6 +42,8 @@ class QgsRectangle;
  * - is much faster!
  * - supports true "distance based" searches, i.e. return all points within a radius
  * from a search point
+ *
+ * QgsSpatialIndexKDBush objects are implicitly shared and can be inexpensively copied.
  *
  * \see QgsSpatialIndex, which is an general, mutable index for geometry bounding boxes.
  * \since QGIS 3.4
@@ -72,6 +74,12 @@ class CORE_EXPORT QgsSpatialIndexKDBush
      */
     explicit QgsSpatialIndexKDBush( const QgsFeatureSource &source, QgsFeedback *feedback = nullptr );
 
+    //! Copy constructor
+    QgsSpatialIndexKDBush( const QgsSpatialIndexKDBush &other );
+
+    //! Assignment operator
+    QgsSpatialIndexKDBush &operator=( const QgsSpatialIndexKDBush &other );
+
     ~QgsSpatialIndexKDBush();
 
     /**
@@ -87,7 +95,8 @@ class CORE_EXPORT QgsSpatialIndexKDBush
 
   private:
 
-    std::unique_ptr< PointXYKDBush > mIndex;
+    //! Implicitly shared data pointer
+    QgsSpatialIndexKDBushPrivate *d = nullptr;
 };
 
 #endif // QGSSPATIALINDEXKDBUSH_H
