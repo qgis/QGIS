@@ -120,7 +120,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( const QString &uri, const Pr
     }
   }
 
-  mDetectTypes=true;
+  mDetectTypes = true;
   if ( url.hasQueryItem( QStringLiteral( "detectTypes" ) ) )
     mDetectTypes = ! url.queryItemValue( QStringLiteral( "detectTypes" ) ).toLower().startsWith( 'n' );
 
@@ -557,9 +557,9 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         couldBeDouble[i] = true;
       }
 
-      if( ! mDetectTypes )
+      if ( ! mDetectTypes )
       {
-          continue;
+        continue;
       }
 
       // Now test for still valid possible types for the field
@@ -626,7 +626,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         typeName = QStringLiteral( "double" );
       }
     }
-    if( typeName == QStringLiteral( "integer" ) )
+    if ( typeName == QStringLiteral( "integer" ) )
     {
       fieldType = QVariant::Int;
     }
@@ -634,7 +634,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
       fieldType = QVariant::LongLong;
     }
-    else if(  typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
+    else if ( typeName == QStringLiteral( "real" ) || typeName == QStringLiteral( "double" ) )
     {
       typeName = QStringLiteral( "double" );
       fieldType = QVariant::Double;
