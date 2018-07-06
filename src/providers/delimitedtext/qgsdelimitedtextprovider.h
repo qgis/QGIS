@@ -227,7 +227,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     QString mWktFieldName;
     QString mXFieldName;
     QString mYFieldName;
-    bool mDetectTypes;
+    bool mDetectTypes = true;
 
     mutable int mXFieldIndex = -1;
     mutable int mYFieldIndex = -1;
