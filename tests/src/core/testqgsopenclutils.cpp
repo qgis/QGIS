@@ -19,10 +19,12 @@
 #include <QString>
 #include <QTemporaryFile>
 #include <qgsapplication.h>
+#include <chrono>
 
 //header for class being tested
 #include <qgsopenclutils.h>
-
+#include <qgshillshaderenderer.h>
+#include <qgsrasterlayer.h>
 
 class TestQgsOpenClUtils: public QObject
 {
@@ -46,7 +48,11 @@ class TestQgsOpenClUtils: public QObject
 
   private:
 
+    // For performance testing
+    void testHillshade();
+
     void _testMakeRunProgram();
+    void _testMakeHillshade( const QString title, const int loops );
 
     cl::Program buildProgram( const cl::Context &context, const QString &source )
     {
@@ -67,11 +73,15 @@ class TestQgsOpenClUtils: public QObject
       return pgm;
 
     }
+
+    QgsRasterLayer *mFloat32RasterLayer = nullptr;
 };
 
 
 void TestQgsOpenClUtils::init()
 {
+  // Reset to default in case some tests mess it up
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
 }
 
 void TestQgsOpenClUtils::cleanup()
@@ -89,6 +99,11 @@ void TestQgsOpenClUtils::initTestCase()
 
   QgsApplication::init();
   QgsApplication::initQgis();
+
+  QString float32FileName = QStringLiteral( TEST_DATA_DIR ) + '/' + "/raster/band1_float32_noct_epsg4326.tif";
+  QFileInfo float32RasterFileInfo( float32FileName );
+  mFloat32RasterLayer = new QgsRasterLayer( float32RasterFileInfo.filePath(),
+      float32RasterFileInfo.completeBaseName() );
 }
 
 
@@ -183,6 +198,27 @@ void TestQgsOpenClUtils::testContext()
   QVERIFY( QgsOpenClUtils::context()() != nullptr );
 }
 
+void TestQgsOpenClUtils::_testMakeHillshade( const QString title, const int loops )
+{
+  std::chrono::time_point<std::chrono::system_clock> startTime( std::chrono::system_clock::now() );
+  for ( int i = 0 ; i < loops;  i++ )
+  {
+    QgsHillshadeRenderer renderer( mFloat32RasterLayer->dataProvider(), 1, 35.0, 5000.0 );
+    QgsRasterBlock *block = renderer.block( 0, mFloat32RasterLayer->extent(), 401, 401 );
+  }
+  qDebug() << QStringLiteral( "%1 average for %2 loops: %3 ms" )
+           .arg( title )
+           .arg( loops )
+           .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() / loops ) ;
+}
+
+void TestQgsOpenClUtils::testHillshade()
+{
+  QgsOpenClUtils::setEnabled( true );
+  _testMakeHillshade( QStringLiteral( "OpenCL" ), 5 );
+  QgsOpenClUtils::setEnabled( false );
+  _testMakeHillshade( QStringLiteral( "CPU" ), 5 );
+}
 
 QGSTEST_MAIN( TestQgsOpenClUtils )
 #include "testqgsopenclutils.moc"
