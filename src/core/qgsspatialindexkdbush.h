@@ -120,6 +120,8 @@ class CORE_EXPORT QgsSpatialIndexKDBush
 
     //! Implicitly shared data pointer
     QgsSpatialIndexKDBushPrivate *d = nullptr;
+
+    friend class TestQgsSpatialIndexKdBush;
 };
 
 #endif // QGSSPATIALINDEXKDBUSH_H
