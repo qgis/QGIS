@@ -2450,12 +2450,13 @@ def test_040_issue_14666():
     ]
     return wanted
 
+
 def test_041_no_detect_type():
-    wanted={}
-    wanted['uri']='file://testtypes.csv?yField=lat&xField=lon&type=csv&detectTypes=no'
-    wanted['fieldTypes']=['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['geometryType']=0
-    wanted['data']={
+    wanted = {}
+    wanted['uri'] = 'file://testtypes.csv?yField=lat&xField=lon&type=csv&detectTypes=no'
+    wanted['fieldTypes'] = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 0
+    wanted['data'] = {
         2: {
             'id': 'line1',
             'description': '1.0',
@@ -2469,7 +2470,7 @@ def test_041_no_detect_type():
             'text2': '1',
             '#fid': 2,
             '#geometry': 'Point (1 1)',
-            },
+        },
         3: {
             'id': 'line2',
             'description': '1.0',
@@ -2483,7 +2484,7 @@ def test_041_no_detect_type():
             'text2': '-4',
             '#fid': 3,
             '#geometry': 'Point (1 5)',
-            },
+        },
         4: {
             'id': 'line3',
             'description': '5.0',
@@ -2497,7 +2498,7 @@ def test_041_no_detect_type():
             'text2': '1x',
             '#fid': 4,
             '#geometry': 'Point (5 5)',
-            },
+        },
         5: {
             'id': 'line4',
             'description': '5.0',
@@ -2511,7 +2512,7 @@ def test_041_no_detect_type():
             'text2': 'NULL',
             '#fid': 5,
             '#geometry': 'Point (5 1)',
-            },
+        },
         6: {
             'id': 'line5',
             'description': '3.0',
@@ -2525,7 +2526,7 @@ def test_041_no_detect_type():
             'text2': '23',
             '#fid': 6,
             '#geometry': 'Point (3 1)',
-            },
+        },
         7: {
             'id': 'line6',
             'description': '1.0',
@@ -2539,18 +2540,19 @@ def test_041_no_detect_type():
             'text2': '0',
             '#fid': 7,
             '#geometry': 'Point (1 3)',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log'] = [
+    ]
     return wanted
 
+
 def test_042_no_detect_types_csvt():
-    wanted={}
-    wanted['uri']='file://testcsvt.csv?geomType=none&type=csv&detectTypes=no'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
-    wanted['geometryType']=4
-    wanted['data']={
+    wanted = {}
+    wanted['uri'] = 'file://testcsvt.csv?geomType=none&type=csv&detectTypes=no'
+    wanted['fieldTypes'] = ['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text']
+    wanted['geometryType'] = 4
+    wanted['data'] = {
         2: {
             'id': '1',
             'description': 'Test csvt 1',
@@ -2566,7 +2568,7 @@ def test_042_no_detect_types_csvt():
             'field_12': 'NULL',
             '#fid': 2,
             '#geometry': 'None',
-            },
+        },
         3: {
             'id': '2',
             'description': 'Test csvt 2',
@@ -2582,9 +2584,8 @@ def test_042_no_detect_types_csvt():
             'field_12': '-3123724580211819352',
             '#fid': 3,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log'] = [
+    ]
     return wanted
-
