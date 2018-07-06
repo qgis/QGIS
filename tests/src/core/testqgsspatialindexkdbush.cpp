@@ -73,27 +73,28 @@ class TestQgsSpatialIndexKdBush : public QObject
       for ( QgsFeature f : _pointFeatures() )
         vl->dataProvider()->addFeature( f );
       QgsSpatialIndexKDBush index( *vl->dataProvider() );
+      QCOMPARE( index.size(), 4 );
 
-      QList<QgsFeatureId> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QSet<QgsFeatureId> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QCOMPARE( fids[0], 1 );
+      QVERIFY( fids.contains( 1 ) );
 
-      QList<QgsFeatureId> fids2 = index.intersect( QgsRectangle( -10, -10, 0, 10 ) );
+      QSet<QgsFeatureId> fids2 = index.intersect( QgsRectangle( -10, -10, 0, 10 ) );
       QCOMPARE( fids2.count(), 2 );
       QVERIFY( fids2.contains( 2 ) );
       QVERIFY( fids2.contains( 3 ) );
 
-      QList<QgsFeatureId> fids3 = index.within( QgsPointXY( 0, 0 ), 2 );
+      QSet<QgsFeatureId> fids3 = index.within( QgsPointXY( 0, 0 ), 2 );
       QCOMPARE( fids3.count(), 4 );
       QVERIFY( fids3.contains( 1 ) );
       QVERIFY( fids3.contains( 2 ) );
       QVERIFY( fids3.contains( 3 ) );
       QVERIFY( fids3.contains( 4 ) );
 
-      QList<QgsFeatureId> fids4 = index.within( QgsPointXY( 0, 0 ), 1 );
+      QSet<QgsFeatureId> fids4 = index.within( QgsPointXY( 0, 0 ), 1 );
       QCOMPARE( fids4.count(), 0 );
 
-      QList<QgsFeatureId> fids5 = index.within( QgsPointXY( -1, -1 ), 2.1 );
+      QSet<QgsFeatureId> fids5 = index.within( QgsPointXY( -1, -1 ), 2.1 );
       QCOMPARE( fids5.count(), 3 );
       QVERIFY( fids5.contains( 2 ) );
       QVERIFY( fids5.contains( 3 ) );
@@ -127,9 +128,9 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( index->d->ref == 2 );
 
       // test that copied index works
-      QList<QgsFeatureId> fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QSet<QgsFeatureId> fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QCOMPARE( fids[0], 1 );
+      QVERIFY( fids.contains( 1 ) );
 
       // check that the index is still shared
       QCOMPARE( index->d, indexCopy->d );
@@ -140,12 +141,13 @@ class TestQgsSpatialIndexKdBush : public QObject
       // test that copied index still works
       fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QCOMPARE( fids[0], 1 );
+      QVERIFY( fids.contains( 1 ) );
       QVERIFY( indexCopy->d->ref == 1 );
 
       // assignment operator
       std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( "Point", QString(), QStringLiteral( "memory" ) );
       QgsSpatialIndexKDBush index3( *vl2->dataProvider() );
+      QCOMPARE( index3.size(), 0 );
       fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QCOMPARE( fids.count(), 0 );
       QVERIFY( index3.d->ref == 1 );
@@ -155,7 +157,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( index3.d->ref == 2 );
       fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
-      QCOMPARE( fids[0], 1 );
+      QVERIFY( fids.contains( 1 ) );
 
       indexCopy.reset();
       QVERIFY( index3.d->ref == 1 );

@@ -56,10 +56,10 @@ QgsSpatialIndexKDBush::~QgsSpatialIndexKDBush()
     delete d;
 }
 
-QList<QgsFeatureId> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
+QSet<QgsFeatureId> QgsSpatialIndexKDBush::within( const QgsPointXY &point, double radius ) const
 {
-  QList<QgsFeatureId> result;
-  d->index->within( point.x(), point.y(), radius, [&result]( const QgsFeatureId id ) { result << id; } );
+  QSet<QgsFeatureId> result;
+  d->index->within( point.x(), point.y(), radius, [&result]( const QgsFeatureId id ) { result.insert( id ); } );
   return result;
 }
 
@@ -73,9 +73,14 @@ bool QgsSpatialIndexKDBush::point( QgsFeatureId id, QgsPointXY &point ) const
   return d->index->point( id, point );
 }
 
-QList<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle ) const
+qgssize QgsSpatialIndexKDBush::size() const
 {
-  QList<QgsFeatureId> result;
+  return d->index->size();
+}
+
+QSet<QgsFeatureId> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle ) const
+{
+  QSet<QgsFeatureId> result;
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
                    rectangle.xMaximum(),

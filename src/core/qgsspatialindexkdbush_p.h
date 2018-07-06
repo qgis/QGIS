@@ -99,6 +99,11 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
       return true;
     }
 
+    std::size_t size() const
+    {
+      return points.size();
+    }
+
   private:
 
     QHash< QgsFeatureId, QgsPointXY > mIdToPoint;
