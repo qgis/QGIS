@@ -158,7 +158,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QCOMPARE( fids[0], 1 );
 
       indexCopy.reset();
-      QCOMPARE( index3.d->ref, 1 );
+      QVERIFY( index3.d->ref == 1 );
     }
 
 };
