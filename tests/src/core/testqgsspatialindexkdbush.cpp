@@ -124,7 +124,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       // create copy of the index
       std::unique_ptr< QgsSpatialIndexKDBush > indexCopy( new QgsSpatialIndexKDBush( *index ) );
 
-      QCOMPARE( index->d, indexCopy->d );
+      QVERIFY( index->d == indexCopy->d );
       QVERIFY( index->d->ref == 2 );
 
       // test that copied index works
@@ -133,7 +133,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( fids.contains( 1 ) );
 
       // check that the index is still shared
-      QCOMPARE( index->d, indexCopy->d );
+      QVERIFY( index->d == indexCopy->d );
       QVERIFY( index->d->ref == 2 );
 
       index.reset();
@@ -147,13 +147,13 @@ class TestQgsSpatialIndexKdBush : public QObject
       // assignment operator
       std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( "Point", QString(), QStringLiteral( "memory" ) );
       QgsSpatialIndexKDBush index3( *vl2->dataProvider() );
-      QCOMPARE( index3.size(), 0 );
+      QVERIFY( index3.size() == 0 );
       fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
-      QCOMPARE( fids.count(), 0 );
+      QVERIFY( fids.count() == 0 );
       QVERIFY( index3.d->ref == 1 );
 
       index3 = *indexCopy;
-      QCOMPARE( index3.d, indexCopy->d );
+      QVERIFY( index3.d == indexCopy->d );
       QVERIFY( index3.d->ref == 2 );
       fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
