@@ -74,6 +74,7 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
         {
           const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( f.geometry().constGet() );
           points.emplace_back( point->x(), point->y() );
+          mIdToPoint[ f.id() ] = QgsPointXY( point->x(), point->y() );
         }
         else
         {
@@ -90,16 +91,17 @@ class PointXYKDBush : public kdbush::KDBush< std::pair<double, double>, QgsFeatu
 
     bool point( QgsFeatureId id, QgsPointXY &point ) const
     {
-      auto iter = std::find_if( ids.begin(), ids.end(), [id]( QgsFeatureId f ) { return id == f; } );
-      size_t index = std::distance( ids.begin(), iter );
-      if ( index == ids.size() )
-      {
+      auto it = mIdToPoint.constFind( id );
+      if ( it == mIdToPoint.constEnd() )
         return false;
-      }
 
-      point = QgsPointXY( points[ index ].first, points[index].second );
+      point = *it;
       return true;
     }
+
+  private:
+
+    QHash< QgsFeatureId, QgsPointXY > mIdToPoint;
 
 };
 
