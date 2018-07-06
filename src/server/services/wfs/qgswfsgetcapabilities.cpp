@@ -331,7 +331,6 @@ namespace QgsWfs
     QDomElement dcpElement = doc.createElement( QStringLiteral( "ows:DCP" ) );
     QDomElement httpElement = doc.createElement( QStringLiteral( "ows:HTTP" ) );
     QDomElement getElement = doc.createElement( QStringLiteral( "ows:Get" ) );
-    getElement.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "xlink:simple" ) );
     getElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
     httpElement.appendChild( getElement );
 
