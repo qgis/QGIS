@@ -362,6 +362,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
   private slots:
 
     void rebuild();
+    void repopulateRecentAlgorithms( bool resetting = false );
     void providerAdded( const QString &id );
     void providerRemoved( const QString &id );
 
@@ -371,6 +372,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     QgsProcessingRecentAlgorithmLog *mRecentLog = nullptr;
 
     std::unique_ptr< QgsProcessingToolboxModelGroupNode > mRootNode;
+    QgsProcessingToolboxModelRecentNode *mRecentNode = nullptr;
 
     void addProvider( QgsProcessingProvider *provider );
 

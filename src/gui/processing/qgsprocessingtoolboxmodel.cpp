@@ -117,6 +117,9 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
 {
   rebuild();
 
+  if ( mRecentLog )
+    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [ = ] { repopulateRecentAlgorithms(); } );
+
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::providerAdded );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
 }
@@ -126,22 +129,14 @@ void QgsProcessingToolboxModel::rebuild()
   beginResetModel();
 
   mRootNode->deleteChildren();
+  mRecentNode = nullptr;
 
   if ( mRecentLog )
   {
     std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = qgis::make_unique< QgsProcessingToolboxModelRecentNode >();
-    QgsProcessingToolboxModelRecentNode *parentNode = recentNode.get();
+    mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
-    const QStringList recentAlgIds = mRecentLog->recentAlgorithmIds();
-    for ( const QString &id : recentAlgIds )
-    {
-      const QgsProcessingAlgorithm *algorithm = mRegistry->algorithmById( id );
-      if ( algorithm )
-      {
-        std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
-        parentNode->addChildNode( algorithmNode.release() );
-      }
-    }
+    repopulateRecentAlgorithms();
   }
 
   const QList< QgsProcessingProvider * > providers = mRegistry->providers();
@@ -150,6 +145,46 @@ void QgsProcessingToolboxModel::rebuild()
     addProvider( provider );
   }
   endResetModel();
+}
+
+void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
+{
+  if ( !mRecentNode )
+    return;
+
+  if ( !resetting && rowCount( index( 0, 0 ) ) > 0 )
+  {
+    beginRemoveRows( index( 0, 0 ), 0, rowCount( index( 0, 0 ) ) );
+    mRecentNode->deleteChildren();
+    endRemoveRows();
+  }
+
+  const QStringList recentAlgIds = mRecentLog->recentAlgorithmIds();
+  QList< const QgsProcessingAlgorithm * > recentAlgorithms;
+  recentAlgorithms.reserve( recentAlgIds.count() );
+  for ( const QString &id : recentAlgIds )
+  {
+    const QgsProcessingAlgorithm *algorithm = mRegistry->algorithmById( id );
+    if ( algorithm )
+      recentAlgorithms << algorithm;
+  }
+
+  if ( !resetting && !recentAlgorithms.empty() )
+  {
+    beginInsertRows( index( 0, 0 ), 0, recentAlgorithms.count() - 1 );
+  }
+
+  for ( const QgsProcessingAlgorithm *algorithm : recentAlgorithms )
+  {
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
+    mRecentNode->addChildNode( algorithmNode.release() );
+  }
+
+  if ( !resetting )
+  {
+    endInsertRows();
+  }
+
 }
 
 void QgsProcessingToolboxModel::providerAdded( const QString &id )
