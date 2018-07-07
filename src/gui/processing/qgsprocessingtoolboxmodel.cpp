@@ -514,7 +514,8 @@ QModelIndex QgsProcessingToolboxModel::indexForProvider( const QString &provider
     for ( int row = 0; row < rowCount( parent ); ++row )
     {
       QModelIndex current = index( row, 0, parent );
-      if ( providerIdForIndex( current ) == providerId )
+      const QString currentProviderId = providerIdForIndex( current );
+      if ( !currentProviderId.isEmpty() && currentProviderId == providerId )
         return current;
 
       QModelIndex checkChildren = findIndex( current, providerId );
@@ -649,7 +650,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   else
   {
     // group
-    return hasChildren || isRecentNode;
+    return hasChildren; // || isRecentNode;
   }
 }
 
