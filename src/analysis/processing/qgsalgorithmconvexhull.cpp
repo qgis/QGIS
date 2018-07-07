@@ -74,10 +74,19 @@ QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature
   QgsFeature f = feature;
   if ( f.hasGeometry() )
   {
-    QgsGeometry outputGeometry = f.geometry().convexHull();
-    if ( !outputGeometry )
-      feedback->reportError( outputGeometry.lastError() );
-    f.setGeometry( outputGeometry );
+    QgsGeometry outputGeometry;
+    if ( QgsWkbTypes::flatType( f.geometry().wkbType() ) == QgsWkbTypes::Point )
+    {
+      feedback->reportError( QObject::tr( "Cannot calculate convex hull for a single Point feature (try 'Minimum bounding geometry' algorithm instead)." ) );
+      f.clearGeometry();
+    }
+    else
+    {
+      outputGeometry = f.geometry().convexHull();
+      if ( !outputGeometry )
+        feedback->reportError( outputGeometry.lastError() );
+      f.setGeometry( outputGeometry );
+    }
     if ( outputGeometry )
     {
       QgsAttributes attrs = f.attributes();
