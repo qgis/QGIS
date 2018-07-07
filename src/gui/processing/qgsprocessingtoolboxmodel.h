@@ -393,6 +393,9 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
  * which automatically sorts the toolbox in a logical fashion and supports filtering
  * the results.
  *
+ * If \recentLog is specified then it will be used to create a "Recently used" top
+ * level group containing recently used algorithms.
+ *
  * \ingroup gui
  * \since QGIS 3.2
  */
@@ -418,7 +421,9 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      * registry attached to QgsApplication::processingRegistry() will be used
      * by the model.
      */
-    explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr );
+    explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
+        QgsProcessingRegistry *registry = nullptr,
+        QgsProcessingRecentAlgorithmLog *recentLog = nullptr );
 
     /**
      * Set \a filters that affect how toolbox content is filtered.

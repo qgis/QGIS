@@ -16,6 +16,7 @@
 #include "qgsprocessingtoolboxmodel.h"
 #include "qgsapplication.h"
 #include "qgsprocessingregistry.h"
+#include "qgsprocessingrecentalgorithmlog.h"
 #include <functional>
 
 #ifdef ENABLE_MODELTEST
@@ -128,7 +129,19 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mRecentLog )
   {
-    mRootNode->addChildNode( new QgsProcessingToolboxModelRecentNode() );
+    std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = qgis::make_unique< QgsProcessingToolboxModelRecentNode >();
+    QgsProcessingToolboxModelRecentNode *parentNode = recentNode.get();
+    mRootNode->addChildNode( recentNode.release() );
+    const QStringList recentAlgIds = mRecentLog->recentAlgorithmIds();
+    for ( const QString &id : recentAlgIds )
+    {
+      const QgsProcessingAlgorithm *algorithm = mRegistry->algorithmById( id );
+      if ( algorithm )
+      {
+        std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
+        parentNode->addChildNode( algorithmNode.release() );
+      }
+    }
   }
 
   const QList< QgsProcessingProvider * > providers = mRegistry->providers();
@@ -551,9 +564,10 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 // QgsProcessingToolboxProxyModel
 //
 
-QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry )
+QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry,
+    QgsProcessingRecentAlgorithmLog *recentLog )
   : QSortFilterProxyModel( parent )
-  , mModel( new QgsProcessingToolboxModel( parent, registry ) )
+  , mModel( new QgsProcessingToolboxModel( parent, registry, recentLog ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
