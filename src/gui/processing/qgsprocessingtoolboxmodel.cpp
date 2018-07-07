@@ -124,6 +124,8 @@ void QgsProcessingToolboxModel::rebuild()
 
   mRootNode->deleteChildren();
 
+  mRootNode->addChildNode( new QgsProcessingToolboxModelRecentNode() );
+
   const QList< QgsProcessingProvider * > providers = mRegistry->providers();
   for ( QgsProcessingProvider *provider : providers )
   {
@@ -276,6 +278,10 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       return QVariant();
   }
 
+  bool isRecentNode = false;
+  if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
+    isRecentNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent;
+
   QgsProcessingProvider *provider = providerForIndex( index );
   QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( index2node( index ) );
   const QgsProcessingAlgorithm *algorithm = algorithmForIndex( index );
@@ -293,6 +299,8 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return algorithm->displayName();
           else if ( groupNode )
             return groupNode->name();
+          else if ( isRecentNode )
+            return tr( "Recently used" );
           else
             return QVariant();
 
@@ -323,6 +331,8 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return provider->icon();
           else if ( algorithm )
             return algorithm->icon();
+          else if ( isRecentNode )
+            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
             return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
@@ -630,6 +640,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
   }
 
+  bool isRecentNode = mModel->data( sourceIndex, QgsProcessingToolboxModel::RoleNodeType ).toInt() == QgsProcessingToolboxModelNode::NodeRecent;
+
   if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
   {
     return hasChildren && provider->isActive();
@@ -637,7 +649,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   else
   {
     // group
-    return hasChildren;
+    return hasChildren || isRecentNode;
   }
 }
 

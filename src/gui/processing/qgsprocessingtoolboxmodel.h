@@ -50,6 +50,8 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent )
+        sipType = sipType_QgsProcessingToolboxModelRecentNode;
     }
     else
       sipType = 0;
@@ -64,6 +66,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
       NodeProvider = 0, //!< Provider node
       NodeGroup, //!< Group node
       NodeAlgorithm, //!< Algorithm node
+      NodeRecent, //!< Recent algorithms node
     };
 
     ~QgsProcessingToolboxModelNode() override;
@@ -118,6 +121,27 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
     NodeType mNodeType;
     QgsProcessingToolboxModelNode *mParent = nullptr;
     QList<QgsProcessingToolboxModelNode *> mChildren;
+
+};
+
+/**
+ * Processing toolbox model node corresponding to the recent algorithms group
+ * \ingroup gui
+ * \since QGIS 3.2
+ * \warning Not part of stable API and may change in future QGIS releases.
+ */
+class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolboxModelNode
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingToolboxModelRecentNode.
+     */
+    QgsProcessingToolboxModelRecentNode() = default;
+
+    NodeType nodeType() const override { return NodeRecent; }
 
 };
 

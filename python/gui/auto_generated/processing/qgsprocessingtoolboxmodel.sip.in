@@ -36,6 +36,8 @@ Abstract base class for nodes contained within a QgsProcessingToolboxModel.
         sipType = sipType_QgsProcessingToolboxModelGroupNode;
       else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeAlgorithm )
         sipType = sipType_QgsProcessingToolboxModelAlgorithmNode;
+      else if ( node->nodeType() == QgsProcessingToolboxModelNode::NodeRecent )
+        sipType = sipType_QgsProcessingToolboxModelRecentNode;
     }
     else
       sipType = 0;
@@ -47,6 +49,7 @@ Abstract base class for nodes contained within a QgsProcessingToolboxModel.
       NodeProvider,
       NodeGroup,
       NodeAlgorithm,
+      NodeRecent,
     };
 
     ~QgsProcessingToolboxModelNode();
@@ -90,6 +93,32 @@ to this node.
 %Docstring
 Deletes all child nodes from this node.
 %End
+
+};
+
+class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
+{
+%Docstring
+Processing toolbox model node corresponding to the recent algorithms group
+
+.. versionadded:: 3.2
+
+.. warning::
+
+   Not part of stable API and may change in future QGIS releases.
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtoolboxmodel.h"
+%End
+  public:
+
+    QgsProcessingToolboxModelRecentNode();
+%Docstring
+Constructor for QgsProcessingToolboxModelRecentNode.
+%End
+
+    virtual NodeType nodeType() const;
 
 };
 
