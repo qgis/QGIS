@@ -87,11 +87,11 @@ class TestQgsSpatialIndexKdBush : public QObject
       QgsSpatialIndexKDBush index( *vl->dataProvider() );
       QVERIFY( index.size() == 4 );
 
-      QList<QgsSpatialIndexKDBushData> fids = index.intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids = index.intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
-      QList<QgsSpatialIndexKDBushData> fids2 = index.intersect( QgsRectangle( -10, -10, 0, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids2 = index.intersects( QgsRectangle( -10, -10, 0, 10 ) );
       QCOMPARE( fids2.count(), 2 );
       QVERIFY( testContains( fids2, 2, QgsPointXY( -1, 1 ) ) );
       QVERIFY( testContains( fids2, 3, QgsPointXY( -1, -1 ) ) );
@@ -128,7 +128,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       QVERIFY( index->d->ref == 2 );
 
       // test that copied index works
-      QList<QgsSpatialIndexKDBushData> fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      QList<QgsSpatialIndexKDBushData> fids = indexCopy->intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
@@ -139,7 +139,7 @@ class TestQgsSpatialIndexKdBush : public QObject
       index.reset();
 
       // test that copied index still works
-      fids = indexCopy->intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      fids = indexCopy->intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
       QVERIFY( indexCopy->d->ref == 1 );
@@ -148,14 +148,14 @@ class TestQgsSpatialIndexKdBush : public QObject
       std::unique_ptr< QgsVectorLayer > vl2 = qgis::make_unique< QgsVectorLayer >( "Point", QString(), QStringLiteral( "memory" ) );
       QgsSpatialIndexKDBush index3( *vl2->dataProvider() );
       QVERIFY( index3.size() == 0 );
-      fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      fids = index3.intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 0 );
       QVERIFY( index3.d->ref == 1 );
 
       index3 = *indexCopy;
       QVERIFY( index3.d == indexCopy->d );
       QVERIFY( index3.d->ref == 2 );
-      fids = index3.intersect( QgsRectangle( 0, 0, 10, 10 ) );
+      fids = index3.intersects( QgsRectangle( 0, 0, 10, 10 ) );
       QVERIFY( fids.count() == 1 );
       QVERIFY( testContains( fids, 1, QgsPointXY( 1, 1 ) ) );
 
