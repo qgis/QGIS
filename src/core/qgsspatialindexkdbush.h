@@ -87,14 +87,14 @@ class CORE_EXPORT QgsSpatialIndexKDBush
     /**
      * Returns the list of features which fall within the specified \a rectangle.
      */
-    QList<QgsSpatialIndexKDBushData> intersect( const QgsRectangle &rectangle ) const;
+    QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
 
     /**
      * Calls a \a visitor function for all features which fall within the specified \a rectangle.
      *
      * \note Not available in Python bindings
      */
-    void intersect( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const SIP_SKIP;
+    void intersects( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const SIP_SKIP;
 
     /**
      * Returns the list of features which are within the given search \a radius

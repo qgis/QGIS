@@ -66,7 +66,7 @@ Copy constructor
 
     ~QgsSpatialIndexKDBush();
 
-    QList<QgsSpatialIndexKDBushData> intersect( const QgsRectangle &rectangle ) const;
+    QList<QgsSpatialIndexKDBushData> intersects( const QgsRectangle &rectangle ) const;
 %Docstring
 Returns the list of features which fall within the specified ``rectangle``.
 %End

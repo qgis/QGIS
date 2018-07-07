@@ -73,7 +73,7 @@ qgssize QgsSpatialIndexKDBush::size() const
   return d->index->size();
 }
 
-QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle ) const
+QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle ) const
 {
   QList<QgsSpatialIndexKDBushData> result;
   d->index->range( rectangle.xMinimum(),
@@ -83,7 +83,7 @@ QList<QgsSpatialIndexKDBushData> QgsSpatialIndexKDBush::intersect( const QgsRect
   return result;
 }
 
-void QgsSpatialIndexKDBush::intersect( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const
+void QgsSpatialIndexKDBush::intersects( const QgsRectangle &rectangle, const std::function<void( QgsSpatialIndexKDBushData )> &visitor ) const
 {
   d->index->range( rectangle.xMinimum(),
                    rectangle.yMinimum(),
