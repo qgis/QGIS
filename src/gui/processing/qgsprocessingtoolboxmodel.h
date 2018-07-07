@@ -25,6 +25,7 @@ class QgsProcessingRegistry;
 class QgsProcessingProvider;
 class QgsProcessingAlgorithm;
 class QgsProcessingToolboxModelGroupNode;
+class QgsProcessingRecentAlgorithmLog;
 
 ///@cond PRIVATE
 
@@ -161,7 +162,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
      * Constructor for QgsProcessingToolboxModelProviderNode, linked to the
      * specified \a provider.
      */
-    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
+    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider, QgsProcessingRegistry *registry );
 
     NodeType nodeType() const override { return NodeProvider; }
 
@@ -178,8 +179,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
   private:
 
     QString mProviderId;
-    QgsProcessingProvider *mProvider = nullptr;
-
+    QgsProcessingRegistry *mRegistry = nullptr;
 };
 
 /**
@@ -237,7 +237,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
      * Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
      * with the specified \a algorithm.
      */
-    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
+    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm, QgsProcessingRegistry *registry );
 
     NodeType nodeType() const override { return NodeAlgorithm; }
 
@@ -248,7 +248,8 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
 
   private:
 
-    const QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    const QString mAlgorithmId;
+    QgsProcessingRegistry *mRegistry = nullptr;
 
 };
 
@@ -287,8 +288,12 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * from the given registry. If no registry is specified, then the processing
      * registry attached to QgsApplication::processingRegistry() will be used
      * by the model.
+     *
+     * If \recentLog is specified then it will be used to create a "Recently used" top
+     * level group containing recently used algorithms.
      */
-    QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr );
+    QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr,
+                               QgsProcessingRecentAlgorithmLog *recentLog = nullptr );
 
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
@@ -363,6 +368,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
   private:
 
     QgsProcessingRegistry *mRegistry = nullptr;
+    QgsProcessingRecentAlgorithmLog *mRecentLog = nullptr;
 
     std::unique_ptr< QgsProcessingToolboxModelGroupNode > mRootNode;
 
