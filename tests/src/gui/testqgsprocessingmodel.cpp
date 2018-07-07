@@ -17,6 +17,8 @@
 
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxmodel.h"
+#include "qgsprocessingrecentalgorithmlog.h"
+
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
 class DummyAlgorithm : public QgsProcessingAlgorithm
@@ -126,7 +128,8 @@ void TestQgsProcessingModel::cleanupTestCase()
 void TestQgsProcessingModel::testModel()
 {
   QgsProcessingRegistry registry;
-  QgsProcessingToolboxModel model( nullptr, &registry );
+  QgsProcessingRecentAlgorithmLog recentLog;
+  QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
 
   QCOMPARE( model.columnCount(), 1 );
   QCOMPARE( model.rowCount(), 1 );
@@ -324,10 +327,10 @@ void TestQgsProcessingModel::testModel()
   DummyProvider *qgisP = new DummyProvider( "qgis", "qgis_provider", QList< QgsProcessingAlgorithm * >() << qgisA1 << qgisA2 << qgisA3 << qgisA4 );
   registry2.addProvider( qgisP );
 
-  QCOMPARE( model2.rowCount(), 4 );
-  group1Index = model2.index( 1, 0 );
-  group2Index = model2.index( 2, 0 );
-  QModelIndex group3Index = model2.index( 3, 0 );
+  QCOMPARE( model2.rowCount(), 3 );
+  group1Index = model2.index( 0, 0 );
+  group2Index = model2.index( 1, 0 );
+  QModelIndex group3Index = model2.index( 2, 0 );
   QCOMPARE( model2.data( group1Index, Qt::DisplayRole ).toString(), QStringLiteral( "group1" ) );
   QCOMPARE( model2.data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
   QCOMPARE( model2.data( group3Index, Qt::DisplayRole ).toString(), QStringLiteral( "group3" ) );

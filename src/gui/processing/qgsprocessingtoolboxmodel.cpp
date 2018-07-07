@@ -71,14 +71,14 @@ void QgsProcessingToolboxModelNode::deleteChildren()
 // QgsProcessingToolboxModelProviderNode
 //
 
-QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider )
+QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider, QgsProcessingRegistry *registry )
   : mProviderId( provider->id() )
-  , mProvider( provider )
+  , mRegistry( registry )
 {}
 
 QgsProcessingProvider *QgsProcessingToolboxModelProviderNode::provider()
 {
-  return mProvider;
+  return mRegistry->providerById( mProviderId );
 }
 
 //
@@ -94,22 +94,24 @@ QgsProcessingToolboxModelGroupNode::QgsProcessingToolboxModelGroupNode( const QS
 // QgsProcessingToolboxModelAlgorithmNode
 //
 
-QgsProcessingToolboxModelAlgorithmNode::QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm )
-  : mAlgorithm( algorithm )
+QgsProcessingToolboxModelAlgorithmNode::QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm, QgsProcessingRegistry *registry )
+  : mAlgorithmId( algorithm->id() )
+  , mRegistry( registry )
 {}
 
 const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm() const
 {
-  return mAlgorithm;
+  return mRegistry->algorithmById( mAlgorithmId );
 }
 
 //
 // QgsProcessingToolboxModel
 //
 
-QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry )
+QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog )
   : QAbstractItemModel( parent )
   , mRegistry( registry ? registry : QgsApplication::processingRegistry() )
+  , mRecentLog( recentLog )
   , mRootNode( qgis::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
 {
   rebuild();
@@ -124,7 +126,10 @@ void QgsProcessingToolboxModel::rebuild()
 
   mRootNode->deleteChildren();
 
-  mRootNode->addChildNode( new QgsProcessingToolboxModelRecentNode() );
+  if ( mRecentLog )
+  {
+    mRootNode->addChildNode( new QgsProcessingToolboxModelRecentNode() );
+  }
 
   const QList< QgsProcessingProvider * > providers = mRegistry->providers();
   for ( QgsProcessingProvider *provider : providers )
@@ -208,7 +213,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider->id() ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
+    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider, mRegistry );
     parentNode = node.get();
     mRootNode->addChildNode( node.release() );
   }
@@ -220,7 +225,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   const QList< const QgsProcessingAlgorithm * > algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
 
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
