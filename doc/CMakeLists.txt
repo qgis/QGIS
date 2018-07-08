@@ -104,7 +104,7 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
-    IF(WITH_SERVER_PLUGINS)
+    IF(WITH_SERVER)
       SET(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
         ${CMAKE_SOURCE_DIR}/src/server/
@@ -113,7 +113,7 @@ IF(WITH_APIDOC)
         ${CMAKE_SOURCE_DIR}/src/server/services/wfs
         ${CMAKE_SOURCE_DIR}/src/server/services/wcs
       )
-    ENDIF(WITH_SERVER_PLUGINS)
+    ENDIF(WITH_SERVER)
 
     SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
 
