@@ -396,6 +396,11 @@ registry attached to QgsApplication.processingRegistry() will be used
 by the model.
 %End
 
+    QgsProcessingToolboxModel *toolboxModel();
+%Docstring
+Returns the underlying source Processing toolbox model.
+%End
+
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 %Docstring
 Set ``filters`` that affect how toolbox content is filtered.
