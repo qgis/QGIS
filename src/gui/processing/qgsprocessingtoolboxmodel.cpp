@@ -169,12 +169,15 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
       recentAlgorithms << algorithm;
   }
 
-  if ( !resetting && !recentAlgorithms.empty() )
+  if ( recentAlgorithms.empty() )
+    return;
+
+  if ( !resetting )
   {
     beginInsertRows( index( 0, 0 ), 0, recentAlgorithms.count() - 1 );
   }
 
-  for ( const QgsProcessingAlgorithm *algorithm : recentAlgorithms )
+  for ( const QgsProcessingAlgorithm *algorithm : qgis::as_const( recentAlgorithms ) )
   {
     std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
     mRecentNode->addChildNode( algorithmNode.release() );
@@ -230,6 +233,8 @@ void QgsProcessingToolboxModel::providerRemoved( const QString &id )
     beginRemoveRows( QModelIndex(), index.row(), index.row() );
     delete mRootNode->takeChild( node );
     endRemoveRows();
+
+    repopulateRecentAlgorithms();
   }
 }
 
