@@ -56,7 +56,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
     /**
      * Sets the processing \a registry associated with the view.
      *
-     * If \recentLog is specified then it will be used to create a "Recently used" top
+     * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      */
     void setRegistry(

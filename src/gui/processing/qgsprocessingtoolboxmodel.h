@@ -20,6 +20,7 @@
 #include "qgis_gui.h"
 #include <QAbstractItemModel>
 #include <QSortFilterProxyModel>
+#include <QPointer>
 
 class QgsProcessingRegistry;
 class QgsProcessingProvider;
@@ -375,8 +376,8 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
   private:
 
-    QgsProcessingRegistry *mRegistry = nullptr;
-    QgsProcessingRecentAlgorithmLog *mRecentLog = nullptr;
+    QPointer< QgsProcessingRegistry > mRegistry;
+    QPointer< QgsProcessingRecentAlgorithmLog > mRecentLog;
 
     std::unique_ptr< QgsProcessingToolboxModelGroupNode > mRootNode;
     QgsProcessingToolboxModelRecentNode *mRecentNode = nullptr;
