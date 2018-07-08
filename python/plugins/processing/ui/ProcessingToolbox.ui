@@ -51,7 +51,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QTreeView" name="algorithmTree">
+     <widget class="QgsProcessingToolboxTreeView" name="algorithmTree">
       <property name="contextMenuPolicy">
        <enum>Qt::CustomContextMenu</enum>
       </property>
@@ -95,6 +95,11 @@ color: rgb(255, 255, 255);</string>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+    <customwidget>
+   <class>QgsProcessingToolboxTreeView</class>
+   <extends>QTreeView</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
