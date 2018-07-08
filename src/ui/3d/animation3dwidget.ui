@@ -79,6 +79,162 @@
        </property>
       </spacer>
      </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Interpolation</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboInterpolation">
+       <item>
+        <property name="text">
+         <string>Linear</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuad</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInCubic</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuart</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInQuint</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInSine</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInExpo</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>InOutCirc</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>OutInCirc</string>
+        </property>
+       </item>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
@@ -126,8 +282,10 @@
   <tabstop>btnRemoveKeyframe</tabstop>
   <tabstop>btnEditKeyframe</tabstop>
   <tabstop>btnDuplicateKeyframe</tabstop>
+  <tabstop>cboInterpolation</tabstop>
   <tabstop>btnPlayPause</tabstop>
   <tabstop>sliderTime</tabstop>
+  <tabstop>btnRepeat</tabstop>
  </tabstops>
  <resources/>
  <connections/>

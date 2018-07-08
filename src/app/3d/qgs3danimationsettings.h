@@ -18,6 +18,7 @@
 
 #include "qgsvector3d.h"
 
+#include <QEasingCurve>
 #include <QVector>
 
 class QDomDocument;
@@ -50,6 +51,11 @@ class Qgs3DAnimationSettings
     //! Returns keyframes of the animation
     Keyframes keyFrames() const { return mKeyframes; }
 
+    //! Sets the interpolation method for transitions of the camera
+    void setEasingCurve( const QEasingCurve &curve ) { mEasingCurve = curve; }
+    //! Returns the interpolation method for transitions of the camera
+    QEasingCurve easingCurve() const { return mEasingCurve; }
+
     //! Returns duration of the whole animation in seconds
     float duration() const;
 
@@ -63,6 +69,7 @@ class Qgs3DAnimationSettings
 
   private:
     Keyframes mKeyframes;
+    QEasingCurve mEasingCurve;
 };
 
 Q_DECLARE_METATYPE( Qgs3DAnimationSettings::Keyframe )

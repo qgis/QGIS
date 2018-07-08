@@ -51,6 +51,7 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
     void onRemoveKeyframe();
     void onEditKeyframe();
     void onDuplicateKeyframe();
+    void onInterpolationChanged();
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );

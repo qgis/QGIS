@@ -45,6 +45,7 @@ Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   connect( btnRemoveKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onRemoveKeyframe );
   connect( btnEditKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onEditKeyframe );
   connect( btnDuplicateKeyframe, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onDuplicateKeyframe );
+  connect( cboInterpolation, qgis::overload<int>::of( &QComboBox::currentIndexChanged ), this, &Qgs3DAnimationWidget::onInterpolationChanged );
 
   btnPlayPause->setCheckable( true );
   connect( btnPlayPause, &QToolButton::clicked, this, &Qgs3DAnimationWidget::onPlayPause );
@@ -68,6 +69,8 @@ void Qgs3DAnimationWidget::setCameraController( QgsCameraController *cameraContr
 
 void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSettings )
 {
+  cboInterpolation->setCurrentIndex( animSettings.easingCurve().type() );
+
   // initialize GUI from the given animation
   cboKeyframe->clear();
   cboKeyframe->addItem( tr( "<none>" ) );
@@ -91,6 +94,7 @@ void Qgs3DAnimationWidget::initializeController( const Qgs3DAnimationSettings &a
 Qgs3DAnimationSettings Qgs3DAnimationWidget::animation() const
 {
   Qgs3DAnimationSettings animSettings;
+  animSettings.setEasingCurve( QEasingCurve( ( QEasingCurve::Type ) cboInterpolation->currentIndex() ) );
   Qgs3DAnimationSettings::Keyframes keyframes;
   for ( int i = 1; i < cboKeyframe->count(); ++i )
   {
@@ -328,4 +332,12 @@ void Qgs3DAnimationWidget::onDuplicateKeyframe()
   initializeController( animation() );
 
   cboKeyframe->setCurrentIndex( newIndex + 1 );
+}
+
+void Qgs3DAnimationWidget::onInterpolationChanged()
+{
+  initializeController( animation() );
+
+  if ( cboKeyframe->currentIndex() <= 0 )
+    onSliderValueChanged();
 }
