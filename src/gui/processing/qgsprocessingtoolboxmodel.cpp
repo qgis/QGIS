@@ -152,9 +152,11 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   if ( !mRecentNode )
     return;
 
-  if ( !resetting && rowCount( index( 0, 0 ) ) > 0 )
+  QModelIndex recentIndex = index( 0, 0 );
+  const int prevCount = rowCount( recentIndex );
+  if ( !resetting && prevCount > 0 )
   {
-    beginRemoveRows( index( 0, 0 ), 0, rowCount( index( 0, 0 ) ) );
+    beginRemoveRows( recentIndex, 0, prevCount - 1 );
     mRecentNode->deleteChildren();
     endRemoveRows();
   }
@@ -174,7 +176,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   if ( !resetting )
   {
-    beginInsertRows( index( 0, 0 ), 0, recentAlgorithms.count() - 1 );
+    beginInsertRows( recentIndex, 0, recentAlgorithms.count() - 1 );
   }
 
   for ( const QgsProcessingAlgorithm *algorithm : qgis::as_const( recentAlgorithms ) )
@@ -199,7 +201,7 @@ void QgsProcessingToolboxModel::providerAdded( const QString &id )
   if ( !isTopLevelProvider( id ) )
   {
     int previousRowCount = rowCount();
-    beginInsertRows( QModelIndex(), previousRowCount + 1, previousRowCount + 1 );
+    beginInsertRows( QModelIndex(), previousRowCount, previousRowCount );
     addProvider( provider );
     endInsertRows();
   }
