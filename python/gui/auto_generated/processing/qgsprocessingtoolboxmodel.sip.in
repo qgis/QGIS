@@ -348,6 +348,13 @@ Returns the index corresponding to the specified ``providerId``.
 Returns the index corresponding to the parent of a given node.
 %End
 
+  signals:
+
+    void recentAlgorithmAdded();
+%Docstring
+Emitted whenever recent algorithms are added to the model.
+%End
+
 };
 
 

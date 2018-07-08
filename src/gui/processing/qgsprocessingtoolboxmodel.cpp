@@ -135,7 +135,7 @@ void QgsProcessingToolboxModel::rebuild()
     std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = qgis::make_unique< QgsProcessingToolboxModelRecentNode >();
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
-    repopulateRecentAlgorithms();
+    repopulateRecentAlgorithms( true );
   }
 
   const QList< QgsProcessingProvider * > providers = mRegistry->providers();
@@ -171,7 +171,10 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   }
 
   if ( recentAlgorithms.empty() )
+  {
+    emit recentAlgorithmAdded();
     return;
+  }
 
   if ( !resetting )
   {
@@ -180,7 +183,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   for ( const QgsProcessingAlgorithm *algorithm : qgis::as_const( recentAlgorithms ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
     mRecentNode->addChildNode( algorithmNode.release() );
   }
 
@@ -188,7 +191,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   {
     endInsertRows();
   }
-
+  emit recentAlgorithmAdded();
 }
 
 void QgsProcessingToolboxModel::providerAdded( const QString &id )
@@ -615,6 +618,8 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   setSortLocaleAware( true );
   setFilterCaseSensitivity( Qt::CaseInsensitive );
   sort( 0 );
+
+  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
 }
 
 void QgsProcessingToolboxProxyModel::setFilters( QgsProcessingToolboxProxyModel::Filters filters )
@@ -701,8 +706,6 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
   }
 
-  bool isRecentNode = mModel->data( sourceIndex, QgsProcessingToolboxModel::RoleNodeType ).toInt() == QgsProcessingToolboxModelNode::NodeRecent;
-
   if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
   {
     return hasChildren && provider->isActive();
@@ -734,6 +737,23 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
     else
       return true;
   }
+
+  // if node represents a recent algorithm, it's not sorted at all
+  bool isRecentNode = false;
+  QModelIndex parent = left.parent();
+  while ( parent.isValid() )
+  {
+    if ( mModel->data( parent, QgsProcessingToolboxModel::RoleNodeType ).toInt() == QgsProcessingToolboxModelNode::NodeRecent )
+    {
+      isRecentNode = true;
+      break;
+    }
+  }
+  if ( isRecentNode )
+  {
+    return left.row() < right.row();
+  }
+
 
   // default mode is alphabetical order
   QString leftStr = sourceModel()->data( left ).toString();

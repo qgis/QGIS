@@ -519,18 +519,34 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.rowCount(), 4 );
 
   // check sort order of recent algorithms
-  recentLog.push( QStringLiteral( "qgis:a1" ) );
+  recentLog.push( QStringLiteral( "p2:a1" ) );
   QCOMPARE( model.rowCount(), 5 );
   QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
   QCOMPARE( model.data( recentIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
+  recentLog.push( QStringLiteral( "p1:a2" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 2 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p1:a2" ) );
+  QCOMPARE( model.data( model.index( 1, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
+  recentLog.push( QStringLiteral( "qgis:a1" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 3 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "qgis:a1" ) );
+  QCOMPARE( model.data( model.index( 1, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p1:a2" ) );
+  QCOMPARE( model.data( model.index( 2, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
+  recentLog.push( QStringLiteral( "p2:a1" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 3 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
+  QCOMPARE( model.data( model.index( 1, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "qgis:a1" ) );
+  QCOMPARE( model.data( model.index( 2, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p1:a2" ) );
 
   // inactive provider - should not be visible
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.rowCount(), 5 );
   DummyAlgorithm *qgisA31 = new DummyAlgorithm( "a3", "group1" );
   DummyProvider *p3 = new DummyProvider( "p3", "provider3", QList< QgsProcessingAlgorithm * >() << qgisA31 );
   p3->mActive = false;
   registry.addProvider( p3 );
-  QCOMPARE( model.rowCount(), 4 );
+  QCOMPARE( model.rowCount(), 5 );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModel )
