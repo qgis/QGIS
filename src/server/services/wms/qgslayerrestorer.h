@@ -24,7 +24,7 @@
 
 /**
  * RAII class to restore layer configuration on destruction (opacity,
- *  filters, ...)
+ * filters, ...)
  * \since QGIS 3.0
  */
 class QgsLayerRestorer
@@ -40,7 +40,15 @@ class QgsLayerRestorer
     };
 
   public:
+
+    /**
+     * Constructor.
+     */
     QgsLayerRestorer( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Destructor.
+     */
     ~QgsLayerRestorer();
 
   private:
