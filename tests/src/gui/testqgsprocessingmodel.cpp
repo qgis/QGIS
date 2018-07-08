@@ -18,6 +18,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxmodel.h"
 #include "qgsprocessingrecentalgorithmlog.h"
+#include "qgssettings.h"
 
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
@@ -118,6 +119,8 @@ void TestQgsProcessingModel::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsSettings().clear();
 }
 
 void TestQgsProcessingModel::cleanupTestCase()
@@ -135,6 +138,7 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.rowCount(), 1 );
   QVERIFY( model.hasChildren() );
   QCOMPARE( model.data( model.index( 0, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
+  QCOMPARE( model.rowCount( model.index( 0, 0, QModelIndex() ) ), 0 );
   QVERIFY( !model.providerForIndex( model.index( 0, 0, QModelIndex() ) ) );
   QVERIFY( !model.providerForIndex( model.index( 1, 0, QModelIndex() ) ) );
   QVERIFY( !model.indexForProvider( nullptr ).isValid() );
@@ -296,6 +300,21 @@ void TestQgsProcessingModel::testModel()
   alg2Index = model.index( 0, 0, group2Index );
   QCOMPARE( model.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p3:a2" ) );
 
+  // recent algorithms
+  QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
+  QCOMPARE( model.data( recentIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 0 );
+  recentLog.push( QStringLiteral( "p5:a5" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p5:a5" ) );
+  recentLog.push( QStringLiteral( "not valid" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p5:a5" ) );
+  recentLog.push( QStringLiteral( "p4:a3" ) );
+  QCOMPARE( model.rowCount( recentIndex ), 2 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p4:a3" ) );
+  QCOMPARE( model.data( model.index( 1, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p5:a5" ) );
+
   // remove a provider
   registry.removeProvider( p1 );
   QCOMPARE( model.rowCount(), 5 );
@@ -304,11 +323,18 @@ void TestQgsProcessingModel::testModel()
   QCOMPARE( model.data( model.index( 1, 0, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
   registry.removeProvider( p5 );
   QCOMPARE( model.rowCount(), 4 );
+  recentIndex = model.index( 0, 0, QModelIndex() );
+  QCOMPARE( model.rowCount( recentIndex ), 1 );
+  QCOMPARE( model.data( model.index( 0, 0, recentIndex ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p4:a3" ) );
   registry.removeProvider( p2 );
   QCOMPARE( model.rowCount(), 3 );
   registry.removeProvider( p3 );
   QCOMPARE( model.rowCount(), 2 );
+  recentIndex = model.index( 0, 0, QModelIndex() );
+  QCOMPARE( model.rowCount( recentIndex ), 1 );
   registry.removeProvider( p4 );
+  recentIndex = model.index( 0, 0, QModelIndex() );
+  QCOMPARE( model.rowCount( recentIndex ), 0 );
   QCOMPARE( model.rowCount(), 1 );
   QCOMPARE( model.columnCount(), 1 );
   QVERIFY( model.hasChildren() );
