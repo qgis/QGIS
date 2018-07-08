@@ -720,7 +720,11 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, QgsProcessingToolboxModel::RoleNodeType ).toInt() );
   QgsProcessingToolboxModelNode::NodeType rightType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( right, QgsProcessingToolboxModel::RoleNodeType ).toInt() );
 
-  if ( leftType != rightType )
+  if ( leftType == QgsProcessingToolboxModelNode::NodeRecent )
+    return true;
+  else if ( rightType == QgsProcessingToolboxModelNode::NodeRecent )
+    return false;
+  else if ( leftType != rightType )
   {
     if ( leftType == QgsProcessingToolboxModelNode::NodeProvider )
       return false;

@@ -382,8 +382,14 @@ void TestQgsProcessingModel::testModel()
 
 void TestQgsProcessingModel::testProxyModel()
 {
+  QgsSettings().clear();
   QgsProcessingRegistry registry;
-  QgsProcessingToolboxProxyModel model( nullptr, &registry );
+  QgsProcessingRecentAlgorithmLog recentLog;
+  QgsProcessingToolboxProxyModel model( nullptr, &registry, &recentLog );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &model, this ); // for model validity checking
+#endif
 
   // add a provider
   DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", QgsProcessingAlgorithm::FlagHideFromModeler );
@@ -510,6 +516,13 @@ void TestQgsProcessingModel::testProxyModel()
   QCOMPARE( model.data( model.index( 0, 0, group2Index ), QgsProcessingToolboxModel::RoleAlgorithmId ).toString(), QStringLiteral( "p2:a1" ) );
 
   model.setFilterString( QString() );
+  QCOMPARE( model.rowCount(), 4 );
+
+  // check sort order of recent algorithms
+  recentLog.push( QStringLiteral( "qgis:a1" ) );
+  QCOMPARE( model.rowCount(), 5 );
+  QModelIndex recentIndex = model.index( 0, 0, QModelIndex() );
+  QCOMPARE( model.data( recentIndex, Qt::DisplayRole ).toString(), QStringLiteral( "Recently used" ) );
 
   // inactive provider - should not be visible
   QCOMPARE( model.rowCount(), 4 );
