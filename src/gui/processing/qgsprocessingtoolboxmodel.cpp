@@ -165,7 +165,8 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   if ( !mRegistry )
   {
-    emit recentAlgorithmAdded();
+    if ( !resetting )
+      emit recentAlgorithmAdded();
     return;
   }
 
@@ -181,7 +182,8 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   if ( recentAlgorithms.empty() )
   {
-    emit recentAlgorithmAdded();
+    if ( !resetting )
+      emit recentAlgorithmAdded();
     return;
   }
 
@@ -199,8 +201,8 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   if ( !resetting )
   {
     endInsertRows();
+    emit recentAlgorithmAdded();
   }
-  emit recentAlgorithmAdded();
 }
 
 void QgsProcessingToolboxModel::providerAdded( const QString &id )

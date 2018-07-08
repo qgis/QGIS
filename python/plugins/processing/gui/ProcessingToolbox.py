@@ -139,7 +139,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
     def addProvider(self, provider_id):
         provider = QgsApplication.processingRegistry().providerById(provider_id)
-        self.addProviderActions(provider)
+        if provider is not None:
+            self.addProviderActions(provider)
 
     def removeProvider(self, provider_id):
         button = self.findChild(QToolButton, 'provideraction-' + provider_id)
