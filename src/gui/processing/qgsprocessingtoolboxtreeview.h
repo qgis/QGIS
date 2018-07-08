@@ -46,7 +46,7 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      * and providers from the registry. Otherwise, users must manually call setRegistry()
      * to associate a registry with the view.
      *
-     * If \recentLog is specified then it will be used to create a "Recently used" top
+     * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      */
     QgsProcessingToolboxTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr,
