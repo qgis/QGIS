@@ -38,25 +38,27 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     Q_OBJECT
 
   public:
+    //! Source of the parameter used in the configuration
     enum Source
     {
-      DEFAULT_VALUE,
-      ENVIRONMENT_VARIABLE,
-      INI_FILE
+      DEFAULT_VALUE, //!< Default value
+      ENVIRONMENT_VARIABLE, //!< Environment variable
+      INI_FILE //<! Configuration file
     };
     Q_ENUM( Source )
 
+    //! Environment variables to configure the server
     enum EnvVar
     {
-      QGIS_OPTIONS_PATH,
-      QGIS_SERVER_PARALLEL_RENDERING,
-      QGIS_SERVER_MAX_THREADS,
-      QGIS_SERVER_LOG_LEVEL,
-      QGIS_SERVER_LOG_FILE,
-      QGIS_PROJECT_FILE,
-      MAX_CACHE_LAYERS,
-      QGIS_SERVER_CACHE_DIRECTORY,
-      QGIS_SERVER_CACHE_SIZE
+      QGIS_OPTIONS_PATH, //!< Override the default path for user configuration
+      QGIS_SERVER_PARALLEL_RENDERING, //!< Activate/deactivate parallel rendering
+      QGIS_SERVER_MAX_THREADS, //!< Number of threads to use when parallel rendering is activated
+      QGIS_SERVER_LOG_LEVEL, //!< Log level
+      QGIS_SERVER_LOG_FILE, //!< Log file
+      QGIS_PROJECT_FILE, //!< QGIS project file
+      MAX_CACHE_LAYERS, //!< Maximum number of cached layers
+      QGIS_SERVER_CACHE_DIRECTORY, //!< Cache directory
+      QGIS_SERVER_CACHE_SIZE //!< Cache size
     };
     Q_ENUM( EnvVar )
 };
