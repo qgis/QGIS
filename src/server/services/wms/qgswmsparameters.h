@@ -224,6 +224,8 @@ namespace QgsWms
        */
       int heightAsInt() const;
 
+      bool fake() { return true; }
+
       /**
        * Returns VERSION parameter as a string or an empty string if not
        *  defined.

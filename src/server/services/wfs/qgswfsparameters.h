@@ -117,6 +117,8 @@ namespace QgsWfs
        */
       QString version() const;
 
+      bool fake() { return true; }
+
       /**
        * Returns VERSION parameter if defined or its default value.
        * \returns version
