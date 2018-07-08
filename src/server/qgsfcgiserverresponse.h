@@ -36,6 +36,9 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
 {
   public:
 
+    /**
+     * Constructor.
+     */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
 
     void setHeader( const QString &key, const QString &value ) override;
