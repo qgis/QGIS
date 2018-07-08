@@ -30,8 +30,8 @@ import os
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QModelIndex, QItemSelectionModel
-from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction, QMessageBox
+from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm)
@@ -40,8 +40,7 @@ from qgis.gui import (QgsGui,
                       QgsProcessingToolboxProxyModel)
 
 from processing.gui.Postprocessing import handleAlgorithmResults
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
@@ -76,15 +75,13 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
 
-        self.model = QgsProcessingToolboxProxyModel(self,
-                                                    QgsApplication.processingRegistry(),
-                                                    QgsGui.instance().processingRecentAlgorithmLog())
-        self.model.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
-        self.algorithmTree.setModel(self.model)
+        self.algorithmTree.setRegistry(QgsApplication.processingRegistry(),
+                                       QgsGui.instance().processingRecentAlgorithmLog())
+        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
 
         self.searchBox.setShowSearchIcon(True)
 
-        self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
         self.searchBox.returnPressed.connect(self.activateCurrent)
         self.algorithmTree.customContextMenuRequested.connect(
             self.showPopupMenu)
@@ -122,33 +119,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         return False
 
-    def textChanged(self):
-        text = self.searchBox.text().strip(' ').lower()
-        self.model.setFilterString(text)
-        if text:
-            self.algorithmTree.expandAll()
-            if not self.algorithmTree.selectionModel().hasSelection():
-                # if previously selected item was hidden, auto select the first visible algorithm
-                first_visible_index = self._findFirstVisibleAlgorithm(QModelIndex())
-                if first_visible_index is not None:
-                    self.algorithmTree.selectionModel().setCurrentIndex(first_visible_index, QItemSelectionModel.ClearAndSelect)
-        else:
-            self.algorithmTree.collapseAll()
-
-    def _findFirstVisibleAlgorithm(self, parent_index):
-        """
-        Returns the first visible algorithm in the tree widget
-        """
-        for r in range(self.model.rowCount(parent_index)):
-            proxy_index = self.model.index(r, 0, parent_index)
-            source_index = self.model.mapToSource(proxy_index)
-            if self.model.toolboxModel().isAlgorithm(source_index):
-                return proxy_index
-            index = self._findFirstVisibleAlgorithm(proxy_index)
-            if index is not None:
-                return index
-        return None
-
     def addProviderActions(self, provider):
         if provider.id() in ProviderActions.actions:
             toolbarButton = QToolButton()
@@ -176,22 +146,10 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         if button:
             self.processingToolbar.removeChild(button)
 
-    def algorithm_for_index(self, index):
-        source_index = self.model.mapToSource(index)
-        if self.model.toolboxModel().isAlgorithm(source_index):
-            return self.model.toolboxModel().algorithmForIndex(source_index)
-        return None
-
-    def selected_algorithm(self):
-        if self.algorithmTree.selectionModel().hasSelection():
-            index = self.algorithmTree.selectionModel().selectedIndexes()[0]
-            return self.algorithm_for_index(index)
-        return None
-
     def showPopupMenu(self, point):
         index = self.algorithmTree.indexAt(point)
         popupmenu = QMenu()
-        alg = self.algorithm_for_index(index)
+        alg = self.algorithmTree.algorithmForIndex(index)
         if alg is not None:
             executeAction = QAction(QCoreApplication.translate('ProcessingToolbox', 'Execute…'), popupmenu)
             executeAction.triggered.connect(self.executeAlgorithm)
@@ -224,7 +182,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
 
     def editRenderingStyles(self):
-        alg = self.selected_algorithm()
+        alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             dlg = EditRenderingStylesDialog(alg)
             dlg.exec_()
@@ -233,14 +191,14 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.executeAlgorithm()
 
     def executeAlgorithmAsBatchProcess(self):
-        alg = self.selected_algorithm()
+        alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             dlg = BatchAlgorithmDialog(alg)
             dlg.show()
             dlg.exec_()
 
     def executeAlgorithm(self):
-        alg = self.selected_algorithm()
+        alg = self.algorithmTree.selectedAlgorithm()
         if alg is not None:
             ok, message = alg.canExecute()
             if not ok:
