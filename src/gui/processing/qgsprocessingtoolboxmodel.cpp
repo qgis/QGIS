@@ -138,10 +138,13 @@ void QgsProcessingToolboxModel::rebuild()
     repopulateRecentAlgorithms( true );
   }
 
-  const QList< QgsProcessingProvider * > providers = mRegistry->providers();
-  for ( QgsProcessingProvider *provider : providers )
+  if ( mRegistry )
   {
-    addProvider( provider );
+    const QList< QgsProcessingProvider * > providers = mRegistry->providers();
+    for ( QgsProcessingProvider *provider : providers )
+    {
+      addProvider( provider );
+    }
   }
   endResetModel();
 }
@@ -158,6 +161,12 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
     beginRemoveRows( recentIndex, 0, prevCount - 1 );
     mRecentNode->deleteChildren();
     endRemoveRows();
+  }
+
+  if ( !mRegistry )
+  {
+    emit recentAlgorithmAdded();
+    return;
   }
 
   const QStringList recentAlgIds = mRecentLog->recentAlgorithmIds();
@@ -196,6 +205,9 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
 void QgsProcessingToolboxModel::providerAdded( const QString &id )
 {
+  if ( !mRegistry )
+    return;
+
   QgsProcessingProvider *provider = mRegistry->providerById( id );
   if ( !provider )
     return;
