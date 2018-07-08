@@ -139,7 +139,7 @@ Processing toolbox model node corresponding to a Processing provider.
 %End
   public:
 
-    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider, QgsProcessingRegistry *registry );
+    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 %Docstring
 Constructor for QgsProcessingToolboxModelProviderNode, linked to the
 specified ``provider``.
@@ -216,7 +216,7 @@ Processing toolbox model node corresponding to an algorithm.
 %End
   public:
 
-    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm, QgsProcessingRegistry *registry );
+    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
 with the specified ``algorithm``.

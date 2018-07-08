@@ -162,7 +162,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
      * Constructor for QgsProcessingToolboxModelProviderNode, linked to the
      * specified \a provider.
      */
-    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider, QgsProcessingRegistry *registry );
+    QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 
     NodeType nodeType() const override { return NodeProvider; }
 
@@ -179,7 +179,8 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
   private:
 
     QString mProviderId;
-    QgsProcessingRegistry *mRegistry = nullptr;
+    QgsProcessingProvider *mProvider = nullptr;
+
 };
 
 /**
@@ -237,7 +238,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
      * Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
      * with the specified \a algorithm.
      */
-    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm, QgsProcessingRegistry *registry );
+    QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 
     NodeType nodeType() const override { return NodeAlgorithm; }
 
@@ -248,8 +249,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
 
   private:
 
-    const QString mAlgorithmId;
-    QgsProcessingRegistry *mRegistry = nullptr;
+    const QgsProcessingAlgorithm *mAlgorithm = nullptr;
 
 };
 

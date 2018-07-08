@@ -72,14 +72,14 @@ void QgsProcessingToolboxModelNode::deleteChildren()
 // QgsProcessingToolboxModelProviderNode
 //
 
-QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider, QgsProcessingRegistry *registry )
+QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider )
   : mProviderId( provider->id() )
-  , mRegistry( registry )
+  , mProvider( provider )
 {}
 
 QgsProcessingProvider *QgsProcessingToolboxModelProviderNode::provider()
 {
-  return mRegistry->providerById( mProviderId );
+  return mProvider;
 }
 
 //
@@ -95,14 +95,13 @@ QgsProcessingToolboxModelGroupNode::QgsProcessingToolboxModelGroupNode( const QS
 // QgsProcessingToolboxModelAlgorithmNode
 //
 
-QgsProcessingToolboxModelAlgorithmNode::QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm, QgsProcessingRegistry *registry )
-  : mAlgorithmId( algorithm->id() )
-  , mRegistry( registry )
+QgsProcessingToolboxModelAlgorithmNode::QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm )
+  : mAlgorithm( algorithm )
 {}
 
 const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm() const
 {
-  return mRegistry->algorithmById( mAlgorithmId );
+  return mAlgorithm;
 }
 
 //
@@ -268,7 +267,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider->id() ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider, mRegistry );
+    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = qgis::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
     parentNode = node.get();
     mRootNode->addChildNode( node.release() );
   }
@@ -280,7 +279,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   const QList< const QgsProcessingAlgorithm * > algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm, mRegistry );
+    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = qgis::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
 
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
