@@ -359,6 +359,13 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      */
     QModelIndex indexOfParentTreeNode( QgsProcessingToolboxModelNode *parentNode ) const;
 
+  signals:
+
+    /**
+     * Emitted whenever recent algorithms are added to the model.
+     */
+    void recentAlgorithmAdded();
+
   private slots:
 
     void rebuild();
