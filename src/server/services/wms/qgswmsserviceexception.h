@@ -39,11 +39,18 @@ namespace QgsWms
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
+
+      /**
+       * Constructor.
+       */
       QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(),
                            int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
       {}
 
+      /**
+       * Constructor.
+       */
       QgsServiceException( const QString &code, const QString &message, int responseCode )
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
       {}
@@ -58,6 +65,10 @@ namespace QgsWms
   class QgsSecurityException: public QgsServiceException
   {
     public:
+
+      /**
+       * Constructor.
+       */
       QgsSecurityException( const QString &message, const QString &locator = QString() )
         : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
       {}
@@ -71,12 +82,14 @@ namespace QgsWms
   class QgsBadRequestException: public QgsServiceException
   {
     public:
+
+      /**
+       * Constructor.
+       */
       QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
         : QgsServiceException( code, message, locator, 400 )
       {}
   };
-
-
 } // namespace QgsWms
 
 #endif
