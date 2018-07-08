@@ -435,6 +435,11 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
         QgsProcessingRecentAlgorithmLog *recentLog = nullptr );
 
     /**
+     * Returns the underlying source Processing toolbox model.
+     */
+    QgsProcessingToolboxModel *toolboxModel();
+
+    /**
      * Set \a filters that affect how toolbox content is filtered.
      * \see filters()
      */

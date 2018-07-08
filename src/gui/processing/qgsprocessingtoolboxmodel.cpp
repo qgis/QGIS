@@ -622,6 +622,11 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
 }
 
+QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
+{
+  return mModel;
+}
+
 void QgsProcessingToolboxProxyModel::setFilters( QgsProcessingToolboxProxyModel::Filters filters )
 {
   mFilters = filters;
@@ -748,6 +753,7 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
       isRecentNode = true;
       break;
     }
+    parent = parent.parent();
   }
   if ( isRecentNode )
   {
