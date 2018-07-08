@@ -22,6 +22,12 @@
 
 #include <QtTest/QSignalSpy>
 #include "qgstest.h"
+
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
+
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {
   public:
@@ -133,6 +139,10 @@ void TestQgsProcessingModel::testModel()
   QgsProcessingRegistry registry;
   QgsProcessingRecentAlgorithmLog recentLog;
   QgsProcessingToolboxModel model( nullptr, &registry, &recentLog );
+
+#ifdef ENABLE_MODELTEST
+  new ModelTest( &model, this ); // for model validity checking
+#endif
 
   QCOMPARE( model.columnCount(), 1 );
   QCOMPARE( model.rowCount(), 1 );
