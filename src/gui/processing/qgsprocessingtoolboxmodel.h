@@ -289,7 +289,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
      * registry attached to QgsApplication::processingRegistry() will be used
      * by the model.
      *
-     * If \recentLog is specified then it will be used to create a "Recently used" top
+     * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      */
     QgsProcessingToolboxModel( QObject *parent SIP_TRANSFERTHIS = nullptr, QgsProcessingRegistry *registry = nullptr,
