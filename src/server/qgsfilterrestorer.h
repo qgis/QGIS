@@ -35,6 +35,9 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
 
+    /**
+     * Constructor.
+     */
     QgsOWSServerFilterRestorer() = default;
 
     //! Destructor. When object is destroyed all original layer filters will be restored.
