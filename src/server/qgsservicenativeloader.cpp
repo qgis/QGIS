@@ -34,6 +34,10 @@ typedef void unloadHook_t( QgsServiceModule * );
 class QgsServiceNativeModuleEntry
 {
   public:
+
+    /**
+     * Constructor.
+     */
     QgsServiceNativeModuleEntry( const QString &location )
       : mLocation( location )
     {}
