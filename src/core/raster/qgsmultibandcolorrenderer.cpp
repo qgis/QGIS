@@ -142,7 +142,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
   bool fastDraw = ( !usesTransparency()
                     && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
-                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement );
+                    && mAlphaBand < 1 );
 
   QSet<int> bands;
   if ( mRedBand > 0 )
@@ -238,6 +238,27 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
+
+  if ( fastDraw )
+  {
+    // By default RGB raster layers have contrast enhancement assigned and normally that requires us to take the slow
+    // route that applies the enhancement. However if the algorithm type is "no enhancement" and all input bands are byte-sized,
+    // no transform would be applied to the input values and we can take the fast route.
+    bool hasEnhancement;
+    if ( hasByteRgb )
+    {
+      hasEnhancement =
+        ( mRedContrastEnhancement && mRedContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mGreenContrastEnhancement && mGreenContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement ) ||
+        ( mBlueContrastEnhancement && mBlueContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement );
+    }
+    else
+    {
+      hasEnhancement = mRedContrastEnhancement || mGreenContrastEnhancement || mBlueContrastEnhancement;
+    }
+    if ( hasEnhancement )
+      fastDraw = false;
+  }
 
   qgssize count = ( qgssize )width * height;
   for ( qgssize i = 0; i < count; i++ )
