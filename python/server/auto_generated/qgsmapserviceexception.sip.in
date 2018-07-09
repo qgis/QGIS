@@ -29,7 +29,11 @@ The most important codes are:
 #include "qgsmapserviceexception.h"
 %End
   public:
+
     QgsMapServiceException( const QString &code, const QString &message );
+%Docstring
+Constructor.
+%End
 };
 
 /************************************************************************
