@@ -407,20 +407,27 @@ bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, Container
   QString dbPath = newDb.fileName();
 
   // creating geopackage
-  if ( containerType == GPKG )
+  switch ( containerType )
   {
-    OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
-    if ( !hGpkgDriver )
+    case GPKG:
     {
-      showWarning( tr( "Creation of database failed. GeoPackage driver not found." ) );
-      return false;
-    }
+      OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
+      if ( !hGpkgDriver )
+      {
+        showWarning( tr( "Creation of database failed. GeoPackage driver not found." ) );
+        return false;
+      }
 
-    gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, dbPath.toUtf8().constData(), nullptr ) );
-    if ( !hDS )
+      gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, dbPath.toUtf8().constData(), nullptr ) );
+      if ( !hDS )
+      {
+        showWarning( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        return false;
+      }
+    }
+    case SpatiaLite:
     {
-      showWarning( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
-      return false;
+      break;
     }
   }
 
@@ -503,136 +510,139 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   // new layer
   QgsVectorLayer *newLayer = nullptr;
 
-  if ( containerType != GPKG )
+  switch ( containerType )
   {
-    // create table
-    QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
-    QString delim;
-    const QgsFields providerFields = layer->dataProvider()->fields();
-    for ( const auto &field : providerFields )
+    case SpatiaLite:
     {
-      QString dataType;
-      QVariant::Type type = field.type();
-      if ( type == QVariant::Int || type == QVariant::LongLong )
+      // create table
+      QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
+      QString delim;
+      const QgsFields providerFields = layer->dataProvider()->fields();
+      for ( const auto &field : providerFields )
       {
-        dataType = QStringLiteral( "INTEGER" );
+        QString dataType;
+        QVariant::Type type = field.type();
+        if ( type == QVariant::Int || type == QVariant::LongLong )
+        {
+          dataType = QStringLiteral( "INTEGER" );
+        }
+        else if ( type == QVariant::Double )
+        {
+          dataType = QStringLiteral( "REAL" );
+        }
+        else if ( type == QVariant::String )
+        {
+          dataType = QStringLiteral( "TEXT" );
+        }
+        else
+        {
+          showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
+        }
+
+        sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
+        delim = ',';
       }
-      else if ( type == QVariant::Double )
+      sql += ')';
+
+      int rc = sqlExec( db, sql );
+
+      // add geometry column
+      if ( layer->isSpatial() )
       {
-        dataType = QStringLiteral( "REAL" );
-      }
-      else if ( type == QVariant::String )
-      {
-        dataType = QStringLiteral( "TEXT" );
-      }
-      else
-      {
-        showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
-      }
+        const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
 
-      sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
-      delim = ',';
-    }
-    sql += ')';
+        QString geomType;
+        switch ( QgsWkbTypes::flatType( sourceWkbType ) )
+        {
+          case QgsWkbTypes::Point:
+            geomType = QStringLiteral( "POINT" );
+            break;
+          case QgsWkbTypes::MultiPoint:
+            geomType = QStringLiteral( "MULTIPOINT" );
+            break;
+          case QgsWkbTypes::LineString:
+            geomType = QStringLiteral( "LINESTRING" );
+            break;
+          case QgsWkbTypes::MultiLineString:
+            geomType = QStringLiteral( "MULTILINESTRING" );
+            break;
+          case QgsWkbTypes::Polygon:
+            geomType = QStringLiteral( "POLYGON" );
+            break;
+          case QgsWkbTypes::MultiPolygon:
+            geomType = QStringLiteral( "MULTIPOLYGON" );
+            break;
+          default:
+            showWarning( tr( "Layer %1 has unsupported geometry type %2." ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
+            break;
+        };
 
-    int rc = sqlExec( db, sql );
+        QString zmInfo = QStringLiteral( "XY" );
 
-    // add geometry column
-    if ( layer->isSpatial() )
-    {
-      const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
+        if ( QgsWkbTypes::hasZ( sourceWkbType ) )
+          zmInfo += 'Z';
+        if ( QgsWkbTypes::hasM( sourceWkbType ) )
+          zmInfo += 'M';
 
-      QString geomType;
-      switch ( QgsWkbTypes::flatType( sourceWkbType ) )
-      {
-        case QgsWkbTypes::Point:
-          geomType = QStringLiteral( "POINT" );
-          break;
-        case QgsWkbTypes::MultiPoint:
-          geomType = QStringLiteral( "MULTIPOINT" );
-          break;
-        case QgsWkbTypes::LineString:
-          geomType = QStringLiteral( "LINESTRING" );
-          break;
-        case QgsWkbTypes::MultiLineString:
-          geomType = QStringLiteral( "MULTILINESTRING" );
-          break;
-        case QgsWkbTypes::Polygon:
-          geomType = QStringLiteral( "POLYGON" );
-          break;
-        case QgsWkbTypes::MultiPolygon:
-          geomType = QStringLiteral( "MULTIPOLYGON" );
-          break;
-        default:
-          showWarning( tr( "Layer %1 has unsupported geometry type %2." ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
-          break;
-      };
+        QString epsgCode;
 
-      QString zmInfo = QStringLiteral( "XY" );
+        if ( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
+        {
+          epsgCode = layer->crs().authid().mid( 5 );
+        }
+        else
+        {
+          epsgCode = '0';
+          showWarning( tr( "Layer %1 has unsupported Coordinate Reference System (%2)." ).arg( layer->name(), layer->crs().authid() ) );
+        }
 
-      if ( QgsWkbTypes::hasZ( sourceWkbType ) )
-        zmInfo += 'Z';
-      if ( QgsWkbTypes::hasM( sourceWkbType ) )
-        zmInfo += 'M';
+        QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', '%4')" )
+                             .arg( tableName, epsgCode, geomType, zmInfo );
 
-      QString epsgCode;
+        // create spatial index
+        QString sqlCreateIndex = QStringLiteral( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
 
-      if ( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
-      {
-        epsgCode = layer->crs().authid().mid( 5 );
-      }
-      else
-      {
-        epsgCode = '0';
-        showWarning( tr( "Layer %1 has unsupported Coordinate Reference System (%2)." ).arg( layer->name(), layer->crs().authid() ) );
-      }
-
-      QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', '%4')" )
-                           .arg( tableName, epsgCode, geomType, zmInfo );
-
-      // create spatial index
-      QString sqlCreateIndex = QStringLiteral( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
-
-      if ( rc == SQLITE_OK )
-      {
-        rc = sqlExec( db, sqlAddGeom );
         if ( rc == SQLITE_OK )
         {
-          rc = sqlExec( db, sqlCreateIndex );
+          rc = sqlExec( db, sqlAddGeom );
+          if ( rc == SQLITE_OK )
+          {
+            rc = sqlExec( db, sqlCreateIndex );
+          }
         }
       }
-    }
 
-    if ( rc != SQLITE_OK )
+      if ( rc != SQLITE_OK )
+      {
+        showWarning( tr( "Filling SpatiaLite for layer %1 failed" ).arg( layer->name() ) );
+        return nullptr;
+      }
+
+      // add new layer
+      QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
+                                 .arg( offlineDbPath,
+                                       tableName, layer->isSpatial() ? "(Geometry)" : "" );
+      newLayer = new QgsVectorLayer( connectionString,
+                                     layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
+    }
+    case GPKG:
     {
-      showWarning( tr( "Filling SpatiaLite for layer %1 failed" ).arg( layer->name() ) );
-      return nullptr;
+      QgsVectorFileWriter::SaveVectorOptions options;
+      options.driverName = QStringLiteral( "GPKG" );
+      options.layerName = tableName;
+      options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
+      options.onlySelectedFeatures = onlySelected;
+
+      QString error;
+      if ( QgsVectorFileWriter::writeAsVectorFormat( layer, offlineDbPath, options, &error ) != QgsVectorFileWriter::NoError )
+      {
+        showWarning( tr( "Packaging layer %1 failed: %2" ).arg( layer->name(), error ) );
+        return nullptr;
+      }
+
+      QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
+      newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
     }
-
-    // add new layer
-    QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
-                               .arg( offlineDbPath,
-                                     tableName, layer->isSpatial() ? "(Geometry)" : "" );
-    newLayer = new QgsVectorLayer( connectionString,
-                                   layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
-  }
-  else
-  {
-    QgsVectorFileWriter::SaveVectorOptions options;
-    options.driverName = QStringLiteral( "GPKG" );
-    options.layerName = tableName;
-    options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
-    options.onlySelectedFeatures = onlySelected;
-
-    QString error;
-    if ( QgsVectorFileWriter::writeAsVectorFormat( layer, offlineDbPath, options, &error ) != QgsVectorFileWriter::NoError )
-    {
-      showWarning( tr( "Packaging layer %1 failed: %2" ).arg( layer->name(), error ) );
-      return nullptr;
-    }
-
-    QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
-    newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
   }
 
   if ( newLayer->isValid() )
