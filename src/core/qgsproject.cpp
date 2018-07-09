@@ -508,7 +508,7 @@ QString QgsProject::baseName() const
   }
   else
   {
-    return QFileInfo( mFile.fileName() ).baseName();
+    return QFileInfo( mFile.fileName() ).completeBaseName();
   }
 }
 
