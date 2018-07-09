@@ -267,7 +267,7 @@ void QgsOfflineEditingPluginGui::datatypeChanged( int index )
   }
   else
   {
-    //Spatialite
+    //SpatiaLite
     mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   }
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );

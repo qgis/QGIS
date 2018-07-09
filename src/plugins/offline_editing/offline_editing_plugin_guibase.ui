@@ -29,7 +29,7 @@
         </size>
        </property>
        <property name="text">
-        <string>Storage Type</string>
+        <string>Storage type</string>
        </property>
       </widget>
      </item>
@@ -48,7 +48,7 @@
        </item>
        <item>
         <property name="text">
-         <string>Spatialite</string>
+         <string>SpatiaLite</string>
         </property>
        </item>
       </widget>
