@@ -32,7 +32,10 @@ namespace QgsWcs
   class Service: public QgsService
   {
     public:
-      // Constructor
+
+      /**
+       * Constructor.
+       */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )
       {}
