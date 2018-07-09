@@ -291,7 +291,6 @@ const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeT
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
-  int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
