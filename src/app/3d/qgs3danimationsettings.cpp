@@ -46,17 +46,14 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
     // QEasingCurve is probably not flexible enough, we may need more granular
     // control with Bezier curves to allow smooth transition at keyframes
 
-    float totalTime = duration();
-    float interpTime = mEasingCurve.valueForProgress( time / totalTime );
-    float time2 = interpTime * totalTime;
-
     for ( int i = 0; i < mKeyframes.size() - 1; i++ )
     {
       const Keyframe &k0 = mKeyframes.at( i );
       const Keyframe &k1 = mKeyframes.at( i + 1 );
-      if ( time2 >= k0.time && time2 <= k1.time )
+      if ( time >= k0.time && time <= k1.time )
       {
-        float eIp = ( time2 - k0.time ) / ( k1.time - k0.time );
+        float ip = ( time - k0.time ) / ( k1.time - k0.time );
+        float eIp = mEasingCurve.valueForProgress( ip );
         float eIip = 1.0f - eIp;
 
         Keyframe kf;
