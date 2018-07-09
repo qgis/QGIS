@@ -197,6 +197,20 @@ class CORE_EXPORT QgsRasterBlock
     double value( qgssize index ) const;
 
     /**
+     * Gives direct access to the raster block data.
+     * The data type of the block must be Qgis::Byte otherwise it returns null pointer.
+     * Useful for most efficient read access.
+     * \note not available in Python bindings
+     * \since QGIS 3.4
+     */
+    const quint8 *byteData() const SIP_SKIP
+    {
+      if ( mDataType != Qgis::Byte )
+        return nullptr;
+      return static_cast< const quint8 * >( mData );
+    }
+
+    /**
      * \brief Read a single color
      *  \param row row index
      *  \param column column index
@@ -330,6 +344,20 @@ class CORE_EXPORT QgsRasterBlock
       QRgb *bits = reinterpret_cast< QRgb * >( mImage->bits() );
       bits[index] = color;
       return true;
+    }
+
+    /**
+     * Gives direct read/write access to the raster RGB data.
+     * The data type of the block must be Qgis::ARGB32 or Qgis::ARGB32_Premultiplied otherwise it returns null pointer.
+     * Useful for most efficient read/write access to RGB blocks.
+     * \note not available in Python bindings
+     * \since QGIS 3.4
+     */
+    QRgb *colorData() SIP_SKIP
+    {
+      if ( !mImage )
+        return nullptr;
+      return reinterpret_cast< QRgb * >( mImage->bits() );
     }
 
     /**
