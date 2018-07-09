@@ -33,6 +33,10 @@ class QgsPythonUtils;
 class SERVER_EXPORT QgsServerPlugins
 {
   public:
+
+    /**
+     * Constructor.
+     */
     explicit QgsServerPlugins() = default;
 
     /**
