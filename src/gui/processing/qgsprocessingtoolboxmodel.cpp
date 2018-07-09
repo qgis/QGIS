@@ -151,7 +151,7 @@ void QgsProcessingToolboxModel::rebuild()
 
 void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 {
-  if ( !mRecentNode )
+  if ( !mRecentNode || !mRecentLog )
     return;
 
   QModelIndex recentIndex = index( 0, 0 );
