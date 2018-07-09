@@ -18,6 +18,7 @@
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingtoolboxmodel.h"
 #include "qgsprocessingrecentalgorithmlog.h"
+#include "qgsprocessingtoolboxtreeview.h"
 #include "qgssettings.h"
 
 #include <QtTest/QSignalSpy>
@@ -113,6 +114,7 @@ class TestQgsProcessingModel: public QObject
     void cleanup() {} // will be called after every testfunction.
     void testModel();
     void testProxyModel();
+    void testView();
 };
 
 
@@ -547,6 +549,91 @@ void TestQgsProcessingModel::testProxyModel()
   p3->mActive = false;
   registry.addProvider( p3 );
   QCOMPARE( model.rowCount(), 5 );
+}
+
+void TestQgsProcessingModel::testView()
+{
+  QgsSettings().clear();
+  QgsProcessingRegistry registry;
+  QgsProcessingRecentAlgorithmLog recentLog;
+  QgsProcessingToolboxTreeView view( nullptr, &registry, &recentLog );
+
+  QVERIFY( !view.algorithmForIndex( QModelIndex() ) );
+
+  // add a provider
+  DummyAlgorithm *a1 = new DummyAlgorithm( "a1", "group2", QgsProcessingAlgorithm::FlagHideFromToolbox );
+  DummyProvider *p1 = new DummyProvider( "p2", "provider2", QList< QgsProcessingAlgorithm * >() << a1 );
+  registry.addProvider( p1 );
+  // second provider
+  DummyAlgorithm *a2 = new DummyAlgorithm( "a2", "group2", QgsProcessingAlgorithm::FlagHideFromModeler,
+      QStringLiteral( "buffer,vector" ), QStringLiteral( "short desc" ), QStringLiteral( "algorithm2" ) );
+  DummyProvider *p2 = new DummyProvider( "p1", "provider1", QList< QgsProcessingAlgorithm * >() << a2 );
+  registry.addProvider( p2 );
+
+  QModelIndex provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  QVERIFY( !view.algorithmForIndex( provider1Index ) );
+  QModelIndex group2Index = view.model()->index( 0, 0, provider1Index );
+  QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
+  QVERIFY( !view.algorithmForIndex( group2Index ) );
+  QModelIndex alg2Index = view.model()->index( 0, 0, group2Index );
+  QCOMPARE( view.algorithmForIndex( alg2Index )->id(), QStringLiteral( "p1:a2" ) );
+  QModelIndex provider2Index = view.model()->index( 1, 0, QModelIndex() );
+  QVERIFY( !view.algorithmForIndex( provider2Index ) );
+  QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  group2Index = view.model()->index( 0, 0, provider2Index );
+  QCOMPARE( view.model()->data( group2Index, Qt::DisplayRole ).toString(), QStringLiteral( "group2" ) );
+  QModelIndex alg1Index = view.model()->index( 0, 0, group2Index );
+  QCOMPARE( view.algorithmForIndex( alg1Index )->id(), QStringLiteral( "p2:a1" ) );
+
+  view.setFilters( QgsProcessingToolboxProxyModel::FilterModeler );
+  provider2Index = view.model()->index( 0, 0, QModelIndex() );
+  QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( view.model()->rowCount(), 1 );
+  QCOMPARE( view.model()->rowCount( provider2Index ), 1 );
+  group2Index = view.model()->index( 0, 0, provider2Index );
+  QCOMPARE( view.model()->rowCount( group2Index ), 1 );
+  QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p2:a1" ) );
+  view.setFilters( QgsProcessingToolboxProxyModel::FilterToolbox );
+  provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  QCOMPARE( view.model()->data( provider1Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider1" ) );
+  QCOMPARE( view.model()->rowCount(), 1 );
+  QCOMPARE( view.model()->rowCount( provider1Index ), 1 );
+  group2Index = view.model()->index( 0, 0, provider1Index );
+  QCOMPARE( view.model()->rowCount( group2Index ), 1 );
+  QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p1:a2" ) );
+
+  view.setFilters( nullptr );
+  // test filter strings
+  view.setFilterString( "a1" );
+  provider2Index = view.model()->index( 0, 0, QModelIndex() );
+  QCOMPARE( view.model()->data( provider2Index, Qt::DisplayRole ).toString(), QStringLiteral( "provider2" ) );
+  QCOMPARE( view.model()->rowCount(), 1 );
+  QCOMPARE( view.model()->rowCount( provider2Index ), 1 );
+  group2Index = view.model()->index( 0, 0, provider2Index );
+  QCOMPARE( view.model()->rowCount( group2Index ), 1 );
+  QCOMPARE( view.algorithmForIndex( view.model()->index( 0, 0, group2Index ) )->id(), QStringLiteral( "p2:a1" ) );
+
+  view.setFilterString( QString() );
+
+  // selected algorithm
+  provider1Index = view.model()->index( 0, 0, QModelIndex() );
+  view.selectionModel()->clear();
+  QVERIFY( !view.selectedAlgorithm() );
+  view.selectionModel()->select( provider1Index, QItemSelectionModel::ClearAndSelect );
+  QVERIFY( !view.selectedAlgorithm() );
+  group2Index = view.model()->index( 0, 0, provider1Index );
+  view.selectionModel()->select( group2Index, QItemSelectionModel::ClearAndSelect );
+  QVERIFY( !view.selectedAlgorithm() );
+  alg2Index = view.model()->index( 0, 0, group2Index );
+  view.selectionModel()->select( alg2Index, QItemSelectionModel::ClearAndSelect );
+  QCOMPARE( view.selectedAlgorithm()->id(), QStringLiteral( "p1:a2" ) );
+
+  // when a filter string removes the selected algorithm, the next matching algorithm should be auto-selected
+  view.setFilterString( QStringLiteral( "p2:a1" ) );
+  QCOMPARE( view.selectedAlgorithm()->id(), QStringLiteral( "p2:a1" ) );
+  // but if it doesn't remove the selected one, that algorithm should not be deselected
+  view.setFilterString( QStringLiteral( "a" ) );
+  QCOMPARE( view.selectedAlgorithm()->id(), QStringLiteral( "p2:a1" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingModel )
