@@ -1091,6 +1091,20 @@ class TestQgsProject(unittest.TestCase):
         self.assertTrue(l.setSubsetString('class=\'a\''))
         self.assertTrue(p.isDirty())
 
+    def testProjectTitleWithPeriod(self):
+        tmpDir = QTemporaryDir()
+        tmpFile = "{}/2.18.21.qgs".format(tmpDir.path())
+        tmpFile2 = "{}/qgis-3.2.0.qgs".format(tmpDir.path())
+
+        p0 = QgsProject()
+        p0.setFileName(tmpFile)
+
+        p1 = QgsProject()
+        p1.setFileName(tmpFile2)
+
+        self.assertEqual(p0.baseName(), '2.18.21')
+        self.assertEqual(p1.baseName(), 'qgis-3.2.0')
+
 
 if __name__ == '__main__':
     unittest.main()
