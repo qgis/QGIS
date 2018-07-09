@@ -64,6 +64,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
      * \param offlineDbFile Offline db file name
      * \param layerIds List of layer names to convert
      * \param onlySelected Only copy selected features from layers where a selection is present
+     * \param containerType defines the SQLite file container type like SpatiaLite or GPKG
      */
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false, ContainerType containerType = SpatiaLite );
 

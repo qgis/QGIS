@@ -180,7 +180,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     }
     case QgsOfflineEditing::SpatiaLite:
     {
-      //Spacialite
+      //SpaciaLite
       QString fileName = QFileDialog::getSaveFileName( this,
                          tr( "Select target database for offline data" ),
                          QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
