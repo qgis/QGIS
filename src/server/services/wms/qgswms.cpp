@@ -41,7 +41,10 @@ namespace QgsWms
   class Service: public QgsService
   {
     public:
-      // Constructor
+
+      /**
+       * Constructor.
+       */
       Service( const QString &version, QgsServerInterface *serverIface )
         : mVersion( version )
         , mServerIface( serverIface )
