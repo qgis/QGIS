@@ -225,9 +225,22 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     return outputBlock.release();
   }
 
+  QRgb *outputBlockColorData = outputBlock->colorData();
+
+  // faster data access to data for the common case that input data are coming from RGB image with 8-bit bands
+  bool hasByteRgb = ( redBlock->dataType() == Qgis::Byte && greenBlock->dataType() == Qgis::Byte && blueBlock->dataType() == Qgis::Byte );
+  const quint8 *redData = nullptr, *greenData = nullptr, *blueData = nullptr;
+  if ( hasByteRgb )
+  {
+    redData = redBlock->byteData();
+    greenData = greenBlock->byteData();
+    blueData = blueBlock->byteData();
+  }
+
   QRgb myDefaultColor = NODATA_COLOR;
 
-  for ( qgssize i = 0; i < ( qgssize )width * height; i++ )
+  qgssize count = ( qgssize )width * height;
+  for ( qgssize i = 0; i < count; i++ )
   {
     if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
     {
@@ -239,10 +252,17 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       }
       else
       {
-        int redVal = ( int )redBlock->value( i );
-        int greenVal = ( int )greenBlock->value( i );
-        int blueVal = ( int )blueBlock->value( i );
-        outputBlock->setColor( i, qRgba( redVal, greenVal, blueVal, 255 ) );
+        if ( hasByteRgb )
+        {
+          outputBlockColorData[i] = qRgb( redData[i], greenData[i], blueData[i] );
+        }
+        else
+        {
+          int redVal = ( int )redBlock->value( i );
+          int greenVal = ( int )greenBlock->value( i );
+          int blueVal = ( int )blueBlock->value( i );
+          outputBlockColorData[i] = qRgb( redVal, greenVal, blueVal );
+        }
       }
       continue;
     }
