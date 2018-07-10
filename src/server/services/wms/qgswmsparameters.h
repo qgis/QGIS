@@ -30,12 +30,6 @@
 #include "qgsgeometry.h"
 #include "qgsprojectversion.h"
 
-/**
- * \ingroup server
- * QgsWmsParameters provides an interface to retrieve and manipulate WMS
- *  parameters received from the client.
- * \since QGIS 3.0
- */
 namespace QgsWms
 {
   struct QgsWmsParametersLayer
@@ -74,6 +68,12 @@ namespace QgsWms
     QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 
+  /**
+   * \ingroup server
+   * \class QgsWmsParameters
+   * \brief Interface to retrieve and manipulate WMS parameters received from the client.
+   * \since QGIS 3.0
+   */
   class QgsWmsParameters
   {
       Q_GADGET

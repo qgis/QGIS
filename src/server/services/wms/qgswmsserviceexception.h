@@ -29,13 +29,14 @@ namespace QgsWms
    * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WMS service exceptions.
-   * \since QGIS 3.0
    *
    * The most important codes are:
    *  * "InvalidFormat"
    *  * "Invalid CRS"
    *  * "LayerNotDefined" / "StyleNotDefined"
    *  * "OperationNotSupported"
+   *
+   * \since QGIS 3.0
    */
   class QgsServiceException : public QgsOgcServiceException
   {
