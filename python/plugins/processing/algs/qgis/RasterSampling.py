@@ -115,7 +115,10 @@ class RasterSampling(QgisAlgorithm):
         # append field to vector as rasterName_bandCount
         for i in sampled_rasters:
             for b in range(i.bandCount()):
-                raster_fields.append(QgsField(i.name() + str('_{}'.format(b+1)), QVariant.Double))
+                raster_fields.append(QgsField(
+                    i.name() + str('_{}'.format(b+1)),
+                    QVariant.Double)
+                )
 
 
         # combine all the vector fields
@@ -147,11 +150,16 @@ class RasterSampling(QgisAlgorithm):
                 if rr.bandCount() >1:
 
                     for b in range(rr.bandCount()):
-                        attrs.append(rr.dataProvider().identify(i.geometry().asPoint(),
-                        QgsRaster.IdentifyFormatValue).results()[b+1])
+                        attrs.append(
+                            rr.dataProvider().identify(i.geometry().asPoint(),
+                            QgsRaster.IdentifyFormatValue).results()[b+1]
+                        )
 
 
-                attrs.append(rr.dataProvider().identify(i.geometry().asPoint(), QgsRaster.IdentifyFormatValue).results()[1])
+                attrs.append(
+                    rr.dataProvider().identify(i.geometry().asPoint(),
+                    QgsRaster.IdentifyFormatValue).results()[1]
+                )
 
 
                 i.setAttributes(attrs)
