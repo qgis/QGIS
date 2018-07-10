@@ -24,7 +24,6 @@ SET(QGIS_SERVER_SRCS
   qgsbufferserverresponse.cpp
   qgscapabilitiescache.cpp
   qgsconfigcache.cpp
-  qgsconfigparserutils.cpp
   qgsfcgiserverrequest.cpp
   qgsfcgiserverresponse.cpp
   qgsfilterresponsedecorator.cpp
