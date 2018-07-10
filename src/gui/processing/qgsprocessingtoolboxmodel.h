@@ -34,7 +34,7 @@ class QgsProcessingRecentAlgorithmLog;
  * Abstract base class for nodes contained within a QgsProcessingToolboxModel.
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 {
@@ -129,7 +129,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 /**
  * Processing toolbox model node corresponding to the recent algorithms group
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
  */
 class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolboxModelNode
@@ -150,7 +150,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 /**
  * Processing toolbox model node corresponding to a Processing provider.
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
  */
 class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToolboxModelNode
@@ -187,7 +187,7 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
 /**
  * Processing toolbox model node corresponding to a group of algorithms.
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
  */
 class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolboxModelNode
@@ -226,7 +226,7 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
 /**
  * Processing toolbox model node corresponding to an algorithm.
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
  */
 class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingToolboxModelNode
@@ -263,7 +263,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
  * of this model.
  *
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 {
@@ -405,7 +405,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
  * the results.
  *
  * \ingroup gui
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 {

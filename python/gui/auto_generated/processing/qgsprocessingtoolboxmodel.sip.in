@@ -19,7 +19,7 @@ Abstract base class for nodes contained within a QgsProcessingToolboxModel.
 
    Not part of stable API and may change in future QGIS releases.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -101,7 +101,7 @@ class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to the recent algorithms group
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 
 .. warning::
 
@@ -127,7 +127,7 @@ class QgsProcessingToolboxModelProviderNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to a Processing provider.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 
 .. warning::
 
@@ -164,7 +164,7 @@ class QgsProcessingToolboxModelGroupNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to a group of algorithms.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 
 .. warning::
 
@@ -204,7 +204,7 @@ class QgsProcessingToolboxModelAlgorithmNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to an algorithm.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 
 .. warning::
 
@@ -240,7 +240,7 @@ A model for providers and algorithms shown within the Processing toolbox.
 See QgsProcessingToolboxProxyModel for a sorted, filterable version
 of this model.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -367,7 +367,7 @@ A sort/filter proxy model for providers and algorithms shown within the Processi
 which automatically sorts the toolbox in a logical fashion and supports filtering
 the results.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
