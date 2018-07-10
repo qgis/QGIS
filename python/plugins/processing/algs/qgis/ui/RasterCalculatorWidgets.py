@@ -214,10 +214,11 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return QLineEdit()
         else:
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
-            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(lyr) for lyr in layers}
+            options = {self.dialog.resolveValueDescription(lyr): "{}@1".format(self.dialog.resolveValueDescription(lyr)) for lyr in layers}
             return self._panel(options)
 
     def refresh(self):
+        # TODO: check if avoid code duplication with self.createWidget
         layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         options = {}
         for lyr in layers:
