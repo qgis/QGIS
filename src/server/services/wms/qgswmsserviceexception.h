@@ -29,6 +29,7 @@ namespace QgsWms
    * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WMS service exceptions.
+   * \since QGIS 3.0
    *
    * The most important codes are:
    *  * "InvalidFormat"
@@ -61,6 +62,7 @@ namespace QgsWms
    * \ingroup server
    * \class  QgsSecurityException
    * \brief Exception thrown when data access violates access controls
+   * \since QGIS 3.0
    */
   class QgsSecurityException: public QgsServiceException
   {
@@ -78,6 +80,7 @@ namespace QgsWms
    * \ingroup server
    * \class  QgsBadRequestException
    * \brief Exception thrown in case of malformed request
+   * \since QGIS 3.0
    */
   class QgsBadRequestException: public QgsServiceException
   {

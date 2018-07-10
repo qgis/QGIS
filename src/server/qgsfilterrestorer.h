@@ -30,7 +30,8 @@ class QgsAccessControl;
 
 /**
  * \ingroup server
- * RAII class to restore layer filters on destruction
+ * \brief RAII class to restore layer filters on destruction
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsOWSServerFilterRestorer
 {

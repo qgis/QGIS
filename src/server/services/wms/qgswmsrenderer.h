@@ -68,15 +68,12 @@ class QgsLayerTreeGroup;
  *  - getlegendgraphics
  *  - getprint
  */
-
-// These requests share common methods: putting them into a single helper class is
-// more practical than spitting everything in a more functional way.
-
 namespace QgsWms
 {
 
   /**
    * \ingroup server
+   * \since QGIS 3.0
    */
   class QgsRenderer
   {

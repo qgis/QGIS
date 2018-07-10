@@ -31,8 +31,9 @@
 #include "qgsproject.h"
 
 /**
- * Cache for server configuration.
  * \ingroup server
+ * \brief Cache for server configuration.
+ * \since QGIS 2.8
  */
 class SERVER_EXPORT QgsConfigCache : public QObject
 {

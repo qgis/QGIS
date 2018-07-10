@@ -31,6 +31,7 @@
 /**
  * \ingroup server
  * \brief Writes message log into server logfile
+ * \since QGIS 2.8
  */
 class QgsServerLogger: public QObject
 {

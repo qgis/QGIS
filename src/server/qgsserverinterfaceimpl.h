@@ -27,13 +27,12 @@
 
 /**
  * \ingroup server
- * QgsServerInterface
- * Class defining interfaces exposed by QGIS Server and
- * made available to plugins.
+ * \class QgsServerInterface
+ * \brief Interfaces exposed by QGIS Server and made available to plugins.
+ * \since QGIS 2.8
  */
 class QgsServerInterfaceImpl : public QgsServerInterface
 {
-
   public:
 
     //! Constructor
