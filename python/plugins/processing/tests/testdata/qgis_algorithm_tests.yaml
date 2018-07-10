@@ -5728,4 +5728,64 @@ tests:
         name: expected/kmeans_polys.gml
         type: vector
 
+  - algorithm: native:dbscanclustering
+    name: DBScan 5/3
+    params:
+      DBSCAN*: false
+      EPS: 3.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_5_2.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan* 5/3
+    params:
+      DBSCAN*: true
+      EPS: 3.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_star_5_2.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan no clusters
+    params:
+      DBSCAN*: false
+      EPS: 1.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 5
+    results:
+      OUTPUT:
+        name: expected/dbscan_no_clusters.gml
+        type: vector
+
+  - algorithm: native:dbscanclustering
+    name: DBScan multiple clusters
+    params:
+      DBSCAN*: false
+      EPS: 2.0
+      FIELD_NAME: CLUSTER_ID
+      INPUT:
+        name: custom/points_weighted.gml
+        type: vector
+      MIN_SIZE: 3
+    results:
+      OUTPUT:
+        name: expected/dbscan_multiple_clusters.gml
+        type: vector
+
 # See ../README.md for a description of the file format
