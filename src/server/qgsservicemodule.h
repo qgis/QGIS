@@ -28,12 +28,14 @@ class QgsServerInterface;
 
 /**
  * \ingroup server
- * QgsServiceModule
- * Class defining the service module interface for QGIS server services
+ * \class QgsServiceModule
+ * \brief Class defining the service module interface for QGIS server services
  *
  * This class acts as a service registrar for services.
  *
  * For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
+ *
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServiceModule
 {
