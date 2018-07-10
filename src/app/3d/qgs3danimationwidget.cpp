@@ -129,12 +129,19 @@ void Qgs3DAnimationWidget::setDefaultAnimation()
   setAnimation( animSettings );
 }
 
+void Qgs3DAnimationWidget::setEditControlsEnabled( bool enabled )
+{
+  cboKeyframe->setEnabled( enabled );
+  btnAddKeyframe->setEnabled( enabled );
+  cboInterpolation->setEnabled( enabled );
+}
+
 void Qgs3DAnimationWidget::onPlayPause()
 {
   if ( mAnimationTimer->isActive() )
   {
     mAnimationTimer->stop();
-    cboKeyframe->setEnabled( true );
+    setEditControlsEnabled( true );
   }
   else
   {
@@ -143,8 +150,8 @@ void Qgs3DAnimationWidget::onPlayPause()
       sliderTime->setValue( 0 );
     }
 
-    cboKeyframe->setCurrentIndex( 0 );  // unset active keyframe
-    cboKeyframe->setEnabled( false );
+    cboKeyframe->setCurrentIndex( 0 ); // unset active keyframe
+    setEditControlsEnabled( false );
     mAnimationTimer->start();
   }
 }

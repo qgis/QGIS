@@ -55,6 +55,7 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
 
   private:
     void initializeController( const Qgs3DAnimationSettings &animSettings );
+    void setEditControlsEnabled( bool enabled );
     float askForKeyframeTime( float defaultTime, bool *ok );
     int findIndexForKeyframe( float time );
 
