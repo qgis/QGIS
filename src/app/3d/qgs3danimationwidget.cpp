@@ -138,6 +138,11 @@ void Qgs3DAnimationWidget::onPlayPause()
   }
   else
   {
+    if ( sliderTime->value() >= sliderTime->maximum() )
+    {
+      sliderTime->setValue( 0 );
+    }
+
     cboKeyframe->setCurrentIndex( 0 );  // unset active keyframe
     cboKeyframe->setEnabled( false );
     mAnimationTimer->start();
