@@ -5729,7 +5729,7 @@ tests:
         type: vector
 
   - algorithm: qgis:rastersampling
-    name: Raster sampling, points single band
+    name: Test (qgis:rastersampling)
     params:
       INPUT:
         name: custom/points_over.shp
@@ -5741,7 +5741,7 @@ tests:
         type: multi
     results:
       OUTPUT:
-        name: expected/raster_sampling.gml
+        name: expected/raster_sampling.geojson
         type: vector
 
 

@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "raster_sampling",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "id": 1, "dem_1": 91.927398681640625 }, "geometry": { "type": "Point", "coordinates": [ 18.673561581200811, 45.806034820107143 ] } },
+{ "type": "Feature", "properties": { "id": 2, "dem_1": 122.21053314208984 }, "geometry": { "type": "Point", "coordinates": [ 18.689169554006359, 45.803517405138507 ] } },
+{ "type": "Feature", "properties": { "id": 3, "dem_1": 129.41787719726562 }, "geometry": { "type": "Point", "coordinates": [ 18.692358279633297, 45.787573777003807 ] } },
+{ "type": "Feature", "properties": { "id": 4, "dem_1": 109.65437316894531 }, "geometry": { "type": "Point", "coordinates": [ 18.679603377125538, 45.787070294010086 ] } },
+{ "type": "Feature", "properties": { "id": 5, "dem_1": 174.28929138183594 }, "geometry": { "type": "Point", "coordinates": [ 18.681281653771297, 45.796468643226326 ] } },
+{ "type": "Feature", "properties": { "id": 6, "dem_1": 93.11883544921875 }, "geometry": { "type": "Point", "coordinates": [ 18.673561581200811, 45.79260860694108 ] } }
+]
+}
