@@ -28,7 +28,7 @@
 
 /**
  * \ingroup server
- * \class QgsFcgiServerResquest
+ * \class QgsFcgiServerRequest
  * \brief Class defining fcgi request
  * \since QGIS 3.0
  */

@@ -27,7 +27,7 @@
 
 /**
  * \ingroup server
- * \class QgsServerInterface
+ * \class QgsServerInterfaceImpl
  * \brief Interfaces exposed by QGIS Server and made available to plugins.
  * \since QGIS 2.8
  */

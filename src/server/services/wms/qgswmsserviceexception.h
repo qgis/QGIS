@@ -27,7 +27,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsserviceException
+   * \class  QgsWms::QgsserviceException
    * \brief Exception class for WMS service exceptions.
    *
    * The most important codes are:
@@ -61,7 +61,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsSecurityException
+   * \class  QgsWms::QgsSecurityException
    * \brief Exception thrown when data access violates access controls
    * \since QGIS 3.0
    */
@@ -79,7 +79,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsBadRequestException
+   * \class  QgsWms::QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    * \since QGIS 3.0
    */
