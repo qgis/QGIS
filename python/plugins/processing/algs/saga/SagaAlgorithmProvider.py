@@ -80,6 +80,12 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def setActive(self, active):
         ProcessingConfig.setSettingValue('ACTIVATE_SAGA', active)
 
+    def canBeActivated(self):
+        version = SagaUtils.getInstalledVersion(True)
+        if version is not None and version.startswith(REQUIRED_VERSION):
+            return True
+        return False
+
     def loadAlgorithms(self):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:

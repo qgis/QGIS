@@ -114,7 +114,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             return False
 
         for provider in QgsApplication.processingRegistry().providers():
-            if not provider.isActive():
+            if not provider.isActive() and provider.canBeActivated():
                 return True
 
         return False
