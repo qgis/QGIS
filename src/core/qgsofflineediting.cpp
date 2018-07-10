@@ -424,6 +424,7 @@ bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, Container
         showWarning( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
         return false;
       }
+      break;
     }
     case SpatiaLite:
     {
@@ -624,6 +625,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
                                        tableName, layer->isSpatial() ? "(Geometry)" : "" );
       newLayer = new QgsVectorLayer( connectionString,
                                      layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
+      break;
     }
     case GPKG:
     {
@@ -642,6 +644,7 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
 
       QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
       newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
+      break;
     }
   }
 
