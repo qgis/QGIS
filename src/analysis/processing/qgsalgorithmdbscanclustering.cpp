@@ -70,8 +70,9 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   fieldNameParam->setFlags( fieldNameParam->flags() | QgsProcessingParameterDefinition::FlagAdvanced );
   addParameter( fieldNameParam.release() );
 
-
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clusters" ), QgsProcessing::TypeVectorPoint ) );
+
+  addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_CLUSTERS" ), QObject::tr( "Number of clusters" ) ) );
 }
 
 QString QgsDbscanClusteringAlgorithm::shortHelpString() const
@@ -145,7 +146,8 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
   QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
   const long featureCount = source->featureCount();
 
-  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, feedback );
+  int clusterCount = 0;
+  dbscan( minSize, eps, borderPointsAreNoise, featureCount, features, index, idToCluster, clusterCount, feedback );
 
   // write clusters
   const double writeStep = featureCount > 0 ? 10.0 / featureCount : 1;
@@ -177,6 +179,7 @@ QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &p
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( QStringLiteral( "NUM_CLUSTERS" ), clusterCount );
   return outputs;
 }
 
@@ -188,6 +191,7 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
     QgsFeatureIterator features,
     QgsSpatialIndexKDBush &index,
     std::unordered_map< QgsFeatureId, int> &idToCluster,
+    int &clusterCount,
     QgsProcessingFeedback *feedback )
 {
   const double step = featureCount > 0 ? 90.0 / featureCount : 1;
@@ -196,8 +200,8 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
   visited.reserve( index.size() );
 
   QgsFeature feat;
-  int clusterIdx = 0;
   int i = 0;
+  clusterCount = 0;
 
   while ( features.nextFeature( feat ) )
   {
@@ -249,8 +253,8 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
     }
 
     // start new cluster
-    clusterIdx++;
-    idToCluster[ feat.id() ] = clusterIdx;
+    clusterCount++;
+    idToCluster[ feat.id() ] = clusterCount;
     feedback->setProgress( ++i * step );
 
     while ( !within.empty() )
@@ -290,7 +294,7 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
       }
       if ( !borderPointsAreNoise || within2.size() >= minSize )
       {
-        idToCluster[ j.id ] = clusterIdx;
+        idToCluster[ j.id ] = clusterCount;
       }
     }
   }
