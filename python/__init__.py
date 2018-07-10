@@ -59,7 +59,7 @@ def setupenv():
         for line in f:
             linedata = line.split("=")
             name = linedata[0]
-            data = linedata[1]
+            data = linedata[1].rstrip()
             os.environ[name] = data
 
 
