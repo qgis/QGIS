@@ -5728,4 +5728,21 @@ tests:
         name: expected/kmeans_polys.gml
         type: vector
 
+  - algorithm: qgis:rastersampling
+    name: Raster sampling, points single band
+    params:
+      INPUT:
+        name: custom/points_over.shp
+        type: vector
+      RASTERCOPY:
+        params:
+        - name: dem.tif
+          type: raster
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/raster_sampling.gml
+        type: vector
+
+
 # See ../README.md for a description of the file format
