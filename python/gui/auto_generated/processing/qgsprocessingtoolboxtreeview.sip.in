@@ -15,11 +15,11 @@ class QgsProcessingToolboxTreeView : QTreeView
 %Docstring
 Processing toolbox tree view, showing algorithms and providers in a tree structure.
 
-.. versionadded:: 3.4
-
 .. warning::
 
    Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode

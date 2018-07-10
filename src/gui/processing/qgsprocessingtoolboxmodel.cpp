@@ -23,6 +23,8 @@
 #include "modeltest.h"
 #endif
 
+///@cond PRIVATE
+
 //
 // QgsProcessingToolboxModelNode
 //
@@ -103,6 +105,8 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
 {
   return mAlgorithm;
 }
+
+///@endcond
 
 //
 // QgsProcessingToolboxModel

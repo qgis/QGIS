@@ -30,8 +30,8 @@ class QgsProcessingAlgorithm;
 /**
  * Processing toolbox tree view, showing algorithms and providers in a tree structure.
  * \ingroup gui
- * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
 {
@@ -105,4 +105,5 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
 
 };
 
+///@endcond
 #endif // QGSPROCESSINGTOOLBOXTREEVIEW_H

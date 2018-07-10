@@ -101,11 +101,11 @@ class QgsProcessingToolboxModelRecentNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to the recent algorithms group
 
-.. versionadded:: 3.4
-
 .. warning::
 
    Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -127,11 +127,11 @@ class QgsProcessingToolboxModelProviderNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to a Processing provider.
 
-.. versionadded:: 3.4
-
 .. warning::
 
    Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -164,11 +164,11 @@ class QgsProcessingToolboxModelGroupNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to a group of algorithms.
 
-.. versionadded:: 3.4
-
 .. warning::
 
    Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -204,11 +204,11 @@ class QgsProcessingToolboxModelAlgorithmNode : QgsProcessingToolboxModelNode
 %Docstring
 Processing toolbox model node corresponding to an algorithm.
 
-.. versionadded:: 3.4
-
 .. warning::
 
    Not part of stable API and may change in future QGIS releases.
+
+.. versionadded:: 3.4
 %End
 
 %TypeHeaderCode
@@ -394,7 +394,7 @@ from the given registry. If no registry is specified, then the processing
 registry attached to QgsApplication.processingRegistry() will be used
 by the model.
 
-If \recentLog is specified then it will be used to create a "Recently used" top
+If ``recentLog`` is specified then it will be used to create a "Recently used" top
 level group containing recently used algorithms.
 %End
 

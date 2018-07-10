@@ -129,8 +129,8 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 /**
  * Processing toolbox model node corresponding to the recent algorithms group
  * \ingroup gui
- * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolboxModelNode
 {
@@ -150,8 +150,8 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 /**
  * Processing toolbox model node corresponding to a Processing provider.
  * \ingroup gui
- * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToolboxModelNode
 {
@@ -187,8 +187,8 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
 /**
  * Processing toolbox model node corresponding to a group of algorithms.
  * \ingroup gui
- * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolboxModelNode
 {
@@ -226,8 +226,8 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
 /**
  * Processing toolbox model node corresponding to an algorithm.
  * \ingroup gui
- * \since QGIS 3.4
  * \warning Not part of stable API and may change in future QGIS releases.
+ * \since QGIS 3.4
  */
 class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingToolboxModelNode
 {
@@ -413,6 +413,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 
   public:
 
+    //! Available filter flags for filtering the model
     enum Filter
     {
       FilterToolbox = 1 << 1, //!< Filters out any algorithms and content which should not be shown in the toolbox
@@ -429,7 +430,7 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
      * registry attached to QgsApplication::processingRegistry() will be used
      * by the model.
      *
-     * If \recentLog is specified then it will be used to create a "Recently used" top
+     * If \a recentLog is specified then it will be used to create a "Recently used" top
      * level group containing recently used algorithms.
      */
     explicit QgsProcessingToolboxProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr,
