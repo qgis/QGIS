@@ -75,6 +75,9 @@ class QgsLayerTreeGroup;
 namespace QgsWms
 {
 
+  /**
+   * \ingroup server
+   */
   class QgsRenderer
   {
     public:

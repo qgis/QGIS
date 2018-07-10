@@ -28,7 +28,8 @@
 class QgsPythonUtils;
 
 /**
- * \brief Init Python server plugins and store a list of server plugin names
+ * \ingroup server
+ * \brief Initializes Python server plugins and stores a list of server plugin names
  */
 class SERVER_EXPORT QgsServerPlugins
 {

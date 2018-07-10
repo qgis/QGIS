@@ -38,6 +38,9 @@
 namespace QgsWms
 {
 
+  /**
+   * \ingroup server
+   */
   class Service: public QgsService
   {
     public:
@@ -155,8 +158,9 @@ namespace QgsWms
 
 } // namespace QgsWms
 
-
-// Module
+/**
+ * \ingroup server
+ */
 class QgsWmsModule: public QgsServiceModule
 {
   public:

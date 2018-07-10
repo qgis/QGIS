@@ -30,6 +30,9 @@ class QDomDocument;
 class QDomElement;
 class QString;
 
+/**
+ * \ingroup server
+ */
 class QgsConfigParserUtils
 {
   public:

@@ -86,12 +86,6 @@ namespace QgsWcs
         : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
       {}
   };
-
-
-
-
-
-
 } // namespace QgsWcs
 
 #endif

@@ -29,6 +29,7 @@ class QgsMapLayer;
 class QgsAccessControl;
 
 /**
+ * \ingroup server
  * RAII class to restore layer filters on destruction
  */
 class SERVER_EXPORT QgsOWSServerFilterRestorer

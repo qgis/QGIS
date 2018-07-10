@@ -31,6 +31,7 @@
 #include "qgsprojectversion.h"
 
 /**
+ * \ingroup server
  * QgsWmsParameters provides an interface to retrieve and manipulate WMS
  *  parameters received from the client.
  * \since QGIS 3.0

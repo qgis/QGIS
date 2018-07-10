@@ -23,6 +23,7 @@
 #include "qgsmaplayer.h"
 
 /**
+ * \ingroup server
  * RAII class to restore layer configuration on destruction (opacity,
  * filters, ...)
  * \since QGIS 3.0
