@@ -27,7 +27,7 @@ namespace QgsWfs
 
   /**
    * \ingroup server
-   * \class  QgsserviceException
+   * \class  QgsWfs::QgsServiceException
    * \brief Exception class for WFS service exceptions.
    * \since QGIS 3.0
    */
@@ -55,7 +55,7 @@ namespace QgsWfs
 
   /**
    * \ingroup server
-   * \class  QgsSecurityAccessException
+   * \class  QgsWfs::QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    * \since QGIS 3.0
    */
@@ -73,7 +73,7 @@ namespace QgsWfs
 
   /**
    * \ingroup server
-   * \class  QgsRequestNotWellFormedException
+   * \class  QgsWfs::QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    * \since QGIS 3.0
    */
@@ -91,7 +91,7 @@ namespace QgsWfs
 
   /**
    * \ingroup server
-   * \class  QgsBadRequestException
+   * \class  QgsWfs::QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    * \since QGIS 3.0
    */

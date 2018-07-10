@@ -27,7 +27,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsWms::QgsserviceException
+   * \class  QgsWms::QgsServiceException
    * \brief Exception class for WMS service exceptions.
    *
    * The most important codes are:

@@ -27,14 +27,15 @@
 #include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
 
-/**
- * \ingroup server
- * QgsWfsParameters provides an interface to retrieve and manipulate WFS
- *  parameters received from the client.
- * \since QGIS 3.0
- */
 namespace QgsWfs
 {
+
+  /**
+   * \ingroup server
+   * \class QgsWfs::QgsWfsParameters
+   * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
+   * \since QGIS 3.0
+   */
   class QgsWfsParameters
   {
       Q_GADGET
