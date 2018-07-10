@@ -40,6 +40,7 @@ namespace QgsWfs
       Q_GADGET
 
     public:
+      //! Available parameters for WFS requests
       enum ParameterName
       {
         OUTPUTFORMAT,
@@ -58,6 +59,7 @@ namespace QgsWfs
       };
       Q_ENUM( ParameterName )
 
+      //! Output format
       enum Format
       {
         NONE,
@@ -67,6 +69,7 @@ namespace QgsWfs
         XSD
       };
 
+      //! Type of results
       enum ResultType
       {
         RESULTS,
@@ -116,8 +119,6 @@ namespace QgsWfs
        * \returns version
        */
       QString version() const;
-
-      bool fake() { return true; }
 
       /**
        * Returns VERSION parameter if defined or its default value.
