@@ -33,21 +33,45 @@ class QString;
 class QgsConfigParserUtils
 {
   public:
+
+    /**
+     * Appends a CRS XML element in the layer document.
+     */
     static void appendCrsElementsToLayer( QDomElement &layerElement, QDomDocument &doc, const QStringList &crsList,
                                           const QStringList &constrainedCrsList );
+
+    /**
+     * Appends a CRS XML element in the layer document.
+     */
     static void appendCrsElementToLayer( QDomElement &layerElement, const QDomElement &precedingElement,
                                          const QString &crsText, QDomDocument &doc );
+
+    /**
+     * Appends a BBOX XML element in the layer document.
+     */
     static void appendLayerBoundingBoxes( QDomElement &layerElem, QDomDocument &doc, const QgsRectangle &layerExtent,
                                           const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
                                           const QStringList &constrainedCrsList );
+
+    /**
+     * Appends a BBOX XML element in the layer document.
+     */
     static void appendLayerBoundingBox( QDomElement &layerElem, QDomDocument &doc, const QgsRectangle &layerExtent,
                                         const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText );
-    //! Returns a list of supported EPSG coordinate system numbers from a layer
+
+    /**
+     * Returns a list of supported EPSG coordinate system numbers from a layer
+     */
     static QStringList createCrsListForLayer( QgsMapLayer *mapLayer );
 
-    //! Returns default service capabilities from wms_metadata.xml if nothing else is defined
+    /**
+     * Returns default service capabilities from wms_metadata.xml if nothing else is defined
+     */
     static void fallbackServiceCapabilities( QDomElement &parentElement, QDomDocument &doc );
 
+    /**
+     * Returns a list of layer from a map of layer.
+     */
     static QList<QgsMapLayer *> layerMapToList( const QMap< int, QgsMapLayer * > &layerMap, bool reverseOrder = false );
 };
 
