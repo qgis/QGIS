@@ -325,17 +325,18 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
     return false;
 
   int colorRampItemListCount = mColorRampItemList.count();
+  const QgsColorRampShader::ColorRampItem *colorRampItems = mColorRampItemList.constData();
   int idx;
   if ( !mLUTInitialized )
   {
     // calculate LUT for faster index recovery
     mLUTFactor = 1.0;
-    double minimumValue = mColorRampItemList.first().value;
+    double minimumValue = colorRampItems[0].value;
     mLUTOffset = minimumValue + DOUBLE_DIFF_THRESHOLD;
     // Only make lut if at least 3 items, with 2 items the low and high cases handle both
     if ( colorRampItemListCount >= 3 )
     {
-      double rangeValue = mColorRampItemList.at( colorRampItemListCount - 2 ).value - minimumValue;
+      double rangeValue = colorRampItems[colorRampItemListCount - 2].value - minimumValue;
       if ( rangeValue > 0 )
       {
         int lutSize = 256; // TODO: test if speed can be increased with a different LUT size
@@ -347,7 +348,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
         {
           val = ( i / mLUTFactor ) + mLUTOffset;
           while ( idx < colorRampItemListCount
-                  && mColorRampItemList.at( idx ).value - DOUBLE_DIFF_THRESHOLD < val )
+                  && colorRampItems[idx].value - DOUBLE_DIFF_THRESHOLD < val )
           {
             idx++;
           }
@@ -371,7 +372,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
   else if ( lutIndex >= mLUT.count() )
   {
     idx = colorRampItemListCount - 1;
-    if ( mColorRampItemList.at( idx ).value + DOUBLE_DIFF_THRESHOLD < value )
+    if ( colorRampItems[idx].value + DOUBLE_DIFF_THRESHOLD < value )
     {
       overflow = true;
     }
@@ -383,7 +384,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
 
     // check if it's correct and if not increase until correct
     // the LUT is made in such a way the index is always correct or too low, never too high
-    while ( idx < colorRampItemListCount && mColorRampItemList.at( idx ).value + DOUBLE_DIFF_THRESHOLD < value )
+    while ( idx < colorRampItemListCount && colorRampItems[idx].value + DOUBLE_DIFF_THRESHOLD < value )
     {
       idx++;
     }
@@ -394,7 +395,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
     }
   }
 
-  const QgsColorRampShader::ColorRampItem &currentColorRampItem = mColorRampItemList.at( idx );
+  const QgsColorRampShader::ColorRampItem &currentColorRampItem = colorRampItems[idx];
 
   if ( colorRampType() == Interpolated )
   {
@@ -413,16 +414,18 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       return true;
     }
 
-    const QgsColorRampShader::ColorRampItem &previousColorRampItem = mColorRampItemList.at( idx - 1 );
+    const QgsColorRampShader::ColorRampItem &previousColorRampItem = colorRampItems[idx - 1];
 
-    double currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
-    double offsetInRange = value - previousColorRampItem.value;
-    double scale = offsetInRange / currentRampRange;
+    float currentRampRange = currentColorRampItem.value - previousColorRampItem.value;
+    float offsetInRange = value - previousColorRampItem.value;
+    float scale = offsetInRange / currentRampRange;
+    const QRgb c1 = previousColorRampItem.color.rgba();
+    const QRgb c2 = currentColorRampItem.color.rgba();
 
-    *returnRedValue   = static_cast< int >( static_cast< double >( previousColorRampItem.color.red() )   + ( static_cast< double >( currentColorRampItem.color.red()   - previousColorRampItem.color.red() )   * scale ) );
-    *returnGreenValue = static_cast< int >( static_cast< double >( previousColorRampItem.color.green() ) + ( static_cast< double >( currentColorRampItem.color.green() - previousColorRampItem.color.green() ) * scale ) );
-    *returnBlueValue  = static_cast< int >( static_cast< double >( previousColorRampItem.color.blue() )  + ( static_cast< double >( currentColorRampItem.color.blue()  - previousColorRampItem.color.blue() )  * scale ) );
-    *returnAlphaValue = static_cast< int >( static_cast< double >( previousColorRampItem.color.alpha() ) + ( static_cast< double >( currentColorRampItem.color.alpha() - previousColorRampItem.color.alpha() ) * scale ) );
+    *returnRedValue   = qRed( c1 )   + static_cast< int >( ( qRed( c2 )   - qRed( c1 ) )   * scale );
+    *returnGreenValue = qGreen( c1 ) + static_cast< int >( ( qGreen( c2 ) - qGreen( c1 ) ) * scale );
+    *returnBlueValue  = qBlue( c1 )  + static_cast< int >( ( qBlue( c2 )  - qBlue( c1 ) )  * scale );
+    *returnAlphaValue = qAlpha( c1 ) + static_cast< int >( ( qAlpha( c2 ) - qAlpha( c1 ) ) * scale );
     return true;
   }
   else if ( colorRampType() == Discrete )
