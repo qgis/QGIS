@@ -51,6 +51,11 @@ If ``recentLog`` is specified then it will be used to create a "Recently used" t
 level group containing recently used algorithms.
 %End
 
+    void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model /Transfer/ );
+%Docstring
+Sets the toolbox proxy model used to drive the view.
+%End
+
     const QgsProcessingAlgorithm *algorithmForIndex( const QModelIndex &index );
 %Docstring
 Returns the algorithm at the specified tree view ``index``, or a None
