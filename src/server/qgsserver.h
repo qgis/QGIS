@@ -31,7 +31,6 @@
 #include "qgsrequesthandler.h"
 #include "qgsapplication.h"
 #include "qgsconfigcache.h"
-#include "qgsconfigparserutils.h"
 #include "qgscapabilitiescache.h"
 #include "qgsmapsettings.h"
 #include "qgsmessagelog.h"
