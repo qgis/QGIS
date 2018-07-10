@@ -687,6 +687,11 @@ QString QgsProcessingAlgorithm::invalidSourceError( const QVariantMap &parameter
       QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
       var = fromVar.source;
     }
+    else if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+      var = fromVar.sink;
+    }
     if ( var.canConvert<QgsProperty>() )
     {
       QgsProperty p = var.value< QgsProperty >();

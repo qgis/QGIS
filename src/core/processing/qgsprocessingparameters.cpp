@@ -321,6 +321,12 @@ QString QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( const Qgs
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
     val = fromVar.source;
   }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
 
   if ( val.canConvert<QgsProperty>() )
   {
@@ -513,6 +519,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsCrs( const QgsP
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
   }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
 
   if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
   {
@@ -588,6 +600,12 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
+  }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
   }
 
   if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
@@ -696,6 +714,12 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
   }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
 
   if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
   {
@@ -794,6 +818,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
   }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
 
   if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
   {
@@ -821,6 +851,12 @@ QgsCoordinateReferenceSystem QgsProcessingParameters::parameterAsExtentCrs( cons
     // input is a QgsProcessingFeatureSourceDefinition - get extra properties from it
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( val );
     val = fromVar.source;
+  }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
   }
 
   if ( val.canConvert<QgsProperty>() && val.value< QgsProperty >().propertyType() == QgsProperty::StaticProperty )
@@ -1451,6 +1487,10 @@ bool QgsProcessingParameterCrs::checkValueIsAcceptable( const QVariant &input, Q
   {
     return true;
   }
+  else if ( input.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    return true;
+  }
 
   if ( input.canConvert<QgsProperty>() )
   {
@@ -1566,6 +1606,15 @@ bool QgsProcessingParameterExtent::checkValueIsAcceptable( const QVariant &input
 {
   if ( !input.isValid() )
     return mFlags & FlagOptional;
+
+  if ( input.canConvert<QgsProcessingFeatureSourceDefinition>() )
+  {
+    return true;
+  }
+  else if ( input.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    return true;
+  }
 
   if ( input.canConvert<QgsProperty>() )
   {
@@ -3096,6 +3145,12 @@ bool QgsProcessingParameterFeatureSource::checkValueIsAcceptable( const QVariant
   {
     QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( var );
     var = fromVar.source;
+  }
+  else if ( var.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( var );
+    var = fromVar.sink;
   }
 
   if ( var.canConvert<QgsProperty>() )

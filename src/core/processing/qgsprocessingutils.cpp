@@ -239,6 +239,12 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
     selectedFeaturesOnly = fromVar.selectedFeaturesOnly;
     val = fromVar.source;
   }
+  else if ( val.canConvert<QgsProcessingOutputLayerDefinition>() )
+  {
+    // input is a QgsProcessingOutputLayerDefinition (e.g. an output from earlier in a model) - get extra properties from it
+    QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( val );
+    val = fromVar.sink;
+  }
 
   if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( val ) ) )
   {
