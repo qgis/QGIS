@@ -64,6 +64,11 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
       QgsProcessingRecentAlgorithmLog *recentLog = nullptr );
 
     /**
+     * Sets the toolbox proxy model used to drive the view.
+     */
+    void setToolboxProxyModel( QgsProcessingToolboxProxyModel *model SIP_TRANSFER );
+
+    /**
      * Returns the algorithm at the specified tree view \a index, or a nullptr
      * if the index does not correspond to an algorithm.
      */

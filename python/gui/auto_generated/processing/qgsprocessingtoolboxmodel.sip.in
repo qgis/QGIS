@@ -284,6 +284,8 @@ level group containing recently used algorithms.
 
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
 
     QgsProcessingToolboxModelNode *index2node( const QModelIndex &index ) const;
 %Docstring

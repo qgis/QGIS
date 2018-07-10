@@ -302,6 +302,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     /**
      * Returns the model node corresponding to the given \a index.

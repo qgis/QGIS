@@ -550,6 +550,25 @@ QModelIndex QgsProcessingToolboxModel::parent( const QModelIndex &child ) const
   }
 }
 
+QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes ) const
+{
+  if ( !indexes.isEmpty() && isAlgorithm( indexes.at( 0 ) ) )
+  {
+    QByteArray encodedData;
+    QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
+
+    std::unique_ptr< QMimeData > mimeData = qgis::make_unique< QMimeData >();
+    const QgsProcessingAlgorithm *algorithm = algorithmForIndex( indexes.at( 0 ) );
+    if ( algorithm )
+    {
+      stream << algorithm->id();
+    }
+    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ), encodedData );
+    return mimeData.release();
+  }
+  return nullptr;
+}
+
 QgsProcessingProvider *QgsProcessingToolboxModel::providerForIndex( const QModelIndex &index ) const
 {
   QgsProcessingToolboxModelNode *n = index2node( index );

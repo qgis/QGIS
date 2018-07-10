@@ -35,6 +35,14 @@ void QgsProcessingToolboxTreeView::setRegistry( QgsProcessingRegistry *registry,
   mModel = newModel;
 }
 
+void QgsProcessingToolboxTreeView::setToolboxProxyModel( QgsProcessingToolboxProxyModel *model )
+{
+  mToolboxModel = mModel->toolboxModel();
+  setModel( model );
+  mModel->deleteLater();
+  mModel = model;
+}
+
 void QgsProcessingToolboxTreeView::setFilterString( const QString &filter )
 {
   const QString text = filter.trimmed().toLower();
