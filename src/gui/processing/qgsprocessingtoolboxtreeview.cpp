@@ -16,6 +16,8 @@
 #include "qgsprocessingtoolboxtreeview.h"
 #include "qgsprocessingtoolboxmodel.h"
 
+///@cond PRIVATE
+
 QgsProcessingToolboxTreeView::QgsProcessingToolboxTreeView( QWidget *parent,
     QgsProcessingRegistry *registry,
     QgsProcessingRecentAlgorithmLog *recentLog )
@@ -107,3 +109,4 @@ QModelIndex QgsProcessingToolboxTreeView::findFirstVisibleAlgorithm( const QMode
   return QModelIndex();
 }
 
+///@endcond
