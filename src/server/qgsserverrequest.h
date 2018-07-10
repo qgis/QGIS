@@ -90,8 +90,6 @@ class SERVER_EXPORT QgsServerRequest
       */
     QgsServerRequest::Method method() const;
 
-    bool fake() { return true; }
-
     /**
      * Returns a map of query parameters with keys converted
      * to uppercase

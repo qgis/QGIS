@@ -68,8 +68,6 @@ Constructor
 :return: the request method
 %End
 
-    bool fake();
-
     QgsServerRequest::Parameters parameters() const;
 %Docstring
 Returns a map of query parameters with keys converted
