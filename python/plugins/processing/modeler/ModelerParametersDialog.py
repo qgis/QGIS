@@ -489,6 +489,7 @@ class ModelerParametersDialog(QDialog):
                         ParameterVector,
                         ParameterTable,
                         ParameterTableField,
+                        ParameterTableMultipleField,
                         ParameterSelection,
                         ParameterNumber,
                         ParameterBoolean,
