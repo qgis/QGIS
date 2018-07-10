@@ -48,6 +48,9 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
 {
   setupUi( this );
 
+  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
+  mTreeView->setModel( model );
+
   QgsSettings settings;
 
   mProjectFileWidget->setStorageMode( QgsFileWidget::GetFile );
@@ -184,9 +187,6 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 
   if ( !mShowEmbeddedContent )
     removeEmbeddedNodes( mRootGroup );
-
-  QgsEmbeddedLayerTreeModel *model = new QgsEmbeddedLayerTreeModel( mRootGroup, this );
-  mTreeView->setModel( model );
 
   connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
 
