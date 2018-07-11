@@ -34,6 +34,7 @@ typedef void unloadHook_t( QgsServiceModule * );
 /**
  * \ingroup server
  * \class QgsServiceNativeModuleEntry
+ * \brief Native module (location, the module itself and the unload function).
  * \since QGIS 3.0
  */
 class QgsServiceNativeModuleEntry
@@ -166,5 +167,3 @@ void QgsServiceNativeLoader::unloadModuleEntry( QgsServiceNativeModuleEntry *ent
   QLibrary lib( entry->mLocation );
   lib.unload();
 }
-
-

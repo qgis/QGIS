@@ -41,6 +41,7 @@ namespace QgsWms
   /**
    * \ingroup server
    * \class QgsWms::Service
+   * \brief OGC web service specialised for WMS
    * \since QGIS 3.0
    */
   class Service: public QgsService
@@ -161,6 +162,7 @@ namespace QgsWms
 /**
  * \ingroup server
  * \class QgsWmsModule
+ * \brief Service module specialised for WMS
  * \since QGIS 3.0
  */
 class QgsWmsModule: public QgsServiceModule

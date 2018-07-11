@@ -32,6 +32,7 @@ namespace QgsWcs
   /**
    * \ingroup server
    * \class QgsWcs::Service
+   * \brief OGC web service specialised for WCS
    * \since QGIS 3.0
    */
   class Service: public QgsService
@@ -105,6 +106,7 @@ namespace QgsWcs
 /**
  * \ingroup server
  * \class QgsWcsModule
+ * \brief Service module specialised for WCS
  * \since QGIS 3.0
  */
 class QgsWcsModule: public QgsServiceModule

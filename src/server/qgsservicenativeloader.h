@@ -49,7 +49,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
     QgsServiceNativeLoader() = default;
 
     /**
-     * Lead all medules from path
+     * Load all modules from path.
      * \param modulePath the path to look for module
      * \param registrar QgsServiceRegistry instance for registering services
      * \param serverIface QgsServerInterface instarce
@@ -75,14 +75,14 @@ class SERVER_EXPORT QgsServiceNativeLoader
     typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry> > ModuleTable;
 
     /**
-     * Find module
+     * Finds module.
      * \param path the module path
      * \returns a module hook entry
      */
     QgsServiceNativeModuleEntry *findModuleEntry( const QString &path );
 
     /**
-     *  Unload medule hook
+     *  Unloads module hook.
      */
     void unloadModuleEntry( QgsServiceNativeModuleEntry *entry );
 

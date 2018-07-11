@@ -59,20 +59,13 @@ class QPainter;
 class QStandardItem;
 class QgsLayerTreeGroup;
 
-/**
- * This class handles requestsi that share rendering:
- *
- * This includes
- *  - getfeatureinfo
- *  - getmap
- *  - getlegendgraphics
- *  - getprint
- */
 namespace QgsWms
 {
 
   /**
    * \ingroup server
+   * \class QgsWms::QgsRenderer
+   * \brief Map renderer for WMS requests
    * \since QGIS 3.0
    */
   class QgsRenderer
