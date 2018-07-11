@@ -31,6 +31,8 @@ namespace QgsWcs
 
   /**
    * \ingroup server
+   * \class QgsWcs::Service
+   * \since QGIS 3.0
    */
   class Service: public QgsService
   {
@@ -102,6 +104,8 @@ namespace QgsWcs
 
 /**
  * \ingroup server
+ * \class QgsWcsModule
+ * \since QGIS 3.0
  */
 class QgsWcsModule: public QgsServiceModule
 {
@@ -124,8 +128,3 @@ QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }
-
-
-
-
-

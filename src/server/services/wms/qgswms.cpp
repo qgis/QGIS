@@ -40,6 +40,8 @@ namespace QgsWms
 
   /**
    * \ingroup server
+   * \class QgsWms::Service
+   * \since QGIS 3.0
    */
   class Service: public QgsService
   {
@@ -154,12 +156,12 @@ namespace QgsWms
       QString mVersion;
       QgsServerInterface *mServerIface = nullptr;
   };
-
-
 } // namespace QgsWms
 
 /**
  * \ingroup server
+ * \class QgsWmsModule
+ * \since QGIS 3.0
  */
 class QgsWmsModule: public QgsServiceModule
 {
@@ -182,8 +184,3 @@ QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }
-
-
-
-
-
