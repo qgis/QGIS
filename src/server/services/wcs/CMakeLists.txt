@@ -27,10 +27,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/server
   ${CMAKE_CURRENT_BINARY_DIR}
-  ../../../core 
+  ../../../core
   ../../../core/dxf
   ../../../core/expression
-  ../../../core/geometry 
+  ../../../core/geometry
   ../../../core/metadata
   ../../../core/raster
   ../../../core/symbology
@@ -41,7 +41,6 @@ INCLUDE_DIRECTORIES(
 )
 
 
-#endif
 TARGET_LINK_LIBRARIES(wcs
   qgis_core
   qgis_server
