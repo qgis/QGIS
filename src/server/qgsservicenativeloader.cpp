@@ -31,6 +31,11 @@
 
 typedef void unloadHook_t( QgsServiceModule * );
 
+/**
+ * \ingroup server
+ * \class QgsServiceNativeModuleEntry
+ * \since QGIS 3.0
+ */
 class QgsServiceNativeModuleEntry
 {
   public:

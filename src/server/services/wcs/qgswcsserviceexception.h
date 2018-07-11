@@ -27,7 +27,7 @@ namespace QgsWcs
 
   /**
    * \ingroup server
-   * \class  QgsWcs::QgsserviceException
+   * \class  QgsWcs::QgsServiceException
    * \brief Exception class for WFS service exceptions.
    * \since QGIS 3.0
    */
