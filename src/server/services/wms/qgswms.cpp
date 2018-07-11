@@ -49,7 +49,9 @@ namespace QgsWms
     public:
 
       /**
-       * Constructor.
+       * Constructor for WMS service.
+       * \param version Version of the WMS service.
+       * \param serverIface Interface for plugins.
        */
       Service( const QString &version, QgsServerInterface *serverIface )
         : mVersion( version )

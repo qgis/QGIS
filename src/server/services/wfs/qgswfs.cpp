@@ -46,7 +46,8 @@ namespace QgsWfs
     public:
 
       /**
-       * Constructor.
+       * Constructor for WFS service.
+       * \param serverIface Interface for plugin.
        */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )

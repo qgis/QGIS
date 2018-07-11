@@ -40,7 +40,8 @@ namespace QgsWcs
     public:
 
       /**
-       * Constructor.
+       * Constructor for WCS service.
+       * \param serverIface Interface for plugins.
        */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )
