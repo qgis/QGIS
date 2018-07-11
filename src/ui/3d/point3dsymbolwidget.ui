@@ -144,6 +144,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="cbOverwriteMaterial">
+       <property name="toolTip">
+        <string>Overwrite model material</string>
+       </property>
        <property name="text">
         <string/>
        </property>
