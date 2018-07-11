@@ -182,7 +182,7 @@ namespace QgsWms
 
       /**
        * Loads new parameters.
-       * \param map of parameters
+       * \param parameters Map of parameters
        */
       void load( const QgsServerRequest::Parameters &parameters );
 

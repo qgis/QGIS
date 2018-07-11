@@ -196,9 +196,9 @@ namespace QgsWms
       QImage *createImage( int width = -1, int height = -1, bool useBbox = true ) const;
 
       /**
-       * Configures mapSettings to the parameters
-       * HEIGHT, WIDTH, BBOX, CRS.
-       * \param paintDevice the device that is used for painting (for dpi)
+       * Configures map settings according to WMS parameters.
+       * \param paintDevice The device that is used for painting (for dpi)
+       * \param mapSettings Map settings to use for rendering
        * may throw an exception
        */
       void configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const;
@@ -207,9 +207,20 @@ namespace QgsWms
                                         const QImage *outputImage, const QString &version ) const;
 
       /**
-       * Appends feature info xml for the layer to the layer element of the feature info dom document
-      \param featureBBox the bounding box of the selected features in output CRS
-      \returns true in case of success*/
+       * Appends feature info xml for the layer to the layer element of the
+       * feature info dom document.
+       * \param layer The vector layer
+       * \param infoPoint The point coordinates
+       * \param nFeatures The number of features
+       * \param infoDocument Feature info document
+       * \param layerElement Layer XML element
+       * \param mapSettings Map settings with extent, CRS, ...
+       * \param renderContext Context to use for feature rendering
+       * \param version WMS version
+       * \param featureBBox The bounding box of the selected features in output CRS
+       * \param filterGeom Geometry for filtering selected features
+       * \returns true in case of success
+       */
       bool featureInfoFromVectorLayer( QgsVectorLayer *layer,
                                        const QgsPointXY *infoPoint,
                                        int nFeatures,
@@ -220,6 +231,7 @@ namespace QgsWms
                                        const QString &version,
                                        QgsRectangle *featureBBox = nullptr,
                                        QgsGeometry *filterGeom = nullptr ) const;
+
       //! Appends feature info xml for the layer to the layer element of the dom document
       bool featureInfoFromRasterLayer( QgsRasterLayer *layer,
                                        const QgsMapSettings &mapSettings,
