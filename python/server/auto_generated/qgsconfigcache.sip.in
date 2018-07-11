@@ -32,6 +32,8 @@ Returns the current instance.
     void removeEntry( const QString &path );
 %Docstring
 Removes an entry from cache.
+
+:param path: The path of the project
 %End
 
     const QgsProject *project( const QString &path );
