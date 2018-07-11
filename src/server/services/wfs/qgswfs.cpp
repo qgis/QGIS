@@ -38,7 +38,7 @@ namespace QgsWfs
   /**
    * \ingroup server
    * \class QgsWfs::Service
-   * \brief OGC web service specialised for WFS
+   * \brief OGC web service specialized for WFS
    * \since QGIS 3.0
    */
   class Service: public QgsService
@@ -130,7 +130,7 @@ namespace QgsWfs
 /**
  * \ingroup server
  * \class QgsWfsModule
- * \brief Service module specialised for WFS
+ * \brief Service module specialized for WFS
  * \since QGIS 3.0
  */
 class QgsWfsModule: public QgsServiceModule
