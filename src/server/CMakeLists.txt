@@ -39,7 +39,6 @@ SET(QGIS_SERVER_SRCS
   qgsserverresponse.cpp
   qgsserversettings.cpp
   qgsservice.cpp
-  qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
   qgsfeaturefilterprovidergroup.cpp
