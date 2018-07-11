@@ -74,8 +74,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
     def handleFileDrop(self, file):
         if not file.lower().endswith('.model3'):
             return False
-        self.runAlg(file)
-        return True
+        return self.runAlg(file)
 
     @staticmethod
     def runAlg(file):
