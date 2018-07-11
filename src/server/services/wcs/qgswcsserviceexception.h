@@ -38,7 +38,7 @@ namespace QgsWcs
       /**
        * Constructor for QgsServiceException (empty locator attribute).
        * \param code Error code name
-       * \param Exception message to return to the client
+       * \param message Exception message to return to the client
        * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message,
@@ -51,6 +51,7 @@ namespace QgsWcs
        * \param code Error code name
        * \param message Exception message to return to the client
        * \param locator Locator attribute according to OGC specifications
+       * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, const QString &locator,
                            int responseCode = 200 )
