@@ -170,13 +170,13 @@ namespace QgsWms
       };
 
       /**
-       * Constructor.
-       * \param map of parameters where keys are parameters' names.
+       * Constructor for WMS parameters with specific values.
+       * \param parameters Map of parameters where keys are parameters' names.
        */
       QgsWmsParameters( const QgsServerRequest::Parameters &parameters );
 
       /**
-       * Constructor.
+       * Constructor for WMS parameters with default values only.
         */
       QgsWmsParameters();
 
@@ -205,8 +205,8 @@ namespace QgsWms
 
       /**
        * Returns WIDTH parameter as an int or its default value if not
-       *  defined. An exception is raised if WIDTH is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if WIDTH is defined and cannot be
+       * converted.
        * \returns width parameter
        * \throws QgsBadRequestException
        */
@@ -220,8 +220,8 @@ namespace QgsWms
 
       /**
        * Returns HEIGHT parameter as an int or its default value if not
-       *  defined. An exception is raised if HEIGHT is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if HEIGHT is defined and cannot be
+       * converted.
        * \returns height parameter
        * \throws QgsBadRequestException
        */
@@ -229,7 +229,7 @@ namespace QgsWms
 
       /**
        * Returns VERSION parameter as a string or an empty string if not
-       *  defined.
+       * defined.
        * \returns version
        */
       QString version() const;
@@ -248,7 +248,7 @@ namespace QgsWms
 
       /**
        * Returns BBOX as a rectangle if defined and valid. An exception is
-       *  raised if the BBOX string cannot be converted into a rectangle.
+       * raised if the BBOX string cannot be converted into a rectangle.
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */
@@ -325,7 +325,7 @@ namespace QgsWms
 
       /**
        * Returns format. If the FORMAT parameter is not used, then the
-       *  default value is PNG.
+       * default value is PNG.
        * \returns format
        */
       Format format() const;
@@ -337,7 +337,7 @@ namespace QgsWms
       QString infoFormatAsString() const;
 
       /**
-       * Check if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
+       * Checks if INFO_FORMAT parameter is one of the image formats (PNG, JPG).
        * \returns true if the INFO_FORMAT is an image format
        */
       bool infoFormatIsImage() const;
@@ -379,8 +379,8 @@ namespace QgsWms
 
       /**
        * Returns J parameter as an int or its default value if not
-       *  defined. An exception is raised if J is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if J is defined and cannot be
+       * converted.
        * \returns j parameter
        * \throws QgsBadRequestException
        */
@@ -394,8 +394,8 @@ namespace QgsWms
 
       /**
        * Returns X parameter as an int or its default value if not
-       *  defined. An exception is raised if X is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if X is defined and cannot be
+       * converted.
        * \returns x parameter
        * \throws QgsBadRequestException
        */
@@ -409,8 +409,8 @@ namespace QgsWms
 
       /**
        * Returns Y parameter as an int or its default value if not
-       *  defined. An exception is raised if Y is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if Y is defined and cannot be
+       * converted.
        * \returns j parameter
        * \throws QgsBadRequestException
        */
@@ -430,7 +430,7 @@ namespace QgsWms
 
       /**
        * Returns RULELABEL as a bool. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns ruleLabel
        * \throws QgsBadRequestException
        */
@@ -444,7 +444,7 @@ namespace QgsWms
 
       /**
        * Returns SHOWFEATURECOUNT as a bool. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns showFeatureCount
        * \throws QgsBadRequestException
        */
@@ -458,7 +458,7 @@ namespace QgsWms
 
       /**
        * Returns FEATURE_COUNT as an integer. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns FeatureCount
        * \throws QgsBadRequestException
        */
@@ -472,7 +472,7 @@ namespace QgsWms
 
       /**
        * Returns SCALE as a double. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns scale
        * \throws QgsBadRequestException
        */
@@ -486,7 +486,7 @@ namespace QgsWms
 
       /**
        * Returns BOXSPACE as a double or its default value if not defined.
-       *  An exception is raised if an invalid parameter is found.
+       * An exception is raised if an invalid parameter is found.
        * \returns boxSpace
        * \throws QgsBadRequestException
        */
@@ -500,7 +500,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERSPACE as a double or its default value if not defined.
-       *  An exception is raised if an invalid parameter is found.
+       * An exception is raised if an invalid parameter is found.
        * \returns layerSpace
        * \throws QgsBadRequestException
        */
@@ -514,7 +514,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERTITLESPACE as a double. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns layerTitleSpace
        * \throws QgsBadRequestException
        */
@@ -528,7 +528,7 @@ namespace QgsWms
 
       /**
        * Returns SYMBOLSPACE as a double or its default value if not defined.
-       *  An exception is raised if an invalid parameter is found.
+       * An exception is raised if an invalid parameter is found.
        * \returns symbolSpace
        * \throws QgsBadRequestException
        */
@@ -542,7 +542,7 @@ namespace QgsWms
 
       /**
        * Returns ICONLABELSPACE as a double or its default value if not
-       *  defined. An exception is raised if an invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns iconLabelSpace
        * \throws QgsBadRequestException
        */
@@ -556,7 +556,7 @@ namespace QgsWms
 
       /**
        * Returns SYMBOLWIDTH as a double or its default value if not defined.
-       *  An exception is raised if an invalid parameter is found.
+       * An exception is raised if an invalid parameter is found.
        * \returns symbolWidth
        * \throws QgsBadRequestException
        */
@@ -570,7 +570,7 @@ namespace QgsWms
 
       /**
        * Returns SYMBOLHEIGHT as a double or its default value if not defined.
-       *  An exception is raised if an invalid parameter is found.
+       * An exception is raised if an invalid parameter is found.
        * \returns symbolHeight
        * \throws QgsBadRequestException
        */
@@ -578,7 +578,7 @@ namespace QgsWms
 
       /**
        * Returns the layer font (built thanks to the LAYERFONTFAMILY,
-       *  LAYERFONTSIZE, LAYERFONTBOLD, ... parameters).
+       * LAYERFONTSIZE, LAYERFONTBOLD, ... parameters).
        * \returns layerFont
        */
       QFont layerFont() const;
@@ -597,8 +597,8 @@ namespace QgsWms
 
       /**
        * Returns LAYERFONTBOLD as a boolean or its default value if not
-       *  defined. An exception is raised if an
-       *  invalid parameter is found.
+       * defined. An exception is raised if an
+       * invalid parameter is found.
        * \returns layerFontBold
        * \throws QgsBadRequestException
        */
@@ -612,7 +612,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERFONTITALIC as a boolean or its default value if not
-       *  defined. An exception is raised if an invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns layerFontItalic
        * \throws QgsBadRequestException
        */
@@ -626,7 +626,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERFONTSIZE as a double. An exception is raised if an invalid
-       *  parameter is found.
+       * parameter is found.
        * \returns layerFontSize
        * \throws QgsBadRequestException
        */
@@ -640,7 +640,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERFONTCOLOR as a color or its defined value if not
-       *  defined. An exception is raised if an invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns layerFontColor
        * \throws QgsBadRequestException
        */
@@ -648,7 +648,7 @@ namespace QgsWms
 
       /**
        * Returns the item font (built thanks to the ITEMFONTFAMILY,
-       *  ITEMFONTSIZE, ITEMFONTBOLD, ... parameters).
+       * ITEMFONTSIZE, ITEMFONTBOLD, ... parameters).
        * \returns itemFont
        */
       QFont itemFont() const;
@@ -667,7 +667,7 @@ namespace QgsWms
 
       /**
        * Returns ITEMFONTBOLD as a boolean or its default value if not
-       *  defined. An exception is raised if an invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns itemFontBold
        * \throws QgsBadRequestException
        */
@@ -681,7 +681,7 @@ namespace QgsWms
 
       /**
        * Returns ITEMFONTITALIC as a boolean or its default value if not
-       *  defined. An exception is raised if an invalid parameter is found.
+       * defined. An exception is raised if an invalid parameter is found.
        * \returns itemFontItalic
        * \throws QgsBadRequestException
        */
@@ -695,7 +695,7 @@ namespace QgsWms
 
       /**
        * Returns ITEMFONTSIZE as a double. An exception is raised if an
-       *  invalid parameter is found.
+       * invalid parameter is found.
        * \returns itemFontSize
        * \throws QgsBadRequestException
        */
@@ -709,7 +709,7 @@ namespace QgsWms
 
       /**
        * Returns ITEMFONTCOLOR as a color. An exception is raised if an
-       *  invalid parameter is found.
+       * invalid parameter is found.
        * \returns itemFontColor
        * \throws QgsBadRequestException
        */
@@ -723,7 +723,7 @@ namespace QgsWms
 
       /**
        * Returns LAYERTITLE as a bool or its default value if not defined. An
-       *  exception is raised if an invalid parameter is found.
+       * exception is raised if an invalid parameter is found.
        * \returns layerTitle
        * \throws QgsBadRequestException
        */
@@ -749,7 +749,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_GEOM as a list of geometries. An exception is
-       *  raised if an invalid geometry is found.
+       * raised if an invalid geometry is found.
        * \returns highlight geometries
        * \throws QgsBadRequestException
        */
@@ -775,7 +775,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABELCOLOR as a list of color. An exception is
-       *  raised if an invalid color is found.
+       * raised if an invalid color is found.
        * \returns highlight label color
        * \throws QgsBadRequestException
        */
@@ -789,7 +789,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABELSIZE as a list of int An exception is raised
-       *  if an invalid size is found.
+       * if an invalid size is found.
        * \returns highlight label size
        * \throws QgsBadRequestException
        */
@@ -803,7 +803,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABELWEIGHT as a list of int. An exception is
-       *  raised if an invalid weight is found.
+       * raised if an invalid weight is found.
        * \returns highlight label weight
        * \throws QgsBadRequestException
        */
@@ -823,7 +823,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERSIZE as a list of float. An exception is
-       *  raised if an invalid size is found.
+       * raised if an invalid size is found.
        * \returns highlight label buffer size
        * \throws QgsBadRequestException
        */
@@ -837,7 +837,7 @@ namespace QgsWms
 
       /**
        * Returns HIGHLIGHT_LABELBUFFERCOLOR as a list of colors. An axception
-       *  is raised if an invalid color is found.
+       * is raised if an invalid color is found.
        * \returns highlight label buffer color
        * \throws QgsBadRequestException
        */
@@ -851,8 +851,8 @@ namespace QgsWms
 
       /**
        * Returns WMS_PRECISION parameter as an int or its default value if not
-       *  defined. An exception is raised if WMS_PRECISION is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if WMS_PRECISION is defined and cannot be
+       * converted.
        * \returns wms precision parameter
        * \throws QgsBadRequestException
        */
@@ -928,7 +928,7 @@ namespace QgsWms
       QString externalWMSUri( const QString &id ) const;
 
       /**
-       * \brief Returns if the client wants the feature info response with geometry information
+       * Returns if the client wants the feature info response with geometry information
        * \returns true if geometry information is requested for feature info response
        */
       bool withGeometry() const;
