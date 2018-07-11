@@ -47,6 +47,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 
     /**
      * Removes an entry from cache.
+     * \param path The path of the project
      */
     void removeEntry( const QString &path );
 

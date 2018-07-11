@@ -36,7 +36,10 @@ namespace QgsWfs
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsServiceException.
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message,
                            int responseCode = 200 )
@@ -44,7 +47,11 @@ namespace QgsWfs
       {}
 
       /**
-       * Constructor.
+       * Constructor for QgsServiceException.
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
+       * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, const QString &locator,
                            int responseCode = 200 )
@@ -64,7 +71,10 @@ namespace QgsWfs
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsSecurityAccessException (HTTP error code 403 with
+       * Security code name).
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
        */
       QgsSecurityAccessException( const QString &message, const QString &locator = QString() )
         : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
@@ -82,7 +92,10 @@ namespace QgsWfs
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsRequestNotWellFormedException (HTTP error code 400
+       * with RequestNotWellFormed code name).
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
        */
       QgsRequestNotWellFormedException( const QString &message, const QString &locator = QString() )
         : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
@@ -100,7 +113,10 @@ namespace QgsWfs
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsBadRequestException (HTTP error code 400).
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
        */
       QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
         : QgsServiceException( code, message, locator, 400 )

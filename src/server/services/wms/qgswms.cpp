@@ -164,7 +164,7 @@ namespace QgsWms
 /**
  * \ingroup server
  * \class QgsWmsModule
- * \brief Service module specialized for WMS
+ * \brief Module specialized for WMS service
  * \since QGIS 3.0
  */
 class QgsWmsModule: public QgsServiceModule

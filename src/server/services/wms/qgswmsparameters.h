@@ -82,83 +82,83 @@ namespace QgsWms
       //! Available parameters for WMS requests
       enum ParameterName
       {
-        BOXSPACE, //!< BOXSPACE parameter
-        CRS, //!< Instead of SRS for WMS 1.3.0
-        SRS, //!< For WMS 1.1.1
-        WIDTH, //!< With of the resulting image
-        HEIGHT, //!< Height of the resulting image
-        BBOX, //!< BBOX parameter
-        ICONLABELSPACE, //!< ICONLABELSPACE parameter
-        ITEMFONTFAMILY, //!< ITEMFONTFAMILY parameter
-        ITEMFONTBOLD, //!< ITEMFONTBOLD parameter
-        ITEMFONTITALIC, //!< ITEMFONTITALIC parameter
-        ITEMFONTSIZE, //!< Parameter
-        ITEMFONTCOLOR, //!< Parameter
-        LAYER, //!< Parameter
-        LAYERFONTFAMILY, //!< LAYERFONTFAMILY parameter
-        LAYERFONTBOLD, //!< LAYERFONTBOLD parameter
-        LAYERFONTITALIC, //!< LAYERFONTITALIC parameter
-        LAYERFONTSIZE, //!< LAYERFONTSIZE parameter
-        LAYERFONTCOLOR, //!< LAYERFONTCOLOR parameter
-        LAYERTITLE, //!< LAYERTITLE parameter
-        LAYERS, //!< LAYERS parameter
-        LAYERSPACE, //!< LAYERSPACE parameter
-        LAYERTITLESPACE, //!< LAYERTITLESPACE parameter
-        QUERY_LAYERS, //!< QUERY_LAYERS parameter
-        FEATURE_COUNT, //!< FEATURE_COUNT parameter
-        SHOWFEATURECOUNT, //!< SHOWFEATURECOUNT parameter
-        STYLE, //!< STYLE parameter
-        STYLES, //!< STYLES parameter
-        SYMBOLSPACE, //!< SYMBOLSPACE parameter
-        SYMBOLHEIGHT, //!< SYMBOLHEIGHT parameter
-        SYMBOLWIDTH, //!< SYMBOLWIDTH parameter
-        OPACITIES, //!< OPACITIES parameter
-        SLD, //!< SLD parameter
-        FILTER, //!< FILTER parameter
-        FILTER_GEOM, //!< FILTER_GEOM parameter
-        FORMAT, //!< FORMAT parameter
-        INFO_FORMAT, //!< INFO_FORMAT parameter
-        I, //!< I parameter
-        J, //!< J parameter
-        X, //!< X parameter
-        Y, //!< Y parameter
-        RULE, //!< RULE parameter
-        RULELABEL, //!< RULELABEL parameter
-        SCALE, //!< SCALE parameter
-        SELECTION, //!< SELECTION parameter
-        HIGHLIGHT_GEOM, //!< HIGHLIGHT_GEOM parameter
-        HIGHLIGHT_SYMBOL, //!< HIGHLIGHT_SYMBOL parameter
-        HIGHLIGHT_LABELSTRING, //!< HIGHLIGHT_LABELSTRING parameter
-        HIGHLIGHT_LABELFONT, //!< HIGHLIGHT_LABELFONT parameter
-        HIGHLIGHT_LABELSIZE, //!< HIGHLIGHT_LABELSIZE parameter
-        HIGHLIGHT_LABELWEIGHT, //!< HIGHLIGHT_LABELWEIGHT parameter
-        HIGHLIGHT_LABELCOLOR, //!< HIGHLIGHT_LABELCOLOR parameter
-        HIGHLIGHT_LABELBUFFERCOLOR, //!< HIGHLIGHT_LABELBUFFERCOLOR parameter
-        HIGHLIGHT_LABELBUFFERSIZE, //!< HIGHLIGHT_LABELBUFFERSIZE parameter
-        WMS_PRECISION, //!< WMS_PRECISION parameter
-        TRANSPARENT, //!< TRANSPARENT parameter
-        BGCOLOR, //!< BGCOLOR parameter
-        DPI, //!< DPI parameter
-        TEMPLATE, //!< TEMPLATE parameter
-        EXTENT, //!< EXTENT parameter
-        ROTATION, //!< ROTATION parameter
-        GRID_INTERVAL_X, //!< GRID_INTERVAL_X parameter
-        GRID_INTERVAL_Y, //!< GRID_INTERVAL_Y parameter
-        WITH_GEOMETRY, //!< WITH_GEOMETRY parameter
-        WITH_MAPTIP //!< WITH_MAPTIP parameter
+        BOXSPACE,
+        CRS,
+        SRS,
+        WIDTH,
+        HEIGHT,
+        BBOX,
+        ICONLABELSPACE,
+        ITEMFONTFAMILY,
+        ITEMFONTBOLD,
+        ITEMFONTITALIC,
+        ITEMFONTSIZE,
+        ITEMFONTCOLOR,
+        LAYER,
+        LAYERFONTFAMILY,
+        LAYERFONTBOLD,
+        LAYERFONTITALIC,
+        LAYERFONTSIZE,
+        LAYERFONTCOLOR,
+        LAYERTITLE,
+        LAYERS,
+        LAYERSPACE,
+        LAYERTITLESPACE,
+        QUERY_LAYERS,
+        FEATURE_COUNT,
+        SHOWFEATURECOUNT,
+        STYLE,
+        STYLES,
+        SYMBOLSPACE,
+        SYMBOLHEIGHT,
+        SYMBOLWIDTH,
+        OPACITIES,
+        SLD,
+        FILTER,
+        FILTER_GEOM,
+        FORMAT,
+        INFO_FORMAT,
+        I,
+        J,
+        X,
+        Y,
+        RULE,
+        RULELABEL,
+        SCALE,
+        SELECTION,
+        HIGHLIGHT_GEOM,
+        HIGHLIGHT_SYMBOL,
+        HIGHLIGHT_LABELSTRING,
+        HIGHLIGHT_LABELFONT,
+        HIGHLIGHT_LABELSIZE,
+        HIGHLIGHT_LABELWEIGHT,
+        HIGHLIGHT_LABELCOLOR,
+        HIGHLIGHT_LABELBUFFERCOLOR,
+        HIGHLIGHT_LABELBUFFERSIZE,
+        WMS_PRECISION,
+        TRANSPARENT,
+        BGCOLOR,
+        DPI,
+        TEMPLATE,
+        EXTENT,
+        ROTATION,
+        GRID_INTERVAL_X,
+        GRID_INTERVAL_Y,
+        WITH_GEOMETRY,
+        WITH_MAPTIP
       };
       Q_ENUM( ParameterName )
 
-      //! Output format
+      //! Output format for the response
       enum Format
       {
-        NONE, //!< NONE
-        JPG, //!< JPEG format
-        PNG, //!< PNG format
-        TEXT, //!< TEXT format
-        XML, //!< XML format
-        HTML, //!< HTML format
-        GML //!< GML format
+        NONE,
+        JPG,
+        PNG,
+        TEXT,
+        XML,
+        HTML,
+        GML
       };
 
       struct Parameter

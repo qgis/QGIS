@@ -28,7 +28,7 @@ namespace QgsWms
   /**
    * \ingroup server
    * \class QgsWms::QgsMapRendererJobProxy
-   * \brief Proxy for sequential or parallel map render job by reading qsettings.
+   * \brief Proxy for sequential or parallel map render job
    * \since QGIS 3.0
    */
   class QgsMapRendererJobProxy
@@ -37,7 +37,7 @@ namespace QgsWms
 
       /**
        * Constructor for QgsMapRendererJobProxy. Does not take ownership of
-       * QgsFeatureFilterProvider.
+       * \a featureFilterProvider.
        * \param parallelRendering True to activate parallel rendering, false otherwise
        * \param maxThreads The number of threads to use in case of parallel rendering
        * \param featureFilterProvider Features filtering
@@ -49,7 +49,7 @@ namespace QgsWms
       );
 
       /**
-       * Sequential or parallel map rendering according to QSettings.
+       * Sequential or parallel map rendering.
        * \param mapSettings Passed to MapRendererJob
        * \param image The resulting image
        */

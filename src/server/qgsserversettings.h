@@ -29,8 +29,8 @@
 
 /**
  * \ingroup server
- * QgsServerSettingsEnv provides some enum describing the environment
- * currently supported for configuration.
+ * \class QgsServerSettingsEnv
+ * \brief Provides some enum describing the environment currently supported for configuration.
  * \since QGIS 3.0
  */
 #ifndef SIP_RUN
@@ -42,24 +42,24 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     //! Source of the parameter used in the configuration
     enum Source
     {
-      DEFAULT_VALUE, //!< Default value
-      ENVIRONMENT_VARIABLE, //!< Environment variable
-      INI_FILE //<! Configuration file
+      DEFAULT_VALUE,
+      ENVIRONMENT_VARIABLE,
+      INI_FILE
     };
     Q_ENUM( Source )
 
     //! Environment variables to configure the server
     enum EnvVar
     {
-      QGIS_OPTIONS_PATH, //!< Override the default path for user configuration
-      QGIS_SERVER_PARALLEL_RENDERING, //!< Activate/deactivate parallel rendering
-      QGIS_SERVER_MAX_THREADS, //!< Number of threads to use when parallel rendering is activated
-      QGIS_SERVER_LOG_LEVEL, //!< Log level
-      QGIS_SERVER_LOG_FILE, //!< Log file
-      QGIS_PROJECT_FILE, //!< QGIS project file
-      MAX_CACHE_LAYERS, //!< Maximum number of cached layers
-      QGIS_SERVER_CACHE_DIRECTORY, //!< Cache directory
-      QGIS_SERVER_CACHE_SIZE //!< Cache size
+      QGIS_OPTIONS_PATH,
+      QGIS_SERVER_PARALLEL_RENDERING,
+      QGIS_SERVER_MAX_THREADS,
+      QGIS_SERVER_LOG_LEVEL,
+      QGIS_SERVER_LOG_FILE,
+      QGIS_PROJECT_FILE,
+      MAX_CACHE_LAYERS,
+      QGIS_SERVER_CACHE_DIRECTORY,
+      QGIS_SERVER_CACHE_SIZE
     };
     Q_ENUM( EnvVar )
 };
@@ -67,8 +67,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 
 /**
  * \ingroup server
- * QgsServerSettings provides a way to retrieve settings by prioritizing
- * according to environment variables, ini file and default values.
+ * \class QgsServerSettings
+ * \brief Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
  * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings

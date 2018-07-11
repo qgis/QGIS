@@ -47,7 +47,7 @@ namespace QgsWfs
 
       /**
        * Constructor for WFS service.
-       * \param serverIface Interface for plugin.
+       * \param serverIface Interface for plugins.
        */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )
@@ -131,7 +131,7 @@ namespace QgsWfs
 /**
  * \ingroup server
  * \class QgsWfsModule
- * \brief Service module specialized for WFS
+ * \brief Module specialized for WFS service
  * \since QGIS 3.0
  */
 class QgsWfsModule: public QgsServiceModule

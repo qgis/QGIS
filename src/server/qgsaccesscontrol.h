@@ -33,7 +33,7 @@ class QgsAccessControlPlugin;
 /**
  * \ingroup server
  * \class QgsAccessControl
- * \brief A helper class that centralize the restrictions given by all the access control filter plugins.
+ * \brief A helper class that centralizes restrictions given by all the access control filter plugins.
  * \since QGIS 2.14
  */
 class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider

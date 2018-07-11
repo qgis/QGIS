@@ -42,7 +42,8 @@ class QgsServiceNativeModuleEntry
   public:
 
     /**
-     * Constructor.
+     * Constructor for QgsServiceNativeModuleEntry.
+     * \param location Relative path of the module
      */
     QgsServiceNativeModuleEntry( const QString &location )
       : mLocation( location )

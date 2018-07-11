@@ -43,7 +43,11 @@ namespace QgsWms
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsServiceException.
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
+       * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(),
                            int responseCode = 200 )
@@ -51,7 +55,10 @@ namespace QgsWms
       {}
 
       /**
-       * Constructor.
+       * Constructor for QgsServiceException (empty locator attribute).
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, int responseCode )
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
@@ -70,7 +77,10 @@ namespace QgsWms
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsSecurityException (HTTP error code 403 with
+       * Security code name).
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
        */
       QgsSecurityException( const QString &message, const QString &locator = QString() )
         : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
@@ -88,7 +98,10 @@ namespace QgsWms
     public:
 
       /**
-       * Constructor.
+       * Constructor for QgsBadRequestException (HTTP error code 400).
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
        */
       QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
         : QgsServiceException( code, message, locator, 400 )

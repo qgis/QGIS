@@ -38,7 +38,7 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
   public:
 
     /**
-     * Constructor.
+     * Default constructor for QgsOWSServerFilterRestorer.
      */
     QgsOWSServerFilterRestorer() = default;
 

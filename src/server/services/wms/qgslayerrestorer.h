@@ -43,12 +43,15 @@ class QgsLayerRestorer
   public:
 
     /**
-     * Constructor.
+     * Constructor for QgsLayerRestorer.
+     * \param layers List of layers to restore in their initial states
      */
     QgsLayerRestorer( const QList<QgsMapLayer *> &layers );
 
     /**
      * Destructor.
+     *
+     * Restores layers in their initial states.
      */
     ~QgsLayerRestorer();
 

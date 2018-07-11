@@ -38,7 +38,8 @@ class SERVER_EXPORT QgsFcgiServerResponse: public QgsServerResponse
   public:
 
     /**
-     * Constructor.
+     * Constructor for QgsFcgiServerResponse.
+     * \param method The HTTP method (Get by default)
      */
     QgsFcgiServerResponse( QgsServerRequest::Method method = QgsServerRequest::GetMethod );
 

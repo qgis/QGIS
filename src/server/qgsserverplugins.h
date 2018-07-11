@@ -37,12 +37,12 @@ class SERVER_EXPORT QgsServerPlugins
   public:
 
     /**
-     * Constructor.
+     * Default constructor for QgsServerPlugins.
      */
     explicit QgsServerPlugins() = default;
 
     /**
-     * Initialize the Python plugins
+     * Initializes the Python plugins
      * \param interface QgsServerInterface
      * \returns bool true on success
      */

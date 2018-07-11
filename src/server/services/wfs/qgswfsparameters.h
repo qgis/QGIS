@@ -60,7 +60,7 @@ namespace QgsWfs
       };
       Q_ENUM( ParameterName )
 
-      //! Output format
+      //! Output format for the response
       enum Format
       {
         NONE,
