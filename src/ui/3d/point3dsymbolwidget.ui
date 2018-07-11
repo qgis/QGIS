@@ -236,21 +236,30 @@
      <item row="1" column="1">
       <widget class="QgsDoubleSpinBox" name="spinTX">
        <property name="minimum">
-        <double>-99.900000000000006</double>
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
        </property>
       </widget>
      </item>
      <item row="1" column="2">
       <widget class="QgsDoubleSpinBox" name="spinTY">
        <property name="minimum">
-        <double>-99.900000000000006</double>
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
        </property>
       </widget>
      </item>
      <item row="1" column="3">
       <widget class="QgsDoubleSpinBox" name="spinTZ">
        <property name="minimum">
-        <double>-99.900000000000006</double>
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
        </property>
       </widget>
      </item>
@@ -263,6 +272,12 @@
      </item>
      <item row="2" column="1">
       <widget class="QgsDoubleSpinBox" name="spinSX">
+       <property name="minimum">
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
+       </property>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
@@ -270,6 +285,12 @@
      </item>
      <item row="2" column="2">
       <widget class="QgsDoubleSpinBox" name="spinSY">
+       <property name="minimum">
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
+       </property>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
@@ -277,6 +298,12 @@
      </item>
      <item row="2" column="3">
       <widget class="QgsDoubleSpinBox" name="spinSZ">
+       <property name="minimum">
+        <double>-99999.900000000000006</double>
+       </property>
+       <property name="maximum">
+        <double>99999.900000000000006</double>
+       </property>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
