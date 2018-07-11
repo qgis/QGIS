@@ -115,7 +115,7 @@ class RasterSampling(QgisAlgorithm):
         for i in sampled_rasters:
             for b in range(i.bandCount()):
                 raster_fields.append(QgsField(
-                    i.name() + str('_{}'.format(b + 1)), QVariant.Double)
+                    os.path.splitext(os.path.basename(i.source()))[0] + str('_{}'.format(b + 1)), QVariant.Double)
                 )
 
         # combine all the vector fields
