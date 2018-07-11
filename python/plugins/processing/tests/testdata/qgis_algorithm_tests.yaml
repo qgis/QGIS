@@ -5729,10 +5729,10 @@ tests:
         type: vector
 
   - algorithm: qgis:rastersampling
-    name: Test (qgis:rastersampling)
+    name: Single band raster
     params:
       INPUT:
-        name: custom/points_over.shp
+        name: custom/sampling_points.gml
         type: vector
       RASTERCOPY:
         params:
@@ -5741,8 +5741,12 @@ tests:
         type: multi
     results:
       OUTPUT:
-        name: expected/raster_sampling.geojson
+        name: expected/sampling_raster.gml
         type: vector
+        compare:
+          fields:
+            fid: skip
+
 
 
 # See ../README.md for a description of the file format

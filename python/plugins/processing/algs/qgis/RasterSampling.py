@@ -76,7 +76,6 @@ class RasterSampling(QgisAlgorithm):
             )
         )
 
-
         self.addParameter(
             QgsProcessingParameterMultipleLayers(
                 self.RASTERCOPY,
@@ -116,14 +115,11 @@ class RasterSampling(QgisAlgorithm):
         for i in sampled_rasters:
             for b in range(i.bandCount()):
                 raster_fields.append(QgsField(
-                    i.name() + str('_{}'.format(b+1)),
-                    QVariant.Double)
+                    i.name() + str('_{}'.format(b + 1)), QVariant.Double)
                 )
-
 
         # combine all the vector fields
         out_fields = QgsProcessingUtils.combineFields(source_fields, raster_fields)
-
 
         (sink, dest_id) = self.parameterAsSink(
             parameters,
@@ -133,7 +129,6 @@ class RasterSampling(QgisAlgorithm):
             source.wkbType(),
             source.sourceCrs()
         )
-
 
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
@@ -147,25 +142,22 @@ class RasterSampling(QgisAlgorithm):
 
                 attrs = i.attributes()
 
-                if rr.bandCount() >1:
+                if rr.bandCount() > 1:
 
                     for b in range(rr.bandCount()):
                         attrs.append(
                             rr.dataProvider().identify(i.geometry().asPoint(),
-                            QgsRaster.IdentifyFormatValue).results()[b+1]
+                                                       QgsRaster.IdentifyFormatValue).results()[b + 1]
                         )
-
 
                 attrs.append(
                     rr.dataProvider().identify(i.geometry().asPoint(),
-                    QgsRaster.IdentifyFormatValue).results()[1]
+                                               QgsRaster.IdentifyFormatValue).results()[1]
                 )
-
 
                 i.setAttributes(attrs)
 
             sink.addFeature(i, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(n * total))
-
 
         return {self.OUTPUT: dest_id}

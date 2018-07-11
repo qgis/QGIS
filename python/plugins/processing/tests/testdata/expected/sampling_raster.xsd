@@ -10,19 +10,12 @@
     </xs:extension>
   </xs:complexContent>
 </xs:complexType>
-<xs:element name="raster_sampling" type="ogr:raster_sampling_Type" substitutionGroup="gml:_Feature"/>
-<xs:complexType name="raster_sampling_Type">
+<xs:element name="sampling_raster" type="ogr:sampling_raster_Type" substitutionGroup="gml:_Feature"/>
+<xs:complexType name="sampling_raster_Type">
   <xs:complexContent>
     <xs:extension base="gml:AbstractFeatureType">
       <xs:sequence>
         <xs:element name="geometryProperty" type="gml:PointPropertyType" nillable="true" minOccurs="0" maxOccurs="1"/>
-        <xs:element name="id" nillable="true" minOccurs="0" maxOccurs="1">
-          <xs:simpleType>
-            <xs:restriction base="xs:long">
-              <xs:totalDigits value="10"/>
-            </xs:restriction>
-          </xs:simpleType>
-        </xs:element>
         <xs:element name="dem_1" nillable="true" minOccurs="0" maxOccurs="1">
           <xs:simpleType>
             <xs:restriction base="xs:decimal">
