@@ -46,6 +46,7 @@ SET(QGIS_SERVER_SRCS
 )
 
 SET (QGIS_SERVER_HDRS
+  qgsservicemodule.h
   qgsmapserviceexception.h
 )
 
