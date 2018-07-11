@@ -158,7 +158,7 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   if ( !_projectsTableExists( *conn, projectUri.schemaName ) )
   {
     // try to create projects table
-    QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" ).arg( projectUri.schemaName );
+    QString sql = QStringLiteral( "CREATE TABLE %1.qgis_projects(name TEXT PRIMARY KEY, metadata JSONB, content BYTEA)" ).arg( QgsPostgresConn::quotedIdentifier( projectUri.schemaName ) );
     QgsPostgresResult res( conn->PQexec( sql ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
