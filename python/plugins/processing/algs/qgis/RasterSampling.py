@@ -36,7 +36,7 @@ from qgis.core import (QgsApplication,
                        QgsFeatureSink,
                        QgsRaster,
                        QgsProcessing,
-                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterRasterLayer,
                        QgsFields,
                        QgsProcessingUtils,
                        QgsProcessingException,
@@ -77,10 +77,9 @@ class RasterSampling(QgisAlgorithm):
         )
 
         self.addParameter(
-            QgsProcessingParameterMultipleLayers(
+            QgsProcessingParameterRasterLayer(
                 self.RASTERCOPY,
                 self.tr('Raster Layer to sample'),
-                QgsProcessing.TypeRaster
             )
         )
 
@@ -99,7 +98,7 @@ class RasterSampling(QgisAlgorithm):
             context
         )
 
-        sampled_rasters = self.parameterAsLayerList(
+        sampled_rasters = self.parameterAsRasterLayer(
             parameters,
             self.RASTERCOPY,
             context
@@ -112,11 +111,11 @@ class RasterSampling(QgisAlgorithm):
         raster_fields = QgsFields()
 
         # append field to vector as rasterName_bandCount
-        for i in sampled_rasters:
-            for b in range(i.bandCount()):
-                raster_fields.append(QgsField(
-                    os.path.splitext(os.path.basename(i.source()))[0] + str('_{}'.format(b + 1)), QVariant.Double)
+        for b in range(sampled_rasters.bandCount()):
+            raster_fields.append(QgsField(
+                'rvalue_' + str('{}'.format(b + 1)), QVariant.Double
                 )
+            )
 
         # combine all the vector fields
         out_fields = QgsProcessingUtils.combineFields(source_fields, raster_fields)
@@ -138,24 +137,22 @@ class RasterSampling(QgisAlgorithm):
 
         for n, i in enumerate(source.getFeatures()):
 
-            for rr in sampled_rasters:
+            attrs = i.attributes()
 
-                attrs = i.attributes()
+            if sampled_rasters.bandCount() > 1:
 
-                if rr.bandCount() > 1:
+                for b in range(sampled_rasters.bandCount()):
+                    attrs.append(
+                        sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
+                                                   QgsRaster.IdentifyFormatValue).results()[b + 1]
+                    )
 
-                    for b in range(rr.bandCount()):
-                        attrs.append(
-                            rr.dataProvider().identify(i.geometry().asPoint(),
-                                                       QgsRaster.IdentifyFormatValue).results()[b + 1]
-                        )
+            attrs.append(
+                sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
+                                           QgsRaster.IdentifyFormatValue).results()[1]
+            )
 
-                attrs.append(
-                    rr.dataProvider().identify(i.geometry().asPoint(),
-                                               QgsRaster.IdentifyFormatValue).results()[1]
-                )
-
-                i.setAttributes(attrs)
+            i.setAttributes(attrs)
 
             sink.addFeature(i, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(n * total))
