@@ -395,13 +395,13 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   queryUrl.addQueryItem( QStringLiteral( "imageDisplay" ), QStringLiteral( "%1,%2,%3" ).arg( width ).arg( height ).arg( dpi ) );
   queryUrl.addQueryItem( QStringLiteral( "mapExtent" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum(), 0, 'f' ).arg( extent.yMinimum(), 0, 'f' ).arg( extent.xMaximum(), 0, 'f' ).arg( extent.yMaximum(), 0, 'f' ) );
   queryUrl.addQueryItem( QStringLiteral( "tolerance" ), QStringLiteral( "10" ) );
-  QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
+  const QVariantList queryResults = QgsArcGisRestUtils::queryServiceJSON( queryUrl, mErrorTitle, mError ).value( QStringLiteral( "results" ) ).toList();
 
   QMap<int, QVariant> entries;
 
   if ( format == QgsRaster::IdentifyFormatText )
   {
-    foreach ( const QVariant &result, queryResults )
+    for ( const QVariant &result : queryResults )
     {
       const QVariantMap resultMap = result.toMap();
       QVariantMap attributesMap = resultMap[QStringLiteral( "attributes" )].toMap();
@@ -415,7 +415,7 @@ QgsRasterIdentifyResult QgsAmsProvider::identify( const QgsPointXY &point, QgsRa
   }
   else if ( format == QgsRaster::IdentifyFormatFeature )
   {
-    foreach ( const QVariant &result, queryResults )
+    for ( const QVariant &result : queryResults )
     {
       const QVariantMap resultMap = result.toMap();
 

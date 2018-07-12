@@ -284,14 +284,13 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
 
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    QgsRasterBlock *myBlock = block( i, pixelExtent, 1, 1 );
+    std::unique_ptr< QgsRasterBlock > bandBlock( block( i, pixelExtent, 1, 1 ) );
 
-    if ( myBlock )
+    if ( bandBlock )
     {
-      double value = myBlock->value( 0 );
+      double value = bandBlock->value( 0 );
 
       results.insert( i, value );
-      delete myBlock;
     }
     else
     {
