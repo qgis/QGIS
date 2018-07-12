@@ -355,9 +355,23 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         Empty if failed or there are no results (TODO: better error reporting).
      * \note The arbitraryness of the returned document is enforced by WMS standards
      *       up to at least v1.3.0
+     * \see sample()
      */
-    //virtual QMap<int, QVariant> identify( const QgsPointXY & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+
+    /**
+     * Samples a raster value from the specified \a band found at the \a point position. The context
+     * parameters \a boundingBox, \a width and \a height are important to identify
+     * on the same zoom level as a displayed map and to do effective
+     * caching (WCS). If context params are not specified the highest
+     * resolution is used. capabilities() may be used to test if format
+     * is supported by provider.
+     *
+     * A null QVariant will be returned if the point is outside data source extent.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QVariant sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief Returns the caption error text for the last error in this provider
