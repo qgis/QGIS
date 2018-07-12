@@ -85,6 +85,7 @@ class TestQgsRasterLayer : public QObject
     void setRenderer();
     void regression992(); //test for issue #992 - GeoJP2 images improperly displayed as all black
     void testRefreshRendererIfNeeded();
+    void sample();
 
 
   private:
@@ -718,6 +719,28 @@ void TestQgsRasterLayer::testRefreshRendererIfNeeded()
   mpLandsatRasterLayer->refreshRendererIfNeeded( mpLandsatRasterLayer->renderer(), newExtent );
   double newMinVal = static_cast<QgsMultiBandColorRenderer *>( mpLandsatRasterLayer->renderer() )->redContrastEnhancement()->minimumValue();
   QGSCOMPARENOTNEAR( initMinVal, newMinVal, 1e-5 );
+}
+
+void TestQgsRasterLayer::sample()
+{
+  QString fileName = mTestDataDir + "landsat-f32-b1.tif";
+
+  QFileInfo rasterFileInfo( fileName );
+  std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
+                                         rasterFileInfo.completeBaseName() );
+  QVERIFY( rl->isValid() );
+  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ).isValid() );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1 ).toInt(), 125 );
+
+  fileName = mTestDataDir + "landsat_4326.tif";
+  rasterFileInfo = QFileInfo( fileName );
+  rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
+       rasterFileInfo.completeBaseName() );
+  QVERIFY( rl->isValid() );
+  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ).isValid() );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 1 ).toInt(), 125 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2 ).toInt(), 139 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3 ).toInt(), 111 );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )
