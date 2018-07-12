@@ -39,6 +39,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,
                        QgsProcessingParameterDefinition,
+                       QgsCoordinateTransform,
                        QgsFields,
                        QgsProcessingUtils,
                        QgsProcessingException,
@@ -151,6 +152,9 @@ class RasterSampling(QgisAlgorithm):
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         features = source.getFeatures()
 
+        # create the coordinates transformation context
+        ct = QgsCoordinateTransform(source.sourceCrs(), sampled_raster.crs(), context.transformContext())
+
         for n, i in enumerate(source.getFeatures()):
 
             if i.geometry().isMultipart():
@@ -158,19 +162,30 @@ class RasterSampling(QgisAlgorithm):
                 of a Multipart layer. Please use the Multipart to single part
                 algorithm to transform the layer.'''))
 
+            # get the feature geometry as point
+            point = i.geometry().asPoint()
+
+            # reproject to raster crs
+            try:
+                point = ct.transform(point)
+            except QgsCsException:
+                feedback.reportError(self.tr('Could not reproject feature {} to raster CRS').format(i.id()))
+
             attrs = i.attributes()
 
             if sampled_raster.bandCount() > 1:
 
                 for b in range(sampled_raster.bandCount()):
                     attrs.append(
-                        sampled_raster.dataProvider().identify(i.geometry().asPoint(),
-                                                                QgsRaster.IdentifyFormatValue).results()[b + 1]
+                        sampled_raster.dataProvider().identify(
+                            point,
+                            QgsRaster.IdentifyFormatValue).results()[b + 1]
                     )
 
             attrs.append(
-                sampled_raster.dataProvider().identify(i.geometry().asPoint(),
-                                                        QgsRaster.IdentifyFormatValue).results()[1]
+                sampled_raster.dataProvider().identify(
+                    point,
+                    QgsRaster.IdentifyFormatValue).results()[1]
             )
 
             i.setAttributes(attrs)
