@@ -428,8 +428,6 @@ qgis:rastersampling: >
 
   If the raster layer has more than one band, all the band values are sampled.
 
-  WARNING: raster layer(s) must be in the same CRS of the source point layer.
-
 qgis:rasterize: >
   This algorithm rasterizes map canvas content.
 
