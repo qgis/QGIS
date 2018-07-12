@@ -288,6 +288,8 @@ is supported by provider.
 
 A null QVariant will be returned if the point is outside data source extent.
 
+.. seealso:: :py:func:`identify`
+
 .. versionadded:: 3.4
 %End
 
