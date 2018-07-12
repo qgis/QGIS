@@ -223,7 +223,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setMode( Mode mode ) { mMode = mode; }
 
     /**
-     * Get if we want to classify symmetric around a given value
+     * Returns if we want to classify symmetric around a given value
      * \since QGIS 3.4
      */
     bool useSymmetricMode() const { return mUseSymmetricMode; }
@@ -235,7 +235,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
 
     /**
-     * Get the pivot value for symmetric classification
+     * Returns the pivot value for symmetric classification
      * \since QGIS 3.4
      */
     double symmetryPoint() const { return mSymmetryPoint; }
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
 
     /**
-     * Get mListForCboPrettyBreaks, which is needed to recover this list in saved configuration, or when property window in closed and reopened
+     * Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
      * \since QGIS 3.4
      */
     QStringList listForCboPrettyBreaks() const { return mListForCboPrettyBreaks; }
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
 
     /**
-     *  Get if we want to have a central class astride the pivot value
+     * Returns if we want to have a central class astride the pivot value
      * \since QGIS 3.4
      */
     bool astride() const { return mAstride; }
@@ -275,11 +275,10 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param vlayer  The layer being rendered (from which data values are calculated)
      * \param mode    The calculation mode
      * \param nclasses The number of classes to calculate (approximate for some modes)
-     * \since QGIS 2.6
      * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
      * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
-     * \since QGIS 3.4
+     * \since QGIS 2.6 (three first arguments) and 3.4 (three last arguments)
      */
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 
