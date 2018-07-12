@@ -78,7 +78,7 @@ class CORE_EXPORT QgsRasterShaderFunction
                         int *returnRedValue SIP_OUT,
                         int *returnGreenValue SIP_OUT,
                         int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT );
+                        int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates an new RGBA value based on an original RGBA value.
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsRasterShaderFunction
                         int *returnRedValue SIP_OUT,
                         int *returnGreenValue SIP_OUT,
                         int *returnBlueValue SIP_OUT,
-                        int *returnAlpha SIP_OUT );
+                        int *returnAlpha SIP_OUT ) const;
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 

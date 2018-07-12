@@ -157,13 +157,13 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void classifyColorRamp( int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = nullptr ) SIP_PYNAME( classifyColorRampV2 );
 
     //! \brief Generates and new RGB value based on one input value
-    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
+    bool shade( double value, int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT, int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
 
     //! \brief Generates and new RGB value based on original RGB value
     bool shade( double redValue, double greenValue,
                 double blueValue, double alphaValue,
                 int *returnRedValue SIP_OUT, int *returnGreenValue SIP_OUT,
-                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) override;
+                int *returnBlueValue SIP_OUT, int *returnAlphaValue SIP_OUT ) const override;
 
     void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const override;
 
@@ -207,10 +207,10 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     /**
      * Look up table to speed up finding the right color.
       * It is initialized on the first call to shade(). */
-    QVector<int> mLUT;
-    double mLUTOffset = 0.0;
-    double mLUTFactor = 1.0;
-    bool mLUTInitialized = false;
+    mutable QVector<int> mLUT;
+    mutable double mLUTOffset = 0.0;
+    mutable double mLUTFactor = 1.0;
+    mutable bool mLUTInitialized = false;
 
     //! Do not render values out of range
     bool mClip = false;

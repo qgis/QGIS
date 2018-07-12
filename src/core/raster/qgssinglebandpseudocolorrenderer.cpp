@@ -235,7 +235,7 @@ QgsRasterBlock *QgsSingleBandPseudoColorRenderer::block( int bandNo, QgsRectangl
 
   QRgb myDefaultColor = NODATA_COLOR;
   QRgb *outputBlockData = outputBlock->colorData();
-  QgsRasterShaderFunction *fcn = const_cast<QgsRasterShaderFunction *>( mShader->rasterShaderFunction() );
+  const QgsRasterShaderFunction *fcn = mShader->rasterShaderFunction();
 
   qgssize count = ( qgssize )width * height;
   for ( qgssize i = 0; i < count; i++ )
