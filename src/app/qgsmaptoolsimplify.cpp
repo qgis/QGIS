@@ -399,9 +399,7 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
     if ( f.hasGeometry() )
       mOriginalVertexCount += f.geometry().constGet()->nCoordinates();
 
-    QgsRubberBand *rb = new QgsRubberBand( mCanvas );
-    rb->setColor( QColor( 255, 0, 0, 65 ) );
-    rb->setWidth( 2 );
+    QgsRubberBand *rb = createRubberBand();
     rb->show();
     mRubberBands << rb;
   }
