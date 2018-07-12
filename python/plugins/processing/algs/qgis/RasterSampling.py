@@ -114,7 +114,7 @@ class RasterSampling(QgisAlgorithm):
         for b in range(sampled_rasters.bandCount()):
             raster_fields.append(QgsField(
                 'rvalue_' + str('{}'.format(b + 1)), QVariant.Double
-                )
+            )
             )
 
         # combine all the vector fields
@@ -149,12 +149,12 @@ class RasterSampling(QgisAlgorithm):
                 for b in range(sampled_rasters.bandCount()):
                     attrs.append(
                         sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
-                                                   QgsRaster.IdentifyFormatValue).results()[b + 1]
+                                                                QgsRaster.IdentifyFormatValue).results()[b + 1]
                     )
 
             attrs.append(
                 sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
-                                           QgsRaster.IdentifyFormatValue).results()[1]
+                                                        QgsRaster.IdentifyFormatValue).results()[1]
             )
 
             i.setAttributes(attrs)
