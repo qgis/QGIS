@@ -1022,12 +1022,15 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   }
 
   QgsRectangle finalExtent = boundingBox;
-  if ( finalExtent.isEmpty() )  finalExtent = extent();
+  if ( finalExtent.isEmpty() )
+    finalExtent = extent();
 
   QgsDebugMsgLevel( QStringLiteral( "myExtent = %1 " ).arg( finalExtent.toString() ), 3 );
 
-  if ( width == 0 ) width = xSize();
-  if ( height == 0 ) height = ySize();
+  if ( width == 0 )
+    width = xSize();
+  if ( height == 0 )
+    height = ySize();
 
   QgsDebugMsgLevel( QStringLiteral( "theWidth = %1 height = %2" ).arg( width ).arg( height ), 3 );
 
@@ -1036,8 +1039,8 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   double yres = ( finalExtent.height() ) / height;
 
   // Offset, not the cell index -> std::floor
-  int col = ( int ) std::floor( ( point.x() - finalExtent.xMinimum() ) / xres );
-  int row = ( int ) std::floor( ( finalExtent.yMaximum() - point.y() ) / yres );
+  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
 
   QgsDebugMsgLevel( QStringLiteral( "row = %1 col = %2" ).arg( row ).arg( col ), 3 );
 
@@ -1056,14 +1059,14 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
 
   for ( int i = 1; i <= bandCount(); i++ )
   {
-    QgsRasterBlock *myBlock = block( i, pixelExtent, w, h );
+    std::unique_ptr< QgsRasterBlock > bandBlock( block( i, pixelExtent, w, h ) );
 
-    if ( !myBlock )
+    if ( !bandBlock )
     {
       return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
     }
 
-    double value = myBlock->value( r, c );
+    double value = bandBlock->value( r, c );
 
     if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
            ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
@@ -1082,7 +1085,6 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
       else
         results.insert( i, value );
     }
-    delete myBlock;
   }
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
