@@ -292,6 +292,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Close all cached dataset for the specified provider.
     static void closeCachedGdalHandlesFor( QgsGdalProvider *provider );
 
+    bool worldToPixel( double x, double y, int &col, int &row ) const;
 };
 
 #endif

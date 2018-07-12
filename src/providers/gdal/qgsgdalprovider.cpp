@@ -1089,7 +1089,19 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
-QVariant QgsGdalProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox, int width, int height, int )
+bool QgsGdalProvider::worldToPixel( double x, double y, int &col, int &row ) const
+{
+  double div = ( mGeoTransform[2] * mGeoTransform[4] - mGeoTransform[1] * mGeoTransform[5] );
+  if ( div < 2 * std::numeric_limits<double>::epsilon() )
+    return false;
+  double doubleCol = -( mGeoTransform[2] * ( mGeoTransform[3] - y ) + mGeoTransform[5] * x - mGeoTransform[0] * mGeoTransform[5] ) / div;
+  double doubleRow = ( mGeoTransform[1] * ( mGeoTransform[3] - y ) + mGeoTransform[4] * x - mGeoTransform[0] * mGeoTransform[4] ) / div;
+  col = static_cast< int >( doubleCol );
+  row = static_cast< int >( doubleRow );
+  return true;
+};
+
+QVariant QgsGdalProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &, int, int, int )
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
@@ -1101,60 +1113,22 @@ QVariant QgsGdalProvider::sample( const QgsPointXY &point, int band, const QgsRe
     return QVariant();
   }
 
-  QgsRectangle finalExtent = boundingBox;
-  if ( finalExtent.isEmpty() )
-    finalExtent = extent();
+  GDALRasterBandH hBand = GDALGetRasterBand( mGdalDataset, band );
+  if ( !hBand )
+    return QVariant();
 
-  if ( width == 0 )
-    width = xSize();
-  if ( height == 0 )
-    height = ySize();
+  int row;
+  int col;
+  if ( !worldToPixel( point.x(), point.y(), col, row ) )
+    return QVariant();
 
-  // Calculate the row / column where the point falls
-  double xres = ( finalExtent.width() ) / width;
-  double yres = ( finalExtent.height() ) / height;
+  float value = 0;
+  CPLErr err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
+                             &value, 1, 1, GDT_Float32, 0, 0 );
+  if ( err != CE_None )
+    return QVariant();
 
-  // Offset, not the cell index -> std::floor
-  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
-  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
-
-  int r = 0;
-  int c = 0;
-  int w = 1;
-  int h = 1;
-
-  double xMin = finalExtent.xMinimum() + col * xres;
-  double xMax = xMin + xres * w;
-  double yMax = finalExtent.yMaximum() - row * yres;
-  double yMin = yMax - yres * h;
-  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
-
-  std::unique_ptr< QgsRasterBlock > bandBlock( block( band, pixelExtent, w, h ) );
-
-  if ( !bandBlock )
-  {
-    return tr( "Cannot read data" );
-  }
-
-  double value = bandBlock->value( r, c );
-
-  if ( ( sourceHasNoDataValue( band ) && useSourceNoDataValue( band ) &&
-         ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( band ) ) ) ) ||
-       ( QgsRasterRange::contains( value, userNoDataValues( band ) ) ) )
-  {
-    return QVariant(); // null QVariant represents no data
-  }
-  else
-  {
-    if ( sourceDataType( band ) == Qgis::Float32 )
-    {
-      // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
-      // can print a string without an excessive precision
-      return static_cast<float>( value );
-    }
-    else
-      return value;
-  }
+  return static_cast< double >( value ) * bandScale( band ) + bandOffset( band );
 }
 
 int QgsGdalProvider::capabilities() const
