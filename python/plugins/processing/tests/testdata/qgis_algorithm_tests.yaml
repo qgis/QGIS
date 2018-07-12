@@ -5731,14 +5731,13 @@ tests:
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:
+      COLUMN_PREFIX: rvalue
       INPUT:
         name: custom/sampling_points.gml
         type: vector
       RASTERCOPY:
-        params:
-        - name: dem.tif
-          type: raster
-        type: multi
+        name: dem.tif
+        type: raster
     results:
       OUTPUT:
         name: expected/sampling_raster.gml
