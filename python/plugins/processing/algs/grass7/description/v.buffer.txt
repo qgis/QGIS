@@ -8,7 +8,6 @@ QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;
 QgsProcessingParameterNumber|distance|Buffer distance in map units|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|minordistance|Buffer distance along minor axis in map units|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|angle|Angle of major axis in degrees|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
-QgsProcessingParameterField|column|Name of column to use for buffer distances|None|input|-1|False|True
 QgsProcessingParameterNumber|scale|Scaling factor for attribute column values|QgsProcessingParameterNumber.Double|1.0|True|None|None
 QgsProcessingParameterNumber|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|QgsProcessingParameterNumber.Double|0.01|True|None|None
 *QgsProcessingParameterBoolean|-s|Make outside corners straight|False
