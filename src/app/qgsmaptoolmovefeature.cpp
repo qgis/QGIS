@@ -163,8 +163,6 @@ void QgsMapToolMoveFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     }
 
     mStartPointMapCoords = e->mapPoint();
-    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
-    mRubberBand->setWidth( 2 );
     mRubberBand->show();
   }
   else
