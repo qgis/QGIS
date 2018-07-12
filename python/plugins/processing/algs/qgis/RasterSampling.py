@@ -38,6 +38,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessing,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,
+                       QgsProcessingParameterDefinition,
                        QgsFields,
                        QgsProcessingUtils,
                        QgsProcessingException,
@@ -85,12 +86,12 @@ class RasterSampling(QgisAlgorithm):
             )
         )
 
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.COLUMN_PREFIX,
-                self.tr('Output column prefix'), 'rvalue'
-            )
+        columnPrefix = QgsProcessingParameterString(
+            self.COLUMN_PREFIX,
+            self.tr('Output column prefix'), 'rvalue'
         )
+        columnPrefix.setFlags(columnPrefix.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(columnPrefix)
 
         self.addParameter(
             QgsProcessingParameterFeatureSink(
@@ -107,7 +108,7 @@ class RasterSampling(QgisAlgorithm):
             context
         )
 
-        sampled_rasters = self.parameterAsRasterLayer(
+        sampled_raster = self.parameterAsRasterLayer(
             parameters,
             self.RASTERCOPY,
             context
@@ -125,8 +126,8 @@ class RasterSampling(QgisAlgorithm):
         source_fields = source.fields()
         raster_fields = QgsFields()
 
-        # append field to vector as rasterName_bandCount
-        for b in range(sampled_rasters.bandCount()):
+        # append field to vector as columnPrefix_bandCount
+        for b in range(sampled_raster.bandCount()):
             raster_fields.append(QgsField(
                 columnPrefix + str('_{}'.format(b + 1)), QVariant.Double
             )
@@ -155,20 +156,20 @@ class RasterSampling(QgisAlgorithm):
             if i.geometry().isMultipart():
                 raise QgsProcessingException(self.tr('''Impossible to sample data
                 of a Multipart layer. Please use the Multipart to single part
-                algoithm to transform the layer.'''))
+                algorithm to transform the layer.'''))
 
             attrs = i.attributes()
 
-            if sampled_rasters.bandCount() > 1:
+            if sampled_raster.bandCount() > 1:
 
-                for b in range(sampled_rasters.bandCount()):
+                for b in range(sampled_raster.bandCount()):
                     attrs.append(
-                        sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
+                        sampled_raster.dataProvider().identify(i.geometry().asPoint(),
                                                                 QgsRaster.IdentifyFormatValue).results()[b + 1]
                     )
 
             attrs.append(
-                sampled_rasters.dataProvider().identify(i.geometry().asPoint(),
+                sampled_raster.dataProvider().identify(i.geometry().asPoint(),
                                                         QgsRaster.IdentifyFormatValue).results()[1]
             )
 
