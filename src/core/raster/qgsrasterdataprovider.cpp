@@ -300,6 +300,45 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
+QVariant QgsRasterDataProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox, int width, int height, int )
+{
+  if ( !extent().contains( point ) )
+  {
+    // Outside the raster
+    return QVariant();
+  }
+
+  QgsRectangle finalExtent = boundingBox;
+  if ( finalExtent.isEmpty() )
+    finalExtent = extent();
+
+  if ( width == 0 )
+  {
+    width = capabilities() & Size ? xSize() : 1000;
+  }
+  if ( height == 0 )
+  {
+    height = capabilities() & Size ? ySize() : 1000;
+  }
+
+  // Calculate the row / column where the point falls
+  double xres = ( finalExtent.width() ) / width;
+  double yres = ( finalExtent.height() ) / height;
+
+  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
+
+  double xMin = finalExtent.xMinimum() + col * xres;
+  double xMax = xMin + xres;
+  double yMax = finalExtent.yMaximum() - row * yres;
+  double yMin = yMax - yres;
+  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
+
+  std::unique_ptr< QgsRasterBlock > bandBlock( block( band, pixelExtent, 1, 1 ) );
+
+  return bandBlock ? bandBlock->value( 0 ) : QVariant();
+}
+
 QString QgsRasterDataProvider::lastErrorFormat()
 {
   return QStringLiteral( "text/plain" );

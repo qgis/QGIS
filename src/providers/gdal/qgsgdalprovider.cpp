@@ -1089,6 +1089,74 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
+QVariant QgsGdalProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox, int width, int height, int )
+{
+  QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return tr( "Cannot read data" );
+
+  if ( !extent().contains( point ) )
+  {
+    // Outside the raster
+    return QVariant();
+  }
+
+  QgsRectangle finalExtent = boundingBox;
+  if ( finalExtent.isEmpty() )
+    finalExtent = extent();
+
+  if ( width == 0 )
+    width = xSize();
+  if ( height == 0 )
+    height = ySize();
+
+  // Calculate the row / column where the point falls
+  double xres = ( finalExtent.width() ) / width;
+  double yres = ( finalExtent.height() ) / height;
+
+  // Offset, not the cell index -> std::floor
+  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
+  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
+
+  int r = 0;
+  int c = 0;
+  int w = 1;
+  int h = 1;
+
+  double xMin = finalExtent.xMinimum() + col * xres;
+  double xMax = xMin + xres * w;
+  double yMax = finalExtent.yMaximum() - row * yres;
+  double yMin = yMax - yres * h;
+  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
+
+  std::unique_ptr< QgsRasterBlock > bandBlock( block( band, pixelExtent, w, h ) );
+
+  if ( !bandBlock )
+  {
+    return tr( "Cannot read data" );
+  }
+
+  double value = bandBlock->value( r, c );
+
+  if ( ( sourceHasNoDataValue( band ) && useSourceNoDataValue( band ) &&
+         ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( band ) ) ) ) ||
+       ( QgsRasterRange::contains( value, userNoDataValues( band ) ) ) )
+  {
+    return QVariant(); // null QVariant represents no data
+  }
+  else
+  {
+    if ( sourceDataType( band ) == Qgis::Float32 )
+    {
+      // Insert a float QVariant so that QgsMapToolIdentify::identifyRasterLayer()
+      // can print a string without an excessive precision
+      return static_cast<float>( value );
+    }
+    else
+      return value;
+  }
+}
+
 int QgsGdalProvider::capabilities() const
 {
   QMutexLocker locker( mpMutex );
