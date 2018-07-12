@@ -1002,7 +1002,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   if ( !initIfNeeded() )
     return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
 
-  QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
+  QgsDebugMsgLevel( QStringLiteral( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ), 3 );
 
   QMap<int, QVariant> results;
 
@@ -1024,12 +1024,12 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   QgsRectangle finalExtent = boundingBox;
   if ( finalExtent.isEmpty() )  finalExtent = extent();
 
-  QgsDebugMsg( "myExtent = " + finalExtent.toString() );
+  QgsDebugMsgLevel( QStringLiteral( "myExtent = %1 " ).arg( finalExtent.toString() ), 3 );
 
   if ( width == 0 ) width = xSize();
   if ( height == 0 ) height = ySize();
 
-  QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
+  QgsDebugMsgLevel( QStringLiteral( "theWidth = %1 height = %2" ).arg( width ).arg( height ), 3 );
 
   // Calculate the row / column where the point falls
   double xres = ( finalExtent.width() ) / width;
@@ -1039,7 +1039,7 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
   int col = ( int ) std::floor( ( point.x() - finalExtent.xMinimum() ) / xres );
   int row = ( int ) std::floor( ( finalExtent.yMaximum() - point.y() ) / yres );
 
-  QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
+  QgsDebugMsgLevel( QStringLiteral( "row = %1 col = %2" ).arg( row ).arg( col ), 3 );
 
   // QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 

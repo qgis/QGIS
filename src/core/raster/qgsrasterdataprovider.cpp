@@ -237,12 +237,12 @@ QString QgsRasterDataProvider::htmlMetadata()
 // Default implementation for values
 QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsgLevel( "Entered", 4 );
+  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
   QMap<int, QVariant> results;
 
   if ( format != QgsRaster::IdentifyFormatValue || !( capabilities() & IdentifyValue ) )
   {
-    QgsDebugMsg( "Format not supported" );
+    QgsDebugMsg( QStringLiteral( "Format not supported" ) );
     return QgsRasterIdentifyResult( ERR( tr( "Format not supported" ) ) );
   }
 
