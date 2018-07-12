@@ -110,15 +110,16 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   QActionGroup *angleButtonGroup = new QActionGroup( menu ); // actions are exclusive for common angles
   mCommonAngleActions = QMap<QAction *, double>();
   QList< QPair< double, QString > > commonAngles;
-  commonAngles << QPair<double, QString>( 0, tr( "Do not snap to common angles" ) );
-  commonAngles << QPair<double, QString>( 5, tr( "Snap to 5° angles" ) );
-  commonAngles << QPair<double, QString>( 10, tr( "Snap to 10° angles" ) );
-  commonAngles << QPair<double, QString>( 15, tr( "Snap to 15° angles" ) );
-  commonAngles << QPair<double, QString>( 18, tr( "Snap to 18° angles" ) );
-  commonAngles << QPair<double, QString>( 22.5, tr( "Snap to 22.5° angles" ) );
-  commonAngles << QPair<double, QString>( 30, tr( "Snap to 30° angles" ) );
-  commonAngles << QPair<double, QString>( 45, tr( "Snap to 45° angles" ) );
-  commonAngles << QPair<double, QString>( 90, tr( "Snap to 90° angles" ) );
+  QString menuText;
+  QList<double> anglesDouble( { 0.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
+  {
+    if ( *it == 0 )
+      menuText = tr( "Do not snap to common angles" );
+    else
+      menuText = QString( tr( "%1, %2, %3, %4°..." ) ).arg( *it, 0, 'f', 1 ).arg( *it * 2, 0, 'f', 1 ).arg( *it * 3, 0, 'f', 1 ).arg( *it * 4, 0, 'f', 1 );
+    commonAngles << QPair<double, QString>( *it, menuText );
+  }
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, menu );
