@@ -1765,6 +1765,7 @@ void QgisApp::dataSourceManager( const QString &pageName )
              this, SLOT( addVectorLayer( QString const &, QString const &, QString const & ) ) );
     connect( mDataSourceManagerDialog, SIGNAL( addVectorLayers( QStringList const &, QString const &, QString const & ) ),
              this, SLOT( addVectorLayers( QStringList const &, QString const &, QString const & ) ) );
+    connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addMeshLayer, this, &QgisApp::addMeshLayer );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showProgress, this, &QgisApp::showProgress );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::showStatusMessage, this, &QgisApp::showStatusMessage );
     connect( mDataSourceManagerDialog, &QgsDataSourceManagerDialog::addDatabaseLayers, this, &QgisApp::addDatabaseLayers );
@@ -4483,6 +4484,54 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 
   return true;
 } // QgisApp::addVectorLayer()
+
+
+bool QgisApp::addMeshLayer( const QString &uri, const QString &providerKey )
+{
+  bool wasfrozen = mMapCanvas->isFrozen();
+  QgsSettings settings;
+
+  QFileInfo fi( uri );
+  QString base = fi.completeBaseName();
+
+  if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+  {
+    base = QgsMapLayer::formatLayerName( base );
+  }
+
+  QgsDebugMsg( "completeBaseName: " + base );
+
+  // create the layer
+  QgsMeshLayer::LayerOptions options;
+  std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( uri, base, providerKey, options ) );
+
+  if ( ! layer || !layer->isValid() )
+  {
+    QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+    messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
+
+    // since the layer is bad, stomp on it
+    return false;
+  }
+
+  // Register this layer with the layers registry
+  freezeCanvases();
+  bool ok;
+  layer->loadDefaultStyle( ok );
+  layer->loadDefaultMetadata( ok );
+  QgsProject::instance()->addMapLayer( layer.release() );
+
+  activateDeactivateLayerRelatedActions( activeLayer() );
+
+  // Only update the map if we frozen in this method
+  // Let the caller do it otherwise
+  if ( !wasfrozen )
+  {
+    freezeCanvases( false );
+    refreshMapCanvas();
+  }
+  return true;
+} // QgisApp::addMeshLayer()
 
 // present a dialog to choose zipitem layers
 bool QgisApp::askUserForZipItemLayers( const QString &path )
