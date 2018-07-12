@@ -355,7 +355,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *         Empty if failed or there are no results (TODO: better error reporting).
      * \note The arbitraryness of the returned document is enforced by WMS standards
      *       up to at least v1.3.0
-     * \see sample()
+     * \see sample(), which is much more efficient for simple "value at point" queries.
      */
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
@@ -369,6 +369,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      *
      * A null QVariant will be returned if the point is outside data source extent.
      *
+     * \see identify(), which is much more flexible but considerably less efficient.
      * \since QGIS 3.4
      */
     virtual QVariant sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
