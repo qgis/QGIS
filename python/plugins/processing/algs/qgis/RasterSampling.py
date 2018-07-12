@@ -137,6 +137,11 @@ class RasterSampling(QgisAlgorithm):
 
         for n, i in enumerate(source.getFeatures()):
 
+            if i.geometry().isMultipart():
+                raise QgsProcessingException(self.tr('''Impossible to sample data
+                of a Multipart layer. Please use the Multipart to single part
+                algoithm to transform the layer.'''))
+
             attrs = i.attributes()
 
             if sampled_rasters.bandCount() > 1:
