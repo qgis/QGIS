@@ -90,6 +90,12 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() );
 
     /**
+     * Emitted when a mesh layer has been selected for addition.
+     * \since QGIS 3.4
+     */
+    void addMeshLayer( const QString &uri, const QString &providerKey );
+
+    /**
      * Emitted when one or more OGR supported layers are selected for addition
      * \param layerList list of layers protocol URIs
      * \param encoding encoding

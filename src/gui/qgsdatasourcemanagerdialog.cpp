@@ -161,6 +161,8 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
   // Raster
   connect( dlg, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ),
            this, SIGNAL( addRasterLayer( QString const &, QString const &, QString const & ) ) );
+  // Mesh
+  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, &QgsDataSourceManagerDialog::addMeshLayer );
 
   // Virtual
   connect( dlg, SIGNAL( replaceVectorLayer( QString, QString, QString, QString ) ),

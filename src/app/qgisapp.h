@@ -922,6 +922,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
 
+    /**
+     * Adds a mesh layer directly without prompting user for location
+     * \returns true if successfully added layer
+     */
+    bool addMeshLayer( const QString &uri, const QString &providerKey );
+
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
 
