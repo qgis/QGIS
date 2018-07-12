@@ -37,6 +37,7 @@ from qgis.core import (QgsApplication,
                        QgsRaster,
                        QgsProcessing,
                        QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterString,
                        QgsFields,
                        QgsProcessingUtils,
                        QgsProcessingException,
@@ -50,6 +51,7 @@ class RasterSampling(QgisAlgorithm):
 
     INPUT = 'INPUT'
     RASTERCOPY = 'RASTERCOPY'
+    COLUMN_PREFIX = 'COLUMN_PREFIX'
     OUTPUT = 'OUTPUT'
 
     def name(self):
@@ -84,6 +86,13 @@ class RasterSampling(QgisAlgorithm):
         )
 
         self.addParameter(
+            QgsProcessingParameterString(
+                self.COLUMN_PREFIX,
+                self.tr('Output column prefix'), 'rvalue'
+            )
+        )
+
+        self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
                 self.tr('Sampled Points')
@@ -104,6 +113,12 @@ class RasterSampling(QgisAlgorithm):
             context
         )
 
+        columnPrefix = self.parameterAsString(
+            parameters,
+            self.COLUMN_PREFIX,
+            context
+        )
+
         if source is None:
             raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
@@ -113,7 +128,7 @@ class RasterSampling(QgisAlgorithm):
         # append field to vector as rasterName_bandCount
         for b in range(sampled_rasters.bandCount()):
             raster_fields.append(QgsField(
-                'rvalue_' + str('{}'.format(b + 1)), QVariant.Double
+                columnPrefix + str('_{}'.format(b + 1)), QVariant.Double
             )
             )
 
