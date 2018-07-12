@@ -54,10 +54,10 @@
   <widget class="QStatusBar" name="mStatusBar"/>
   <widget class="QToolBar" name="mLayoutToolbar">
    <property name="windowTitle">
-    <string>Layout Toolbar</string>
+    <string>Layout</string>
    </property>
    <property name="toolTip">
-    <string>Layout Toolbar</string>
+    <string>Layout toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -85,7 +85,7 @@
     <string>Toolbox</string>
    </property>
    <property name="toolTip">
-    <string>Toolbox</string>
+    <string>Toolbox toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -101,10 +101,10 @@
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
    <property name="windowTitle">
-    <string>Navigation Toolbar</string>
+    <string>Navigation</string>
    </property>
    <property name="toolTip">
-    <string>Navigation Toolbar</string>
+    <string>Navigation toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -120,10 +120,10 @@
   </widget>
   <widget class="QToolBar" name="mActionsToolbar">
    <property name="windowTitle">
-    <string>Actions Toolbar</string>
+    <string>Actions</string>
    </property>
    <property name="toolTip">
-    <string>Actions Toolbar</string>
+    <string>Actions toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -138,10 +138,10 @@
   </widget>
   <widget class="QToolBar" name="mAtlasToolbar">
    <property name="windowTitle">
-    <string>Atlas Toolbar</string>
+    <string>Atlas</string>
    </property>
    <property name="toolTip">
-    <string>Atlas Toolbar</string>
+    <string>Atlas toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -159,10 +159,10 @@
   </widget>
   <widget class="QToolBar" name="mReportToolbar">
    <property name="windowTitle">
-    <string>Report Toolbar</string>
+    <string>Report</string>
    </property>
    <property name="toolTip">
-    <string>Report Toolbar</string>
+    <string>Report toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>

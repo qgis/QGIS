@@ -13565,14 +13565,6 @@ QMenu *QgisApp::createPopupMenu()
     menu->addAction( panelstitle );
     Q_FOREACH ( QAction *a, panels )
     {
-      if ( !a->property( "fixed_title" ).toBool() )
-      {
-        // append " Panel" to menu text. Only ever do this once, because the actions are not unique to
-        // this single popup menu
-
-        a->setText( tr( "%1 Panel" ).arg( a->text() ) );
-        a->setProperty( "fixed_title", true );
-      }
       menu->addAction( a );
     }
     menu->addSeparator();

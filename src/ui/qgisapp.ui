@@ -21,7 +21,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Menu Toolbar</string>
+    <string>Menu toolbar</string>
    </property>
    <widget class="QMenu" name="mProjectMenu">
     <property name="title">
@@ -380,10 +380,10 @@
   </widget>
   <widget class="QToolBar" name="mFileToolBar">
    <property name="windowTitle">
-    <string>Project Toolbar</string>
+    <string>Project</string>
    </property>
    <property name="toolTip">
-    <string>Project Toolbar</string>
+    <string>Project toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -400,10 +400,10 @@
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
-    <string>Manage Layers Toolbar</string>
+    <string>Manage Layers</string>
    </property>
    <property name="toolTip">
-    <string>Manage Layers Toolbar</string>
+    <string>Manage Layers toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -422,10 +422,10 @@
   </widget>
   <widget class="QToolBar" name="mDigitizeToolBar">
    <property name="windowTitle">
-    <string>Digitizing Toolbar</string>
+    <string>Digitizing</string>
    </property>
    <property name="toolTip">
-    <string>Digitizing Toolbar</string>
+    <string>Digitizing toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -448,10 +448,10 @@
   </widget>
   <widget class="QToolBar" name="mAdvancedDigitizeToolBar">
    <property name="windowTitle">
-    <string>Advanced Digitizing Toolbar</string>
+    <string>Advanced Digitizing</string>
    </property>
    <property name="toolTip">
-    <string>Advanced Digitizing Toolbar</string>
+    <string>Advanced Digitizing toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -475,10 +475,10 @@
   </widget>
   <widget class="QToolBar" name="mMapNavToolBar">
    <property name="windowTitle">
-    <string>Map Navigation Toolbar</string>
+    <string>Map Navigation</string>
    </property>
    <property name="toolTip">
-    <string>Map Navigation Toolbar</string>
+    <string>Map Navigation toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -503,10 +503,10 @@
   </widget>
   <widget class="QToolBar" name="mAttributesToolBar">
    <property name="windowTitle">
-    <string>Attributes Toolbar</string>
+    <string>Attributes</string>
    </property>
    <property name="toolTip">
-    <string>Attributes Toolbar</string>
+    <string>Attributes toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -523,10 +523,10 @@
   </widget>
   <widget class="QToolBar" name="mPluginToolBar">
    <property name="windowTitle">
-    <string>Plugins Toolbar</string>
+    <string>Plugins</string>
    </property>
    <property name="toolTip">
-    <string>Plugins Toolbar</string>
+    <string>Plugins toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -538,10 +538,10 @@
   </widget>
   <widget class="QToolBar" name="mHelpToolBar">
    <property name="windowTitle">
-    <string>Help Toolbar</string>
+    <string>Help</string>
    </property>
    <property name="toolTip">
-    <string>Help Toolbar</string>
+    <string>Help toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -553,10 +553,10 @@
   </widget>
   <widget class="QToolBar" name="mRasterToolBar">
    <property name="windowTitle">
-    <string>Raster Toolbar</string>
+    <string>Raster</string>
    </property>
    <property name="toolTip">
-    <string>Raster Toolbar</string>
+    <string>Raster toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -575,10 +575,10 @@
   </widget>
   <widget class="QToolBar" name="mLabelToolBar">
    <property name="windowTitle">
-    <string>Label Toolbar</string>
+    <string>Label</string>
    </property>
    <property name="toolTip">
-    <string>Label Toolbar</string>
+    <string>Label toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -597,10 +597,10 @@
   </widget>
   <widget class="QToolBar" name="mVectorToolBar">
    <property name="windowTitle">
-    <string>Vector Toolbar</string>
+    <string>Vector</string>
    </property>
    <property name="toolTip">
-    <string>Vector Toolbar</string>
+    <string>Vector toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -611,10 +611,10 @@
   </widget>
   <widget class="QToolBar" name="mDatabaseToolBar">
    <property name="windowTitle">
-    <string>Database Toolbar</string>
+    <string>Database</string>
    </property>
    <property name="toolTip">
-    <string>Database Toolbar</string>
+    <string>Database toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -625,10 +625,10 @@
   </widget>
   <widget class="QToolBar" name="mWebToolBar">
    <property name="windowTitle">
-    <string>Web Toolbar</string>
+    <string>Web</string>
    </property>
    <property name="toolTip">
-    <string>Web Toolbar</string>
+    <string>Web toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -639,10 +639,10 @@
   </widget>
   <widget class="QToolBar" name="mSnappingToolBar">
    <property name="windowTitle">
-    <string>Snapping Toolbar</string>
+    <string>Snapping</string>
    </property>
    <property name="toolTip">
-    <string>Snapping Toolbar</string>
+    <string>Snapping toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -653,10 +653,10 @@
   </widget>
   <widget class="QToolBar" name="mDataSourceManagerToolBar">
    <property name="windowTitle">
-    <string>Data Source Manager Toolbar</string>
+    <string>Data Source Manager</string>
    </property>
    <property name="toolTip">
-    <string>Data Source Manager Toolbar</string>
+    <string>Data Source Manager toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -672,10 +672,10 @@
   </widget>
   <widget class="QToolBar" name="mShapeDigitizeToolBar">
    <property name="windowTitle">
-    <string>Shape Digitizing Toolbar</string>
+    <string>Shape Digitizing</string>
    </property>
    <property name="toolTip">
-    <string>Shape Digitizing Toolbar</string>
+    <string>Shape Digitizing toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
