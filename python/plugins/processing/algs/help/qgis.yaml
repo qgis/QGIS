@@ -426,8 +426,6 @@ qgis:rasterlayerstatistics: >
 qgis:rastersampling: >
   This algorithm creates a new vector layer with the same attributes of the input layer and the raster values corresponding on the point location.
 
-  Many raster layers can be chosen at the same time.
-
   If the raster layer has more than one band, all the band values are sampled.
 
   WARNING: raster layer(s) must be in the same CRS of the source point layer.
