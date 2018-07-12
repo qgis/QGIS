@@ -286,7 +286,8 @@ caching (WCS). If context params are not specified the highest
 resolution is used. capabilities() may be used to test if format
 is supported by provider.
 
-A null QVariant will be returned if the point is outside data source extent.
+A null QVariant will be returned if the point is outside data source extent, or an invalid
+band number was specified.
 
 .. seealso:: :py:func:`identify`
 

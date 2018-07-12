@@ -731,6 +731,9 @@ void TestQgsRasterLayer::sample()
   QVERIFY( rl->isValid() );
   QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ).isValid() );
   QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1 ).toInt(), 125 );
+  // bad bands
+  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0 ).isValid() );
+  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 10 ).isValid() );
 
   fileName = mTestDataDir + "landsat_4326.tif";
   rasterFileInfo = QFileInfo( fileName );

@@ -367,7 +367,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * resolution is used. capabilities() may be used to test if format
      * is supported by provider.
      *
-     * A null QVariant will be returned if the point is outside data source extent.
+     * A null QVariant will be returned if the point is outside data source extent, or an invalid
+     * band number was specified.
      *
      * \see identify(), which is much more flexible but considerably less efficient.
      * \since QGIS 3.4
