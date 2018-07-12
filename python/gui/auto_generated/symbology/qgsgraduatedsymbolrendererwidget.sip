@@ -1,0 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsgraduatedsymbolrendererwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
+{
+
+%TypeHeaderCode
+#include "qgsgraduatedsymbolrendererwidget.h"
+%End
+  public:
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+
+    QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+    ~QgsGraduatedSymbolRendererWidget();
+
+    virtual QgsFeatureRenderer *renderer();
+
+
+  public slots:
+    void changeGraduatedSymbol();
+    void graduatedColumnChanged( const QString &field );
+    void classifyGraduated();
+    void reapplyColorRamp();
+    void reapplySizes();
+    void rangesDoubleClicked( const QModelIndex &idx );
+    void rangesClicked( const QModelIndex &idx );
+    void changeCurrentValue( QStandardItem *item );
+
+    void addClass();
+%Docstring
+Adds a class manually to the classification
+%End
+    void deleteClasses();
+%Docstring
+Removes currently selected classes
+%End
+    void deleteAllClasses();
+%Docstring
+Removes all classes from the classification
+%End
+    void toggleBoundariesLink( bool linked );
+%Docstring
+Toggle the link between classes boundaries
+%End
+
+    void labelFormatChanged();
+
+    void showSymbolLevels();
+
+    void rowsMoved();
+    void modelDataChanged();
+    void refreshRanges( bool reset = false );
+
+  protected:
+    void updateUiFromRenderer( bool updateCount = true );
+    void connectUpdateHandlers();
+    void disconnectUpdateHandlers();
+    bool rowsOrdered();
+
+    void updateGraduatedSymbolIcon();
+
+    QList<int> selectedClasses();
+%Docstring
+Returns a list of indexes for the classes under selection
+%End
+    QgsRangeList selectedRanges();
+
+    void changeRangeSymbol( int rangeIdx );
+    void changeRange( int rangeIdx );
+
+    void changeSelectedSymbols();
+    void applyChangeToSymbol();
+%Docstring
+Applies current symbol to selected ranges, or to all ranges if none is selected
+%End
+
+    virtual QList<QgsSymbol *> selectedSymbols();
+
+    QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
+    virtual void refreshSymbolView();
+
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgsgraduatedsymbolrendererwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
