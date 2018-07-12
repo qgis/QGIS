@@ -95,8 +95,9 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void addRasterLayer();
     //! Emitted when a vector layer was selected for addition: for signal forwarding to QgisApp
     void addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
-    /*
-     *  Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp\
+
+    /**
+     * Emitted when a mesh layer was selected for addition: for signal forwarding to QgisApp\
      * \since QGIS 3.4
      */
     void addMeshLayer( const QString &uri, const QString &providerKey );
