@@ -169,6 +169,10 @@ class RasterSampling(QgisAlgorithm):
             try:
                 point = ct.transform(point)
             except QgsCsException:
+                for b in range(sampled_raster.bandCount()):
+                    attrs.append(
+                        None
+                    )
                 feedback.reportError(self.tr('Could not reproject feature {} to raster CRS').format(i.id()))
 
             attrs = i.attributes()
