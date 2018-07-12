@@ -54,7 +54,7 @@ Sets the minimum ``value`` for the raster shader.
                         int *returnRedValue /Out/,
                         int *returnGreenValue /Out/,
                         int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ );
+                        int *returnAlpha /Out/ ) const;
 %Docstring
 Generates an new RGBA value based on one input ``value``.
 
@@ -74,7 +74,7 @@ Generates an new RGBA value based on one input ``value``.
                         int *returnRedValue /Out/,
                         int *returnGreenValue /Out/,
                         int *returnBlueValue /Out/,
-                        int *returnAlpha /Out/ );
+                        int *returnAlpha /Out/ ) const;
 %Docstring
 Generates an new RGBA value based on an original RGBA value.
 

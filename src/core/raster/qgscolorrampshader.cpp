@@ -315,7 +315,7 @@ void QgsColorRampShader::classifyColorRamp( const int band, const QgsRectangle &
   classifyColorRamp( colorRampItemList().count(), band, extent, input );
 }
 
-bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue )
+bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
   if ( mColorRampItemList.isEmpty() )
   {
@@ -464,7 +464,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
 bool QgsColorRampShader::shade( double redValue, double greenValue,
                                 double blueValue, double alphaValue,
                                 int *returnRedValue, int *returnGreenValue,
-                                int *returnBlueValue, int *returnAlphaValue )
+                                int *returnBlueValue, int *returnAlphaValue ) const
 {
   Q_UNUSED( redValue );
   Q_UNUSED( greenValue );
