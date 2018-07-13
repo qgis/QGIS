@@ -45,11 +45,10 @@ class TestQgsOpenClUtils: public QObject
     void testMakeRunProgram();
     void testProgramSource();
     void testContext();
-
-  private:
-
     // For performance testing
     void testHillshade();
+
+  private:
 
     void _testMakeRunProgram();
     void _testMakeHillshade( const QString title, const int loops );
@@ -204,7 +203,9 @@ void TestQgsOpenClUtils::_testMakeHillshade( const QString title, const int loop
   for ( int i = 0 ; i < loops;  i++ )
   {
     QgsHillshadeRenderer renderer( mFloat32RasterLayer->dataProvider(), 1, 35.0, 5000.0 );
-    QgsRasterBlock *block = renderer.block( 0, mFloat32RasterLayer->extent(), 401, 401 );
+    // Note: CPU time grows linearly with raster dimensions while GPU time is roughly constant
+    // 900x900 px gives even times on my testing machine
+    QgsRasterBlock *block = renderer.block( 0, mFloat32RasterLayer->extent(), 900, 900 );
   }
   qDebug() << QStringLiteral( "%1 average for %2 loops: %3 ms" )
            .arg( title )
