@@ -49,6 +49,7 @@ from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
+from processing.algs.gdal.fillnodata import fillnodata
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
@@ -1339,6 +1340,59 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
+    def testFillnodata(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'raster.tif')
+        outsource = 'd:/temp/check.tif'
+        alg = fillnodata()
+        alg.initAlgorithm()
+
+        # with mask value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'MASK_LAYER': mask,
+                                    'NO_MASK': False,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 -mask ' +
+             mask +
+             ' -of GTiff ' +
+             source + ' ' +
+             outsource])
+
+        # without mask value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'NO_MASK': False,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 ' +
+             '-of GTiff ' +
+             source + ' ' +
+             outsource])
+
+        # nomask true
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'NO_MASK': True,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 -nomask ' +
+             '-of GTiff ' +
+             source + ' ' +
+             outsource])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):
