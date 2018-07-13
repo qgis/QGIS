@@ -75,6 +75,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsRasterLayer *addRasterLayer( const QString &rasterLayerPath, const QString &baseName ) override;
     //! Add a WMS layer
     QgsRasterLayer *addRasterLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
+    //! Add a mesh layer
+    QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
 
     //! Add a project
     bool addProject( const QString &projectName ) override;

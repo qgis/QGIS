@@ -4486,13 +4486,12 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 } // QgisApp::addVectorLayer()
 
 
-bool QgisApp::addMeshLayer( const QString &uri, const QString &providerKey )
+QgsMeshLayer *QgisApp::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
   QgsSettings settings;
 
-  QFileInfo fi( uri );
-  QString base = fi.completeBaseName();
+  QString base( baseName );
 
   if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
   {
@@ -4503,23 +4502,24 @@ bool QgisApp::addMeshLayer( const QString &uri, const QString &providerKey )
 
   // create the layer
   QgsMeshLayer::LayerOptions options;
-  std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( uri, base, providerKey, options ) );
+  std::unique_ptr<QgsMeshLayer> layer( new QgsMeshLayer( url, base, providerKey, options ) );
 
   if ( ! layer || !layer->isValid() )
   {
-    QString msg = tr( "%1 is not a valid or recognized data source." ).arg( uri );
+    QString msg = tr( "%1 is not a valid or recognized data source." ).arg( url );
     messageBar()->pushMessage( tr( "Invalid Data Source" ), msg, Qgis::Critical, messageTimeout() );
 
     // since the layer is bad, stomp on it
-    return false;
+    return nullptr;
   }
 
   // Register this layer with the layers registry
   freezeCanvases();
+
+  QgsProject::instance()->addMapLayer( layer.get() );
   bool ok;
   layer->loadDefaultStyle( ok );
   layer->loadDefaultMetadata( ok );
-  QgsProject::instance()->addMapLayer( layer.release() );
 
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -4530,7 +4530,7 @@ bool QgisApp::addMeshLayer( const QString &uri, const QString &providerKey )
     freezeCanvases( false );
     refreshMapCanvas();
   }
-  return true;
+  return layer.release();
 } // QgisApp::addMeshLayer()
 
 // present a dialog to choose zipitem layers

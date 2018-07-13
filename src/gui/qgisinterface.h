@@ -47,6 +47,7 @@ class QgsVectorLayerTools;
 class QgsOptionsWidgetFactory;
 class QgsLocatorFilter;
 class QgsStatusBar;
+class QgsMeshLayer;
 
 #include <QObject>
 #include <QFont>
@@ -545,6 +546,9 @@ class GUI_EXPORT QgisInterface : public QObject
 
     //! Add a WMS layer
     virtual QgsRasterLayer *addRasterLayer( const QString &url, const QString &layerName, const QString &providerKey ) = 0;
+
+    //! Add a mesh layer
+    virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
 
     //! Add a project
     virtual bool addProject( const QString &project ) = 0;

@@ -93,7 +93,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * Emitted when a mesh layer has been selected for addition.
      * \since QGIS 3.4
      */
-    void addMeshLayer( const QString &uri, const QString &providerKey );
+    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
 
     /**
      * Emitted when one or more OGR supported layers are selected for addition

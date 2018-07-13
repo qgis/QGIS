@@ -157,6 +157,11 @@ QgsRasterLayer *QgisAppInterface::addRasterLayer( const QString &url, const QStr
   return qgis->addRasterLayer( url, baseName, providerKey );
 }
 
+QgsMeshLayer *QgisAppInterface::addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey )
+{
+  return qgis->addMeshLayer( url, baseName, providerKey );
+}
+
 bool QgisAppInterface::addProject( const QString &projectName )
 {
   return qgis->addProject( projectName );

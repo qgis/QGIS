@@ -49,7 +49,7 @@ void QgsMdalSourceSelect::addButtonClicked()
 
   for ( const QString &path : QgsFileWidget::splitFilePaths( mMeshPath ) )
   {
-    emit addMeshLayer( path, QStringLiteral( "mdal" ) );
+    emit addMeshLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "mdal" ) );
   }
 }
 

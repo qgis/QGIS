@@ -76,7 +76,7 @@ If ``providerKey`` is not specified, the default provider key associated with th
 will be used.
 %End
 
-    void addMeshLayer( const QString &uri, const QString &providerKey );
+    void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
 %Docstring
 Emitted when a mesh layer has been selected for addition.
 
