@@ -631,6 +631,11 @@ Add a raster layer given a raster layer file name
 Add a WMS layer
 %End
 
+    virtual QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) = 0;
+%Docstring
+Add a mesh layer
+%End
+
     virtual bool addProject( const QString &project ) = 0;
 %Docstring
 Add a project

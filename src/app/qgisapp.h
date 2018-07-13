@@ -906,6 +906,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayer *addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey );
 
     /**
+     * Adds a mesh layer directly without prompting user for location
+     * \returns true if successfully added layer
+     */
+    QgsMeshLayer *addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey );
+
+    /**
      * \brief overloaded version of the private addLayer method that takes a list of
      * file names instead of prompting user with a dialog.
      \param enc encoding type for the layer
@@ -921,12 +927,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       \returns true if successfully added layer(s)
       */
     bool addRasterLayers( const QStringList &layerQStringList, bool guiWarning = true );
-
-    /**
-     * Adds a mesh layer directly without prompting user for location
-     * \returns true if successfully added layer
-     */
-    bool addMeshLayer( const QString &uri, const QString &providerKey );
 
     //! Open a plugin layer using its provider
     QgsPluginLayer *addPluginLayer( const QString &uri, const QString &baseName, const QString &providerKey );
