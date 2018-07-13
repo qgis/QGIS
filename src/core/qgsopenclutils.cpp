@@ -294,14 +294,16 @@ QString QgsOpenClUtils::errorText( const int errorCode )
 
 cl::Context QgsOpenClUtils::context()
 {
-  if ( available() && sPlatform() && sDevice() )
+  static cl::Context context;
+  static std::once_flag contextCreated;
+  std::call_once( contextCreated, [ = ]()
   {
-    return cl::Context( sDevice );
-  }
-  else
-  {
-    return cl::Context();
-  }
+    if ( available() && sPlatform() && sDevice() )
+    {
+      context = cl::Context( sDevice );
+    }
+  } );
+  return context;
 }
 
 cl::Program QgsOpenClUtils::buildProgram( const cl::Context &context, const QString &source, ExceptionBehavior exceptionBehavior )
