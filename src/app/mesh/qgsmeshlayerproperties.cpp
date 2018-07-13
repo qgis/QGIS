@@ -134,7 +134,10 @@ void QgsMeshLayerProperties::addDataset()
 
   QgsSettings settings;
   QString openFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load mesh datasets" ), openFileDir, tr( "Layout mesh datasets" ) + " (*.*)" );
+  QString openFileString = QFileDialog::getOpenFileName( nullptr,
+                           tr( "Load mesh datasets" ),
+                           openFileDir,
+                           QStringLiteral( "All files(*.*);;Results Files XMDF(*.xmdf);;Results Files DAT(*.dat)" ) );
 
   if ( openFileString.isEmpty() )
   {
