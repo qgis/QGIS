@@ -6,8 +6,6 @@ SET(MDAL_MOC_HDRS
   qgsmdalprovider.h
   qgsmdaldataitems.h
 )
-SET(MDAL_HDRS
-)
 
 IF (WITH_GUI)
   SET(MDAL_SRCS ${MDAL_SRCS}
@@ -17,6 +15,9 @@ IF (WITH_GUI)
     qgsmdalsourceselect.h
   )
 ENDIF ()
+
+
+FIND_PACKAGE(HDF5)
 
 ########################################################
 # Compile internal MDAL
@@ -46,6 +47,34 @@ IF (WITH_INTERNAL_MDAL)
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_ascii_dat.hpp
     ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_binary_dat.hpp
   )
+
+  IF(HDF5_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xmdf.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_hdf5.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_xmdf.hpp
+    )
+    SET(MDAL_DEPS ${MDAL_DEPS} )
+    SET (HAVE_HDF5 TRUE)
+  ENDIF(HDF5_FOUND)
+
+  IF(GDAL_FOUND)
+    SET(MDAL_LIB_SRCS ${MDAL_LIB_SRCS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.cpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_grib.cpp
+    )
+    SET(MDAL_LIB_HDRS ${MDAL_LIB_HDRS}
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_gdal.hpp
+      ${CMAKE_SOURCE_DIR}/external/mdal/frmts/mdal_grib.hpp
+    )
+    SET (HAVE_GDAL TRUE)
+  ENDIF(GDAL_FOUND)
+
+  # create mdal_config.h
+  CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/external/mdal/cmake_templates/mdal_config.hpp.in ${CMAKE_BINARY_DIR}/mdal_config.hpp)
+  INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 
   UNSET(MDAL_LIBRARY)
   UNSET(MDAL_INCLUDE_DIR)
@@ -87,7 +116,17 @@ IF (WITH_GUI)
   TARGET_LINK_LIBRARIES (mdalprovider
     qgis_gui
   )
-ENDIF ()
+ENDIF (WITH_GUI)
+
+IF (HDF5_FOUND)
+  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${HDF5_INCLUDE_DIRS})
+  TARGET_LINK_LIBRARIES(mdalprovider ${HDF5_C_LIBRARIES} )
+ENDIF (HDF5_FOUND)
+
+IF (GDAL_FOUND)
+  TARGET_INCLUDE_DIRECTORIES(mdalprovider PRIVATE ${GDAL_INCLUDE_DIR})
+  TARGET_LINK_LIBRARIES(mdalprovider ${GDAL_LIBRARY} )
+ENDIF (GDAL_FOUND)
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

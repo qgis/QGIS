@@ -177,7 +177,7 @@ void MDAL::LoaderAsciiDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
 
 void MDAL::LoaderAsciiDat::addDatasets( MDAL::Mesh *mesh,
                                         const std::string &name,
-                                        const std::vector<std::shared_ptr<Dataset>> &datOutputs ) const
+                                        const Datasets &datOutputs ) const
 {
   for ( const std::shared_ptr<Dataset> &ds : datOutputs )
   {
@@ -194,7 +194,9 @@ void MDAL::LoaderAsciiDat::addDatasets( MDAL::Mesh *mesh,
   );
 }
 
-void MDAL::LoaderAsciiDat::readVertexTimestep( const MDAL::Mesh *mesh, std::vector<std::shared_ptr<MDAL::Dataset> > &datOutputs, double t, bool isVector, bool hasStatus, std::ifstream &stream )
+void MDAL::LoaderAsciiDat::readVertexTimestep( const MDAL::Mesh *mesh, Datasets &datOutputs,
+    double t, bool isVector,
+    bool hasStatus, std::ifstream &stream )
 {
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
@@ -259,7 +261,7 @@ void MDAL::LoaderAsciiDat::readVertexTimestep( const MDAL::Mesh *mesh, std::vect
   datOutputs.push_back( std::move( dataset ) );
 }
 
-void MDAL::LoaderAsciiDat::readFaceTimestep( const MDAL::Mesh *mesh, std::vector<std::shared_ptr<MDAL::Dataset> > &datOutputs, double t, bool isVector, std::ifstream &stream )
+void MDAL::LoaderAsciiDat::readFaceTimestep( const MDAL::Mesh *mesh, Datasets &datOutputs, double t, bool isVector, std::ifstream &stream )
 {
   size_t faceCount = mesh->faces.size();
 

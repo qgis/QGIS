@@ -26,12 +26,6 @@ std::unique_ptr<MDAL::Mesh> MDAL::Loader2dm::load( MDAL_Status *status )
 {
   if ( status ) *status = MDAL_Status::None;
 
-  if ( !MDAL::fileExists( mMeshFile ) )
-  {
-    if ( status ) *status = MDAL_Status::Err_FileNotFound;
-    return nullptr;
-  }
-
   std::ifstream in( mMeshFile, std::ifstream::in );
   std::string line;
   if ( !std::getline( in, line ) || !startsWith( line, "MESH2D" ) )
