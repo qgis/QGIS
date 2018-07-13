@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <memory>
+#include <limits>
 
 #include "qgsmeshlayerrenderer.h"
 
@@ -33,6 +34,32 @@
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
+
+static void calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr )
+{
+  bool found = false;
+
+  min = std::numeric_limits<double>::max();
+  max = std::numeric_limits<double>::min();
+
+  for ( const double val : arr )
+  {
+    if ( !std::isnan( val ) )
+    {
+      found = true;
+      if ( val < min )
+        min = val;
+      if ( val > max )
+        max = val;
+    }
+  }
+
+  if ( !found )
+  {
+    min = std::numeric_limits<double>::quiet_NaN();
+    max = std::numeric_limits<double>::quiet_NaN();
+  }
+}
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id() )
@@ -65,14 +92,10 @@ void QgsMeshLayerRenderer::assignDefaultScalarShader( )
   if ( mScalarDatasetValues.isEmpty() || mRendererScalarSettings.isEnabled() )
     return; // no need for default shader, either rendering is off or we already have some shader
 
-  auto bounds = std::minmax_element( mScalarDatasetValues.constBegin(), mScalarDatasetValues.constEnd() );
-  double vMin = *bounds.first;
-  double vMax = *bounds.second;
-
   QgsSettings settings;
   QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
   std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( defaultPalette ) );
-  QgsColorRampShader fcn( vMin, vMax, colorRamp.release() );
+  QgsColorRampShader fcn( mScalarDatasetMinimum, mScalarDatasetMaximum, colorRamp.release() );
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   mRendererScalarSettings.setColorRampShader( fcn );
@@ -130,6 +153,8 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
       double v = layer->dataProvider()->datasetValue( datasetIndex, i ).scalar();
       mScalarDatasetValues[i] = v;
     }
+
+    calculateMinimumMaximum( mScalarDatasetMinimum, mScalarDatasetMaximum, mScalarDatasetValues );
   }
 }
 
@@ -169,6 +194,8 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
         mVectorDatasetValuesMag[i] = mag;
       }
     }
+
+    calculateMinimumMaximum( mVectorDatasetMagMinimum, mVectorDatasetMagMaximum, mVectorDatasetValuesMag );
   }
 }
 
@@ -225,6 +252,9 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( mScalarDatasetValues.isEmpty() )
     return; // activeScalarDataset == NO_ACTIVE_MESH_DATASET
 
+  if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
+    return; // only NODATA values
+
   if ( !mRendererScalarSettings.isEnabled() )
     return; // no shader
 
@@ -247,11 +277,15 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   if ( mVectorDatasetValuesX.isEmpty() )
     return;
 
+  if ( std::isnan( mVectorDatasetMagMinimum ) || std::isnan( mVectorDatasetMagMaximum ) )
+    return; // only NODATA values
+
   if ( mVectorDatasetValuesX.size() != mVectorDatasetValuesY.size() )
     return;
 
   QgsMeshVectorRenderer renderer( mTriangularMesh,
                                   mVectorDatasetValuesX, mVectorDatasetValuesY, mVectorDatasetValuesMag,
+                                  mVectorDatasetMagMinimum, mVectorDatasetMagMaximum,
                                   mVectorDataOnVertices, mRendererVectorSettings, mContext, mOutputSize );
 
   renderer.draw();

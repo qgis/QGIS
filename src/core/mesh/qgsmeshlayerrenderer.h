@@ -24,6 +24,7 @@ class QgsSymbol;
 #define SIP_NO_FILE
 
 #include <memory>
+#include <limits>
 
 #include "qgis.h"
 
@@ -86,11 +87,15 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     // copy of the scalar dataset
     QVector<double> mScalarDatasetValues;
     bool mScalarDataOnVertices = true;
+    double mScalarDatasetMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mScalarDatasetMaximum = std::numeric_limits<double>::quiet_NaN();
 
     // copy of the vector dataset
     QVector<double> mVectorDatasetValuesX;
     QVector<double> mVectorDatasetValuesY;
     QVector<double> mVectorDatasetValuesMag;
+    double mVectorDatasetMagMinimum = std::numeric_limits<double>::quiet_NaN();
+    double mVectorDatasetMagMaximum = std::numeric_limits<double>::quiet_NaN();
     bool mVectorDataOnVertices = true;
 
     // copy from mesh layer
