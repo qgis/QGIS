@@ -23,8 +23,9 @@
 #include "qgsmaplayer.h"
 
 /**
+ * \ingroup server
  * RAII class to restore layer configuration on destruction (opacity,
- *  filters, ...)
+ * filters, ...)
  * \since QGIS 3.0
  */
 class QgsLayerRestorer
@@ -40,7 +41,18 @@ class QgsLayerRestorer
     };
 
   public:
+
+    /**
+     * Constructor for QgsLayerRestorer.
+     * \param layers List of layers to restore in their initial states
+     */
     QgsLayerRestorer( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Destructor.
+     *
+     * Restores layers in their initial states.
+     */
     ~QgsLayerRestorer();
 
   private:

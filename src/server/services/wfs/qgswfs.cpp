@@ -35,10 +35,20 @@
 namespace QgsWfs
 {
 
+  /**
+   * \ingroup server
+   * \class QgsWfs::Service
+   * \brief OGC web service specialized for WFS
+   * \since QGIS 3.0
+   */
   class Service: public QgsService
   {
     public:
-      // Constructor
+
+      /**
+       * Constructor for WFS service.
+       * \param serverIface Interface for plugins.
+       */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )
       {}
@@ -118,8 +128,12 @@ namespace QgsWfs
 
 } // namespace QgsWfs
 
-
-// Module
+/**
+ * \ingroup server
+ * \class QgsWfsModule
+ * \brief Module specialized for WFS service
+ * \since QGIS 3.0
+ */
 class QgsWfsModule: public QgsServiceModule
 {
   public:
@@ -141,8 +155,3 @@ QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }
-
-
-
-
-

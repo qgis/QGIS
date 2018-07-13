@@ -67,7 +67,6 @@ INCLUDE_DIRECTORIES(
 )
 
 
-#endif
 TARGET_LINK_LIBRARIES(wms
   qgis_core
   qgis_server

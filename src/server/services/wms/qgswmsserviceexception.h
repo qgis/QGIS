@@ -27,7 +27,7 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsserviceException
+   * \class  QgsWms::QgsServiceException
    * \brief Exception class for WMS service exceptions.
    *
    * The most important codes are:
@@ -35,15 +35,31 @@ namespace QgsWms
    *  * "Invalid CRS"
    *  * "LayerNotDefined" / "StyleNotDefined"
    *  * "OperationNotSupported"
+   *
+   * \since QGIS 3.0
    */
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
+
+      /**
+       * Constructor for QgsServiceException.
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
+       * \param responseCode HTTP error code
+       */
       QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(),
                            int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
       {}
 
+      /**
+       * Constructor for QgsServiceException (empty locator attribute).
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param responseCode HTTP error code
+       */
       QgsServiceException( const QString &code, const QString &message, int responseCode )
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.3.0" ) )
       {}
@@ -52,12 +68,20 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsSecurityException
+   * \class  QgsWms::QgsSecurityException
    * \brief Exception thrown when data access violates access controls
+   * \since QGIS 3.0
    */
   class QgsSecurityException: public QgsServiceException
   {
     public:
+
+      /**
+       * Constructor for QgsSecurityException (HTTP error code 403 with
+       * Security code name).
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
+       */
       QgsSecurityException( const QString &message, const QString &locator = QString() )
         : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
       {}
@@ -65,18 +89,24 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class  QgsBadRequestException
+   * \class  QgsWms::QgsBadRequestException
    * \brief Exception thrown in case of malformed request
+   * \since QGIS 3.0
    */
   class QgsBadRequestException: public QgsServiceException
   {
     public:
+
+      /**
+       * Constructor for QgsBadRequestException (HTTP error code 400).
+       * \param code Error code name
+       * \param message Exception message to return to the client
+       * \param locator Locator attribute according to OGC specifications
+       */
       QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
         : QgsServiceException( code, message, locator, 400 )
       {}
   };
-
-
 } // namespace QgsWms
 
 #endif

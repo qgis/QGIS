@@ -28,16 +28,18 @@
 #include "qgis_sip.h"
 
 /**
-  * QgsServerSettingsEnv provides some enum describing the environment
-  * currently supported for configuration.
-  * \since QGIS 3.0
-  */
+ * \ingroup server
+ * \class QgsServerSettingsEnv
+ * \brief Provides some enum describing the environment currently supported for configuration.
+ * \since QGIS 3.0
+ */
 #ifndef SIP_RUN
 class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 {
     Q_OBJECT
 
   public:
+    //! Source of the parameter used in the configuration
     enum Source
     {
       DEFAULT_VALUE,
@@ -46,6 +48,7 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
     };
     Q_ENUM( Source )
 
+    //! Environment variables to configure the server
     enum EnvVar
     {
       QGIS_OPTIONS_PATH,
@@ -64,8 +67,8 @@ class SERVER_EXPORT QgsServerSettingsEnv : public QObject
 
 /**
  * \ingroup server
- * QgsServerSettings provides a way to retrieve settings by prioritizing
- * according to environment variables, ini file and default values.
+ * \class QgsServerSettings
+ * \brief Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
  * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsServerSettings

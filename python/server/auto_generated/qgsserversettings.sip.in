@@ -15,8 +15,7 @@
 class QgsServerSettings
 {
 %Docstring
-QgsServerSettings provides a way to retrieve settings by prioritizing
-according to environment variables, ini file and default values.
+Provides a way to retrieve settings by prioritizing according to environment variables, ini file and default values.
 
 .. versionadded:: 3.0
 %End

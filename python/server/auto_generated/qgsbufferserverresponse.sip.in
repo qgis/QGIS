@@ -13,6 +13,8 @@ class QgsBufferServerResponse: QgsServerResponse
 {
 %Docstring
 Class defining buffered response
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

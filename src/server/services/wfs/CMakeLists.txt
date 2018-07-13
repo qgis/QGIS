@@ -51,7 +51,6 @@ INCLUDE_DIRECTORIES(
 )
 
 
-#endif
 TARGET_LINK_LIBRARIES(wfs
   qgis_core
   qgis_server

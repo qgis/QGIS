@@ -27,19 +27,21 @@
 #include "qgsserverrequest.h"
 #include "qgsprojectversion.h"
 
-/**
- * QgsWfsParameters provides an interface to retrieve and manipulate WFS
- *  parameters received from the client.
- * \since QGIS 3.0
- */
 namespace QgsWfs
 {
 
+  /**
+   * \ingroup server
+   * \class QgsWfs::QgsWfsParameters
+   * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
+   * \since QGIS 3.0
+   */
   class QgsWfsParameters
   {
       Q_GADGET
 
     public:
+      //! Available parameters for WFS requests
       enum ParameterName
       {
         OUTPUTFORMAT,
@@ -58,6 +60,7 @@ namespace QgsWfs
       };
       Q_ENUM( ParameterName )
 
+      //! Output format for the response
       enum Format
       {
         NONE,
@@ -67,6 +70,7 @@ namespace QgsWfs
         XSD
       };
 
+      //! Type of results
       enum ResultType
       {
         RESULTS,
@@ -82,19 +86,19 @@ namespace QgsWfs
       };
 
       /**
-       * Constructor.
-       * \param map of parameters where keys are parameters' names.
+       * Constructor for WFS parameters with specific values.
+       * \param parameters Map of parameters where keys are parameters' names.
        */
       QgsWfsParameters( const QgsServerRequest::Parameters &parameters );
 
       /**
-       * Constructor.
+       * Constructor for WFS parameters with default values only.
         */
       QgsWfsParameters();
 
       /**
        * Loads new parameters.
-       * \param map of parameters
+       * \param parameters Map of parameters
        */
       void load( const QgsServerRequest::Parameters &parameters );
 
@@ -105,14 +109,14 @@ namespace QgsWfs
 
       /**
        * Returns REQUEST parameter as a string or an empty string if not
-       *  defined.
+       * defined.
        * \returns request
        */
       QString request() const;
 
       /**
        * Returns VERSION parameter as a string or an empty string if not
-       *  defined.
+       * defined.
        * \returns version
        */
       QString version() const;
@@ -131,7 +135,7 @@ namespace QgsWfs
 
       /**
        * Returns format. If the OUTPUTFORMAT parameter is not used, then the
-       *  default value is GML2 or GML3.
+       * default value is GML2 or GML3.
        * \returns format
        */
       Format outputFormat() const;
@@ -144,7 +148,7 @@ namespace QgsWfs
 
       /**
        * Returns resultType. If the RESULTTYPE parameter is not used, then the
-       *  default value is RESULTS.
+       * default value is RESULTS.
        * \returns resultType
        */
       ResultType resultType() const;
@@ -163,7 +167,7 @@ namespace QgsWfs
 
       /**
        * Returns MAXFEATURES parameter as an int or its default value if not
-       *  defined. An exception is raised if I is defined and cannot be
+       * defined. An exception is raised if I is defined and cannot be
        *  converted.
        * \returns maxFeatures parameter
        * \throws QgsBadRequestException
@@ -178,8 +182,8 @@ namespace QgsWfs
 
       /**
        * Returns STARTINDEX parameter as an int or its default value if not
-       *  defined. An exception is raised if I is defined and cannot be
-       *  converted.
+       * defined. An exception is raised if I is defined and cannot be
+       * converted.
        * \returns startIndex parameter
        * \throws QgsBadRequestException
        */
@@ -217,7 +221,7 @@ namespace QgsWfs
 
       /**
        * Returns BBOX as a rectangle if defined and valid. An exception is
-       *  raised if the BBOX string cannot be converted into a rectangle.
+       * raised if the BBOX string cannot be converted into a rectangle.
        * \returns bbox as rectangle
        * \throws QgsBadRequestException
        */

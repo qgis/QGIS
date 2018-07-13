@@ -26,15 +26,13 @@
 #include "qgscapabilitiescache.h"
 
 /**
- * QgsServerInterface
- * Class defining interfaces exposed by QGIS Server and
- * made available to plugins.
- *
+ * \ingroup server
+ * \class QgsServerInterfaceImpl
+ * \brief Interfaces exposed by QGIS Server and made available to plugins.
+ * \since QGIS 2.8
  */
-
 class QgsServerInterfaceImpl : public QgsServerInterface
 {
-
   public:
 
     //! Constructor

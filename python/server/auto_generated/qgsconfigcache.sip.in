@@ -15,19 +15,30 @@ class QgsConfigCache : QObject
 {
 %Docstring
 Cache for server configuration.
+
+.. versionadded:: 2.8
 %End
 
 %TypeHeaderCode
 #include "qgsconfigcache.h"
 %End
   public:
+
     static QgsConfigCache *instance();
+%Docstring
+Returns the current instance.
+%End
 
     void removeEntry( const QString &path );
+%Docstring
+Removes an entry from cache.
+
+:param path: The path of the project
+%End
 
     const QgsProject *project( const QString &path );
 %Docstring
-If the project is not cached yet, then the project is read thank to the
+If the project is not cached yet, then the project is read thanks to the
 path. If the project is not available, then a None is returned.
 
 :param path: the filename of the QGIS project
