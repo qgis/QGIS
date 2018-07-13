@@ -85,14 +85,14 @@ double QgsQuickUtils::screenUnitsToMeters( QgsQuickMapSettings *mapSettings, int
   return mDistanceArea.measureLine( p1, p2 );
 }
 
-bool QgsQuickUtils::fileExists( QString path )
+bool QgsQuickUtils::fileExists( const QString &path ) const
 {
   QFileInfo check_file( path );
   // check if file exists and if yes: Is it really a file and no directory?
   return ( check_file.exists() && check_file.isFile() );
 }
 
-QString QgsQuickUtils::getFileName( QString path )
+QString QgsQuickUtils::getFileName( const QString &path ) const
 {
   QFileInfo fileInfo( path );
   QString filename( fileInfo.fileName() );
@@ -119,11 +119,11 @@ const QUrl QgsQuickUtils::getThemeIcon( const QString &name ) const
 const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
 {
   QString path( "qgsquick%1.qml" );
-  QStringList supportedWidgets = { "textedit",
-                                   "valuemap",
-                                   "checkbox",
-                                   "externalresource",
-                                   "datetime"
+  QStringList supportedWidgets = { QStringLiteral( "textedit" ),
+                                   QStringLiteral( "valuemap" ),
+                                   QStringLiteral( "checkbox" ),
+                                   QStringLiteral( "externalresource" ),
+                                   QStringLiteral( "datetime" )
                                  };
   if ( supportedWidgets.contains( widgetName ) )
   {
@@ -131,7 +131,7 @@ const QUrl QgsQuickUtils::getEditorComponentSource( const QString &widgetName )
   }
   else
   {
-    return QUrl( path.arg( "textedit" ) );
+    return QUrl( path.arg( QStringLiteral( "textedit" ) ) );
   }
 }
 

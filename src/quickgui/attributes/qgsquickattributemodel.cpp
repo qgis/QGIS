@@ -170,6 +170,9 @@ bool QgsQuickAttributeModel::save()
     QgsMessageLog::logMessage( tr( "Cannot update feature" ),
                                QStringLiteral( "QgsQuick" ),
                                Qgis::Warning );
+
+  // This calls lower-level I/O functions which shouldn't be used
+  // in a Q_INVOKABLE because they can make the UI unresponsive.
   rv = commit();
 
   if ( rv )
@@ -201,6 +204,7 @@ bool QgsQuickAttributeModel::deleteFeature()
     QgsMessageLog::logMessage( tr( "Cannot delete feature" ),
                                QStringLiteral( "QgsQuick" ),
                                Qgis::Warning );
+
   rv = commit();
 
   return rv;

@@ -55,7 +55,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
   public:
 
     //! Feature fields's roles
-    enum FeatureRoles
+    enum FeatureFieldRoles
     {
       ElementType = Qt::UserRole + 1, //!< User role used to identify either "field" or "container" type of item
       Name, //!< Field Name
@@ -73,7 +73,7 @@ class QUICK_EXPORT QgsQuickAttributeFormModel : public QSortFilterProxyModel
       ConstraintDescription //!< Contraint description
     };
 
-    Q_ENUM( FeatureRoles )
+    Q_ENUM( FeatureFieldRoles )
 
     //! Create new attribute form model
     QgsQuickAttributeFormModel( QObject *parent = nullptr );

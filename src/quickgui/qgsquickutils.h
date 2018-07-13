@@ -121,13 +121,13 @@ class QUICK_EXPORT QgsQuickUtils: public QObject
       * Returns whether file on path exists
       * \since QGIS 3.4
       */
-    Q_INVOKABLE bool fileExists( QString path );
+    Q_INVOKABLE bool fileExists( const QString &path ) const;
 
     /**
      * Extracts filename from path
      * \since QGIS 3.4
      */
-    Q_INVOKABLE QString getFileName( QString path );
+    Q_INVOKABLE QString getFileName( const QString &path ) const;
 
     /**
       * Log message in QgsMessageLog
