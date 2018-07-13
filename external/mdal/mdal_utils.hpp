@@ -9,9 +9,17 @@
 #include <string>
 #include <vector>
 #include <stddef.h>
+#include <limits>
+
+#include "mdal_defines.hpp"
+
+// avoid unused variable warnings
+#define MDAL_UNUSED(x) (void)x;
 
 namespace MDAL
 {
+  // numbers
+  bool equals( double val1, double val2, double eps = std::numeric_limits<double>::epsilon() );
 
   // debugging
   void debug( const std::string &message );
@@ -21,8 +29,19 @@ namespace MDAL
   std::string baseName( const std::string &filename );
 
   // strings
-  bool startsWith( const std::string &str, const std::string &substr );
-  bool contains( const std::string &str, const std::string &substr );
+  enum ContainsBehaviour
+  {
+    CaseSensitive,
+    CaseInsensitive
+  };
+
+  bool startsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
+  bool endsWith( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
+  bool contains( const std::string &str, const std::string &substr, ContainsBehaviour behaviour = CaseSensitive );
+  bool contains( const std::vector<std::string> &list, const std::string &str );
+  std::string replace( const std::string &str, const std::string &substr, const std::string &replacestr, ContainsBehaviour behaviour = CaseSensitive );
+
+  std::string toLower( const std::string &std );
 
   /** Return 0 if not possible to convert */
   size_t toSizeT( const std::string &str );
@@ -35,6 +54,7 @@ namespace MDAL
     KeepEmptyParts
   };
   std::vector<std::string> split( const std::string &str, const std::string &delimiter, SplitBehaviour behaviour );
+  std::string join( const std::vector<std::string> parts, const std::string &delimiter );
 
   // http://www.cplusplus.com/faq/sequences/strings/trim/
   inline std::string rtrim(
@@ -59,6 +79,9 @@ namespace MDAL
   {
     return ltrim( rtrim( s, delimiters ), delimiters );
   }
+
+  // extent
+  BBox computeExtent( const Vertices &vertices );
 
 } // namespace MDAL
 #endif //MDAL_UTILS_HPP

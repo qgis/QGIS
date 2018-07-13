@@ -13,6 +13,17 @@
 
 namespace MDAL
 {
+  struct BBox
+  {
+    BBox() {}
+    BBox( double lx, double ux, double ly, double uy ): minX( lx ), maxX( ux ), minY( ly ), maxY( uy ) {}
+
+    double minX;
+    double maxX;
+    double minY;
+    double maxY;
+  };
+
 
   typedef struct
   {
@@ -22,6 +33,8 @@ namespace MDAL
 
   typedef std::vector<size_t> Face;
 
+  typedef std::vector<Vertex> Vertices;
+  typedef std::vector<Face> Faces;
 
 
 
@@ -39,7 +52,7 @@ namespace MDAL
 
       std::string getMetadata( const std::string &key )
       {
-        for ( auto pair : metadata )
+        for ( auto &pair : metadata )
         {
           if ( pair.first == key )
           {
@@ -52,7 +65,7 @@ namespace MDAL
       void setMetadata( const std::string &key, const std::string &val )
       {
         bool found = false;
-        for ( auto pair : metadata )
+        for ( auto &pair : metadata )
         {
           if ( pair.first == key )
           {
@@ -109,18 +122,25 @@ namespace MDAL
       }
   };
 
+  typedef std::vector<std::shared_ptr<Dataset>> Datasets;
+
   struct Mesh
   {
     std::string uri; // file/uri from where it came
+    std::string crs;
 
-    std::vector<Vertex> vertices;
+    Vertices vertices;
     std::map<size_t, size_t> vertexIDtoIndex; // only for 2DM and DAT files
 
-    std::vector<Face> faces;
+    Faces faces;
     std::map<size_t, size_t> faceIDtoIndex; // only for 2DM and DAT files
 
-    std::vector<std::shared_ptr<Dataset>> datasets;
+    Datasets datasets;
+
+    void setSourceCrs( const std::string &str ) {crs = str;} //TODO
+    void setSourceCrsFromWKT( const std::string &str ) {crs = str;} //TODO
   };
+
 } // namespace MDAL
 #endif //MDAL_DEFINES_HPP
 
