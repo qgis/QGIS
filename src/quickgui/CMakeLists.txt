@@ -1,6 +1,11 @@
 ############################################################
 # sources
 SET(QGIS_QUICK_GUI_MOC_HDRS
+  attributes/qgsquickattributeformmodel.h
+  attributes/qgsquickattributeformmodelbase.h
+  attributes/qgsquickattributemodel.h
+  attributes/qgsquicksubmodel.h
+
   qgsquickfeaturelayerpair.h
   qgsquickcoordinatetransformer.h
   qgsquickfeaturehighlight.h
@@ -20,6 +25,11 @@ SET(QGIS_QUICK_GUI_HDRS
 )
 
 SET(QGIS_QUICK_GUI_SRC
+  attributes/qgsquickattributeformmodel.cpp
+  attributes/qgsquickattributeformmodelbase.cpp
+  attributes/qgsquickattributemodel.cpp
+  attributes/qgsquicksubmodel.cpp
+
   qgsquickfeaturelayerpair.cpp
   qgsquickcoordinatetransformer.cpp
   qgsquickfeaturehighlight.cpp
@@ -37,6 +47,7 @@ SET(QGIS_QUICK_GUI_SRC
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/attributes
   ${CMAKE_CURRENT_BINARY_DIR}
 
   ${CMAKE_SOURCE_DIR}/src/core

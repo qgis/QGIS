@@ -10,8 +10,16 @@ SET(QGIS_QUICK_PLUGIN_SRC
 )
 
 SET(QGIS_QUICK_PLUGIN_RESOURCES
+  editor/qgsquickcheckbox.qml
+  editor/qgsquickdatetime.qml
+  editor/qgsquickexternalresource.qml
+  editor/qgsquicktextedit.qml
+  editor/qgsquickvaluemap.qml
+  qgsquickfeatureform.qml
+  qgsquickfeatureformstyling.qml
   qgsquickmapcanvas.qml
   qgsquickmessagelog.qml
+  qgsquickphotopanel.qml
   qgsquickpositionmarker.qml
   qgsquickscalebar.qml
   qmldir
