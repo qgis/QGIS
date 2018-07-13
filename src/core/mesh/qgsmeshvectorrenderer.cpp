@@ -39,10 +39,17 @@ inline double mag( double input )
   return 1.0;
 }
 
+inline bool nodataValue( double x, double y )
+{
+  return ( std::isnan( x ) || std::isnan( y ) );
+}
+
 QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
     const QVector<double> &datasetValuesX,
     const QVector<double> &datasetValuesY,
     const QVector<double> &datasetValuesMag,
+    double datasetMagMinimumValue,
+    double datasetMagMaximumValue,
     bool dataIsOnVertices,
     const QgsMeshRendererVectorSettings &settings,
     QgsRenderContext &context, const QSize &size )
@@ -50,14 +57,17 @@ QgsMeshVectorRenderer::QgsMeshVectorRenderer( const QgsTriangularMesh &m,
   , mDatasetValuesX( datasetValuesX )
   , mDatasetValuesY( datasetValuesY )
   , mDatasetValuesMag( datasetValuesMag )
+  , mMinMag( datasetMagMinimumValue )
+  , mMaxMag( datasetMagMaximumValue )
   , mContext( context )
   , mCfg( settings )
   , mDataOnVertices( dataIsOnVertices )
   , mOutputSize( size )
 {
-  auto bounds = std::minmax_element( mDatasetValuesMag.constBegin(), mDatasetValuesMag.constEnd() );
-  mMinMag = *bounds.first;
-  mMaxMag = *bounds.second;
+  // should be checked in caller
+  Q_ASSERT( !mDatasetValuesMag.empty() );
+  Q_ASSERT( !std::isnan( mMinMag ) );
+  Q_ASSERT( !std::isnan( mMaxMag ) );
 }
 
 QgsMeshVectorRenderer::~QgsMeshVectorRenderer() = default;
@@ -192,6 +202,9 @@ void QgsMeshVectorRenderer::drawVectorDataOnVertices()
 
     double xVal = mDatasetValuesX[i];
     double yVal = mDatasetValuesY[i];
+    if ( nodataValue( xVal, yVal ) )
+      continue;
+
     double V = mDatasetValuesMag[i];  // pre-calculated magnitude
     QgsPointXY lineStart = mContext.mapToPixel().transform( vertex.x(), vertex.y() );
 
@@ -211,6 +224,9 @@ void QgsMeshVectorRenderer::drawVectorDataOnFaces()
     QgsPointXY center = centroids.at( i );
     double xVal = mDatasetValuesX[i];
     double yVal = mDatasetValuesY[i];
+    if ( nodataValue( xVal, yVal ) )
+      continue;
+
     double V = mDatasetValuesMag[i];  // pre-calculated magnitude
     QgsPointXY lineStart = mContext.mapToPixel().transform( center.x(), center.y() );
 

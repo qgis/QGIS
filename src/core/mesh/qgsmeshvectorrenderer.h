@@ -49,6 +49,8 @@ class QgsMeshVectorRenderer
                            const QVector<double> &datasetValuesX,
                            const QVector<double> &datasetValuesY,
                            const QVector<double> &datasetValuesMag,
+                           double datasetMagMaximumValue,
+                           double datasetMagMinimumValue,
                            bool dataIsOnVertices,
                            const QgsMeshRendererVectorSettings &settings,
                            QgsRenderContext &context,
