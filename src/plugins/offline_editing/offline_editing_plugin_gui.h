@@ -23,6 +23,7 @@
 
 #include "ui_offline_editing_plugin_guibase.h"
 
+#include "qgsofflineediting.h"
 #include "qgslayertreemodel.h"
 
 class QgsSelectLayerTreeModel : public QgsLayerTreeModel
@@ -46,11 +47,13 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QString offlineDbFile();
     QStringList selectedLayerIds();
     bool onlySelected() const;
+    QgsOfflineEditing::ContainerType dbContainerType() const;
 
   public slots:
     //! Change the selection of layers in the list
     void selectAll();
     void deSelectAll();
+    void datatypeChanged( int index );
 
   private:
     void saveState();

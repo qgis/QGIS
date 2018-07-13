@@ -35,6 +35,8 @@
 #include "qgsrelationmanager.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayertree.h"
+#include "qgsogrutils.h"
+#include "qgsvectorfilewriter.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -74,14 +76,14 @@ QgsOfflineEditing::QgsOfflineEditing()
  *  - remove remote layers
  *  - mark as offline project
  */
-bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected )
+bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected, ContainerType containerType )
 {
   if ( layerIds.isEmpty() )
   {
     return false;
   }
   QString dbPath = QDir( offlineDataPath ).absoluteFilePath( offlineDbFile );
-  if ( createSpatialiteDB( dbPath ) )
+  if ( createOfflineDb( dbPath, containerType ) )
   {
     spatialite_database_unique_ptr database;
     int rc = database.open( dbPath );
@@ -136,7 +138,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString &offlineDataPath,
         if ( vl )
         {
           QString origLayerId = vl->id();
-          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected );
+          QgsVectorLayer *newLayer = copyVectorLayer( vl, database.get(), dbPath, onlySelected, containerType );
           if ( newLayer )
           {
             layerIdMapping.insert( origLayerId, newLayer );
@@ -383,7 +385,7 @@ void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
   spatial_ref_sys_init( sqlite_handle, 0 );
 }
 
-bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
+bool QgsOfflineEditing::createOfflineDb( const QString &offlineDbPath, ContainerType containerType )
 {
   int ret;
   char *errMsg = nullptr;
@@ -403,6 +405,33 @@ bool QgsOfflineEditing::createSpatialiteDB( const QString &offlineDbPath )
 
   // creating/opening the new database
   QString dbPath = newDb.fileName();
+
+  // creating geopackage
+  switch ( containerType )
+  {
+    case GPKG:
+    {
+      OGRSFDriverH hGpkgDriver = OGRGetDriverByName( "GPKG" );
+      if ( !hGpkgDriver )
+      {
+        showWarning( tr( "Creation of database failed. GeoPackage driver not found." ) );
+        return false;
+      }
+
+      gdal::ogr_datasource_unique_ptr hDS( OGR_Dr_CreateDataSource( hGpkgDriver, dbPath.toUtf8().constData(), nullptr ) );
+      if ( !hDS )
+      {
+        showWarning( tr( "Creation of database failed (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+        return false;
+      }
+      break;
+    }
+    case SpatiaLite:
+    {
+      break;
+    }
+  }
+
   spatialite_database_unique_ptr database;
   ret = database.open_v2( dbPath, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( ret )
@@ -471,7 +500,7 @@ void QgsOfflineEditing::createLoggingTables( sqlite3 *db )
   */
 }
 
-QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected )
+QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlite3 *db, const QString &offlineDbPath, bool onlySelected, ContainerType containerType )
 {
   if ( !layer )
     return nullptr;
@@ -479,244 +508,277 @@ QgsVectorLayer *QgsOfflineEditing::copyVectorLayer( QgsVectorLayer *layer, sqlit
   QString tableName = layer->id();
   QgsDebugMsgLevel( QString( "Creating offline table %1 ..." ).arg( tableName ), 4 );
 
-  // create table
-  QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
-  QString delim;
-  const QgsFields providerFields = layer->dataProvider()->fields();
-  for ( const auto &field : providerFields )
+  // new layer
+  QgsVectorLayer *newLayer = nullptr;
+
+  switch ( containerType )
   {
-    QString dataType;
-    QVariant::Type type = field.type();
-    if ( type == QVariant::Int || type == QVariant::LongLong )
+    case SpatiaLite:
     {
-      dataType = QStringLiteral( "INTEGER" );
+      // create table
+      QString sql = QStringLiteral( "CREATE TABLE '%1' (" ).arg( tableName );
+      QString delim;
+      const QgsFields providerFields = layer->dataProvider()->fields();
+      for ( const auto &field : providerFields )
+      {
+        QString dataType;
+        QVariant::Type type = field.type();
+        if ( type == QVariant::Int || type == QVariant::LongLong )
+        {
+          dataType = QStringLiteral( "INTEGER" );
+        }
+        else if ( type == QVariant::Double )
+        {
+          dataType = QStringLiteral( "REAL" );
+        }
+        else if ( type == QVariant::String )
+        {
+          dataType = QStringLiteral( "TEXT" );
+        }
+        else
+        {
+          showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
+        }
+
+        sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
+        delim = ',';
+      }
+      sql += ')';
+
+      int rc = sqlExec( db, sql );
+
+      // add geometry column
+      if ( layer->isSpatial() )
+      {
+        const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
+
+        QString geomType;
+        switch ( QgsWkbTypes::flatType( sourceWkbType ) )
+        {
+          case QgsWkbTypes::Point:
+            geomType = QStringLiteral( "POINT" );
+            break;
+          case QgsWkbTypes::MultiPoint:
+            geomType = QStringLiteral( "MULTIPOINT" );
+            break;
+          case QgsWkbTypes::LineString:
+            geomType = QStringLiteral( "LINESTRING" );
+            break;
+          case QgsWkbTypes::MultiLineString:
+            geomType = QStringLiteral( "MULTILINESTRING" );
+            break;
+          case QgsWkbTypes::Polygon:
+            geomType = QStringLiteral( "POLYGON" );
+            break;
+          case QgsWkbTypes::MultiPolygon:
+            geomType = QStringLiteral( "MULTIPOLYGON" );
+            break;
+          default:
+            showWarning( tr( "Layer %1 has unsupported geometry type %2." ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
+            break;
+        };
+
+        QString zmInfo = QStringLiteral( "XY" );
+
+        if ( QgsWkbTypes::hasZ( sourceWkbType ) )
+          zmInfo += 'Z';
+        if ( QgsWkbTypes::hasM( sourceWkbType ) )
+          zmInfo += 'M';
+
+        QString epsgCode;
+
+        if ( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
+        {
+          epsgCode = layer->crs().authid().mid( 5 );
+        }
+        else
+        {
+          epsgCode = '0';
+          showWarning( tr( "Layer %1 has unsupported Coordinate Reference System (%2)." ).arg( layer->name(), layer->crs().authid() ) );
+        }
+
+        QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', '%4')" )
+                             .arg( tableName, epsgCode, geomType, zmInfo );
+
+        // create spatial index
+        QString sqlCreateIndex = QStringLiteral( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
+
+        if ( rc == SQLITE_OK )
+        {
+          rc = sqlExec( db, sqlAddGeom );
+          if ( rc == SQLITE_OK )
+          {
+            rc = sqlExec( db, sqlCreateIndex );
+          }
+        }
+      }
+
+      if ( rc != SQLITE_OK )
+      {
+        showWarning( tr( "Filling SpatiaLite for layer %1 failed" ).arg( layer->name() ) );
+        return nullptr;
+      }
+
+      // add new layer
+      QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
+                                 .arg( offlineDbPath,
+                                       tableName, layer->isSpatial() ? "(Geometry)" : "" );
+      newLayer = new QgsVectorLayer( connectionString,
+                                     layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
+      break;
     }
-    else if ( type == QVariant::Double )
+    case GPKG:
     {
-      dataType = QStringLiteral( "REAL" );
+      QgsVectorFileWriter::SaveVectorOptions options;
+      options.driverName = QStringLiteral( "GPKG" );
+      options.layerName = tableName;
+      options.actionOnExistingFile = QgsVectorFileWriter::CreateOrOverwriteLayer;
+      options.onlySelectedFeatures = onlySelected;
+
+      QString error;
+      if ( QgsVectorFileWriter::writeAsVectorFormat( layer, offlineDbPath, options, &error ) != QgsVectorFileWriter::NoError )
+      {
+        showWarning( tr( "Packaging layer %1 failed: %2" ).arg( layer->name(), error ) );
+        return nullptr;
+      }
+
+      QString uri = QStringLiteral( "%1|layername=%2" ).arg( offlineDbPath,  tableName );
+      newLayer = new QgsVectorLayer( uri, layer->name() + " (offline)", QStringLiteral( "ogr" ) );
+      break;
     }
-    else if ( type == QVariant::String )
+  }
+
+  if ( newLayer->isValid() )
+  {
+
+    // copy features
+    newLayer->startEditing();
+    QgsFeature f;
+
+    QgsFeatureRequest req;
+
+    if ( onlySelected )
     {
-      dataType = QStringLiteral( "TEXT" );
+      QgsFeatureIds selectedFids = layer->selectedFeatureIds();
+      if ( !selectedFids.isEmpty() )
+        req.setFilterFids( selectedFids );
+    }
+
+    QgsFeatureIterator fit = layer->dataProvider()->getFeatures( req );
+
+    if ( req.filterType() == QgsFeatureRequest::FilterFids )
+    {
+      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeatureIds().size() );
     }
     else
     {
-      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for the field." ).arg( field.name(), QVariant::typeToName( type ) ) );
+      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
     }
+    int featureCount = 1;
 
-    sql += delim + QStringLiteral( "'%1' %2" ).arg( field.name(), dataType );
-    delim = ',';
-  }
-  sql += ')';
-
-  int rc = sqlExec( db, sql );
-
-  // add geometry column
-  if ( layer->isSpatial() )
-  {
-    const QgsWkbTypes::Type sourceWkbType = layer->wkbType();
-
-    QString geomType;
-    switch ( QgsWkbTypes::flatType( sourceWkbType ) )
+    QList<QgsFeatureId> remoteFeatureIds;
+    while ( fit.nextFeature( f ) )
     {
-      case QgsWkbTypes::Point:
-        geomType = QStringLiteral( "POINT" );
-        break;
-      case QgsWkbTypes::MultiPoint:
-        geomType = QStringLiteral( "MULTIPOINT" );
-        break;
-      case QgsWkbTypes::LineString:
-        geomType = QStringLiteral( "LINESTRING" );
-        break;
-      case QgsWkbTypes::MultiLineString:
-        geomType = QStringLiteral( "MULTILINESTRING" );
-        break;
-      case QgsWkbTypes::Polygon:
-        geomType = QStringLiteral( "POLYGON" );
-        break;
-      case QgsWkbTypes::MultiPolygon:
-        geomType = QStringLiteral( "MULTIPOLYGON" );
-        break;
-      default:
-        showWarning( tr( "Layer %1 has unsupported geometry type %2." ).arg( layer->name(), QgsWkbTypes::displayString( layer->wkbType() ) ) );
-        break;
-    };
+      remoteFeatureIds << f.id();
 
-    QString zmInfo = QStringLiteral( "XY" );
+      // NOTE: SpatiaLite provider ignores position of geometry column
+      // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
+      int column = 0;
+      QgsAttributes attrs = f.attributes();
+      QgsAttributes newAttrs( attrs.count() );
+      for ( int it = 0; it < attrs.count(); ++it )
+      {
+        newAttrs[column++] = attrs.at( it );
+      }
+      f.setAttributes( newAttrs );
 
-    if ( QgsWkbTypes::hasZ( sourceWkbType ) )
-      zmInfo += 'Z';
-    if ( QgsWkbTypes::hasM( sourceWkbType ) )
-      zmInfo += 'M';
+      newLayer->addFeature( f );
 
-    QString epsgCode;
-
-    if ( layer->crs().authid().startsWith( QLatin1String( "EPSG:" ), Qt::CaseInsensitive ) )
-    {
-      epsgCode = layer->crs().authid().mid( 5 );
+      emit progressUpdated( featureCount++ );
     }
-    else
+    if ( newLayer->commitChanges() )
     {
-      epsgCode = '0';
-      showWarning( tr( "Layer %1 has unsupported Coordinate Reference System (%2)." ).arg( layer->name(), layer->crs().authid() ) );
-    }
+      emit progressModeSet( QgsOfflineEditing::ProcessFeatures, layer->dataProvider()->featureCount() );
+      featureCount = 1;
 
-    QString sqlAddGeom = QStringLiteral( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', '%4')" )
-                         .arg( tableName, epsgCode, geomType, zmInfo );
+      // update feature id lookup
+      int layerId = getOrCreateLayerId( db, newLayer->id() );
+      QList<QgsFeatureId> offlineFeatureIds;
 
-    // create spatial index
-    QString sqlCreateIndex = QStringLiteral( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
-
-    if ( rc == SQLITE_OK )
-    {
-      rc = sqlExec( db, sqlAddGeom );
-      if ( rc == SQLITE_OK )
-      {
-        rc = sqlExec( db, sqlCreateIndex );
-      }
-    }
-  }
-
-  if ( rc == SQLITE_OK )
-  {
-    // add new layer
-    QString connectionString = QStringLiteral( "dbname='%1' table='%2'%3 sql=" )
-                               .arg( offlineDbPath,
-                                     tableName, layer->isSpatial() ? "(Geometry)" : "" );
-    QgsVectorLayer *newLayer = new QgsVectorLayer( connectionString,
-        layer->name() + " (offline)", QStringLiteral( "spatialite" ) );
-    if ( newLayer->isValid() )
-    {
-
-      // copy features
-      newLayer->startEditing();
-      QgsFeature f;
-
-      QgsFeatureRequest req;
-
-      if ( onlySelected )
-      {
-        QgsFeatureIds selectedFids = layer->selectedFeatureIds();
-        if ( !selectedFids.isEmpty() )
-          req.setFilterFids( selectedFids );
-      }
-
-      QgsFeatureIterator fit = layer->dataProvider()->getFeatures( req );
-
-      if ( req.filterType() == QgsFeatureRequest::FilterFids )
-      {
-        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->selectedFeatureIds().size() );
-      }
-      else
-      {
-        emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
-      }
-      int featureCount = 1;
-
-      QList<QgsFeatureId> remoteFeatureIds;
+      QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
       while ( fit.nextFeature( f ) )
       {
-        remoteFeatureIds << f.id();
+        offlineFeatureIds << f.id();
+      }
 
-        // NOTE: SpatiaLite provider ignores position of geometry column
-        // fill gap in QgsAttributeMap if geometry column is not last (WORKAROUND)
-        int column = 0;
-        QgsAttributes attrs = f.attributes();
-        QgsAttributes newAttrs( attrs.count() );
-        for ( int it = 0; it < attrs.count(); ++it )
+      // NOTE: insert fids in this loop, as the db is locked during newLayer->nextFeature()
+      sqlExec( db, QStringLiteral( "BEGIN" ) );
+      int remoteCount = remoteFeatureIds.size();
+      for ( int i = 0; i < remoteCount; i++ )
+      {
+        // Check if the online feature has been fetched (WFS download aborted for some reason)
+        if ( i < offlineFeatureIds.count() )
         {
-          newAttrs[column++] = attrs.at( it );
+          addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( i ) );
         }
-        f.setAttributes( newAttrs );
-
-        newLayer->addFeature( f );
-
+        else
+        {
+          showWarning( tr( "Feature cannot be copied to the offline layer, please check if the online layer '%1' is still accessible." ).arg( layer->name() ) );
+          return nullptr;
+        }
         emit progressUpdated( featureCount++ );
       }
-      if ( newLayer->commitChanges() )
-      {
-        emit progressModeSet( QgsOfflineEditing::ProcessFeatures, layer->dataProvider()->featureCount() );
-        featureCount = 1;
-
-        // update feature id lookup
-        int layerId = getOrCreateLayerId( db, newLayer->id() );
-        QList<QgsFeatureId> offlineFeatureIds;
-
-        QgsFeatureIterator fit = newLayer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() ) );
-        while ( fit.nextFeature( f ) )
-        {
-          offlineFeatureIds << f.id();
-        }
-
-        // NOTE: insert fids in this loop, as the db is locked during newLayer->nextFeature()
-        sqlExec( db, QStringLiteral( "BEGIN" ) );
-        int remoteCount = remoteFeatureIds.size();
-        for ( int i = 0; i < remoteCount; i++ )
-        {
-          // Check if the online feature has been fetched (WFS download aborted for some reason)
-          if ( i < offlineFeatureIds.count() )
-          {
-            addFidLookup( db, layerId, offlineFeatureIds.at( i ), remoteFeatureIds.at( i ) );
-          }
-          else
-          {
-            showWarning( tr( "Feature cannot be copied to the offline layer, please check if the online layer '%1' is still accessible." ).arg( layer->name() ) );
-            return nullptr;
-          }
-          emit progressUpdated( featureCount++ );
-        }
-        sqlExec( db, QStringLiteral( "COMMIT" ) );
-      }
-      else
-      {
-        showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
-      }
-
-      // mark as offline layer
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
-
-      // store original layer source
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
-      newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
-
-      // register this layer with the central layers registry
-      QgsProject::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << newLayer );
-
-      // copy style
-      copySymbology( layer, newLayer );
-
-      QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
-      // Find the parent group of the original layer
-      QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
-      if ( layerTreeLayer )
-      {
-        QgsLayerTreeGroup *parentTreeGroup = qobject_cast<QgsLayerTreeGroup *>( layerTreeLayer->parent() );
-        if ( parentTreeGroup )
-        {
-          int index = parentTreeGroup->children().indexOf( layerTreeLayer );
-          // Move the new layer from the root group to the new group
-          QgsLayerTreeLayer *newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
-          if ( newLayerTreeLayer )
-          {
-            QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
-            QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
-            parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
-            if ( grp )
-              grp->removeChildNode( newLayerTreeLayer );
-          }
-        }
-      }
-
-      updateRelations( layer, newLayer );
-      updateMapThemes( layer, newLayer );
-      updateLayerOrder( layer, newLayer );
-
-
+      sqlExec( db, QStringLiteral( "COMMIT" ) );
     }
-    return newLayer;
+    else
+    {
+      showWarning( newLayer->commitErrors().join( QStringLiteral( "\n" ) ) );
+    }
+
+    // mark as offline layer
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_IS_OFFLINE_EDITABLE, true );
+
+    // store original layer source
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
+    newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
+
+    // register this layer with the central layers registry
+    QgsProject::instance()->addMapLayers(
+      QList<QgsMapLayer *>() << newLayer );
+
+    // copy style
+    copySymbology( layer, newLayer );
+
+    QgsLayerTreeGroup *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+    // Find the parent group of the original layer
+    QgsLayerTreeLayer *layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
+    if ( layerTreeLayer )
+    {
+      QgsLayerTreeGroup *parentTreeGroup = qobject_cast<QgsLayerTreeGroup *>( layerTreeLayer->parent() );
+      if ( parentTreeGroup )
+      {
+        int index = parentTreeGroup->children().indexOf( layerTreeLayer );
+        // Move the new layer from the root group to the new group
+        QgsLayerTreeLayer *newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
+        if ( newLayerTreeLayer )
+        {
+          QgsLayerTreeNode *newLayerTreeLayerClone = newLayerTreeLayer->clone();
+          QgsLayerTreeGroup *grp = qobject_cast<QgsLayerTreeGroup *>( newLayerTreeLayer->parent() );
+          parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
+          if ( grp )
+            grp->removeChildNode( newLayerTreeLayer );
+        }
+      }
+    }
+
+    updateRelations( layer, newLayer );
+    updateMapThemes( layer, newLayer );
+    updateLayerOrder( layer, newLayer );
+
+
+
   }
-  return nullptr;
+  return newLayer;
 }
 
 void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer *remoteLayer, sqlite3 *db, int layerId, int commitNo )
@@ -1292,8 +1354,20 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
   QgsDataSourceUri uri = QgsDataSourceUri( layer->source() );
 
+  QString offlinePath = QgsProject::instance()->readPath( QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH ) );
+  QString tableName;
+
+  if ( !offlinePath.contains( ".gpkg" ) )
+  {
+    tableName = uri.table();
+  }
+  else
+  {
+    tableName = uri.param( offlinePath + "|layername" );
+  }
+
   // only store feature ids
-  QString sql = QStringLiteral( "SELECT ROWID FROM '%1' ORDER BY ROWID DESC LIMIT %2" ).arg( uri.table() ).arg( addedFeatures.size() );
+  QString sql = QStringLiteral( "SELECT ROWID FROM '%1' ORDER BY ROWID DESC LIMIT %2" ).arg( tableName ).arg( addedFeatures.size() );
   QList<int> newFeatureIds = sqlQueryInts( database.get(), sql );
   for ( int i = newFeatureIds.size() - 1; i >= 0; i-- )
   {
