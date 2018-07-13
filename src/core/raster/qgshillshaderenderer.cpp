@@ -24,6 +24,11 @@
 #include "qgsrectangle.h"
 #include <memory>
 
+#ifdef QGISDEBUG
+#include "qgsmessagelog.h"
+#include <chrono>
+#endif
+
 QgsHillshadeRenderer::QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAngle ):
   QgsRasterRenderer( input, QStringLiteral( "hillshade" ) )
   , mBand( band )
@@ -122,20 +127,33 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     return outputBlock.release();
   }
 
-  double cellXSize = extent.width() / double( width );
-  double cellYSize = extent.height() / double( height );
-  double zenithRad = std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
-  double azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
-  double cosZenithRad = std::cos( zenithRad );
-  double sinZenithRad = std::sin( zenithRad );
+  float cellXSize = extent.width() / float( width );
+  float cellYSize = extent.height() / float( height );
+  float zenithRad = std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
+  float azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
+  float cosZenithRad = std::cos( zenithRad );
+  float sinZenithRad = std::sin( zenithRad );
 
-  // Multi direction hillshade: http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
-  double angle0Rad = ( -1 * mLightAzimuth - 45 - 45 * 0.5 ) * M_PI / 180.0;
-  double angle1Rad = ( -1 * mLightAzimuth - 45 * 0.5 ) * M_PI / 180.0;
-  double angle2Rad = ( -1 * mLightAzimuth + 45 * 0.5 ) * M_PI / 180.0;
-  double angle3Rad = ( -1 * mLightAzimuth + 45 + 45 * 0.5 ) * M_PI / 180.0;
+  // For fast formula from GDAL DEM
+  float cos_alt_mul_z = cosZenithRad * mZFactor;
+  float cos_az_mul_cos_alt_mul_z = std::cos( azimuthRad ) * cos_alt_mul_z;
+  float sin_az_mul_cos_alt_mul_z = std::sin( azimuthRad ) * cos_alt_mul_z;
+  float cos_az_mul_cos_alt_mul_z_mul_254 = 254.0 * cos_az_mul_cos_alt_mul_z;
+  float sin_az_mul_cos_alt_mul_z_mul_254 = 254.0 * sin_az_mul_cos_alt_mul_z;
+  float square_z = mZFactor * mZFactor;
+  float sinZenithRad_mul_254 = 254.0 * sinZenithRad;
+
+  // For multi directional
+  float sinZenithRad_mul_127 = 127.0 * sinZenithRad;
+  // 127.0 * std::cos(225.0 *  M_PI / 180.0) = -32.87001872802012
+  float cos225_az_mul_cos_alt_mul_z_mul_127 = -32.87001872802012f * cos_alt_mul_z;
+  float cos_alt_mul_z_mul_127 = 127.0 * cos_alt_mul_z;
 
   QRgb myDefaultColor = NODATA_COLOR;
+
+#ifdef QGISDEBUG
+  std::chrono::time_point<std::chrono::system_clock> startTime( std::chrono::system_clock::now() );
+#endif
 
   for ( qgssize i = 0; i < ( qgssize )height; i++ )
   {
@@ -182,15 +200,15 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         jRight = j;
       }
 
-      double x11;
-      double x21;
-      double x31;
-      double x12;
-      double x22; // Working cell
-      double x32;
-      double x13;
-      double x23;
-      double x33;
+      float x11;
+      float x21;
+      float x31;
+      float x12;
+      float x22; // Working cell
+      float x32;
+      float x13;
+      float x23;
+      float x33;
 
       // This is center cell. It is not nodata. Use this in place of nodata neighbors
       x22 = inputBlock->value( i, j );
@@ -207,43 +225,64 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       x23 = inputBlock->isNoData( i, jRight )     ? x22 : inputBlock->value( i, jRight );
       x33 = inputBlock->isNoData( iDown, jRight ) ? x22 : inputBlock->value( iDown, jRight );
 
-      double derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellXSize );
-      double derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellYSize );
+      float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellXSize );
+      float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33, cellYSize );
 
-      double slopeRad = std::atan( mZFactor * std::sqrt( derX * derX + derY * derY ) );
-      double aspectRad = std::atan2( derX, -derY );
-
-
-      double grayValue;
+      float grayValue;
       if ( !mMultiDirectional )
       {
         // Standard single direction hillshade
-        grayValue = qBound( 0.0, 255.0 * ( cosZenithRad * std::cos( slopeRad )
-                                           + sinZenithRad * std::sin( slopeRad )
-                                           * std::cos( azimuthRad - aspectRad ) ), 255.0 );
+        // Fast formula from GDAL DEM
+        grayValue = qBound( 0.0f, ( sinZenithRad_mul_254 -
+                                    ( derY * cos_az_mul_cos_alt_mul_z_mul_254 -
+                                      derX * sin_az_mul_cos_alt_mul_z_mul_254 ) ) /
+                            std::sqrt( 1 + square_z * ( derX * derX + derY * derY ) )
+                            , 255.0f );
       }
       else
       {
-        // Weighted multi direction as in http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
-        double weight0 = std::sin( aspectRad - angle0Rad );
-        double weight1 = std::sin( aspectRad - angle1Rad );
-        double weight2 = std::sin( aspectRad - angle2Rad );
-        double weight3 = std::sin( aspectRad - angle3Rad );
-        weight0 = weight0 * weight0;
-        weight1 = weight1 * weight1;
-        weight2 = weight2 * weight2;
-        weight3 = weight3 * weight3;
+        // Fast formula from GDAL DEM
+        const float xx = derX * derX;
+        const float yy = derY * derY;
+        const float xx_plus_yy = xx + yy;
+        // Flat? -> white
+        if ( xx_plus_yy == 0.0 )
+        {
+          grayValue = qBound( 0.0f, 255.0f * static_cast<float>( 1.0 + sinZenithRad_mul_254 ), 255.0f );
+        }
+        else
+        {
+          // ... then the shade value from different azimuth
+          float val225_mul_127 = sinZenithRad_mul_127 +
+                                 ( derX - derY ) * cos225_az_mul_cos_alt_mul_z_mul_127;
+          val225_mul_127 = ( val225_mul_127 <= 0.0 ) ? 0.0 : val225_mul_127;
+          float val270_mul_127 = sinZenithRad_mul_127 -
+                                 derX * cos_alt_mul_z_mul_127;
+          val270_mul_127 = ( val270_mul_127 <= 0.0 ) ? 0.0 : val270_mul_127;
+          float val315_mul_127 = sinZenithRad_mul_127 +
+                                 ( derX + derY ) * cos225_az_mul_cos_alt_mul_z_mul_127;
+          val315_mul_127 = ( val315_mul_127 <= 0.0 ) ? 0.0 : val315_mul_127;
+          float val360_mul_127 = sinZenithRad_mul_127 -
+                                 derY * cos_alt_mul_z_mul_127;
+          val360_mul_127 = ( val360_mul_127 <= 0.0 ) ? 0.0 : val360_mul_127;
 
-        double cosSlope = cosZenithRad * std::cos( slopeRad );
-        double sinSlope = sinZenithRad * std::sin( slopeRad );
-        double color0 = cosSlope + sinSlope * std::cos( angle0Rad - aspectRad );
-        double color1 = cosSlope + sinSlope * std::cos( angle1Rad - aspectRad );
-        double color2 = cosSlope + sinSlope * std::cos( angle2Rad - aspectRad );
-        double color3 = cosSlope + sinSlope * std::cos( angle3Rad - aspectRad );
-        grayValue = qBound( 0.0, 255 * ( weight0 * color0 + weight1 * color1 + weight2 * color2 + weight3 * color3 ) * 0.5, 255.0 );
+          // ... then the weighted shading
+          const float weight_225 = 0.5 * xx_plus_yy - derX * derY;
+          const float weight_270 = xx;
+          const float weight_315 = xx_plus_yy - weight_225;
+          const float weight_360 = yy;
+          const float cang_mul_127 = (
+                                       ( weight_225 * val225_mul_127 +
+                                         weight_270 * val270_mul_127 +
+                                         weight_315 * val315_mul_127 +
+                                         weight_360 * val360_mul_127 ) / xx_plus_yy ) /
+                                     ( 1 + square_z * xx_plus_yy );
+
+          grayValue = qBound( 0.0f, 1.0f + cang_mul_127, 255.0f );
+        }
       }
 
-      double currentAlpha = mOpacity;
+      float currentAlpha = mOpacity;
       if ( mRasterTransparency )
       {
         currentAlpha = mRasterTransparency->alphaValue( x22, mOpacity * 255 ) / 255.0;
@@ -263,6 +302,13 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       }
     }
   }
+
+#ifdef QGISDEBUG
+  QgsMessageLog::logMessage( QStringLiteral( "CPU Rendering time for hillshade (%2 x %3 ): %4 ms" )
+                             .arg( width )
+                             .arg( height )
+                             .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() ) );
+#endif
 
   return outputBlock.release();
 }
