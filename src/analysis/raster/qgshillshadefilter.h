@@ -44,15 +44,21 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
     void setLightAngle( float angle );
 
   private:
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 
 #ifdef HAVE_OPENCL
 
+=======
+>>>>>>> [opencl] Use fast formula for hillshade
     const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "hillshade" );
     }
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 #endif
 
+=======
+>>>>>>> [opencl] Use fast formula for hillshade
     float mLightAzimuth;
     float mLightAngle;
     // Precalculate for speed:
@@ -67,6 +73,11 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
     void addExtraRasterParams( std::vector<float> &params ) override;
 #endif
 
+
+    // QgsNineCellFilter interface
+  private:
+
+    void addExtraRasterParams( std::vector<float> &params ) override;
 };
 
 #endif // QGSHILLSHADEFILTER_H

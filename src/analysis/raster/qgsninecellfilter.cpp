@@ -261,21 +261,30 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   addExtraRasterParams( rasterParams );
 
   std::size_t bufferSize( sizeof( float ) * ( xSize + 2 ) );
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   std::size_t inputSize( sizeof( float ) * ( xSize ) );
 =======
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+  std::size_t inputSize( sizeof( float ) * ( xSize ) );
+>>>>>>> [opencl] Use fast formula for hillshade
 
   cl::Buffer rasterParamsBuffer( queue, rasterParams.begin(), rasterParams.end(), true, false, nullptr );
   cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine3Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   cl::Buffer *scanLineBuffer[3] = {&scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer};
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
 =======
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, sizeof( float ) * xSize, nullptr, nullptr );
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+  cl::Buffer *scanLineBuffer[3] = {&scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer};
+  cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
+>>>>>>> [opencl] Use fast formula for hillshade
 
   // Create a program from the kernel source
   cl::Program program( QgsOpenClUtils::buildProgram( ctx, source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
@@ -289,12 +298,18 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
                 cl::Buffer &
                 > ( program, "processNineCellWindow" );
 
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
   // Rotate buffer index
   std::vector<int> rowIndex = {0, 1, 2};
 
 =======
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+  // Rotate buffer index
+  std::vector<int> rowIndex = {0, 1, 2};
+
+>>>>>>> [opencl] Use fast formula for hillshade
   // values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
@@ -310,18 +325,24 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( i == 0 )
     {
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Fill scanline 1 with (input) nodata for the values above the first row and
       // feed scanline2 with the first actual data row
 =======
       // Fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+      // Fill scanline 1 with (input) nodata for the values above the first row and
+      // feed scanline2 with the first actual data row
+>>>>>>> [opencl] Use fast formula for hillshade
       for ( int a = 0; a < xSize + 2 ; ++a )
       {
         scanLine[a] = mInputNodataValue;
       }
       queue.enqueueWriteBuffer( scanLine1Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Read scanline2: first real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
@@ -346,14 +367,23 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 =======
       // Read scanline2
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+=======
+      // Read scanline2: first real raster row
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+>>>>>>> [opencl] Use fast formula for hillshade
       {
         QgsDebugMsg( "Raster IO Error" );
       }
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
       // Read scanline3
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+      // Read scanline3: second real raster row
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+>>>>>>> [opencl] Use fast formula for hillshade
       {
         QgsDebugMsg( "Raster IO Error" );
       }
@@ -362,6 +392,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
     else
     {
       // Normally fetch only scanLine3 and move forward one row
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
       // Read scanline 3, fill the last row with nodata values if it's the last iteration
 =======
@@ -370,12 +401,16 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
       // Read scanline 3
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+      // Read scanline 3, fill the last row with nodata values if it's the last iteration
+>>>>>>> [opencl] Use fast formula for hillshade
       if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
       {
         for ( int a = 0; a < xSize + 2; ++a )
         {
           scanLine[a] = mInputNodataValue;
         }
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
@@ -383,6 +418,9 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         // Overwrite from input, skip first and last
 =======
         queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+=======
+        queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+>>>>>>> [opencl] Use fast formula for hillshade
       }
       else // Overwrite from input, skip first and last
 >>>>>>> [opencl] Reduce memory footprint and optimize
@@ -391,6 +429,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         {
           QgsDebugMsg( "Raster IO Error" );
         }
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
@@ -414,6 +453,9 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 >>>>>>> Use OpenCL command queue
 =======
         queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+=======
+        queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
+>>>>>>> [opencl] Use fast formula for hillshade
       }
     }
 >>>>>>> [opencl] Reduce memory footprint and optimize
@@ -429,11 +471,15 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
             rasterParamsBuffer
           );
 
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 <<<<<<< 3bad167572f04c553d1e3d60f9c15d3f8511365f
     queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, inputSize, resultLine.get() );
 =======
     queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, xSize * sizeof( float ), resultLine.get() );
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+    queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, inputSize, resultLine.get() );
+>>>>>>> [opencl] Use fast formula for hillshade
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {

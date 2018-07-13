@@ -70,6 +70,7 @@ void QgsHillshadeFilter::setLightAngle( float angle )
   mSinZenithRad = std::sin( angle * static_cast<float>( M_PI ) / 180.0f );
 }
 
+<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 #ifdef HAVE_OPENCL
 
 void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
@@ -82,3 +83,28 @@ void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
 }
 
 #endif
+=======
+void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
+{
+  float azimuthRad =  -1 * mLightAzimuth * M_PI / 180.0;
+  float zenithRad = std::max( 0.0f, 90.0f - mLightAngle ) * M_PI / 180.0;
+  float cosZenithRad = std::cos( zenithRad );
+  float cos_az_mul_cos_alt_mul_z = std::cos( azimuthRad ) * cosZenithRad * mZFactor;
+  float sin_az_mul_cos_alt_mul_z = std::sin( azimuthRad ) * cosZenithRad * mZFactor;
+  float cos_az_mul_cos_alt_mul_z_mul_254 = 254.0 * cos_az_mul_cos_alt_mul_z;
+  float sin_az_mul_cos_alt_mul_z_mul_254 = 254.0 * sin_az_mul_cos_alt_mul_z;
+  float square_z = mZFactor * mZFactor;
+  float sin_altRadians_mul_254 = 254.0 * std::sin( zenithRad );
+
+  // For fast formula from GDAL DEM
+  params.push_back( cos_az_mul_cos_alt_mul_z_mul_254 ); // 5
+  params.push_back( sin_az_mul_cos_alt_mul_z_mul_254 ); // 6
+  params.push_back( square_z ); // 7
+  params.push_back( sin_altRadians_mul_254 ); // 8
+  /*/ Slow formula
+  params.push_back( azimuthRad ); // 9
+  params.push_back( zenithRad ); // 10
+  */
+
+}
+>>>>>>> [opencl] Use fast formula for hillshade
