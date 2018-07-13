@@ -127,8 +127,8 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
     return outputBlock.release();
   }
 
-  float cellXSize = extent.width() / float( width );
-  float cellYSize = extent.height() / float( height );
+  float cellXSize = extent.width() / static_cast<float>( width );
+  float cellYSize = extent.height() / static_cast<float>( height );
   float zenithRad = std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0;
   float azimuthRad = -1 * mLightAzimuth * M_PI / 180.0;
   float cosZenithRad = std::cos( zenithRad );
@@ -241,6 +241,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
       }
       else
       {
+        // Weighted multi direction as in http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
         // Fast formula from GDAL DEM
         const float xx = derX * derX;
         const float yy = derY * derY;
@@ -248,7 +249,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         // Flat? -> white
         if ( xx_plus_yy == 0.0 )
         {
-          grayValue = qBound( 0.0f, 255.0f * static_cast<float>( 1.0 + sinZenithRad_mul_254 ), 255.0f );
+          grayValue = qBound( 0.0f, static_cast<float>( 1.0 + sinZenithRad_mul_254 ), 255.0f );
         }
         else
         {
