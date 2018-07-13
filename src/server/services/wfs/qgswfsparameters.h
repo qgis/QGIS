@@ -121,26 +121,12 @@ namespace QgsWfs
        * Loads new parameters.
        * \param parameters Map of parameters
        */
-      void load( const QgsServerRequest::Parameters &parameters );
+      // void load( const QgsServerRequest::Parameters &parameters );
 
       /**
        * Dumps parameters.
        */
       void dump() const;
-
-      /**
-       * Returns REQUEST parameter as a string or an empty string if not
-       * defined.
-       * \returns request
-       */
-      QString request() const;
-
-      /**
-       * Returns VERSION parameter as a string or an empty string if not
-       * defined.
-       * \returns version
-       */
-      QString version() const;
 
       /**
        * Returns VERSION parameter if defined or its default value.

@@ -262,13 +262,6 @@ namespace QgsWms
       int heightAsInt() const;
 
       /**
-       * Returns VERSION parameter as a string or an empty string if not
-       * defined.
-       * \returns version
-       */
-      QString version() const;
-
-      /**
        * Returns VERSION parameter if defined or its default value.
        * \returns version
        */
