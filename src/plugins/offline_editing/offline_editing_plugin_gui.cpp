@@ -82,10 +82,9 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
                        "please check with your system administrator<br>"
                        "if this WFS layer can be used for offline<br>"
                        "editing." );
-            break;
+
           case Qt::DecorationRole:
-            return QgsApplication::getThemeIcon( "/mIconWarning.svg" );
-            break;
+            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
         }
       }
     }
@@ -177,7 +176,9 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
         mOfflineDataPathLineEdit->setText( fileName );
       }
+      break;
     }
+
     case QgsOfflineEditing::SpatiaLite:
     {
       //SpaciaLite
@@ -197,6 +198,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
         mOfflineDataPathLineEdit->setText( fileName );
       }
+      break;
     }
   }
 }
