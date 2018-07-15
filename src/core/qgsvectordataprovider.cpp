@@ -291,58 +291,39 @@ const QList< QgsVectorDataProvider::NativeType > &QgsVectorDataProvider::nativeT
 
 bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
-  int i;
   QgsDebugMsgLevel( QString( "field name = %1 type = %2 length = %3 precision = %4" )
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
                     .arg( field.precision() ), 2 );
-  for ( i = 0; i < mNativeTypes.size(); i++ )
+  Q_FOREACH ( const NativeType &nativeType, mNativeTypes )
   {
     QgsDebugMsgLevel( QString( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
-                      .arg( QVariant::typeToName( mNativeTypes[i].mType ) )
-                      .arg( mNativeTypes[i].mMinLen )
-                      .arg( mNativeTypes[i].mMaxLen )
-                      .arg( mNativeTypes[i].mMinPrec )
-                      .arg( mNativeTypes[i].mMaxPrec ), 2 );
+                      .arg( QVariant::typeToName( nativeType.mType ) )
+                      .arg( nativeType.mMinLen )
+                      .arg( nativeType.mMaxLen )
+                      .arg( nativeType.mMinPrec )
+                      .arg( nativeType.mMaxPrec ), 2 );
 
-    if ( field.type() != mNativeTypes[i].mType )
+    if ( field.type() != nativeType.mType )
       continue;
 
-    if ( field.length() == -1 )
-    {
-      // source length unlimited
-      if ( mNativeTypes[i].mMinLen > -1 || mNativeTypes[i].mMaxLen > -1 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
+    if ( field.length() > 0 )
     {
       // source length limited
-      if ( mNativeTypes[i].mMinLen > -1 && mNativeTypes[i].mMaxLen > -1 &&
-           ( field.length() < mNativeTypes[i].mMinLen || field.length() > mNativeTypes[i].mMaxLen ) )
+      if (( nativeType.mMinLen > 0 && field.length() < nativeType.mMinLen ) ||
+          ( nativeType.mMaxLen > 0 && field.length() > nativeType.mMaxLen ) )
       {
         // source length exceeds destination limits
         continue;
       }
     }
 
-    if ( field.precision() == -1 )
+    if ( field.precision() > 0 )
     {
-      // source precision unlimited / n/a
-      if ( mNativeTypes[i].mMinPrec > -1 || mNativeTypes[i].mMaxPrec > -1 )
-      {
-        // destination limited
-        continue;
-      }
-    }
-    else
-    {
-      // source precision unlimited / n/a
-      if ( mNativeTypes[i].mMinPrec > -1 && mNativeTypes[i].mMaxPrec > -1 &&
-           ( field.precision() < mNativeTypes[i].mMinPrec || field.precision() > mNativeTypes[i].mMaxPrec ) )
+      // source precision limited
+      if (( nativeType.mMinPrec > 0 && field.precision() < nativeType.mMinPrec ) ||
+          ( nativeType.mMaxPrec > 0 && field.precision() > nativeType.mMaxPrec ) )
       {
         // source precision exceeds destination limits
         continue;
