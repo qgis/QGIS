@@ -40,25 +40,19 @@
 ****************************************************************************/
 
 #include "smain.h"
+#include <qsqldriverplugin.h>
 #include "qsql_spatialite.h"
 
 QSpatiaLiteDriverPlugin::QSpatiaLiteDriverPlugin()
-    : QSqlDriverPlugin()
 {
 }
 
-QSqlDriver* QSpatiaLiteDriverPlugin::create(const QString &name)
+QSqlDriver *QSpatiaLiteDriverPlugin::create( const QString &name )
 {
-    if (name == QLatin1String("QSPATIALITE")) {
-        QSpatiaLiteDriver* driver = new QSpatiaLiteDriver();
-        return driver;
-    }
-    return 0;
-}
-
-QStringList QSpatiaLiteDriverPlugin::keys() const
-{
-    QStringList l;
-    l  << QLatin1String("QSPATIALITE");
-    return l;
+  if ( name == QLatin1String( "QSPATIALITE" ) )
+  {
+    QSpatiaLiteDriver *driver = new QSpatiaLiteDriver();
+    return driver;
+  }
+  return nullptr;
 }

@@ -88,6 +88,7 @@ RUN  apt-get update \
     qtpositioning5-dev \
     qttools5-dev \
     qttools5-dev-tools \
+    qtbase5-private-dev \
     saga \
     spawn-fcgi \
     txt2tags \

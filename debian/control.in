@@ -22,6 +22,7 @@ Build-Depends:
  libspatialindex-dev,
  libzip-dev,
  qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtpositioning5-dev, qt5keychain-dev,
+#!xenial# qtbase5-private-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
  python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
@@ -40,7 +41,7 @@ Build-Depends:
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid buster artful bionic cosmic# libosgearth-dev,
 #artful bionic cosmic# qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
-#oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
+#oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
 #sid buster stretch xenial yakkety zesty artful bionic cosmic#Standards-Version: 3.9.7
