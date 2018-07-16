@@ -102,16 +102,6 @@ struct KDBushDataHashById
   }
 };
 
-bool operator <( const QgsSpatialIndexKDBushData &data, const QgsFeatureId id )
-{
-  return data.id < id;
-};
-
-bool operator <( const QgsFeatureId id, const QgsSpatialIndexKDBushData &data )
-{
-  return id < data.id;
-};
-
 QVariantMap QgsDbscanClusteringAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
@@ -287,10 +277,13 @@ void QgsDbscanClusteringAlgorithm::dbscan( const std::size_t minSize,
       if ( within2.size() >= minSize )
       {
         // expand neighbourhood
-        std::set_difference( within2.begin(),
-                             within2.end(),
-                             visited.begin(), visited.end(),
-                             std::inserter( within, within.end() ) );
+        std::copy_if( within2.begin(),
+                      within2.end(),
+                      std::inserter( within, within.end() ),
+                      [&visited]( const QgsSpatialIndexKDBushData & needle )
+        {
+          return visited.find( needle.id ) == visited.end();
+        } );
       }
       if ( !borderPointsAreNoise || within2.size() >= minSize )
       {
