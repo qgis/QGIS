@@ -1101,32 +1101,38 @@ bool QgsGdalProvider::worldToPixel( double x, double y, int &col, int &row ) con
   return true;
 };
 
-QVariant QgsGdalProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &, int, int, int )
+double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, const QgsRectangle &, int, int, int )
 {
+  if ( ok )
+    *ok = false;
+
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
-    return tr( "Cannot read data" );
+    return std::numeric_limits<double>::quiet_NaN();
 
   if ( !extent().contains( point ) )
   {
     // Outside the raster
-    return QVariant();
+    return std::numeric_limits<double>::quiet_NaN();
   }
 
   GDALRasterBandH hBand = GDALGetRasterBand( mGdalDataset, band );
   if ( !hBand )
-    return QVariant();
+    return std::numeric_limits<double>::quiet_NaN();
 
   int row;
   int col;
   if ( !worldToPixel( point.x(), point.y(), col, row ) )
-    return QVariant();
+    return std::numeric_limits<double>::quiet_NaN();
 
   float value = 0;
   CPLErr err = GDALRasterIO( hBand, GF_Read, col, row, 1, 1,
                              &value, 1, 1, GDT_Float32, 0, 0 );
   if ( err != CE_None )
-    return QVariant();
+    return std::numeric_limits<double>::quiet_NaN();
+
+  if ( ok )
+    *ok = true;
 
   return static_cast< double >( value ) * bandScale( band ) + bandOffset( band );
 }

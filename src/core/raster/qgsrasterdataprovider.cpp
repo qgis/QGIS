@@ -300,12 +300,16 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
   return QgsRasterIdentifyResult( QgsRaster::IdentifyFormatValue, results );
 }
 
-QVariant QgsRasterDataProvider::sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox, int width, int height, int )
+double QgsRasterDataProvider::sample( const QgsPointXY &point, int band,
+                                      bool *ok, const QgsRectangle &boundingBox, int width, int height, int )
 {
+  if ( ok )
+    *ok = false;
+
   if ( !extent().contains( point ) )
   {
     // Outside the raster
-    return QVariant();
+    return std::numeric_limits<double>::quiet_NaN();
   }
 
   QgsRectangle finalExtent = boundingBox;
@@ -335,8 +339,10 @@ QVariant QgsRasterDataProvider::sample( const QgsPointXY &point, int band, const
   QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
 
   std::unique_ptr< QgsRasterBlock > bandBlock( block( band, pixelExtent, 1, 1 ) );
+  if ( bandBlock && ok )
+    *ok = true;
 
-  return bandBlock ? bandBlock->value( 0 ) : QVariant();
+  return bandBlock ? bandBlock->value( 0 ) : std::numeric_limits<double>::quiet_NaN();
 }
 
 QString QgsRasterDataProvider::lastErrorFormat()
