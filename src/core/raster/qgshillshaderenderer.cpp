@@ -22,6 +22,7 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasterblock.h"
 #include "qgsrectangle.h"
+#include "qgssettings.h"
 #include <memory>
 
 #ifdef QGISDEBUG
@@ -246,7 +247,7 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
         const float xx = derX * derX;
         const float yy = derY * derY;
         const float xx_plus_yy = xx + yy;
-        // Flat? -> white
+        // Flat?
         if ( xx_plus_yy == 0.0 )
         {
           grayValue = qBound( 0.0f, static_cast<float>( 1.0 + sinZenithRad_mul_254 ), 255.0f );
@@ -305,10 +306,14 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   }
 
 #ifdef QGISDEBUG
-  QgsMessageLog::logMessage( QStringLiteral( "CPU Rendering time for hillshade (%2 x %3 ): %4 ms" )
-                             .arg( width )
-                             .arg( height )
-                             .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() ) );
+  if ( QgsSettings().value( QStringLiteral( "Map/logCanvasRefreshEvent" ), false ).toBool() )
+  {
+    QgsMessageLog::logMessage( QStringLiteral( "CPU processing time for hillshade (%2 x %3 ): %4 ms" )
+                               .arg( width )
+                               .arg( height )
+                               .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() ),
+                               tr( "Rendering" ) );
+  }
 #endif
 
   return outputBlock.release();
