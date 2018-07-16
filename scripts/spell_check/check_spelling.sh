@@ -223,7 +223,7 @@ for I in $(seq -f '%02g' 0  $((SPLIT-1)) ) ; do
         else
           # Match case
           MATCHCASE="$ERROR:$CORRECTION"
-          CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/' | cut -d: -f2)
+          CORRECTIONCASE=$(echo "$MATCHCASE" | ${GP}sed -r 's/([A-Z]+):(.*)/\1:\U\2/; s/([A-Z][a-z]+):([a-z])/\1:\U\2\L/; s/\*?$//;' | cut -d: -f2)
 
           if [[ -n $OUTPUTLOG ]]; then
             echo "$FILE $NUMBER $ERROR $CORRECTIONCASE" >> $OUTPUTLOG
