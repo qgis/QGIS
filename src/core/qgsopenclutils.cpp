@@ -23,85 +23,70 @@
 #include <QFile>
 #include <QDebug>
 
-QLatin1String QgsOpenClUtils::SETTINGS_KEY = QLatin1Literal( "OpenClEnabled" );
+QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1Literal( "OpenClEnabled" );
+QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = QLatin1Literal( "OpenClDefaultDevice" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1Literal( "OpenCL" );
 bool QgsOpenClUtils::sAvailable = false;
-cl::Platform QgsOpenClUtils::sPlatform = cl::Platform();
-cl::Device QgsOpenClUtils::sDevice = cl::Device();
+cl::Platform QgsOpenClUtils::sDefaultPlatform = cl::Platform();
+cl::Device QgsOpenClUtils::sActiveDevice = cl::Device();
 QString QgsOpenClUtils::sSourcePath = QString();
+
+
+std::vector<cl::Device> QgsOpenClUtils::devices()
+{
+  std::vector<cl::Platform> platforms;
+  cl::Platform::get( &platforms );
+  cl::Platform plat;
+  cl::Device dev;
+  std::vector<cl::Device> existingDevices;
+  for ( auto &p : platforms )
+  {
+    std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+    QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+    if ( platver.find( "OpenCL 1." ) != std::string::npos )
+    {
+      std::vector<cl::Device> _devices;
+      // Check for a device
+      try
+      {
+        p.getDevices( CL_DEVICE_TYPE_ALL, &_devices );
+      }
+      catch ( cl::Error &e )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                          .arg( errorText( e.err() ),
+                                QString::fromStdString( e.what() ),
+                                QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+      }
+      if ( _devices.size() > 0 )
+      {
+        for ( unsigned long i = 0; i < _devices.size(); i++ )
+        {
+          existingDevices.push_back( _devices[i] );
+        }
+      }
+    }
+  }
+  return existingDevices;
+}
 
 void QgsOpenClUtils::init()
 {
-  static bool initialized = false;
-  if ( ! initialized )
+  static std::once_flag initialized;
+  std::call_once( initialized, [ = ]( )
   {
     try
     {
-      std::vector<cl::Platform> platforms;
-      cl::Platform::get( &platforms );
-      cl::Platform plat;
-      cl::Device dev;
-      for ( auto &p : platforms )
-      {
-        std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
-        QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
-        if ( platver.find( "OpenCL 1." ) != std::string::npos )
-        {
-          std::vector<cl::Device> devices;
-          // Check for a GPU device
-          try
-          {
-            p.getDevices( CL_DEVICE_TYPE_GPU, &devices );
-          }
-          catch ( cl::Error &e )
-          {
-            QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
-                              .arg( errorText( e.err() ),
-                                    QString::fromStdString( e.what() ),
-                                    QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
-          }
-          if ( devices.size() > 0 )
-          {
-            // Got one!
-            plat = p;
-            dev = devices[0];
-            break;
-          }
-        }
-      }
-      if ( plat() == 0 )
-      {
-        QgsMessageLog::logMessage( QObject::tr( "No OpenCL 1.x platform with GPU found." ), LOGMESSAGE_TAG, Qgis::Warning );
-        sAvailable = false;
-      }
-      else
-      {
-        cl::Platform newP = cl::Platform::setDefault( plat );
-        if ( newP != plat )
-        {
-          QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ), LOGMESSAGE_TAG, Qgis::Warning );
-          sAvailable = false;
-        }
-        else
-        {
-          cl::Device::setDefault( dev );
-          QgsDebugMsgLevel( QStringLiteral( "Found OpenCL device %1" )
-                            .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ), 2 );
-          sAvailable = true;
-          sDevice = dev;
-          sPlatform = plat;
-        }
-      }
+      activate( preferredDevice() );
     }
     catch ( cl::Error &e )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
+      QgsMessageLog::logMessage( QObject::tr( "Error %1 initializing OpenCL device: %2" )
                                  .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
                                  LOGMESSAGE_TAG, Qgis::Critical );
-      sAvailable = false;
     }
-    initialized = true;
-  }
+
+  } );
 }
 
 QString QgsOpenClUtils::sourcePath()
@@ -114,38 +99,208 @@ void QgsOpenClUtils::setSourcePath( const QString &value )
   sSourcePath = value;
 }
 
-QString QgsOpenClUtils::deviceInfo( const Info infoType )
+QString QgsOpenClUtils::defaultDeviceInfo( const QgsOpenClUtils::Info infoType )
 {
-  if ( available( ) )
+  return deviceInfo( infoType, activeDevice( ) );
+}
+
+QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
+{
+  try
   {
     switch ( infoType )
     {
       case Info::Vendor:
-        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_VENDOR>() );
+        return QString::fromStdString( device.getInfo<CL_DEVICE_VENDOR>() );
       case Info::Profile:
-        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_PROFILE>() );
+        return QString::fromStdString( device.getInfo<CL_DEVICE_PROFILE>() );
       case Info::Version:
-        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_VERSION>() );
+        return QString::fromStdString( device.getInfo<CL_DEVICE_VERSION>() );
       case Info::ImageSupport:
-        return sDevice.getInfo<CL_DEVICE_IMAGE_SUPPORT>() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
+        return device.getInfo<CL_DEVICE_IMAGE_SUPPORT>() ? QStringLiteral( "True" ) : QStringLiteral( "False" );
       case Info::Image2dMaxHeight:
-        return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_HEIGHT>() );
+        return QString::number( device.getInfo<CL_DEVICE_IMAGE2D_MAX_HEIGHT>() );
       case Info::MaxMemAllocSize:
-        return QString::number( sDevice.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() );
+        return QString::number( device.getInfo<CL_DEVICE_MAX_MEM_ALLOC_SIZE>() );
       case Info::Image2dMaxWidth:
-        return QString::number( sDevice.getInfo<CL_DEVICE_IMAGE2D_MAX_WIDTH>() );
+        return QString::number( device.getInfo<CL_DEVICE_IMAGE2D_MAX_WIDTH>() );
+      case Info::Type:
+      {
+        int type( device.getInfo<CL_DEVICE_TYPE>() );
+        int mappedType;
+        switch ( type )
+        {
+          case CL_DEVICE_TYPE_CPU:
+            mappedType = QgsOpenClUtils::HardwareType::CPU;
+            break;
+          case CL_DEVICE_TYPE_GPU:
+            mappedType = QgsOpenClUtils::HardwareType::GPU;
+            break;
+          default:
+            mappedType = QgsOpenClUtils::HardwareType::Other;
+        }
+        QMetaEnum metaEnum = QMetaEnum::fromType<QgsOpenClUtils::HardwareType>();
+        return metaEnum.valueToKey( mappedType );
+      }
       case Info::Name:
       default:
-        return QString::fromStdString( sDevice.getInfo<CL_DEVICE_NAME>() );
+        return QString::fromStdString( device.getInfo<CL_DEVICE_NAME>() );
     }
   }
-  return QString();
+  catch ( cl::Error &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error %1 getting info for OpenCL device: %2" )
+                               .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+                               LOGMESSAGE_TAG, Qgis::Critical );
+    return QString();
+  }
 }
 
 
 bool QgsOpenClUtils::enabled()
 {
-  return QgsSettings().value( SETTINGS_KEY, false, QgsSettings::Section::Core ).toBool();
+  return QgsSettings().value( SETTINGS_GLOBAL_ENABLED_KEY, false, QgsSettings::Section::Core ).toBool();
+}
+
+cl::Device QgsOpenClUtils::activeDevice()
+{
+  return sActiveDevice;
+}
+
+void QgsOpenClUtils::setActiveDevice( const cl::Device device )
+{
+  sActiveDevice = device;
+}
+
+void QgsOpenClUtils::storePreferredDevice( const QString deviceId )
+{
+  QgsSettings().setValue( SETTINGS_DEFAULT_DEVICE_KEY, deviceId, QgsSettings::Section::Core );
+}
+
+QString QgsOpenClUtils::preferredDevice()
+{
+  return QgsSettings().value( SETTINGS_DEFAULT_DEVICE_KEY, QString( ), QgsSettings::Section::Core ).toString();
+}
+
+QString QgsOpenClUtils::deviceId( const cl::Device device )
+{
+  return QStringLiteral( "%1|%2|%3|%4" )
+         .arg( deviceInfo( QgsOpenClUtils::Info::Name, device ) )
+         .arg( deviceInfo( QgsOpenClUtils::Info::Vendor, device ) )
+         .arg( deviceInfo( QgsOpenClUtils::Info::Version, device ) )
+         .arg( deviceInfo( QgsOpenClUtils::Info::Type, device ) );
+}
+
+bool QgsOpenClUtils::activate( const QString preferredDeviceId )
+{
+  if ( preferredDeviceId.isEmpty() || deviceId( activeDevice() ) == preferredDeviceId )
+  {
+    return false;
+  }
+  try
+  {
+    std::vector<cl::Platform> platforms;
+    cl::Platform::get( &platforms );
+    cl::Platform plat;
+    cl::Device dev;
+    for ( auto &p : platforms )
+    {
+      std::string platver = p.getInfo<CL_PLATFORM_VERSION>();
+      QgsDebugMsg( QStringLiteral( "Found OpenCL platform %1: %2" ).arg( QString::fromStdString( platver ), QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ) );
+      if ( platver.find( "OpenCL 1." ) != std::string::npos )
+      {
+        std::vector<cl::Device> devices;
+        // Search for a device
+        try
+        {
+          p.getDevices( CL_DEVICE_TYPE_ALL, &devices );
+        }
+        catch ( cl::Error &e )
+        {
+          QgsDebugMsgLevel( QStringLiteral( "Error %1 on platform %3 searching for OpenCL device: %2" )
+                            .arg( errorText( e.err() ),
+                                  QString::fromStdString( e.what() ),
+                                  QString::fromStdString( p.getInfo<CL_PLATFORM_NAME>() ) ), 2 );
+        }
+        for ( const auto &_dev : devices )
+        {
+          if ( ( preferredDeviceId.isEmpty() && _dev.getInfo<CL_DEVICE_TYPE>() == CL_DEVICE_TYPE_GPU ) ||
+               ( preferredDeviceId == deviceId( _dev ) ) )
+          {
+            // Got one!
+            plat = p;
+            dev = _dev;
+            break;
+          }
+        }
+      }
+    }
+    if ( plat() == 0 )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "No OpenCL 1.x platform with GPU found." ), LOGMESSAGE_TAG, Qgis::Warning );
+      sAvailable = false;
+    }
+    else
+    {
+      cl::Platform newP = cl::Platform::setDefault( plat );
+      if ( newP != plat )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Error setting default platform." ),
+                                   LOGMESSAGE_TAG, Qgis::Warning );
+        sAvailable = false;
+      }
+      else
+      {
+        cl::Device::setDefault( dev );
+        QgsMessageLog::logMessage( QObject::tr( "Activated OpenCL device %1" )
+                                   .arg( QString::fromStdString( dev.getInfo<CL_DEVICE_NAME>() ) ),
+                                   LOGMESSAGE_TAG, Qgis::Success );
+        sAvailable = true;
+        sActiveDevice = dev;
+        sDefaultPlatform = plat;
+      }
+    }
+  }
+
+  catch ( cl::Error &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Error %1 searching for OpenCL device: %2" )
+                               .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+                               LOGMESSAGE_TAG, Qgis::Critical );
+    sAvailable = false;
+  }
+  return sAvailable;
+}
+
+QString QgsOpenClUtils::deviceDescription( const cl::Device device )
+{
+  return QStringLiteral(
+           "Name: <b>%1</b><br>"
+           "Vendor: <b>%2</b><br>"
+           "Profile: <b>%3</b><br>"
+           "Version: <b>%4</b><br>"
+           "Image support: <b>%5</b><br>"
+           "Max image2d width: <b>%6</b><br>"
+           "Max image2d height: <b>%7</b><br>"
+           "Max mem alloc size: <b>%8</b><br>"
+         ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ) );
+}
+
+QString QgsOpenClUtils::deviceDescription( const QString deviceId )
+{
+  for ( const auto &dev : devices( ) )
+  {
+    if ( QgsOpenClUtils::deviceId( dev ) == deviceId )
+      return deviceDescription( dev );
+  }
+  return QString();
 }
 
 bool QgsOpenClUtils::available()
@@ -156,7 +311,7 @@ bool QgsOpenClUtils::available()
 
 void QgsOpenClUtils::setEnabled( bool enabled )
 {
-  QgsSettings().setValue( SETTINGS_KEY, enabled, QgsSettings::Section::Core );
+  QgsSettings().setValue( SETTINGS_GLOBAL_ENABLED_KEY, enabled, QgsSettings::Section::Core );
 }
 
 
@@ -298,9 +453,9 @@ cl::Context QgsOpenClUtils::context()
   static std::once_flag contextCreated;
   std::call_once( contextCreated, [ = ]()
   {
-    if ( available() && sPlatform() && sDevice() )
+    if ( available() && sDefaultPlatform() && sActiveDevice() )
     {
-      context = cl::Context( sDevice );
+      context = cl::Context( sActiveDevice );
     }
   } );
   return context;

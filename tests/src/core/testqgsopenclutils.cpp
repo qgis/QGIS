@@ -45,6 +45,7 @@ class TestQgsOpenClUtils: public QObject
     void testMakeRunProgram();
     void testProgramSource();
     void testContext();
+    void testDevices();
     // For performance testing
     void testHillshade();
 
@@ -146,7 +147,6 @@ void TestQgsOpenClUtils::_testMakeRunProgram()
   QVERIFY( err == 0 );
 
   cl::Context ctx = QgsOpenClUtils::context();
-  cl::Context::setDefault( ctx );
   cl::CommandQueue queue( ctx );
 
   std::vector<float> a_vec = {1, 10, 100};
@@ -197,6 +197,14 @@ void TestQgsOpenClUtils::testContext()
   QVERIFY( QgsOpenClUtils::context()() != nullptr );
 }
 
+void TestQgsOpenClUtils::testDevices()
+{
+  std::vector<cl::Device> _devices( QgsOpenClUtils::devices( ) );
+  QVERIFY( _devices.size() > 0 );
+  qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, _devices.at( 0 ) );
+  qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, _devices.at( 0 ) );
+}
+
 void TestQgsOpenClUtils::_testMakeHillshade( const QString title, const int loops )
 {
   std::chrono::time_point<std::chrono::system_clock> startTime( std::chrono::system_clock::now() );
@@ -217,6 +225,7 @@ void TestQgsOpenClUtils::testHillshade()
 {
   QgsOpenClUtils::setEnabled( true );
   _testMakeHillshade( QStringLiteral( "OpenCL" ), 5 );
+  QVERIFY( QgsOpenClUtils::enabled() );
   QgsOpenClUtils::setEnabled( false );
   _testMakeHillshade( QStringLiteral( "CPU" ), 5 );
 }

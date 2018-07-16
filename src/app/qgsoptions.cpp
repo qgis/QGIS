@@ -1087,25 +1087,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   if ( QgsOpenClUtils::available( ) )
   {
     mGPUEnableCheckBox->setEnabled( true );
-    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU found on your system:<br>"
-                                            "Name: <b>%1</b><br>"
-                                            "Vendor: <b>%2</b><br>"
-                                            "Profile: <b>%3</b><br>"
-                                            "Version: <b>%4</b><br>"
-                                            "Image support: <b>%5</b><br>"
-                                            "Max image2d width: <b>%6</b><br>"
-                                            "Max image2d height: <b>%7</b><br>"
-                                            "Max mem alloc size: <b>%8</b><br>"
-                                          ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize )
-                                               )
-                          );
+
+    for ( const auto &dev : QgsOpenClUtils::devices( ) )
+    {
+      mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceId( dev ), QgsOpenClUtils::deviceId( dev ) );
+    }
+    connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), [ = ]( int )
+    {
+      mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+    } );
+    mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
   }
   else
   {
@@ -1668,7 +1659,8 @@ void QgsOptions::saveOptions()
 #ifdef HAVE_OPENCL
   // OpenCL settings
   QgsOpenClUtils::setEnabled( mGPUEnableCheckBox->isChecked() );
-
+  QString preferredDevice( mOpenClDevicesCombo->currentData().toString() );
+  QgsOpenClUtils::storePreferredDevice( preferredDevice );
 #endif
 
   // Gdal skip driver list

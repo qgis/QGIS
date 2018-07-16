@@ -33,6 +33,7 @@
  * \class QgsOpenClUtils
  * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
  * - enable/disable opencl
+ * - store and retrieve preferences for the default device
  * - check opencl device availability and automatically choose the first GPU (TODO: let the user choose & override!)
  * - creating contexts
  * - loading program sources from standard locations
@@ -42,6 +43,8 @@
  */
 class CORE_EXPORT QgsOpenClUtils
 {
+    Q_GADGET
+
   public:
 
     /**
@@ -52,6 +55,18 @@ class CORE_EXPORT QgsOpenClUtils
       Catch,  // Write errors in the message log and silently fail
       Throw   // Write errors in the message log and re-throw exceptions
     };
+
+    /**
+     * The Type enum represent OpenCL device type
+     */
+    enum HardwareType
+    {
+      CPU,
+      GPU,
+      Other
+    };
+
+    Q_ENUM( HardwareType )
 
     /**
      * The Info enum maps to OpenCL info constants
@@ -67,11 +82,49 @@ class CORE_EXPORT QgsOpenClUtils
       ImageSupport = CL_DEVICE_IMAGE_SUPPORT,
       Image2dMaxWidth = CL_DEVICE_IMAGE2D_MAX_WIDTH,
       Image2dMaxHeight = CL_DEVICE_IMAGE2D_MAX_HEIGHT,
-      MaxMemAllocSize = CL_DEVICE_MAX_MEM_ALLOC_SIZE
+      MaxMemAllocSize = CL_DEVICE_MAX_MEM_ALLOC_SIZE,
+      Type = CL_DEVICE_TYPE // CPU/GPU etc.
     };
 
-    //! Returs true if OpenCL is enabled in the user settings
+    //! Return true if OpenCL is enabled in the user settings
     static bool enabled();
+
+    //! Return a list of OpenCL devices found on this sysytem
+    static std::vector<cl::Device> devices();
+
+    //! Return the active device
+    static cl::Device activeDevice( );
+
+    //! Set the active \a device
+    static void setActiveDevice( const cl::Device device );
+
+    //! Store in the settings the preferred \a deviceId device identifier
+    static void storePreferredDevice( const QString deviceId );
+
+    //! Read from the settings the preferred device identifier
+    static QString preferredDevice( );
+
+    //! Create a string identifier from a \a device
+    static QString deviceId( const cl::Device device );
+
+    /**
+     * Activate a device identified by its \a preferredDeviceId by making it the default device
+     * if the device does not exists or deviceId is empty, the first GPU device will be
+     * activated
+     * \return true if the device could be found and activated. Return false if the device was already
+     * the active one or if it could not be found.
+     */
+    static bool activate( const QString preferredDeviceId = QString() );
+
+    /**
+     * Returns a formatted description for the \a device
+     */
+    static QString deviceDescription( const cl::Device device );
+
+    /**
+     * Returns a formatted description for the device identified by \a deviceId
+     */
+    static QString deviceDescription( const QString deviceId );
 
     /**
      * Checks whether a suitable OpenCL platform and device is found on this system and initialize the QGIS OpenCL system
@@ -120,7 +173,10 @@ class CORE_EXPORT QgsOpenClUtils
     static void setSourcePath( const QString &value );
 
     //! Return \a infoType information about the default device
-    static QString deviceInfo( const Info infoType = Info::Name );
+    static QString defaultDeviceInfo( const Info infoType = Info::Name );
+
+    //! Return \a infoType information about the \a device
+    static QString deviceInfo( const Info infoType, cl::Device device );
 
     /**
      * Tiny smart-pointer-like wrapper around CPLMalloc and CPLFree: this is needed because
@@ -183,9 +239,10 @@ class CORE_EXPORT QgsOpenClUtils
     QgsOpenClUtils();
     static void init();
     static bool sAvailable;
-    static cl::Device sDevice;
-    static cl::Platform sPlatform;
-    static QLatin1String SETTINGS_KEY;
+    static cl::Device sActiveDevice;
+    static cl::Platform sDefaultPlatform;
+    static QLatin1String SETTINGS_GLOBAL_ENABLED_KEY;
+    static QLatin1String SETTINGS_DEFAULT_DEVICE_KEY;
     static QString sSourcePath;
 };
 
