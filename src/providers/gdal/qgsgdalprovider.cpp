@@ -1091,11 +1091,18 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
 
 bool QgsGdalProvider::worldToPixel( double x, double y, int &col, int &row ) const
 {
+  /*
+   * This set of equations solves
+   * Xgeo = GT(0) + XpixelGT(1) + YlineGT(2)
+   * Ygeo = GT(3) + XpixelGT(4) + YlineGT(5)
+   * when Xgeo, Ygeo are given
+   */
   double div = ( mGeoTransform[2] * mGeoTransform[4] - mGeoTransform[1] * mGeoTransform[5] );
   if ( div < 2 * std::numeric_limits<double>::epsilon() )
     return false;
-  double doubleCol = -( mGeoTransform[2] * ( mGeoTransform[3] - y ) + mGeoTransform[5] * x - mGeoTransform[0] * mGeoTransform[5] ) / div;
-  double doubleRow = ( mGeoTransform[1] * ( mGeoTransform[3] - y ) + mGeoTransform[4] * x - mGeoTransform[0] * mGeoTransform[4] ) / div;
+  double doubleCol = -( mGeoTransform[2] * ( mGeoTransform[3] - y ) + mGeoTransform[5] * ( x - mGeoTransform[0] ) ) / div;
+  double doubleRow = ( mGeoTransform[1] * ( mGeoTransform[3] - y ) + mGeoTransform[4] * ( x - mGeoTransform[0] ) ) / div;
+  // note: we truncate here, not round, otherwise values will be 0.5 pixels off
   col = static_cast< int >( doubleCol );
   row = static_cast< int >( doubleRow );
   return true;
