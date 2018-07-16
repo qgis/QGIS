@@ -31,7 +31,8 @@ import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QVariant
 
-from qgis.core import (QgsApplication,
+from qgis.core import (NULL,
+                       QgsApplication,
                        QgsField,
                        QgsFeatureSink,
                        QgsRaster,
@@ -179,20 +180,12 @@ class RasterSampling(QgisAlgorithm):
                 feedback.reportError(self.tr('Could not reproject feature {} to raster CRS').format(i.id()))
                 continue
 
-            if sampled_raster.bandCount() > 1:
-
-                for b in range(sampled_raster.bandCount()):
-                    attrs.append(
-                        sampled_raster.dataProvider().identify(
-                            point,
-                            QgsRaster.IdentifyFormatValue).results()[b + 1]
-                    )
-
-            attrs.append(
-                sampled_raster.dataProvider().identify(
-                    point,
-                    QgsRaster.IdentifyFormatValue).results()[1]
-            )
+            for b in range(sampled_raster.bandCount()):
+                value, ok = sampled_raster.dataProvider().sample(point, b + 1)
+                if ok:
+                    attrs.append(value)
+                else:
+                    attrs.append(NULL)
 
             i.setAttributes(attrs)
 
