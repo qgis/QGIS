@@ -313,6 +313,15 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+        # with None NODATA value
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'NODATA': None,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
         # with NODATA value
         self.assertEqual(
             translate_alg.getConsoleCommands({'INPUT': source,
@@ -1285,6 +1294,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+        # with None NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': None,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
         # with NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -1338,6 +1357,39 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
                                     'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdalwarp',
              '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # with target resolution with None value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': None,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # test target resolution with a valid value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': 10.0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -tr 10.0 10.0 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # test target resolution with a value of zero, to be ignored
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': 0.0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
 
