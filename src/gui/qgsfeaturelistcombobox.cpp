@@ -160,6 +160,7 @@ void QgsFeatureListComboBox::onDataChanged( const QModelIndex &topLeft, const QM
       QModelIndex modelIndex = mModel->index( currentIndex, 0, QModelIndex() );
       mLineEdit->setText( mModel->data( modelIndex, QgsFeatureFilterModel::ValueRole ).toString() );
     }
+    emit currentIndexChanged( currentIndex );
   }
 }
 
