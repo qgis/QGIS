@@ -115,9 +115,9 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
   {
     if ( *it == 0 )
-      menuText = tr( "Do not snap to common angles" );
+      menuText = tr( "Do Not Snap to Common Angles" );
     else
-      menuText = QString( tr( "%1, %2, %3, %4° …" ) ).arg( *it, 0, 'f', 1 ).arg( *it * 2, 0, 'f', 1 ).arg( *it * 3, 0, 'f', 1 ).arg( *it * 4, 0, 'f', 1 );
+      menuText = QString( tr( "%1, %2, %3, %4°…" ) ).arg( *it, 0, 'f', 1 ).arg( *it * 2, 0, 'f', 1 ).arg( *it * 3, 0, 'f', 1 ).arg( *it * 4, 0, 'f', 1 );
     commonAngles << QPair<double, QString>( *it, menuText );
   }
   for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
