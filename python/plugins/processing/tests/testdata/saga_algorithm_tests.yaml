@@ -375,3 +375,39 @@ tests:
         name: expected/saga/cross_profiles.shp
         type: vector
 
+  - algorithm: saga:snappointstolines
+    name: Snap points to lines
+    params:
+      DISTANCE: 0.9
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      SNAP:
+        name: snap_lines.gml
+        type: vector
+    results:
+      MOVES:
+        name: expected/saga/snap_points_to_lines_moves.shp
+        type: vector
+      OUTPUT:
+        name: expected/saga/snap_points_to_lines_result.shp
+        type: vector
+
+  - algorithm: saga:snappointstopoints
+    name: Snap points to points
+    params:
+      DISTANCE: 0.5
+      INPUT:
+        name: snap_points.gml
+        type: vector
+      SNAP:
+        name: points.gml
+        type: vector
+    results:
+      MOVES:
+        name: expected/saga/snap_points_to_points_moves.shp
+        type: vector
+      OUTPUT:
+        name: expected/saga/snap_points_to_points_result.shp
+        type: vector
+

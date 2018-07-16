@@ -580,6 +580,11 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
       QgsProcessingFeatureSourceDefinition fromVar = qvariant_cast<QgsProcessingFeatureSourceDefinition>( value );
       value = fromVar.source;
     }
+    else if ( value.canConvert<QgsProcessingOutputLayerDefinition>() )
+    {
+      QgsProcessingOutputLayerDefinition fromVar = qvariant_cast<QgsProcessingOutputLayerDefinition>( value );
+      value = fromVar.sink;
+    }
     if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( qvariant_cast<QObject *>( value ) ) )
     {
       featureSource = layer;
@@ -846,6 +851,7 @@ bool QgsProcessingModelAlgorithm::loadVariant( const QVariant &model )
 
   mModelName = map.value( QStringLiteral( "model_name" ) ).toString();
   mModelGroup = map.value( QStringLiteral( "model_group" ) ).toString();
+  mModelGroupId = map.value( QStringLiteral( "model_group" ) ).toString();
   mHelpContent = map.value( QStringLiteral( "help" ) ).toMap();
 
   mChildAlgorithms.clear();

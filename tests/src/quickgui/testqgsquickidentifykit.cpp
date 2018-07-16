@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsquickidentifykit.cpp.cpp
+     testqgsquickidentifykit.cpp
      --------------------------------------
   Date                 : May 2018
   Copyright            : (C) 2018 by Viktor Sklencar

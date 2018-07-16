@@ -51,7 +51,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QTreeWidget" name="algorithmTree">
+     <widget class="QgsProcessingToolboxTreeView" name="algorithmTree">
       <property name="contextMenuPolicy">
        <enum>Qt::CustomContextMenu</enum>
       </property>
@@ -63,31 +63,6 @@
         <string notr="true">1</string>
        </property>
       </column>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="txtDisabled">
-      <property name="autoFillBackground">
-       <bool>false</bool>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(255, 255, 127);</string>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::Box</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <property name="text">
-       <string>There are disabled providers that contain algorithms including your text string. Click &lt;a href=&quot;view&quot;&gt;to view them.&lt;/a&gt;</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-      <property name="margin">
-       <number>5</number>
-      </property>
      </widget>
     </item>
     <item>
@@ -120,6 +95,11 @@ color: rgb(255, 255, 255);</string>
   <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+    <customwidget>
+   <class>QgsProcessingToolboxTreeView</class>
+   <extends>QTreeView</extends>
    <header>qgis.gui</header>
   </customwidget>
  </customwidgets>

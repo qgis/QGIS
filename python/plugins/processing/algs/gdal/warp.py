@@ -87,15 +87,21 @@ class warp(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterCrs(self.TARGET_CRS,
                                                     self.tr('Target CRS'),
                                                     'EPSG:4326'))
+        self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
+                                                     self.tr('Resampling method to use'),
+                                                     options=[i[0] for i in self.methods],
+                                                     defaultValue=0))
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Nodata value for output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0))
+                                                       defaultValue=None,
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.TARGET_RESOLUTION,
                                                        self.tr('Output file resolution in target georeferenced units'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       defaultValue=None))
+                                                       defaultValue=None,
+                                                       optional=True))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
@@ -106,11 +112,6 @@ class warp(GdalAlgorithm):
             'widget_wrapper': {
                 'class': 'processing.algs.gdal.ui.RasterOptionsWidget.RasterOptionsWidgetWrapper'}})
         self.addParameter(options_param)
-
-        self.addParameter(QgsProcessingParameterEnum(self.RESAMPLING,
-                                                     self.tr('Resampling method to use'),
-                                                     options=[i[0] for i in self.methods],
-                                                     defaultValue=0))
 
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),

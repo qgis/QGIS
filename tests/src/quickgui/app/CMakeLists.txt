@@ -7,6 +7,7 @@ SET(QGIS_QUICK_APP_SRCS
 
 SET(QGIS_QUICK_APP_QMLS
   main.qml
+  FeaturePanel.qml
 )
 
 INCLUDE_DIRECTORIES(

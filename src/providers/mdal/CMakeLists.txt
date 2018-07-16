@@ -9,6 +9,14 @@ SET(MDAL_MOC_HDRS
 SET(MDAL_HDRS
 )
 
+IF (WITH_GUI)
+  SET(MDAL_SRCS ${MDAL_SRCS}
+    qgsmdalsourceselect.cpp
+  )
+  SET(MDAL_MOC_HDRS ${MDAL_MOC_HDRS}
+    qgsmdalsourceselect.h
+  )
+ENDIF ()
 
 ########################################################
 # Compile internal MDAL
@@ -58,8 +66,13 @@ INCLUDE_DIRECTORIES (
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
 
   ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/gui
+  ${CMAKE_BINARY_DIR}/src/ui
+
 )
 
 QT5_WRAP_CPP(MDAL_MOC_SRCS ${MDAL_MOC_HDRS})
@@ -69,6 +82,12 @@ TARGET_LINK_LIBRARIES (mdalprovider
   qgis_core
   ${MDAL_LIBRARY}
 )
+
+IF (WITH_GUI)
+  TARGET_LINK_LIBRARIES (mdalprovider
+    qgis_gui
+  )
+ENDIF ()
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)

@@ -38,10 +38,21 @@
 namespace QgsWms
 {
 
+  /**
+   * \ingroup server
+   * \class QgsWms::Service
+   * \brief OGC web service specialized for WMS
+   * \since QGIS 3.0
+   */
   class Service: public QgsService
   {
     public:
-      // Constructor
+
+      /**
+       * Constructor for WMS service.
+       * \param version Version of the WMS service.
+       * \param serverIface Interface for plugins.
+       */
       Service( const QString &version, QgsServerInterface *serverIface )
         : mVersion( version )
         , mServerIface( serverIface )
@@ -148,12 +159,14 @@ namespace QgsWms
       QString mVersion;
       QgsServerInterface *mServerIface = nullptr;
   };
-
-
 } // namespace QgsWms
 
-
-// Module
+/**
+ * \ingroup server
+ * \class QgsWmsModule
+ * \brief Module specialized for WMS service
+ * \since QGIS 3.0
+ */
 class QgsWmsModule: public QgsServiceModule
 {
   public:
@@ -175,8 +188,3 @@ QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }
-
-
-
-
-

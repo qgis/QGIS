@@ -44,12 +44,12 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
     Q_PROPERTY( QgsQuickMapSettings *mapSettings READ mapSettings WRITE setMapSettings NOTIFY mapSettingsChanged )
 
   public:
-    //! create new map transform
+    //! Creates a new map transform
     QgsQuickMapTransform() = default;
     ~QgsQuickMapTransform() = default;
 
     /**
-     * Apply transformation based on current map settings to a matrix.
+     * Applies transformation based on current map settings to a matrix.
      *
      * Also optimize resulting matrix after transformation
      * \param matrix Matrix to be transformed
@@ -70,7 +70,7 @@ class QUICK_EXPORT QgsQuickMapTransform : public QQuickTransform
     void updateMatrix();
 
   private:
-    QgsQuickMapSettings *mMapSettings = nullptr;
+    QgsQuickMapSettings *mMapSettings = nullptr; // not owned
     QMatrix4x4 mMatrix;
 };
 

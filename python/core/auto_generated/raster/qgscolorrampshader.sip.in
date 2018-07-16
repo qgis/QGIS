@@ -143,7 +143,7 @@ Classify color ramp shader
 :param input: raster input used in classification (quantile mode only)
 %End
 
-    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 
 %Docstring
 Generates and new RGB value based on one input value
@@ -152,7 +152,7 @@ Generates and new RGB value based on one input value
      virtual bool shade( double redValue, double greenValue,
                 double blueValue, double alphaValue,
                 int *returnRedValue /Out/, int *returnGreenValue /Out/,
-                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ ) const;
 %Docstring
 Generates and new RGB value based on original RGB value
 %End

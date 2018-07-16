@@ -74,7 +74,7 @@ class ProcessingDropHandler(QgsCustomDropHandler):
     def handleFileDrop(self, file):
         if not file.lower().endswith('.model3'):
             return False
-        self.runAlg(file)
+        return self.runAlg(file)
 
     @staticmethod
     def runAlg(file):
@@ -205,7 +205,7 @@ class ProcessingPlugin:
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(pluginPath, 'images', 'history.svg')),
+            QgsApplication.getThemeIcon("/mIconHistory.svg"),
             QCoreApplication.translate('ProcessingPlugin', '&History…'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)

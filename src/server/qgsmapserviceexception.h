@@ -40,6 +40,12 @@
 class SERVER_EXPORT QgsMapServiceException : public QgsOgcServiceException
 {
   public:
+
+    /**
+     * Constructor for QgsMapServiceException.
+     * \param code HTTP error code
+     * \param message Exception message to return to the client
+     */
     QgsMapServiceException( const QString &code, const QString &message )
       : QgsOgcServiceException( code, message )
     {}

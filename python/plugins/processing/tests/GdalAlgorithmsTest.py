@@ -49,6 +49,7 @@ from processing.algs.gdal.rasterize import rasterize
 from processing.algs.gdal.retile import retile
 from processing.algs.gdal.translate import translate
 from processing.algs.gdal.warp import warp
+from processing.algs.gdal.fillnodata import fillnodata
 
 from qgis.core import (QgsProcessingContext,
                        QgsProcessingFeedback,
@@ -307,6 +308,15 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         # with no NODATA value
         self.assertEqual(
             translate_alg.getConsoleCommands({'INPUT': source,
+                                              'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdal_translate',
+             '-ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+        # with None NODATA value
+        self.assertEqual(
+            translate_alg.getConsoleCommands({'INPUT': source,
+                                              'NODATA': None,
                                               'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
             ['gdal_translate',
              '-ot Float32 -of JPEG ' +
@@ -1284,6 +1294,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+        # with None NODATA value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'NODATA': None,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
         # with NODATA value
         self.assertEqual(
             alg.getConsoleCommands({'INPUT': source,
@@ -1339,6 +1359,92 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
              '-s_srs EPSG:3111 -t_srs EPSG:3111 -r near -ot Float32 -of JPEG ' +
              source + ' ' +
              'd:/temp/check.jpg'])
+
+        # with target resolution with None value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': None,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # test target resolution with a valid value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': 10.0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -tr 10.0 10.0 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+        # test target resolution with a value of zero, to be ignored
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'SOURCE_CRS': 'EPSG:3111',
+                                    'TARGET_RESOLUTION': 0.0,
+                                    'OUTPUT': 'd:/temp/check.jpg'}, context, feedback),
+            ['gdalwarp',
+             '-s_srs EPSG:3111 -t_srs EPSG:4326 -r near -ot Float32 -of JPEG ' +
+             source + ' ' +
+             'd:/temp/check.jpg'])
+
+    def testFillnodata(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source = os.path.join(testDataPath, 'dem.tif')
+        mask = os.path.join(testDataPath, 'raster.tif')
+        outsource = 'd:/temp/check.tif'
+        alg = fillnodata()
+        alg.initAlgorithm()
+
+        # with mask value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'MASK_LAYER': mask,
+                                    'NO_MASK': False,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 -mask ' +
+             mask +
+             ' -of GTiff ' +
+             source + ' ' +
+             outsource])
+
+        # without mask value
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'NO_MASK': False,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 ' +
+             '-of GTiff ' +
+             source + ' ' +
+             outsource])
+
+        # nomask true
+        self.assertEqual(
+            alg.getConsoleCommands({'INPUT': source,
+                                    'BAND': 1,
+                                    'DISTANCE': 10,
+                                    'ITERATIONS': 0,
+                                    'NO_MASK': True,
+                                    'OUTPUT': outsource}, context, feedback),
+            ['gdal_fillnodata.py',
+             '-md 10 -b 1 -nomask ' +
+             '-of GTiff ' +
+             source + ' ' +
+             outsource])
 
 
 class TestGdalOgrToPostGis(unittest.TestCase):

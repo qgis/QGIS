@@ -32,7 +32,19 @@ import os
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QCoreApplication, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtCore import (
+    Qt,
+    QCoreApplication,
+    QRectF,
+    QMimeData,
+    QPoint,
+    QPointF,
+    QByteArray,
+    QSize,
+    QSizeF,
+    pyqtSignal,
+    QDataStream,
+    QIODevice)
 from qgis.PyQt.QtWidgets import (QGraphicsView,
                                  QTreeWidget,
                                  QMessageBox,
@@ -67,7 +79,9 @@ from qgis.core import (Qgis,
 from qgis.gui import (QgsMessageBar,
                       QgsDockWidget,
                       QgsScrollArea,
-                      QgsFilterLineEdit)
+                      QgsFilterLineEdit,
+                      QgsProcessingToolboxTreeView,
+                      QgsProcessingToolboxProxyModel)
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
@@ -82,6 +96,22 @@ with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
         os.path.join(pluginPath, 'ui', 'DlgModeler.ui'))
+
+
+class ModelerToolboxModel(QgsProcessingToolboxProxyModel):
+
+    def __init__(self, parent=None, registry=None, recentLog=None):
+        super().__init__(parent, registry, recentLog)
+
+    def flags(self, index):
+        f = super().flags(index)
+        source_index = self.mapToSource(index)
+        if self.toolboxModel().isAlgorithm(source_index):
+            f = f | Qt.ItemIsDragEnabled
+        return f
+
+    def supportedDragActions(self):
+        return Qt.CopyAction
 
 
 class ModelerDialog(BASE, WIDGET):
@@ -193,7 +223,8 @@ class ModelerDialog(BASE, WIDGET):
         self.verticalLayout_2.setSpacing(4)
         self.searchBox = QgsFilterLineEdit(self.scrollAreaWidgetContents_3)
         self.verticalLayout_2.addWidget(self.searchBox)
-        self.algorithmTree = QTreeWidget(self.scrollAreaWidgetContents_3)
+        self.algorithmTree = QgsProcessingToolboxTreeView(None,
+                                                          QgsApplication.processingRegistry())
         self.algorithmTree.setAlternatingRowColors(True)
         self.algorithmTree.header().setVisible(False)
         self.verticalLayout_2.addWidget(self.algorithmTree)
@@ -266,26 +297,31 @@ class ModelerDialog(BASE, WIDGET):
         self.view.ensureVisible(0, 0, 10, 10)
 
         def _dragEnterEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 event.acceptProposedAction()
             else:
                 event.ignore()
 
         def _dropEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
+                data = event.mimeData().data('application/x-vnd.qgis.qgis.algorithmid')
+                stream = QDataStream(data, QIODevice.ReadOnly)
+                algorithm_id = stream.readQString()
+                alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm_id)
+                if alg is not None:
+                    self._addAlgorithm(alg, event.pos())
+                else:
+                    assert False, algorithm_id
+            elif event.mimeData().hasText():
                 itemId = event.mimeData().text()
                 if itemId in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
                     self.addInputOfType(itemId, event.pos())
-                else:
-                    alg = QgsApplication.processingRegistry().createAlgorithmById(itemId)
-                    if alg is not None:
-                        self._addAlgorithm(alg, event.pos())
                 event.accept()
             else:
                 event.ignore()
 
         def _dragMoveEvent(event):
-            if event.mimeData().hasText():
+            if event.mimeData().hasText() or event.mimeData().hasFormat('application/x-vnd.qgis.qgis.algorithmid'):
                 event.accept()
             else:
                 event.ignore()
@@ -352,18 +388,12 @@ class ModelerDialog(BASE, WIDGET):
         self.inputsTree.setDragDropMode(QTreeWidget.DragOnly)
         self.inputsTree.setDropIndicatorShown(True)
 
-        def _mimeDataAlgorithm(items):
-            item = items[0]
-            mimeData = None
-            if isinstance(item, TreeAlgorithmItem):
-                mimeData = QMimeData()
-                mimeData.setText(item.alg.id())
-            return mimeData
-
-        self.algorithmTree.mimeData = _mimeDataAlgorithm
-
+        self.algorithms_model = ModelerToolboxModel(self, QgsApplication.processingRegistry())
+        self.algorithmTree.setToolboxProxyModel(self.algorithms_model)
         self.algorithmTree.setDragDropMode(QTreeWidget.DragOnly)
         self.algorithmTree.setDropIndicatorShown(True)
+
+        self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterModeler)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(QCoreApplication.translate('ModelerDialog', 'Search…'))
@@ -374,7 +404,7 @@ class ModelerDialog(BASE, WIDGET):
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self.addInput)
-        self.searchBox.textChanged.connect(self.textChanged)
+        self.searchBox.textChanged.connect(self.algorithmTree.setFilterString)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
         # Ctrl+= should also trigger a zoom in action
@@ -407,7 +437,6 @@ class ModelerDialog(BASE, WIDGET):
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
-        self.fillTreeUsingProviders()
 
         self.view.centerOn(0, 0)
         self.help = None
@@ -693,51 +722,6 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
-    def textChanged(self):
-        text = self.searchBox.text().strip(' ').lower()
-        for item in list(self.disabledProviderItems.values()):
-            item.setHidden(True)
-        self._filterItem(self.algorithmTree.invisibleRootItem(), [t for t in text.split(' ') if t])
-        if text:
-            self.algorithmTree.expandAll()
-            self.disabledWithMatchingAlgs = []
-            for provider in QgsApplication.processingRegistry().providers():
-                if not provider.isActive():
-                    for alg in provider.algorithms():
-                        if text in alg.name():
-                            self.disabledWithMatchingAlgs.append(provider.id())
-                            break
-        else:
-            self.algorithmTree.collapseAll()
-
-    def _filterItem(self, item, text):
-        if (item.childCount() > 0):
-            show = False
-            for i in range(item.childCount()):
-                child = item.child(i)
-                showChild = self._filterItem(child, text)
-                show = (showChild or show) and item not in list(self.disabledProviderItems.values())
-            item.setHidden(not show)
-            return show
-        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            # hide if every part of text is not contained somewhere in either the item text or item user role
-            item_text = [item.text(0).lower(), item.data(0, ModelerDialog.NAME_ROLE).lower()]
-            if isinstance(item, TreeAlgorithmItem):
-                item_text.append(item.alg.id().lower())
-                if item.alg.shortDescription():
-                    item_text.append(item.alg.shortDescription().lower())
-                item_text.extend([t.lower() for t in item.data(0, ModelerDialog.TAG_ROLE)])
-
-            hide = bool(text) and not all(
-                any(part in t for t in item_text)
-                for part in text)
-
-            item.setHidden(hide)
-            return not hide
-        else:
-            item.setHidden(True)
-            return False
-
     def fillInputsTree(self):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
@@ -756,9 +740,9 @@ class ModelerDialog(BASE, WIDGET):
         parametersItem.setExpanded(True)
 
     def addAlgorithm(self):
-        item = self.algorithmTree.currentItem()
-        if isinstance(item, TreeAlgorithmItem):
-            alg = QgsApplication.processingRegistry().createAlgorithmById(item.alg.id())
+        algorithm = self.algorithmTree.selectedAlgorithm()
+        if algorithm is not None:
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algorithm.id())
             self._addAlgorithm(alg)
 
     def _addAlgorithm(self, alg, pos=None):
@@ -791,158 +775,3 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
-
-    def fillTreeUsingProviders(self):
-        self.algorithmTree.clear()
-        self.disabledProviderItems = {}
-
-        # TODO - replace with proper model for toolbox!
-
-        # first add qgis/native providers, since they create top level groups
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
-            else:
-                continue
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
-        for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native', '3d'):
-                # already added
-                continue
-            else:
-                providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-
-                # insert non-native providers at end of tree, alphabetically
-                for i in range(self.algorithmTree.invisibleRootItem().childCount()):
-                    child = self.algorithmTree.invisibleRootItem().child(i)
-                    if isinstance(child, TreeProviderItem):
-                        if child.text(0) > providerItem.text(0):
-                            break
-
-                self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
-
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
-    def addAlgorithmsFromProvider(self, provider, parent):
-        groups = {}
-        count = 0
-        algs = provider.algorithms()
-        active = provider.isActive()
-
-        # Add algorithms
-        for alg in algs:
-            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
-                continue
-            groupItem = None
-            if alg.group() in groups:
-                groupItem = groups[alg.group()]
-            else:
-                # check if group already exists
-                for i in range(parent.childCount()):
-                    if parent.child(i).text(0) == alg.group():
-                        groupItem = parent.child(i)
-                        groups[alg.group()] = groupItem
-                        break
-
-                if not groupItem:
-                    groupItem = TreeGroupItem(alg.group())
-                    if not active:
-                        groupItem.setInactive()
-                    if provider.id() in ('qgis', 'native', '3d'):
-                        groupItem.setIcon(0, provider.icon())
-                    groups[alg.group()] = groupItem
-            algItem = TreeAlgorithmItem(alg)
-            if not active:
-                algItem.setForeground(0, Qt.darkGray)
-            groupItem.addChild(algItem)
-            count += 1
-
-        text = provider.name()
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            if not active:
-                def activateProvider():
-                    self.activateProvider(provider.id())
-
-                label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
-                label.setStyleSheet("QLabel {background-color: white; color: grey;}")
-                label.linkActivated.connect(activateProvider)
-                self.algorithmTree.setItemWidget(parent, 0, label)
-            else:
-                parent.setText(0, text)
-
-        for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
-            parent.addChild(groupItem)
-
-        if not provider.id() in ('qgis', 'native', '3d'):
-            parent.setHidden(parent.childCount() == 0)
-
-
-class TreeAlgorithmItem(QTreeWidgetItem):
-
-    def __init__(self, alg):
-        QTreeWidgetItem.__init__(self)
-        self.alg = alg
-        icon = alg.icon()
-        nameEn = alg.name()
-        name = alg.displayName()
-        name = name if name != '' else nameEn
-        self.setIcon(0, icon)
-        self.setToolTip(0, self.formatAlgorithmTooltip(alg))
-        self.setText(0, name)
-        self.setData(0, ModelerDialog.NAME_ROLE, nameEn)
-        self.setData(0, ModelerDialog.TAG_ROLE, alg.tags())
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.ALG_ITEM)
-
-    def formatAlgorithmTooltip(self, alg):
-        return '<p><b>{}</b></p>{}<p>{}</p>'.format(
-            alg.displayName(),
-            '<p>{}</p>'.format(alg.shortDescription()) if alg.shortDescription() else '',
-            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
-        )
-
-
-class TreeGroupItem(QTreeWidgetItem):
-
-    def __init__(self, name):
-        QTreeWidgetItem.__init__(self)
-        self.setToolTip(0, name)
-        self.setText(0, name)
-        self.setData(0, ModelerDialog.NAME_ROLE, name)
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.GROUP_ITEM)
-
-    def setInactive(self):
-        self.setForeground(0, Qt.darkGray)
-
-
-class TreeActionItem(QTreeWidgetItem):
-
-    def __init__(self, action):
-        QTreeWidgetItem.__init__(self)
-        self.action = action
-        self.setText(0, action.name)
-        self.setIcon(0, action.getIcon())
-        self.setData(0, ModelerDialog.NAME_ROLE, action.name)
-
-
-class TreeProviderItem(QTreeWidgetItem):
-
-    def __init__(self, provider, tree, toolbox):
-        QTreeWidgetItem.__init__(self, None)
-        self.tree = tree
-        self.toolbox = toolbox
-        self.provider = provider
-        self.setIcon(0, self.provider.icon())
-        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.PROVIDER_ITEM)
-        self.setToolTip(0, self.provider.longName())
-        self.populate()
-
-    def refresh(self):
-        self.takeChildren()
-        self.populate()
-
-    def populate(self):
-        self.toolbox.addAlgorithmsFromProvider(self.provider, self)

@@ -103,19 +103,16 @@ void QgsColorRampShaderWidget::initializeForUseWithRasterLayer()
 void QgsColorRampShaderWidget::setRasterDataProvider( QgsRasterDataProvider *dp )
 {
   mRasterDataProvider = dp;
-  loadMinimumMaximumFromTree();
 }
 
 void QgsColorRampShaderWidget::setRasterBand( int band )
 {
   mBand = band;
-  loadMinimumMaximumFromTree();
 }
 
 void QgsColorRampShaderWidget::setExtent( const QgsRectangle &extent )
 {
   mExtent = extent;
-  loadMinimumMaximumFromTree();
 }
 
 QgsColorRampShader QgsColorRampShaderWidget::shader() const

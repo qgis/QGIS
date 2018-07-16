@@ -316,4 +316,6 @@
 %Include auto_generated/processing/qgsprocessingalgorithmconfigurationwidget.sip
 %Include auto_generated/processing/qgsprocessingalgorithmdialogbase.sip
 %Include auto_generated/processing/qgsprocessingrecentalgorithmlog.sip
+%Include auto_generated/processing/qgsprocessingtoolboxmodel.sip
+%Include auto_generated/processing/qgsprocessingtoolboxtreeview.sip
 %Include auto_generated/qgsadvanceddigitizingcanvasitem.sip

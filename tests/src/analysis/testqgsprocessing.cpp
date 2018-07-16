@@ -2111,6 +2111,7 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( r1->id() ) ) );
   QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( r1->id() ) ) );
 
   // using map layer
   QVariantMap params;
@@ -2148,6 +2149,8 @@ void TestQgsProcessing::parameterCrs()
   params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( v1->id() ) );
   QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
   params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( v1 ) ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
+  params.insert( "non_optional",  QgsProcessingOutputLayerDefinition( v1->id() ) );
   QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
 
   QCOMPARE( def->valueAsPythonString( QVariant(), context ), QStringLiteral( "None" ) );
@@ -2362,6 +2365,9 @@ void TestQgsProcessing::parameterExtent()
   QVERIFY( !def->checkValueIsAcceptable( "1,2,3", &context ) );
   QVERIFY( !def->checkValueIsAcceptable( "1,2,3,a", &context ) );
 
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingFeatureSourceDefinition( r1->id() ) ) );
+  QVERIFY( def->checkValueIsAcceptable( QgsProcessingOutputLayerDefinition( r1->id() ) ) );
+
   // using map layer
   QVariantMap params;
   params.insert( "non_optional",  r1->id() );
@@ -2414,6 +2420,22 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
   params.insert( "non_optional",  QgsProcessingFeatureSourceDefinition( QgsProperty::fromValue( QVariant::fromValue( r1 ) ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QCOMPARE( gExt.constGet()->vertexCount(), 5 );
+  ext = gExt.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+
+  // using output layer definition, e.g. from a previous model child algorithm
+  params.insert( "non_optional",  QgsProcessingOutputLayerDefinition( r1->id() ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
   ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
@@ -4454,7 +4476,8 @@ void TestQgsProcessing::parameterFeatureSource()
   QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
   params.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( v1 ) );
   QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: invalid value" ) );
-
+  params.insert( QStringLiteral( "INPUT" ), QgsProcessingOutputLayerDefinition( QStringLiteral( "my prop layer" ) ) );
+  QCOMPARE( QgsProcessingAlgorithm::invalidSourceError( params, QStringLiteral( "INPUT" ) ), QStringLiteral( "Could not load source layer for INPUT: my prop layer not found" ) );
 }
 
 void TestQgsProcessing::parameterFeatureSink()
@@ -5156,9 +5179,16 @@ void TestQgsProcessing::processingFeatureSource()
   QVERIFY( source->getFeatures().nextFeature( f2 ) );
   QCOMPARE( f2.geometry(), f.geometry() );
 
-
   // next using property based definition
   params.insert( QStringLiteral( "layer" ), QgsProcessingFeatureSourceDefinition( QgsProperty::fromExpression( QStringLiteral( "trim('%1' + ' ')" ).arg( layer->id() ) ), false ) );
+  source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
+  // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
+  QVERIFY( source.get() );
+  QVERIFY( source->getFeatures().nextFeature( f2 ) );
+  QCOMPARE( f2.geometry(), f.geometry() );
+
+  // we also must accept QgsProcessingOutputLayerDefinition - e.g. to allow outputs from earlier child algorithms in models
+  params.insert( QStringLiteral( "layer" ), QgsProcessingOutputLayerDefinition( QgsProperty::fromValue( layer->id() ) ) );
   source.reset( QgsProcessingParameters::parameterAsSource( def.get(), params, context ) );
   // can't directly match it to layer, so instead just get the feature and test that it matches what we expect
   QVERIFY( source.get() );
@@ -6582,6 +6612,11 @@ void TestQgsProcessing::convertCompatible()
   // vector layer as default
   def.reset( new QgsProcessingParameterFeatureSource( QStringLiteral( "source" ), QString(), QList<int>(), QVariant::fromValue( layer ) ) );
   params.remove( QStringLiteral( "source" ) );
+  out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
+  QCOMPARE( out, layer->source() );
+
+  // output layer as input - e.g. from a previous model child
+  params.insert( QStringLiteral( "source" ), QgsProcessingOutputLayerDefinition( layer->id() ) );
   out = QgsProcessingParameters::parameterAsCompatibleSourceLayerPath( def.get(), params, context, QStringList() << "shp", QString( "shp" ), &feedback );
   QCOMPARE( out, layer->source() );
 }

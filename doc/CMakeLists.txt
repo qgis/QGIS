@@ -104,23 +104,16 @@ IF(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/quickgui/plugin
     )
 
-    IF(WITH_SERVER_PLUGINS)
+    IF(WITH_SERVER)
       SET(DOXYGEN_INPUT
         ${DOXYGEN_INPUT}
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserver.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgscapabilitiescache.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverexception.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsrequesthandler.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsaccesscontrolfilter.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverinterface.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverresponse.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserverrequest.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsservice.h
-        ${CMAKE_SOURCE_DIR}/src/server/qgsserviceregistry.h
+        ${CMAKE_SOURCE_DIR}/src/server/
+        ${CMAKE_SOURCE_DIR}/src/server/services/
+        ${CMAKE_SOURCE_DIR}/src/server/services/wms
+        ${CMAKE_SOURCE_DIR}/src/server/services/wfs
+        ${CMAKE_SOURCE_DIR}/src/server/services/wcs
       )
-    ENDIF(WITH_SERVER_PLUGINS)
+    ENDIF(WITH_SERVER)
 
     SET(DOXYGEN_FILE_PATTERNS *.h *.cpp *.dox)
 

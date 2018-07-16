@@ -12,8 +12,9 @@
 class QgsBufferServerRequest : QgsServerRequest
 {
 %Docstring
-QgsBufferServerRequest
-Class defining request with  data
+Class defining request with data
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

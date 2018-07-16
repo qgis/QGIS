@@ -28,8 +28,9 @@
 
 /**
  * \ingroup server
- * QgsFcgiServerResquest
- * Class defining fcgi request
+ * \class QgsFcgiServerRequest
+ * \brief Class defining fcgi request
+ * \since QGIS 3.0
  */
 class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
 {

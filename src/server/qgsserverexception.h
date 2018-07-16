@@ -30,7 +30,6 @@
  * \ingroup server
  * \class  QgsServerException
  * \brief Exception base class for server exceptions.
- *
  * \since QGIS 3.0
  */
 #ifndef SIP_RUN

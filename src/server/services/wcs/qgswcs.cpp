@@ -29,10 +29,20 @@
 namespace QgsWcs
 {
 
+  /**
+   * \ingroup server
+   * \class QgsWcs::Service
+   * \brief OGC web service specialized for WCS
+   * \since QGIS 3.0
+   */
   class Service: public QgsService
   {
     public:
-      // Constructor
+
+      /**
+       * Constructor for WCS service.
+       * \param serverIface Interface for plugins.
+       */
       Service( QgsServerInterface *serverIface )
         : mServerIface( serverIface )
       {}
@@ -94,8 +104,12 @@ namespace QgsWcs
 
 } // namespace QgsWfs
 
-
-// Module
+/**
+ * \ingroup server
+ * \class QgsWcsModule
+ * \brief Service module specialized for WCS
+ * \since QGIS 3.0
+ */
 class QgsWcsModule: public QgsServiceModule
 {
   public:
@@ -117,8 +131,3 @@ QGISEXTERN void QGS_ServiceModule_Exit( QgsServiceModule * )
 {
   // Nothing to do
 }
-
-
-
-
-
