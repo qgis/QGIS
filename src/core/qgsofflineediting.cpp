@@ -1338,7 +1338,6 @@ void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, co
   }
 
   increaseCommitNo( database.get() );
-  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, const QgsFeatureList &addedFeatures )
@@ -1376,8 +1375,6 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
                   .arg( newFeatureIds.at( i ) );
     sqlExec( database.get(), sql );
   }
-
-  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, const QgsFeatureIds &deletedFeatureIds )
@@ -1405,8 +1402,6 @@ void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, co
       sqlExec( database.get(), sql );
     }
   }
-
-  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLayerId, const QgsChangedAttributesMap &changedAttrsMap )
@@ -1441,7 +1436,6 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
   }
 
   increaseCommitNo( database.get() );
-  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, const QgsGeometryMap &changedGeometries )
@@ -1474,7 +1468,6 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, 
   }
 
   increaseCommitNo( database.get() );
-  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::startListenFeatureChanges()
