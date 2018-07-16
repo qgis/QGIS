@@ -301,48 +301,21 @@ QgsRasterIdentifyResult QgsRasterDataProvider::identify( const QgsPointXY &point
 }
 
 double QgsRasterDataProvider::sample( const QgsPointXY &point, int band,
-                                      bool *ok, const QgsRectangle &boundingBox, int width, int height, int )
+                                      bool *ok, const QgsRectangle &boundingBox, int width, int height, int dpi )
 {
   if ( ok )
     *ok = false;
 
-  if ( !extent().contains( point ) )
-  {
-    // Outside the raster
+  const auto res = identify( point, QgsRaster::IdentifyFormatValue, boundingBox, width, height, dpi );
+  const QVariant value = res.results().value( band );
+
+  if ( !value.isValid() )
     return std::numeric_limits<double>::quiet_NaN();
-  }
 
-  QgsRectangle finalExtent = boundingBox;
-  if ( finalExtent.isEmpty() )
-    finalExtent = extent();
-
-  if ( width == 0 )
-  {
-    width = capabilities() & Size ? xSize() : 1000;
-  }
-  if ( height == 0 )
-  {
-    height = capabilities() & Size ? ySize() : 1000;
-  }
-
-  // Calculate the row / column where the point falls
-  double xres = ( finalExtent.width() ) / width;
-  double yres = ( finalExtent.height() ) / height;
-
-  int col = static_cast< int >( std::floor( ( point.x() - finalExtent.xMinimum() ) / xres ) );
-  int row = static_cast< int >( std::floor( ( finalExtent.yMaximum() - point.y() ) / yres ) );
-
-  double xMin = finalExtent.xMinimum() + col * xres;
-  double xMax = xMin + xres;
-  double yMax = finalExtent.yMaximum() - row * yres;
-  double yMin = yMax - yres;
-  QgsRectangle pixelExtent( xMin, yMin, xMax, yMax );
-
-  std::unique_ptr< QgsRasterBlock > bandBlock( block( band, pixelExtent, 1, 1 ) );
-  if ( bandBlock && ok )
+  if ( ok )
     *ok = true;
 
-  return bandBlock ? bandBlock->value( 0 ) : std::numeric_limits<double>::quiet_NaN();
+  return value.toDouble( ok );
 }
 
 QString QgsRasterDataProvider::lastErrorFormat()
