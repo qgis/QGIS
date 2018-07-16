@@ -184,7 +184,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
                     self.spnValue.setClearValue(float(param.defaultValue()))
                 except:
                     pass
-        elif self.param.minimum() is not None:
+        elif self.param.minimum() is not None and not self.allowing_null:
             try:
                 self.setValue(float(self.param.minimum()))
                 if not self.allowing_null:
