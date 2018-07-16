@@ -96,7 +96,8 @@ class warp(GdalAlgorithm):
                                                        self.tr('Output file resolution in target georeferenced units'),
                                                        type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.0,
-                                                       defaultValue=None))
+                                                       defaultValue=None,
+                                                       optional=True))
 
         options_param = QgsProcessingParameterString(self.OPTIONS,
                                                      self.tr('Additional creation parameters'),
