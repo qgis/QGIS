@@ -175,11 +175,17 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
     /**
      * Returns the provider ID.
      */
-    QString providerId() const;
+    QString providerId() const { return mProviderId; }
 
   private:
 
-    QgsProcessingProvider *mProvider = nullptr;
+    // NOTE: we store both the provider ID and a pointer to the provider here intentionally.
+    // We store the provider pointer to avoid having to lookup the provider from the registry
+    // everytime the node is used (which kills performance in the filter proxy model), but
+    // we also store the provider id string in order to identify the provider that the node
+    // is linked to for cleanups after the provider is removed.
+    QString mProviderId;
+    QPointer< QgsProcessingProvider > mProvider;
 
 };
 
