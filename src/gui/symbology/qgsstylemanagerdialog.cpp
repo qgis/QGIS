@@ -907,7 +907,7 @@ void QgsStyleManagerDialog::populateGroups()
   setBold( favoriteSymbols );
   model->appendRow( favoriteSymbols );
 
-  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
+  QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all" );
   allSymbols->setEditable( false );
   setBold( allSymbols );
