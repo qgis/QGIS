@@ -27,7 +27,9 @@ struct HdfString
   char data [HDF_MAX_NAME];
 };
 
-template <int TYPE> inline void hdfClose( hid_t id ) { Q_UNUSED( id ); assert( false ); }
+#define MDAL_UNUSED(x) (void)x;
+
+template <int TYPE> inline void hdfClose( hid_t id ) { MDAL_UNUSED( id ); assert( id ); }
 template <> inline void hdfClose<H5I_FILE>( hid_t id ) { H5Fclose( id ); }
 template <> inline void hdfClose<H5I_GROUP>( hid_t id ) { H5Gclose( id ); }
 template <> inline void hdfClose<H5I_DATASET>( hid_t id ) { H5Dclose( id ); }
