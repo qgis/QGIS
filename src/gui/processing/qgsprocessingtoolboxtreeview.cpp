@@ -2,7 +2,7 @@
     qgsprocessingtoolboxtreeview.cpp
     -------------------------------
     begin                : July 2018
-    copyright            : (C) 2018 by Nyall Dawso
+    copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
