@@ -1,5 +1,5 @@
 /***************************************************************************
-    QgsProcessingToolboxModel.cpp
+    qgsprocessingtoolboxmodel.cpp
     -------------------------------
     begin                : May 2018
     copyright            : (C) 2018 by Nyall Dawson
@@ -75,13 +75,17 @@ void QgsProcessingToolboxModelNode::deleteChildren()
 //
 
 QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider )
-  : mProviderId( provider->id() )
-  , mProvider( provider )
+  : mProvider( provider )
 {}
 
 QgsProcessingProvider *QgsProcessingToolboxModelProviderNode::provider()
 {
   return mProvider;
+}
+
+QString QgsProcessingToolboxModelProviderNode::providerId() const
+{
+  return mProvider ? mProvider->id() : QString();
 }
 
 //
@@ -227,8 +231,8 @@ void QgsProcessingToolboxModel::providerAdded( const QString &id )
   }
   else
   {
-    //native providers use top level groups - that's too hard for us to
-    //work out exactly what's going to change, so just reset the model
+    // native providers use top level groups - that's too hard for us to
+    // work out exactly what's going to change, so just reset the model
     beginResetModel();
     addProvider( provider );
     endResetModel();
@@ -283,6 +287,9 @@ QModelIndex QgsProcessingToolboxModel::node2index( QgsProcessingToolboxModelNode
 
 void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 {
+  if ( !provider )
+    return;
+
   connect( provider, &QgsProcessingProvider::algorithmsLoaded, this, &QgsProcessingToolboxModel::rebuild, Qt::UniqueConnection );
 
   QgsProcessingToolboxModelNode *parentNode = nullptr;
