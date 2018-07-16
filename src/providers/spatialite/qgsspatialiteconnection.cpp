@@ -666,6 +666,7 @@ error:
 
 
 QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
+QMutex QgsSqliteHandle::sHandleMutex;
 
 
 bool QgsSqliteHandle::checkMetadata( sqlite3 *handle )
@@ -696,6 +697,7 @@ skip:
 QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
 {
   //QMap < QString, QgsSqliteHandle* >&handles = QgsSqliteHandle::handles;
+  QMutexLocker locker( &sHandleMutex );
 
   if ( shared && sHandles.contains( dbPath ) )
   {
@@ -743,6 +745,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
   }
   else
   {
+    QMutexLocker locker( &sHandleMutex );
     QMap < QString, QgsSqliteHandle * >::iterator i;
     for ( i = sHandles.begin(); i != sHandles.end() && i.value() != handle; ++i )
       ;
@@ -762,6 +765,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
 
 void QgsSqliteHandle::closeAll()
 {
+  QMutexLocker locker( &sHandleMutex );
   qDeleteAll( sHandles );
   sHandles.clear();
 }
