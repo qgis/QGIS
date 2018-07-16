@@ -29,15 +29,15 @@ void MDAL::GdalDataset::init( const std::string &dsName )
 
 void MDAL::GdalDataset::parseParameters()
 {
-  mNBands = static_cast<uint>( GDALGetRasterCount( mHDataset ) );
+  mNBands = static_cast<unsigned int>( GDALGetRasterCount( mHDataset ) );
   if ( mNBands == 0 ) throw MDAL_Status::Err_InvalidData;
 
   GDALGetGeoTransform( mHDataset, mGT ); // in case of error it returns Identid
 
-  mXSize = static_cast<uint>( GDALGetRasterXSize( mHDataset ) ); //raster width in pixels
+  mXSize = static_cast<unsigned int>( GDALGetRasterXSize( mHDataset ) ); //raster width in pixels
   if ( mXSize == 0 ) throw MDAL_Status::Err_InvalidData;
 
-  mYSize = static_cast<uint>( GDALGetRasterYSize( mHDataset ) ); //raster height in pixels
+  mYSize = static_cast<unsigned int>( GDALGetRasterYSize( mHDataset ) ); //raster height in pixels
   if ( mYSize == 0 ) throw MDAL_Status::Err_InvalidData;
 
   mNPoints = mXSize * mYSize;
@@ -72,13 +72,13 @@ bool MDAL::LoaderGdal::meshes_equals( const MDAL::GdalDataset *ds1, const MDAL::
 bool MDAL::LoaderGdal::initVertices( Vertices &vertices )
 {
   Vertex *VertexsPtr = vertices.data();
-  uint mXSize = meshGDALDataset()->mXSize;
-  uint mYSize = meshGDALDataset()->mYSize;
+  unsigned int mXSize = meshGDALDataset()->mXSize;
+  unsigned int mYSize = meshGDALDataset()->mYSize;
   const double *mGT = meshGDALDataset()->mGT;
 
-  for ( uint y = 0; y < mYSize; ++y )
+  for ( unsigned int y = 0; y < mYSize; ++y )
   {
-    for ( uint x = 0; x < mXSize; ++x, ++VertexsPtr )
+    for ( unsigned int x = 0; x < mXSize; ++x, ++VertexsPtr )
     {
       // VertexsPtr->setId(x + mXSize*y);
       VertexsPtr->x = mGT[0] + ( x + 0.5 ) * mGT[1] + ( y + 0.5 ) * mGT[2];
@@ -111,14 +111,14 @@ bool MDAL::LoaderGdal::initVertices( Vertices &vertices )
 void MDAL::LoaderGdal::initFaces( Vertices &Vertexs, Faces &Faces, bool is_longitude_shifted )
 {
   int reconnected = 0;
-  uint mXSize = meshGDALDataset()->mXSize;
-  uint mYSize = meshGDALDataset()->mYSize;
+  unsigned int mXSize = meshGDALDataset()->mXSize;
+  unsigned int mYSize = meshGDALDataset()->mYSize;
 
   size_t i = 0;
 
-  for ( uint y = 0; y < mYSize - 1; ++y )
+  for ( unsigned int y = 0; y < mYSize - 1; ++y )
   {
-    for ( uint x = 0; x < mXSize - 1; ++x )
+    for ( unsigned int x = 0; x < mXSize - 1; ++x )
     {
       if ( is_longitude_shifted &&
            ( Vertexs[x + mXSize * y].x > 0.0 ) &&
@@ -195,7 +195,7 @@ MDAL::LoaderGdal::metadata_hash MDAL::LoaderGdal::parseMetadata( GDALMajorObject
 
 void MDAL::LoaderGdal::parseRasterBands( const MDAL::GdalDataset *cfGDALDataset )
 {
-  for ( uint i = 1; i <= cfGDALDataset->mNBands; ++i ) // starts with 1 .... ehm....
+  for ( unsigned int i = 1; i <= cfGDALDataset->mNBands; ++i ) // starts with 1 .... ehm....
   {
     // Get Band
     GDALRasterBandH gdalBand = GDALGetRasterBand( cfGDALDataset->mHDataset, static_cast<int>( i ) );
@@ -262,10 +262,10 @@ void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
   assert( raster_band );
 
   double nodata =  GDALGetRasterNoDataValue( raster_band, nullptr );
-  uint mXSize = meshGDALDataset()->mXSize;
-  uint mYSize = meshGDALDataset()->mYSize;
+  unsigned int mXSize = meshGDALDataset()->mXSize;
+  unsigned int mYSize = meshGDALDataset()->mYSize;
 
-  for ( uint y = 0; y < mYSize; ++y )
+  for ( unsigned int y = 0; y < mYSize; ++y )
   {
     // buffering per-line
     CPLErr err = GDALRasterIO(
@@ -287,9 +287,9 @@ void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
       throw MDAL_Status::Err_InvalidData;
     }
 
-    for ( uint x = 0; x < mXSize; ++x )
+    for ( unsigned int x = 0; x < mXSize; ++x )
     {
-      uint idx = x + mXSize * y;
+      unsigned int idx = x + mXSize * y;
       double val = mPafScanline[x];
       bool noData = false;
       if ( MDAL::equals( val, nodata ) )
@@ -324,7 +324,7 @@ void MDAL::LoaderGdal::addDataToOutput( GDALRasterBandH raster_band, std::shared
 void MDAL::LoaderGdal::activateFaces( std::shared_ptr<Dataset> tos )
 {
   // Activate only Faces that do all Vertex's outputs with some data
-  for ( uint idx = 0; idx < meshGDALDataset()->mNVolumes; ++idx )
+  for ( unsigned int idx = 0; idx < meshGDALDataset()->mNVolumes; ++idx )
   {
     Face elem = mMesh->faces.at( idx );
 
