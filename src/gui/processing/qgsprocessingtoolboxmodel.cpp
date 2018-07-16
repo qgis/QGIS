@@ -75,17 +75,13 @@ void QgsProcessingToolboxModelNode::deleteChildren()
 //
 
 QgsProcessingToolboxModelProviderNode::QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider )
-  : mProvider( provider )
+  : mProviderId( provider->id() )
+  , mProvider( provider )
 {}
 
 QgsProcessingProvider *QgsProcessingToolboxModelProviderNode::provider()
 {
   return mProvider;
-}
-
-QString QgsProcessingToolboxModelProviderNode::providerId() const
-{
-  return mProvider ? mProvider->id() : QString();
 }
 
 //
