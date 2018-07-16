@@ -90,7 +90,8 @@ class warp(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Nodata value for output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0))
+                                                       defaultValue=None,
+                                                       optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.TARGET_RESOLUTION,
                                                        self.tr('Output file resolution in target georeferenced units'),
                                                        type=QgsProcessingParameterNumber.Double,
