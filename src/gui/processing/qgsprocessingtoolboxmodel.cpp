@@ -123,7 +123,7 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   if ( mRecentLog )
     connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [ = ] { repopulateRecentAlgorithms(); } );
 
-  connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::providerAdded );
+  connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
   connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
 }
 
@@ -235,29 +235,11 @@ void QgsProcessingToolboxModel::providerAdded( const QString &id )
   }
 }
 
-void QgsProcessingToolboxModel::providerRemoved( const QString &id )
+void QgsProcessingToolboxModel::providerRemoved( const QString & )
 {
-  if ( isTopLevelProvider( id ) )
-  {
-    // native providers use top level groups - so we can't
-    // work out what to remove. Just rebuild the whole model instead.
-    rebuild();
-  }
-  else
-  {
-    // can't retrieve the provider - it's been deleted!
-    // so find node by id
-    QModelIndex index = indexForProvider( id );
-    QgsProcessingToolboxModelNode *node = index2node( index );
-    if ( !node )
-      return;
-
-    beginRemoveRows( QModelIndex(), index.row(), index.row() );
-    delete mRootNode->takeChild( node );
-    endRemoveRows();
-
-    repopulateRecentAlgorithms();
-  }
+  // native providers use top level groups - so we can't
+  // work out what to remove. Just rebuild the whole model instead.
+  rebuild();
 }
 
 QgsProcessingToolboxModelNode *QgsProcessingToolboxModel::index2node( const QModelIndex &index ) const
@@ -651,7 +633,7 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry,
     QgsProcessingRecentAlgorithmLog *recentLog )
   : QSortFilterProxyModel( parent )
-  , mModel( new QgsProcessingToolboxModel( parent, registry, recentLog ) )
+  , mModel( new QgsProcessingToolboxModel( this, registry, recentLog ) )
 {
   setSourceModel( mModel );
   setDynamicSortFilter( true );
