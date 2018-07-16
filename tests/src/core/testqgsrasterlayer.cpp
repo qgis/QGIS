@@ -729,21 +729,32 @@ void TestQgsRasterLayer::sample()
   std::unique_ptr< QgsRasterLayer > rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
                                          rasterFileInfo.completeBaseName() );
   QVERIFY( rl->isValid() );
-  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ).isValid() );
-  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1 ).toInt(), 125 );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ) ) );
+  bool ok = false;
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1, &ok ) ) );
+  QVERIFY( !ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1 ), 125.0 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 1, &ok ), 125.0 );
+  QVERIFY( ok );
   // bad bands
-  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0 ).isValid() );
-  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 10 ).isValid() );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0 ) ) );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 0, &ok ) ) );
+  QVERIFY( !ok );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 788461, 3344957 ), 10, &ok ) ) );
+  QVERIFY( !ok );
 
   fileName = mTestDataDir + "landsat_4326.tif";
   rasterFileInfo = QFileInfo( fileName );
   rl = qgis::make_unique< QgsRasterLayer> ( rasterFileInfo.filePath(),
        rasterFileInfo.completeBaseName() );
   QVERIFY( rl->isValid() );
-  QVERIFY( !rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ).isValid() );
-  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 1 ).toInt(), 125 );
-  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2 ).toInt(), 139 );
-  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3 ).toInt(), 111 );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1 ) ) );
+  QVERIFY( std::isnan( rl->dataProvider()->sample( QgsPointXY( 0, 0 ), 1, &ok ) ) );
+  QVERIFY( !ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 1, &ok ), 125.0 );
+  QVERIFY( ok );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 2 ), 139.0 );
+  QCOMPARE( rl->dataProvider()->sample( QgsPointXY( 17.943731, 30.230791 ), 3 ), 111.0 );
 }
 
 QGSTEST_MAIN( TestQgsRasterLayer )

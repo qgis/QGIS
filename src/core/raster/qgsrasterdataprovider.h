@@ -364,16 +364,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * parameters \a boundingBox, \a width and \a height are important to identify
      * on the same zoom level as a displayed map and to do effective
      * caching (WCS). If context params are not specified the highest
-     * resolution is used. capabilities() may be used to test if format
-     * is supported by provider.
+     * resolution is used.
      *
-     * A null QVariant will be returned if the point is outside data source extent, or an invalid
-     * band number was specified.
+     * If \a ok is specified and the point is outside data source extent, or an invalid
+     * band number was specified, then \a ok will be set to false. In this case the function will return
+     * a NaN value.
      *
      * \see identify(), which is much more flexible but considerably less efficient.
      * \since QGIS 3.4
      */
-    virtual QVariant sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    virtual double sample( const QgsPointXY &point, int band,
+                           bool *ok SIP_OUT = nullptr,
+                           const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
      * \brief Returns the caption error text for the last error in this provider

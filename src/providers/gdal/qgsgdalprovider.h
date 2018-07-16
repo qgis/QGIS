@@ -103,7 +103,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRectangle extent() const override;
     bool isValid() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
-    QVariant sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    double sample( const QgsPointXY &point, int band, bool *ok = nullptr, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
     QString lastErrorTitle() override;
     QString lastError() override;
     int capabilities() const override;

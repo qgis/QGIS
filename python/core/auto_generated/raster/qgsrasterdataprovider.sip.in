@@ -277,17 +277,19 @@ if point is outside data source extent.
 .. seealso:: :py:func:`sample`
 %End
 
-    virtual QVariant sample( const QgsPointXY &point, int band, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
+    virtual double sample( const QgsPointXY &point, int band,
+                           bool *ok /Out/ = 0,
+                           const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 %Docstring
 Samples a raster value from the specified ``band`` found at the ``point`` position. The context
 parameters ``boundingBox``, ``width`` and ``height`` are important to identify
 on the same zoom level as a displayed map and to do effective
 caching (WCS). If context params are not specified the highest
-resolution is used. capabilities() may be used to test if format
-is supported by provider.
+resolution is used.
 
-A null QVariant will be returned if the point is outside data source extent, or an invalid
-band number was specified.
+If ``ok`` is specified and the point is outside data source extent, or an invalid
+band number was specified, then ``ok`` will be set to false. In this case the function will return
+a NaN value.
 
 .. seealso:: :py:func:`identify`
 
