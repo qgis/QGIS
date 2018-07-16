@@ -1,32 +1,34 @@
 __kernel void processNineCellWindow( __global float *scanLine1,
-                                       __global float *scanLine2,
-                                       __global float *scanLine3,
-                                       __global uchar4 *resultLine, // This is an image!
-                                       __global float *rasterParams //  [ mInputNodataValue, mOutputNodataValue, mZFactor, mCellSizeX, mCellSizeY,
-                                                                    //    cos_az_mul_cos_alt_mul_z_mul_254, sin_az_mul_cos_alt_mul_z_mul_254, square_z, sin_altRadians_mul_254]
+                                     __global float *scanLine2,
+                                     __global float *scanLine3,
+                                     __global uchar4 *resultLine, // This is an image!
+                                     __global float *rasterParams
 
-                         ) {
+                                    )
+{
 
-    // Get the index of the current element
-    const int i = get_global_id(0);
+  // Get the index of the current element
+  const int i = get_global_id(0);
 
-    float x11 = scanLine1[i];
-    float x12 = scanLine1[i+1];
-    float x13 = scanLine1[i+2];
-    float x21 = scanLine2[i];
-    float x22 = scanLine2[i+1];
-    float x23 = scanLine2[i+2];
-    float x31 = scanLine3[i];
-    float x32 = scanLine3[i+1];
-    float x33 = scanLine3[i+2];
+  float x11 = scanLine1[i];
+  float x12 = scanLine1[i+1];
+  float x13 = scanLine1[i+2];
+  float x21 = scanLine2[i];
+  float x22 = scanLine2[i+1];
+  float x23 = scanLine2[i+2];
+  float x31 = scanLine3[i];
+  float x32 = scanLine3[i+1];
+  float x33 = scanLine3[i+2];
 
-    float res;
-    if ( x22 == rasterParams[1] )
-    {
-       res = rasterParams[2];
-    }
-    else
-    {
+  if ( x22 == rasterParams[0] )
+  {
+    float alpha = rasterParams[5] * rasterParams[16];
+    resultLine[i] = (uchar4)(rasterParams[13] * alpha,
+                             rasterParams[14] * alpha,
+                             rasterParams[15] * alpha, 255 * alpha);
+  }
+  else
+  {
     if ( x11 == rasterParams[0] ) x11 = x22;
     if ( x12 == rasterParams[0] ) x12 = x22;
     if ( x13 == rasterParams[0] ) x13 = x22;
@@ -40,36 +42,41 @@ __kernel void processNineCellWindow( __global float *scanLine1,
     float derX = ( ( x13 + x23 + x23 + x33 ) - ( x11 + x21 + x21 + x31 ) ) / ( 8 * rasterParams[3] );
     float derY = ( ( x31 + x32 + x32 + x33 ) - ( x11 + x12 + x12 + x13 ) ) / ( 8 * -rasterParams[4]);
 
-    if ( derX == rasterParams[1] || derY == rasterParams[1] )
+    if ( derX == rasterParams[0] ||
+         derX == rasterParams[0] )
     {
-      res = rasterParams[2];
+      float alpha = rasterParams[5] * rasterParams[16];
+      resultLine[i] = (uchar4)(rasterParams[13] * alpha,
+                               rasterParams[14] * alpha,
+                               rasterParams[15] * alpha, 255 * alpha);
     }
     else
     {
+      float res;
       // Weighted multi direction as in http://pubs.usgs.gov/of/1992/of92-422/of92-422.pdf
       // Fast formula from GDAL DEM
       const float xx = derX * derX;
       const float yy = derY * derY;
       const float xx_plus_yy = xx + yy;
-      // Flat? -> white
+      // Flat?
       if ( xx_plus_yy == 0.0f )
       {
-        res = clamp( 1.0f + rasterParams[12], 0.0f, 255.0f );
+        res = clamp( 1.0f + rasterParams[9], 0.0f, 255.0f );
       }
       else
       {
         // ... then the shade value from different azimuth
-        float val225_mul_127 = rasterParams[13] +
-                               ( derX - derY ) * rasterParams[14];
+        float val225_mul_127 = rasterParams[10] +
+                               ( derX - derY ) * rasterParams[11];
         val225_mul_127 = ( val225_mul_127 <= 0.0 ) ? 0.0 : val225_mul_127;
-        float val270_mul_127 = rasterParams[13] -
-                               derX * rasterParams[15];
+        float val270_mul_127 = rasterParams[10] -
+                               derX * rasterParams[12];
         val270_mul_127 = ( val270_mul_127 <= 0.0 ) ? 0.0 : val270_mul_127;
-        float val315_mul_127 = rasterParams[13] +
-                               ( derX + derY ) * rasterParams[14];
+        float val315_mul_127 = rasterParams[10] +
+                               ( derX + derY ) * rasterParams[11];
         val315_mul_127 = ( val315_mul_127 <= 0.0 ) ? 0.0 : val315_mul_127;
-        float val360_mul_127 = rasterParams[13] -
-                               derY * rasterParams[15];
+        float val360_mul_127 = rasterParams[10] -
+                               derY * rasterParams[12];
         val360_mul_127 = ( val360_mul_127 <= 0.0 ) ? 0.0 : val360_mul_127;
         // ... then the weighted shading
         const float weight_225 = 0.5 * xx_plus_yy - derX * derY;
@@ -81,16 +88,11 @@ __kernel void processNineCellWindow( __global float *scanLine1,
                                        weight_270 * val270_mul_127 +
                                        weight_315 * val315_mul_127 +
                                        weight_360 * val360_mul_127 ) / xx_plus_yy ) /
-                                   ( 1 + rasterParams[11] * xx_plus_yy );
-
+                                   ( 1 + rasterParams[8] * xx_plus_yy );
         res = clamp( 1.0f + cang_mul_127, 0.0f, 255.0f );
+        res = res * rasterParams[5];
+        resultLine[i] = (uchar4)(res, res, res, 255 * rasterParams[5]);
       }
     }
   }
-
-  // Opacity
-  res = res * rasterParams[7];
-
-  resultLine[i] = (uchar4)(res, res, res, 255 * rasterParams[7]);
-
 }
