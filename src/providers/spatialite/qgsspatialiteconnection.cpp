@@ -756,7 +756,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
     if ( --i.value()->ref == 0 )
     {
       delete i.value();
-      sHandles.remove( i.key() );
+      i = sHandles.erase( i );
     }
   }
 
