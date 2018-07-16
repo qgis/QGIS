@@ -157,6 +157,8 @@ class RasterSampling(QgisAlgorithm):
 
         for n, i in enumerate(source.getFeatures()):
 
+            attrs = i.attributes()
+
             if i.geometry().isMultipart():
                 raise QgsProcessingException(self.tr('''Impossible to sample data
                 of a Multipart layer. Please use the Multipart to single part
@@ -170,12 +172,12 @@ class RasterSampling(QgisAlgorithm):
                 point = ct.transform(point)
             except QgsCsException:
                 for b in range(sampled_raster.bandCount()):
-                    attrs.append(
-                        None
-                    )
+                    attrs.append(None)
+                i.setAttributes(attrs)
+                sink.addFeature(i, QgsFeatureSink.FastInsert)
+                feedback.setProgress(int(n * total))
                 feedback.reportError(self.tr('Could not reproject feature {} to raster CRS').format(i.id()))
-
-            attrs = i.attributes()
+                continue
 
             if sampled_raster.bandCount() > 1:
 
