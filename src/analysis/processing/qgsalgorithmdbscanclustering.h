@@ -31,7 +31,7 @@ class QgsSpatialIndexKDBush;
 
 
 /**
- * Native k-means clustering algorithm.
+ * Native DBSCAN density based scan with noise clustering algorithm.
  */
 class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorithm
 {
