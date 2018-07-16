@@ -1,6 +1,6 @@
 /***************************************************************************
-    qgsprocessingalgorithmmodel.h
-    -----------------------------
+    qgsprocessingtoolboxmodel.h
+    ---------------------------
     begin                : May 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSPROCESSINGALGORITHMMODEL_H
-#define QGSPROCESSINGALGORITHMMODEL_H
+#ifndef QGSPROCESSINGTOOLBOXMODEL_H
+#define QGSPROCESSINGTOOLBOXMODEL_H
 
 #include "qgis.h"
 #include "qgis_gui.h"
@@ -31,7 +31,7 @@ class QgsProcessingRecentAlgorithmLog;
 ///@cond PRIVATE
 
 /**
- * Abstract base class for nodes contained within a QgsProcessingToolboxModel.
+ * \brief Abstract base class for nodes contained within a QgsProcessingToolboxModel.
  * \warning Not part of stable API and may change in future QGIS releases.
  * \ingroup gui
  * \since QGIS 3.4
@@ -127,7 +127,7 @@ class GUI_EXPORT QgsProcessingToolboxModelNode : public QObject
 };
 
 /**
- * Processing toolbox model node corresponding to the recent algorithms group
+ * \brief Processing toolbox model node corresponding to the recent algorithms group
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -148,7 +148,7 @@ class GUI_EXPORT QgsProcessingToolboxModelRecentNode : public QgsProcessingToolb
 };
 
 /**
- * Processing toolbox model node corresponding to a Processing provider.
+ * \brief Processing toolbox model node corresponding to a Processing provider.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -175,17 +175,16 @@ class GUI_EXPORT QgsProcessingToolboxModelProviderNode : public QgsProcessingToo
     /**
      * Returns the provider ID.
      */
-    QString providerId() const { return mProviderId; }
+    QString providerId() const;
 
   private:
 
-    QString mProviderId;
     QgsProcessingProvider *mProvider = nullptr;
 
 };
 
 /**
- * Processing toolbox model node corresponding to a group of algorithms.
+ * \brief Processing toolbox model node corresponding to a group of algorithms.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -224,7 +223,7 @@ class GUI_EXPORT QgsProcessingToolboxModelGroupNode : public QgsProcessingToolbo
 };
 
 /**
- * Processing toolbox model node corresponding to an algorithm.
+ * \brief Processing toolbox model node corresponding to an algorithm.
  * \ingroup gui
  * \warning Not part of stable API and may change in future QGIS releases.
  * \since QGIS 3.4
@@ -257,7 +256,7 @@ class GUI_EXPORT QgsProcessingToolboxModelAlgorithmNode : public QgsProcessingTo
 ///@endcond
 
 /**
- * A model for providers and algorithms shown within the Processing toolbox.
+ * \brief A model for providers and algorithms shown within the Processing toolbox.
  *
  * See QgsProcessingToolboxProxyModel for a sorted, filterable version
  * of this model.
@@ -400,7 +399,7 @@ class GUI_EXPORT QgsProcessingToolboxModel : public QAbstractItemModel
 
 
 /**
- * A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
+ * \brief A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
  * which automatically sorts the toolbox in a logical fashion and supports filtering
  * the results.
  *
@@ -483,4 +482,4 @@ class GUI_EXPORT QgsProcessingToolboxProxyModel: public QSortFilterProxyModel
 };
 
 
-#endif // QGSPROCESSINGALGORITHMMODEL_H
+#endif // QGSPROCESSINGTOOLBOXMODEL_H

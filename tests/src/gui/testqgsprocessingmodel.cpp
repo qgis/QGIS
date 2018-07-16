@@ -1,8 +1,8 @@
 /***************************************************************************
-                         testqgsprocessing.cpp
-                         ---------------------
-    begin                : January 2017
-    copyright            : (C) 2017 by Nyall Dawson
+                         testqgsprocessingmodel.cpp
+                         --------------------------
+    begin                : July 2018
+    copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
