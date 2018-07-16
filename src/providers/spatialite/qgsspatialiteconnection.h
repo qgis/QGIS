@@ -17,6 +17,7 @@
 
 #include <QStringList>
 #include <QObject>
+#include <QMutex>
 
 #include "qgsspatialiteutils.h"
 
@@ -178,6 +179,7 @@ class QgsSqliteHandle
     bool mIsValid;
 
     static QMap < QString, QgsSqliteHandle * > sHandles;
+    static QMutex sHandleMutex;
 };
 
 
