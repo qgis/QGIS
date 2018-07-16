@@ -69,7 +69,7 @@ class translate(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.NODATA,
                                                        self.tr('Assign a specified nodata value to output bands'),
                                                        type=QgsProcessingParameterNumber.Double,
-                                                       defaultValue=0.0,
+                                                       defaultValue=None,
                                                        optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.COPY_SUBDATASETS,
                                                         self.tr('Copy all subdatasets of this file to individual output files'),
