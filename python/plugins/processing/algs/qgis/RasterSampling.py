@@ -61,7 +61,7 @@ class RasterSampling(QgisAlgorithm):
         return 'rastersampling'
 
     def displayName(self):
-        return self.tr('Sample Raster Values')
+        return self.tr('Sample raster values')
 
     def group(self):
         return self.tr('Raster analysis')
