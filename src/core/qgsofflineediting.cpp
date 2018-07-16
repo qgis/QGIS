@@ -1254,7 +1254,7 @@ QgsOfflineEditing::GeometryChanges QgsOfflineEditing::sqlQueryGeometryChanges( s
 void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, const QList<QgsField> &addedAttributes )
 {
   sqlite3_database_unique_ptr database = openLoggingDb();
-  if ( !database.get() )
+  if ( !database )
     return;
 
   // insert log
@@ -1281,7 +1281,7 @@ void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, co
 void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, const QgsFeatureList &addedFeatures )
 {
   sqlite3_database_unique_ptr database = openLoggingDb();
-  if ( !database.get() )
+  if ( !database )
     return;
 
   // insert log
@@ -1306,7 +1306,7 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
 void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, const QgsFeatureIds &deletedFeatureIds )
 {
   sqlite3_database_unique_ptr database = openLoggingDb();
-  if ( !database.get() )
+  if ( !database )
     return;
 
   // insert log
@@ -1333,7 +1333,7 @@ void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, co
 void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLayerId, const QgsChangedAttributesMap &changedAttrsMap )
 {
   sqlite3_database_unique_ptr database = openLoggingDb();
-  if ( !database.get() )
+  if ( !database )
     return;
 
   // insert log
@@ -1367,7 +1367,7 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
 void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, const QgsGeometryMap &changedGeometries )
 {
   sqlite3_database_unique_ptr database = openLoggingDb();
-  if ( !database.get() )
+  if ( !database )
     return;
 
   // insert log
