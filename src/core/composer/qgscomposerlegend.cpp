@@ -751,6 +751,15 @@ QgsLegendModelV2::QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject* parent
 {
   setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
   setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
+
+  Q_FOREACH ( QgsLayerTreeLayer* nodeLayer, rootGroup()->findLayers() )
+  {
+    QString layerTitle = nodeLayer->layer()->title();
+    if ( !layerTitle.isNull() )
+    {
+      nodeLayer->setCustomProperty( "legend/title-label", layerTitle );
+    }
+  }
 }
 
 QVariant QgsLegendModelV2::data( const QModelIndex& index, int role ) const

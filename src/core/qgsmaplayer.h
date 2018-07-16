@@ -116,11 +116,13 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Set the title of the layer
      *  used by QGIS Server in GetCapabilities request
+     *  and in composer legend as a default title
      * @return the layer title
      */
     void setTitle( const QString& title ) { mTitle = title; }
     /** Get the title of the layer
      *  used by QGIS Server in GetCapabilities request
+     *  and in composer legend as a default title
      * @return the layer title
      */
     QString title() const { return mTitle; }
