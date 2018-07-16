@@ -113,6 +113,7 @@ from .RandomSelectionWithinSubsets import RandomSelectionWithinSubsets
 from .Rasterize import RasterizeAlgorithm
 from .RasterCalculator import RasterCalculator
 from .RasterLayerStatistics import RasterLayerStatistics
+from .RasterSampling import RasterSampling
 from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
@@ -229,6 +230,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RasterCalculator(),
                 RasterizeAlgorithm(),
                 RasterLayerStatistics(),
+                RasterSampling(),
                 RectanglesOvalsDiamondsFixed(),
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),

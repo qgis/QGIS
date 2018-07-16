@@ -5728,6 +5728,7 @@ tests:
         name: expected/kmeans_polys.gml
         type: vector
 
+
   - algorithm: native:dbscanclustering
     name: DBScan 5/3
     params:
@@ -5787,5 +5788,23 @@ tests:
       OUTPUT:
         name: expected/dbscan_multiple_clusters.gml
         type: vector
+        
+  - algorithm: qgis:rastersampling
+    name: Single band raster
+    params:
+      COLUMN_PREFIX: rvalue
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      RASTERCOPY:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/sampling_raster.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
 
 # See ../README.md for a description of the file format
