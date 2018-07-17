@@ -222,7 +222,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
 void QgsStatisticalSummaryDockWidget::gathererFinished()
 {
   QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
-  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer == mGatherer )
   {
@@ -236,7 +236,7 @@ void QgsStatisticalSummaryDockWidget::gathererFinished()
 void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 {
   QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
-  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )
     return;
@@ -305,7 +305,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 {
   QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
-  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )
     return;
@@ -428,7 +428,7 @@ void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
 void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 {
   QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
-  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // this may have been sent from a gatherer which was canceled previously and we don't care
   // about it anymore...
   if ( gatherer != mGatherer )
     return;
