@@ -9,13 +9,13 @@ __kernel void processNineCellWindow( __global float *scanLine1,
   const int i = get_global_id(0);
 
   float x11 = scanLine1[i];
-  float x12 = scanLine1[i+1];
-  float x13 = scanLine1[i+2];
-  float x21 = scanLine2[i];
+  float x21 = scanLine1[i+1];
+  float x31 = scanLine1[i+2];
+  float x12 = scanLine2[i];
   float x22 = scanLine2[i+1];
-  float x23 = scanLine2[i+2];
-  float x31 = scanLine3[i];
-  float x32 = scanLine3[i+1];
+  float x32 = scanLine2[i+2];
+  float x13 = scanLine3[i];
+  float x23 = scanLine3[i+1];
   float x33 = scanLine3[i+2];
 
   if ( x22 == rasterParams[0] )
