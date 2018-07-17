@@ -3,15 +3,18 @@
 
 SET(QGIS_3D_SRCS
   qgsaabb.cpp
+  qgsabstract3dengine.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
   qgs3dutils.cpp
   qgscameracontroller.cpp
+  qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgsraycastingutils_p.cpp
   qgstessellatedpolygongeometry.cpp
   qgstilingscheme.cpp
   qgsvectorlayer3drenderer.cpp
+  qgswindow3dengine.cpp
 
   chunks/qgschunkboundsentity_p.cpp
   chunks/qgschunkedentity_p.cpp
@@ -47,7 +50,10 @@ SET(QGIS_3D_MOC_HDRS
 
   qgs3dmapscene.h
   qgs3dmapsettings.h
+  qgsabstract3dengine.h
   qgscameracontroller.h
+  qgsoffscreen3dengine.h
+  qgswindow3dengine.h
 
   chunks/qgschunkedentity_p.h
   chunks/qgschunkloader_p.h
@@ -70,15 +76,18 @@ QT5_ADD_RESOURCES(QGIS_3D_RCC_SRCS shaders.qrc)
 
 SET(QGIS_3D_HDRS
   qgsaabb.h
+  qgsabstract3dengine.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dutils.h
   qgscameracontroller.h
+  qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgsraycastingutils_p.h
   qgstessellatedpolygongeometry.h
   qgstilingscheme.h
   qgsvectorlayer3drenderer.h
+  qgswindow3dengine.h
 
   chunks/qgschunkboundsentity_p.h
   chunks/qgschunkedentity_p.h

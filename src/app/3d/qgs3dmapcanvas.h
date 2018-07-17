@@ -26,6 +26,7 @@ namespace Qt3DExtras
 
 class Qgs3DMapSettings;
 class Qgs3DMapScene;
+class QgsWindow3DEngine;
 class QgsCameraController;
 class QgsPointXY;
 
@@ -66,10 +67,10 @@ class Qgs3DMapCanvas : public QWidget
     void resizeEvent( QResizeEvent *ev ) override;
 
   private:
-    //! 3D window with all the 3D magic inside
-    Qt3DExtras::Qt3DWindow *mWindow3D = nullptr;
-    //! Frame graph node for render capture
-    Qt3DRender::QRenderCapture *mCapture = nullptr;
+    QgsWindow3DEngine *mEngine = nullptr;
+
+    QString mCaptureFileName;
+    QString mCaptureFileFormat;
 
     //! Container QWidget that encapsulates mWindow3D so we can use it embedded in ordinary widgets app
     QWidget *mContainer = nullptr;

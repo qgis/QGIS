@@ -22,24 +22,27 @@
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmapscene.h"
+#include "qgswindow3dengine.h"
 
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
-  mWindow3D = new Qt3DExtras::Qt3DWindow;
+  mEngine = new QgsWindow3DEngine;
 
-  mCapture = new Qt3DRender::QRenderCapture;
-  mWindow3D->activeFrameGraph()->setParent( mCapture );
-  mWindow3D->setActiveFrameGraph( mCapture );
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
+  {
+    image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
+    emit savedAsImage( mCaptureFileName );
+  } );
 
-  mContainer = QWidget::createWindowContainer( mWindow3D );
+  mContainer = QWidget::createWindowContainer( mEngine->window() );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
   hLayout->setMargin( 0 );
   hLayout->addWidget( mContainer, 1 );
 
-  mWindow3D->setCursor( Qt::OpenHandCursor );
+  mEngine->window()->setCursor( Qt::OpenHandCursor );
 }
 
 Qgs3DMapCanvas::~Qgs3DMapCanvas()
@@ -64,10 +67,10 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   Q_ASSERT( !mMap );
   Q_ASSERT( !mScene );
 
-  QRect viewportRect( QPoint( 0, 0 ), size() );
-  Qgs3DMapScene *newScene = new Qgs3DMapScene( *map, mWindow3D->defaultFrameGraph(), mWindow3D->renderSettings(), mWindow3D->camera(), viewportRect );
+  //QRect viewportRect( QPoint( 0, 0 ), size() );
+  Qgs3DMapScene *newScene = new Qgs3DMapScene( *map, mEngine );
 
-  mWindow3D->setRootEntity( newScene );
+  mEngine->setRootEntity( newScene );
 
   if ( mScene )
     mScene->deleteLater();
@@ -100,14 +103,8 @@ void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileForm
 {
   if ( !fileName.isEmpty() )
   {
-    Qt3DRender::QRenderCaptureReply *captureReply;
-    captureReply = mCapture->requestCapture();
-    connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
-    {
-      captureReply->image().save( fileName, fileFormat.toLocal8Bit().data() );
-      emit savedAsImage( fileName );
-
-      captureReply->deleteLater();
-    } );
+    mCaptureFileName = fileName;
+    mCaptureFileFormat = fileFormat;
+    mEngine->requestCaptureImage();
   }
 }
