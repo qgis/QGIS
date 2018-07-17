@@ -48,6 +48,7 @@
    <addaction name="mActionOpen"/>
    <addaction name="mActionSave"/>
    <addaction name="mActionSaveAs"/>
+   <addaction name="mActionSaveInProject"/>
    <addaction name="separator"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
@@ -188,6 +189,14 @@
    </property>
    <property name="shortcut">
     <string>F5</string>
+   </property>
+  </action>
+  <action name="mActionSaveInProject">
+   <property name="text">
+    <string>Save model in project</string>
+   </property>
+   <property name="toolTip">
+    <string>Save model in project</string>
    </property>
   </action>
  </widget>

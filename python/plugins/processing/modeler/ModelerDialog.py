@@ -69,6 +69,7 @@ from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.core import (Qgis,
                        QgsApplication,
                        QgsProcessingAlgorithm,
+                       QgsProject,
                        QgsSettings,
                        QgsMessageLog,
                        QgsProcessingUtils,
@@ -88,6 +89,7 @@ from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameter
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
+from processing.modeler.ProjectProvider import PROJECT_PROVIDER_ID
 from qgis.utils import iface
 
 
@@ -245,12 +247,15 @@ class ModelerDialog(BASE, WIDGET):
         except:
             pass
 
-        self.mToolbar.setIconSize(iface.iconSize())
+        if iface is not None:
+            self.mToolbar.setIconSize(iface.iconSize())
         self.mActionOpen.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.mActionSave.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.mActionSaveAs.setIcon(
+            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.mActionSaveInProject.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
         self.mActionZoomActual.setIcon(
             QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
@@ -414,6 +419,7 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionOpen.triggered.connect(self.openModel)
         self.mActionSave.triggered.connect(self.save)
         self.mActionSaveAs.triggered.connect(self.saveAs)
+        self.mActionSaveInProject.triggered.connect(self.saveInProject)
         self.mActionZoomIn.triggered.connect(self.zoomIn)
         self.mActionZoomOut.triggered.connect(self.zoomOut)
         self.mActionZoomActual.triggered.connect(self.zoomActual)
@@ -485,6 +491,23 @@ class ModelerDialog(BASE, WIDGET):
 
     def saveAs(self):
         self.saveModel(True)
+
+    def saveInProject(self):
+        if not self.can_save():
+            return
+
+        self.model.setName(str(self.textName.text()))
+        self.model.setGroup(str(self.textGroup.text()))
+        self.model.setSourceFilePath(None)
+
+        project_provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
+        project_provider.add_model(self.model)
+
+        self.update_model.emit()
+        self.bar.pushMessage("", self.tr("Model was saved inside current project"), level=Qgis.Success, duration=5)
+
+        self.hasChanged = False
+        QgsProject.instance().setDirty(True)
 
     def zoomIn(self):
         self.view.setTransformationAnchor(QGraphicsView.NoAnchor)
@@ -620,11 +643,21 @@ class ModelerDialog(BASE, WIDGET):
 
         self.bar.pushMessage("", self.tr("Model was correctly exported as python script"), level=Qgis.Success, duration=5)
 
-    def saveModel(self, saveAs):
+    def can_save(self):
+        """
+        Tests whether a model can be saved, or if it is not yet valid
+        :return: bool
+        """
         if str(self.textName.text()).strip() == '':
             self.bar.pushWarning(
                 "", self.tr('Please a enter model name before saving')
             )
+            return False
+
+        return True
+
+    def saveModel(self, saveAs):
+        if not self.can_save():
             return
         self.model.setName(str(self.textName.text()))
         self.model.setGroup(str(self.textGroup.text()))
