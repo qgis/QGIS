@@ -908,13 +908,24 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             return
 
         if self.dialogType == DIALOG_STANDARD:
-            if self.combo.findText(value) >= 0:
-                self.combo.setCurrentIndex(self.combo.findText(value))
-            else:
-                items = self.combo.additionalItems()
-                items.append(value)
-                self.combo.setAdditionalItems(items)
-                self.combo.setCurrentIndex(self.combo.findText(value))
+            if isinstance(value, str):
+                layer = QgsProject.instance().mapLayer(value)
+                if layer is not None:
+                    value = layer
+
+            found = False
+            if isinstance(value, QgsMapLayer):
+                self.combo.setLayer(value)
+                found = self.combo.currentIndex() != -1
+
+            if not found:
+                if self.combo.findText(value) >= 0:
+                    self.combo.setCurrentIndex(self.combo.findText(value))
+                else:
+                    items = self.combo.additionalItems()
+                    items.append(value)
+                    self.combo.setAdditionalItems(items)
+                    self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1146,13 +1157,24 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             return
 
         if self.dialogType == DIALOG_STANDARD:
-            if self.combo.findText(value) >= 0:
-                self.combo.setCurrentIndex(self.combo.findText(value))
-            else:
-                items = self.combo.additionalItems()
-                items.append(value)
-                self.combo.setAdditionalItems(items)
-                self.combo.setCurrentIndex(self.combo.findText(value))
+            if isinstance(value, str):
+                layer = QgsProject.instance().mapLayer(value)
+                if layer is not None:
+                    value = layer
+
+            found = False
+            if isinstance(value, QgsMapLayer):
+                self.combo.setLayer(value)
+                found = self.combo.currentIndex() != -1
+
+            if not found:
+                if self.combo.findText(value) >= 0:
+                    self.combo.setCurrentIndex(self.combo.findText(value))
+                else:
+                    items = self.combo.additionalItems()
+                    items.append(value)
+                    self.combo.setAdditionalItems(items)
+                    self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1448,13 +1470,24 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             return
 
         if self.dialogType == DIALOG_STANDARD:
-            if self.combo.findText(value) >= 0:
-                self.combo.setCurrentIndex(self.combo.findText(value))
-            else:
-                items = self.combo.additionalItems()
-                items.append(value)
-                self.combo.setAdditionalItems(items)
-                self.combo.setCurrentIndex(self.combo.findText(value))
+            if isinstance(value, str):
+                layer = QgsProject.instance().mapLayer(value)
+                if layer is not None:
+                    value = layer
+
+            found = False
+            if isinstance(value, QgsMapLayer):
+                self.combo.setLayer(value)
+                found = self.combo.currentIndex() != -1
+
+            if not found:
+                if self.combo.findText(value) >= 0:
+                    self.combo.setCurrentIndex(self.combo.findText(value))
+                else:
+                    items = self.combo.additionalItems()
+                    items.append(value)
+                    self.combo.setAdditionalItems(items)
+                    self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.setValue(value)
         else:
