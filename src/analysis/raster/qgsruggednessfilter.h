@@ -47,7 +47,10 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
     {
       return QStringLiteral( "ruggedness" );
     }
+<<<<<<< 8b81f1bb0993c3755019921eaa064d95f430c9db
 #endif
+=======
+>>>>>>> [opencl] Ruggedness index OpenCL program
 
 };
 
