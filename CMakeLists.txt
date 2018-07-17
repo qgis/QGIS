@@ -38,6 +38,8 @@ if (USE_OPENCL)
         IF(USE_OPENCL)
           SET(HAVE_OPENCL TRUE)
         ENDIF(USE_OPENCL)
+    else(${OpenCL_FOUND})
+        MESSAGE(FATAL_ERROR "Couldn't find OpenCL")
     endif(${OpenCL_FOUND})
 endif(USE_OPENCL)
 
