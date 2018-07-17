@@ -36,6 +36,7 @@ namespace Qt3DExtras
   class QForwardRenderer;
 }
 
+class QgsAbstract3DEngine;
 class QgsMapLayer;
 class QgsCameraController;
 class Qgs3DMapSettings;
@@ -52,7 +53,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     Q_OBJECT
   public:
     //! Constructs a 3D scene based on map settings and Qt 3D renderer configuration
-    Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent = nullptr );
+    Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine );
 
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
@@ -87,12 +88,11 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
 
   private:
     const Qgs3DMapSettings &mMap;
+    QgsAbstract3DEngine *mEngine = nullptr;
     //! Provides a way to have a synchronous function executed each frame
     Qt3DLogic::QFrameAction *mFrameAction = nullptr;
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
-    //! Forward renderer provided by 3D window
-    Qt3DExtras::QForwardRenderer *mForwardRenderer = nullptr;
     QList<QgsChunkedEntity *> mChunkEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;

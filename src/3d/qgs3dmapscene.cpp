@@ -29,6 +29,7 @@
 #include <QTimer>
 
 #include "qgsaabb.h"
+#include "qgsabstract3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstract3drenderer.h"
@@ -41,10 +42,10 @@
 #include "qgsvectorlayer3drenderer.h"
 
 
-Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
-  : Qt3DCore::QEntity( parent )
+Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
+  : Qt3DCore::QEntity()
   , mMap( map )
-  , mForwardRenderer( defaultFrameGraph )
+  , mEngine( engine )
 {
 
   connect( &map, &Qgs3DMapSettings::backgroundColorChanged, this, &Qgs3DMapScene::onBackgroundColorChanged );
@@ -52,16 +53,18 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
 
   // TODO: strange - setting OnDemand render policy still keeps QGIS busy (Qt 5.9.0)
   // actually it is more busy than with the default "Always" policy although there are no changes in the scene.
-  //renderSettings->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
+  //mRenderer->renderSettings()->setRenderPolicy( Qt3DRender::QRenderSettings::OnDemand );
 
 #if QT_VERSION >= 0x050900
   // we want precise picking of terrain (also bounding volume picking does not seem to work - not sure why)
-  renderSettings->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
+  mEngine->renderSettings()->pickingSettings()->setPickMethod( Qt3DRender::QPickingSettings::TrianglePicking );
 #endif
+
+  QRect viewportRect( QPoint( 0, 0 ), mEngine->size() );
 
   // Camera
   float aspectRatio = ( float )viewportRect.width() / viewportRect.height();
-  camera->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
+  mEngine->camera()->lens()->setPerspectiveProjection( 45.0f, aspectRatio, 10.f, 10000.0f );
 
   mFrameAction = new Qt3DLogic::QFrameAction();
   connect( mFrameAction, &Qt3DLogic::QFrameAction::triggered,
@@ -71,10 +74,10 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
   // Camera controlling
   mCameraController = new QgsCameraController( this ); // attaches to the scene
   mCameraController->setViewport( viewportRect );
-  mCameraController->setCamera( camera );
+  mCameraController->setCamera( mEngine->camera() );
   mCameraController->resetView( 1000 );
 
-  addCameraViewCenterEntity( camera );
+  addCameraViewCenterEntity( mEngine->camera() );
 
   // create terrain entity
 
@@ -156,7 +159,7 @@ Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardR
     // docs say frustum culling must be disabled for skybox.
     // it _somehow_ works even when frustum culling is enabled with some camera positions,
     // but then when zoomed in more it would disappear - so let's keep frustum culling disabled
-    defaultFrameGraph->setFrustumCullingEnabled( false );
+    mEngine->setFrustumCullingEnabled( false );
   }
 
   // force initial update of chunked entities
@@ -333,7 +336,7 @@ void Qgs3DMapScene::createTerrainDeferred()
 
 void Qgs3DMapScene::onBackgroundColorChanged()
 {
-  mForwardRenderer->setClearColor( mMap.backgroundColor() );
+  mEngine->setClearColor( mMap.backgroundColor() );
 }
 
 void Qgs3DMapScene::onLayerRenderer3DChanged()
