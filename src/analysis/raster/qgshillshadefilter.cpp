@@ -101,10 +101,6 @@ void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
   params.push_back( sin_az_mul_cos_alt_mul_z_mul_254 ); // 6
   params.push_back( square_z ); // 7
   params.push_back( sin_altRadians_mul_254 ); // 8
-  /*/ Slow formula
-  params.push_back( azimuthRad ); // 9
-  params.push_back( zenithRad ); // 10
-  */
 
 }
 >>>>>>> [opencl] Use fast formula for hillshade
