@@ -1090,13 +1090,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
     for ( const auto &dev : QgsOpenClUtils::devices( ) )
     {
-      mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceId( dev ), QgsOpenClUtils::deviceId( dev ) );
+      mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, dev ), QgsOpenClUtils::deviceId( dev ) );
     }
-    connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), [ = ]( int )
+    // Info updater
+    std::function<void( int )> infoUpdater = [ = ]( int )
     {
       mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
-    } );
+    };
+    connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
+    infoUpdater( -1 );
   }
   else
   {

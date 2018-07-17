@@ -149,9 +149,10 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
   }
   catch ( cl::Error &e )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error %1 getting info for OpenCL device: %2" )
-                               .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
-                               LOGMESSAGE_TAG, Qgis::Critical );
+    // This can be a legitimate error when initializing, let's log it quietly
+    QgsDebugMsgLevel( QStringLiteral( "Error %1 getting info for OpenCL device: %2" )
+                      .arg( errorText( e.err() ), QString::fromStdString( e.what() ) ),
+                      4 );
     return QString();
   }
 }
@@ -193,7 +194,7 @@ QString QgsOpenClUtils::deviceId( const cl::Device device )
 
 bool QgsOpenClUtils::activate( const QString preferredDeviceId )
 {
-  if ( preferredDeviceId.isEmpty() || deviceId( activeDevice() ) == preferredDeviceId )
+  if ( deviceId( activeDevice() ) == preferredDeviceId )
   {
     return false;
   }
@@ -275,6 +276,7 @@ bool QgsOpenClUtils::activate( const QString preferredDeviceId )
 QString QgsOpenClUtils::deviceDescription( const cl::Device device )
 {
   return QStringLiteral(
+           "Type: <b>%9</b><br>"
            "Name: <b>%1</b><br>"
            "Vendor: <b>%2</b><br>"
            "Profile: <b>%3</b><br>"
@@ -290,7 +292,8 @@ QString QgsOpenClUtils::deviceDescription( const cl::Device device )
                 QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport, device ),
                 QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth, device ),
                 QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight, device ),
-                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ) );
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize, device ),
+                QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
 QString QgsOpenClUtils::deviceDescription( const QString deviceId )
