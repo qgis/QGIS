@@ -46,7 +46,7 @@ class QgsStatisticsValueGatherer : public QgsTask
     Q_OBJECT
 
   public:
-    QgsStatisticsValueGatherer( QgsVectorLayer *layer, QgsFeatureIterator fit, int featureCount, QString sourceFieldExp )
+    QgsStatisticsValueGatherer( QgsVectorLayer *layer, const QgsFeatureIterator &fit, long featureCount, const QString &sourceFieldExp )
       : QgsTask( tr( "Fetching statistic values" ) )
       , mFeatureIterator( fit )
       , mFeatureCount( featureCount )
@@ -97,9 +97,9 @@ class QgsStatisticsValueGatherer : public QgsTask
   private:
 
     QgsFeatureIterator mFeatureIterator;
-    int mFeatureCount;
+    long mFeatureCount = 0;
     QString mFieldExpression;
-    int mFieldIndex;
+    int mFieldIndex = -1;
     QList<QVariant> mValues;
 
     std::unique_ptr<QgsExpression> mExpression;
