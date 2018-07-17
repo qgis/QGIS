@@ -1095,7 +1095,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     // Info updater
     std::function<void( int )> infoUpdater = [ = ]( int )
     {
-      mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+      mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
     };
     connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
@@ -1104,9 +1104,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
-    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system.<br>"
-                                            "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                            "Please check your logs for further details." ) );
+    mGPUInfoTextBrowser->setText( QStringLiteral( "An OpenCL compatible device was not found on your system.<br>"
+                                  "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                  "Please check your logs for further details." ) );
   }
 
 

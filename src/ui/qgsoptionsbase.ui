@@ -289,7 +289,7 @@
          </item>
          <item>
           <property name="text">
-           <string>GPU</string>
+           <string>Acceleration</string>
           </property>
           <property name="toolTip">
            <string>Configure GPU for processing algorithms</string>
@@ -361,8 +361,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>572</width>
-                <height>833</height>
+                <width>556</width>
+                <height>885</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1082,8 +1082,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>561</width>
-                <height>1079</height>
+                <width>544</width>
+                <height>1096</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1618,8 +1618,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>576</width>
-                <height>351</height>
+                <width>556</width>
+                <height>369</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1785,8 +1785,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>511</width>
-                <height>719</height>
+                <width>496</width>
+                <height>753</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2153,8 +2153,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>692</width>
-                <height>994</height>
+                <width>675</width>
+                <height>1052</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2904,8 +2904,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>514</width>
-                <height>300</height>
+                <width>507</width>
+                <height>314</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3215,8 +3215,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>625</width>
-                <height>602</height>
+                <width>613</width>
+                <height>646</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3659,8 +3659,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>156</width>
-                <height>267</height>
+                <width>154</width>
+                <height>271</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3827,8 +3827,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>556</width>
-                <height>825</height>
+                <width>547</width>
+                <height>873</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4429,8 +4429,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>487</width>
-                <height>588</height>
+                <width>474</width>
+                <height>606</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4698,8 +4698,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>427</width>
-                <height>380</height>
+                <width>415</width>
+                <height>392</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4867,8 +4867,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>857</width>
-                <height>830</height>
+                <width>616</width>
+                <height>737</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5324,7 +5324,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
            <item>
             <widget class="QLabel" name="label_53">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some of the internal C++ processing core algorithms and renderers can take advantage of an OpenCL compatible device to increase the performances.&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;QGIS support is highly experimental and can crash QGIS because of bugs in the underlying libraries, enable at your own risk!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Some of the internal C++ processing core algorithms and renderers can take advantage of an OpenCL compatible device to increase the performances.&lt;br/&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;QGIS OpenCL support is highly experimental and can crash QGIS because of bugs in the underlying libraries, enable at your own risk!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="wordWrap">
               <bool>true</bool>
@@ -5342,9 +5342,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
             <widget class="QComboBox" name="mOpenClDevicesCombo"/>
            </item>
            <item>
-            <widget class="QLabel" name="mGPUInfoLabel">
-             <property name="text">
-              <string>Placemark for OpenCL information results (mGPUInfoLabel)</string>
+            <widget class="QTextBrowser" name="mGPUInfoTextBrowser">
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Noto Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Placemark for OpenCL information results (mGPUInfoTextBrowser)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
