@@ -235,7 +235,10 @@ void QgsStatisticalSummaryDockWidget::gathererFinished()
 
 void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QList< QVariant > variantValues = mGatherer->values();
@@ -301,7 +304,10 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
 
 void QgsStatisticalSummaryDockWidget::updateStringStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QVariantList values = mGatherer->values();
@@ -421,7 +427,10 @@ void QgsStatisticalSummaryDockWidget::layerSelectionChanged()
 
 void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
 {
-  if ( !mGatherer )
+  QgsStatisticsValueGatherer *gatherer = qobject_cast<QgsStatisticsValueGatherer *>( QObject::sender() );
+  // this may have been sent from a gathererer which was canceled previously and we don't care
+  // about it anymore...
+  if ( gatherer != mGatherer )
     return;
 
   QVariantList values = mGatherer->values();
