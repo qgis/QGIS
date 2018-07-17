@@ -1096,11 +1096,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     // Info updater
     std::function<void( int )> infoUpdater = [ = ]( int )
     {
+<<<<<<< 1324eff749a7b6102088ab77d27a5df6c6dce919
 <<<<<<< 41e7e71db720385195af51c40df201a1aa077b0d
       mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
 =======
       mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
 >>>>>>> [opencl] Fix device selection on start
+=======
+      mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+>>>>>>> [opencl] Make opencl info copyable
     };
     connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
@@ -1133,6 +1137,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
+<<<<<<< 1324eff749a7b6102088ab77d27a5df6c6dce919
 <<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
     mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
                                       "You may need to install additional libraries in order to enable OpenCL.<br>"
@@ -1142,6 +1147,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                             "You may need to install additional libraries in order to enable OpenCL.<br>"
                                             "Please check your logs for further details." ) );
 >>>>>>> [opencl] Test with image2d
+=======
+    mGPUInfoTextBrowser->setText( QStringLiteral( "An OpenCL compatible device was not found on your system.<br>"
+                                  "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                  "Please check your logs for further details." ) );
+>>>>>>> [opencl] Make opencl info copyable
   }
 
 
