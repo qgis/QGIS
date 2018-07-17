@@ -141,10 +141,10 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
 
   if ( !rows.isEmpty() )
   {
-    QString text = QString( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
+    QString text = QStringLiteral( "%1\t%2\n%3" ).arg( mStatisticsTable->horizontalHeaderItem( 0 )->text(),
                    mStatisticsTable->horizontalHeaderItem( 1 )->text(),
                    rows.join( QStringLiteral( "\n" ) ) );
-    QString html = QString( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
+    QString html = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>%1</td></tr></table></body></html>" ).arg( text );
     html.replace( QStringLiteral( "\t" ), QStringLiteral( "</td><td>" ) ).replace( QStringLiteral( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
 
     QgsClipboard clipboard;
@@ -185,7 +185,7 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
   QgsFeatureIterator fit = QgsVectorLayerUtils::getValuesIterator( mLayer, sourceFieldExp, ok, selectedOnly );
   if ( ok )
   {
-    int featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
+    long featureCount = selectedOnly ? mLayer->selectedFeatureCount() : mLayer->featureCount();
     std::unique_ptr< QgsStatisticsValueGatherer > gatherer = qgis::make_unique< QgsStatisticsValueGatherer >( mLayer, fit, featureCount, sourceFieldExp );
     switch ( mFieldType )
     {
@@ -198,10 +198,12 @@ void QgsStatisticalSummaryDockWidget::refreshStatistics()
       case DataType::DateTime:
         connect( gatherer.get(), &QgsStatisticsValueGatherer::taskCompleted, this, &QgsStatisticalSummaryDockWidget::updateDateTimeStatistics );
         break;
+#if 0 // not required for now - we can handle all known types
       default:
         //don't know how to handle stats for this field!
         mStatisticsTable->setRowCount( 0 );
         return;
+#endif
     }
     connect( gatherer.get(), &QgsStatisticsValueGatherer::progressChanged, mCalculatingProgressBar, &QProgressBar::setValue );
     connect( gatherer.get(), &QgsStatisticsValueGatherer::taskTerminated, this, &QgsStatisticalSummaryDockWidget::gathererFinished );
@@ -387,8 +389,6 @@ void QgsStatisticalSummaryDockWidget::statActionTriggered( bool checked )
     case DataType::DateTime:
       settingsKey = QStringLiteral( "datetime" );
       break;
-    default:
-      break;
   }
 
   QgsSettings settings;
@@ -545,8 +545,6 @@ void QgsStatisticalSummaryDockWidget::refreshStatisticsMenu()
       }
       break;
     }
-    default:
-      break;
   }
 }
 
