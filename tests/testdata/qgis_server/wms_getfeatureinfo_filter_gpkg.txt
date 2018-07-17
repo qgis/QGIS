@@ -1,0 +1,14 @@
+Content-Length: 577
+Content-Type: text/xml; charset=utf-8
+
+<GetFeatureInfoResponse>
+ <BoundingBox maxy="5606017.87425818" maxx="913214.67407005" miny="5606017.87425818" CRS="EPSG:3857" minx="913214.67407005"/>
+ <Layer name="testlayer èé">
+  <Feature id="2">
+   <Attribute value="2" name="id"/>
+   <Attribute value="two" name="name"/>
+   <Attribute value="two àò" name="utf8nameè"/>
+   <BoundingBox maxy="5606017.8743" maxx="913214.6741" miny="5606017.8743" CRS="EPSG:3857" minx="913214.6741"/>
+  </Feature>
+ </Layer>
+</GetFeatureInfoResponse>

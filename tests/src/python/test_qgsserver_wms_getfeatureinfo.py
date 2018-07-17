@@ -167,8 +167,8 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'wms_getfeatureinfo_notvisible',
                                  'test_project_scalevisibility.qgs')
 
-        # Test GetFeatureInfo resolves "value map" widget values
-        mypath = self.testdata_path + "test_project_values.qgs"
+        # Test GetFeatureInfo resolves "value map" widget values but also Server usage of qgs and gpkg file
+        mypath = self.testdata_path + "test_project_values.qgz"
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer0&styles=&' +
                                  'VERSION=1.3.0&' +
@@ -179,11 +179,11 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&FEATURE_COUNT=10' +
                                  '&QUERY_LAYERS=layer0&I=487&J=308',
                                  'wms_getfeatureinfo-values0-text-xml',
-                                 'test_project_values.qgs')
+                                 'test_project_values.qgz')
 
     def testGetFeatureInfoValueRelation(self):
         """Test GetFeatureInfo resolves "value relation" widget values. regression 18518"""
-        mypath = self.testdata_path + "test_project_values.qgs"
+        mypath = self.testdata_path + "test_project_values.qgz"
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer1&styles=&' +
                                  'VERSION=1.3.0&' +
@@ -195,13 +195,13 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&WITH_GEOMETRY=True' +
                                  '&QUERY_LAYERS=layer1&I=487&J=308',
                                  'wms_getfeatureinfo-values1-text-xml',
-                                 'test_project_values.qgs')
+                                 'test_project_values.qgz')
 
     # TODO make GetFeatureInfo show the dictionary values and enable test
     @unittest.expectedFailure
     def testGetFeatureInfoValueRelationArray(self):
         """Test GetFeatureInfo on "value relation" widget with array field (multiple selections)"""
-        mypath = self.testdata_path + "test_project_values.qgs"
+        mypath = self.testdata_path + "test_project_values.qgz"
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer3&styles=&' +
                                  'VERSION=1.3.0&' +
@@ -213,13 +213,13 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&WITH_GEOMETRY=True' +
                                  '&QUERY_LAYERS=layer3&I=487&J=308',
                                  'wms_getfeatureinfo-values3-text-xml',
-                                 'test_project_values.qgs')
+                                 'test_project_values.qgz')
 
     # TODO make GetFeatureInfo show what's in the display expression and enable test
     @unittest.expectedFailure
     def testGetFeatureInfoRelationReference(self):
         """Test GetFeatureInfo solves "relation reference" widget "display expression" values"""
-        mypath = self.testdata_path + "test_project_values.qgs"
+        mypath = self.testdata_path + "test_project_values.qgz"
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=layer2&styles=&' +
                                  'VERSION=1.3.0&' +
@@ -231,7 +231,22 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  '&WITH_GEOMETRY=True' +
                                  '&QUERY_LAYERS=layer2&I=487&J=308',
                                  'wms_getfeatureinfo-values2-text-xml',
-                                 'test_project_values.qgs')
+                                 'test_project_values.qgz')
+
+    # TODO make filter work with gpkg and move test inside testGetFeatureInfoFilter function
+    @unittest.expectedFailure
+    def testGetFeatureInfoFilterGPKG(self):
+        # 'test_project.qgz' ='test_project.qgs' but with a gpkg source + different fid
+        # Regression for #8656 Test getfeatureinfo response xml with gpkg datasource
+        # Mind the gap! (the space in the FILTER expression)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'INFO_FORMAT=text%2Fxml&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&' +
+                                 'query_layers=testlayer%20%C3%A8%C3%A9&' +
+                                 'FEATURE_COUNT=10&FILTER=testlayer%20%C3%A8%C3%A9' + urllib.parse.quote(':"NAME" = \'two\''),
+                                 'wms_getfeatureinfo_filter_gpkg',
+                                 'test_project.qgz')
 
     def testGetFeatureInfoFilter(self):
         # Test getfeatureinfo response xml
