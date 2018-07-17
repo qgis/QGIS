@@ -722,7 +722,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   }
 
   bool hasChildren = false;
-  // providers and groups are shown only if they have visible children
+  // groups are shown only if they have visible children
+  // but providers are shown if they have visible children, OR the filter string is empty
   int count = sourceModel()->rowCount( sourceIndex );
   for ( int i = 0; i < count; ++i )
   {
@@ -735,7 +736,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
   if ( QgsProcessingProvider *provider = mModel->providerForIndex( sourceIndex ) )
   {
-    return hasChildren && provider->isActive();
+    return ( hasChildren || mFilterString.trimmed().isEmpty() ) && provider->isActive();
   }
   else
   {
