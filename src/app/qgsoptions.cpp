@@ -1096,11 +1096,16 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     // Info updater
     std::function<void( int )> infoUpdater = [ = ]( int )
     {
+<<<<<<< 41e7e71db720385195af51c40df201a1aa077b0d
       mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+=======
+      mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+>>>>>>> [opencl] Fix device selection on start
     };
     connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
     infoUpdater( -1 );
+<<<<<<< 41e7e71db720385195af51c40df201a1aa077b0d
 =======
     mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU found on your system:<br>"
                                             "Name: <b>%1</b><br>"
@@ -1122,6 +1127,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                                )
                           );
 >>>>>>> [opencl] Test with image2d
+=======
+>>>>>>> [opencl] Fix device selection on start
   }
   else
   {
