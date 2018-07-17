@@ -154,7 +154,7 @@ void QgsStatisticalSummaryDockWidget::copyStatistics()
 
 void QgsStatisticalSummaryDockWidget::refreshStatistics()
 {
-  if ( !mLayer || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
+  if ( !mLayer || mFieldExpressionWidget->currentField().isEmpty() || ( mFieldExpressionWidget->isExpression() && !mFieldExpressionWidget->isValidExpression() ) )
   {
     mStatisticsTable->setRowCount( 0 );
     return;
@@ -346,12 +346,14 @@ void QgsStatisticalSummaryDockWidget::layerChanged( QgsMapLayer *layer )
 
   mLayer = newLayer;
 
+  // clear expression, so that we don't force an unwanted recalculation
+  mFieldExpressionWidget->setExpression( QString() );
+  mFieldExpressionWidget->setLayer( mLayer );
+
   if ( mLayer )
   {
     connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsStatisticalSummaryDockWidget::layerSelectionChanged );
   }
-
-  mFieldExpressionWidget->setLayer( mLayer );
 
   if ( mGatherer )
   {
