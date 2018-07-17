@@ -101,7 +101,9 @@ set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
 set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS7_VERSION%
 
 set PYTHONPATH=
-path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
+if exist "%PROGRAMFILES%\CMake\bin" path %PATH%;%PROGRAMFILES%\CMake\bin
+if exist "%PF86%\CMake\bin" path %PATH%;%PF86%\CMake\bin
+path %PATH%;c:\cygwin\bin
 
 PROMPT qgis%VERSION%$g 
 
