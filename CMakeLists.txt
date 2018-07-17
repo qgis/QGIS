@@ -43,7 +43,12 @@ if (USE_OPENCL)
         IF(USE_OPENCL)
           SET(HAVE_OPENCL TRUE)
         ENDIF(USE_OPENCL)
+<<<<<<< a420474ec4f22e581be5ba5c5ca47eae5d7e0447
 >>>>>>> OpenCL POC 1
+=======
+    else(${OpenCL_FOUND})
+        MESSAGE(FATAL_ERROR "Couldn't find OpenCL")
+>>>>>>> [opencl] Error message when OpenCL could not be found
     endif(${OpenCL_FOUND})
 endif(USE_OPENCL)
 
