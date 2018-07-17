@@ -181,27 +181,35 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
 
   r = mapCanvas->mapSettings().mapToLayerCoordinates( layer, r );
 
-  QgsFeature feature;
-
-  if ( !vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) ).nextFeature( feature ) )
-    return QString();
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vlayer ) );
   if ( mapCanvas )
     context.appendScope( QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() ) );
 
-  context.setFeature( feature );
-
   QString mapTip = vlayer->mapTipTemplate();
-  if ( !mapTip.isEmpty() )
+  QgsFeature feature;
+  QgsFeatureIterator it = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  while ( it.nextFeature( feature ) )
   {
-    return QgsExpression::replaceExpressionText( mapTip, &context );
+    QString tipString;
+
+    context.setFeature( feature );
+    if ( !mapTip.isEmpty() )
+    {
+      tipString = QgsExpression::replaceExpressionText( mapTip, &context );
+    }
+    else
+    {
+      QgsExpression exp( vlayer->displayExpression() );
+      tipString = exp.evaluate( &context ).toString();
+    }
+
+    if ( !tipString.isEmpty() )
+    {
+      return tipString;
+    }
   }
-  else
-  {
-    QgsExpression exp( vlayer->displayExpression() );
-    return exp.evaluate( &context ).toString();
-  }
+
+  return QString();
 }
 
 //This slot handles all clicks
