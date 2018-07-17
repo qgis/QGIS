@@ -64,6 +64,7 @@ from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  #
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
+from processing.modeler.ProjectProvider import ProjectProvider # NOQA
 
 
 class Processing(object):
@@ -92,7 +93,8 @@ class Processing(object):
             GdalAlgorithmProvider,
             SagaAlgorithmProvider,
             ScriptAlgorithmProvider,
-            ModelerAlgorithmProvider
+            ModelerAlgorithmProvider,
+            ProjectProvider
         ]:
             p = c()
             if QgsApplication.processingRegistry().addProvider(p):
