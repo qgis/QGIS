@@ -14,13 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Z Factor</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="1" colspan="2">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
@@ -72,6 +65,27 @@
      </item>
     </layout>
    </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Altitude</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Azimuth</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Z Factor</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="2">
     <widget class="QgsDoubleSpinBox" name="mLightAngle">
      <property name="sizePolicy">
@@ -91,24 +105,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QgsRasterBandComboBox" name="mBandsCombo"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Multidirectional</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Altitude</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0" colspan="3">
+   <item row="5" column="0" colspan="3">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -121,12 +118,15 @@
      </property>
     </spacer>
    </item>
-   <item row="4" column="2">
-    <widget class="QCheckBox" name="mMultiDirection">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_4">
      <property name="text">
-      <string/>
+      <string>Band</string>
      </property>
     </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QgsRasterBandComboBox" name="mBandsCombo"/>
    </item>
    <item row="3" column="2">
     <widget class="QgsDoubleSpinBox" name="mZFactor">
@@ -144,27 +144,17 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_4">
+   <item row="4" column="2">
+    <widget class="QCheckBox" name="mMultiDirection">
      <property name="text">
-      <string>Band</string>
+      <string/>
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Azimuth</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="3">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;To avoid visual artifacts, set the zoomed in resampling to bilinear, and make sure the project's CRS matches that of your raster&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
+      <string>Multidirectional</string>
      </property>
     </widget>
    </item>
