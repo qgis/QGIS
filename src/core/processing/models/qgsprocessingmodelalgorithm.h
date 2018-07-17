@@ -252,6 +252,24 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     bool fromFile( const QString &path );
 
     /**
+     * Saves this model to a QVariantMap, wrapped in a QVariant.
+     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
+     *
+     * \see loadVariant()
+     * \since QGIS 3.4
+     */
+    QVariant toVariant() const;
+
+    /**
+     * Loads this model from a QVariantMap, wrapped in a QVariant \a variant.
+     * You can use QgsXmlUtils::readVariant to load it from an XML document.
+     *
+     * \see toVariant()
+     * \since QGIS 3.4
+     */
+    bool loadVariant( const QVariant &variant );
+
+    /**
      * Returns the model's help contents (a free-form map of values describing the algorithm's
      * use and metadata).
      * \see setHelpContent()
@@ -386,22 +404,6 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
      * the model.
      */
     bool childOutputIsRequired( const QString &childId, const QString &outputName ) const;
-
-    /**
-     * Saves this model to a QVariantMap, wrapped in a QVariant.
-     * You can use QgsXmlUtils::writeVariant to save it to an XML document.
-     *
-     * \see loadVariant()
-     */
-    QVariant toVariant() const;
-
-    /**
-     * Loads this model from a QVariantMap, wrapped in a QVariant.
-     * You can use QgsXmlUtils::readVariant to load it from an XML document.
-     *
-     * \see toVariant()
-     */
-    bool loadVariant( const QVariant &model );
 
     /**
      * Checks whether the output vector type given by \a outputType is compatible
