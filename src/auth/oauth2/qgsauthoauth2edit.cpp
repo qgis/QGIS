@@ -161,7 +161,6 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( leUsername, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setUsername );
   connect( lePassword, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setPassword );
   connect( leScope, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setScope );
-  connect( leState, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setState );
   connect( leApiKey, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setApiKey );
   connect( chkbxTokenPersist, &QCheckBox::toggled, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setPersistToken );
   connect( cmbbxAccessMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
@@ -380,7 +379,6 @@ void QgsAuthOAuth2Edit::loadFromOAuthConfig( const QgsAuthOAuth2Config *config )
     leUsername->setText( config->username() );
     lePassword->setText( config->password() );
     leScope->setText( config->scope() );
-    leState->setText( config->state() );
     leApiKey->setText( config->apiKey() );
 
     // advanced

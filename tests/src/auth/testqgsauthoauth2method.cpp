@@ -108,7 +108,6 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setUsername( "myusername" );
     config->setPassword( "mypassword" );
     config->setScope( "scope_1 scope_2 scope_3" );
-    config->setState( "somestate" );
     config->setApiKey( "someapikey" );
     config->setPersistToken( false );
     config->setAccessMethod( QgsAuthOAuth2Config::Header );
@@ -150,7 +149,6 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"requestTimeout\": 30,\n"
            "    \"requestUrl\": \"https://request.oauth2.test\",\n"
            "    \"scope\": \"scope_1 scope_2 scope_3\",\n"
-           "    \"state\": \"somestate\",\n"
            "    \"tokenUrl\": \"https://token.oauth2.test\",\n"
            "    \"username\": \"myusername\",\n"
            "    \"version\": 1\n"
@@ -177,7 +175,6 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "\"requestTimeout\":30,"
            "\"requestUrl\":\"https://request.oauth2.test\","
            "\"scope\":\"scope_1 scope_2 scope_3\","
-           "\"state\":\"somestate\","
            "\"tokenUrl\":\"https://token.oauth2.test\","
            "\"username\":\"myusername\","
            "\"version\":1}";
@@ -210,7 +207,6 @@ QVariantMap TestQgsAuthOAuth2Method::baseVariantMap()
   vmap.insert( "requestTimeout", 30 );
   vmap.insert( "requestUrl", "https://request.oauth2.test" );
   vmap.insert( "scope", "scope_1 scope_2 scope_3" );
-  vmap.insert( "state", "somestate" );
   vmap.insert( "tokenUrl", "https://token.oauth2.test" );
   vmap.insert( "username", "myusername" );
   vmap.insert( "version", 1 );
