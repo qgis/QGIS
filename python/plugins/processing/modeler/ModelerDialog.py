@@ -621,10 +621,9 @@ class ModelerDialog(BASE, WIDGET):
         self.bar.pushMessage("", self.tr("Model was correctly exported as python script"), level=Qgis.Success, duration=5)
 
     def saveModel(self, saveAs):
-        if str(self.textGroup.text()).strip() == '' \
-                or str(self.textName.text()).strip() == '':
-            QMessageBox.warning(
-                self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
+        if str(self.textName.text()).strip() == '':
+            self.bar.pushWarning(
+                "", self.tr('Please a enter model name before saving')
             )
             return
         self.model.setName(str(self.textName.text()))
