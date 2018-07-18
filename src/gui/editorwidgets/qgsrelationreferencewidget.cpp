@@ -556,7 +556,12 @@ void QgsRelationReferenceWidget::init()
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
 
-    updateAttributeEditorFrame( mFeature );
+    if ( !mFeatureInitialized )
+    {
+      //call it for the first intialization
+      emit mComboBox->currentIndexChanged( mComboBox->currentIndex() );
+      mFeatureInitialized = true;
+    }
     QApplication::restoreOverrideCursor();
   }
 }
