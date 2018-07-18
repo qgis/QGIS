@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgswebview.h"
 #include "qgswebframe.h"
 
@@ -40,6 +41,9 @@ QgsMapTip::QgsMapTip()
 {
   // Init the visible flag
   mMapTipVisible = false;
+
+  // Init font-related values
+  applyFontSettings();
 }
 
 void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
@@ -118,7 +122,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   bodyStyle = QString(
                 "background-color: %1;"
                 "margin: 0;"
-                "white-space: nowrap;" ).arg( backgroundColor );
+                "white-space: nowrap;"
+                "font: %2pt \"%3\";" ).arg( backgroundColor ).arg( mFontSize ).arg( mFontFamily );
 
   containerStyle = QString(
                      "display: inline-block;"
@@ -130,6 +135,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
               "<div id='QgsWebViewContainer' style='%2'>%3</div>"
               "</body>"
               "</html>" ).arg( bodyStyle, containerStyle, tipText );
+
+  QgsDebugMsg( tipHtml );
 
   mWidget->move( pixelPosition.x(),
                  pixelPosition.y() );
@@ -214,6 +221,14 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   }
 
   return tipString;
+}
+
+void QgsMapTip::applyFontSettings()
+{
+  QgsSettings settings;
+  QFont defaultFont = qApp->font();
+  mFontSize = settings.value( QStringLiteral( "/qgis/stylesheet/fontPointSize" ), defaultFont.pointSize() ).toInt();
+  mFontFamily = settings.value( QStringLiteral( "/qgis/stylesheet/fontFamily" ), defaultFont.family() ).toString();
 }
 
 // This slot handles all clicks

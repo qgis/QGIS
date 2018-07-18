@@ -79,6 +79,11 @@ class GUI_EXPORT QgsMapTip : public QWidget
      */
     void clear( QgsMapCanvas *mpMapCanvas = nullptr );
 
+    /**
+     * Apply font family and size to match user settings
+     */
+    void applyFontSettings();
+
   private slots:
     void onLinkClicked( const QUrl &url );
     void resizeContent();
@@ -98,6 +103,9 @@ class GUI_EXPORT QgsMapTip : public QWidget
 
     QWidget *mWidget = nullptr;
     QgsWebView *mWebView = nullptr;
+
+    QString mFontFamily;
+    int mFontSize = 8;
 
     const int MARGIN_VALUE = 5;
 };
