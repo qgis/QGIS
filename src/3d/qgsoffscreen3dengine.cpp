@@ -33,8 +33,6 @@
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QViewport>
 
-// TODO: set size
-// TODO: destructor
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
@@ -48,7 +46,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   // Set up a camera to point at the shapes.
   mCamera = new Qt3DRender::QCamera;
-  mCamera->lens()->setPerspectiveProjection( 45.0f, 1200.0f / 800.0f, 0.1f, 1000.0f );
+  mCamera->lens()->setPerspectiveProjection( 45.0f, float( mSize.width() ) / float( mSize.height() ), 0.1f, 1000.0f );
   mCamera->setPosition( QVector3D( 0, 0, 20.0f ) );
   mCamera->setUpVector( QVector3D( 0, 1, 0 ) );
   mCamera->setViewCenter( QVector3D( 0, 0, 0 ) );
@@ -82,6 +80,22 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Set the root entity of the engine. This causes the engine to begin running.
   mAspectEngine->setRootEntity( Qt3DCore::QEntityPtr( mRoot ) );
 
+}
+
+QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
+{
+  delete mAspectEngine;
+}
+
+void QgsOffscreen3DEngine::setSize( const QSize &s )
+{
+  mSize = s;
+
+  mTexture->setSize( mSize.width(), mSize.height() );
+  mDepthTexture->setSize( mSize.width(), mSize.height() );
+  mSurfaceSelector->setExternalRenderTargetSize( mSize );
+
+  mCamera->setAspectRatio( float( mSize.width() ) / float( mSize.height() ) );
 }
 
 void QgsOffscreen3DEngine::setClearColor( const QColor &color )
