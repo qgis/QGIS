@@ -39,6 +39,9 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Q_OBJECT
   public:
     QgsOffscreen3DEngine();
+    ~QgsOffscreen3DEngine();
+
+    void setSize( const QSize &s );
 
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;
