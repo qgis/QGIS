@@ -11,7 +11,7 @@
 #include <vector>
 
 #include "mdal.h"
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 
 namespace MDAL
 {

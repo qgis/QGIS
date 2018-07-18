@@ -125,9 +125,9 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
   if ( version != CT_VERSION ) // Version should be 3000
     EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-  bool isVector = false;
-  std::string baseDatasetName;
-  Datasets datOutputs; // DAT outputs data
+  std::shared_ptr<DatasetGroup> group( new DatasetGroup() ); // DAT datasets
+  group->uri = mDatFile;
+  group->isOnVertices = true;
 
   while ( card != CT_ENDDS )
   {
@@ -160,11 +160,11 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
         break;
 
       case CT_BEGSCL:
-        isVector = false;
+        group->isScalar = true;
         break;
 
       case CT_BEGVEC:
-        isVector = true;
+        group->isScalar = false;
         break;
 
       case CT_VECTYPE:
@@ -201,7 +201,7 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
         if ( name[39] != 0 )
           name[39] = 0;
-        baseDatasetName = trim( std::string( name ) );
+        group->setName( trim( std::string( name ) ) );
         break;
 
       case CT_TS:
@@ -212,56 +212,35 @@ void MDAL::LoaderBinaryDat::load( MDAL::Mesh *mesh, MDAL_Status *status )
         if ( read( in, reinterpret_cast< char * >( &time ), 4 ) )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-        if ( readVertexTimestep( mesh, datOutputs, time, isVector, istat, sflg, in ) )
+        double t = static_cast<double>( time );
+        if ( readVertexTimestep( mesh, group, t, istat, sflg, in ) )
           EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
         break;
     }
   }
 
-  if ( datOutputs.size() == 0 )
+  if ( !group || group->datasets.size() == 0 )
     EXIT_WITH_ERROR( MDAL_Status::Err_UnknownFormat );
 
-  addDatasets( mesh, baseDatasetName, datOutputs );
+  mesh->datasetGroups.push_back( group );
 }
 
-
-void MDAL::LoaderBinaryDat::addDatasets( MDAL::Mesh *mesh,
-    const std::string &name,
-    const Datasets &datOutputs ) const
-{
-  for ( const std::shared_ptr<Dataset> &ds : datOutputs )
-  {
-    ds->uri = mDatFile;
-    std::string suffix = ds->name();
-    ds->setName( name + suffix );
-    ds->isValid = true;
-  }
-
-  //https://stackoverflow.com/a/2551785/2838364
-  mesh->datasets.insert(
-    mesh->datasets.end(),
-    datOutputs.begin(),
-    datOutputs.end()
-  );
-}
-
-bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh, MDAL::Datasets &datOutputs, float time,
-    bool isVector, bool hasStatus, int sflg, std::ifstream &in )
+bool MDAL::LoaderBinaryDat::readVertexTimestep(
+  const MDAL::Mesh *mesh,
+  std::shared_ptr<DatasetGroup> group,
+  double time,
+  bool hasStatus,
+  int sflg,
+  std::ifstream &in )
 {
   size_t vertexCount = mesh->vertices.size();
   size_t faceCount = mesh->faces.size();
 
   std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
-  dataset->isScalar = !isVector; //everything else to be set in addDatasets
-  dataset->setMetadata( "time", std::to_string( time / 3600.0f ) );
   dataset->values.resize( vertexCount );
   dataset->active.resize( faceCount );
-  dataset->isOnVertices = true;
-
-  // name will be set properly in the addDatasets at the end.
-  if ( time == 99999 ) // Special TUFLOW dataset with maximus
-    dataset->setName( "/Maximums" );
+  dataset->parent = group.get();
 
   bool active = true;
   for ( size_t i = 0; i < faceCount; ++i )
@@ -277,7 +256,7 @@ bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh, MDAL::Da
 
   for ( size_t i = 0; i < vertexCount; ++i )
   {
-    if ( isVector )
+    if ( !group->isScalar )
     {
       float x, y;
 
@@ -300,7 +279,15 @@ bool MDAL::LoaderBinaryDat::readVertexTimestep( const MDAL::Mesh *mesh, MDAL::Da
     }
   }
 
-  datOutputs.push_back( std::move( dataset ) );
-
+  if ( MDAL::equals( time, 99999.0 ) ) // Special TUFLOW dataset with maximus
+  {
+    dataset->time = time;
+    group->maximumDataset = dataset;
+  }
+  else
+  {
+    dataset->time = time / 3600.0; // TODO read TIMEUNITS
+    group->datasets.push_back( dataset );
+  }
   return false; //OK
 }

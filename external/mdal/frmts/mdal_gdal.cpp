@@ -342,32 +342,38 @@ void MDAL::LoaderGdal::activateFaces( std::shared_ptr<Dataset> tos )
   }
 }
 
-void MDAL::LoaderGdal::addDatasets()
+void MDAL::LoaderGdal::addDatasetGroups()
 {
   // Add dataset to mMesh
   for ( data_hash::const_iterator band = mBands.begin(); band != mBands.end(); band++ )
   {
+    std::shared_ptr<DatasetGroup> group( new DatasetGroup() );
+    group->uri = mFileName;
+    group->setName( band->first );
+    group->isOnVertices = true;
+
     for ( timestep_map::const_iterator time_step = band->second.begin(); time_step != band->second.end(); time_step++ )
     {
       std::vector<GDALRasterBandH> raster_bands = time_step->second;
       bool is_vector = ( raster_bands.size() > 1 );
 
-      std::shared_ptr<MDAL::Dataset> tos( new MDAL::Dataset );
-      tos->setName( band->first );
-      tos->isOnVertices = true;
-      tos->isScalar = !is_vector;
-      tos->uri = mFileName;
-      tos->setMetadata( "time", std::to_string( time_step->first ) );
-      tos->values.resize( meshGDALDataset()->mNPoints );
-      tos->active.resize( meshGDALDataset()->mNVolumes );
+      std::shared_ptr<MDAL::Dataset> dataset( new MDAL::Dataset );
+      group->isScalar = !is_vector;
+
+      dataset->time = time_step->first;
+      dataset->values.resize( meshGDALDataset()->mNPoints );
+      dataset->active.resize( meshGDALDataset()->mNVolumes );
+      dataset->parent = group.get();
+
       for ( std::vector<GDALRasterBandH>::size_type i = 0; i < raster_bands.size(); ++i )
       {
-        addDataToOutput( raster_bands[i], tos, is_vector, i == 0 );
+        addDataToOutput( raster_bands[i], dataset, is_vector, i == 0 );
       }
-      activateFaces( tos );
+      activateFaces( dataset );
 
-      mMesh->datasets.push_back( tos );
+      group->datasets.push_back( dataset );
     }
+    mMesh->datasetGroups.push_back( group );
   }
 }
 
@@ -505,7 +511,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::LoaderGdal::load( MDAL_Status *status )
     }
 
     // Create MDAL datasets
-    addDatasets();
+    addDatasetGroups();
   }
   catch ( MDAL_Status error )
   {
@@ -522,7 +528,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::LoaderGdal::load( MDAL_Status *status )
   if ( mPafScanline ) delete[] mPafScanline;
 
   // do not allow mesh without any valid datasets
-  if ( mMesh && ( mMesh->datasets.empty() ) )
+  if ( mMesh && ( mMesh->datasetGroups.empty() ) )
   {
     if ( status ) *status = MDAL_Status::Err_InvalidData;
     mMesh.reset();
