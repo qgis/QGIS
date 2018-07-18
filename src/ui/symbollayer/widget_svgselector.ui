@@ -26,20 +26,6 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item row="1" column="1">
-    <widget class="QLabel" name="mImagesLabel">
-     <property name="text">
-      <string>SVG Images</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mGroupsLabel">
-     <property name="text">
-      <string>SVG Groups</string>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="0">
     <widget class="QTreeView" name="mGroupsTreeView">
      <property name="sizePolicy">
@@ -53,6 +39,13 @@
        <width>200</width>
        <height>0</height>
       </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="mImagesLabel">
+     <property name="text">
+      <string>SVG Images</string>
      </property>
     </widget>
    </item>
@@ -102,33 +95,33 @@
      </property>
     </widget>
    </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mGroupsLabel">
+     <property name="text">
+      <string>SVG Groups</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="mFileLayout">
-     <item>
-      <widget class="QLineEdit" name="mFileLineEdit"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mFilePushButton">
-       <property name="maximumSize">
-        <size>
-         <width>50</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>…</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsSvgSourceLineEdit" name="mSvgSourceLineEdit" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsSvgSourceLineEdit</class>
+   <extends>QWidget</extends>
+   <header>qgssvgsourcelineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mGroupsTreeView</tabstop>
   <tabstop>mImagesListView</tabstop>
-  <tabstop>mFileLineEdit</tabstop>
-  <tabstop>mFilePushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

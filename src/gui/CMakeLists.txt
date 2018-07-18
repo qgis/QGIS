@@ -359,6 +359,7 @@ SET(QGIS_GUI_SRCS
   qgssubstitutionlistwidget.cpp
   qgssqlcomposerdialog.cpp
   qgsstatusbar.cpp
+  qgssvgsourcelineedit.cpp
   qgssymbolbutton.cpp
   qgstablewidgetbase.cpp
   qgstabwidget.cpp
@@ -526,6 +527,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsstatusbar.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
+  qgssvgsourcelineedit.h
   qgssymbolbutton.h
   qgstablewidgetbase.h
   qgstabwidget.h
