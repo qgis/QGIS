@@ -131,7 +131,7 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     QgsMeshDatasetGroupTreeModel mModel;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     QStringList mGroups; // group names
-    int mActiveGroup; // index of active group
+    int mActiveGroup = -1; // index of active group
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H

@@ -226,21 +226,18 @@ void QgsMeshDatasetGroupTreeView::onSelectionChanged( const QItemSelection &sele
 {
   Q_UNUSED( deselected );
 
-  if ( selected.isEmpty() )
+  int group = -1;
+  if ( !selected.isEmpty() && !selected.first().indexes().isEmpty() )
   {
-    mActiveGroup = 0;
-    return;
+    QModelIndex index = selected.first().indexes().first(); //single selection only
+    group = index.row();
   }
 
-  if ( selected.first().indexes().isEmpty() )
+  if ( mActiveGroup != group )
   {
-    mActiveGroup = 0;
-    return;
+    mActiveGroup = group;
+    emit activeGroupChanged();
   }
-
-  QModelIndex index = selected.first().indexes().first(); //single selection only
-  mActiveGroup = index.row();
-  emit activeGroupChanged();
 }
 
 

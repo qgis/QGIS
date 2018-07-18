@@ -169,6 +169,8 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex ind
     return QgsMeshDatasetMetadata();
 
   DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
+    return QgsMeshDatasetMetadata();
 
   bool isValid = MDAL_D_isValid( dataset );
   double time = MDAL_D_time( dataset );

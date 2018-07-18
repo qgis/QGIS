@@ -58,7 +58,7 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   public slots:
     //! Set active scalar dataset to be used
-    void setActiveDataset( QgsMeshDatasetIndex activeDatase );
+    void setActiveDataset( QgsMeshDatasetIndex activeDataset );
 
   private slots:
     void minMaxChanged();
