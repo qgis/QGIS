@@ -923,14 +923,14 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
   for ( int catIdx = 0; catIdx < mRenderer->categories().count(); ++catIdx )
   {
     QString val = mRenderer->categories().at( catIdx ).value().toString();
-    QgsSymbol *symbol = style->symbol( val );
+    std::unique_ptr< QgsSymbol > symbol( style->symbol( val ) );
     if ( symbol &&
          ( ( symbol->type() == QgsSymbol::Marker && mLayer->geometryType() == QgsWkbTypes::PointGeometry )
            || ( symbol->type() == QgsSymbol::Line && mLayer->geometryType() == QgsWkbTypes::LineGeometry )
            || ( symbol->type() == QgsSymbol::Fill && mLayer->geometryType() == QgsWkbTypes::PolygonGeometry ) ) )
     {
       matched++;
-      mRenderer->updateCategorySymbol( catIdx, symbol->clone() );
+      mRenderer->updateCategorySymbol( catIdx, symbol.release() );
     }
   }
   mModel->updateSymbology();

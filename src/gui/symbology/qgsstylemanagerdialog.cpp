@@ -279,12 +279,12 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
-    QgsSymbol *symbol = mStyle->symbol( name );
+    std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
     if ( symbol && symbol->type() == type )
     {
       QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, name );
       QStandardItem *item = new QStandardItem( name );
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, listItems->iconSize(), 18 );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), listItems->iconSize(), 18 );
       item->setIcon( icon );
       item->setData( name ); // used to find out original name when user edited the name
       item->setCheckable( check );
@@ -292,7 +292,6 @@ void QgsStyleManagerDialog::populateSymbols( const QStringList &symbolNames, boo
       // add to model
       model->appendRow( item );
     }
-    delete symbol;
   }
   selectedSymbolsChanged( QItemSelection(), QItemSelection() );
   symbolSelected( listItems->currentIndex() );
@@ -654,18 +653,17 @@ bool QgsStyleManagerDialog::editSymbol()
   if ( symbolName.isEmpty() )
     return false;
 
-  QgsSymbol *symbol = mStyle->symbol( symbolName );
+  std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( symbolName ) );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
+  QgsSymbolSelectorDialog dlg( symbol.get(), mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
-    delete symbol;
     return false;
   }
 
   // by adding symbol to style with the same name the old effectively gets overwritten
-  mStyle->addSymbol( symbolName, symbol, true );
+  mStyle->addSymbol( symbolName, symbol.release(), true );
   mModified = true;
   return true;
 }
@@ -870,8 +868,9 @@ void QgsStyleManagerDialog::exportSelectedItemsImages( const QString &dir, const
   {
     QString name = index.data().toString();
     QString path = dir + '/' + name + '.' + format;
-    QgsSymbol *sym = mStyle->symbol( name );
-    sym->exportImage( path, format, size );
+    std::unique_ptr< QgsSymbol > sym( mStyle->symbol( name ) );
+    if ( sym )
+      sym->exportImage( path, format, size );
   }
 }
 
