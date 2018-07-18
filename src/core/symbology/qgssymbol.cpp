@@ -266,40 +266,40 @@ void QgsSymbol::setMapUnitScale( const QgsMapUnitScale &scale )
 
 QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
 {
-  QgsSymbol *s = nullptr;
+  std::unique_ptr< QgsSymbol > s;
 
   // override global default if project has a default for this type
   QString defaultSymbol;
   switch ( geomType )
   {
     case QgsWkbTypes::PointGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Marker" ) );
       break;
     case QgsWkbTypes::LineGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Line" ) );
       break;
     case QgsWkbTypes::PolygonGeometry :
-      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ), QLatin1String( "" ) );
+      defaultSymbol = QgsProject::instance()->readEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/Fill" ) );
       break;
     default:
       break;
   }
   if ( !defaultSymbol.isEmpty() )
-    s = QgsStyle::defaultStyle()->symbol( defaultSymbol );
+    s.reset( QgsStyle::defaultStyle()->symbol( defaultSymbol ) );
 
   // if no default found for this type, get global default (as previously)
-  if ( ! s )
+  if ( !s )
   {
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        s = new QgsMarkerSymbol();
+        s = qgis::make_unique< QgsMarkerSymbol >();
         break;
       case QgsWkbTypes::LineGeometry:
-        s = new QgsLineSymbol();
+        s = qgis::make_unique< QgsLineSymbol >();
         break;
       case QgsWkbTypes::PolygonGeometry:
-        s = new QgsFillSymbol();
+        s = qgis::make_unique< QgsFillSymbol >();
         break;
       default:
         QgsDebugMsg( "unknown layer's geometry type" );
@@ -326,7 +326,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
     s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
-  return s;
+  return s.release();
 }
 
 QgsSymbolLayer *QgsSymbol::symbolLayer( int layer )
