@@ -37,9 +37,8 @@
 #include "qgsmaptip.h"
 
 QgsMapTip::QgsMapTip()
-
 {
-  // init the visible flag
+  // Init the visible flag
   mMapTipVisible = false;
 }
 
@@ -60,6 +59,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   delete mWidget;
   mWidget = new QWidget( pMapCanvas );
+  mWidget->setContentsMargins( MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE, MARGIN_VALUE );
   mWebView = new QgsWebView( mWidget );
 
 
@@ -70,24 +70,27 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
 #endif
 
-  mWebView->page()->settings()->setAttribute(
-    QWebSettings::DeveloperExtrasEnabled, true );
-  mWebView->page()->settings()->setAttribute(
-    QWebSettings::JavascriptEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
+  mWebView->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
+
+  // Disable scrollbars, avoid random resizing issues
+  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
+  mWebView->page()->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
 
   QHBoxLayout *layout = new QHBoxLayout;
+  layout->setContentsMargins( 0, 0, 0, 0 );
   layout->addWidget( mWebView );
 
   mWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
   mWidget->setLayout( layout );
 
-  //assure the map tip is never larger than half the map canvas
+  // Assure the map tip is never larger than half the map canvas
   const int MAX_WIDTH = pMapCanvas->geometry().width() / 2;
   const int MAX_HEIGHT = pMapCanvas->geometry().height() / 2;
   mWidget->setMaximumSize( MAX_WIDTH, MAX_HEIGHT );
 
-  // start with 0 size,
-  // the content will automatically make it grow up to MaximumSize
+  // Start with 0 size,
+  // The content will automatically make it grow up to MaximumSize
   mWidget->resize( 0, 0 );
 
   backgroundColor = mWidget->palette().base().color().name();
@@ -114,7 +117,8 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   bodyStyle = QString(
                 "background-color: %1;"
-                "margin: 0;" ).arg( backgroundColor );
+                "margin: 0;"
+                "white-space: nowrap;" ).arg( backgroundColor );
 
   containerStyle = QString(
                      "display: inline-block;"
@@ -134,10 +138,6 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   lastTipText = tipText;
 
   mWidget->show();
-
-#if WITH_QTWEBKIT
-  resizeContent();
-#endif
 }
 
 void QgsMapTip::resizeContent()
@@ -145,19 +145,8 @@ void QgsMapTip::resizeContent()
   // Get the content size
   QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
                             QStringLiteral( "#QgsWebViewContainer" ) );
-  int width = container.geometry().width();
-  int height = container.geometry().height();
-  int scrollbarWidth = mWebView->page()->mainFrame()->scrollBarGeometry(
-                         Qt::Vertical ).width();
-  int scrollbarHeight = mWebView->page()->mainFrame()->scrollBarGeometry(
-                          Qt::Horizontal ).height();
-
-  if ( scrollbarWidth > 0 || scrollbarHeight > 0 )
-  {
-    width += 5 + scrollbarWidth;
-    height += 5 + scrollbarHeight;
-  }
-
+  int width = container.geometry().width() + MARGIN_VALUE * 2;
+  int height = container.geometry().height() + MARGIN_VALUE * 2;
   mWidget->resize( width, height );
 }
 
@@ -169,7 +158,7 @@ void QgsMapTip::clear( QgsMapCanvas * )
   mWebView->setHtml( QString() );
   mWidget->hide();
 
-  // reset the visible flag
+  // Reset the visible flag
   mMapTipVisible = false;
 }
 
@@ -220,7 +209,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   return QString();
 }
 
-//This slot handles all clicks
+// This slot handles all clicks
 void QgsMapTip::onLinkClicked( const QUrl &url )
 {
   QDesktopServices::openUrl( url );
