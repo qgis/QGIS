@@ -155,19 +155,19 @@ void TestQgsMeshRenderer::test_triangular_mesh_rendering()
 
 void TestQgsMeshRenderer::test_vertex_scalar_dataset_rendering()
 {
-  int ds = 0;
+  QgsMeshDatasetIndex ds( 0, 0 );
   mMemoryLayer->setActiveScalarDataset( ds );
-  const QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
-  QVERIFY( metadata.extraOptions()["name"] == "VertexScalarDataset" );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexScalarDataset" );
   QVERIFY( imageCheck( "quad_and_triangle_vertex_scalar_dataset" ) );
 }
 
 void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
 {
-  int ds = 1;
+  QgsMeshDatasetIndex ds( 1, 0 );
   mMemoryLayer->setActiveVectorDataset( ds );
-  const QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
-  QVERIFY( metadata.extraOptions()["name"] == "VertexVectorDataset" );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "VertexVectorDataset" );
 
   QgsMeshRendererVectorSettings settings = mMemoryLayer->rendererVectorSettings();
   settings.setMinShaftLength( 15 );
@@ -178,19 +178,19 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
 
 void TestQgsMeshRenderer::test_face_scalar_dataset_rendering()
 {
-  int ds = 2;
+  QgsMeshDatasetIndex ds( 2, 0 );
   mMemoryLayer->setActiveScalarDataset( ds );
-  const QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
-  QVERIFY( metadata.extraOptions()["name"] == "FaceScalarDataset" );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "FaceScalarDataset" );
   QVERIFY( imageCheck( "quad_and_triangle_face_scalar_dataset" ) );
 }
 
 void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
 {
-  int ds = 3;
+  QgsMeshDatasetIndex ds( 3, 0 );
   mMemoryLayer->setActiveVectorDataset( ds );
-  const QgsMeshDatasetMetadata metadata = mMemoryLayer->dataProvider()->datasetMetadata( ds );
-  QVERIFY( metadata.extraOptions()["name"] == "FaceVectorDataset" );
+  const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
+  QVERIFY( metadata.name() == "FaceVectorDataset" );
   QVERIFY( imageCheck( "quad_and_triangle_face_vector_dataset" ) );
 }
 

@@ -144,35 +144,35 @@ void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSetting
 }
 
 
-void QgsMeshLayer::setActiveScalarDataset( int index )
+void QgsMeshLayer::setActiveScalarDataset( QgsMeshDatasetIndex index )
 {
   if ( index == mActiveScalarDataset )
     return;
 
-  if ( ( index >= 0 ) && ( index < dataProvider()->datasetCount() ) )
+  if ( index.isValid() )
     mActiveScalarDataset = index;
   else
-    mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
+    mActiveScalarDataset = QgsMeshDatasetIndex();
 
   triggerRepaint();
 }
 
-void QgsMeshLayer::setActiveVectorDataset( int index )
+void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
 {
   if ( index == mActiveVectorDataset )
     return;
 
-  if ( ( index < 0 ) || ( index >= dataProvider()->datasetCount() ) )
+  if ( !index.isValid() )
   {
-    mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
+    mActiveVectorDataset = QgsMeshDatasetIndex();
   }
   else
   {
-    const QgsMeshDatasetMetadata metadata = dataProvider()->datasetMetadata( index );
+    const QgsMeshDatasetGroupMetadata metadata = dataProvider()->datasetGroupMetadata( index );
     if ( metadata.isVector() )
       mActiveVectorDataset = index;
     else
-      mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
+      mActiveVectorDataset = QgsMeshDatasetIndex();
   }
 
   triggerRepaint();

@@ -52,7 +52,6 @@ QgsMdalProvider::QgsMdalProvider( const QString &uri, const ProviderOptions &opt
 {
   QByteArray curi = uri.toAscii();
   mMeshH = MDAL_LoadMesh( curi.constData() );
-  refreshDatasets();
 }
 
 QgsMdalProvider::~QgsMdalProvider()
@@ -103,13 +102,12 @@ QgsMeshFace QgsMdalProvider::face( int index ) const
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
-  int datasetCount = mDatasets.count();
+  int datasetCount = datasetGroupCount();
 
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
-  refreshDatasets();
 
-  if ( datasetCount == mDatasets.count() )
+  if ( datasetCount == datasetGroupCount() )
   {
     return false;
   }
@@ -120,37 +118,43 @@ bool QgsMdalProvider::addDataset( const QString &uri )
   }
 }
 
-int QgsMdalProvider::datasetCount() const
+int QgsMdalProvider::datasetGroupCount() const
 {
-  return MDAL_M_datasetCount( mMeshH );
+  return MDAL_M_datasetGroupCount( mMeshH );
 }
 
-QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int datasetIndex ) const
+
+int QgsMdalProvider::datasetCount( int groupIndex ) const
 {
-  if ( datasetIndex >= mDatasets.length() )
-    return QgsMeshDatasetMetadata();
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  if ( !group )
+    return 0;
+  return MDAL_G_datasetCount( group );
+}
 
-  if ( datasetIndex < 0 )
-    return QgsMeshDatasetMetadata();
+QgsMeshDatasetGroupMetadata QgsMdalProvider::datasetGroupMetadata( int groupIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, groupIndex );
+  if ( !group )
+    return QgsMeshDatasetGroupMetadata();
 
-  DatasetH dataset = mDatasets[datasetIndex];
 
-  bool isScalar = MDAL_D_hasScalarData( dataset );
-  bool isValid = MDAL_D_isValid( dataset );
-  bool isOnVertices = MDAL_D_isOnVertices( dataset );
+  bool isScalar = MDAL_G_hasScalarData( group );
+  bool isOnVertices = MDAL_G_isOnVertices( group );
+  QString name = MDAL_G_name( group );
 
   QMap<QString, QString> metadata;
-  int n = MDAL_D_metadataCount( dataset );
+  int n = MDAL_G_metadataCount( group );
   for ( int i = 0; i < n; ++i )
   {
-    QString key = MDAL_D_metadataKey( dataset, i );
-    QString value = MDAL_D_metadataValue( dataset, i );
+    QString key = MDAL_G_metadataKey( group, i );
+    QString value = MDAL_G_metadataValue( group, i );
     metadata[key] = value;
   }
 
-  QgsMeshDatasetMetadata meta(
+  QgsMeshDatasetGroupMetadata meta(
+    name,
     isScalar,
-    isValid,
     isOnVertices,
     metadata
   );
@@ -158,18 +162,39 @@ QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( int datasetIndex ) cons
   return meta;
 }
 
-QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIndex ) const
+QgsMeshDatasetMetadata QgsMdalProvider::datasetMetadata( QgsMeshDatasetIndex index ) const
 {
-  if ( datasetIndex >= mDatasets.length() )
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
+    return QgsMeshDatasetMetadata();
+
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+
+  bool isValid = MDAL_D_isValid( dataset );
+  double time = MDAL_D_time( dataset );
+
+  QgsMeshDatasetMetadata meta(
+    time,
+    isValid
+  );
+
+  return meta;
+
+}
+
+QgsMeshDatasetValue QgsMdalProvider::datasetValue( QgsMeshDatasetIndex index, int valueIndex ) const
+{
+  DatasetGroupH group = MDAL_M_datasetGroup( mMeshH, index.group() );
+  if ( !group )
     return QgsMeshDatasetValue();
 
-  if ( datasetIndex < 0 )
+  DatasetH dataset = MDAL_G_dataset( group, index.dataset() );
+  if ( !dataset )
     return QgsMeshDatasetValue();
 
-  DatasetH dataset = mDatasets[datasetIndex];
   QgsMeshDatasetValue val;
 
-  if ( MDAL_D_hasScalarData( dataset ) )
+  if ( MDAL_G_hasScalarData( group ) )
   {
     val.setX( MDAL_D_value( dataset, valueIndex ) );
   }
@@ -180,18 +205,6 @@ QgsMeshDatasetValue QgsMdalProvider::datasetValue( int datasetIndex, int valueIn
   }
 
   return val;
-}
-
-void QgsMdalProvider::refreshDatasets()
-{
-  int n = MDAL_M_datasetCount( mMeshH );
-  mDatasets.resize( 0 ); // keeps allocated space - potentially avoids reallocation
-  mDatasets.reserve( n );
-  for ( int i = 0; i < n; ++i )
-  {
-    DatasetH dataset = MDAL_M_dataset( mMeshH, i );
-    mDatasets.push_back( dataset );
-  }
 }
 
 /*----------------------------------------------------------------------------------------------*/

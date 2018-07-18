@@ -26,8 +26,6 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
-const int NO_ACTIVE_MESH_DATASET = -1;
-
 class QgsMapLayerRenderer;
 class QgsSymbol;
 class QgsTriangularMesh;
@@ -172,18 +170,18 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * Triggers repaint
      */
-    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
     //! Returns active scalar dataset
-    int activeScalarDataset() const { return mActiveScalarDataset; }
+    QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
 
     /**
      * Sets active vector dataset for rendering.
      *
      * If dataset is not vector based, do nothing. Triggers repaint
      */
-    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
     //! Returns active vector dataset
-    int activeVectorDataset() const { return mActiveVectorDataset; }
+    QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
 
   private: // Private methods
 
@@ -225,10 +223,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshRendererVectorSettings mRendererVectorSettings;
 
     //! index of active scalar dataset; -1 if none
-    int mActiveScalarDataset = NO_ACTIVE_MESH_DATASET;
+    QgsMeshDatasetIndex mActiveScalarDataset;
 
     //! index of active vector dataset; -1 if none
-    int mActiveVectorDataset = NO_ACTIVE_MESH_DATASET;
+    QgsMeshDatasetIndex mActiveVectorDataset;
 };
 
 #endif //QGSMESHLAYER_H
