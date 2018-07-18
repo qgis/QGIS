@@ -128,9 +128,11 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 {
   int value = mDatasetSlider->value();
   int groupIndex = mDatasetGroupTreeView->activeGroup();
-  int datasetCount = mMeshLayer->dataProvider()->datasetCount( groupIndex );
 
-  if ( datasetCount > value && mMeshLayer && mMeshLayer->dataProvider() )
+  if ( mMeshLayer &&
+       mMeshLayer->dataProvider() &&
+       mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value
+     )
     return QgsMeshDatasetIndex( groupIndex, value );
   else
     return QgsMeshDatasetIndex();
