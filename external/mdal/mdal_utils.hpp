@@ -13,6 +13,9 @@
 
 #include "mdal_data_model.hpp"
 
+// avoid unused variable warnings
+#define MDAL_UNUSED(x) (void)x;
+
 namespace MDAL
 {
   // numbers

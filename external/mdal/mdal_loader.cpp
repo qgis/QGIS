@@ -8,6 +8,7 @@
 #include "frmts/mdal_2dm.hpp"
 #include "frmts/mdal_ascii_dat.hpp"
 #include "frmts/mdal_binary_dat.hpp"
+#include "mdal_utils.hpp"
 
 #ifdef HAVE_HDF5
 #include "frmts/mdal_xmdf.hpp"
