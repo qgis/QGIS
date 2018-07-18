@@ -1761,7 +1761,10 @@ void QgsProjectProperties::populateStyles()
   for ( int i = 0; i < symbolNames.count(); ++i )
   {
     QString name = symbolNames[i];
-    QgsSymbol *symbol = mStyle->symbol( name );
+    std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( name ) );
+    if ( !symbol )
+      continue;
+
     QComboBox *cbo = nullptr;
     switch ( symbol->type() )
     {
@@ -1780,10 +1783,9 @@ void QgsProjectProperties::populateStyles()
     }
     if ( cbo )
     {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, cbo->iconSize() );
+      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), cbo->iconSize() );
       cbo->addItem( icon, name );
     }
-    delete symbol;
   }
 
   // populate color ramps
@@ -1857,7 +1859,7 @@ void QgsProjectProperties::editSymbol( QComboBox *cbo )
     QMessageBox::information( this, QLatin1String( "" ), tr( "Select a valid symbol" ) );
     return;
   }
-  QgsSymbol *symbol = mStyle->symbol( symbolName );
+  std::unique_ptr< QgsSymbol > symbol( mStyle->symbol( symbolName ) );
   if ( ! symbol )
   {
     QMessageBox::warning( this, QLatin1String( "" ), tr( "Invalid symbol : " ) + symbolName );
@@ -1865,19 +1867,19 @@ void QgsProjectProperties::editSymbol( QComboBox *cbo )
   }
 
   // let the user edit the symbol and update list when done
-  QgsSymbolSelectorDialog dlg( symbol, mStyle, nullptr, this );
+  QgsSymbolSelectorDialog dlg( symbol.get(), mStyle, nullptr, this );
   if ( dlg.exec() == 0 )
   {
-    delete symbol;
     return;
   }
 
-  // by adding symbol to style with the same name the old effectively gets overwritten
-  mStyle->addSymbol( symbolName, symbol );
-
   // update icon
-  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol, cbo->iconSize() );
+  QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( symbol.get(), cbo->iconSize() );
   cbo->setItemIcon( cbo->currentIndex(), icon );
+
+  // by adding symbol to style with the same name the old effectively gets overwritten
+  mStyle->addSymbol( symbolName, symbol.release() );
+
 }
 
 void QgsProjectProperties::resetPythonMacros()

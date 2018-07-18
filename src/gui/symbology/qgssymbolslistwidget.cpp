@@ -295,10 +295,9 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList &names )
 
   for ( int i = 0; i < names.count(); i++ )
   {
-    QgsSymbol *s = mStyle->symbol( names[i] );
-    if ( s->type() != mSymbol->type() )
+    std::unique_ptr< QgsSymbol > s( mStyle->symbol( names[i] ) );
+    if ( !s || s->type() != mSymbol->type() )
     {
-      delete s;
       continue;
     }
     QStringList tags = mStyle->tagsOfSymbol( QgsStyle::SymbolEntity, names[i] );
@@ -312,11 +311,10 @@ void QgsSymbolsListWidget::populateSymbols( const QStringList &names )
     itemFont.setPointSize( 10 );
     item->setFont( itemFont );
     // create preview icon
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s, previewSize, 15 );
+    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( s.get(), previewSize, 15 );
     item->setIcon( icon );
     // add to model
     model->appendRow( item );
-    delete s;
   }
 }
 
@@ -637,7 +635,10 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
   QString symbolName = index.data( Qt::UserRole ).toString();
   lblSymbolName->setText( symbolName );
   // get new instance of symbol from style
-  QgsSymbol *s = mStyle->symbol( symbolName );
+  std::unique_ptr< QgsSymbol > s( mStyle->symbol( symbolName ) );
+  if ( !s )
+    return;
+
   // remove all symbol layers from original symbolgroupsCombo
   while ( mSymbol->symbolLayerCount() )
     mSymbol->deleteSymbolLayer( 0 );
@@ -648,9 +649,6 @@ void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex &index )
     mSymbol->appendSymbolLayer( sl );
   }
   mSymbol->setOpacity( s->opacity() );
-
-  // delete the temporary symbol
-  delete s;
 
   updateSymbolInfo();
   emit changed();
