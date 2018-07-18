@@ -63,6 +63,11 @@ Clear the current maptip if it exists
 :param mpMapCanvas: the canvas from which the tip should be cleared.
 %End
 
+    void applyFontSettings();
+%Docstring
+Apply font family and size to match user settings
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
