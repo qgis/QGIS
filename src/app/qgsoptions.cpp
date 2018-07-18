@@ -1634,6 +1634,8 @@ void QgsOptions::saveOptions()
   if ( mStyleSheetNewOpts != mStyleSheetOldOpts )
   {
     mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
+    // trigger an extra  style sheet build to propagate saved settings
+    mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
   }
 
   mDefaultDatumTransformTableWidget->transformContext().writeSettings();
