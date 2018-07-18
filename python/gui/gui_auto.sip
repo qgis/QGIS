@@ -195,6 +195,7 @@
 %Include auto_generated/qgsstatusbar.sip
 %Include auto_generated/qgssublayersdialog.sip
 %Include auto_generated/qgssubstitutionlistwidget.sip
+%Include auto_generated/qgssvgsourcelineedit.sip
 %Include auto_generated/qgssymbolbutton.sip
 %Include auto_generated/qgstablewidgetbase.sip
 %Include auto_generated/qgstabwidget.sip

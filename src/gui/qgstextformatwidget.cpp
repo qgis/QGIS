@@ -1310,6 +1310,7 @@ void QgsTextFormatWidget::mShapeSVGSelectorBtn_clicked()
     if ( !svgPath.isEmpty() )
     {
       mShapeSVGPathLineEdit->setText( svgPath );
+      updatePreview();
     }
   }
 }

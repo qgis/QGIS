@@ -32,6 +32,7 @@
 #include <QPixmapCache>
 #include <QStyle>
 #include <QTime>
+#include <QMenu>
 
 // QgsSvgSelectorLoader
 
@@ -373,8 +374,8 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
 {
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
-  connect( mFilePushButton, &QPushButton::clicked, this, &QgsSvgSelectorWidget::mFilePushButton_clicked );
-  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsSvgSelectorWidget::mFileLineEdit_textChanged );
+
+  connect( mSvgSourceLineEdit, &QgsSvgSourceLineEdit::sourceChanged, this, &QgsSvgSelectorWidget::svgSourceChanged );
 
   mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().width( QStringLiteral( "XXXX" ) ) ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
@@ -392,9 +393,7 @@ void QgsSvgSelectorWidget::setSvgPath( const QString &svgPath )
 {
   mCurrentSvgPath = svgPath;
 
-  mFileLineEdit->blockSignals( true );
-  mFileLineEdit->setText( svgPath );
-  mFileLineEdit->blockSignals( false );
+  whileBlocking( mSvgSourceLineEdit )->setSource( svgPath );
 
   mImagesListView->selectionModel()->blockSignals( true );
   QAbstractItemModel *m = mImagesListView->model();
@@ -427,7 +426,7 @@ void QgsSvgSelectorWidget::updateCurrentSvgPath( const QString &svgPath )
 void QgsSvgSelectorWidget::svgSelectionChanged( const QModelIndex &idx )
 {
   QString filePath = idx.data( Qt::UserRole ).toString();
-  mFileLineEdit->setText( filePath );
+  whileBlocking( mSvgSourceLineEdit )->setSource( filePath );
   updateCurrentSvgPath( filePath );
 }
 
@@ -442,57 +441,14 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
 
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
            this, &QgsSvgSelectorWidget::svgSelectionChanged );
-
 }
 
-void QgsSvgSelectorWidget::mFilePushButton_clicked()
-{
-  QgsSettings settings;
-  QString openDir = settings.value( QStringLiteral( "UI/lastSVGMarkerDir" ), QDir::homePath() ).toString();
-
-  QString lineEditText = mFileLineEdit->text();
-  if ( !lineEditText.isEmpty() )
-  {
-    QFileInfo openDirFileInfo( lineEditText );
-    openDir = openDirFileInfo.path();
-  }
-
-  QString file = QFileDialog::getOpenFileName( nullptr,
-                 tr( "Select SVG file" ),
-                 openDir,
-                 tr( "SVG files" ) + " (*.svg *.SVG)" );
-
-  activateWindow(); // return window focus
-
-  if ( file.isNull() )
-    return;
-
-  QFileInfo fi( file );
-  if ( !fi.exists() || !fi.isReadable() )
-  {
-    updateCurrentSvgPath( QString() );
-    updateLineEditFeedback( false );
-    return;
-  }
-  settings.setValue( QStringLiteral( "UI/lastSVGMarkerDir" ), fi.absolutePath() );
-  mFileLineEdit->setText( file );
-  updateCurrentSvgPath( file );
-}
-
-void QgsSvgSelectorWidget::updateLineEditFeedback( bool ok, const QString &tip )
-{
-  // draw red text for path field if invalid (path can't be resolved)
-  mFileLineEdit->setStyleSheet( QString( !ok ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
-  mFileLineEdit->setToolTip( !ok ? tr( "File not found" ) : tip );
-}
-
-void QgsSvgSelectorWidget::mFileLineEdit_textChanged( const QString &text )
+void QgsSvgSelectorWidget::svgSourceChanged( const QString &text )
 {
   QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( text, QgsProject::instance()->pathResolver() );
   bool validSVG = !resolvedPath.isNull();
 
-  updateLineEditFeedback( validSVG, resolvedPath );
-  updateCurrentSvgPath( validSVG ? resolvedPath : QString() );
+  updateCurrentSvgPath( validSVG ? resolvedPath : text );
 }
 
 void QgsSvgSelectorWidget::populateList()
