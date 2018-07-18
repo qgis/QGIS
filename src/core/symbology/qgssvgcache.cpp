@@ -399,6 +399,13 @@ QByteArray QgsSvgCache::getImageData( const QString &path ) const
     }
   }
 
+  // maybe it's an embedded base64 string
+  if ( path.startsWith( QLatin1String( "base64:" ), Qt::CaseInsensitive ) )
+  {
+    QByteArray base64 = path.mid( 7 ).toLocal8Bit(); // strip 'base64:' prefix
+    return QByteArray::fromBase64( base64, QByteArray::OmitTrailingEquals );
+  }
+
   // maybe it's a url...
   if ( !path.contains( QLatin1String( "://" ) ) ) // otherwise short, relative SVG paths might be considered URLs
   {
