@@ -62,6 +62,7 @@ Clear the current maptip if it exists
 
 :param mpMapCanvas: the canvas from which the tip should be cleared.
 %End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *
