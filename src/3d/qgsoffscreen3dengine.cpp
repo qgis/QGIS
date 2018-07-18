@@ -82,14 +82,17 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Set the root entity of the engine. This causes the engine to begin running.
   mAspectEngine->setRootEntity( Qt3DCore::QEntityPtr( mRoot ) );
 
-
-  // start requesting renders
-  requestRenderCapture();
 }
 
 void QgsOffscreen3DEngine::setClearColor( const QColor &color )
 {
   mClearBuffers->setClearColor( color );
+}
+
+void QgsOffscreen3DEngine::setFrustumCullingEnabled( bool enabled )
+{
+  // TODO
+  Q_UNUSED( enabled );
 }
 
 void QgsOffscreen3DEngine::createRenderTarget()
@@ -195,23 +198,19 @@ QSize QgsOffscreen3DEngine::size() const
   return mSize;
 }
 
-//static int iii = 0;
-
-void QgsOffscreen3DEngine::requestRenderCapture()
+void QgsOffscreen3DEngine::requestCaptureImage()
 {
-  delete mReply;
+  if ( mReply )
+  {
+    qDebug() << "already having a pending capture, skipping";
+    return;
+  }
   mReply = mRenderCapture->requestCapture();
   connect( mReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
   {
     QImage image = mReply->image();
-    /*
-    iii++;
-    qDebug() << "got image!" << iii;
-    image.save( QString( "/tmp/3d_%1.jpg" ).arg( iii ), "jpg" );
-    */
+    mReply->deleteLater();
+    mReply = nullptr;
     emit imageCaptured( image );
-
-    //if (!end)
-    requestRenderCapture();
   } );
 }

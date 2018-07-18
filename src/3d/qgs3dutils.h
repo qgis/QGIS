@@ -19,6 +19,9 @@
 class QgsLineString;
 class QgsPolygon;
 
+class QgsAbstract3DEngine;
+class Qgs3DMapScene;
+
 #include "qgs3dmapsettings.h"
 #include "qgsaabb.h"
 
@@ -49,6 +52,13 @@ enum AltitudeBinding
 class _3D_EXPORT Qgs3DUtils
 {
   public:
+
+    /**
+     * Captures image of the current 3D scene of a 3D engine. The function waits
+     * until the scene is not fully loaded/updated before capturing the image.
+     * \since QGIS 3.4
+     */
+    static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
