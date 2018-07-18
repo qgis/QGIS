@@ -398,6 +398,13 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
   delete mContext.expressionContext().popScope();
 
+  if ( features.empty() )
+  {
+    // nothing to draw
+    stopRenderer( selRenderer );
+    return;
+  }
+
   // find out the order
   QgsSymbolLevelOrder levels;
   QgsSymbolList symbols = mRenderer->symbols( mContext );
