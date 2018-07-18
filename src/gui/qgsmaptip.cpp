@@ -67,6 +67,7 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWebView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );//Handle link clicks by yourself
   mWebView->setContextMenuPolicy( Qt::NoContextMenu ); //No context menu is allowed if you don't need it
   connect( mWebView, &QWebView::linkClicked, this, &QgsMapTip::onLinkClicked );
+  connect( mWebView, &QWebView::loadFinished, this, [ = ]( bool ) { resizeContent(); } );
 #endif
 
   mWebView->page()->settings()->setAttribute(
@@ -135,6 +136,17 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   mWidget->show();
 
 #if WITH_QTWEBKIT
+  resizeContent();
+#endif
+}
+
+void QgsMapTip::resizeContent()
+{
+  // Get the content size
+  QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
+                            QStringLiteral( "#QgsWebViewContainer" ) );
+  int width = container.geometry().width();
+  int height = container.geometry().height();
   int scrollbarWidth = mWebView->page()->mainFrame()->scrollBarGeometry(
                          Qt::Vertical ).width();
   int scrollbarHeight = mWebView->page()->mainFrame()->scrollBarGeometry(
@@ -142,15 +154,11 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
   if ( scrollbarWidth > 0 || scrollbarHeight > 0 )
   {
-    // Get the content size
-    QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
-                              QStringLiteral( "#QgsWebViewContainer" ) );
-    int width = container.geometry().width() + 5 + scrollbarWidth;
-    int height = container.geometry().height() + 5 + scrollbarHeight;
-
-    mWidget->resize( width, height );
+    width += 5 + scrollbarWidth;
+    height += 5 + scrollbarHeight;
   }
-#endif
+
+  mWidget->resize( width, height );
 }
 
 void QgsMapTip::clear( QgsMapCanvas * )

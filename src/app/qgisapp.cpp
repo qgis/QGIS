@@ -9336,7 +9336,6 @@ void QgisApp::saveLastMousePosition( const QgsPointXY &p )
       mpMaptip->clear( mMapCanvas );
       // don't start the timer if the mouse is not over the map canvas
       mpMapTipsTimer->start();
-      //QgsDebugMsg("Started maptips timer");
     }
   }
 }
