@@ -198,6 +198,8 @@ void Qgs3DMapScene::onCameraChanged()
       entity->update( _sceneState( mCameraController ) );
   }
 
+  updateSceneState();
+
   // Update near and far plane from the terrain.
   // this needs to be done with great care as we have kind of circular dependency here:
   // active nodes are culled based on the current frustum (which involves near + far plane)
@@ -279,6 +281,8 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
       entity->update( _sceneState( mCameraController ) );
     }
   }
+
+  updateSceneState();
 }
 
 void Qgs3DMapScene::createTerrain()
@@ -296,6 +300,7 @@ void Qgs3DMapScene::createTerrain()
     // defer re-creation of terrain: there may be multiple invocations of this slot, so create the new entity just once
     QTimer::singleShot( 0, this, &Qgs3DMapScene::createTerrainDeferred );
     mTerrainUpdateScheduled = true;
+    setSceneState( Updating );
   }
 }
 
@@ -452,4 +457,32 @@ void Qgs3DMapScene::addCameraViewCenterEntity( Qt3DRender::QCamera *camera )
   {
     mEntityCameraViewCenter->setEnabled( mMap.showCameraViewCenter() );
   } );
+}
+
+void Qgs3DMapScene::setSceneState( Qgs3DMapScene::SceneState state )
+{
+  if ( mSceneState == state )
+    return;
+  mSceneState = state;
+  emit sceneStateChanged();
+}
+
+void Qgs3DMapScene::updateSceneState()
+{
+  if ( mTerrainUpdateScheduled )
+  {
+    setSceneState( Updating );
+    return;
+  }
+
+  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  {
+    if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
+    {
+      setSceneState( Updating );
+      return;
+    }
+  }
+
+  setSceneState( Ready );
 }

@@ -41,18 +41,18 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     QgsOffscreen3DEngine();
 
     void setClearColor( const QColor &color ) override;
-    //void setFrustumCullingEnabled( bool enabled ) override;
+    void setFrustumCullingEnabled( bool enabled ) override;
     void setRootEntity( Qt3DCore::QEntity *root ) override;
 
     Qt3DRender::QRenderSettings *renderSettings() override;
     Qt3DRender::QCamera *camera() override;
     QSize size() const override;
 
+    void requestCaptureImage() override;
+
   private:
     void createRenderTarget();
     void createFrameGraph();
-
-    void requestRenderCapture();
 
   private:
 

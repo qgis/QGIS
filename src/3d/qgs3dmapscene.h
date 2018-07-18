@@ -66,11 +66,22 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
 
+    enum SceneState
+    {
+      Ready,     //!< The scene is fully loaded/updated
+      Updating,  //!< The scene is still being loaded/updated
+    };
+
+    //! Returns the current state of the scene
+    SceneState sceneState() const { return mSceneState; }
+
   signals:
     //! Emitted when the current terrain entity is replaced by a new one
     void terrainEntityChanged();
     //! Emitted when the number of terrain's pending jobs changes
     void terrainPendingJobsCountChanged();
+    //! Emitted when the scene's state has changed
+    void sceneStateChanged();
 
   private slots:
     void onCameraChanged();
@@ -85,6 +96,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void addLayerEntity( QgsMapLayer *layer );
     void removeLayerEntity( QgsMapLayer *layer );
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
+    void setSceneState( SceneState state );
+    void updateSceneState();
 
   private:
     const Qgs3DMapSettings &mMap;
@@ -99,6 +112,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Keeps track of entities that belong to a particular layer
     QMap<QgsMapLayer *, Qt3DCore::QEntity *> mLayerEntities;
     bool mTerrainUpdateScheduled = false;
+    SceneState mSceneState = Ready;
 };
 
 #endif // QGS3DMAPSCENE_H

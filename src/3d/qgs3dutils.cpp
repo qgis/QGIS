@@ -23,8 +23,52 @@
 #include "qgsabstractgeometry.h"
 #include "qgsvectorlayer.h"
 
+#include "qgs3dmapscene.h"
+#include "qgsabstract3dengine.h"
 #include "qgsterraingenerator.h"
 
+
+QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene )
+{
+  QImage resImage;
+  QEventLoop evLoop;
+
+  auto requestImageFcn = [&engine, scene]
+  {
+    if ( scene->sceneState() == Qgs3DMapScene::Ready )
+    {
+      qDebug() << "loaded - requesting image";
+      engine.requestCaptureImage();
+    }
+  };
+
+  auto saveImageFcn = [&engine, &evLoop, &resImage]( const QImage & img )
+  {
+    resImage = img;
+    evLoop.quit();
+  };
+
+  QMetaObject::Connection conn1 = QObject::connect( &engine, &QgsAbstract3DEngine::imageCaptured, saveImageFcn );
+  QMetaObject::Connection conn2;
+
+  if ( scene->sceneState() == Qgs3DMapScene::Ready )
+  {
+    requestImageFcn();
+  }
+  else
+  {
+    // first wait until scene is loaded
+    conn2 = QObject::connect( scene, &Qgs3DMapScene::sceneStateChanged, requestImageFcn );
+  }
+
+  evLoop.exec();
+
+  QObject::disconnect( conn1 );
+  if ( conn2 )
+    QObject::disconnect( conn2 );
+
+  return resImage;
+}
 
 
 int Qgs3DUtils::maxZoomLevel( double tile0width, double tileResolution, double maxError )

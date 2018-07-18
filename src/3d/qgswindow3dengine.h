@@ -40,7 +40,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 
     QWindow *window();
 
-    void requestCaptureImage();
+    void requestCaptureImage() override;
 
     void setClearColor( const QColor &color ) override;
     void setFrustumCullingEnabled( bool enabled ) override;

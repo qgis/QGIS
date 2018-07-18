@@ -44,6 +44,8 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     virtual Qt3DRender::QCamera *camera() = 0;
     virtual QSize size() const = 0;
 
+    virtual void requestCaptureImage() = 0;
+
   signals:
     void imageCaptured( const QImage &image );
 };
