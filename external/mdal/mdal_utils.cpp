@@ -4,6 +4,7 @@
 */
 
 #include "mdal_utils.hpp"
+#include <string>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
@@ -101,7 +102,14 @@ bool MDAL::contains( const std::string &str, const std::string &substr, Contains
     auto it = std::search(
                 str.begin(), str.end(),
                 substr.begin(),   substr.end(),
-    []( char ch1, char ch2 ) { return std::toupper( ch1 ) == std::toupper( ch2 ); }
+                []( char ch1, char ch2 )
+    {
+#ifdef _MSC_VER
+      return toupper( ch1 ) == toupper( ch2 );
+#else
+      return std::toupper( ch1 ) == std::toupper( ch2 );
+#endif
+    }
               );
     return ( it != str.end() );
   }
