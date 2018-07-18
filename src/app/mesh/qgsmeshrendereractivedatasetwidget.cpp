@@ -50,25 +50,41 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeVectorDataset() co
   return mActiveVectorDataset;
 }
 
-void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
+void QgsMeshRendererActiveDatasetWidget::setSliderRange()
 {
-  int datasetCount = mMeshLayer->dataProvider()->datasetCount( mDatasetGroupTreeView->activeGroup() );
+  int datasetCount = 1;
+  if ( mMeshLayer &&
+       mMeshLayer->dataProvider() )
+    datasetCount = mMeshLayer->dataProvider()->datasetCount( mDatasetGroupTreeView->activeGroup() );
 
   mDatasetSlider->setMinimum( 0 );
   mDatasetSlider->setMaximum( datasetCount - 1 );
-  mDatasetSlider->setValue( 0 );
+}
+
+void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
+{
+  setSliderRange();
+
+  // keep the same timestep if possible
+  int val = mDatasetSlider->value();
+  if ( ( val < 0 ) || ( val > mDatasetSlider->maximum() ) )
+    val = 0;
+
+  mDatasetSlider->setValue( val );
+  onActiveDatasetChanged( val );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 {
   int groupIndex = mDatasetGroupTreeView->activeGroup();
-  int datasetCount = mMeshLayer->dataProvider()->datasetCount( groupIndex );
 
   mActiveScalarDataset = QgsMeshDatasetIndex();
   mActiveVectorDataset = QgsMeshDatasetIndex();
   QgsMeshDatasetIndex datasetIndex( groupIndex, value );
 
-  if ( datasetCount > value && mMeshLayer && mMeshLayer->dataProvider() )
+  if ( mMeshLayer &&
+       mMeshLayer->dataProvider() &&
+       mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value )
   {
     const QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
     mActiveScalarDataset = datasetIndex;
@@ -86,7 +102,9 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 
 void QgsMeshRendererActiveDatasetWidget::updateMetadata( QgsMeshDatasetIndex datasetIndex )
 {
-  if ( !datasetIndex.isValid() )
+  if ( !mMeshLayer ||
+       !mMeshLayer->dataProvider() ||
+       !datasetIndex.isValid() )
   {
     mActiveDatasetMetadata->setText( tr( "No dataset selected" ) );
   }
@@ -140,7 +158,7 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 
 void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 {
-  mDatasetGroupTreeView->syncToLayer();
+  whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
   if ( mMeshLayer )
   {
@@ -153,6 +171,11 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
     mActiveVectorDataset = QgsMeshDatasetIndex();
   }
 
+  int val = 0;
   if ( mActiveScalarDataset.isValid() )
-    whileBlocking( mDatasetSlider )->setValue( mActiveScalarDataset.dataset() );
+    val = mActiveScalarDataset.dataset();
+  mDatasetSlider->setValue( val );
+
+  setSliderRange();
+  onActiveDatasetChanged( val );
 }
