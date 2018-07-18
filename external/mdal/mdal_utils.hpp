@@ -11,10 +11,7 @@
 #include <stddef.h>
 #include <limits>
 
-#include "mdal_defines.hpp"
-
-// avoid unused variable warnings
-#define MDAL_UNUSED(x) (void)x;
+#include "mdal_data_model.hpp"
 
 namespace MDAL
 {

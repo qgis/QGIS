@@ -7,7 +7,7 @@
 #define MDAL_GRIB_HPP
 
 #include "mdal_gdal.hpp"
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 #include "mdal.h"
 #include <string>
 

@@ -13,7 +13,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 #include "mdal.h"
 #include "mdal_hdf5.hpp"
 
@@ -28,14 +28,14 @@ namespace MDAL
 
     private:
       std::string mDatFile;
-      Datasets readXmdfGroupAsDataSet(
+      std::shared_ptr<MDAL::DatasetGroup> readXmdfGroupAsDatasetGroup(
         const HdfGroup &rootGroup,
         const std::string &name,
         size_t vertexCount,
         size_t faceCount );
 
-      void addDataSetsFromGroup(
-        Datasets &datasets,
+      void addDatasetGroupsFromXmdfGroup(
+        DatasetGroups &groups,
         const HdfGroup &rootGroup,
         size_t vertexCount,
         size_t faceCount );

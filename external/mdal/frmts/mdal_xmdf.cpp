@@ -6,7 +6,7 @@
 #include "mdal_xmdf.hpp"
 
 #include "mdal_utils.hpp"
-#include "mdal_defines.hpp"
+#include "mdal_data_model.hpp"
 #include "mdal_hdf5.hpp"
 
 #include <string>
@@ -51,12 +51,12 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
 
   // TODO: read Times group (e.g. time of peak velocity)
 
-  Datasets datasets; // DAT outputs data
+  DatasetGroups groups; // DAT outputs data
 
   HdfGroup gTemporal = gMesh.group( "Temporal" );
   if ( gTemporal.isValid() )
   {
-    addDataSetsFromGroup( datasets, gTemporal, vertexCount, faceCount );
+    addDatasetGroupsFromXmdfGroup( groups, gTemporal, vertexCount, faceCount );
   }
 
   HdfGroup gMaximums = gMesh.group( "Maximums" );
@@ -65,11 +65,27 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
     for ( const std::string &name : gMaximums.groups() )
     {
       HdfGroup g = gMaximums.group( name );
-      Datasets ds = readXmdfGroupAsDataSet( g, name + "/Maximums", vertexCount, faceCount );
-      if ( ds.size() != 1 )
+      std::shared_ptr<MDAL::DatasetGroup> maxGroup = readXmdfGroupAsDatasetGroup( g, name + "/Maximums", vertexCount, faceCount );
+      if ( maxGroup->datasets.size() != 1 )
         MDAL::debug( "Maximum dataset should have just one timestep!" );
       else
-        datasets.emplace_back( ds.at( 0 ) );
+      {
+        bool found = false;
+        for ( const std::shared_ptr<MDAL::DatasetGroup> grp : groups )
+        {
+          if ( grp->name() == name )
+          {
+            grp->maximumDataset = maxGroup->datasets.at( 0 );
+            found = true;
+            break;
+          }
+        }
+
+        if ( !found )
+        {
+          MDAL::debug( "Unable to find base dataset for maximum dataset" );
+        }
+      }
     }
   }
 
@@ -77,42 +93,37 @@ void MDAL::LoaderXmdf::load( MDAL::Mesh *mesh, MDAL_Status *status )
   HdfGroup gDifference = gMesh.group( "Difference" );
   if ( gDifference.isValid() )
   {
-    addDataSetsFromGroup( datasets, gDifference, vertexCount, faceCount );
+    addDatasetGroupsFromXmdfGroup( groups, gDifference, vertexCount, faceCount );
   }
 
-  mesh->datasets.insert(
-    mesh->datasets.end(),
-    datasets.begin(),
-    datasets.end()
+  mesh->datasetGroups.insert(
+    mesh->datasetGroups.end(),
+    groups.begin(),
+    groups.end()
   );
 }
 
-void MDAL::LoaderXmdf::addDataSetsFromGroup(
-  MDAL::Datasets &datasets, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
+void MDAL::LoaderXmdf::addDatasetGroupsFromXmdfGroup( DatasetGroups &groups, const HdfGroup &rootGroup, size_t vertexCount, size_t faceCount )
 {
   for ( const std::string &name : rootGroup.groups() )
   {
     HdfGroup g = rootGroup.group( name );
-    Datasets ds = readXmdfGroupAsDataSet( g, name, vertexCount, faceCount );
-    datasets.insert(
-      datasets.end(),
-      ds.begin(),
-      ds.end()
-    );
+    std::shared_ptr<DatasetGroup> ds = readXmdfGroupAsDatasetGroup( g, name, vertexCount, faceCount );
+    groups.push_back( ds );
   }
 }
 
-MDAL::Datasets MDAL::LoaderXmdf::readXmdfGroupAsDataSet(
+std::shared_ptr<MDAL::DatasetGroup> MDAL::LoaderXmdf::readXmdfGroupAsDatasetGroup(
   const HdfGroup &rootGroup, const std::string &name, size_t vertexCount, size_t faceCount )
 {
-  Datasets datasets;
+  std::shared_ptr<DatasetGroup> group( new DatasetGroup() );
   std::vector<std::string> gDataNames = rootGroup.datasets();
   if ( !MDAL::contains( gDataNames, "Times" ) ||
        !MDAL::contains( gDataNames, "Values" ) ||
        !MDAL::contains( gDataNames, "Active" ) )
   {
     MDAL::debug( "ignoring dataset " + name + " - not having required arrays" );
-    return datasets;
+    return group;
   }
 
   HdfDataset dsTimes = rootGroup.dataset( "Times" );
@@ -126,19 +137,19 @@ MDAL::Datasets MDAL::LoaderXmdf::readXmdfGroupAsDataSet(
   if ( dimTimes.size() != 1 || ( dimValues.size() != 2 && dimValues.size() != 3 ) || dimActive.size() != 2 )
   {
     MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension counts" );
-    return datasets;
+    return group;
   }
   hsize_t nTimeSteps = dimTimes[0];
 
   if ( dimValues[0] != nTimeSteps || dimActive[0] != nTimeSteps )
   {
     MDAL::debug( "ignoring dataset " + name + " - arrays not having correct dimension sizes" );
-    return datasets;
+    return group;
   }
   if ( dimValues[1] != vertexCount || dimActive[1] != faceCount )
   {
     MDAL::debug( "ignoring dataset " + name + " - not aligned with the used mesh" );
-    return datasets;
+    return group;
   }
 
   bool isVector = dimValues.size() == 3;
@@ -147,16 +158,17 @@ MDAL::Datasets MDAL::LoaderXmdf::readXmdfGroupAsDataSet(
   std::vector<float> values = dsValues.readArray();
   std::vector<uchar> active = dsActive.readArrayUint8();
 
+  group->setName( name );
+  group->isScalar = !isVector;
+  group->isOnVertices = true;
+  group->uri = mDatFile;
   for ( hsize_t i = 0; i < nTimeSteps; ++i )
   {
     std::shared_ptr<Dataset> dataset( new Dataset() );
-    dataset->setName( name );
-    dataset->isScalar = !isVector;
-    dataset->isOnVertices = true;
     dataset->values.resize( vertexCount );
     dataset->active.resize( faceCount );
-    dataset->uri = mDatFile;
-    dataset->setMetadata( "time", std::to_string( times[i] / 3600.0f ) );
+    dataset->parent = group.get();
+    dataset->time = double( times[i] ) / 3600.0;
 
     if ( isVector )
     {
@@ -181,8 +193,8 @@ MDAL::Datasets MDAL::LoaderXmdf::readXmdfGroupAsDataSet(
     {
       dataset->active[j] = input[j];
     }
-    datasets.push_back( dataset );
+    group->datasets.push_back( dataset );
   }
 
-  return datasets;
+  return group;
 }
