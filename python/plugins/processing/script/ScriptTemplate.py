@@ -149,6 +149,9 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
             source.sourceCrs()
         )
 
+        # Send some information to the user
+        feedback.pushInfo('CRS is {}'.format(source.sourceCrs().authid()))
+
         # If sink was not created, throw an exception to indicate that the algorithm
         # encountered a fatal error. The exception text can be any string, but in this
         # case we use the pre-built invalidSinkError method to return a standard
