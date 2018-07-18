@@ -558,7 +558,7 @@ void QgsRelationReferenceWidget::init()
 
     if ( !mFeatureInitialized )
     {
-      //call it for the first intialization
+      //call it for the first initialization
       emit mComboBox->currentIndexChanged( mComboBox->currentIndex() );
       mFeatureInitialized = true;
     }
