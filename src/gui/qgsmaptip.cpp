@@ -57,6 +57,12 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
   // we only want the first qualifying feature and we will only display the
   // field defined as the label field in the layer configuration file/database
 
+  // Do not render map tips if the layer is not visible
+  if ( !pMapCanvas->layers().contains( pLayer ) )
+  {
+    return;
+  }
+
   // Show the maptip on the canvas
   QString tipText, lastTipText, tipHtml, bodyStyle, containerStyle,
           backgroundColor, strokeColor;
