@@ -257,8 +257,6 @@ void QgsMeshDatasetGroupTreeView::extractGroups()
 
 void QgsMeshDatasetGroupTreeView::syncToLayer()
 {
-  mActiveGroup = 0;
-
   extractGroups();
 
   mModel.setupModelData( mGroups );
@@ -271,6 +269,7 @@ void QgsMeshDatasetGroupTreeView::syncToLayer()
 
 int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
 {
+  int group = -1;
   // find active dataset
   QgsMeshDatasetIndex activeDataset;
   if ( mMeshLayer )
@@ -283,12 +282,18 @@ int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
   // find group that contains active dataset
   if ( activeDataset.isValid() && activeDataset.group() < mGroups.size() )
   {
-    mActiveGroup = activeDataset.group();
+    group = activeDataset.group();
   }
-  else
+  else if ( !mGroups.empty() )
   {
     // not found, select first item
-    mActiveGroup = 0;
+    group = 0;
+  }
+
+  if ( mActiveGroup != group )
+  {
+    mActiveGroup = group;
+    emit activeGroupChanged();
   }
 
   return mActiveGroup;

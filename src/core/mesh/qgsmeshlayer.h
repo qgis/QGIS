@@ -222,10 +222,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     QgsMeshRendererScalarSettings mRendererScalarSettings;
     QgsMeshRendererVectorSettings mRendererVectorSettings;
 
-    //! index of active scalar dataset; -1 if none
+    //! index of active scalar dataset
     QgsMeshDatasetIndex mActiveScalarDataset;
 
-    //! index of active vector dataset; -1 if none
+    //! index of active vector dataset
     QgsMeshDatasetIndex mActiveVectorDataset;
 };
 

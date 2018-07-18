@@ -74,6 +74,7 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
 
   private:
     QgsMeshDatasetIndex datasetIndex() const;
+    void setSliderRange();
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
     QgsMeshDatasetIndex mActiveScalarDataset;
