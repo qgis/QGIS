@@ -96,5 +96,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
 
   private slots:
     void onLinkClicked( const QUrl &url );
+    void resizeContent();
 };
 #endif // QGSMAPTIP_H
