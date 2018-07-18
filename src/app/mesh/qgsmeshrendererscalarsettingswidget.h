@@ -19,6 +19,7 @@
 #include "ui_qgsmeshrendererscalarsettingswidgetbase.h"
 #include "qgis_app.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshdataprovider.h"
 
 #include <QWidget>
 
@@ -57,7 +58,7 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   public slots:
     //! Set active scalar dataset to be used
-    void setActiveDataset( int activeDatase );
+    void setActiveDataset( QgsMeshDatasetIndex activeDatase );
 
   private slots:
     void minMaxChanged();
@@ -66,10 +67,10 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
 
   private:
     double lineEditValue( const QLineEdit *lineEdit ) const;
-    void calcMinMax( int datasetIndex, double &min, double &max ) const;
+    void calcMinMax( QgsMeshDatasetIndex datasetIndex, double &min, double &max ) const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    int mActiveDataset = -1;
+    QgsMeshDatasetIndex mActiveDataset;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

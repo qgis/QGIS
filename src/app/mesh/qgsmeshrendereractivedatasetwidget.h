@@ -18,6 +18,7 @@
 
 #include "ui_qgsmeshrendereractivedatasetwidgetbase.h"
 #include "qgis_app.h"
+#include "qgsmeshdataprovider.h"
 
 #include <QWidget>
 
@@ -47,10 +48,10 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
     void setLayer( QgsMeshLayer *layer );
 
     //! Gets index of the selected/active scalar dataset
-    int activeScalarDataset() const;
+    QgsMeshDatasetIndex activeScalarDataset() const;
 
     //! Gets index of the selected/active vector dataset
-    int activeVectorDataset() const;
+    QgsMeshDatasetIndex activeVectorDataset() const;
 
     //! Synchronizes widgets state with associated mesh layer
     void syncToLayer();
@@ -58,10 +59,10 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   signals:
 
     //! Emitted when active scalar dataset changed
-    void activeScalarDatasetChanged( int index );
+    void activeScalarDatasetChanged( QgsMeshDatasetIndex index );
 
     //! Emitted when active vector dataset changed
-    void activeVectorDatasetChanged( int index );
+    void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
 
     //! Emitted when any settings related to rendering changed
     void widgetChanged();
@@ -69,14 +70,14 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
   private slots:
     void onActiveGroupChanged();
     void onActiveDatasetChanged( int value );
-    void updateMetadata( int datasetIndex );
+    void updateMetadata( QgsMeshDatasetIndex datasetIndex );
 
   private:
-    int datasetIndex() const;
+    QgsMeshDatasetIndex datasetIndex() const;
 
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    int mActiveScalarDataset = -1;
-    int mActiveVectorDataset = -1;
+    QgsMeshDatasetIndex mActiveScalarDataset ;
+    QgsMeshDatasetIndex mActiveVectorDataset;
 };
 
 #endif // QGSMESHRENDERERSCALARSETTINGSWIDGET_H

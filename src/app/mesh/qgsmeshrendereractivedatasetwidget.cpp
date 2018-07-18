@@ -40,36 +40,37 @@ void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
   syncToLayer();
 }
 
-int QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
+QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
 {
   return mActiveScalarDataset;
 }
 
-int QgsMeshRendererActiveDatasetWidget::activeVectorDataset() const
+QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeVectorDataset() const
 {
   return mActiveVectorDataset;
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
 {
-  const QVector<int> datasets = mDatasetGroupTreeView->datasetsInActiveGroup();
+  int datasetCount = mMeshLayer->dataProvider()->datasetCount( mDatasetGroupTreeView->activeGroup() );
 
   mDatasetSlider->setMinimum( 0 );
-  mDatasetSlider->setMaximum( datasets.size() - 1 );
+  mDatasetSlider->setMaximum( datasetCount - 1 );
   mDatasetSlider->setValue( 0 );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 {
-  int datasetIndex = -1;
-  const QVector<int> datasets = mDatasetGroupTreeView->datasetsInActiveGroup();
-  mActiveScalarDataset = -1;
-  mActiveVectorDataset = -1;
+  int groupIndex = mDatasetGroupTreeView->activeGroup();
+  int datasetCount = mMeshLayer->dataProvider()->datasetCount( groupIndex );
 
-  if ( datasets.size() > value && mMeshLayer && mMeshLayer->dataProvider() )
+  mActiveScalarDataset = QgsMeshDatasetIndex();
+  mActiveVectorDataset = QgsMeshDatasetIndex();
+  QgsMeshDatasetIndex datasetIndex( groupIndex, value );
+
+  if ( datasetCount > value && mMeshLayer && mMeshLayer->dataProvider() )
   {
-    datasetIndex = datasets[value];
-    const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
     mActiveScalarDataset = datasetIndex;
     if ( meta.isVector() )
       mActiveVectorDataset = datasetIndex;
@@ -83,27 +84,36 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
   emit widgetChanged();
 }
 
-void QgsMeshRendererActiveDatasetWidget::updateMetadata( int datasetIndex )
+void QgsMeshRendererActiveDatasetWidget::updateMetadata( QgsMeshDatasetIndex datasetIndex )
 {
-  if ( datasetIndex == -1 )
+  if ( !datasetIndex.isValid() )
   {
     mActiveDatasetMetadata->setText( tr( "No dataset selected" ) );
   }
   else
   {
-    const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
     QString msg;
     msg += QStringLiteral( "<table>" );
 
+    const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
+    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+           .arg( tr( "Is valid" ) )
+           .arg( meta.isValid() ? tr( "Yes" ) : tr( "No" ) );
+
+    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
+           .arg( tr( "Time" ) )
+           .arg( meta.time() );
+
+    const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
            .arg( tr( "Is on vertices" ) )
-           .arg( meta.isOnVertices() ? tr( "Yes" ) : tr( "No" ) );
+           .arg( gmeta.isOnVertices() ? tr( "Yes" ) : tr( "No" ) );
 
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
            .arg( tr( "Is vector" ) )
-           .arg( meta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
-    for ( auto it = meta.extraOptions().constBegin(); it != meta.extraOptions().constEnd(); ++it )
+    for ( auto it = gmeta.extraOptions().constBegin(); it != gmeta.extraOptions().constEnd(); ++it )
     {
       msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
     }
@@ -114,16 +124,16 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata( int datasetIndex )
 
 }
 
-int QgsMeshRendererActiveDatasetWidget::datasetIndex() const
+QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 {
-  const QVector<int> datasets = mDatasetGroupTreeView->datasetsInActiveGroup();
   int value = mDatasetSlider->value();
-  int datasetIndex = -1;
-  if ( value < datasets.size() )
-  {
-    datasetIndex = datasets[value];
-  }
-  return datasetIndex;
+  int groupIndex = mDatasetGroupTreeView->activeGroup();
+  int datasetCount = mMeshLayer->dataProvider()->datasetCount( groupIndex );
+
+  if ( datasetCount > value && mMeshLayer && mMeshLayer->dataProvider() )
+    return QgsMeshDatasetIndex( groupIndex, value );
+  else
+    return QgsMeshDatasetIndex();
 }
 
 void QgsMeshRendererActiveDatasetWidget::syncToLayer()
@@ -137,10 +147,10 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
   }
   else
   {
-    mActiveScalarDataset = -1;
-    mActiveVectorDataset = -1;
+    mActiveScalarDataset = QgsMeshDatasetIndex();
+    mActiveVectorDataset = QgsMeshDatasetIndex();
   }
 
-  if ( mActiveScalarDataset != -1 )
-    whileBlocking( mDatasetSlider )->setValue( mActiveScalarDataset );
+  if ( mActiveScalarDataset.isValid() )
+    whileBlocking( mDatasetSlider )->setValue( mActiveScalarDataset.dataset() );
 }

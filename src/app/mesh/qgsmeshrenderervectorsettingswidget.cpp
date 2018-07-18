@@ -97,7 +97,7 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   return settings;
 }
 
-void QgsMeshRendererVectorSettingsWidget::setActiveDataset( int activeDataset )
+void QgsMeshRendererVectorSettingsWidget::setActiveDataset( QgsMeshDatasetIndex activeDataset )
 {
   mActiveDataset = activeDataset;
 }

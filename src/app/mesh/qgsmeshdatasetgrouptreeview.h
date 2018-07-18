@@ -111,8 +111,8 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );
 
-    //! Returns all the dataset indexes in the active group
-    QVector<int> datasetsInActiveGroup() const;
+    //! Returns index of active group
+    int activeGroup() const;
 
     //! Synchronize widgets state with associated mesh layer
     void syncToLayer();
@@ -130,8 +130,8 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
 
     QgsMeshDatasetGroupTreeModel mModel;
     QgsMeshLayer *mMeshLayer = nullptr; // not owned
-    QMap<QString, QVector<int>> mGroups; // group name -> dataset indices
-    QString mActiveGroup;
+    QStringList mGroups; // group names
+    int mActiveGroup; // index of active group
 };
 
 #endif // QGSMESHDATASETGROUPTREE_H

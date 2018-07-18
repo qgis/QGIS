@@ -98,12 +98,12 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
 }
 
-void QgsMeshRendererScalarSettingsWidget::setActiveDataset( int activeDataset )
+void QgsMeshRendererScalarSettingsWidget::setActiveDataset( QgsMeshDatasetIndex activeDataset )
 {
   mActiveDataset = activeDataset;
 }
 
-void QgsMeshRendererScalarSettingsWidget::calcMinMax( int datasetIndex, double &min, double &max ) const
+void QgsMeshRendererScalarSettingsWidget::calcMinMax( QgsMeshDatasetIndex datasetIndex, double &min, double &max ) const
 {
   if ( !mMeshLayer )
     return;
@@ -111,7 +111,7 @@ void QgsMeshRendererScalarSettingsWidget::calcMinMax( int datasetIndex, double &
   if ( !mMeshLayer->dataProvider() )
     return;
 
-  const QgsMeshDatasetMetadata metadata = mMeshLayer->dataProvider()->datasetMetadata( datasetIndex );
+  const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
   bool scalarDataOnVertices = metadata.isOnVertices();
   int count;
   if ( scalarDataOnVertices )

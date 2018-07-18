@@ -10,8 +10,6 @@
 
 
 
-const int NO_ACTIVE_MESH_DATASET;
-
 
 class QgsMeshLayer : QgsMapLayer
 {
@@ -171,24 +169,24 @@ Returns renderer settings
 Sets new renderer settings, triggers repaint
 %End
 
-    void setActiveScalarDataset( int index = NO_ACTIVE_MESH_DATASET );
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
 %Docstring
 Sets active scalar dataset for rendering
 
 Triggers repaint
 %End
-    int activeScalarDataset() const;
+    QgsMeshDatasetIndex activeScalarDataset() const;
 %Docstring
 Returns active scalar dataset
 %End
 
-    void setActiveVectorDataset( int index = NO_ACTIVE_MESH_DATASET );
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
 %Docstring
 Sets active vector dataset for rendering.
 
 If dataset is not vector based, do nothing. Triggers repaint
 %End
-    int activeVectorDataset() const;
+    QgsMeshDatasetIndex activeVectorDataset() const;
 %Docstring
 Returns active vector dataset
 %End

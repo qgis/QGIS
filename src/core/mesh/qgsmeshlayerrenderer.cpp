@@ -136,10 +136,10 @@ void QgsMeshLayerRenderer::createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol,
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  int datasetIndex = layer->activeScalarDataset();
-  if ( datasetIndex != NO_ACTIVE_MESH_DATASET )
+  const QgsMeshDatasetIndex datasetIndex = layer->activeScalarDataset();
+  if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetMetadata metadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
     mScalarDataOnVertices = metadata.isOnVertices();
     int count;
     if ( mScalarDataOnVertices )
@@ -160,10 +160,10 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  int datasetIndex = layer->activeVectorDataset();
-  if ( datasetIndex != NO_ACTIVE_MESH_DATASET )
+  const QgsMeshDatasetIndex datasetIndex = layer->activeVectorDataset();
+  if ( datasetIndex.isValid() )
   {
-    const QgsMeshDatasetMetadata metadata = layer->dataProvider()->datasetMetadata( datasetIndex );
+    const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
 
     bool isScalar = metadata.isScalar();
     if ( isScalar )

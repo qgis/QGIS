@@ -19,6 +19,7 @@
 #include "ui_qgsmeshrenderervectorsettingswidgetbase.h"
 #include "qgis_app.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmeshdataprovider.h"
 
 #include <memory>
 #include <QWidget>
@@ -58,7 +59,7 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
 
   public slots:
     //! Set active vector dataset to be used
-    void setActiveDataset( int activeDataset );
+    void setActiveDataset( QgsMeshDatasetIndex activeDataset );
 
   private:
 
@@ -69,7 +70,7 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
     double filterValue( const QString &text, double errVal ) const;
 
     QgsMeshLayer *mMeshLayer = nullptr; //not owned
-    int mActiveDataset = -1;
+    QgsMeshDatasetIndex mActiveDataset;
 };
 
 #endif // QGSMESHRENDERERVECTORSETTINGSWIDGET_H

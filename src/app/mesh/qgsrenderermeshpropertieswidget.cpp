@@ -82,18 +82,18 @@ void QgsRendererMeshPropertiesWidget::apply()
   whileBlocking( mMeshLayer )->setRendererTriangularMeshSettings( triangularMeshSettings );
 
   // SCALAR
-  int activeScalarDatasetIndex = activeScalarDataset();
+  const QgsMeshDatasetIndex activeScalarDatasetIndex = activeScalarDataset();
   whileBlocking( mMeshLayer )->setActiveScalarDataset( activeScalarDatasetIndex );
-  if ( activeScalarDatasetIndex != -1 )
+  if ( activeScalarDatasetIndex.isValid() )
   {
     const  QgsMeshRendererScalarSettings settings = mMeshRendererScalarSettingsWidget->settings();
     whileBlocking( mMeshLayer )->setRendererScalarSettings( settings );
   }
 
   // VECTOR
-  int activeVectorDatasetIndex = activeVectorDataset();
+  const QgsMeshDatasetIndex activeVectorDatasetIndex = activeVectorDataset();
   whileBlocking( mMeshLayer )->setActiveVectorDataset( activeVectorDatasetIndex );
-  if ( activeVectorDatasetIndex != -1 )
+  if ( activeVectorDatasetIndex.isValid() )
   {
     const QgsMeshRendererVectorSettings settings = mMeshRendererVectorSettingsWidget->settings();
     whileBlocking( mMeshLayer )->setRendererVectorSettings( settings );
@@ -113,25 +113,25 @@ void QgsRendererMeshPropertiesWidget::syncToLayer()
   enableVectorRenderingTab( activeVectorDataset() );
 }
 
-void QgsRendererMeshPropertiesWidget::enableVectorRenderingTab( int vectorDatasetIndex )
+void QgsRendererMeshPropertiesWidget::enableVectorRenderingTab( QgsMeshDatasetIndex vectorDatasetIndex )
 {
-  mVectorsGroupBox->setEnabled( vectorDatasetIndex != -1 );
+  mVectorsGroupBox->setEnabled( vectorDatasetIndex.isValid() );
 }
 
-int QgsRendererMeshPropertiesWidget::activeScalarDataset() const
+QgsMeshDatasetIndex QgsRendererMeshPropertiesWidget::activeScalarDataset() const
 {
-  int activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeScalarDataset();
-  if ( activeScalarDatasetIndex != -1 && mContoursGroupBox->isChecked() )
+  QgsMeshDatasetIndex activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeScalarDataset();
+  if ( activeScalarDatasetIndex.isValid() && mContoursGroupBox->isChecked() )
     return activeScalarDatasetIndex;
   else
-    return -1;
+    return QgsMeshDatasetIndex();
 }
 
-int QgsRendererMeshPropertiesWidget::activeVectorDataset() const
+QgsMeshDatasetIndex QgsRendererMeshPropertiesWidget::activeVectorDataset() const
 {
-  int activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeVectorDataset();
-  if ( activeScalarDatasetIndex != -1 && mVectorsGroupBox->isChecked() )
+  QgsMeshDatasetIndex activeScalarDatasetIndex = mMeshRendererActiveDatasetWidget->activeVectorDataset();
+  if ( activeScalarDatasetIndex.isValid() && mVectorsGroupBox->isChecked() )
     return activeScalarDatasetIndex;
   else
-    return -1;
+    return QgsMeshDatasetIndex();
 }

@@ -217,12 +217,9 @@ void QgsMeshDatasetGroupTreeView::setLayer( QgsMeshLayer *layer )
   }
 }
 
-QVector<int> QgsMeshDatasetGroupTreeView::datasetsInActiveGroup() const
+int QgsMeshDatasetGroupTreeView::activeGroup() const
 {
-  if ( mGroups.constFind( mActiveGroup ) == mGroups.constEnd() )
-    return QVector<int>();
-  else
-    return mGroups[mActiveGroup];
+  return mActiveGroup;
 }
 
 void QgsMeshDatasetGroupTreeView::onSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
@@ -231,55 +228,43 @@ void QgsMeshDatasetGroupTreeView::onSelectionChanged( const QItemSelection &sele
 
   if ( selected.isEmpty() )
   {
-    mActiveGroup = QString();
+    mActiveGroup = 0;
     return;
   }
 
   if ( selected.first().indexes().isEmpty() )
   {
-    mActiveGroup = QString();
+    mActiveGroup = 0;
     return;
   }
 
   QModelIndex index = selected.first().indexes().first(); //single selection only
-  QVariant name = mModel.data( index, 0 );
-  mActiveGroup = name.toString();
+  mActiveGroup = index.row();
   emit activeGroupChanged();
 }
 
 
 void QgsMeshDatasetGroupTreeView::extractGroups()
 {
-  // TODO replace with MDAL groups when introduced
   mGroups.clear();
 
   if ( !mMeshLayer || !mMeshLayer->dataProvider() )
     return;
 
-  for ( int i = 0; i < mMeshLayer->dataProvider()->datasetCount(); ++i )
+  for ( int i = 0; i < mMeshLayer->dataProvider()->datasetGroupCount(); ++i )
   {
-    const QgsMeshDatasetMetadata meta = mMeshLayer->dataProvider()->datasetMetadata( i );
-    QString name = meta.extraOptions()["name"];
-    if ( mGroups.constFind( name ) == mGroups.constEnd() )
-    {
-      QVector<int> datasets;
-      datasets.append( i );
-      mGroups[name] = datasets;
-    }
-    else
-    {
-      mGroups[name].append( i );
-    }
+    const QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( i );
+    mGroups << meta.name();
   }
 }
 
 void QgsMeshDatasetGroupTreeView::syncToLayer()
 {
-  mActiveGroup.clear();
+  mActiveGroup = 0;
 
   extractGroups();
 
-  mModel.setupModelData( mGroups.keys() );
+  mModel.setupModelData( mGroups );
 
   int index = setActiveGroupFromActiveDataset();
 
@@ -290,35 +275,24 @@ void QgsMeshDatasetGroupTreeView::syncToLayer()
 int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
 {
   // find active dataset
-  int activeDataset = -1;
+  QgsMeshDatasetIndex activeDataset;
   if ( mMeshLayer )
   {
     activeDataset = mMeshLayer->activeScalarDataset();
-    if ( activeDataset == -1 )
+    if ( !activeDataset.isValid() )
       activeDataset = mMeshLayer->activeVectorDataset();
   }
 
   // find group that contains active dataset
-  int index = 0;
-  if ( activeDataset > -1 )
+  if ( activeDataset.isValid() && activeDataset.group() < mGroups.size() )
   {
-    for ( auto it = mGroups.constBegin(); it != mGroups.constEnd(); ++it )
-    {
-      int datasetIndex = it.value().indexOf( activeDataset );
-      if ( datasetIndex > -1 )
-      {
-        mActiveGroup = it.key();
-        return index;
-      }
-      else
-      {
-        ++index;
-      }
-    }
+    mActiveGroup = activeDataset.group();
+  }
+  else
+  {
+    // not found, select first item
+    mActiveGroup = 0;
   }
 
-
-  // not found return first item in the list
-  mActiveGroup = QString();
-  return 0;
+  return mActiveGroup;
 }
