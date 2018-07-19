@@ -194,7 +194,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   }
 
-  if ( ! geomTypeNone->isChecked() ) 
+  if ( ! geomTypeNone->isChecked() )
   {
     url.addQueryItem( QStringLiteral( "spatialIndex" ), cbxSpatialIndex->isChecked() ? QStringLiteral( "yes" ) : QStringLiteral( "no" ) );
   }
