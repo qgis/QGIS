@@ -124,18 +124,18 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void registerReplyFinished();
 
-    void networkError(QNetworkReply::NetworkError error);
+    void networkError( QNetworkReply::NetworkError error );
 
     //! For testability
     QString registrationEndpoint() const;
 
     //! For testability
-    void setRegistrationEndpoint(const QString& registrationEndpoint);
+    void setRegistrationEndpoint( const QString &registrationEndpoint );
 
   private:
 
     void initGui();
-    void parseSoftwareStatement(const QString& path);
+    void parseSoftwareStatement( const QString &path );
 
     QWidget *parentWidget() const;
     QLineEdit *parentNameField() const;
@@ -169,7 +169,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     QToolButton *btnTokenClear = nullptr;
     QString mRegistrationEndpoint;
     QMap<QString, QVariant> mSoftwareStatement;
-    void registerSoftStatement(const QString& registrationUrl);
+    void registerSoftStatement( const QString &registrationUrl );
     bool mDownloading = false;
     friend class TestQgsAuthOAuth2Method;
 };

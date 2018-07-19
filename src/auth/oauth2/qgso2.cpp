@@ -144,7 +144,7 @@ void QgsO2::clearProperties()
   // TODO: clear object properties
 }
 
-void QgsO2::onSetAuthCode(const QString& code)
+void QgsO2::onSetAuthCode( const QString &code )
 {
   setCode( code );
   onVerificationReceived( QMap<QString, QString>() );

@@ -64,7 +64,7 @@ class QgsO2: public O2
     void clearProperties();
 
     //! Triggered when auth code was set
-    void onSetAuthCode(const QString &code);
+    void onSetAuthCode( const QString &code );
 
     //! Authenticate.
     void link() override;
