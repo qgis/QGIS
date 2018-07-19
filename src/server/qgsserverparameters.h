@@ -131,6 +131,11 @@ class SERVER_EXPORT QgsServerParameters
      */
     void remove( const QString &key );
 
+    /**
+     * Removes a parameter.
+     * \param name The name of the parameter
+     * \since QGIS 3.4
+     */
     void remove( QgsServerParameter::Name name );
 
     /**
@@ -185,6 +190,11 @@ class SERVER_EXPORT QgsServerParameters
     QString version() const;
 
   protected:
+
+    /**
+     * Loads a parameter with a specific value. This method should be
+     * implemented in subclasses.
+     */
     virtual bool loadParameter( const QString &name, const QString &value );
 
     QMap<QString, QString> mUnmanagedParameters;

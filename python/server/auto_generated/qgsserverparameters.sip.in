@@ -142,6 +142,13 @@ Removes a parameter.
 %End
 
     void remove( QgsServerParameter::Name name );
+%Docstring
+Removes a parameter.
+
+:param name: The name of the parameter
+
+.. versionadded:: 3.4
+%End
 
     QString value( const QString &key ) const;
 %Docstring
@@ -201,7 +208,12 @@ defined.
 %End
 
   protected:
+
     virtual bool loadParameter( const QString &name, const QString &value );
+%Docstring
+Loads a parameter with a specific value. This method should be
+implemented in subclasses.
+%End
 
 
 };
