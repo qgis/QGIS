@@ -1889,7 +1889,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     case QgsLayoutExporter::FileError:
       cursorOverride.release();
       QMessageBox::warning( this, tr( "Image Export Error" ),
-                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( QDir::toNativeSeparators( exporter.errorFile() ) ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -1900,7 +1900,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
-                            .arg( exporter.errorFile() ).arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
+                            .arg( QDir::toNativeSeparators( exporter.errorFile() ) ).arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
 
