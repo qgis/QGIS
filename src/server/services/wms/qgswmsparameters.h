@@ -70,9 +70,9 @@ namespace QgsWms
 
   /**
    * \ingroup server
-   * \class QgsWmsParameters
-   * \brief Interface to retrieve and manipulate WMS parameters received from the client.
-   * \since QGIS 3.0
+   * \class QgsWmsParameter
+   * \brief WMS parameter received from the client.
+   * \since QGIS 3.4
    */
   class QgsWmsParameter : public QgsServerParameterDefinition
   {
@@ -155,26 +155,97 @@ namespace QgsWms
       };
       Q_ENUM( Name )
 
+      /**
+       * Constructor for QgsWmsParameter.
+       * \param name Name of the WMS parameter
+       * \param type Type of the parameter
+       * \param defaultValue Default value of the parameter
+       */
       QgsWmsParameter( const QgsWmsParameter::Name name = QgsWmsParameter::UNKNOWN,
                        const QVariant::Type type = QVariant::String,
                        const QVariant defaultValue = QVariant( "" ) );
 
+      /**
+       * Default destructor for QgsWmsParameter.
+       */
       virtual ~QgsWmsParameter() = default;
 
+      /**
+       * Returns true if the parameter is valid, false otherwise.
+       */
       bool isValid() const override;
 
+      /**
+       * Converts the parameter into a list of geometries.
+       * \param delimiter The character delimiting string geometries
+       * \returns A list of geometries
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QList<QgsGeometry> toGeomList( const char delimiter = ',' ) const;
+
+      /**
+       * Converts the parameter into a list of integers.
+       * \param delimiter The character delimiting string integers
+       * \returns A list of integers
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QList<int> toIntList( const char delimiter = ',' ) const;
+
+      /**
+       * Converts the parameter into a list of doubles.
+       * \param delimiter The character delimiting string doubles
+       * \returns A list of doubles
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QList<double> toDoubleList( const char delimiter = ',' ) const;
+
+      /**
+       * Converts the parameter into a list of colors.
+       * \param delimiter The character delimiting string colors
+       * \returns A list of colors
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QList<QColor> toColorList( const char delimiter = ',' ) const;
+
+      /**
+       * Converts the parameter into a rectangle.
+       * \returns A rectangle
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QgsRectangle toRectangle() const;
+
+      /**
+       * Converts the parameter into an integer.
+       * \returns An integer
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       int toInt() const;
+
+      /**
+       * Converts the parameter into a double.
+       * \returns A double
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       double toDouble() const;
+
+      /**
+       * Converts the parameter into a color.
+       * \returns A color
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QColor toColor() const;
 
       void raiseError() const;
 
+      /**
+       * Converts a parameter's name into its string representation.
+       */
       static QString name( const QgsWmsParameter::Name );
+
+      /**
+       * Converts a string into a parameter's name (UNKNOWN in case of an
+       * invalid string).
+       */
       static QgsWmsParameter::Name name( const QString &name );
 
       QgsWmsParameter::Name mName;
