@@ -66,6 +66,7 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns number of pending jobs of the terrain entity
     int terrainPendingJobsCount() const;
 
+    //! Enumeration of possible states of the 3D scene
     enum SceneState
     {
       Ready,     //!< The scene is fully loaded/updated
