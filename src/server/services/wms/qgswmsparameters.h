@@ -338,6 +338,10 @@ namespace QgsWms
        */
       QgsProjectVersion versionAsNumber() const;
 
+      /**
+       * Returns true if \a version is valid, false otherwise.
+       * \since QGIS 3.4
+       */
       bool versionIsValid( const QString version ) const;
 
       /**
@@ -417,16 +421,46 @@ namespace QgsWms
        */
       QList<QgsWmsParametersLayer> layersParameters() const;
 
+      /**
+       * Returns FI_POLYGON_TOLERANCE parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.4
+       */
       QString polygonTolerance() const;
 
+      /**
+       * Returns FI_LINE_TOLERANCE parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.4
+       */
       QString lineTolerance() const;
 
+      /**
+       * Returns FI_POINT_TOLERANCE parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.4
+       */
       QString pointTolerance() const;
 
+      /**
+       * Returns FI_POLYGON_TOLERANCE parameter as an integer.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.4
+       */
       int polygonToleranceAsInt() const;
 
+      /**
+       * Returns FI_LINE_TOLERANCE parameter as an integer.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.4
+       */
       int lineToleranceAsInt() const;
 
+      /**
+       * Returns FI_POINT_TOLERANCE parameter as an integer.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.4
+       */
       int pointToleranceAsInt() const;
 
       /**
@@ -454,8 +488,18 @@ namespace QgsWms
        */
       bool infoFormatIsImage() const;
 
+      /**
+       * Returns IMAGE_QUALITY parameter or an empty string if not
+       * defined.
+       * \since QGIS 3.4
+       */
       QString imageQuality() const;
 
+      /**
+       * Returns IMAGE_QUALITY parameter as an integer.
+       * \throws QgsBadRequestException
+       * \since QGIS 3.4
+       */
       int imageQualityAsInt() const;
 
       /**
@@ -1054,8 +1098,19 @@ namespace QgsWms
        */
       bool withMapTip() const;
 
+      /**
+       * Returns WMTVER parameter or an empty string if not defined.
+       * \since QGIS 3.4
+       */
       QString wmtver() const;
 
+      /**
+       * Returns a layout parameter thanks to its \a id.
+       * \param id Parameter id
+       * \param ok True if the parameter is valid, false otherwise
+       * \returns The layout parameter
+       * \since QGIS 3.4
+       */
       QString layoutParameter( const QString &id, bool &ok ) const;
 
     private:
