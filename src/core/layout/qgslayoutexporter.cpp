@@ -486,7 +486,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   if ( !p.begin( &printer ) )
   {
     //error beginning print
-    return PrintError;
+    return FileError;
   }
 
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
