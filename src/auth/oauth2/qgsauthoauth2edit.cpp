@@ -156,10 +156,6 @@ void QgsAuthOAuth2Edit::setupConnections()
   } );
   connect( btnRegister, &QPushButton::clicked, this, &QgsAuthOAuth2Edit::getSoftwareStatementConfig );
 
-  // FIXME: in the testbed13 code this signal does not exists (but a connection was attempted)
-  //connect( this, &QgsAuthOAuth2Edit::configSucceeded, this, &QgsAuthOAuth2Edit::registerSoftStatement );
-
-
   // Custom config editing connections
   connect( cmbbxGrantFlow, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
            this, &QgsAuthOAuth2Edit::updateGrantFlow ); // also updates GUI
@@ -267,7 +263,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
 
   //QgsDebugMsg( QStringLiteral( "oauth2config: " ).arg( configmap.value( QStringLiteral( "oauth2config" ) ) ) );
 
-  if ( configmap.contains( QStringLiteral( "oauth2config" ) ) )
+  if ( configmap.contains( QLatin1Literal( "oauth2config" ) ) )
   {
     tabConfigs->setCurrentIndex( customTab() );
     QByteArray configtxt = configmap.value( QStringLiteral( "oauth2config" ) ).toUtf8();
@@ -298,7 +294,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
       QgsDebugMsg( QStringLiteral( "FAILED to load OAuth2 config: empty config txt" ) );
     }
   }
-  else if ( configmap.contains( QStringLiteral( "definedid" ) ) )
+  else if ( configmap.contains( QLatin1Literal( "definedid" ) ) )
   {
     tabConfigs->setCurrentIndex( definedTab() );
     QString definedid = configmap.value( QStringLiteral( "definedid" ) );
@@ -499,7 +495,7 @@ void QgsAuthOAuth2Edit::definedCustomDirChanged( const QString &path )
   QFileInfo pinfo( path );
   bool ok = pinfo.exists() || pinfo.isDir();
 
-  leDefinedDirPath->setStyleSheet( ok ? "" : QgsAuthGuiUtils::redTextStyleSheet() );
+  leDefinedDirPath->setStyleSheet( ok ? QString() : QgsAuthGuiUtils::redTextStyleSheet() );
 
   if ( ok )
   {
@@ -513,7 +509,7 @@ void QgsAuthOAuth2Edit::softwareStatementJwtPathChanged( const QString &path )
   QFileInfo pinfo( path );
   bool ok = pinfo.exists() || pinfo.isFile();
 
-  leSoftwareStatementJwtPath->setStyleSheet( ok ? "" : QgsAuthGuiUtils::redTextStyleSheet() );
+  leSoftwareStatementJwtPath->setStyleSheet( ok ? QString() : QgsAuthGuiUtils::redTextStyleSheet() );
 
   if ( ok )
   {
@@ -592,7 +588,7 @@ void QgsAuthOAuth2Edit::getSoftStatementDir()
   this->raise();
   this->activateWindow();
 
-  if ( softStatementFile.isNull() )
+  if ( softStatementFile.isEmpty() )
   {
     return;
   }
@@ -968,14 +964,20 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
   }
   if ( softwareStatementBase64.isEmpty() )
   {
-    QgsDebugMsg( QStringLiteral( "Error software statement is empty: %1" ).arg( QString( path ) ) );
+    QgsDebugMsg( QStringLiteral( "Error software statement is empty: %1" ).arg( path ) );
     file.close();
     return;
   }
   mRegistrationEndpoint = QString();
   file.close();
   mSoftwareStatement.insert( "software_statement", softwareStatementBase64 );
-  QByteArray payload = softwareStatementBase64.split( '.' )[1];
+  QList<QByteArray> payloadParts( softwareStatementBase64.split( '.' ) );
+  if ( payloadParts.count() < 2 )
+  {
+    QgsDebugMsg( QStringLiteral( "Error parsing JSON: base64 decode returned less than 2 parts" ) );
+    return;
+  }
+  QByteArray payload = payloadParts[1];
   QByteArray decoded = QByteArray::fromBase64( payload/*, QByteArray::Base64UrlEncoding*/ );
   QByteArray errStr;
   bool res = false;
@@ -985,24 +987,32 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     QgsDebugMsg( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
     return;
   }
-  if ( jsonData.contains( "grant_types" ) && jsonData.contains( QLatin1Literal( "redirect_uris" ) ) )
+  if ( jsonData.contains( QLatin1Literal( "grant_types" ) ) && jsonData.contains( QLatin1Literal( "redirect_uris" ) ) )
   {
-    QString grantType = jsonData[QLatin1Literal( "grant_types" ) ].toStringList()[0];
-    if ( grantType == QLatin1Literal( "authorization_code" ) )
+    QStringList grantTypes( jsonData[QLatin1Literal( "grant_types" ) ].toStringList() );
+    if ( grantTypes.count( ) )
     {
-      updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
-    }
-    else
-    {
-      updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
+      QString grantType = grantTypes[0];
+      if ( grantType == QLatin1Literal( "authorization_code" ) )
+      {
+        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
+      }
+      else
+      {
+        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
+      }
     }
     //Set redirect_uri
-    QString redirectUri = jsonData[QLatin1Literal( "redirect_uris" ) ].toStringList()[0];
-    leRedirectUrl->setText( redirectUri );
+    QStringList  redirectUris( jsonData[QLatin1Literal( "redirect_uris" ) ].toStringList() );
+    if ( redirectUris.count( ) )
+    {
+      QString redirectUri = redirectUris[0];
+      leRedirectUrl->setText( redirectUri );
+    }
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Error software statement is invalid: %1" ).arg( QString( path ) ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "Error software statement is invalid: %1" ).arg( path ), 4 );
     return;
   }
   if ( jsonData.contains( QLatin1Literal( "registration_endpoint" ) ) )
@@ -1043,7 +1053,7 @@ void QgsAuthOAuth2Edit::configReplyFinished()
     }
     else
     {
-      QString errorMsg = QStringLiteral( "Downloading configuration failed with error: %1" ).arg( configReply->errorString() );
+      QString errorMsg = tr( "Downloading configuration failed with error: %1" ).arg( configReply->errorString() );
       QgsMessageLog::logMessage( errorMsg, QStringLiteral( "OAuth2" ), Qgis::Critical );
     }
   }
