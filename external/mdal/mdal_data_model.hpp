@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 #include <map>
+#include <string>
 
 // avoid unused variable warnings
 #define MDAL_UNUSED(x) (void)x;
