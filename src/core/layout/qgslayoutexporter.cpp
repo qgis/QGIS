@@ -439,7 +439,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
     if ( result != Success )
     {
       if ( result == FileError )
-        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( filePath );
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
       iterator->endRender();
       return result;
     }
@@ -566,7 +566,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     if ( result != Success )
     {
       if ( result == FileError )
-        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( fileName );
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( fileName ) );
       iterator->endRender();
       return result;
     }
@@ -616,7 +616,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
     if ( result != Success )
     {
       if ( result == FileError )
-        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( filePath );
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
       iterator->endRender();
       return result;
     }
@@ -981,7 +981,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
     if ( result != Success )
     {
       if ( result == FileError )
-        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( filePath );
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application or may be an invalid path." ).arg( QDir::toNativeSeparators( filePath ) );
       iterator->endRender();
       return result;
     }
