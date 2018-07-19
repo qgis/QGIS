@@ -36,8 +36,6 @@
 
 QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 {
-  mSize = QSize( 640, 480 );
-
   // Set up the default OpenGL surface format.
   QSurfaceFormat format;
   format.setDepthBufferSize( 32 ); // TODO: or 24?  (used by QWindow3D)
@@ -75,6 +73,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   createFrameGraph();
 
   // Set this frame graph to be in use.
+  // the render settings also sets itself as the parent of mSurfaceSelector
   mRenderSettings->setActiveFrameGraph( mSurfaceSelector );
 
   // Set the root entity of the engine. This causes the engine to begin running.
@@ -85,6 +84,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 QgsOffscreen3DEngine::~QgsOffscreen3DEngine()
 {
   delete mAspectEngine;
+  delete mOffscreenSurface;
 }
 
 void QgsOffscreen3DEngine::setSize( const QSize &s )
@@ -116,7 +116,7 @@ void QgsOffscreen3DEngine::createRenderTarget()
   // The lifetime of the objects created here is managed
   // automatically, as they become children of this object.
 
-  // Create a render target output for rendering colour.
+  // Create a render target output for rendering color.
   mTextureOutput = new Qt3DRender::QRenderTargetOutput( mTextureTarget );
   mTextureOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Color0 );
 
@@ -161,7 +161,8 @@ void QgsOffscreen3DEngine::createFrameGraph()
   // Create a texture to render into. This acts as the buffer that
   // holds the rendered image.
   mRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mSurfaceSelector );
-  createRenderTarget();  // new TextureRenderTarget(renderTargetSelector, size);
+  createRenderTarget();
+  // the target selector also sets itself as the parent of mTextureTarget
   mRenderTargetSelector->setTarget( mTextureTarget );
 
   // Create a node used for clearing the required buffers.

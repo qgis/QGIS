@@ -37,12 +37,11 @@ QImage Qgs3DUtils::captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene
   {
     if ( scene->sceneState() == Qgs3DMapScene::Ready )
     {
-      qDebug() << "loaded - requesting image";
       engine.requestCaptureImage();
     }
   };
 
-  auto saveImageFcn = [&engine, &evLoop, &resImage]( const QImage & img )
+  auto saveImageFcn = [&evLoop, &resImage]( const QImage & img )
   {
     resImage = img;
     evLoop.quit();

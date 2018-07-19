@@ -192,7 +192,7 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
 
 void Qgs3DMapScene::onCameraChanged()
 {
-  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
       entity->update( _sceneState( mCameraController ) );
@@ -273,7 +273,7 @@ void Qgs3DMapScene::onFrameTriggered( float dt )
 {
   mCameraController->frameTriggered( dt );
 
-  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->needsUpdate() )
     {
@@ -475,7 +475,7 @@ void Qgs3DMapScene::updateSceneState()
     return;
   }
 
-  Q_FOREACH ( QgsChunkedEntity *entity, mChunkEntities )
+  for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() && entity->pendingJobsCount() > 0 )
     {

@@ -32,12 +32,20 @@ namespace Qt3DExtras
 class QWindow;
 
 
+/**
+ * \ingroup 3d
+ * On-screen 3D engine: it creates OpenGL window (QWindow) and displays rendered 3D scene there.
+ * The window can be embedded into a QWidget-based application with QWidget::createWindowContainer().
+ *
+ * \since QGIS 3.4
+ */
 class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 {
     Q_OBJECT
   public:
     QgsWindow3DEngine();
 
+    //! Returns the internal 3D window where all the rendered output is displayed
     QWindow *window();
 
     void requestCaptureImage() override;

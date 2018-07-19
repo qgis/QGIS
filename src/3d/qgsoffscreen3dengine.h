@@ -1,3 +1,18 @@
+/***************************************************************************
+  qgsoffscreen3dengine.h
+  --------------------------------------
+  Date                 : July 2018
+  Copyright            : (C) 2018 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSOFFSCREEN3DENGINE_H
 #define QGSOFFSCREEN3DENGINE_H
 
@@ -34,6 +49,15 @@ namespace Qt3DLogic
 }
 
 
+/**
+ * \ingroup 3d
+ * Off-screen 3D engine implementation. It is useful for recording rendered 3D scenes of arbitrary size.
+ *
+ * \note While the on-screen 3D engine also allows capturing of images, its limitation is that
+ * the captured images are of the size of the on-screen window.
+ *
+ * \since QGIS 3.4
+ */
 class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
 {
     Q_OBJECT
@@ -41,6 +65,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     QgsOffscreen3DEngine();
     ~QgsOffscreen3DEngine();
 
+    //! Sets the size of the rendering area (in pixels)
     void setSize( const QSize &s );
 
     void setClearColor( const QColor &color ) override;
@@ -59,7 +84,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
 
   private:
 
-    QSize mSize;
+    QSize mSize = QSize( 640, 480 );
     Qt3DRender::QCamera *mCamera = nullptr;
     QOffscreenSurface *mOffscreenSurface = nullptr;
     Qt3DRender::QRenderCaptureReply *mReply = nullptr;
@@ -68,7 +93,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Qt3DCore::QAspectEngine *mAspectEngine = nullptr;              // The aspect engine, which holds the scene and related aspects.
     Qt3DRender::QRenderAspect *mRenderAspect = nullptr;            // The render aspect, which deals with rendering the scene.
     Qt3DLogic::QLogicAspect *mLogicAspect = nullptr;               // The logic aspect, which runs jobs to do with synchronising frames.
-    Qt3DRender::QRenderSettings *mRenderSettings = nullptr;        // The render settings, which control the general rendering behaviour.
+    Qt3DRender::QRenderSettings *mRenderSettings = nullptr;        // The render settings, which control the general rendering behavior.
     Qt3DCore::QNode *mSceneRoot = nullptr;                         // The scene root, which becomes a child of the engine's root entity.
     Qt3DCore::QEntity *mRoot = nullptr;
 
