@@ -1310,7 +1310,7 @@
      <normaloff>:/images/themes/default/mActionMapTips.svg</normaloff>:/images/themes/default/mActionMapTips.svg</iconset>
    </property>
    <property name="text">
-    <string>Map Tips</string>
+    <string>Show Map Tips</string>
    </property>
    <property name="statusTip">
     <string>Show information about a feature when the mouse is hovered over it</string>
