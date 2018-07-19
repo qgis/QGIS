@@ -114,6 +114,13 @@ class SERVER_EXPORT QgsOgcServiceException
 class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
 {
   public:
+
+    /**
+     * Constructor for QgsBadRequestException (HTTP error code 400).
+     * \param code Error code name
+     * \param message Exception message to return to the client
+     * \param locator Locator attribute according to OGC specifications
+     */
     QgsBadRequestException( const QString &code, const QString &message, const QString &locator = QString() )
       : QgsOgcServiceException( code, message, locator, 400 )
     {}
@@ -121,4 +128,3 @@ class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
 #endif
 
 #endif
-
