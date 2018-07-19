@@ -172,10 +172,6 @@ class CORE_EXPORT QgsSnappingConfig
     //! Sets if the snapping on intersection is enabled
     void setIntersectionSnapping( bool enabled );
 
-    bool editVerticesOnAllLayers() const;
-
-    void setEditVerticesOnAllLayers( bool enabled );
-
     //! Returns individual snapping settings for all layers
 #ifndef SIP_RUN
     QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> individualLayerSettings() const;
