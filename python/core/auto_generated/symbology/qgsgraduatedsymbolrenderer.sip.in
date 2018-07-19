@@ -225,60 +225,60 @@ Tests whether classes assigned to the renderer have gaps between the ranges.
     Mode mode() const;
     void setMode( Mode mode );
 
-    bool useSymmetricMode();
+    bool useSymmetricMode() const;
 %Docstring
-get mUseSymmetricMode, which says if we want to classify symmetric around a given value
+Returns if we want to classify symmetric around a given value
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     void setUseSymmetricMode( bool useSymmetricMode );
 %Docstring
-set mUseSymmetricMode, which says if we want to classify symmetric around a given value
+Set if we want to classify symmetric around a given value
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
-    double symmetryPoint();
+    double symmetryPoint() const;
 %Docstring
-get mSymmetryPoint, the pivot value for symmetric classification
+Returns the pivot value for symmetric classification
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     void setSymmetryPoint( double symmetryPoint );
 %Docstring
-set the pivot point
+Set the pivot point
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
-    QStringList listForCboPrettyBreaks();
+    QStringList listForCboPrettyBreaks() const;
 %Docstring
-get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+Returns the list of breaks used in the prettybreaks mode. Needed to recover this list in saved configuration, or when property window in closed and reopened
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks );
 %Docstring
-set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+Set the list of breaks used in the prettybreaks mode, which is needed to recover this list in saved configuration, or when property window is closed and reopened
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
-    bool astride();
+    bool astride() const;
 %Docstring
-get mAstride, a bool saying if we want to have a central class astride the pivot value
+Returns if we want to have a central class astride the pivot value
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     void setAstride( bool astride );
 %Docstring
-set mAstride, a bool saying if we want to have a central class astride the pivot value
+Set if we want a central class astride the pivot value
 
-.. versionadded:: 3.2
+.. versionadded:: 3.4
 %End
 
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
@@ -288,13 +288,11 @@ Recalculate classes for a layer
 :param vlayer: The layer being rendered (from which data values are calculated)
 :param mode: The calculation mode
 :param nclasses: The number of classes to calculate (approximate for some modes)
-
-.. versionadded:: 2.6
 :param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
 :param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
 :param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 
-.. versionadded:: 3.2
+.. versionadded:: 2.6
 %End
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
