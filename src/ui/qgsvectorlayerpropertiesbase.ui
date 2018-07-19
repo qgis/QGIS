@@ -1173,20 +1173,38 @@ border-radius: 2px;</string>
                <number>0</number>
               </property>
               <item row="0" column="0">
-               <widget class="QLabel" name="label">
-                <property name="text">
-                 <string>Display expression</string>
+               <widget class="QGroupBox" name="groupBox_22">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
+                <property name="title">
+                 <string>Display Name</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_50">
+                 <item row="0" column="0">
+                  <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
+                   <property name="focusPolicy">
+                    <enum>Qt::StrongFocus</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="labelDisplayNameInfo">
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>The feature display name is used in identify results and attribute table's dual view list.</string>
+                   </property>
+                  </widget>                  
+                 </item>
+                </layout>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QgsFieldExpressionWidget" name="mDisplayExpressionWidget" native="true">
-                <property name="focusPolicy">
-                 <enum>Qt::StrongFocus</enum>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" colspan="2">
+              <item row="1" column="0">
                <widget class="QGroupBox" name="groupBox_2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
@@ -1195,7 +1213,7 @@ border-radius: 2px;</string>
                  </sizepolicy>
                 </property>
                 <property name="title">
-                 <string>Map Tip</string>
+                 <string>HTML Map Tip</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_8">
                  <item row="1" column="2">
@@ -1239,6 +1257,16 @@ border-radius: 2px;</string>
                     <string>The valid attribute names for this layer</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="3" column="0" colspan="3">
+                  <widget class="QLabel" name="labelMapTipInfo">
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
+                   <property name="text">
+                    <string>The HTML map tips are shown when moving mouse over features of the currently selected layer when the 'Show Map Tips' action is toggled on. If no HTML code is set, the feature display name is used.</string>
+                   </property>
+                  </widget>                  
                  </item>
                 </layout>
                </widget>
