@@ -156,8 +156,8 @@ void QgsO2::link()
   }
 
   setLinked( false );
-  setToken( "" );
-  setTokenSecret( "" );
+  setToken( QString() );
+  setTokenSecret( QString() );
   setExtraTokens( QVariantMap() );
   setRefreshToken( QString() );
   setExpires( 0 );
