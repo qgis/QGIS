@@ -109,6 +109,16 @@
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationLayoutExtent"/>
     </widget>
+    <widget class="QMenu" name="menuAnnotations">
+     <property name="title">
+      <string>&amp;Annotations</string>
+     </property>
+     <addaction name="mActionTextAnnotation"/>
+     <addaction name="mActionFormAnnotation"/>
+     <addaction name="mActionHtmlAnnotation"/>
+     <addaction name="mActionSvgAnnotation"/>
+     <addaction name="mActionAnnotation"/>
+    </widget>
     <widget class="QMenu" name="mMenuPreviewMode">
      <property name="title">
       <string>Preview Mode</string>
@@ -138,6 +148,7 @@
     <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
     <addaction name="menuDecorations"/>
+    <addaction name="menuAnnotations"/>
     <addaction name="mMenuPreviewMode"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
