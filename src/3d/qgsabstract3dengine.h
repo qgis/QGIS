@@ -69,7 +69,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     /**
      * Starts a request for an image rendered by the engine.
      * The function does not block - when the rendered image is captured, it is returned in imageCaptured() signal.
-     * Only one image reqeust can be active at a time.
+     * Only one image request can be active at a time.
      */
     virtual void requestCaptureImage() = 0;
 
