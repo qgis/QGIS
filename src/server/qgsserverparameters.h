@@ -56,11 +56,18 @@ class SERVER_EXPORT QgsServerParameterDefinition
     QVariant mDefaultValue;
 };
 
+/**
+ * \ingroup server
+ * \class QgsServerParameter
+ * \brief Parameter common to all services (WMS, WFS, ...)
+ * \since QGIS 3.4
+ */
 class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
 {
     Q_GADGET
 
   public:
+    //! Parameter's name common to all services
     enum Name
     {
       UNKNOWN,
@@ -72,21 +79,40 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
     };
     Q_ENUM( Name )
 
+    /**
+     * Constructor for QgsServerParameter.
+     * \param name The name of the parameter
+     * \param type The type of the parameter
+     * \param defaultValue The default value to use if not defined
+     */
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
                         const QVariant::Type type = QVariant::String,
                         const QVariant defaultValue = QVariant( "" ) );
 
+    /**
+     * Raises an error in case of an invalid conversion.
+     * \throws QgsBadRequestException Invalid parameter exception
+     */
     void raiseError() const;
 
+    /**
+     * Converts a parameter's name into its string representation.
+     */
     static QString name( const QgsServerParameter::Name name );
+
+    /**
+     * Converts a string into a parameter's name (UNKNOWN in case of an
+     * invalid string).
+     */
     static QgsServerParameter::Name name( const QString &name );
 
     QgsServerParameter::Name mName;
 };
 
 /**
- * QgsServerParameters provides an interface to retrieve and manipulate
- * global parameters received from the client.
+ * \ingroup server
+ * \class QgsServerParameters
+ * \brief QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameters

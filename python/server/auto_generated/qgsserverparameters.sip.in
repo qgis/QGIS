@@ -55,6 +55,11 @@ the Free Software Foundation; either version 2 of the License, or     *
 
 class QgsServerParameter : QgsServerParameterDefinition
 {
+%Docstring
+Parameter common to all services (WMS, WFS, ...)
+
+.. versionadded:: 3.4
+%End
 
 %TypeHeaderCode
 #include "qgsserverparameters.h"
@@ -76,11 +81,30 @@ class QgsServerParameter : QgsServerParameterDefinition
     QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
                         const QVariant::Type type = QVariant::String,
                         const QVariant defaultValue = QVariant( "" ) );
+%Docstring
+Constructor for QgsServerParameter.
+
+:param name: The name of the parameter
+:param type: The type of the parameter
+:param defaultValue: The default value to use if not defined
+%End
 
     void raiseError() const;
+%Docstring
+Raises an error in case of an invalid conversion.
+\throws QgsBadRequestException Invalid parameter exception
+%End
 
     static QString name( const QgsServerParameter::Name name );
+%Docstring
+Converts a parameter's name into its string representation.
+%End
+
     static QgsServerParameter::Name name( const QString &name );
+%Docstring
+Converts a string into a parameter's name (UNKNOWN in case of an
+invalid string).
+%End
 
     QgsServerParameter::Name mName;
 };
@@ -88,8 +112,7 @@ class QgsServerParameter : QgsServerParameterDefinition
 class QgsServerParameters
 {
 %Docstring
-QgsServerParameters provides an interface to retrieve and manipulate
-global parameters received from the client.
+QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
 
 .. versionadded:: 3.4
 %End
