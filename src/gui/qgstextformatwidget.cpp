@@ -1256,11 +1256,21 @@ void QgsTextFormatWidget::updateSvgWidgets( const QString &svgPath )
     mShapeSVGPathLineEdit->setText( svgPath );
   }
 
-  QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
-  bool validSVG = QFileInfo::exists( resolvedPath );
+  QString resolvedPath;
+  bool validSVG = true;
+  if ( ! svgPath.startsWith( QStringLiteral( "base64:" ), Qt::CaseInsensitive ) )
+  {
+    resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgPath, QgsProject::instance()->pathResolver() );
+    validSVG = QFileInfo::exists( resolvedPath );
+  }
+  else
+  {
+    resolvedPath = svgPath;
+    validSVG = true;
+  }
 
   // draw red text for path field if invalid (path can't be resolved)
-  mShapeSVGPathLineEdit->setStyleSheet( QString( !validSVG ? "QLineEdit{ color: rgb(225, 0, 0); }" : "" ) );
+  mShapeSVGPathLineEdit->setStyleSheet( !validSVG ? QStringLiteral( "QLineEdit{ color: rgb(225, 0, 0); }" ) : QString() );
   mShapeSVGPathLineEdit->setToolTip( !validSVG ? tr( "File not found" ) : resolvedPath );
 
   QColor fill, stroke;
