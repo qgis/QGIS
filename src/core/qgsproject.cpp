@@ -367,6 +367,9 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
   connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
+
+  mTranslator = new QTranslator();
+
 }
 
 
@@ -928,6 +931,10 @@ bool QgsProject::read()
   QString filename = mFile.fileName();
   bool rc;
 
+  //dave dirty hack
+  delete mTranslator;
+  mTranslator = new QTranslator();
+
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QTemporaryFile inDevice;
@@ -961,21 +968,14 @@ bool QgsProject::read()
     rc = readProjectFile( mFile.fileName() );
   }
 
-  mFile.setFileName( filename );
-  return rc;
-}
-
-//dave put to another place
-QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )
-{
-  if ( mTranslator.isEmpty() )
+  //on translation we should not change the filename back
+  if ( mTranslator->isEmpty() )
   {
-    return sourceText;
+    mFile.setFileName( filename );
   }
 
-  return mTranslator.translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
+  return rc;
 }
-
 
 bool QgsProject::readProjectFile( const QString &filename )
 {
@@ -984,9 +984,14 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   QgsSettings settings;
 
-  if ( mTranslator.load( QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() ), QFileInfo( projectFile.fileName() ).absolutePath() ) )
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() );
+
+  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
-    QgsDebugMsg( "Translation loaded" );
+    if ( mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() ) )
+    {
+      QgsDebugMsg( "Translation loaded" );
+    }
   }
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
@@ -1285,6 +1290,23 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
 
+  if ( !mTranslator->isEmpty() )
+  {
+    //project possibly translated -> rename it with locale postfix
+    QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
+    QgsProject::instance()->setFileName( newFileName );
+
+    if ( QgsProject::instance()->write() )
+    {
+      QgsProject::instance()->setTitle( localeFileName );
+
+      QgsDebugMsg( "Translated project saved with locale prefix " + newFileName );
+    }
+    else
+    {
+      QgsDebugMsg( "Error saving translated project with locale prefix " + newFileName );
+    }
+  }
   return true;
 }
 
@@ -2765,13 +2787,23 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
   writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
 }
 
-void QgsProject::generateTsFile()
+void QgsProject::generateTsFile( const QString &locale )
 {
   QgsTranslationContext translationContext;
   translationContext.setProject( this );
-  translationContext.setFileName( QStringLiteral( "%1/%2.ts" ).arg( absolutePath(), baseName() ) );
+  translationContext.setFileName( QStringLiteral( "%1/%2_%3.ts" ).arg( absolutePath(), baseName(), locale ) );
 
   emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
   translationContext.writeTsFile();
+}
+
+QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )
+{
+  if ( mTranslator->isEmpty() )
+  {
+    return sourceText;
+  }
+
+  return mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
 }

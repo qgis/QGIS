@@ -277,8 +277,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>671</width>
+                <height>783</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -798,6 +798,13 @@
                    </layout>
                   </item>
                  </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="generateTsFileButton">
+                 <property name="text">
+                  <string>Generate TS File</string>
+                 </property>
                 </widget>
                </item>
                <item>
@@ -1602,7 +1609,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>624</width>
+                <width>671</width>
                 <height>2451</height>
                </rect>
               </property>

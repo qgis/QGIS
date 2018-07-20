@@ -830,6 +830,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
   connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
 
+  connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::generateTsFileButton_clicked );
   projectionSelectorInitialized();
   populateRequiredLayers();
   restoreOptionsBaseUi();
@@ -2189,4 +2190,9 @@ void QgsProjectProperties::setCurrentPage( const QString &pageWidgetName )
       return;
     }
   }
+}
+
+void QgsProjectProperties::generateTsFileButton_clicked()
+{
+  QgsProject::instance()->generateTsFile( "de" );
 }

@@ -352,6 +352,7 @@
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgstaskmanager.sip
 %Include auto_generated/qgstolerance.sip
+%Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgstrackedvectorlayertools.sip
 %Include auto_generated/qgstransaction.sip
 %Include auto_generated/qgstransactiongroup.sip

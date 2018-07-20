@@ -92,6 +92,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
+    //dave to document
+    void generateTsFileButton_clicked();
+
     /**
      * Set WMS default extent to current canvas extent
      */

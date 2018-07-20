@@ -5950,10 +5950,10 @@ void QgisApp::fileSaveAs()
     return;
 
   QFileInfo fullPath( path );
-
   settings.setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
   if ( filter == zipExt )
+
   {
     if ( fullPath.suffix().compare( QLatin1String( "qgz" ), Qt::CaseInsensitive ) != 0 )
       fullPath.setFile( fullPath.filePath() + ".qgz" );

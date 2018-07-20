@@ -32,6 +32,12 @@ class QgsProject;
 
 class CORE_EXPORT QgsTranslationContext
 {
+    struct TranslatableObject
+    {
+      QString context;
+      QString source;
+    };
+
   public:
 
     /**
@@ -82,7 +88,7 @@ class CORE_EXPORT QgsTranslationContext
 
     QgsProject *mProject = nullptr;
     QString mFileName;
-    QList < QPair< QString, QString > > mTranslatableObjects;
+    QList < TranslatableObject > mTranslatableObjects;
 
 };
 

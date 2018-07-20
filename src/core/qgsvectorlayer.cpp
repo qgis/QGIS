@@ -1935,7 +1935,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement defaultElem = defaultNodeList.at( i ).toElement();
 
-      //dave muss hier übersetzt werden?
       QString field = defaultElem.attribute( QStringLiteral( "field" ), QString() );
       QString expression = defaultElem.attribute( QStringLiteral( "expression" ), QString() );
       bool applyOnUpdate = defaultElem.attribute( QStringLiteral( "applyOnUpdate" ), QStringLiteral( "0" ) ) == QLatin1String( "1" );
@@ -1957,7 +1956,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-      //dave muss hier übersetzt werden?
       QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
       int constraints = constraintElem.attribute( QStringLiteral( "constraints" ), QStringLiteral( "0" ) ).toInt();
       if ( field.isEmpty() || constraints == 0 )
@@ -1983,7 +1981,6 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
     {
       QDomElement constraintElem = constraintNodeList.at( i ).toElement();
 
-      //dave muss hier übersetzt werden?
       QString field = constraintElem.attribute( QStringLiteral( "field" ), QString() );
       QString exp = constraintElem.attribute( QStringLiteral( "exp" ), QString() );
       QString desc = constraintElem.attribute( QStringLiteral( "desc" ), QString() );

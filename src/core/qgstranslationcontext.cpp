@@ -45,7 +45,10 @@ void QgsTranslationContext::setFileName( const QString &fileName )
 
 void QgsTranslationContext::registerTranslation( const QString &context, const QString &source )
 {
-  mTranslatableObjects.append( qMakePair( context, source ) );
+  TranslatableObject translatableObject;
+  translatableObject.context = context;
+  translatableObject.source = source;
+  mTranslatableObjects.append( translatableObject );
 }
 
 void QgsTranslationContext::writeTsFile()
@@ -56,13 +59,13 @@ void QgsTranslationContext::writeTsFile()
   QDomElement tsElement = doc.createElement( QStringLiteral( "TS" ) );
   doc.appendChild( tsElement );
 
-  for ( QPair < QString, QString > translatableObject : mTranslatableObjects )
+  for ( TranslatableObject translatableObject : mTranslatableObjects )
   {
     QDomElement contextElement = doc.createElement( QStringLiteral( "context" ) );
     tsElement.appendChild( contextElement );
 
     QDomElement nameElement = doc.createElement( QStringLiteral( "name" ) );
-    QDomText nameText = doc.createTextNode( translatableObject.first );
+    QDomText nameText = doc.createTextNode( translatableObject.context );
     nameElement.appendChild( nameText );
     contextElement.appendChild( nameElement );
 
@@ -70,12 +73,12 @@ void QgsTranslationContext::writeTsFile()
     contextElement.appendChild( messageElement );
 
     QDomElement sourceElement = doc.createElement( QStringLiteral( "source" ) );
-    QDomText sourceText = doc.createTextNode( translatableObject.second );
+    QDomText sourceText = doc.createTextNode( translatableObject.source );
     sourceElement.appendChild( sourceText );
     messageElement.appendChild( sourceElement );
 
     QDomElement translationElement = doc.createElement( QStringLiteral( "translation" ) );
-    QDomText translationText = doc.createTextNode( translatableObject.second );
+    QDomText translationText = doc.createTextNode( translatableObject.source );
     translationElement.appendChild( translationText );
     messageElement.appendChild( translationElement );
   }

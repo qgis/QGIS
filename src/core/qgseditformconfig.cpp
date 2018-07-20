@@ -399,7 +399,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
       {
         QDomElement elem = attributeEditorFormNodeList.at( i ).toElement();
 
-        QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
+        QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr, node.namedItem( QStringLiteral( "id" ) ).toElement().text() );
         addTab( attributeEditorWidget );
       }
 
@@ -518,13 +518,13 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   //// END TODO
 }
 
-QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent )
+QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId )
 {
   QgsAttributeEditorElement *newElement = nullptr;
 
   if ( elem.tagName() == QLatin1String( "attributeEditorContainer" ) )
   {
-    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( QgsProject::instance()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( "testdave" ), elem.attribute( QStringLiteral( "name" ) ) ), parent );
+    QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( QgsProject::instance()->translate( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), elem.attribute( QStringLiteral( "name" ) ) ), parent );
     bool ok;
     int cc = elem.attribute( QStringLiteral( "columnCount" ) ).toInt( &ok );
     if ( !ok )
@@ -551,7 +551,7 @@ QgsAttributeEditorElement *QgsEditFormConfig::attributeEditorElementFromDomEleme
     for ( int i = 0; i < childNodeList.size(); i++ )
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container );
+      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container, layerId );
       if ( myElem )
         container->addChildElement( myElem );
     }

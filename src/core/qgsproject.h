@@ -966,25 +966,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
     /**
-     * dave : to write
-     * \since QGIS 3.2
-     */
-    //QTranslator &translator() { return mTranslator; }
-
-    /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
      * \since QGIS 3.2
      */
-    void generateTsFile( );
+    void generateTsFile( const QString &locale );
 
     /**
-     * Translates the project with QTranslator and qm-file
+     * Translates the project with QTranslator and qm file
      * \returns the result string (in case there is no QTranslator loaded the sourceText)
+     *
+     * \param context describing layer etc.
+     * \param sourceText is the identifier of this text
+     * \param disambiguation it's the disambiguation
+     * \param n if -1 uses the appropriate form
      */
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 );
-
-    //dave a function not used because of compiling
-    bool translate( const QString &context ) const {return context.isEmpty(); }
 
   signals:
 
@@ -1302,7 +1298,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Registers the translatable objects into the tranlationContext
-     * so there can be created a TS file with etc. dave: write
+     * so there can be created a ts file these values
      * \since QGIS 3.2
      *
      * \param translationContext where the objects will be registered
@@ -1432,7 +1428,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectMetadata mMetadata;
 
-    QTranslator mTranslator;
+    QTranslator *mTranslator = nullptr;
 
     friend class QgsProjectDirtyBlocker;
 
