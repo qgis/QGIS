@@ -28,6 +28,7 @@ Symbol selector widget that can be used to select and build a symbol
 %End
   public:
 
+
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Symbol selector widget that can be used to select and build a symbol

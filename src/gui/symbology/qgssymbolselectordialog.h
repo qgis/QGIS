@@ -93,6 +93,8 @@ class GUI_EXPORT QgsSymbolSelectorWidget: public QgsPanelWidget, private Ui::Qgs
 
   public:
 
+    // TODO QGIS 4.0 - transfer ownership of symbol to widget!
+
     /**
        * Symbol selector widget that can be used to select and build a symbol
        * \param symbol The symbol to load into the widget as a start point.
