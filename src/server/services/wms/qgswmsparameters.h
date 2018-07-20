@@ -235,6 +235,10 @@ namespace QgsWms
        */
       QColor toColor() const;
 
+      /**
+       * Raises an error in case of an invalid conversion.
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       void raiseError() const;
 
       /**
@@ -252,6 +256,12 @@ namespace QgsWms
       int mId = -1;
   };
 
+  /**
+   * \ingroup server
+   * \class QgsWms::QgsWmsParameters
+   * \brief Provides an interface to retrieve and manipulate WMS parameters received from the client.
+   * \since QGIS 3.0
+   */
   class QgsWmsParameters : public QgsServerParameters
   {
       Q_GADGET
@@ -274,8 +284,6 @@ namespace QgsWms
        * Constructor for WMS parameters with specific values.
        * \param parameters Map of parameters where keys are parameters' names.
        */
-      // QgsWmsParameters( const QgsServerRequest::Parameters &parameters );
-
       QgsWmsParameters( const QgsServerParameters &parameters );
 
       /**
@@ -284,12 +292,6 @@ namespace QgsWms
       QgsWmsParameters();
 
       virtual ~QgsWmsParameters() = default;
-
-      /**
-       * Loads new parameters.
-       * \param parameters Map of parameters
-       */
-      // void load( const QgsServerRequest::Parameters &parameters );
 
       /**
        * Dumps parameters.
