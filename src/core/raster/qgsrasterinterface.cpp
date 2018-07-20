@@ -69,7 +69,7 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
       if ( xRes < srcXRes ) xRes = srcXRes;
       if ( yRes < srcYRes ) yRes = srcYRes;
     }
-    QgsDebugMsgLevel( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 4 );
+    QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 4 );
 
     statistics.width = static_cast <int>( finalExtent.width() / xRes );
     statistics.height = static_cast <int>( finalExtent.height() / yRes );
@@ -180,7 +180,7 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
 
       QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
-      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback );
+      std::unique_ptr< QgsRasterBlock > blk( block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback ) );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
@@ -216,7 +216,6 @@ QgsRasterBandStats QgsRasterInterface::bandStatistics( int bandNo,
         myMean += myDelta / myRasterBandStats.elementCount;
         mySumOfSquares += myDelta * ( myValue - myMean );
       }
-      delete blk;
     }
   }
 
@@ -466,7 +465,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
 
       QgsRectangle myPartExtent( xmin, ymin, xmax, ymax );
 
-      QgsRasterBlock *blk = block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback );
+      std::unique_ptr< QgsRasterBlock > blk( block( bandNo, myPartExtent, myBlockWidth, myBlockHeight, feedback ) );
 
       // Collect the histogram counts.
       for ( qgssize i = 0; i < ( static_cast< qgssize >( myBlockHeight ) ) * myBlockWidth; i++ )
@@ -489,7 +488,6 @@ QgsRasterHistogram QgsRasterInterface::histogram( int bandNo,
         myHistogram.histogramVector[myBinIndex] += 1;
         myHistogram.nonNullCount++;
       }
-      delete blk;
     }
   }
 
