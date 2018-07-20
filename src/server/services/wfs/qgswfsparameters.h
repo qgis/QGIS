@@ -33,9 +33,9 @@ namespace QgsWfs
 
   /**
    * \ingroup server
-   * \class QgsWfs::QgsWfsParameters
-   * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
-   * \since QGIS 3.0
+   * \class QgsWfs::QgsWfsParameter
+   * \brief WFS parameter received from the client.
+   * \since QGIS 3.4
    */
   class QgsWfsParameter : public QgsServerParameterDefinition
   {
@@ -62,24 +62,69 @@ namespace QgsWfs
       };
       Q_ENUM( Name )
 
+      /**
+       * Constructor for QgsWfsParameter.
+      * \param name Name of the WMS parameter
+      * \param type Type of the parameter
+      * \param defaultValue Default value of the parameter
+       */
       QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN,
                        const QVariant::Type type = QVariant::String,
                        const QVariant defaultValue = QVariant( "" ) );
 
+      /**
+       * Default destructor for QgsWfsParameter.
+       */
       virtual ~QgsWfsParameter() = default;
 
+      /**
+       * Converts the parameter into an integer.
+       * \returns An integer
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       int toInt() const;
+
+      /**
+       * Converts the parameter into a list of string.
+       * \param exp The expression to use for splitting
+       * \returns A list of strings
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QStringList toStringListWithExp( const QString &exp = "\\(([^()]+)\\)" ) const;
+
+      /**
+       * Converts the parameter into a rectangle.
+       * \returns A rectangle
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       QgsRectangle toRectangle() const;
 
+      /**
+       * Raises an error in case of an invalid conversion.
+       * \throws QgsBadRequestException Invalid parameter exception
+       */
       void raiseError() const;
 
+      /**
+       * Converts a parameter's name into its string representation.
+       */
       static QString name( const QgsWfsParameter::Name );
+
+      /**
+       * Converts a string into a parameter's name (UNKNOWN in case of an
+       * invalid string).
+       */
       static QgsWfsParameter::Name name( const QString &name );
 
       QgsWfsParameter::Name mName;
   };
 
+  /**
+   * \ingroup server
+   * \class QgsWfs::QgsWfsParameters
+   * \brief Provides an interface to retrieve and manipulate WFS parameters received from the client.
+   * \since QGIS 3.0
+   */
   class QgsWfsParameters : public QgsServerParameters
   {
       Q_GADGET
