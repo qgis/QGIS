@@ -61,7 +61,7 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 {
   //prepare search string / tree
   QString errorString;
-  QgsRasterCalcNode *calcNode = QgsRasterCalcNode::parseRasterCalcString( mFormulaString, errorString );
+  std::unique_ptr< QgsRasterCalcNode > calcNode( QgsRasterCalcNode::parseRasterCalcString( mFormulaString, errorString ) );
   if ( !calcNode )
   {
     //error
@@ -74,12 +74,11 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   {
     if ( !it->raster ) // no raster layer in entry
     {
-      delete calcNode;
       qDeleteAll( inputBlocks );
       return static_cast< int >( InputLayerError );
     }
 
-    QgsRasterBlock *block = nullptr;
+    std::unique_ptr< QgsRasterBlock > block;
     // if crs transform needed
     if ( it->raster->crs() != mOutputCrs )
     {
@@ -90,27 +89,23 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
 
       QgsRasterBlockFeedback *rasterBlockFeedback = new QgsRasterBlockFeedback();
       QObject::connect( feedback, &QgsFeedback::canceled, rasterBlockFeedback, &QgsRasterBlockFeedback::cancel );
-      block = proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows, rasterBlockFeedback );
+      block.reset( proj.block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows, rasterBlockFeedback ) );
       if ( rasterBlockFeedback->isCanceled() )
       {
-        delete block;
-        delete calcNode;
         qDeleteAll( inputBlocks );
         return static_cast< int >( Canceled );
       }
     }
     else
     {
-      block = it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows );
+      block.reset( it->raster->dataProvider()->block( it->bandNumber, mOutputRectangle, mNumOutputColumns, mNumOutputRows ) );
     }
     if ( block->isEmpty() )
     {
-      delete block;
-      delete calcNode;
       qDeleteAll( inputBlocks );
       return static_cast<int>( MemoryError );
     }
-    inputBlocks.insert( it->ref, block );
+    inputBlocks.insert( it->ref, block.release() );
   }
 
   //open output dataset for writing
@@ -175,7 +170,7 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   }
 
   //close datasets and release memory
-  delete calcNode;
+  calcNode.reset();
   qDeleteAll( inputBlocks );
   inputBlocks.clear();
 
