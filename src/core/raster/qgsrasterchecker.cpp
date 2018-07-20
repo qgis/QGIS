@@ -142,8 +142,8 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
 
     int width = expectedProvider->xSize();
     int height = expectedProvider->ySize();
-    QgsRasterBlock *expectedBlock = expectedProvider->block( band, expectedProvider->extent(), width, height );
-    QgsRasterBlock *verifiedBlock = verifiedProvider->block( band, expectedProvider->extent(), width, height );
+    std::unique_ptr< QgsRasterBlock > expectedBlock( expectedProvider->block( band, expectedProvider->extent(), width, height ) );
+    std::unique_ptr< QgsRasterBlock > verifiedBlock( verifiedProvider->block( band, expectedProvider->extent(), width, height ) );
 
     if ( !expectedBlock || !expectedBlock->isValid() ||
          !verifiedBlock || !verifiedBlock->isValid() )
@@ -182,9 +182,6 @@ bool QgsRasterChecker::runTest( const QString &verifiedKey, QString verifiedUri,
     htmlTable += QLatin1String( "</table>" );
 
     mReport += htmlTable;
-
-    delete expectedBlock;
-    delete verifiedBlock;
   }
   delete verifiedProvider;
   delete expectedProvider;
