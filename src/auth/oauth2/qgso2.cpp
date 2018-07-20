@@ -228,7 +228,7 @@ void QgsO2::link()
 
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded" );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );

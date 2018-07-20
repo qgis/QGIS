@@ -647,10 +647,7 @@ void QgsAuthOAuth2Edit::updateDefinedConfigsCache()
 
 void QgsAuthOAuth2Edit::loadDefinedConfigs()
 {
-  lstwdgDefinedConfigs->blockSignals( true );
-  lstwdgDefinedConfigs->clear();
-  lstwdgDefinedConfigs->blockSignals( false );
-
+  whileBlocking( lstwdgDefinedConfigs )->clear();
   updateDefinedConfigsCache();
 
   QgsStringMap::const_iterator i = mDefinedConfigsCache.constBegin();
@@ -716,9 +713,7 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
 {
   if ( cmbbxGrantFlow->currentIndex() != indx )
   {
-    cmbbxGrantFlow->blockSignals( true );
-    cmbbxGrantFlow->setCurrentIndex( indx );
-    cmbbxGrantFlow->blockSignals( false );
+    whileBlocking( cmbbxGrantFlow )->setCurrentIndex( indx );
   }
 
   QgsAuthOAuth2Config::GrantFlow flow =
