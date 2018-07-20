@@ -152,21 +152,17 @@ namespace QgsWfs
        * Constructor for WFS parameters with specific values.
        * \param parameters Map of parameters where keys are parameters' names.
        */
-      // QgsWfsParameters( const QgsServerRequest::Parameters &parameters );
       QgsWfsParameters( const QgsServerParameters &parameters );
 
       /**
        * Constructor for WFS parameters with default values only.
-        */
+       */
       QgsWfsParameters();
 
-      virtual ~QgsWfsParameters() = default;
-
       /**
-       * Loads new parameters.
-       * \param parameters Map of parameters
+       * Default destructor for QgsWfsParameters.
        */
-      // void load( const QgsServerRequest::Parameters &parameters );
+      virtual ~QgsWfsParameters() = default;
 
       /**
        * Dumps parameters.

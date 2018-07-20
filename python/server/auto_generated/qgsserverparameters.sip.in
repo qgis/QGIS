@@ -128,9 +128,6 @@ Converts the parameter into a double.
 %Docstring
 Converts the parameter into a boolean.
 
-:param ok: True if there's no error during the conversion, false otherwise
-:param delimiter: The character used for delimiting
-
 :return: A boolean
 %End
 
@@ -139,7 +136,6 @@ Converts the parameter into a boolean.
 Converts the parameter into a color.
 
 :param ok: True if there's no error during the conversion, false otherwise
-:param delimiter: The character used for delimiting
 
 :return: A color
 %End

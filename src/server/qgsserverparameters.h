@@ -126,8 +126,6 @@ class SERVER_EXPORT QgsServerParameterDefinition
 
     /**
      * Converts the parameter into a boolean.
-     * \param ok True if there's no error during the conversion, false otherwise
-     * \param delimiter The character used for delimiting
      * \returns A boolean
      */
     bool toBool() const;
@@ -135,7 +133,6 @@ class SERVER_EXPORT QgsServerParameterDefinition
     /**
      * Converts the parameter into a color.
      * \param ok True if there's no error during the conversion, false otherwise
-     * \param delimiter The character used for delimiting
      * \returns A color
      */
     QColor toColor( bool &ok ) const;
