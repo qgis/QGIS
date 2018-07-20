@@ -415,8 +415,8 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
   QVariantMap configMap( config->mappedProperties() );
-  QCOMPARE( configMap["clientId"], QString() );
-  QCOMPARE( configMap["clientSecret"], QString() );
+  QCOMPARE( configMap["clientId"].toString(), QString() );
+  QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
   for ( const auto &k : configMap.keys( ) )
@@ -439,8 +439,8 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
   QVariantMap configMap( config->mappedProperties() );
-  QCOMPARE( configMap["clientId"], QString() );
-  QCOMPARE( configMap["clientSecret"], QString() );
+  QCOMPARE( configMap["clientId"].toString(), QString() );
+  QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
   for ( const auto &k : configMap.keys( ) )
@@ -459,7 +459,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistration()
   dlg.leSoftwareStatementConfigUrl->setText( QUrl::fromLocalFile( QStringLiteral( "%1/auth_code_grant_display_code_get_config.json" ).arg( sTestDataDir ) ).toString( ) );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.setRegistrationEndpoint( QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString() );
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {
@@ -476,8 +476,8 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   config->setClientId( QString( ) );
   config->setClientSecret( QString( ) );
   QVariantMap configMap( config->mappedProperties() );
-  QCOMPARE( configMap["clientId"], QString() );
-  QCOMPARE( configMap["clientSecret"], QString() );
+  QCOMPARE( configMap["clientId"].toString(), QString() );
+  QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
   for ( const auto &k : configMap.keys( ) )
@@ -493,7 +493,7 @@ void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QStringLiteral( "http://www.qgis.org/oauth2/registration" ) );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.setRegistrationEndpoint( QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString() );
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {

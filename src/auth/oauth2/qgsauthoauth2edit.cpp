@@ -128,7 +128,7 @@ QString QgsAuthOAuth2Edit::parentConfigId() const
   return cie->configId();
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::setupConnections()
 {
   // Action and interaction connections
@@ -186,7 +186,7 @@ void QgsAuthOAuth2Edit::setupConnections()
   }
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::configValidityChanged()
 {
   validateConfig();
@@ -471,14 +471,14 @@ void QgsAuthOAuth2Edit::updateTokenCacheFile( bool curpersist ) const
   }
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::tabIndexChanged( int indx )
 {
   mCurTab = indx;
   validateConfig();
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::populateGrantFlows()
 {
   cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::AuthCode ),
@@ -489,7 +489,7 @@ void QgsAuthOAuth2Edit::populateGrantFlows()
                            static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::definedCustomDirChanged( const QString &path )
 {
   QFileInfo pinfo( path );
@@ -518,7 +518,6 @@ void QgsAuthOAuth2Edit::softwareStatementJwtPathChanged( const QString &path )
 }
 
 
-// slot
 void QgsAuthOAuth2Edit::setCurrentDefinedConfig( const QString &id )
 {
   mDefinedId = id;
@@ -539,7 +538,7 @@ void QgsAuthOAuth2Edit::currentDefinedItemChanged( QListWidgetItem *cur, QListWi
   }
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 {
   if ( mDefinedId.isEmpty() )
@@ -566,7 +565,6 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
   }
 }
 
-// slot
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
   QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ),
@@ -640,7 +638,6 @@ void QgsAuthOAuth2Edit::removeTokenCacheFile()
   btnTokenClear->setEnabled( hasTokenCacheFile() );
 }
 
-// slot
 void QgsAuthOAuth2Edit::updateDefinedConfigsCache()
 {
   QString extradir = leDefinedDirPath->text();
@@ -648,7 +645,6 @@ void QgsAuthOAuth2Edit::updateDefinedConfigsCache()
   mDefinedConfigsCache = QgsAuthOAuth2Config::mappedOAuth2ConfigsCache( this, extradir );
 }
 
-// slot
 void QgsAuthOAuth2Edit::loadDefinedConfigs()
 {
   lstwdgDefinedConfigs->blockSignals( true );
@@ -716,7 +712,6 @@ bool QgsAuthOAuth2Edit::onStatementTab() const
   return mCurTab == statementTab();
 }
 
-// slot
 void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
 {
   if ( cmbbxGrantFlow->currentIndex() != indx )
@@ -761,7 +756,7 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
     lePassword->setText( QString() );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::exportOAuthConfig()
 {
   if ( !onCustomTab() || !mValid )
@@ -802,7 +797,7 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
   mOAuthConfigCustom->setName( QString::null );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::importOAuthConfig()
 {
   if ( !onCustomTab() )
@@ -847,13 +842,13 @@ void QgsAuthOAuth2Edit::importOAuthConfig()
   loadConfig( configmap );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::descriptionChanged()
 {
   mOAuthConfigCustom->setDescription( pteDescription->toPlainText() );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::populateAccessMethods()
 {
   cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::Header ),
@@ -864,7 +859,7 @@ void QgsAuthOAuth2Edit::populateAccessMethods()
                               static_cast<int>( QgsAuthOAuth2Config::Query ) );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::updateConfigAccessMethod( int indx )
 {
   mOAuthConfigCustom->setAccessMethod( static_cast<QgsAuthOAuth2Config::AccessMethod>( indx ) );
@@ -887,7 +882,7 @@ void QgsAuthOAuth2Edit::addQueryPairRow( const QString &key, const QString &val 
   tblwdgQueryPairs->setItem( rowCnt, 1, valItm );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::populateQueryPairs( const QVariantMap &querypairs, bool append )
 {
   if ( !append )
@@ -903,7 +898,7 @@ void QgsAuthOAuth2Edit::populateQueryPairs( const QVariantMap &querypairs, bool 
   }
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::queryTableSelectionChanged()
 {
   bool hassel = tblwdgQueryPairs->selectedItems().count() > 0;
@@ -930,7 +925,7 @@ QVariantMap QgsAuthOAuth2Edit::queryPairs() const
   return querypairs;
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::addQueryPair()
 {
   addQueryPairRow( QString(), QString() );
@@ -939,13 +934,13 @@ void QgsAuthOAuth2Edit::addQueryPair()
   tblwdgQueryPairs->edit( tblwdgQueryPairs->currentIndex() );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::removeQueryPair()
 {
   tblwdgQueryPairs->removeRow( tblwdgQueryPairs->currentRow() );
 }
 
-// slot
+
 void QgsAuthOAuth2Edit::clearQueryPairs()
 {
   for ( int i = tblwdgQueryPairs->rowCount(); i > 0 ; --i )
@@ -1147,15 +1142,5 @@ void QgsAuthOAuth2Edit::getSoftwareStatementConfig()
     connect( configReply, &QNetworkReply::finished, this, &QgsAuthOAuth2Edit::configReplyFinished, Qt::QueuedConnection );
     connect( configReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsAuthOAuth2Edit::networkError, Qt::QueuedConnection );
   }
-}
-
-QString QgsAuthOAuth2Edit::registrationEndpoint() const
-{
-  return mRegistrationEndpoint;
-}
-
-void QgsAuthOAuth2Edit::setRegistrationEndpoint( const QString &registrationEndpoint )
-{
-  mRegistrationEndpoint = registrationEndpoint;
 }
 

@@ -126,12 +126,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void networkError( QNetworkReply::NetworkError error );
 
-    //! For testability
-    QString registrationEndpoint() const;
-
-    //! For testability
-    void setRegistrationEndpoint( const QString &registrationEndpoint );
-
   private:
 
     void initGui();
