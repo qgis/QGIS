@@ -29,8 +29,10 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, 
   mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
+  mCacheManager = new QgsServerCacheManager();
 #else
   mAccessControls = nullptr;
+  mCacheManager = nullptr;
 #endif
 }
 
@@ -80,6 +82,17 @@ void QgsServerInterfaceImpl::registerAccessControl( QgsAccessControlFilter *acce
   mAccessControls->registerAccessControl( accessControl, priority );
 #else
   Q_UNUSED( accessControl );
+  Q_UNUSED( priority );
+#endif
+}
+
+//! Register a new access control filter
+void QgsServerInterfaceImpl::registerServerCache( QgsServerCacheFilter *serverCache, int priority )
+{
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+  mCacheManager->registerServerCache( serverCache, priority );
+#else
+  Q_UNUSED( serverCache );
   Q_UNUSED( priority );
 #endif
 }

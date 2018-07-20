@@ -43,10 +43,43 @@ namespace QgsWfs
     void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                                const QgsServerRequest &request, QgsServerResponse &response )
     {
-      QDomDocument doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+      QStringList cacheKeyList;
+      bool cache = true;
+
+      QgsAccessControl *accessControl = serverIface->accessControls();
+      if ( accessControl )
+        cache = accessControl->fillCacheKey( cacheKeyList );
+
+      QDomDocument doc;
+      QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
+      const QDomDocument *capabilitiesDocument;
+
+      QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+      if ( cacheManager && cache )
+      {
+        capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKey );
+      }
+
+      if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
+      {
+        doc = createGetCapabilitiesDocument( serverIface, project, version, request );
+
+        if ( cache && cacheManager )
+        {
+          if ( cacheManager->setCachedDocument( &doc, project, request, cacheKey ) )
+          {
+            capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKey );
+          }
+        }
+        if ( !capabilitiesDocument )
+        {
+          doc = doc.cloneNode().toDocument();
+          capabilitiesDocument = &doc;
+        }
+      }
 
       response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
-      response.write( doc.toByteArray() );
+      response.write( capabilitiesDocument->toByteArray() );
     }
 
 

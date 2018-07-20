@@ -100,15 +100,26 @@ namespace QgsWms
     cacheKeyList << request.url().host();
     bool cache = true;
 
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
-#endif
+
 
     QDomDocument doc;
     QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
-    const QDomDocument *capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+    const QDomDocument *capabilitiesDocument;
+
+    QgsServerCacheManager *cacheManager = serverIface->cacheManager();
+    if ( cacheManager && cache )
+    {
+      if ( cacheKeyList.count() == 2 )
+        capabilitiesDocument = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+      else if ( cacheKeyList.count() > 2 )
+        capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+    }
+
+    if ( !capabilitiesDocument ) //capabilities xml not in cache plugins
+      capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
     if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
     {
       QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache" ) );
@@ -117,10 +128,26 @@ namespace QgsWms
 
       if ( cache )
       {
-        capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
-        capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+        if ( cacheManager )
+        {
+          if ( cacheKeyList.count() == 2 &&
+               cacheManager->setCachedDocument( &doc, project, request, QStringLiteral( "" ) ) )
+          {
+            capabilitiesDocument = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+          }
+          else if ( cacheKeyList.count() > 2 &&
+                    cacheManager->setCachedDocument( &doc, project, request, cacheKeyList.at( 3 ) ) )
+          {
+            capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+          }
+        }
+        else
+        {
+          capabilitiesCache->insertCapabilitiesDocument( configFilePath, cacheKey, &doc );
+          capabilitiesDocument = capabilitiesCache->searchCapabilitiesDocument( configFilePath, cacheKey );
+        }
       }
-      else
+      if ( !capabilitiesDocument )
       {
         doc = doc.cloneNode().toDocument();
         capabilitiesDocument = &doc;

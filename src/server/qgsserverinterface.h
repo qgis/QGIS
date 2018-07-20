@@ -30,9 +30,13 @@
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
+#include "qgsservercachefilter.h"
+#include "qgsservercachemanager.h"
 #else
 class QgsAccessControl;
 class QgsAccessControlFilter;
+class QgsServerCacheManager;
+class QgsServerCacheFilter;
 #endif
 #include "qgsserviceregistry.h"
 #include "qgis_server.h"
@@ -117,6 +121,16 @@ class SERVER_EXPORT QgsServerInterface
 
     //! Gets the registered access control filters
     virtual QgsAccessControl *accessControls() const = 0;
+
+    /**
+     * Register a server cache filter
+     * \param serverCache the server cache to register
+     * \param priority the priority used to order them
+     */
+    virtual void registerServerCache( QgsServerCacheFilter *serverCache SIP_TRANSFER, int priority = 0 ) = 0;
+
+    //! Gets the registered server cache filters
+    virtual QgsServerCacheManager *cacheManager() const = 0;
 
     //! Returns an enrironment variable, used to pass  environment variables to Python
     virtual QString getEnv( const QString &name ) const = 0;

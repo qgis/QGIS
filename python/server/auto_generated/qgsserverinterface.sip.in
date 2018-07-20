@@ -85,6 +85,19 @@ Register an access control filter
 Gets the registered access control filters
 %End
 
+    virtual void registerServerCache( QgsServerCacheFilter *serverCache /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register a server cache filter
+
+:param serverCache: the server cache to register
+:param priority: the priority used to order them
+%End
+
+    virtual QgsServerCacheManager *cacheManager() const = 0;
+%Docstring
+Gets the registered server cache filters
+%End
+
     virtual QString getEnv( const QString &name ) const = 0;
 %Docstring
 Returns an enrironment variable, used to pass  environment variables to Python

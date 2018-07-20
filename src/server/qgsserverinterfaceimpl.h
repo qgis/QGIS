@@ -50,8 +50,8 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
+
     //! Register an access control filter
-    //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
     /**
@@ -59,6 +59,16 @@ class QgsServerInterfaceImpl : public QgsServerInterface
      * \returns the access control helper
      */
     QgsAccessControl *accessControls() const override { return mAccessControls; }
+
+    //! Register a server cache filter
+    void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 ) override;
+
+    /**
+     * Gets the helper over all the registered server cache filters
+     * \returns the server cache helper
+     */
+    QgsServerCacheManager *cacheManager() const override { return mCacheManager; }
+
     QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
     void setConfigFilePath( const QString &configFilePath ) override;
@@ -74,6 +84,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
+    QgsServerCacheManager *mCacheManager = nullptr;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;
