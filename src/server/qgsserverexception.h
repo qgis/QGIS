@@ -109,6 +109,7 @@ class SERVER_EXPORT QgsOgcServiceException
  * \ingroup server
  * \class  QgsBadRequestException
  * \brief Exception thrown in case of malformed request
+ * \since QGIS 3.4
  */
 #ifndef SIP_RUN
 class SERVER_EXPORT QgsBadRequestException: public QgsOgcServiceException
