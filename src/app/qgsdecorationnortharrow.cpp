@@ -93,6 +93,9 @@ void QgsDecorationNorthArrow::run()
 
 QString QgsDecorationNorthArrow::svgPath()
 {
+  if ( mSvgPath.startsWith( QStringLiteral( "base64:" ), Qt::CaseInsensitive ) )
+    return mSvgPath;
+
   if ( !mSvgPath.isEmpty() )
   {
     QString resolvedPath = QgsSymbolLayerUtils::svgSymbolNameToPath( mSvgPath, QgsProject::instance()->pathResolver() );
