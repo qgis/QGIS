@@ -26,29 +26,125 @@
 #include "qgsgeometry.h"
 #include "qgis_server.h"
 
+/**
+ * \ingroup server
+ * \class QgsServerParameterDefinition
+ * \brief Definition of a parameter with basic conversion methods
+ * \since QGIS 3.4
+ */
 class SERVER_EXPORT QgsServerParameterDefinition
 {
   public:
+
+    /**
+     * Constructor for QgsServerParameterDefinition.
+     * \param type The type of the parameter
+     * \param defaultValue The default value of the parameter
+     */
     QgsServerParameterDefinition( const QVariant::Type type = QVariant::String,
                                   const QVariant defaultValue = QVariant( "" ) );
 
+    /**
+     * Default destructor for QgsServerParameterDefinition.
+     */
     virtual ~QgsServerParameterDefinition() = default;
 
+    /**
+     * Returns the type of the parameter as a string.
+     */
     QString typeName() const;
+
+    /**
+     * Returns true if the parameter is valid, false otherwise.
+     */
     virtual bool isValid() const;
 
+    /**
+     * Converts the parameter into a string.
+     */
     QString toString() const;
+
+    /**
+     * Converts the parameter into a list of strings.
+     * \param delimiter The character used for delimiting
+     * \returns A list of strings
+     */
     QStringList toStringList( char delimiter = ',' ) const;
+
+    /**
+     * Converts the parameter into a list of integers.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A list of integers
+     */
     QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+
+    /**
+     * Converts the parameter into a list of doubles.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A list of doubles
+     */
     QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+
+    /**
+     * Converts the parameter into a list of colors.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A list of colors
+     */
     QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+
+    /**
+     * Converts the parameter into a list of geometries.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A list of geometries
+     */
     QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+
+    /**
+     * Converts the parameter into a rectangle.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \returns A rectangle
+     */
     QgsRectangle toRectangle( bool &ok ) const;
+
+    /**
+     * Converts the parameter into an integer.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \returns An integer
+     */
     int toInt( bool &ok ) const;
+
+    /**
+     * Converts the parameter into a double.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \returns A double
+     */
     double toDouble( bool &ok ) const;
+
+    /**
+     * Converts the parameter into a boolean.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A boolean
+     */
     bool toBool() const;
+
+    /**
+     * Converts the parameter into a color.
+     * \param ok True if there's no error during the conversion, false otherwise
+     * \param delimiter The character used for delimiting
+     * \returns A color
+     */
     QColor toColor( bool &ok ) const;
 
+    /**
+     * Raises an exception in case of an invalid parameters.
+     * \param msg The message describing the exception
+     * \throws QgsBadRequestException Invalid parameter exception
+     */
     static void raiseError( const QString &msg );
 
     QVariant::Type mType;
