@@ -71,8 +71,8 @@ void QgsRasterInterface::initStatistics( QgsRasterBandStats &statistics,
     }
     QgsDebugMsgLevel( QStringLiteral( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ), 4 );
 
-    statistics.width = static_cast <int>( finalExtent.width() / xRes );
-    statistics.height = static_cast <int>( finalExtent.height() / yRes );
+    statistics.width = static_cast <int>( std::ceil( finalExtent.width() / xRes ) );
+    statistics.height = static_cast <int>( std::ceil( finalExtent.height() / yRes ) );
   }
   else
   {

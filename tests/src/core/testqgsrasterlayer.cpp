@@ -385,17 +385,56 @@ void TestQgsRasterLayer::checkStats()
   QgsRasterBandStats myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
                                     QgsRasterBandStats::Min | QgsRasterBandStats::Max |
                                     QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev );
-  QVERIFY( mpRasterLayer->width() == 10 );
-  QVERIFY( mpRasterLayer->height() == 10 );
-  //QVERIFY( myStatistics.elementCount == 100 );
-  QVERIFY( myStatistics.minimumValue == 0 );
-  QVERIFY( myStatistics.maximumValue == 9 );
+  QCOMPARE( mpRasterLayer->width(), 10 );
+  QCOMPARE( mpRasterLayer->height(), 10 );
+  //QCOMPARE( myStatistics.elementCount, 100 );
+  QCOMPARE( myStatistics.minimumValue, 0 );
+  QCOMPARE( myStatistics.maximumValue, 9 );
   QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
   mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
   QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
   mReport += QLatin1String( "<p>Passed</p>" );
+
+  // limited extent
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ) );
+
+  QCOMPARE( myStatistics.minimumValue, 2 );
+  QCOMPARE( myStatistics.maximumValue, 7 );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 1.507557, 0.00001 );
+
+  // with sample size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535450, 5083320 ), 10 );
+  QCOMPARE( myStatistics.minimumValue, 2 );
+  QCOMPARE( myStatistics.maximumValue, 7 );
+  QCOMPARE( myStatistics.elementCount, 12 );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 2.153222, 0.00001 );
+
+  // extremely limited extent - ~1 px size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ) );
+  QCOMPARE( myStatistics.minimumValue, 2 );
+  QCOMPARE( myStatistics.maximumValue, 3 );
+  QGSCOMPARENEAR( myStatistics.mean, 2.600000, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 0.492366, 0.00001 );
+
+  // extremely limited extent - ~1 px size - with sample size
+  myStatistics = mpRasterLayer->dataProvider()->bandStatistics( 1,
+                 QgsRasterBandStats::Min | QgsRasterBandStats::Max |
+                 QgsRasterBandStats::Mean | QgsRasterBandStats::StdDev, QgsRectangle( 1535400, 5083280, 1535412, 5083288 ), 6 );
+  QCOMPARE( myStatistics.minimumValue, 2 );
+  QCOMPARE( myStatistics.maximumValue, 3 );
+  QCOMPARE( myStatistics.elementCount, 2 );
+  QGSCOMPARENEAR( myStatistics.mean, 2.500000, 4 * std::numeric_limits<double>::epsilon() );
+  QGSCOMPARENEAR( myStatistics.stdDev, 0.707107, 0.00001 );
 }
 
 // test scale_factor and offset - uses netcdf file which may not be supported
