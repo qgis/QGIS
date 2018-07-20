@@ -1053,7 +1053,7 @@ void QgsComposer::updateAtlasPageComboBox( int pageCount )
 
   mAtlasPageComboBox->blockSignals( true );
   mAtlasPageComboBox->clear();
-  for ( int i = 1; i <= pageCount && i < 500; ++i )
+  for ( int i = 1; i <= pageCount && i < 100000; ++i )
   {
     QString name = mComposition->atlasComposition().nameForPage( i - 1 );
     QString fullName = ( !name.isEmpty() ? QString( "%1: %2" ).arg( i ).arg( name ) : QString::number( i ) );
