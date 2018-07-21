@@ -79,24 +79,6 @@ class RasterCalculator(QgisAlgorithm):
             def clone(self):
                 return ParameterRasterCalculatorExpression(self.name(), self.description(), self.multiLine())
 
-            # TODO: remove this unused method?
-            def evaluateForModeler(self, value, model):
-                for i in list(model.inputs.values()):
-                    param = i.param
-                    if isinstance(param, QgsProcessingParameterRasterLayer):
-                        new = "{}@".format(os.path.basename(param.value))
-                        old = "{}@".format(param.name())
-                        value = value.replace(old, new)
-
-                    for alg in list(model.algs.values()):
-                        for out in alg.algorithm.outputs:
-                            if isinstance(out, QgsProcessingOutputRasterLayer):
-                                if out.value:
-                                    new = "{}@".format(os.path.basename(out.value))
-                                    old = "{}:{}@".format(alg.modeler_name, out.name)
-                                    value = value.replace(old, new)
-                return value
-
         self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
                                                               multiLine=True))
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
