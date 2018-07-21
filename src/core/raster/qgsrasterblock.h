@@ -250,7 +250,7 @@ class CORE_EXPORT QgsRasterBlock
      *  \returns true if value is no data */
     bool isNoData( qgssize row, qgssize column )
     {
-      return isNoData( row * static_cast< qgssize >( mWidth )+ column );
+      return isNoData( row * static_cast< qgssize >( mWidth ) + column );
     }
 
     /**
