@@ -29,6 +29,8 @@
 
 #include <QDir>
 
+// If true regenerate raster reference images
+const bool REGENERATE_REFERENCES = false;
 
 class TestNineCellFilters : public QObject
 {
@@ -38,17 +40,23 @@ class TestNineCellFilters : public QObject
   private slots:
 
     void initTestCase();
+    void init();
+
+    void testHillshade();
     void testSlope();
     void testAspect();
-    void testHillshade();
     void testRuggedness();
     void testTotalCurvature();
 #ifdef HAVE_OPENCL
+    void testHillshadeCl();
     void testSlopeCl();
     void testAspectCl();
+    void testRuggednessCl();
 #endif
 
   private:
+
+    void _rasterCompare( QgsAlignRaster::RasterInfo &out, QgsAlignRaster::RasterInfo &ref );
 
     template <class T> void _testAlg( const QString &name, bool useOpenCl = false );
 
@@ -64,6 +72,13 @@ class TestNineCellFilters : public QObject
 };
 
 
+void TestNineCellFilters::init()
+{
+#ifdef HAVE_OPENCL
+  // Reset to default in case some tests mess it up
+  QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
+#endif
+}
 
 void TestNineCellFilters::initTestCase()
 {
@@ -77,16 +92,12 @@ template <class T>
 void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
 {
 #ifdef HAVE_OPENCL
-  QgsSettings().setValue( QStringLiteral( "useOpenCl" ), true, QgsSettings::Section::Core );
+  QgsOpenClUtils::setEnabled( useOpenCl );
   QString tmpFile( tempFile( name + ( useOpenCl ? "_opencl" : "" ) ) );
 #else
-  Q_UNUSED( useOpenCl );
   QString tmpFile( tempFile( name ) );
 #endif
   QString refFile( referenceFile( name ) );
-  QgsAlignRaster::RasterInfo in( SRC_FILE );
-  QSize inSize( in.rasterSize() );
-  QSizeF inCellSize( in.cellSize( ) );
   T ninecellsfilter( SRC_FILE, tmpFile, "GTiff" );
   int res = ninecellsfilter.processRaster();
   QVERIFY( res == 0 );
@@ -95,20 +106,20 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QgsAlignRaster::RasterInfo out( tmpFile );
   QVERIFY( out.isValid() );
 
-  // Reference file
+  // Regenerate reference rasters
+  if ( ! useOpenCl && REGENERATE_REFERENCES )
+  {
+    if ( QFile::exists( refFile ) )
+    {
+      QFile::remove( refFile );
+    }
+    QVERIFY( QFile::copy( tmpFile, refFile ) );
+  }
+
+  // Reference
   QgsAlignRaster::RasterInfo ref( refFile );
-  QSize refSize( ref.rasterSize() );
-  QSizeF refCellSize( ref.cellSize( ) );
-
-  QCOMPARE( out.rasterSize(), inSize );
-  QCOMPARE( out.cellSize(), inCellSize );
-  QCOMPARE( out.rasterSize(), refSize );
-  QCOMPARE( out.cellSize(), refCellSize );
-
-  double refId1( ref.identify( 4081812, 2431750 ) );
-  double refId2( ref.identify( 4081312, 2431350 ) );
-  QVERIFY( qAbs( out.identify( 4081812, 2431750 ) - refId1 ) < 0.0001f );
-  QVERIFY( qAbs( out.identify( 4081312, 2431350 ) - refId2 ) < 0.0001f );
+  //qDebug() << "Comparing " << tmpFile << refFile;
+  _rasterCompare( out, ref );
 
 }
 
@@ -117,7 +128,6 @@ void TestNineCellFilters::testSlope()
 {
   _testAlg<QgsSlopeFilter>( QStringLiteral( "slope" ) );
 }
-
 
 void TestNineCellFilters::testAspect()
 {
@@ -130,11 +140,21 @@ void TestNineCellFilters::testSlopeCl()
   _testAlg<QgsSlopeFilter>( QStringLiteral( "slope" ), true );
 }
 
-
 void TestNineCellFilters::testAspectCl()
 {
   _testAlg<QgsAspectFilter>( QStringLiteral( "aspect" ), true );
 }
+
+void TestNineCellFilters::testHillshadeCl()
+{
+  _testAlg<QgsHillshadeFilter>( QStringLiteral( "hillshade" ), true );
+}
+
+void TestNineCellFilters::testRuggednessCl()
+{
+  _testAlg<QgsRuggednessFilter>( QStringLiteral( "ruggedness" ), true );
+}
+
 #endif
 
 void TestNineCellFilters::testHillshade()
@@ -142,12 +162,53 @@ void TestNineCellFilters::testHillshade()
   _testAlg<QgsHillshadeFilter>( QStringLiteral( "hillshade" ) );
 }
 
-
 void TestNineCellFilters::testRuggedness()
 {
   _testAlg<QgsRuggednessFilter>( QStringLiteral( "ruggedness" ) );
 }
 
+void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsAlignRaster::RasterInfo &ref )
+{
+  QSize refSize( ref.rasterSize() );
+  QSizeF refCellSize( ref.cellSize( ) );
+  QgsAlignRaster::RasterInfo in( SRC_FILE );
+  QSize inSize( in.rasterSize() );
+  QSizeF inCellSize( in.cellSize( ) );
+  QCOMPARE( out.rasterSize(), inSize );
+  QCOMPARE( out.cellSize(), inCellSize );
+  QCOMPARE( out.rasterSize(), refSize );
+  QCOMPARE( out.cellSize(), refCellSize );
+
+  // If the values differ less than tolerance they are considered equal
+  double tolerance = 0.0000001;
+
+  // Check three points
+  std::map<int, int> controlPoints;
+  controlPoints[4081812] = 2431750;
+  controlPoints[4081312] = 2431350;
+  controlPoints[4080263] = 2429558;
+  // South West corner
+  controlPoints[4081512] = 2431550;
+  // North east corner
+  controlPoints[4085367] = 2434940;
+  // North west corner
+  controlPoints[4078263] = 2434936;
+  // South east corner
+  controlPoints[4085374] = 2428551;
+
+  for ( const auto &cp : controlPoints )
+  {
+    int x = cp.first;
+    int y = cp.second;
+    double outVal = out.identify( x, y );
+    double refVal = ref.identify( x, y );
+    double diff( qAbs( outVal - refVal ) );
+    //qDebug() << outVal << refVal;
+    //qDebug() << "Identify " <<  x << "," << y << " diff " << diff << " check: < " << tolerance;
+    QVERIFY( diff <= tolerance );
+  }
+
+}
 
 void TestNineCellFilters::testTotalCurvature()
 {

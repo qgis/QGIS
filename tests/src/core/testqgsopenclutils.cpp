@@ -46,13 +46,15 @@ class TestQgsOpenClUtils: public QObject
     void testProgramSource();
     void testContext();
     void testDevices();
-    // For performance testing
-    void testHillshade();
+
+    // For benchmarking performance testing
+    void testHillshadeCPU();
+    void testHillshadeGPU();
 
   private:
 
     void _testMakeRunProgram();
-    void _testMakeHillshade( const QString title, const int loops );
+    void _testMakeHillshade( const int loops );
 
     cl::Program buildProgram( const cl::Context &context, const QString &source )
     {
@@ -205,30 +207,36 @@ void TestQgsOpenClUtils::testDevices()
   qDebug() << QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Type, _devices.at( 0 ) );
 }
 
-void TestQgsOpenClUtils::_testMakeHillshade( const QString title, const int loops )
+void TestQgsOpenClUtils::_testMakeHillshade( const int loops )
 {
-  std::chrono::time_point<std::chrono::system_clock> startTime( std::chrono::system_clock::now() );
   for ( int i = 0 ; i < loops;  i++ )
   {
     QgsHillshadeRenderer renderer( mFloat32RasterLayer->dataProvider(), 1, 35.0, 5000.0 );
     // Note: CPU time grows linearly with raster dimensions while GPU time is roughly constant
-    // 900x900 px gives even times on my testing machine
-    renderer.block( 0, mFloat32RasterLayer->extent(), 900, 900 );
+    // 200x200 px gives even times on my testing machine
+    renderer.block( 0, mFloat32RasterLayer->extent(), 200, 200 );
   }
-  qDebug() << QStringLiteral( "%1 average for %2 loops: %3 ms" )
-           .arg( title )
-           .arg( loops )
-           .arg( std::chrono::duration_cast<std::chrono::milliseconds>( std::chrono::system_clock::now() - startTime ).count() / loops ) ;
 }
 
-void TestQgsOpenClUtils::testHillshade()
+void TestQgsOpenClUtils::testHillshadeGPU()
 {
   QgsOpenClUtils::setEnabled( true );
-  _testMakeHillshade( QStringLiteral( "OpenCL" ), 5 );
-  QVERIFY( QgsOpenClUtils::enabled() );
-  QgsOpenClUtils::setEnabled( false );
-  _testMakeHillshade( QStringLiteral( "CPU" ), 5 );
+  QBENCHMARK
+  {
+    _testMakeHillshade( 1 );
+  }
 }
+
+void TestQgsOpenClUtils::testHillshadeCPU()
+{
+  QgsOpenClUtils::setEnabled( false );
+  QBENCHMARK
+  {
+    _testMakeHillshade( 1 );
+  }
+}
+
+
 
 QGSTEST_MAIN( TestQgsOpenClUtils )
 #include "testqgsopenclutils.moc"
