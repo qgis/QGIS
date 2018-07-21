@@ -36,12 +36,15 @@ class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 ) override;
 
+
+#ifdef HAVE_OPENCL
   private:
 
     virtual const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "slope" );
     }
+#endif
 
 };
 

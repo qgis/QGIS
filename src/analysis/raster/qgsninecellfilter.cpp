@@ -21,10 +21,16 @@
 #include "qgsfeedback.h"
 #include "qgsogrutils.h"
 #include "qgsmessagelog.h"
+
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
 #include <QFile>
 #include <QDebug>
 #include <QFileInfo>
 #include <iterator>
+
 
 
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
@@ -157,6 +163,7 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
   return outputDataset;
 }
 
+#ifdef HAVE_OPENCL
 
 int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *feedback )
 {
@@ -296,7 +303,8 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         }
         queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
-      else // Overwrite from input, skip first and last
+      else // Read line i + 1 and put it into scanline 3
+        // Overwrite from input, skip first and last
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
@@ -334,7 +342,7 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   }
   return 0;
 }
-
+#endif
 
 int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 {
@@ -393,7 +401,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
-  for ( int i = 0; i < ySize; ++i )
+  for ( int yIndex = 0; yIndex < ySize; ++yIndex )
   {
     if ( feedback && feedback->isCanceled() )
     {
@@ -402,10 +410,10 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
+      feedback->setProgress( 100.0 * static_cast< double >( yIndex ) / ySize );
     }
 
-    if ( i == 0 )
+    if ( yIndex == 0 )
     {
       //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
       for ( int a = 0; a < xSize + 2 ; ++a )
@@ -428,7 +436,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     }
 
     // Read scanline 3
-    if ( i == ySize - 1 ) //fill the row below the bottom with nodata values
+    if ( yIndex == ySize - 1 ) //fill the row below the bottom with nodata values
     {
       for ( int a = 0; a < xSize + 2; ++a )
       {
@@ -437,7 +445,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     }
     else
     {
-      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, yIndex + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
         QgsDebugMsg( "Raster IO Error" );
       }
@@ -450,15 +458,16 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
 
     // j is the x axis index, skip 0 and last cell that have been filled with nodata
-    for ( int j = 0; j < xSize ; ++j )
+    for ( int xIndex = 0; xIndex < xSize ; ++xIndex )
     {
-      resultLine[ j ] = processNineCellWindow( &scanLine1[ j ], &scanLine1[ j + 1 ], &scanLine1[ j + 2 ],
-                        &scanLine2[ j ], &scanLine2[ j + 1 ], &scanLine2[ j + 2 ],
-                        &scanLine3[ j ], &scanLine3[ j + 1 ], &scanLine3[ j + 2 ] );
+      // cells(x, y) x11, x21, x31, x12, x22, x32, x13, x23, x33
+      resultLine[ xIndex ] = processNineCellWindow( &scanLine1[ xIndex ], &scanLine1[ xIndex + 1 ], &scanLine1[ xIndex + 2 ],
+                             &scanLine2[ xIndex ], &scanLine2[ xIndex + 1 ], &scanLine2[ xIndex + 2 ],
+                             &scanLine3[ xIndex ], &scanLine3[ xIndex + 1 ], &scanLine3[ xIndex + 2 ] );
 
     }
 
-    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
       QgsDebugMsg( "Raster IO Error" );
     }

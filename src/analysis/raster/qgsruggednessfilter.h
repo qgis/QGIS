@@ -39,6 +39,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 ) override;
 
+#ifdef HAVE_OPENCL
   private:
     QgsRuggednessFilter();
 
@@ -46,6 +47,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
     {
       return QStringLiteral( "ruggedness" );
     }
+#endif
 
 };
 

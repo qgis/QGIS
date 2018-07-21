@@ -24,11 +24,6 @@ QgsRuggednessFilter::QgsRuggednessFilter( const QString &inputFile, const QStrin
 
 }
 
-QgsRuggednessFilter::QgsRuggednessFilter()
-  : QgsNineCellFilter( QString(), QString(), QString() )
-{
-
-}
 
 float QgsRuggednessFilter::processNineCellWindow( float *x11, float *x21, float *x31,
     float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 )

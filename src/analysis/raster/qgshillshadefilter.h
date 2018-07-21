@@ -39,13 +39,33 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
                                  float *x13, float *x23, float *x33 ) override;
 
     float lightAzimuth() const { return mLightAzimuth; }
-    void setLightAzimuth( float azimuth ) { mLightAzimuth = azimuth; }
+    void setLightAzimuth( float azimuth );
     float lightAngle() const { return mLightAngle; }
-    void setLightAngle( float angle ) { mLightAngle = angle; }
+    void setLightAngle( float angle );
 
   private:
+
+#ifdef HAVE_OPENCL
+
+    const QString openClProgramBaseName() const override
+    {
+      return QStringLiteral( "hillshade" );
+    }
+#endif
+
     float mLightAzimuth;
     float mLightAngle;
+    // Precalculate for speed:
+    float mCosZenithRad;
+    float mSinZenithRad;
+    float mAzimuthRad;
+
+
+#ifdef HAVE_OPENCL
+  private:
+
+    void addExtraRasterParams( std::vector<float> &params ) override;
+#endif
 
 };
 
