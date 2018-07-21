@@ -65,6 +65,7 @@
 #include "qgsalgorithmremoveholes.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
+#include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
@@ -177,6 +178,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
+  addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );

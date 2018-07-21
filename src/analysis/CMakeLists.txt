@@ -68,6 +68,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmremoveholes.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
+  processing/qgsalgorithmreverselinedirection.cpp
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
