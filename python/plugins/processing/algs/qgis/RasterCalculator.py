@@ -230,7 +230,7 @@ class RasterCalculator(QgisAlgorithm):
     def mappedNameToLayer(self, lyr, expression, layersDict, context):
         '''Try to identify if a real layer is mapped in the expression with a symbolic name.'''
 
-        nameToMap = lyr.name()
+        nameToMap = lyr.source()
 
         # check for layers directly added in the expression
         if (nameToMap + "@") in expression:
@@ -249,12 +249,12 @@ class RasterCalculator(QgisAlgorithm):
             varDescription = None
             for varName in expContextAlgInputsScope.variableNames():
 
-                layer = expContextAlgInputsScope.variable(varName)
+                layerInContext = expContextAlgInputsScope.variable(varName)
 
-                if not isinstance(layer, str) and not isinstance(layer, QgsMapLayer):
+                if not isinstance(layerInContext, str) and not isinstance(layerInContext, QgsMapLayer):
                     continue
 
-                if isinstance(layer, QgsMapLayer) and nameToMap not in layer.source():
+                if isinstance(layerInContext, QgsMapLayer) and nameToMap not in layerInContext.source():
                     continue
 
                 varDescription = expContextAlgInputsScope.description(varName)
