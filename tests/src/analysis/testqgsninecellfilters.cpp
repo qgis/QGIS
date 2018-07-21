@@ -185,11 +185,15 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsA
   QCOMPARE( out.cellSize(), refCellSize );
 
   // If the values differ less than tolerance they are considered equal
+<<<<<<< 8f40129d09776c7fe96b88604405a908595f9ede
 <<<<<<< 8689c401a2a66b4b159a54d0c37e26a33aa183c3
   double tolerance = 0.0001;
 =======
   double tolerance = 0.0000001;
 >>>>>>> [opencl] Increase test coverage with no-opencl image comparison
+=======
+  double tolerance = 0.0001;
+>>>>>>> [opencl] Small optimization in hillshade
 
   // Check three points
   std::map<int, int> controlPoints;

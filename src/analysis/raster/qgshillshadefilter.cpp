@@ -30,10 +30,16 @@ QgsHillshadeFilter::QgsHillshadeFilter( const QString &inputFile, const QString 
 =======
   , mLightAzimuth( lightAzimuth )
   , mLightAngle( lightAngle )
+<<<<<<< 8f40129d09776c7fe96b88604405a908595f9ede
   , mCosZenithRad( std::cos( mLightAngle * M_PI / 180.0 ) )
   , mSinZenithRad( std::sin( mLightAngle * M_PI / 180.0 ) )
   , mAzimuthRad( mLightAzimuth * M_PI / 180.0 )
 >>>>>>> [opencl] Fix small OpenCL alg issues
+=======
+  , mCosZenithRad( std::cos( mLightAngle * M_PI / 180.0f ) )
+  , mSinZenithRad( std::sin( mLightAngle * M_PI / 180.0f ) )
+  , mAzimuthRad( mLightAzimuth * M_PI / 180.0f )
+>>>>>>> [opencl] Small optimization in hillshade
 {
 }
 
@@ -109,17 +115,9 @@ void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
 void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
 {
 
-  // Original CPU formula
-  float zenith_rad = mLightAngle * M_PI / 180.0;
-  float azimuth_rad = mLightAzimuth * M_PI / 180.0;
-  params.push_back( zenith_rad ); // 5
-  params.push_back( azimuth_rad ); // 6
-
-  /*
-  params.push_back( std::cos( mLightAngle * M_PI / 180.0 ) ); // cos_zenith_rad 5
-  params.push_back( mLightAzimuth * M_PI / 180.0 ); // azimuth_rad 6
-  params.push_back( std::sin( mLightAzimuth * M_PI / 180.0 ) ); // sin_zenith_rad 7
-  */
+  params.push_back( mCosZenithRad ); // cos_zenith_rad 5
+  params.push_back( mSinZenithRad ); // sin_zenith_rad 6
+  params.push_back( mAzimuthRad ); // azimuth_rad 7
 
 }
 <<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
