@@ -125,7 +125,7 @@ class RasterCalculator(QgisAlgorithm):
 
         layersDict = {}
         if layers:
-            layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
+            layersDict = {lyr.source(): lyr for lyr in layers}
 
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         if not crs or not crs.isValid():
