@@ -42,6 +42,7 @@ from qgis.core import (QgsProcessing,
                        QgsProcessingParameterString,
                        QgsCoordinateTransform,
                        QgsMapLayer)
+from qgis.PyQt.QtCore import QObject
 from qgis.analysis import QgsRasterCalculator, QgsRasterCalculatorEntry
 
 
@@ -134,7 +135,7 @@ class RasterCalculator(QgisAlgorithm):
                 crs = list(layersDict.values())[0].crs()
 
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
-        if not bbox or bbox.isNull():
+        if bbox.isNull():
             if not layers:
                 raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
 
@@ -231,63 +232,68 @@ class RasterCalculator(QgisAlgorithm):
 
         nameToMap = lyr.name()
 
-        # get last scope of the expressionContext because should be that related
-        # with mapped variables
-        # The scope name should be "algorithm_inputs"
-        expContextLastScope = context.expressionContext().lastScope()
-
         # check for layers directly added in the expression
         if (nameToMap + "@") in expression:
             layersDict[nameToMap] = lyr
 
-        # check for the layers that are mapped as input in a model
-        #  to do this check in the latest scope all passed variables
-        # to look for a variable that is a layer or a string filename ç
-        # to a layer
-        varId = None
-        varDescription = None
+        # get "algorithm_inputs" scope of the expressionContext related
+        # with mapped variables
+        indexOfScope = context.expressionContext().indexOfScope("algorithm_inputs")
+        if indexOfScope >= 0:
+            expContextAlgInputsScope = context.expressionContext().scope(indexOfScope)
 
-        for varName in expContextLastScope.variableNames():
+            # check for the layers that are mapped as input in a model
+            #  to do this check in the latest scope all passed variables
+            # to look for a variable that is a layer or a string filename ç
+            # to a layer
+            varDescription = None
+            for varName in expContextAlgInputsScope.variableNames():
 
-            layer = expContextLastScope.variable(varName)
+                layer = expContextAlgInputsScope.variable(varName)
 
-            if not isinstance(layer, str) and not isinstance(layer, QgsMapLayer):
-                continue
+                if not isinstance(layer, str) and not isinstance(layer, QgsMapLayer):
+                    continue
 
-            if isinstance(layer, QgsMapLayer) and nameToMap not in layer.source():
-                continue
+                if isinstance(layer, QgsMapLayer) and nameToMap not in layer.source():
+                    continue
 
-            varId = varName
-            varDescription = expContextLastScope.description(varName)
+                varDescription = expContextAlgInputsScope.description(varName)
 
-            # because there can be variable with None or "" description
-            # then skip them
-            if not varDescription:
-                continue
+                # because there can be variable with None or "" description
+                # then skip them
+                if not varDescription:
+                    continue
 
-            # check if it's description starts with Output as in:
-            #    Output 'Output' from algorithm 'calc1'
-            # as set in https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
-            # but var in expression is called simply
-            #    'Output' from algorithm 'calc1'
-            elements = varDescription.split(" ")
-            if len(elements) > 1 and elements[0] == "Output":
-                # remove heading "Output " string
-                varDescription = varDescription[7:]
+                # check if it's description starts with Output as in:
+                #    Output 'Output' from algorithm 'calc1'
+                # as set in https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
+                # but var in expression is called simply
+                #    'Output' from algorithm 'calc1'
 
-            # check if cleaned varDescription is present in the expression
-            # if not skip it
-            if (varDescription + "@") not in expression:
-                continue
+                # get the translatin string to use to parse the description
+                # HAVE to use the same translated string as in
+                # https://github.com/qgis/QGIS/blob/master/src/core/processing/models/qgsprocessingmodelalgorithm.cpp#L516
+                translatedDesc = self.tr("Output '%1' from algorithm '%2'")
+                elementZero = translatedDesc.split(" ")[0] # For english the string result should be "Output"
 
-            # !!!found!!! => substitute in expression
-            # and add in the list of layers that will be passed to raster calculator
-            nameToMap = varName
-            new = "{}@".format(nameToMap)
-            old = "{}@".format(varDescription)
-            expression = expression.replace(old, new)
+                elements = varDescription.split(" ")
+                if len(elements) > 1 and elements[0] == elementZero:
+                    # remove heading QObject.tr"Output ") string. Note adding a space at the end of elementZero!
+                    varDescription = varDescription[len(elementZero) + 1:]
 
-            layersDict[nameToMap] = lyr
+                # check if cleaned varDescription is present in the expression
+                # if not skip it
+                if (varDescription + "@") not in expression:
+                    continue
+
+                # !!!found!!! => substitute in expression
+                # and add in the list of layers that will be passed to raster calculator
+                nameToMap = varName
+                new = "{}@".format(nameToMap)
+                old = "{}@".format(varDescription)
+                expression = expression.replace(old, new)
+
+                layersDict[nameToMap] = lyr
 
         # need return the modified expression because it's not a reference
         return expression
