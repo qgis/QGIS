@@ -959,7 +959,7 @@ tests:
         name: expected/point_on_line.gml
         type: vector
 
-  - algorithm: qgis:reverselinedirection
+  - algorithm: native:reverselinedirection
     name: Reverse line direction
     params:
       INPUT:

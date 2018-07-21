@@ -118,7 +118,6 @@ from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
@@ -235,7 +234,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
-                ReverseLineDirection(),
                 Ruggedness(),
                 SelectByAttribute(),
                 SelectByExpression(),
