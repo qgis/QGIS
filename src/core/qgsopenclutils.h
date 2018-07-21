@@ -34,12 +34,30 @@
  * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
  * - enable/disable opencl
  * - store and retrieve preferences for the default device
- * - check opencl device availability and automatically choose the first GPU (TODO: let the user choose & override!)
- * - creating contexts
+ * - check opencl device availability and automatically choose the first GPU device
+ * - creating the default context
  * - loading program sources from standard locations
  * - build programs and log errors
- * \since QGIS 3.4
+ *
+ * Usage:
+ *
+ * \code{.cpp}
+   // This will check if OpenCL is enabled in user options and if there is a suitable
+   // device, if a device is found it is initialized.
+   if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() )
+   {
+      // Use the default context
+      cl::Context ctx = QgsOpenClUtils::context();
+      cl::CommandQueue queue( ctx );
+      // Load the program from a standard location and build it
+      cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( QStringLiteral ( "hillshade" ) ) );
+      // Continue with the usual OpenCL buffer, kernel and execution
+      ...
+   }
+ * \endcode
+ *
  * \note not available in Python bindings
+ * \since QGIS 3.4
  */
 class CORE_EXPORT QgsOpenClUtils
 {
@@ -52,8 +70,8 @@ class CORE_EXPORT QgsOpenClUtils
      */
     enum ExceptionBehavior
     {
-      Catch,  // Write errors in the message log and silently fail
-      Throw   // Write errors in the message log and re-throw exceptions
+      Catch,  //! Write errors in the message log and silently fail
+      Throw   //! Write errors in the message log and re-throw exceptions
     };
 
     /**
@@ -86,17 +104,31 @@ class CORE_EXPORT QgsOpenClUtils
       Type = CL_DEVICE_TYPE // CPU/GPU etc.
     };
 
-    //! Return true if OpenCL is enabled in the user settings
+    /**
+     * Checks whether a suitable OpenCL platform and device is available on this system
+     * and initialize the QGIS OpenCL system by activating the preferred device
+     * if specified in the user the settings, if no preferred device was set or
+     * the preferred device could not be found the first GPU device is activated,
+     * the first CPU device acts as a fallback if none of the previous could be found.
+     *
+     * This function must always be called before using QGIS OpenCL utils
+     */
+    static bool available();
+
+    //! Returns true if OpenCL is enabled in the user settings
     static bool enabled();
 
-    //! Return a list of OpenCL devices found on this sysytem
-    static std::vector<cl::Device> devices();
+    //! Returns a list of OpenCL devices found on this sysytem
+    static const std::vector<cl::Device> devices();
 
-    //! Return the active device
+    /**
+     * Returns the active device.
+     *
+     * The active device is set as the default device for all OpenCL operations,
+     * once it is set it cannot be changed until QGIS is restarted (this is
+     * due to the way the underlying OpenCL library is built).
+     */
     static cl::Device activeDevice( );
-
-    //! Set the active \a device
-    static void setActiveDevice( const cl::Device device );
 
     //! Store in the settings the preferred \a deviceId device identifier
     static void storePreferredDevice( const QString deviceId );
@@ -108,15 +140,6 @@ class CORE_EXPORT QgsOpenClUtils
     static QString deviceId( const cl::Device device );
 
     /**
-     * Activate a device identified by its \a preferredDeviceId by making it the default device
-     * if the device does not exists or deviceId is empty, the first GPU device will be
-     * activated
-     * \return true if the device could be found and activated. Return false if the device was already
-     * the active one or if it could not be found.
-     */
-    static bool activate( const QString preferredDeviceId = QString() );
-
-    /**
      * Returns a formatted description for the \a device
      */
     static QString deviceDescription( const cl::Device device );
@@ -125,12 +148,6 @@ class CORE_EXPORT QgsOpenClUtils
      * Returns a formatted description for the device identified by \a deviceId
      */
     static QString deviceDescription( const QString deviceId );
-
-    /**
-     * Checks whether a suitable OpenCL platform and device is found on this system and initialize the QGIS OpenCL system
-     * This function must be called before using QGIS OpenCL utils
-     */
-    static bool available();
 
     //! Set the OpenCL user setting to \a enabled
     static void setEnabled( bool enabled );
@@ -141,17 +158,17 @@ class CORE_EXPORT QgsOpenClUtils
     //! Read an OpenCL source file from \a path
     static QString sourceFromPath( const QString &path );
 
-    //! Return the full path to a an OpenCL source file from the \a baseName ('.cl' extension is automatically appended)
+    //! Returns the full path to a an OpenCL source file from the \a baseName ('.cl' extension is automatically appended)
     static QString sourceFromBaseName( const QString &baseName );
 
     //! OpenCL string for message logs
     static QLatin1String LOGMESSAGE_TAG;
 
-    //! Return a string representation from an OpenCL \a errorCode
+    //! Returns a string representation from an OpenCL \a errorCode
     static QString errorText( const int errorCode );
 
     /**
-     * Build the program from \a source in the given \a context and depending on \a exeptionBehavior
+     * Build the program from \a source in the given \a context and depending on \a exceptionBehavior
      * can throw or catch the exceptions
      * \return the built program
      */
@@ -166,16 +183,16 @@ class CORE_EXPORT QgsOpenClUtils
      */
     static cl::Context context();
 
-    //! Return the base path to OpenCL program directory
+    //! Returns the base path to OpenCL program directory
     static QString sourcePath();
 
     //! Set the  base path to OpenCL program directory
     static void setSourcePath( const QString &value );
 
-    //! Return \a infoType information about the default device
-    static QString defaultDeviceInfo( const Info infoType = Info::Name );
+    //! Returns \a infoType information about the active (default) device
+    static QString activeDeviceInfo( const Info infoType = Info::Name );
 
-    //! Return \a infoType information about the \a device
+    //! Returns \a infoType information about the \a device
     static QString deviceInfo( const Info infoType, cl::Device device );
 
     /**
@@ -188,23 +205,23 @@ class CORE_EXPORT QgsOpenClUtils
 
       public:
 
-        explicit CPLAllocator( unsigned long size ): mMem( ( T * )CPLMalloc( sizeof( T ) * size ) ) { }
+        explicit CPLAllocator( unsigned long size ): mMem( static_cast<T *>( CPLMalloc( sizeof( T ) * size ) ) ) { }
 
         ~CPLAllocator()
         {
-          CPLFree( ( void * )mMem );
+          CPLFree( static_cast<void *>( mMem ) );
         }
 
         void reset( T *newData )
         {
           if ( mMem )
-            CPLFree( ( void * )mMem );
+            CPLFree( static_cast<void *>( mMem ) );
           mMem = newData;
         }
 
         void reset( unsigned long size )
         {
-          reset( ( T * )CPLMalloc( sizeof( T ) *size ) );
+          reset( static_cast<T *>( CPLMalloc( sizeof( T ) *size ) ) );
         }
 
         T &operator* ()
@@ -236,8 +253,29 @@ class CORE_EXPORT QgsOpenClUtils
 
 
   private:
+
     QgsOpenClUtils();
+
+    /**
+     * Activate a device identified by its \a preferredDeviceId by making it the default device
+     * if the device does not exists or deviceId is empty, the first GPU device will be
+     * activated, if a GPU device is not found, the first CPU device will be chosen instead.
+     *
+     * Called once by init() when OpenCL is used for the first time in a QGIS working session.
+     *
+     * \return true if the device could be found and activated. Return false if the device was already
+     * the active one or if a device could not be activated.
+     *
+     * \see init()
+     * \see available()
+     */
+    static bool activate( const QString &preferredDeviceId = QString() );
+
+    /**
+     * Initialize the OpenCL system by setting and activating the default device.
+     */
     static void init();
+
     static bool sAvailable;
     static cl::Device sActiveDevice;
     static cl::Platform sDefaultPlatform;
