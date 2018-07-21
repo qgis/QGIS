@@ -180,7 +180,7 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsA
   QCOMPARE( out.cellSize(), refCellSize );
 
   // If the values differ less than tolerance they are considered equal
-  double tolerance = 0.0000001;
+  double tolerance = 0.0001;
 
   // Check three points
   std::map<int, int> controlPoints;
