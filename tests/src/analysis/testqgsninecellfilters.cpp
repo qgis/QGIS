@@ -98,8 +98,13 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QString tmpFile( tempFile( name ) );
 #endif
   QString refFile( referenceFile( name ) );
+<<<<<<< 8689c401a2a66b4b159a54d0c37e26a33aa183c3
   T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
   int res = ninecellFilter.processRaster();
+=======
+  T ninecellsfilter( SRC_FILE, tmpFile, "GTiff" );
+  int res = ninecellsfilter.processRaster();
+>>>>>>> [opencl] Increase test coverage with no-opencl image comparison
   QVERIFY( res == 0 );
 
   // Produced file
@@ -180,7 +185,11 @@ void TestNineCellFilters::_rasterCompare( QgsAlignRaster::RasterInfo &out,  QgsA
   QCOMPARE( out.cellSize(), refCellSize );
 
   // If the values differ less than tolerance they are considered equal
+<<<<<<< 8689c401a2a66b4b159a54d0c37e26a33aa183c3
   double tolerance = 0.0001;
+=======
+  double tolerance = 0.0000001;
+>>>>>>> [opencl] Increase test coverage with no-opencl image comparison
 
   // Check three points
   std::map<int, int> controlPoints;
