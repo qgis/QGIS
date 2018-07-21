@@ -159,32 +159,6 @@ QgsRasterBlock *QgsHillshadeRenderer::block( int bandNo, const QgsRectangle &ext
   QRgb defaultNodataColor = NODATA_COLOR;
 
 
-  // Common pre-calculated values
-  float cellXSize = static_cast<float>( extent.width() ) / width;
-  float cellYSize = static_cast<float>( extent.height() ) / height;
-  float zenithRad = static_cast<float>( std::max( 0.0, 90 - mLightAngle ) * M_PI / 180.0 );
-  float azimuthRad = static_cast<float>( -1 * mLightAzimuth * M_PI / 180.0 );
-  float cosZenithRad = std::cos( zenithRad );
-  float sinZenithRad = std::sin( zenithRad );
-
-  // For fast formula from GDAL DEM
-  float cos_alt_mul_z = cosZenithRad * static_cast<float>( mZFactor );
-  float cos_az_mul_cos_alt_mul_z = std::cos( azimuthRad ) * cos_alt_mul_z;
-  float sin_az_mul_cos_alt_mul_z = std::sin( azimuthRad ) * cos_alt_mul_z;
-  float cos_az_mul_cos_alt_mul_z_mul_254 = 254.0f * cos_az_mul_cos_alt_mul_z;
-  float sin_az_mul_cos_alt_mul_z_mul_254 = 254.0f * sin_az_mul_cos_alt_mul_z;
-  float square_z = static_cast<float>( mZFactor * mZFactor );
-  float sin_altRadians_mul_254 = 254.0f * sinZenithRad;
-
-  // For multi directional
-  float sin_altRadians_mul_127 = 127.0f * sinZenithRad;
-  // 127.0 * std::cos(225.0 *  M_PI / 180.0) = -32.87001872802012
-  float cos225_az_mul_cos_alt_mul_z_mul_127 = -32.87001872802012f * cos_alt_mul_z;
-  float cos_alt_mul_z_mul_127 = 127.0f * cos_alt_mul_z;
-
-  QRgb defaultNodataColor = NODATA_COLOR;
-
-
 #ifdef HAVE_OPENCL
 
   // Use OpenCL? For now OpenCL is enabled in the default configuration only

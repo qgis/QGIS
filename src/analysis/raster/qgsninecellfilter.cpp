@@ -422,8 +422,13 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
 >>>>>>> [opencl] Use fast formula for hillshade
       }
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
       else // Overwrite from input, skip first and last
 >>>>>>> [opencl] Reduce memory footprint and optimize
+=======
+      else // Read line i + 1 and put it into scanline 3
+        // Overwrite from input, skip first and last
+>>>>>>> [opencl] Fix small OpenCL alg issues
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
@@ -497,7 +502,10 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   return 0;
 }
 #endif
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
 
+=======
+>>>>>>> [opencl] Fix small OpenCL alg issues
 
 // TODO: return an anum instead of an int
 int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )

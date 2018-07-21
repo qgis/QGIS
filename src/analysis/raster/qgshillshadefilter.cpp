@@ -21,11 +21,19 @@
 QgsHillshadeFilter::QgsHillshadeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat, double lightAzimuth,
                                         double lightAngle )
   : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
   , mLightAzimuth( static_cast<float>( lightAzimuth ) )
   , mLightAngle( static_cast<float>( lightAngle ) )
   , mCosZenithRad( std::cos( static_cast<float>( lightAngle * M_PI ) / 180.0f ) )
   , mSinZenithRad( std::sin( static_cast<float>( lightAngle * M_PI ) / 180.0f ) )
   , mAzimuthRad( static_cast<float>( lightAzimuth * M_PI ) / 180.0f )
+=======
+  , mLightAzimuth( lightAzimuth )
+  , mLightAngle( lightAngle )
+  , mCosZenithRad( std::cos( mLightAngle * M_PI / 180.0 ) )
+  , mSinZenithRad( std::sin( mLightAngle * M_PI / 180.0 ) )
+  , mAzimuthRad( mLightAzimuth * M_PI / 180.0 )
+>>>>>>> [opencl] Fix small OpenCL alg issues
 {
 }
 
@@ -46,12 +54,17 @@ float QgsHillshadeFilter::processNineCellWindow( float *x11, float *x21, float *
   float aspect_rad = 0;
   if ( derX == 0 && derY == 0 ) //aspect undefined, take a neutral value. Better solutions?
   {
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
     aspect_rad = mAzimuthRad / 2.0f;
+=======
+    aspect_rad = mAzimuthRad / 2.0;
+>>>>>>> [opencl] Fix small OpenCL alg issues
   }
   else
   {
     aspect_rad = M_PI + std::atan2( derX, derY );
   }
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
   return std::max( 0.0f, 255.0f * ( ( mCosZenithRad * std::cos( slope_rad ) ) +
                                     ( mSinZenithRad * std::sin( slope_rad ) *
                                       std::cos( mAzimuthRad - aspect_rad ) ) ) );
@@ -84,23 +97,34 @@ void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
 
 #endif
 =======
+=======
+  return std::max( 0.0, 255.0 * ( ( mCosZenithRad * std::cos( slope_rad ) ) +
+                                  ( mSinZenithRad * std::sin( slope_rad ) *
+                                    std::cos( mAzimuthRad - aspect_rad ) ) ) );
+}
+
+#ifdef HAVE_OPENCL
+
+>>>>>>> [opencl] Fix small OpenCL alg issues
 void QgsHillshadeFilter::addExtraRasterParams( std::vector<float> &params )
 {
-  float azimuthRad =  -1 * mLightAzimuth * M_PI / 180.0;
-  float zenithRad = std::max( 0.0f, 90.0f - mLightAngle ) * M_PI / 180.0;
-  float cosZenithRad = std::cos( zenithRad );
-  float cos_az_mul_cos_alt_mul_z = std::cos( azimuthRad ) * cosZenithRad * mZFactor;
-  float sin_az_mul_cos_alt_mul_z = std::sin( azimuthRad ) * cosZenithRad * mZFactor;
-  float cos_az_mul_cos_alt_mul_z_mul_254 = 254.0 * cos_az_mul_cos_alt_mul_z;
-  float sin_az_mul_cos_alt_mul_z_mul_254 = 254.0 * sin_az_mul_cos_alt_mul_z;
-  float square_z = mZFactor * mZFactor;
-  float sin_altRadians_mul_254 = 254.0 * std::sin( zenithRad );
 
-  // For fast formula from GDAL DEM
-  params.push_back( cos_az_mul_cos_alt_mul_z_mul_254 ); // 5
-  params.push_back( sin_az_mul_cos_alt_mul_z_mul_254 ); // 6
-  params.push_back( square_z ); // 7
-  params.push_back( sin_altRadians_mul_254 ); // 8
+  // Original CPU formula
+  float zenith_rad = mLightAngle * M_PI / 180.0;
+  float azimuth_rad = mLightAzimuth * M_PI / 180.0;
+  params.push_back( zenith_rad ); // 5
+  params.push_back( azimuth_rad ); // 6
+
+  /*
+  params.push_back( std::cos( mLightAngle * M_PI / 180.0 ) ); // cos_zenith_rad 5
+  params.push_back( mLightAzimuth * M_PI / 180.0 ); // azimuth_rad 6
+  params.push_back( std::sin( mLightAzimuth * M_PI / 180.0 ) ); // sin_zenith_rad 7
+  */
 
 }
+<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
 >>>>>>> [opencl] Use fast formula for hillshade
+=======
+
+#endif
+>>>>>>> [opencl] Fix small OpenCL alg issues
