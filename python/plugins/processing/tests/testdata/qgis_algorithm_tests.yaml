@@ -5818,4 +5818,78 @@ tests:
           fields:
             fid: skip
 
+  - algorithm: native:filterpointsbym
+    name: Filter by m no max
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_max.shp
+        type: vector
+
+  - algorithm: native:filterpointsbym
+    name: Filter by m no min
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_min.shp
+        type: vector
+
+  - algorithm: native:filterpointsbym
+    name: Filter by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_m.shp
+        type: vector
+
+  - algorithm: native:filterpointsbyz
+    name: Filter by z no max
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_max.shp
+        type: vector
+
+  - algorithm: native:filterpointsbyz
+    name: Filter by z no min
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_min.shp
+        type: vector
+
+  - algorithm: native:filterpointsbyz
+    name: Filter by z
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_z.shp
+        type: vector
+
 # See ../README.md for a description of the file format
