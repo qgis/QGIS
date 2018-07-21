@@ -196,6 +196,16 @@ Check if value at position is no data
 :return: true if value is no data *
 %End
 
+    bool isNoData( qgssize row, qgssize column );
+%Docstring
+Check if value at position is no data
+
+:param row: row index
+:param column: column index
+
+:return: true if value is no data *
+%End
+
     bool isNoData( qgssize index );
 %Docstring
 Check if value at position is no data

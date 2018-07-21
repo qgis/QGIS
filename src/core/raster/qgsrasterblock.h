@@ -245,6 +245,16 @@ class CORE_EXPORT QgsRasterBlock
 
     /**
      * \brief Check if value at position is no data
+     *  \param row row index
+     *  \param column column index
+     *  \returns true if value is no data */
+    bool isNoData( qgssize row, qgssize column )
+    {
+      return isNoData( row * static_cast< qgssize >( mWidth )+ column );
+    }
+
+    /**
+     * \brief Check if value at position is no data
      *  \param index data matrix index (long type in Python)
      *  \returns true if value is no data */
     bool isNoData( qgssize index )
