@@ -42,7 +42,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfilter.cpp
-  processing/qgsalgorithmfilterpoints.cpp
+  processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmimportphotos.cpp
   processing/qgsalgorithmintersection.cpp

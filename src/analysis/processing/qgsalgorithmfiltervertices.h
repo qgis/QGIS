@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsalgorithmfilterpoints.h
-                         --------------------------
+                         qgsalgorithmfiltervertices.h
+                         ----------------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMFILTERPOINTS_H
-#define QGSALGORITHMFILTERPOINTS_H
+#ifndef QGSALGORITHMFILTERVERTICES_H
+#define QGSALGORITHMFILTERVERTICES_H
 
 #define SIP_NO_FILE
 
@@ -27,9 +27,9 @@
 ///@cond PRIVATE
 
 /**
- * Base class for 'filter points' algorithms.
+ * Base class for 'filter vertices' algorithms.
  */
-class QgsFilterPointsAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
+class QgsFilterVerticesAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
@@ -60,18 +60,18 @@ class QgsFilterPointsAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 };
 
 /**
- * Filter points by M value algorithm.
+ * Filter vertices by M value algorithm.
  */
-class QgsFilterPointsByM : public QgsFilterPointsAlgorithmBase
+class QgsFilterVerticesByM : public QgsFilterVerticesAlgorithmBase
 {
 
   public:
 
-    QgsFilterPointsByM() = default;
+    QgsFilterVerticesByM() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    QgsFilterPointsByM *createInstance() const override SIP_FACTORY;
+    QgsFilterVerticesByM *createInstance() const override SIP_FACTORY;
 
   private:
 
@@ -81,18 +81,18 @@ class QgsFilterPointsByM : public QgsFilterPointsAlgorithmBase
 
 
 /**
- * Filter points by Z value algorithm.
+ * Filter vertices by Z value algorithm.
  */
-class QgsFilterPointsByZ : public QgsFilterPointsAlgorithmBase
+class QgsFilterVerticesByZ : public QgsFilterVerticesAlgorithmBase
 {
 
   public:
 
-    QgsFilterPointsByZ() = default;
+    QgsFilterVerticesByZ() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    QgsFilterPointsByZ *createInstance() const override SIP_FACTORY;
+    QgsFilterVerticesByZ *createInstance() const override SIP_FACTORY;
 
   private:
 
@@ -103,6 +103,6 @@ class QgsFilterPointsByZ : public QgsFilterPointsAlgorithmBase
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMFILTERPOINTS_H
+#endif // QGSALGORITHMFILTERVERTICES_H
 
 

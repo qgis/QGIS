@@ -5818,7 +5818,7 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: native:filterpointsbym
+  - algorithm: native:filterverticesbym
     name: Filter by m no max
     params:
       INPUT:
@@ -5830,7 +5830,7 @@ tests:
         name: expected/filter_by_m_no_max.shp
         type: vector
 
-  - algorithm: native:filterpointsbym
+  - algorithm: native:filterverticesbym
     name: Filter by m no min
     params:
       INPUT:
@@ -5842,7 +5842,7 @@ tests:
         name: expected/filter_by_m_no_min.shp
         type: vector
 
-  - algorithm: native:filterpointsbym
+  - algorithm: native:filterverticesbym
     name: Filter by m
     params:
       INPUT:
@@ -5855,7 +5855,7 @@ tests:
         name: expected/filter_by_m.shp
         type: vector
 
-  - algorithm: native:filterpointsbyz
+  - algorithm: native:filterverticesbyz
     name: Filter by z no max
     params:
       INPUT:
@@ -5867,7 +5867,7 @@ tests:
         name: expected/filter_by_z_no_max.shp
         type: vector
 
-  - algorithm: native:filterpointsbyz
+  - algorithm: native:filterverticesbyz
     name: Filter by z no min
     params:
       INPUT:
@@ -5879,7 +5879,7 @@ tests:
         name: expected/filter_by_z_no_min.shp
         type: vector
 
-  - algorithm: native:filterpointsbyz
+  - algorithm: native:filterverticesbyz
     name: Filter by z
     params:
       INPUT:

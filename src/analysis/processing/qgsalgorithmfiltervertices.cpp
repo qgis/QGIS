@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsalgorithmfilterpoints.cpp
-                         ----------------------------
+                         qgsalgorithmfiltervertices.cpp
+                         ------------------------------
     begin                : July 2018
     copyright            : (C) 2018 by Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -15,27 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmfilterpoints.h"
+#include "qgsalgorithmfiltervertices.h"
 
 ///@cond PRIVATE
 
 
-QString QgsFilterPointsAlgorithmBase::group() const
+QString QgsFilterVerticesAlgorithmBase::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsFilterPointsAlgorithmBase::groupId() const
+QString QgsFilterVerticesAlgorithmBase::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-QString QgsFilterPointsAlgorithmBase::outputName() const
+QString QgsFilterVerticesAlgorithmBase::outputName() const
 {
   return QObject::tr( "Filtered" );
 }
 
-QString QgsFilterPointsAlgorithmBase::shortHelpString() const
+QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
 {
   return QObject::tr( "Filters away vertices based on their %1, returning geometries with only "
                       "vertex points that have a %1 ≥ the specified minimum value and ≤ "
@@ -47,12 +47,12 @@ QString QgsFilterPointsAlgorithmBase::shortHelpString() const
                       "their validity." ).arg( componentString() );
 }
 
-QList<int> QgsFilterPointsAlgorithmBase::inputLayerTypes() const
+QList<int> QgsFilterVerticesAlgorithmBase::inputLayerTypes() const
 {
   return QList<int>() << QgsProcessing::TypeVectorLine << QgsProcessing::TypeVectorPolygon;
 }
 
-void QgsFilterPointsAlgorithmBase::initParameters( const QVariantMap & )
+void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
   auto min = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
              QObject::tr( "Minimum" ), QgsProcessingParameterNumber::Double, QVariant(), true );
@@ -69,7 +69,7 @@ void QgsFilterPointsAlgorithmBase::initParameters( const QVariantMap & )
   addParameter( max.release() );
 }
 
-bool QgsFilterPointsAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsFilterVerticesAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   if ( parameters.contains( QStringLiteral( "MIN" ) ) && parameters.value( QStringLiteral( "MIN" ) ).isValid() )
     mMin = parameterAsDouble( parameters, QStringLiteral( "MIN" ), context );
@@ -92,7 +92,7 @@ bool QgsFilterPointsAlgorithmBase::prepareAlgorithm( const QVariantMap &paramete
   return true;
 }
 
-QgsFeatureList QgsFilterPointsAlgorithmBase::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
+QgsFeatureList QgsFilterVerticesAlgorithmBase::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
@@ -116,32 +116,32 @@ QgsFeatureList QgsFilterPointsAlgorithmBase::processFeature( const QgsFeature &f
 // QgsFilterPointsByM
 //
 
-QString QgsFilterPointsByM::name() const
+QString QgsFilterVerticesByM::name() const
 {
-  return QStringLiteral( "filterpointsbym" );
+  return QStringLiteral( "filterverticesbym" );
 }
 
-QString QgsFilterPointsByM::displayName() const
+QString QgsFilterVerticesByM::displayName() const
 {
   return QObject::tr( "Filter vertices by m value" );
 }
 
-QStringList QgsFilterPointsByM::tags() const
+QStringList QgsFilterVerticesByM::tags() const
 {
   return QObject::tr( "filter,points,vertex,m" ).split( ',' );
 }
 
-QgsFilterPointsByM *QgsFilterPointsByM::createInstance() const
+QgsFilterVerticesByM *QgsFilterVerticesByM::createInstance() const
 {
-  return new QgsFilterPointsByM();
+  return new QgsFilterVerticesByM();
 }
 
-QString QgsFilterPointsByM::componentString() const
+QString QgsFilterVerticesByM::componentString() const
 {
   return QObject::tr( "m-value" );
 }
 
-void QgsFilterPointsByM::filter( QgsGeometry &geometry, double min, double max ) const
+void QgsFilterVerticesByM::filter( QgsGeometry &geometry, double min, double max ) const
 {
   geometry.filterVertices( [min, max]( const QgsPoint & point )->bool
   {
@@ -155,32 +155,32 @@ void QgsFilterPointsByM::filter( QgsGeometry &geometry, double min, double max )
 // QgsFilterPointsByZ
 //
 
-QString QgsFilterPointsByZ::name() const
+QString QgsFilterVerticesByZ::name() const
 {
-  return QStringLiteral( "filterpointsbyz" );
+  return QStringLiteral( "filterverticesbyz" );
 }
 
-QString QgsFilterPointsByZ::displayName() const
+QString QgsFilterVerticesByZ::displayName() const
 {
   return QObject::tr( "Filter vertices by z value" );
 }
 
-QStringList QgsFilterPointsByZ::tags() const
+QStringList QgsFilterVerticesByZ::tags() const
 {
   return QObject::tr( "filter,points,vertex,z" ).split( ',' );
 }
 
-QgsFilterPointsByZ *QgsFilterPointsByZ::createInstance() const
+QgsFilterVerticesByZ *QgsFilterVerticesByZ::createInstance() const
 {
-  return new QgsFilterPointsByZ();
+  return new QgsFilterVerticesByZ();
 }
 
-QString QgsFilterPointsByZ::componentString() const
+QString QgsFilterVerticesByZ::componentString() const
 {
   return QObject::tr( "z-value" );
 }
 
-void QgsFilterPointsByZ::filter( QgsGeometry &geometry, double min, double max ) const
+void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max ) const
 {
   geometry.filterVertices( [min, max]( const QgsPoint & point )->bool
   {
