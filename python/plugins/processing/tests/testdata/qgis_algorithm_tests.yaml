@@ -973,6 +973,17 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: native:reverselinedirection
+    name: Reverse multiline direction
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/reverse_multiline.gml
+        type: vector
+
   - algorithm: qgis:offsetline
     name: Offset line positive
     params:

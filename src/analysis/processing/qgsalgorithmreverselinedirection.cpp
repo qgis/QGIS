@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmreverselinedirection.h"
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
@@ -87,16 +88,41 @@ QgsFeatureList QgsReverseLineDirectionAlgorithm ::processFeature( const QgsFeatu
   if ( feature.hasGeometry() )
   {
     const QgsGeometry geom = feature.geometry();
-    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
-    if ( curve )
+    if ( !geom.isMultipart() )
     {
-      std::unique_ptr< QgsCurve > reversed( curve->reversed() );
-      if ( !reversed )
+      const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom.constGet() );
+      if ( curve )
       {
-        // can this even happen?
-        throw QgsProcessingException( QObject::tr( "Error reversing line" ) );
+        std::unique_ptr< QgsCurve > reversed( curve->reversed() );
+        if ( !reversed )
+        {
+          // can this even happen?
+          throw QgsProcessingException( QObject::tr( "Error reversing line" ) );
+        }
+        const QgsGeometry outGeom( std::move( reversed ) );
+        feature.setGeometry( outGeom );
       }
-      const QgsGeometry outGeom( std::move( reversed ) );
+    }
+    else
+    {
+      std::unique_ptr< QgsAbstractGeometry > dest( geom.constGet()->createEmptyWithSameType() );
+      const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geom.constGet() );
+      QgsGeometryCollection *destCollection = qgsgeometry_cast< QgsGeometryCollection * >( dest.get() );
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        const QgsCurve *curve = qgsgeometry_cast< const QgsCurve *>( collection->geometryN( i ) );
+        if ( curve )
+        {
+          std::unique_ptr< QgsCurve > reversed( curve->reversed() );
+          if ( !reversed )
+          {
+            // can this even happen?
+            throw QgsProcessingException( QObject::tr( "Error reversing line" ) );
+          }
+          destCollection->addGeometry( reversed.release() );
+        }
+      }
+      const QgsGeometry outGeom( std::move( dest ) );
       feature.setGeometry( outGeom );
     }
   }
