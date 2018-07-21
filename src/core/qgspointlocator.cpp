@@ -809,7 +809,6 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   if ( ctx && renderer )
   {
     renderer->stopRender( *ctx );
-    renderer.release();
   }
   return true;
 }
@@ -861,7 +860,6 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
         }
 
         renderer->stopRender( *ctx );
-        renderer.release();
         if ( pass )
           return;
       }
