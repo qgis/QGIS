@@ -621,8 +621,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
-  : mIsEmptyLayer( false )
-  , mLayer( layer )
+  : mLayer( layer )
 {
   if ( destCRS.isValid() )
   {
@@ -631,7 +630,7 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 
   setExtent( extent );
 
-  mStorage = StorageManager::createNewMemoryStorageManager();
+  mStorage.reset( StorageManager::createNewMemoryStorageManager() );
 
   connect( mLayer, &QgsVectorLayer::featureAdded, this, &QgsPointLocator::onFeatureAdded );
   connect( mLayer, &QgsVectorLayer::featureDeleted, this, &QgsPointLocator::onFeatureDeleted );
@@ -644,8 +643,6 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 QgsPointLocator::~QgsPointLocator()
 {
   destroyIndex();
-  delete mStorage;
-  delete mExtent;
 }
 
 QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
@@ -655,10 +652,7 @@ QgsCoordinateReferenceSystem QgsPointLocator::destinationCrs() const
 
 void QgsPointLocator::setExtent( const QgsRectangle *extent )
 {
-  if ( extent )
-  {
-    mExtent = new QgsRectangle( *extent );
-  }
+  mExtent.reset( extent ? new QgsRectangle( *extent ) : nullptr );
 
   destroyIndex();
 }
@@ -803,8 +797,8 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
 
   QgsPointLocator_Stream stream( dataList );
-  mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
-           leafCapacity, dimension, variant, indexId );
+  mRTree.reset( RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
+                leafCapacity, dimension, variant, indexId ) );
 
   if ( ctx && renderer )
   {
@@ -816,8 +810,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
 void QgsPointLocator::destroyIndex()
 {
-  delete mRTree;
-  mRTree = nullptr;
+  mRTree.reset();
 
   mIsEmptyLayer = false;
 
