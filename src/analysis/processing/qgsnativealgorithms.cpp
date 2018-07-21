@@ -38,6 +38,7 @@
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfilter.h"
+#include "qgsalgorithmfilterpoints.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
@@ -148,6 +149,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
+  addAlgorithm( new QgsFilterPointsByM() );
+  addAlgorithm( new QgsFilterPointsByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );
