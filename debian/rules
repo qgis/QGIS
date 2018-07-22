@@ -92,7 +92,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq ($(DISTRIBUTION),"xenial")
+ifneq ($(DISTRIBUTION),xenial)
 	CMAKE_OPTS += -DWITH_QSPATIALITE=TRUE
 endif
 
