@@ -65,7 +65,6 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
-from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
@@ -182,7 +181,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                ExtendLines(),
                 ExtentFromLayer(),
                 ExtractSpecificVertices(),
                 FieldsCalculator(),

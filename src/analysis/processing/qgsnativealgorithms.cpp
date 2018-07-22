@@ -30,6 +30,7 @@
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
 #include "qgsalgorithmexplode.h"
+#include "qgsalgorithmextendlines.h"
 #include "qgsalgorithmextenttolayer.h"
 #include "qgsalgorithmextractbyattribute.h"
 #include "qgsalgorithmextractbyexpression.h"
@@ -140,6 +141,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsExplodeAlgorithm() );
+  addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
