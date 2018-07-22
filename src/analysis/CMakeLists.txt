@@ -33,6 +33,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
   processing/qgsalgorithmexplode.cpp
+  processing/qgsalgorithmextendlines.cpp
   processing/qgsalgorithmextenttolayer.cpp
   processing/qgsalgorithmextractbyattribute.cpp
   processing/qgsalgorithmextractbyexpression.cpp

@@ -157,9 +157,6 @@ qgis:exportaddgeometrycolumns: >
 
   Depending on the geometry type of the vector layer, the attributes added to the table will be different.
 
-qgis:extendlines: >
-  This algorithm extends line geometries by a specified amount at the start and end of the line. Lines are extended using the bearing of the first and last segment in the line.
-
 qgis:extractbyattribute: >
   This algorithm creates a new vector layer that only contains matching features from an input layer. The criteria for adding features to the resulting layer is defined based on the values of an attribute from the input layer.
 

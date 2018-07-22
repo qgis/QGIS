@@ -1835,7 +1835,7 @@ tests:
         name: expected/extract_expression.gml
         type: vector
 
-  - algorithm: qgis:extendlines
+  - algorithm: native:extendlines
     name: Extend lines
     params:
       END_DISTANCE: 0.2
@@ -1850,7 +1850,7 @@ tests:
         compare:
           geometry:
             precision: 7
-  - algorithm: qgis:extendlines
+  - algorithm: native:extendlines
     name: Extend multilines
     params:
       END_DISTANCE: 0.4
