@@ -2795,7 +2795,7 @@ void QgsProject::generateTsFile( const QString &locale )
 
   emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
 
-  translationContext.writeTsFile();
+  translationContext.writeTsFile( locale );
 }
 
 QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )

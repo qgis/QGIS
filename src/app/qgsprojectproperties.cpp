@@ -830,7 +830,30 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( mMetadataWidget, &QgsMetadataWidget::titleChanged, titleEdit, &QLineEdit::setText );
   connect( titleEdit, &QLineEdit::textChanged, mMetadataWidget, &QgsMetadataWidget::setTitle );
 
+  //fill ts language checkbox
+  //could possibly be taken from QgsOptions
+  QString myI18nPath = QgsApplication::i18nPath();
+  QDir myDir( myI18nPath, QStringLiteral( "qgis*.qm" ) );
+  QStringList myFileList = myDir.entryList();
+  QStringListIterator myIterator( myFileList );
+  while ( myIterator.hasNext() )
+  {
+    QString myFileName = myIterator.next();
+
+    // Ignore the 'en' translation file, already added as 'en_US'.
+    if ( myFileName.compare( QLatin1String( "qgis_en.qm" ) ) == 0 ) continue;
+
+    QString l = myFileName.remove( QStringLiteral( "qgis_" ) ).remove( QStringLiteral( ".qm" ) );
+
+    // QTBUG-57802: eo locale is improperly handled
+    QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
+    cbtsLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
+  }
+  cbtsLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( QStringLiteral( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
+
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::generateTsFileButton_clicked );
+
   projectionSelectorInitialized();
   populateRequiredLayers();
   restoreOptionsBaseUi();
@@ -2194,5 +2217,6 @@ void QgsProjectProperties::setCurrentPage( const QString &pageWidgetName )
 
 void QgsProjectProperties::generateTsFileButton_clicked()
 {
-  QgsProject::instance()->generateTsFile( "de" );
+  QString l = cbtsLocale->currentData().toString();
+  QgsProject::instance()->generateTsFile( l );
 }

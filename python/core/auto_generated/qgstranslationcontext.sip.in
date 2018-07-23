@@ -63,7 +63,7 @@ Registers the ``string`` to be translated
 :param layerName: the name of the layer
 %End
 
-    void writeTsFile( );
+    void writeTsFile( const QString &locale );
 %Docstring
 Writes the Ts-file
 %End

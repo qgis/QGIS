@@ -48,7 +48,7 @@ class TestQgsTranslateProject : public QObject
 
 void TestQgsTranslateProject::initTestCase()
 {
-  //start application in english
+  //start application in german
   QgsApplication::init();
   QgsApplication::initQgis();
 
@@ -87,12 +87,10 @@ void TestQgsTranslateProject::cleanup()
   //not needed
 }
 
-
 void TestQgsTranslateProject::createTsFile()
 {
-  //the project should be translated and renamed
-  //so base is points_translation_de.qgs and german values
-  //then we generate a ts file for spanish
+  //the base is points_translation_de.qgs and with german values
+  //then we generate a ts file for spanish and the ts file with additional es postfix is created
 
   //create ts-file
   QgsProject::instance()->generateTsFile( "es" );
@@ -124,7 +122,7 @@ void TestQgsTranslateProject::createTsFile()
 
 void TestQgsTranslateProject::translateProject()
 {
-  //it should translate the project to german
+  //with the qm file containing translation from en to de, the project should be in german and renamed with postfix .de
   QgsVectorLayer *points_layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( "points_240d6bd6_9203_470a_994a_aae13cd9fa04" ) );
   QgsVectorLayer *lines_layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( "lines_a677672a_bf5d_410d_98c9_d326a5719a1b" ) );
 
@@ -147,6 +145,11 @@ void TestQgsTranslateProject::translateProject()
   //check if first relation name translated
 
   //check if second relation name translated
+
+  QString deProjectFileName( TEST_DATA_DIR );
+  deProjectFileName = deProjectFileName + "/project_translation/points_translation_de.qgs";
+  QFile deProjectFile( deProjectFileName );
+  QVERIFY( deProjectFile.exists() );
 }
 
 QGSTEST_MAIN( TestQgsTranslateProject )

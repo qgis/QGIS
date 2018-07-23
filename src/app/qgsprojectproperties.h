@@ -92,7 +92,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
-    //dave to document
+    //! generate the ts file with the locale selected in the checkbox
     void generateTsFileButton_clicked();
 
     /**

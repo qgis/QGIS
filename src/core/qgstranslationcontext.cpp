@@ -20,6 +20,8 @@
 #include <QDomElement>
 #include <QDomDocument>
 
+#include "qgssettings.h"
+
 QgsTranslationContext::QgsTranslationContext()
 {}
 
@@ -51,12 +53,16 @@ void QgsTranslationContext::registerTranslation( const QString &context, const Q
   mTranslatableObjects.append( translatableObject );
 }
 
-void QgsTranslationContext::writeTsFile()
+void QgsTranslationContext::writeTsFile( const QString &locale )
 {
+  QgsSettings settings;
+
   //write xml
   QDomDocument doc( QStringLiteral( "TS" ) );
 
   QDomElement tsElement = doc.createElement( QStringLiteral( "TS" ) );
+  tsElement.setAttribute( QStringLiteral( "language" ), locale );
+  tsElement.setAttribute( QStringLiteral( "sourcelanguage" ), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() );
   doc.appendChild( tsElement );
 
   for ( TranslatableObject translatableObject : mTranslatableObjects )

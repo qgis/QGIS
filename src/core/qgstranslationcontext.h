@@ -82,7 +82,7 @@ class CORE_EXPORT QgsTranslationContext
     /**
      * Writes the Ts-file
      */
-    void writeTsFile( );
+    void writeTsFile( const QString &locale );
 
   private:
 

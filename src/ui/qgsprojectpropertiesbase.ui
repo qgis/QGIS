@@ -276,9 +276,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>671</width>
-                <height>783</height>
+                <y>-147</y>
+                <width>680</width>
+                <height>923</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -801,10 +801,22 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="generateTsFileButton">
-                 <property name="text">
-                  <string>Generate TS File</string>
+                <widget class="QGroupBox" name="groupBox_6">
+                 <property name="title">
+                  <string>Generate Project Translation File</string>
                  </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_4">
+                  <item>
+                   <widget class="QComboBox" name="cbtsLocale"/>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="generateTsFileButton">
+                    <property name="text">
+                     <string>Generate TS File</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
@@ -856,8 +868,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>579</width>
-                <height>170</height>
+                <width>580</width>
+                <height>154</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -931,8 +943,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>284</width>
-                <height>573</height>
+                <width>285</width>
+                <height>638</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1369,7 +1381,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>136</width>
+                <width>120</width>
                 <height>100</height>
                </rect>
               </property>
@@ -1547,8 +1559,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>165</width>
-                <height>57</height>
+                <width>155</width>
+                <height>52</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -1609,8 +1621,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>2451</height>
+                <width>622</width>
+                <height>2646</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2733,6 +2745,12 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
@@ -2753,12 +2771,6 @@
    <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
    <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
