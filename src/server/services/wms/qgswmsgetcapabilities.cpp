@@ -107,15 +107,27 @@ namespace QgsWms
 
     QDomDocument doc;
     QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
-    const QDomDocument *capabilitiesDocument;
+    const QDomDocument *capabilitiesDocument = nullptr;
 
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cache )
     {
+      QByteArray content;
       if ( cacheKeyList.count() == 2 )
-        capabilitiesDocument = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+        content = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
       else if ( cacheKeyList.count() > 2 )
-        capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+        content = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+
+      if ( !content.isEmpty() && doc.setContent( content ) )
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Found capabilities document in cache manager" ) );
+        doc = doc.cloneNode().toDocument();
+        capabilitiesDocument = &doc;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( QStringLiteral( "Capabilities document not found in cache manager" ) );
+      }
     }
 
     if ( !capabilitiesDocument ) //capabilities xml not in cache plugins
@@ -130,15 +142,21 @@ namespace QgsWms
       {
         if ( cacheManager )
         {
+          QByteArray content;
           if ( cacheKeyList.count() == 2 &&
                cacheManager->setCachedDocument( &doc, project, request, QStringLiteral( "" ) ) )
           {
-            capabilitiesDocument = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+            content = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
           }
           else if ( cacheKeyList.count() > 2 &&
                     cacheManager->setCachedDocument( &doc, project, request, cacheKeyList.at( 3 ) ) )
           {
-            capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+            content = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
+          }
+          if ( !content.isEmpty() && doc.setContent( content ) )
+          {
+            doc = doc.cloneNode().toDocument();
+            capabilitiesDocument = &doc;
           }
         }
         else

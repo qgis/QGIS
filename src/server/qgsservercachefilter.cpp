@@ -54,3 +54,10 @@ bool QgsServerCacheFilter::deleteCachedDocument( const QgsProject *project, cons
   Q_UNUSED( key );
   return false;
 }
+
+//! Deletes all cached documents for a QGIS project
+bool QgsServerCacheFilter::deleteCachedDocuments( const QgsProject *project ) const
+{
+  Q_UNUSED( project );
+  return false;
+}

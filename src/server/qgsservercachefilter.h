@@ -80,6 +80,13 @@ class SERVER_EXPORT QgsServerCacheFilter
      */
     virtual bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
+    /**
+     * Deletes all cached documents for a QGIS project
+     * \param project the project used to generate the document to provide path
+     * \returns true if the documents have been deleted
+     */
+    virtual bool deleteCachedDocuments( const QgsProject *project ) const;
+
   private:
 
     //! The server interface

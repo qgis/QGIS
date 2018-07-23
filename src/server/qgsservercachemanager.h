@@ -73,7 +73,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param key the key provided by the access control to identify differents documents for the same request
      * \returns the cached document or 0 if no corresponding document found
      */
-    const QDomDocument *getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+    QByteArray getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
 
     /**
      * Updates or inserts the document in cache like capabilities
@@ -93,6 +93,13 @@ class SERVER_EXPORT QgsServerCacheManager
      * \returns true if the document has been deleted
      */
     bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+
+    /**
+     * Deletes all cached documents for a QGIS project
+     * \param project the project used to generate the document to provide path
+     * \returns true if the document has been deleted
+     */
+    bool deleteCachedDocuments( const QgsProject *project ) const;
 
     /**
      * Register a server cache filter

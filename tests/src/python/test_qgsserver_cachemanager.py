@@ -26,7 +26,7 @@ import hashlib
 from qgis.testing import unittest
 from utilities import unitTestDataPath
 from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
-from qgis.core import QgsApplication, QgsFontUtils
+from qgis.core import QgsApplication, QgsFontUtils, QgsProject
 from qgis.PyQt.QtCore import QFile, QByteArray
 from qgis.PyQt.QtXml import QDomDocument
 
@@ -71,6 +71,22 @@ class PyServerCache(QgsServerCacheFilter):
             f.write(doc.toString())
         return os.path.exists(os.path.join(self._cache_dir, m.hexdigest() + ".xml"))
 
+    def deleteCachedDocument(self, project, request, key):
+        m = hashlib.md5()
+        paramMap = request.parameters()
+        urlParam = "&".join(["%s=%s" % (k, paramMap[k]) for k in paramMap.keys()])
+        m.update(urlParam.encode('utf8'))
+        if os.path.exists(os.path.join(self._cache_dir, m.hexdigest() + ".xml")):
+            os.remove(os.path.join(self._cache_dir, m.hexdigest() + ".xml"))
+        return not os.path.exists(os.path.join(self._cache_dir, m.hexdigest() + ".xml"))
+
+    def deleteCachedDocuments(self, project):
+        filelist = [f for f in os.listdir(self._cache_dir) if f.endswith(".xml")]
+        for f in filelist:
+            os.remove(os.path.join(self._cache_dir, f))
+        filelist = [f for f in os.listdir(self._cache_dir) if f.endswith(".xml")]
+        return len(filelist) == 0
+
 
 class TestQgsServerCacheManager(unittest.TestCase):
 
@@ -101,9 +117,7 @@ class TestQgsServerCacheManager(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        filelist = [f for f in os.listdir(cls._servercache._cache_dir) if f.endswith(".xml")]
-        for f in filelist:
-            os.remove(os.path.join(cls._servercache._cache_dir, f))
+        #cls._servercache.deleteCachedDocuments(None)
         del cls._server
         cls._app.exitQgis
 
@@ -140,14 +154,69 @@ class TestQgsServerCacheManager(unittest.TestCase):
         project = self._project_path
         assert os.path.exists(project), "Project file not found: " + project
 
+        # without cache
         query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
         header, body = self._execute_request(query_string)
+        doc = QDomDocument("wms_getcapabilities_130.xml")
+        doc.setContent(body)
+        # with cache
+        header, body = self._execute_request(query_string)
 
+        # without cache
+        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.1.1&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
+        header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
+
+        # without cache
         query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.1.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
         header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
 
+        # without cache
+        query_string = '?MAP=%s&SERVICE=WFS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
+        header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
+
+        # without cache
         query_string = '?MAP=%s&SERVICE=WCS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
         header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 5, 'Not enough file in cache')
+
+        cacheManager = self._server_iface.cacheManager()
+
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not retrun True')
+
+        filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
+        self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
+
+        prj = QgsProject()
+        prj.read(project)
+
+        query_string = '?MAP=%s&SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
+        request = QgsBufferServerRequest(query_string, QgsServerRequest.GetMethod, {}, None)
+
+        cContent = cacheManager.getCachedDocument(prj, request, '')
+
+        self.assertTrue(cContent.isEmpty(), 'getCachedDocument is not None')
+
+        self.assertTrue(cacheManager.setCachedDocument(doc, prj, request, ''), 'setCachedDocument false')
+
+        cContent = cacheManager.getCachedDocument(prj, request, '')
+
+        self.assertFalse(cContent.isEmpty(), 'getCachedDocument is empty')
+
+        cDoc = QDomDocument("wms_getcapabilities_130.xml")
+        self.assertTrue(cDoc.setContent(cContent), 'cachedDocument not XML doc')
+        self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(), 'cachedDocument not equal to provide document')
+
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not retrun True')
 
 
 if __name__ == "__main__":

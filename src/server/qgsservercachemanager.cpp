@@ -19,7 +19,7 @@
 #include "qgsservercachemanager.h"
 
 //! Returns cached document (or 0 if document not in cache) like capabilities
-const QDomDocument *QgsServerCacheManager::getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+QByteArray QgsServerCacheManager::getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
 {
   QgsServerCacheFilterMap::const_iterator scIterator;
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
@@ -27,14 +27,10 @@ const QDomDocument *QgsServerCacheManager::getCachedDocument( const QgsProject *
     QByteArray content = scIterator.value()->getCachedDocument( project, request, key );
     if ( !content.isEmpty() )
     {
-      QDomDocument doc;
-      if ( doc.setContent( content ) )
-      {
-        return &doc;
-      }
+      return content;
     }
   }
-  return nullptr;
+  return QByteArray();
 }
 
 //! Updates or inserts the document in cache like capabilities
@@ -58,6 +54,20 @@ bool QgsServerCacheManager::deleteCachedDocument( const QgsProject *project, con
   for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
   {
     if ( scIterator.value()->deleteCachedDocument( project, request, key ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//! Deletes all cached documents for a QGIS Project
+bool QgsServerCacheManager::deleteCachedDocuments( const QgsProject *project ) const
+{
+  QgsServerCacheFilterMap::const_iterator scIterator;
+  for ( scIterator = mPluginsServerCaches->constBegin(); scIterator != mPluginsServerCaches->constEnd(); ++scIterator )
+  {
+    if ( scIterator.value()->deleteCachedDocuments( project ) )
     {
       return true;
     }

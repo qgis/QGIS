@@ -52,12 +52,17 @@ namespace QgsWfs
 
       QDomDocument doc;
       QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
-      const QDomDocument *capabilitiesDocument;
+      const QDomDocument *capabilitiesDocument = nullptr;
 
       QgsServerCacheManager *cacheManager = serverIface->cacheManager();
       if ( cacheManager && cache )
       {
-        capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKey );
+        QByteArray content = cacheManager->getCachedDocument( project, request, cacheKey );
+        if ( !content.isEmpty() && doc.setContent( content ) )
+        {
+          doc = doc.cloneNode().toDocument();
+          capabilitiesDocument = &doc;
+        }
       }
 
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
@@ -68,7 +73,12 @@ namespace QgsWfs
         {
           if ( cacheManager->setCachedDocument( &doc, project, request, cacheKey ) )
           {
-            capabilitiesDocument = cacheManager->getCachedDocument( project, request, cacheKey );
+            QByteArray content = cacheManager->getCachedDocument( project, request, cacheKey );
+            if ( !content.isEmpty() && doc.setContent( content ) )
+            {
+              doc = doc.cloneNode().toDocument();
+              capabilitiesDocument = &doc;
+            }
           }
         }
         if ( !capabilitiesDocument )
