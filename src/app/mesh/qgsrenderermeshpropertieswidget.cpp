@@ -65,6 +65,7 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
 
   mMeshRendererScalarSettingsWidget->setActiveDataset( mMeshRendererActiveDatasetWidget->activeScalarDataset() );
   mMeshRendererVectorSettingsWidget->setActiveDataset( mMeshRendererActiveDatasetWidget->activeVectorDataset() );
+  enableVectorRenderingTab( activeVectorDataset() );
 }
 
 void QgsRendererMeshPropertiesWidget::apply()
