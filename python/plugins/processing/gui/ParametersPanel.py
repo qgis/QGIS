@@ -66,9 +66,10 @@ class ParametersPanel(BASE, WIDGET):
 
     NOT_SELECTED = QCoreApplication.translate('ParametersPanel', '[Not selected]')
 
-    def __init__(self, parent, alg):
+    def __init__(self, parent, alg, in_place=False):
         super(ParametersPanel, self).__init__(None)
         self.setupUi(self)
+        self.in_place = in_place
 
         self.grpAdvanced.hide()
 
@@ -124,6 +125,9 @@ class ParametersPanel(BASE, WIDGET):
         # Create widgets and put them in layouts
         for param in self.alg.parameterDefinitions():
             if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
                 continue
 
             if param.isDestination():
@@ -194,6 +198,9 @@ class ParametersPanel(BASE, WIDGET):
 
         for output in self.alg.destinationParameterDefinitions():
             if output.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            if self.in_place and param.name() in ('INPUT', 'OUTPUT'):
                 continue
 
             label = QLabel(output.description())

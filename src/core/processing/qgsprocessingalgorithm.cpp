@@ -787,6 +787,13 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
 // QgsProcessingFeatureBasedAlgorithm
 //
 
+QgsProcessingAlgorithm::Flags QgsProcessingFeatureBasedAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
 void QgsProcessingFeatureBasedAlgorithm::initAlgorithm( const QVariantMap &config )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), inputLayerTypes() ) );

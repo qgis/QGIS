@@ -35,6 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsDataItemProvider,
                        QgsDataProvider,
                        QgsDataItem,
+                       QgsMapLayer,
                        QgsMimeDataUtils)
 from qgis.gui import (QgsOptionsWidgetFactory,
                       QgsCustomDropHandler)
@@ -48,7 +49,8 @@ from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigOptionsPage
 from processing.gui.ResultsDock import ResultsDock
-from processing.gui.AlgorithmLocatorFilter import AlgorithmLocatorFilter
+from processing.gui.AlgorithmLocatorFilter import (AlgorithmLocatorFilter,
+                                                   InPlaceAlgorithmLocatorFilter)
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
@@ -168,6 +170,8 @@ class ProcessingPlugin:
         QgsApplication.dataItemProviderRegistry().addProvider(self.item_provider)
         self.locator_filter = AlgorithmLocatorFilter()
         iface.registerLocatorFilter(self.locator_filter)
+        self.edit_features_locator_filter = InPlaceAlgorithmLocatorFilter()
+        iface.registerLocatorFilter(self.edit_features_locator_filter)
         Processing.initialize()
 
     def initGui(self):
@@ -233,6 +237,14 @@ class ProcessingPlugin:
         self.optionsAction.triggered.connect(self.openProcessingOptions)
         self.toolbox.processingToolbar.addAction(self.optionsAction)
 
+        self.editSelectedAction = QAction(
+            QgsApplication.getThemeIcon("/mActionToggleEditing.svg"),
+            self.tr('Edit Selected Features'), self.iface.mainWindow())
+        self.editSelectedAction.setObjectName('editSelectedFeatures')
+        self.editSelectedAction.setCheckable(True)
+        self.editSelectedAction.toggled.connect(self.editSelected)
+        self.toolbox.processingToolbar.addAction(self.editSelectedAction)
+
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
@@ -241,6 +253,15 @@ class ProcessingPlugin:
 
         initializeMenus()
         createMenus()
+
+        self.iface.currentLayerChanged.connect(self.layer_changed)
+
+    def layer_changed(self, layer):
+        if layer is None or layer.type() != QgsMapLayer.VectorLayer or not layer.isEditable() or not layer.selectedFeatureCount():
+            self.editSelectedAction.setChecked(False)
+            self.editSelectedAction.setEnabled(False)
+        else:
+            self.editSelectedAction.setEnabled(True)
 
     def openProcessingOptions(self):
         self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
@@ -273,6 +294,7 @@ class ProcessingPlugin:
 
         self.iface.unregisterOptionsWidgetFactory(self.options_factory)
         self.iface.deregisterLocatorFilter(self.locator_filter)
+        self.iface.deregisterLocatorFilter(self.edit_features_locator_filter)
         self.iface.unregisterCustomDropHandler(self.drop_handler)
         QgsApplication.dataItemProviderRegistry().removeProvider(self.item_provider)
 
@@ -306,3 +328,6 @@ class ProcessingPlugin:
 
     def tr(self, message):
         return QCoreApplication.translate('ProcessingPlugin', message)
+
+    def editSelected(self, enabled):
+        self.toolbox.set_in_place_edit_mode(enabled)

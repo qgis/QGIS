@@ -74,6 +74,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
       FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
       FlagDisplayNameIsLiteral = 1 << 7, //!< Algorithm's display name is a static literal string, and should not be translated or automatically formatted. For use with algorithms named after commands, e.g. GRASS 'v.in.ogr'.
+      FlagSupportsInPlaceEdits = 1 << 8, //!< Algorithm supports in-place editing
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -861,6 +862,8 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
       */
     QgsProcessingFeatureBasedAlgorithm() = default;
 
+    QgsProcessingAlgorithm::Flags flags() const override;
+
   protected:
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -970,6 +973,7 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
   private:
 
     std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    friend class QgsProcessingToolboxProxyModel;
 
 };
 

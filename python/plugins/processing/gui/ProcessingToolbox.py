@@ -33,7 +33,9 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QToolButton, QMenu, QAction
 from qgis.utils import iface
-from qgis.core import (QgsApplication,
+from qgis.core import (QgsWkbTypes,
+                       QgsMapLayer,
+                       QgsApplication,
                        QgsProcessingAlgorithm)
 from qgis.gui import (QgsGui,
                       QgsDockWidget,
@@ -50,6 +52,7 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 from processing.tools import dataobjects
+from processing.gui.AlgorithmExecutor import execute_in_place
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -71,6 +74,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
     def __init__(self):
         super(ProcessingToolbox, self).__init__(None)
         self.tipWasClosed = False
+        self.in_place_mode = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
         self.processingToolbar.setIconSize(iface.iconSize(True))
@@ -107,6 +111,20 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.addProvider)
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
+
+        iface.currentLayerChanged.connect(self.layer_changed)
+
+    def set_in_place_edit_mode(self, enabled):
+        if enabled:
+            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.Filters(QgsProcessingToolboxProxyModel.FilterToolbox | QgsProcessingToolboxProxyModel.FilterInPlace))
+        else:
+            self.algorithmTree.setFilters(QgsProcessingToolboxProxyModel.FilterToolbox)
+        self.in_place_mode = enabled
+
+    def layer_changed(self, layer):
+        if layer is None or layer.type() != QgsMapLayer.VectorLayer:
+            return
+        self.algorithmTree.setInPlaceLayerType(QgsWkbTypes.geometryType(layer.wkbType()))
 
     def disabledProviders(self):
         showTip = ProcessingConfig.getSetting(ProcessingConfig.SHOW_PROVIDERS_TOOLTIP)
@@ -211,11 +229,17 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 dlg.exec_()
                 return
 
+            if self.in_place_mode and len(alg.parameterDefinitions()) <= 2:
+                # hack
+                parameters = {}
+                execute_in_place(alg, parameters)
+                return
+
             if alg.countVisibleParameters() > 0:
                 dlg = alg.createCustomParametersWidget(self)
 
                 if not dlg:
-                    dlg = AlgorithmDialog(alg)
+                    dlg = AlgorithmDialog(alg, self.in_place_mode)
                 canvas = iface.mapCanvas()
                 prevMapTool = canvas.mapTool()
                 dlg.show()
