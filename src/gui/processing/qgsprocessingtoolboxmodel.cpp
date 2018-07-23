@@ -721,24 +721,26 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         return false;
 
       const QgsProcessingFeatureBasedAlgorithm *alg = dynamic_cast< const QgsProcessingFeatureBasedAlgorithm * >( mModel->algorithmForIndex( sourceIndex ) );
+      if ( alg )
+      {
+        if ( !alg->inputLayerTypes().empty() &&
+             !alg->inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
+             !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
+             ( ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+               ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+               ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+          return false;
 
-      if ( !alg->inputLayerTypes().empty() &&
-           !alg->inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
-           !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
-           ( ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
-             ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
-             ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
-        return false;
-
-      QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
-      if ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry )
-        type = QgsWkbTypes::Point;
-      else if ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry )
-        type = QgsWkbTypes::LineString;
-      else if ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
-        type = QgsWkbTypes::Polygon;
-      if ( QgsWkbTypes::geometryType( alg->outputWkbType( type ) ) != mInPlaceGeometryType )
-        return false;
+        QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
+        if ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry )
+          type = QgsWkbTypes::Point;
+        else if ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry )
+          type = QgsWkbTypes::LineString;
+        else if ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
+          type = QgsWkbTypes::Polygon;
+        if ( QgsWkbTypes::geometryType( alg->outputWkbType( type ) ) != mInPlaceGeometryType )
+          return false;
+      }
     }
     if ( mFilters & FilterModeler )
     {

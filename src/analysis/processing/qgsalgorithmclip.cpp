@@ -26,6 +26,13 @@ QString QgsClipAlgorithm::name() const
   return QStringLiteral( "clip" );
 }
 
+QgsProcessingAlgorithm::Flags QgsClipAlgorithm::flags() const
+{
+  Flags f = QgsProcessingAlgorithm::flags();
+  f |= QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+  return f;
+}
+
 QString QgsClipAlgorithm::displayName() const
 {
   return QObject::tr( "Clip" );
