@@ -91,7 +91,7 @@ namespace QgsWfs
     Q_UNUSED( version );
 
     mRequestParameters = request.parameters();
-    mWfsParameters = QgsWfsParameters( mRequestParameters );
+    mWfsParameters = QgsWfsParameters( QUrlQuery( request.url() ) );
     mWfsParameters.dump();
     getFeatureRequest aRequest;
 

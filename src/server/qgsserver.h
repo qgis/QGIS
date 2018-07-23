@@ -106,7 +106,7 @@ class SERVER_EXPORT QgsServer
      * Returns the configuration file path.
      */
     static QString configPath( const QString &defaultConfigPath,
-                               const QMap<QString, QString> &parameters );
+                               const QString &configPath );
 
     /**
      * \brief QgsServer::printRequestParameters prints the request parameters

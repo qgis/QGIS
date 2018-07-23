@@ -4,6 +4,7 @@
 %Include auto_generated/qgscapabilitiescache.sip
 %Include auto_generated/qgsconfigcache.sip
 %Include auto_generated/qgsserversettings.sip
+%Include auto_generated/qgsserverparameters.sip
 %Include auto_generated/qgsbufferserverrequest.sip
 %Include auto_generated/qgsbufferserverresponse.sip
 %Include auto_generated/qgsrequesthandler.sip

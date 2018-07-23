@@ -107,7 +107,7 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         project = QgsProject()
         project.read(projectPath)
 
-        query_string = 'https://www.qgis.org/?SERVICE=WMS&VERSION=1.3&REQUEST=%s' % (request)
+        query_string = 'https://www.qgis.org/?SERVICE=WMS&VERSION=1.3.0&REQUEST=%s' % (request)
         if extra is not None:
             query_string += extra
         header, body = self._execute_request_project(query_string, project)

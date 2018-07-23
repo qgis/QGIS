@@ -77,7 +77,7 @@ namespace QgsWms
           QgsConfigParser and QgsCapabilitiesCache*/
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
-                   const QgsServerRequest::Parameters &parameters );
+                   const QgsWmsParameters &parameters );
 
       ~QgsRenderer();
 
@@ -292,7 +292,7 @@ namespace QgsWms
 
     private:
 
-      const QgsServerRequest::Parameters &mParameters;
+      const QgsWmsParameters &mWmsParameters;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       //! The access control helper
@@ -302,7 +302,6 @@ namespace QgsWms
 
       const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
-      QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
       QMap<QString, QList<QgsMapLayer *> > mLayerGroups;

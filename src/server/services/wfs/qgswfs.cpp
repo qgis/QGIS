@@ -64,17 +64,17 @@ namespace QgsWfs
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
                            const QgsProject *project ) override
       {
-        QgsServerRequest::Parameters params = request.parameters();
-        QString versionString = params.value( "VERSION" );
+        const QgsWfsParameters params( QUrlQuery( request.url() ) );
 
         // Set the default version
+        QString versionString = params.version();
         if ( versionString.isEmpty() )
         {
           versionString = version(); // defined in qgswfsutils.h
         }
 
         // Get the request
-        QString req = params.value( QStringLiteral( "REQUEST" ) );
+        const QString req = params.request();
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),
