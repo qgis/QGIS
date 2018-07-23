@@ -77,7 +77,8 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
         {
           Field,
           Relation,
-          Container
+          Container,
+          QmlWidget
         };
 
         //do we need that

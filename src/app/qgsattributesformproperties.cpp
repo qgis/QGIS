@@ -133,6 +133,16 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
     item->setData( 0, FieldNameRole, relation.id() );
   }
   catitem->setExpanded( true );
+
+  // QML widget
+  catItemData = DnDTreeItemData( DnDTreeItemData::Container, QStringLiteral( "Other" ), tr( "Other Widgets" ) );
+  catitem = mAvailableWidgetsTree->addItem( mAvailableWidgetsTree->invisibleRootItem(), catItemData );
+
+  DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::QmlWidget, QStringLiteral( "QmlWidget" ), tr( "QML Widget" ) );
+  itemData.setShowLabel( true );
+
+  QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
+  catitem ->setExpanded( true );
 }
 
 void QgsAttributesFormProperties::initFormLayoutTree()
