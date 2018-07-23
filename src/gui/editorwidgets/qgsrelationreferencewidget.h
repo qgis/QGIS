@@ -222,7 +222,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mIsEditable = true;
     QStringList mFilterFields;
     QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
-    bool mFeatureInitialized = false;
+    bool mInitialized = false;
 
     // Q_PROPERTY
     bool mEmbedForm = false;
