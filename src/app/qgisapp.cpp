@@ -1118,7 +1118,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
 
 #ifdef HAVE_OPENCL
-  // Setup the default OpenCL programs source path, this my be overriden later by main.cpp startup
+  // Setup the default OpenCL programs source path, this my be overridden later by main.cpp startup
   QgsOpenClUtils::setSourcePath( QDir( QgsApplication::pkgDataPath() ).absoluteFilePath( QStringLiteral( "resources/opencl_programs" ) ) );
 #endif
 
