@@ -98,8 +98,8 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QString tmpFile( tempFile( name ) );
 #endif
   QString refFile( referenceFile( name ) );
-  T ninecellsfilter( SRC_FILE, tmpFile, "GTiff" );
-  int res = ninecellsfilter.processRaster();
+  T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
+  int res = ninecellFilter.processRaster();
   QVERIFY( res == 0 );
 
   // Produced file
