@@ -62,6 +62,9 @@ QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *
            this, &QgsPanelWidget::widgetChanged );
   connect( mTriangularMeshSettingsWidget, &QgsMeshRendererMeshSettingsWidget::widgetChanged,
            this, &QgsPanelWidget::widgetChanged );
+
+  mMeshRendererScalarSettingsWidget->setActiveDataset( mMeshRendererActiveDatasetWidget->activeScalarDataset() );
+  mMeshRendererVectorSettingsWidget->setActiveDataset( mMeshRendererActiveDatasetWidget->activeVectorDataset() );
 }
 
 void QgsRendererMeshPropertiesWidget::apply()
