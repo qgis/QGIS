@@ -98,6 +98,7 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   QString tmpFile( tempFile( name ) );
 #endif
   QString refFile( referenceFile( name ) );
+<<<<<<< 07db3f84c4506833beea9c3e79858bf932ea028a
 <<<<<<< 8689c401a2a66b4b159a54d0c37e26a33aa183c3
   T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
   int res = ninecellFilter.processRaster();
@@ -105,6 +106,10 @@ void TestNineCellFilters::_testAlg( const QString &name, bool useOpenCl )
   T ninecellsfilter( SRC_FILE, tmpFile, "GTiff" );
   int res = ninecellsfilter.processRaster();
 >>>>>>> [opencl] Increase test coverage with no-opencl image comparison
+=======
+  T ninecellFilter( SRC_FILE, tmpFile, "GTiff" );
+  int res = ninecellFilter.processRaster();
+>>>>>>> [opencl] Rename test function for consistency
   QVERIFY( res == 0 );
 
   // Produced file
