@@ -1059,7 +1059,7 @@ void QgsVertexTool::showVertexEditor()  //#spellok
     mVertexEditor->updateEditor( m.layer(), mSelectedFeature.get() );
   }
 
-  connect( mSelectedFeature.get()->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
+  connect( mSelectedFeature->layer(), &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::cleanEditor );
 }
 
 void QgsVertexTool::cleanupVertexEditor()
@@ -2239,7 +2239,7 @@ void QgsVertexTool::stopRangeVertexSelection()
 
 void QgsVertexTool::cleanEditor( QgsFeatureId id )
 {
-  if ( mSelectedFeature.get() && mSelectedFeature.get()->featureId() == id )
+  if ( mSelectedFeature && mSelectedFeature->featureId() == id )
   {
     cleanupVertexEditor();
   };

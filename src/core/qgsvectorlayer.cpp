@@ -4688,7 +4688,7 @@ QgsAbstractVectorLayerLabeling *QgsVectorLayer::readLabelingFromCustomProperties
   QgsAbstractVectorLayerLabeling *labeling = nullptr;
   if ( customProperty( QStringLiteral( "labeling" ) ).toString() == QLatin1String( "pal" ) )
   {
-    if ( customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() == true )
+    if ( customProperty( QStringLiteral( "labeling/enabled" ), QVariant( false ) ).toBool() )
     {
       // try to load from custom properties
       QgsPalLayerSettings settings;

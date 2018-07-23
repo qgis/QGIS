@@ -40,7 +40,6 @@ class APP_EXPORT QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui:
      * \param parent Parent object
      */
     QgsMeshRendererMeshSettingsWidget( QWidget *parent = nullptr );
-    ~QgsMeshRendererMeshSettingsWidget() = default;
 
     /**
      * Associates mesh layer with the widget

@@ -36,7 +36,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
-    virtual ~QgsAuthOAuth2Edit() = default;
 
     /**
      * Validate current configuration

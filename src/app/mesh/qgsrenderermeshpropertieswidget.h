@@ -44,7 +44,6 @@ class APP_EXPORT QgsRendererMeshPropertiesWidget : public QgsMapLayerConfigWidge
      * \param parent Parent object
      */
     QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsRendererMeshPropertiesWidget()  = default;
 
   public slots:
     //! Applies the settings made in the dialog

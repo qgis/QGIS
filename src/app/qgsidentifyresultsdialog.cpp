@@ -420,10 +420,8 @@ QgsIdentifyResultsDialog::~QgsIdentifyResultsDialog()
   QgsSettings settings;
   settings.setValue( QStringLiteral( "Windows/Identify/columnWidth" ), lstResults->columnWidth( 0 ) );
 
-  if ( mActionPopup )
-    delete mActionPopup;
-  Q_FOREACH ( QgsIdentifyPlotCurve *curve, mPlotCurves )
-    delete curve;
+  delete mActionPopup;
+  qDeleteAll( mPlotCurves );
   mPlotCurves.clear();
 }
 
@@ -1051,9 +1049,7 @@ void QgsIdentifyResultsDialog::contextMenuEvent( QContextMenuEvent *event )
     return;
   }
 
-  if ( mActionPopup )
-    delete mActionPopup;
-
+  delete mActionPopup;
   mActionPopup = new QMenu();
 
   int idx = -1;

@@ -38,7 +38,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
   public:
     explicit QgsAuthOAuth2Method();
-    ~QgsAuthOAuth2Method();
+    ~QgsAuthOAuth2Method() override;
 
     //! OAuth2 method key
     QString key() const override;

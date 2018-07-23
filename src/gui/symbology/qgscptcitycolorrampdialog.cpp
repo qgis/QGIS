@@ -101,11 +101,11 @@ QgsCptCityColorRampDialog::QgsCptCityColorRampDialog( const QgsCptCityColorRamp 
 
   // model / view
   QgsDebugMsg( "loading model/view objects" );
-  if ( mAuthorsModel )
-    delete mAuthorsModel;
+
+  delete mAuthorsModel;
   mAuthorsModel = new QgsCptCityBrowserModel( this, mArchive, QgsCptCityBrowserModel::Authors );
-  if ( mSelectionsModel )
-    delete mSelectionsModel;
+
+  delete mSelectionsModel;
   mSelectionsModel = new QgsCptCityBrowserModel( this, mArchive, QgsCptCityBrowserModel::Selections );
   setTreeModel( mSelectionsModel );
 
@@ -653,8 +653,7 @@ void QgsCptCityColorRampDialog::setTreeModel( QgsCptCityBrowserModel *model )
 {
   mModel = model;
 
-  if ( mTreeFilter )
-    delete mTreeFilter;
+  delete mTreeFilter;
   mTreeFilter = new TreeFilterProxyModel( this, mModel );
   mTreeView->setModel( mTreeFilter );
 }

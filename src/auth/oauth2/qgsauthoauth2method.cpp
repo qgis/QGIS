@@ -44,7 +44,6 @@ QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
 
 
 QgsAuthOAuth2Method::QgsAuthOAuth2Method()
-  : QgsAuthMethod()
 {
   setVersion( 1 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::NetworkReply );

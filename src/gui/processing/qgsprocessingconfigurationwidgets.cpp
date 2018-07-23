@@ -158,10 +158,7 @@ QgsProcessingAlgorithmConfigurationWidget *QgsFilterAlgorithmConfigurationWidget
 
 bool QgsFilterAlgorithmConfigurationWidgetFactory::canCreateFor( const QgsProcessingAlgorithm *algorithm ) const
 {
-  if ( algorithm->name() == QStringLiteral( "filter" ) )
-    return true;
-  else
-    return false;
+  return algorithm->name() == QStringLiteral( "filter" );
 }
 
 ///@endcond PRIVATE

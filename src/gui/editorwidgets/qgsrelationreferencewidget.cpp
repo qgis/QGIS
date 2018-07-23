@@ -152,8 +152,7 @@ QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
 {
   deleteHighlight();
   unsetMapTool();
-  if ( mMapTool )
-    delete mMapTool;
+  delete mMapTool;
 }
 
 void QgsRelationReferenceWidget::updateIndex()
@@ -401,8 +400,7 @@ void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorConte
   mCanvas = canvas;
   mMessageBar = messageBar;
 
-  if ( mMapTool )
-    delete mMapTool;
+  delete mMapTool;
   mMapTool = new QgsMapToolIdentifyFeature( mCanvas );
   mMapTool->setButton( mMapIdentificationButton );
 }

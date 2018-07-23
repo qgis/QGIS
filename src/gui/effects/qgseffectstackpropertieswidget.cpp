@@ -154,11 +154,7 @@ QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget()
 
 void QgsEffectStackPropertiesWidget::setPreviewPicture( const QPicture &picture )
 {
-  if ( mPreviewPicture )
-  {
-    delete mPreviewPicture;
-  }
-
+  delete mPreviewPicture;
   mPreviewPicture = new QPicture( picture );
   updatePreview();
 }

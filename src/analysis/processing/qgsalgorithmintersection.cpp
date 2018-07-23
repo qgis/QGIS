@@ -106,7 +106,7 @@ QVariantMap QgsIntersectionAlgorithm::processAlgorithm( const QVariantMap &param
   int count = 0;
   int total = sourceA->featureCount();
 
-  QgsOverlayUtils::intersection( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
 
   return outputs;
 }

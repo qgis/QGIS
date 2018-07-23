@@ -42,7 +42,6 @@ class APP_EXPORT QgsMeshRendererVectorSettingsWidget : public QWidget, private U
      * \param parent Parent object
      */
     QgsMeshRendererVectorSettingsWidget( QWidget *parent = nullptr );
-    ~QgsMeshRendererVectorSettingsWidget() = default;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );

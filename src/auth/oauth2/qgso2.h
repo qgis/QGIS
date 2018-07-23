@@ -42,7 +42,7 @@ class QgsO2: public O2
     explicit QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config = nullptr,
                     QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr );
 
-    ~QgsO2();
+    ~QgsO2() override;
 
     //! Authentication configuration id
     QString authcfg() const { return mAuthcfg; }

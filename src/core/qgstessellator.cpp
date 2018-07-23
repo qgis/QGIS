@@ -437,7 +437,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       }
     }
 
-    if ( !_check_intersecting_rings( *polygonNew.get() ) )
+    if ( !_check_intersecting_rings( *polygonNew ) )
     {
       // skip the polygon - it would cause a crash inside poly2tri library
       QgsMessageLog::logMessage( QObject::tr( "polygon rings self-intersect or intersect each other - skipping" ), QObject::tr( "3D" ) );

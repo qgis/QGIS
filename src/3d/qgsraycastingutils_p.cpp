@@ -32,26 +32,21 @@ namespace QgsRayCastingUtils
 
   Ray3D::Ray3D()
     : m_direction( 0.0f, 0.0f, 1.0f )
-    , m_distance( 1.0f )
   {
   }
 
-  Ray3D::Ray3D( const QVector3D &origin, const QVector3D &direction, float distance )
+  Ray3D::Ray3D( QVector3D origin, QVector3D direction, float distance )
     : m_origin( origin )
     , m_direction( direction )
     , m_distance( distance )
   {}
-
-  Ray3D::~Ray3D()
-  {
-  }
 
   QVector3D Ray3D::origin() const
   {
     return m_origin;
   }
 
-  void Ray3D::setOrigin( const QVector3D &value )
+  void Ray3D::setOrigin( QVector3D value )
   {
     m_origin = value;
   }
@@ -61,7 +56,7 @@ namespace QgsRayCastingUtils
     return m_direction;
   }
 
-  void Ray3D::setDirection( const QVector3D &value )
+  void Ray3D::setDirection( QVector3D value )
   {
     if ( value.isNull() )
       return;
@@ -107,7 +102,7 @@ namespace QgsRayCastingUtils
     return !( *this == other );
   }
 
-  bool Ray3D::contains( const QVector3D &point ) const
+  bool Ray3D::contains( QVector3D point ) const
   {
     QVector3D ppVec( point - m_origin );
     if ( ppVec.isNull() ) // point coincides with origin
@@ -126,7 +121,7 @@ namespace QgsRayCastingUtils
     return contains( ray.origin() );
   }
 
-  float Ray3D::projectedDistance( const QVector3D &point ) const
+  float Ray3D::projectedDistance( QVector3D point ) const
   {
     Q_ASSERT( !m_direction.isNull() );
 
@@ -134,14 +129,14 @@ namespace QgsRayCastingUtils
            m_direction.lengthSquared();
   }
 
-  QVector3D Ray3D::project( const QVector3D &vector ) const
+  QVector3D Ray3D::project( QVector3D vector ) const
   {
     QVector3D norm = m_direction.normalized();
     return QVector3D::dotProduct( vector, norm ) * norm;
   }
 
 
-  float Ray3D::distance( const QVector3D &point ) const
+  float Ray3D::distance( QVector3D point ) const
   {
     float t = projectedDistance( point );
     return ( point - ( m_origin + t * m_direction ) ).length();
@@ -198,7 +193,7 @@ struct ray
 // https://tavianator.com/fast-branchless-raybounding-box-intersections/
 // https://tavianator.com/fast-branchless-raybounding-box-intersections-part-2-nans/
 
-bool intersection( box b, ray r )
+bool intersection( const box &b, const ray &r )
 {
   double t1 = ( b.min[0] - r.origin[0] ) * r.dir_inv[0];
   double t2 = ( b.max[0] - r.origin[0] ) * r.dir_inv[0];
@@ -253,9 +248,9 @@ namespace QgsRayCastingUtils
 // copied from intersectsSegmentTriangle() from qt3d/src/render/backend/triangleboundingvolume.cpp
 // by KDAB, licensed under the terms of LGPL
   bool rayTriangleIntersection( const Ray3D &ray,
-                                const QVector3D &a,
-                                const QVector3D &b,
-                                const QVector3D &c,
+                                QVector3D a,
+                                QVector3D b,
+                                QVector3D c,
                                 QVector3D &uvw,
                                 float &t )
   {
@@ -305,7 +300,7 @@ namespace QgsRayCastingUtils
 
 
 
-static QRect windowViewport( const QSize &area, const QRectF &relativeViewport )
+static QRect windowViewport( QSize area, const QRectF &relativeViewport )
 {
   if ( area.isValid() )
   {
@@ -320,8 +315,8 @@ static QRect windowViewport( const QSize &area, const QRectF &relativeViewport )
 }
 
 
-static QgsRayCastingUtils::Ray3D intersectionRay( const QPointF &pos, const QMatrix4x4 &viewMatrix,
-    const QMatrix4x4 &projectionMatrix, const QRect &viewport )
+static QgsRayCastingUtils::Ray3D intersectionRay( QPointF pos, const QMatrix4x4 &viewMatrix,
+    const QMatrix4x4 &projectionMatrix, QRect viewport )
 {
   // if something seems wrong slightly off with the returned intersection rays,
   // it may be the case that unproject() has hit qFuzzyIsNull() condition inside
@@ -342,8 +337,8 @@ static QgsRayCastingUtils::Ray3D intersectionRay( const QPointF &pos, const QMat
 namespace QgsRayCastingUtils
 {
 
-  Ray3D rayForViewportAndCamera( const QSize &area,
-                                 const QPointF &pos,
+  Ray3D rayForViewportAndCamera( QSize area,
+                                 QPointF pos,
                                  const QRectF &relativeViewport,
                                  const Qt3DRender::QCamera *camera )
   {

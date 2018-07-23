@@ -32,7 +32,7 @@ class QgsReadWriteContext;
 class Qgs3DAnimationSettings
 {
   public:
-    Qgs3DAnimationSettings();
+    Qgs3DAnimationSettings() = default;
 
     //! keyframe definition
     struct Keyframe

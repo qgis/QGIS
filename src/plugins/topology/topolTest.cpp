@@ -35,11 +35,7 @@
 static bool _canExportToGeos( const QgsGeometry &geom )
 {
   geos::unique_ptr geosGeom = QgsGeos::asGeos( geom );
-  if ( geosGeom )
-  {
-    return true;
-  }
-  return false;
+  return static_cast<bool>( geosGeom );
 }
 
 topolTest::topolTest( QgisInterface *qgsIface )
