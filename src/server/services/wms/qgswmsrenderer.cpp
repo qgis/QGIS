@@ -1241,11 +1241,13 @@ namespace QgsWms
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
       bool validLayer = false;
+      bool queryableLayer = false;
       Q_FOREACH ( QgsMapLayer *layer, layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
           validLayer = true;
+          queryableLayer = !mProject->nonIdentifiableLayers().contains( layer->id() );
 
           QDomElement layerElement;
           if ( infoFormat == QgsWmsParameters::Format::GML )
@@ -1308,8 +1310,12 @@ namespace QgsWms
           break;
         }
       }
-
-      if ( !validLayer && !mNicknameLayers.contains( queryLayer ) )
+      if ( !queryableLayer )
+      {
+        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
+      }
+      else if ( !validLayer && !mNicknameLayers.contains( queryLayer ) )
       {
         QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
@@ -2416,7 +2422,12 @@ namespace QgsWms
     {
       if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
       {
-        initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), child->name() );
+        QString shortName = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        QString name = child->name();
+        if ( !shortName.isEmpty() )
+          initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), shortName );
+        else
+          initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
       }
     }
   }
