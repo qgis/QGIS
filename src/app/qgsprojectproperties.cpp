@@ -850,7 +850,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
     cbtsLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
   cbtsLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( QStringLiteral( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
-  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings->value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
+  cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
 
   connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::generateTsFileButton_clicked );
 

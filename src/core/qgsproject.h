@@ -46,6 +46,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
 #include "qgstranslationcontext.h"
+#include "qgsvectorlayer.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -97,7 +98,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QgsRelationManager *relationManager READ relationManager )
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
     Q_PROPERTY( QgsProjectMetadata metadata READ metadata WRITE setMetadata NOTIFY metadataChanged )
-    //dave to do Q_PROPERTY( QTranslator translator READ translator )
 
   public:
     //! Returns the QgsProject singleton instance
@@ -1295,6 +1295,16 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
     */
     void setPresetHomePath( const QString &path );
+
+    /**
+     * Registers the translatable containers into the tranlationContext
+     * this is a rekursive function to get all the child containers
+     * \since QGIS 3.2
+     *
+     * \param translationContext where the objects will be registered
+     * \param parent parent-container containing list of children
+    */
+    void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 
     /**
      * Registers the translatable objects into the tranlationContext

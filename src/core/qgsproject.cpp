@@ -37,7 +37,6 @@
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
@@ -367,9 +366,6 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
   connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
-
-  mTranslator = new QTranslator();
-
 }
 
 
@@ -445,6 +441,24 @@ void QgsProject::setPresetHomePath( const QString &path )
   setDirty( true );
 }
 
+void QgsProject::registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId )
+{
+  QList<QgsAttributeEditorElement *> elements = parent->children();
+
+  for ( QgsAttributeEditorElement *element : elements )
+  {
+    if ( element->type() == QgsAttributeEditorElement::AeTypeContainer )
+    {
+      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( element );
+
+      translationContext->registerTranslation( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), container->name() );
+
+      if ( container->children().size() > 0 )
+        registerTranslatableContainers( translationContext, container, layerId );
+    }
+  }
+}
+
 void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
 {
   //register layers
@@ -457,6 +471,7 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
     {
       QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
+      //register aliases and fields
       const QgsFields fields = vlayer->fields();
       for ( const QgsField &field : fields )
       {
@@ -465,6 +480,10 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
         else
           translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
       }
+
+      //register formcontainers
+      registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+
     }
   }
 
@@ -931,10 +950,6 @@ bool QgsProject::read()
   QString filename = mFile.fileName();
   bool rc;
 
-  //dave dirty hack
-  delete mTranslator;
-  mTranslator = new QTranslator();
-
   if ( QgsProjectStorage *storage = projectStorage() )
   {
     QTemporaryFile inDevice;
@@ -969,9 +984,14 @@ bool QgsProject::read()
   }
 
   //on translation we should not change the filename back
-  if ( mTranslator->isEmpty() )
+  if ( !mTranslator )
   {
     mFile.setFileName( filename );
+  }
+  else
+  {
+    //but delete the translator
+    delete mTranslator;
   }
 
   return rc;
@@ -988,6 +1008,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
+    mTranslator = new QTranslator();
     if ( mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() ) )
     {
       QgsDebugMsg( "Translation loaded" );
@@ -1290,7 +1311,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
 
-  if ( !mTranslator->isEmpty() )
+  if ( mTranslator )
   {
     //project possibly translated -> rename it with locale postfix
     QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
@@ -2800,7 +2821,7 @@ void QgsProject::generateTsFile( const QString &locale )
 
 QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )
 {
-  if ( mTranslator->isEmpty() )
+  if ( !mTranslator )
   {
     return sourceText;
   }
