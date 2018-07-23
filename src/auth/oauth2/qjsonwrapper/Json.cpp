@@ -40,7 +40,7 @@ namespace QJsonWrapper
   {
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     QVariantMap map;
-    if ( object == NULL )
+    if ( !object )
     {
       return map;
     }
@@ -95,7 +95,7 @@ namespace QJsonWrapper
 #if QT_VERSION >= QT_VERSION_CHECK( 5, 0, 0 )
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson( jsonData, &error );
-    if ( ok != NULL )
+    if ( ok )
     {
       *ok = ( error.error == QJsonParseError::NoError );
     }
@@ -136,7 +136,7 @@ namespace QJsonWrapper
     }
 
     QJsonDocument doc = QJsonDocument::fromVariant( _variant );
-    if ( ok != NULL )
+    if ( ok )
     {
       *ok = !doc.isNull();
     }

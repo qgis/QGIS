@@ -87,8 +87,6 @@ QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
 {
 }
 
-QgsMeshDatasetGroupTreeModel::~QgsMeshDatasetGroupTreeModel() = default;
-
 int QgsMeshDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
 {
   if ( parent.isValid() )

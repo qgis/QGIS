@@ -33,11 +33,7 @@ NormVecDecorator::~NormVecDecorator()
 
   delete mNormVec;
   delete mPointState;
-
-  if ( mTIN )
-  {
-    delete mTIN;
-  }
+  delete mTIN;
 }
 
 int NormVecDecorator::addPoint( const QgsPoint &p )

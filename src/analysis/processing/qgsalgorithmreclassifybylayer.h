@@ -33,9 +33,9 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
 
-    QString group() const override final;
-    QString groupId() const override final;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override final;
+    QString group() const final;
+    QString groupId() const final;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
 
@@ -45,7 +45,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
      */
     virtual void addAlgorithmParams() = 0;
 
-    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override final;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
     /**
      * Prepares the reclassify algorithm subclass for execution.
@@ -60,7 +60,7 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
       const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override final;
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
     std::unique_ptr< QgsRasterInterface > mInterface;
 

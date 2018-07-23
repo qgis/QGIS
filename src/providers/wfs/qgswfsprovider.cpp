@@ -1222,10 +1222,7 @@ bool QgsWFSProvider::empty() const
 #if 0
   request.setLimit( 1 );
 #endif
-  if ( getFeatures( request ).nextFeature( f ) )
-    return false;
-  else
-    return true;
+  return !getFeatures( request ).nextFeature( f );
 
 };
 

@@ -18,7 +18,7 @@
 #include "qgssqliteutils.h"
 
 #include <sqlite3.h>
-#include <stdarg.h>
+#include <cstdarg>
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {

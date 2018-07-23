@@ -127,9 +127,7 @@ QgsVectorLayerExporter::QgsVectorLayerExporter( const QString &uri,
 QgsVectorLayerExporter::~QgsVectorLayerExporter()
 {
   flushBuffer();
-
-  if ( mProvider )
-    delete mProvider;
+  delete mProvider;
 }
 
 QgsVectorLayerExporter::ExportError QgsVectorLayerExporter::errorCode() const

@@ -49,27 +49,26 @@ namespace QgsRayCastingUtils
   {
     public:
       Ray3D();
-      explicit Ray3D( const QVector3D &origin, const QVector3D &direction = QVector3D( 0.0f, 0.0f, 1.0f ), float distance = 1.0f );
-      ~Ray3D();
+      explicit Ray3D( QVector3D origin, QVector3D direction = QVector3D( 0.0f, 0.0f, 1.0f ), float distance = 1.0f );
 
       QVector3D origin() const;
-      void setOrigin( const QVector3D &value );
+      void setOrigin( QVector3D value );
 
       QVector3D direction() const;
-      void setDirection( const QVector3D &value );
+      void setDirection( QVector3D value );
 
       float distance() const;
       void setDistance( float distance );
 
-      bool contains( const QVector3D &point ) const;
+      bool contains( QVector3D point ) const;
       bool contains( const Ray3D &ray ) const;
 
       QVector3D point( float t ) const;
-      float projectedDistance( const QVector3D &point ) const;
+      float projectedDistance( QVector3D point ) const;
 
-      QVector3D project( const QVector3D &vector ) const;
+      QVector3D project( QVector3D vector ) const;
 
-      float distance( const QVector3D &point ) const;
+      float distance( QVector3D point ) const;
 
       Ray3D &transform( const QMatrix4x4 &matrix );
       Ray3D transformed( const QMatrix4x4 &matrix ) const;
@@ -80,7 +79,7 @@ namespace QgsRayCastingUtils
     private:
       QVector3D m_origin;
       QVector3D m_direction;
-      float m_distance;
+      float m_distance = 1.0f;
   };
 
   /**
@@ -111,9 +110,9 @@ namespace QgsRayCastingUtils
    * \since QGIS 3.4
    */
   bool rayTriangleIntersection( const Ray3D &ray,
-                                const QVector3D &a,
-                                const QVector3D &b,
-                                const QVector3D &c,
+                                QVector3D a,
+                                QVector3D b,
+                                QVector3D c,
                                 QVector3D &uvw,
                                 float &t );
 

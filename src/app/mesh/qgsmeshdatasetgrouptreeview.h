@@ -76,7 +76,6 @@ class APP_NO_EXPORT QgsMeshDatasetGroupTreeModel : public QAbstractItemModel
 
   public:
     explicit QgsMeshDatasetGroupTreeModel( QObject *parent = nullptr );
-    ~QgsMeshDatasetGroupTreeModel();
 
     QVariant data( const QModelIndex &index, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
@@ -106,7 +105,6 @@ class APP_EXPORT QgsMeshDatasetGroupTreeView : public QTreeView
 
   public:
     QgsMeshDatasetGroupTreeView( QWidget *parent = nullptr );
-    ~QgsMeshDatasetGroupTreeView() = default;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );

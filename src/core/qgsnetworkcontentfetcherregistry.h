@@ -136,7 +136,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
     Q_ENUM( FetchingMode )
 
     //! Create the registry for temporary downloaded files
-    explicit QgsNetworkContentFetcherRegistry();
+    explicit QgsNetworkContentFetcherRegistry() = default;
 
     ~QgsNetworkContentFetcherRegistry() override;
 

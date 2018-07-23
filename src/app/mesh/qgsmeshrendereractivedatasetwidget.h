@@ -42,7 +42,6 @@ class APP_EXPORT QgsMeshRendererActiveDatasetWidget : public QWidget, private Ui
      * \param parent Parent object
      */
     QgsMeshRendererActiveDatasetWidget( QWidget *parent = nullptr );
-    ~QgsMeshRendererActiveDatasetWidget() = default;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );

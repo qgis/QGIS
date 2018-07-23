@@ -20,10 +20,6 @@
 
 #include "qgsapplication.h"
 
-QgsNetworkContentFetcherRegistry::QgsNetworkContentFetcherRegistry()
-{
-}
-
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
   QMap<QString, QgsFetchedContent *>::const_iterator it = mFileRegistry.constBegin();

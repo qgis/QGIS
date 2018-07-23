@@ -41,7 +41,6 @@ class APP_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
      * \param parent Parent object
      */
     QgsMeshRendererScalarSettingsWidget( QWidget *parent = nullptr );
-    ~QgsMeshRendererScalarSettingsWidget() = default;
 
     //! Associates mesh layer with the widget
     void setLayer( QgsMeshLayer *layer );

@@ -71,31 +71,23 @@ Problem::~Problem()
 {
   if ( sol )
   {
-    if ( sol->s )
-      delete[] sol->s;
+    delete[] sol->s;
     delete sol;
   }
 
-  if ( featWrap )
-    delete[] featWrap;
-  if ( featStartId )
-    delete[] featStartId;
-  if ( featNbLp )
-    delete[] featNbLp;
+  delete[] featWrap;
+  delete[] featStartId;
+  delete[] featNbLp;
 
   qDeleteAll( mLabelPositions );
   mLabelPositions.clear();
 
-  if ( inactiveCost )
-    delete[] inactiveCost;
+  delete[] inactiveCost;
 
   delete candidates;
   delete candidates_sol;
 
-  if ( candidates_subsol )
-  {
-    delete candidates_subsol;
-  }
+  delete candidates_subsol;
 }
 
 typedef struct
@@ -182,8 +174,7 @@ void Problem::init_sol_empty()
 
   if ( sol )
   {
-    if ( sol->s )
-      delete[] sol->s;
+    delete[] sol->s;
     delete sol;
   }
 

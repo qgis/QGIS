@@ -83,7 +83,7 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   if ( !sourceB )
   {
     // we are doing single layer union
-    QgsOverlayUtils::resolveOverlaps( *sourceA.get(), *sink.get(), feedback );
+    QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
     return outputs;
   }
 
@@ -93,11 +93,11 @@ QVariantMap QgsUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, 
   int count = 0;
   int total = sourceA->featureCount() * 2 + sourceB->featureCount();
 
-  QgsOverlayUtils::intersection( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, fieldIndicesA, fieldIndicesB );
+  QgsOverlayUtils::intersection( *sourceA, *sourceB, *sink, context, feedback, count, total, fieldIndicesA, fieldIndicesB );
 
-  QgsOverlayUtils::difference( *sourceA.get(), *sourceB.get(), *sink.get(), context, feedback, count, total, QgsOverlayUtils::OutputAB );
+  QgsOverlayUtils::difference( *sourceA, *sourceB, *sink, context, feedback, count, total, QgsOverlayUtils::OutputAB );
 
-  QgsOverlayUtils::difference( *sourceB.get(), *sourceA.get(), *sink.get(), context, feedback, count, total, QgsOverlayUtils::OutputBA );
+  QgsOverlayUtils::difference( *sourceB, *sourceA, *sink, context, feedback, count, total, QgsOverlayUtils::OutputBA );
 
   return outputs;
 }

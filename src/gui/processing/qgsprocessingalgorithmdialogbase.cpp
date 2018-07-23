@@ -33,10 +33,6 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
-{
-}
-
 void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text )
 {
   emit progressTextChanged( text );

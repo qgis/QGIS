@@ -18,10 +18,6 @@
 #include <QEasingCurve>
 #include <QDomDocument>
 
-Qgs3DAnimationSettings::Qgs3DAnimationSettings()
-{
-}
-
 float Qgs3DAnimationSettings::duration() const
 {
   return mKeyframes.isEmpty() ? 0 : mKeyframes.constLast().time;
