@@ -29,6 +29,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsExpression,
                        QgsGeometry,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterEnum,
@@ -50,6 +51,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
 
     def groupId(self):
         return 'vectorgeometry'
+
+    def flags(self):
+        return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
     def __init__(self):
         super().__init__()

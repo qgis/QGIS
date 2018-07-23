@@ -28,10 +28,16 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
+                       QgsProcessingFeatureBasedAlgorithm,
                        QgsLocatorFilter,
-                       QgsLocatorResult)
+                       QgsLocatorResult,
+                       QgsProcessing,
+                       QgsWkbTypes,
+                       QgsMapLayer,
+                       QgsFields)
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.AlgorithmExecutor import execute_in_place
 from qgis.utils import iface
 
 
@@ -101,3 +107,91 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 except:
                     pass
                 canvas.setMapTool(prevMapTool)
+
+
+class InPlaceAlgorithmLocatorFilter(QgsLocatorFilter):
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def clone(self):
+        return InPlaceAlgorithmLocatorFilter()
+
+    def name(self):
+        return 'edit_features'
+
+    def displayName(self):
+        return self.tr('Edit Selected Features')
+
+    def priority(self):
+        return QgsLocatorFilter.Low
+
+    def prefix(self):
+        return 'ef'
+
+    def flags(self):
+        return QgsLocatorFilter.FlagFast
+
+    def fetchResults(self, string, context, feedback):
+        # collect results in main thread, since this method is inexpensive and
+        # accessing the processing registry/current layer is not thread safe
+
+        if iface.activeLayer() is None or iface.activeLayer().type() != QgsMapLayer.VectorLayer or not iface.activeLayer().selectedFeatureCount():
+            return
+
+        for a in QgsApplication.processingRegistry().algorithms():
+            if not a.flags() & QgsProcessingAlgorithm.FlagSupportsInPlaceEdits:
+                continue
+
+            if a.inputLayerTypes() and \
+                    QgsProcessing.TypeVector not in a.inputLayerTypes() \
+            and QgsProcessing.TypeVectorAnyGeometry not in a.inputLayerTypes() \
+            and (QgsWkbTypes.geometryType(iface.activeLayer().wkbType()) == QgsWkbTypes.PolygonGeometry and QgsProcessing.TypeVectorPolygon not in a.inputLayerTypes() or
+                     QgsWkbTypes.geometryType(
+                    iface.activeLayer().wkbType()) == QgsWkbTypes.LineGeometry and QgsProcessing.TypeVectorLine not in a.inputLayerTypes() or
+                QgsWkbTypes.geometryType(
+                    iface.activeLayer().wkbType()) == QgsWkbTypes.PointGeometry and QgsProcessing.TypeVectorPoint not in a.inputLayerTypes()):
+                continue
+
+            if QgsLocatorFilter.stringMatches(a.displayName(), string) or [t for t in a.tags() if QgsLocatorFilter.stringMatches(t, string)] or \
+                    (context.usingPrefix and not string):
+                result = QgsLocatorResult()
+                result.filter = self
+                result.displayString = a.displayName()
+                result.icon = a.icon()
+                result.userData = a.id()
+                if string and QgsLocatorFilter.stringMatches(a.displayName(), string):
+                    result.score = float(len(string)) / len(a.displayName())
+                else:
+                    result.score = 0
+                self.resultFetched.emit(result)
+
+    def triggerResult(self, result):
+        alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)
+        if alg:
+            ok, message = alg.canExecute()
+            if not ok:
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Missing dependency'))
+                dlg.setMessage(message)
+                dlg.exec_()
+                return
+
+            if len(alg.parameterDefinitions()) > 2:
+                # hack!!
+                dlg = alg.createCustomParametersWidget(None)
+                if not dlg:
+                    dlg = AlgorithmDialog(alg, True)
+                canvas = iface.mapCanvas()
+                prevMapTool = canvas.mapTool()
+                dlg.show()
+                dlg.exec_()
+                if canvas.mapTool() != prevMapTool:
+                    try:
+                        canvas.mapTool().reset()
+                    except:
+                        pass
+                    canvas.setMapTool(prevMapTool)
+            else:
+                parameters = {}
+                execute_in_place(alg, parameters)

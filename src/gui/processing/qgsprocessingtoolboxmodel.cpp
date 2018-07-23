@@ -655,6 +655,12 @@ void QgsProcessingToolboxProxyModel::setFilters( QgsProcessingToolboxProxyModel:
   invalidateFilter();
 }
 
+void QgsProcessingToolboxProxyModel::setInPlaceLayerType( QgsWkbTypes::GeometryType type )
+{
+  mInPlaceGeometryType = type;
+  invalidateFilter();
+}
+
 void QgsProcessingToolboxProxyModel::setFilterString( const QString &filter )
 {
   mFilterString = filter;
@@ -708,6 +714,32 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
       }
     }
 
+    if ( mFilters & FilterInPlace )
+    {
+      const bool supportsInPlace = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagSupportsInPlaceEdits;
+      if ( !supportsInPlace )
+        return false;
+
+      const QgsProcessingFeatureBasedAlgorithm *alg = dynamic_cast< const QgsProcessingFeatureBasedAlgorithm * >( mModel->algorithmForIndex( sourceIndex ) );
+
+      if ( !alg->inputLayerTypes().empty() &&
+           !alg->inputLayerTypes().contains( QgsProcessing::TypeVector ) &&
+           !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorAnyGeometry ) &&
+           ( ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPolygon ) ) ||
+             ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorLine ) ) ||
+             ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry && !alg->inputLayerTypes().contains( QgsProcessing::TypeVectorPoint ) ) ) )
+        return false;
+
+      QgsWkbTypes::Type type = QgsWkbTypes::Unknown;
+      if ( mInPlaceGeometryType == QgsWkbTypes::PointGeometry )
+        type = QgsWkbTypes::Point;
+      else if ( mInPlaceGeometryType == QgsWkbTypes::LineGeometry )
+        type = QgsWkbTypes::LineString;
+      else if ( mInPlaceGeometryType == QgsWkbTypes::PolygonGeometry )
+        type = QgsWkbTypes::Polygon;
+      if ( QgsWkbTypes::geometryType( alg->outputWkbType( type ) ) != mInPlaceGeometryType )
+        return false;
+    }
     if ( mFilters & FilterModeler )
     {
       bool isHiddenFromModeler = sourceModel()->data( sourceIndex, QgsProcessingToolboxModel::RoleAlgorithmFlags ).toInt() & QgsProcessingAlgorithm::FlagHideFromModeler;

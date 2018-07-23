@@ -29,6 +29,7 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 from qgis.core import (QgsProcessingParameterField,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingFeatureSource)
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
@@ -36,6 +37,9 @@ from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 class DeleteColumn(QgisFeatureBasedAlgorithm):
 
     COLUMNS = 'COLUMN'
+
+    def flags(self):
+        return super().flags() & ~QgsProcessingAlgorithm.FlagSupportsInPlaceEdits
 
     def tags(self):
         return self.tr('drop,delete,remove,fields,columns,attributes').split(',')

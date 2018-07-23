@@ -85,6 +85,8 @@ class GUI_EXPORT QgsProcessingToolboxTreeView : public QTreeView
      */
     void setFilters( QgsProcessingToolboxProxyModel::Filters filters );
 
+    void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+
   public slots:
 
     /**

@@ -73,6 +73,8 @@ if no algorithm is currently selected.
 Sets ``filters`` controlling the view's contents.
 %End
 
+    void setInPlaceLayerType( QgsWkbTypes::GeometryType type );
+
   public slots:
 
     void setFilterString( const QString &filter );

@@ -93,6 +93,11 @@ void QgsProcessingToolboxTreeView::setFilters( QgsProcessingToolboxProxyModel::F
   mModel->setFilters( filters );
 }
 
+void QgsProcessingToolboxTreeView::setInPlaceLayerType( QgsWkbTypes::GeometryType type )
+{
+  mModel->setInPlaceLayerType( type );
+}
+
 QModelIndex QgsProcessingToolboxTreeView::findFirstVisibleAlgorithm( const QModelIndex &parent )
 {
   for ( int r = 0; r < mModel->rowCount( parent ); ++r )

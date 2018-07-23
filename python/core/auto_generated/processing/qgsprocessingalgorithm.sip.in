@@ -44,6 +44,7 @@ Abstract base class for processing algorithms.
       FlagRequiresMatchingCrs,
       FlagNoThreading,
       FlagDisplayNameIsLiteral,
+      FlagSupportsInPlaceEdits,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;
@@ -852,6 +853,9 @@ algorithm in "chains", avoiding the need for temporary outputs in multi-step mod
 %Docstring
 Constructor for QgsProcessingFeatureBasedAlgorithm.
 %End
+
+    virtual QgsProcessingAlgorithm::Flags flags() const;
+
 
   protected:
 

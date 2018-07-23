@@ -33,9 +33,11 @@ from qgis.core import (Qgis,
                        QgsProcessingUtils,
                        QgsMessageLog,
                        QgsProcessingException,
+                       QgsProcessingFeatureSourceDefinition,
                        QgsProcessingParameters)
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
+from qgis.utils import iface
 
 
 def execute(alg, parameters, context=None, feedback=None):
@@ -53,6 +55,40 @@ def execute(alg, parameters, context=None, feedback=None):
 
     try:
         results, ok = alg.run(parameters, context, feedback)
+        return ok, results
+    except QgsProcessingException as e:
+        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
+        if feedback is not None:
+            feedback.reportError(e.msg)
+        return False, {}
+
+
+def execute_in_place(alg, parameters, context=None, feedback=None):
+
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+    if context is None:
+        context = dataobjects.createContext(feedback)
+
+    parameters['INPUT'] = QgsProcessingFeatureSourceDefinition(iface.activeLayer().id(), True)
+
+    parameters['OUTPUT'] = 'memory:'
+
+    try:
+        results, ok = alg.run(parameters, context, feedback)
+
+        layer = QgsProcessingUtils.mapLayerFromString(results['OUTPUT'], context)
+        iface.activeLayer().beginEditCommand('Edit features')
+        iface.activeLayer().deleteFeatures(iface.activeLayer().selectedFeatureIds())
+        features = []
+        for f in layer.getFeatures():
+            features.append(f)
+        iface.activeLayer().addFeatures(features)
+        new_selection = [f.id() for f in features]
+        iface.activeLayer().endEditCommand()
+        #iface.activeLayer().selectByIds(new_selection)
+        iface.activeLayer().triggerRepaint()
+
         return ok, results
     except QgsProcessingException as e:
         QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
