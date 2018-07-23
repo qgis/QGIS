@@ -30,14 +30,19 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # Configure OpenCL if available
 
-option(USE_OPENCL "Use OpenCL" ON)
-if (USE_OPENCL)
+OPTION(USE_OPENCL "Use OpenCL" ON)
+IF (USE_OPENCL)
     FIND_PACKAGE(OpenCL)
+<<<<<<< c42a748afc413e235254d2a94dc8af75d2109822
     if(${OpenCL_FOUND})
 <<<<<<< a1a09d75e627b0f085c5a1177db5d58374ca6f44
+=======
+    IF(${OpenCL_FOUND})
+>>>>>>> [opencl] Uppercase CMake
         SET(HAVE_OPENCL TRUE)
-    else(${OpenCL_FOUND})        
+    ELSE(${OpenCL_FOUND})
         MESSAGE(STATUS "Couldn't find OpenCL: support DISABLED")
+<<<<<<< c42a748afc413e235254d2a94dc8af75d2109822
 =======
         SET (USE_OPENCL TRUE CACHE BOOL "Use OpenCL")
         IF(USE_OPENCL)
@@ -51,6 +56,10 @@ if (USE_OPENCL)
 >>>>>>> [opencl] Error message when OpenCL could not be found
     endif(${OpenCL_FOUND})
 endif(USE_OPENCL)
+=======
+    ENDIF(${OpenCL_FOUND})
+ENDIF(USE_OPENCL)
+>>>>>>> [opencl] Uppercase CMake
 
 # Configure CCache if available
 IF(NOT MSVC)
