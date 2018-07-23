@@ -34,7 +34,13 @@ from qgis.gui import (
 )
 
 from qgis.PyQt.QtCore import QTimer
-from qgis.PyQt.QtWidgets import QToolButton, QTableView, QApplication
+from qgis.PyQt.QtWidgets import (
+    QToolButton,
+    QMessageBox,
+    QDialogButtonBox,
+    QTableView,
+    QApplication
+)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -108,6 +114,16 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         self.widget.featureSelectionManager().select([fid])
 
         btn = self.widget.findChild(QToolButton, 'mDeleteFeatureButton')
+
+        def clickOk():
+            # Click the "Delete features" button on the confirmation message
+            # box
+            widget = self.widget.findChild(QMessageBox)
+            buttonBox = widget.findChild(QDialogButtonBox)
+            deleteButton = next((b for b in buttonBox.buttons() if buttonBox.buttonRole(b) == QDialogButtonBox.AcceptRole))
+            deleteButton.click()
+
+        QTimer.singleShot(1, clickOk)
         btn.click()
 
         # This is the important check that the feature is deleted
