@@ -45,6 +45,7 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     QgsClipAlgorithm *createInstance() const override SIP_FACTORY;
 
+    QgsProcessingAlgorithm::Flags flags() const override;
   protected:
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
