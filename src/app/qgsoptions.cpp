@@ -1137,6 +1137,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
+<<<<<<< 9ed9cbded8ecdd774739758493856a8bc1abb302
 <<<<<<< 1324eff749a7b6102088ab77d27a5df6c6dce919
 <<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
     mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
@@ -1152,6 +1153,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
                                   "You may need to install additional libraries in order to enable OpenCL.<br>"
                                   "Please check your logs for further details." ) );
 >>>>>>> [opencl] Make opencl info copyable
+=======
+    mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
+                                      "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                      "Please check your logs for further details." ) );
+>>>>>>> [opencl] Translate message when no opencl is available
   }
 
 
