@@ -47,6 +47,7 @@
 #include "qgsprojectmetadata.h"
 #include "qgstranslationcontext.h"
 #include "qgsvectorlayer.h"
+#include "qgsprojecttranslator.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -85,7 +86,7 @@ class QgsAuxiliaryStorage;
 
 */
 
-class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsProjectTranslator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
@@ -980,7 +981,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param disambiguation it's the disambiguation
      * \param n if -1 uses the appropriate form
      */
-    QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 );
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
 
   signals:
 

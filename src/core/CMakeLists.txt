@@ -636,7 +636,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgstaskmanager.h
   qgstolerance.h
   qgstracer.h
-  qgstranslationcontext.h
   qgstrackedvectorlayertools.h
   qgstransaction.h
   qgstransactiongroup.h

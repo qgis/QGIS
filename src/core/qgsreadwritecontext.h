@@ -20,6 +20,7 @@
 
 #include "qgspathresolver.h"
 #include "qgis.h"
+#include "qgsprojecttranslator.h"
 
 class QgsReadWriteContextCategoryPopper;
 
@@ -99,6 +100,11 @@ class CORE_EXPORT QgsReadWriteContext
      */
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 
+    /**
+     * Returns the project translator
+     * \since QGIS 3.2
+     */
+    const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
   private:
     //! Pop the last category
@@ -107,6 +113,7 @@ class CORE_EXPORT QgsReadWriteContext
     QgsPathResolver mPathResolver;
     QList<ReadWriteMessage> mMessages;
     QStringList mCategories = QStringList();
+    QgsProjectTranslator *mProjectTranslator;
 
     friend class QgsReadWriteContextCategoryPopper;
 };

@@ -2819,7 +2819,7 @@ void QgsProject::generateTsFile( const QString &locale )
   translationContext.writeTsFile( locale );
 }
 
-QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n )
+QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
 {
   if ( !mTranslator )
   {
