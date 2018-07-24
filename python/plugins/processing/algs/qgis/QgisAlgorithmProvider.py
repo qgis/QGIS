@@ -65,7 +65,6 @@ from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .EliminateSelection import EliminateSelection
 from .ExecuteSQL import ExecuteSQL
 from .ExportGeometryInfo import ExportGeometryInfo
-from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
 from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
@@ -118,7 +117,6 @@ from .RectanglesOvalsDiamondsFixed import RectanglesOvalsDiamondsFixed
 from .RectanglesOvalsDiamondsVariable import RectanglesOvalsDiamondsVariable
 from .RegularPoints import RegularPoints
 from .Relief import Relief
-from .ReverseLineDirection import ReverseLineDirection
 from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
@@ -182,7 +180,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 EliminateSelection(),
                 ExecuteSQL(),
                 ExportGeometryInfo(),
-                ExtendLines(),
                 ExtentFromLayer(),
                 ExtractSpecificVertices(),
                 FieldsCalculator(),
@@ -235,7 +232,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 RectanglesOvalsDiamondsVariable(),
                 RegularPoints(),
                 Relief(),
-                ReverseLineDirection(),
                 Ruggedness(),
                 SelectByAttribute(),
                 SelectByExpression(),

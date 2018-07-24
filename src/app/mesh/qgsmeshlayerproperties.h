@@ -43,7 +43,6 @@ class APP_EXPORT QgsMeshLayerProperties : public QgsOptionsDialogBase, private U
      * \param lyr Mesh map layer for which properties will be displayed
      */
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
-    ~QgsMeshLayerProperties() = default;
 
   private slots:
     //! Synchronize widgets state with associated mesh layer

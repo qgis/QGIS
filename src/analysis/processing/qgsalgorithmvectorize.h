@@ -39,8 +39,8 @@ class QgsVectorizeAlgorithm : public QgsProcessingAlgorithm
     QStringList tags() const override;
     QString shortHelpString() const override;
     QgsVectorizeAlgorithm *createInstance() const override SIP_FACTORY;
-    QString group() const override final;
-    QString groupId() const override final;
+    QString group() const final;
+    QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:

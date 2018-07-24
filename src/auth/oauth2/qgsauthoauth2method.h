@@ -38,7 +38,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
   public:
     explicit QgsAuthOAuth2Method();
-    ~QgsAuthOAuth2Method();
+    ~QgsAuthOAuth2Method() override;
 
     //! OAuth2 method key
     QString key() const override;
@@ -71,21 +71,35 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
 
     //! Triggered when linked condition has changed
     void onLinkedChanged();
+
     //! Triggered when linking operation failed
     void onLinkingFailed();
+
     //! Triggered when linking operation succeeded
     void onLinkingSucceeded();
 
     //! Triggered when the browser needs to be opened at \a url
     void onOpenBrowser( const QUrl &url );
+
     //! Triggered on browser close
     void onCloseBrowser();
+
     //! Triggered on reply finished
     void onReplyFinished();
+
     //! Triggered on network error
     void onNetworkError( QNetworkReply::NetworkError err );
+
     //! Triggered on refresh finished
     void onRefreshFinished( QNetworkReply::NetworkError err );
+
+    //! Triggered when auth code needs to be manually entered by the user
+    void onAuthCode();
+
+  signals:
+
+    //! Emitted when authcode was manually set by the user
+    void setAuthCode( const QString code );
 
   private:
     QString mTempStorePath;

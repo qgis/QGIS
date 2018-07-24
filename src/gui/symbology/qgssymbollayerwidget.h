@@ -546,9 +546,7 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerWidget : public QgsSymbolLayerWidget, pr
   private slots:
     void setName( const QModelIndex &idx );
     void populateIcons( const QModelIndex &idx );
-    void mFileToolButton_clicked();
-    void mFileLineEdit_textEdited( const QString &text );
-    void mFileLineEdit_editingFinished();
+    void svgSourceChanged( const QString &text );
     void mChangeColorButton_colorChanged( const QColor &color );
     void mChangeStrokeColorButton_colorChanged( const QColor &color );
     void mStrokeWidthSpinBox_valueChanged( double d );
@@ -668,10 +666,8 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerWidget, priv
     void updateParamGui( bool resetValues = true );
 
   private slots:
-    void mBrowseToolButton_clicked();
     void mTextureWidthSpinBox_valueChanged( double d );
-    void mSVGLineEdit_textEdited( const QString &text );
-    void mSVGLineEdit_editingFinished();
+    void svgSourceChanged( const QString &text );
     void setFile( const QModelIndex &item );
     void populateIcons( const QModelIndex &item );
     void mRotationSpinBox_valueChanged( double d );

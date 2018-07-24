@@ -283,6 +283,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *layerToolBar() = 0;
 
     /**
+     * Returns a reference to the main window "Data Source Manager" toolbar.
+     * \since QGIS 3.4
+     */
+    virtual QToolBar *dataSourceManagerToolBar() = 0;
+
+    /**
      * Returns a reference to the main window "Map Navigation" toolbar.
      */
     virtual QToolBar *mapNavToolToolBar() = 0;

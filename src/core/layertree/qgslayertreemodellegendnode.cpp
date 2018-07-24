@@ -286,10 +286,10 @@ QVariant QgsSymbolLegendNode::data( int role ) const
           QPainter painter( &pix );
           painter.setRenderHint( QPainter::Antialiasing );
           context->setPainter( &painter );
-          QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context.get() ) );
+          QFontMetricsF fm( mTextOnSymbolTextFormat.scaledFont( *context ) );
           qreal yBaselineVCenter = ( mIconSize.height() + fm.ascent() - fm.descent() ) / 2;
           QgsTextRenderer::drawText( QPointF( mIconSize.width() / 2, yBaselineVCenter ), 0, QgsTextRenderer::AlignCenter,
-                                     QStringList() << mTextOnSymbolLabel, *context.get(), mTextOnSymbolTextFormat );
+                                     QStringList() << mTextOnSymbolLabel, *context, mTextOnSymbolTextFormat );
         }
       }
       else

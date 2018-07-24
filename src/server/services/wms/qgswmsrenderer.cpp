@@ -127,15 +127,14 @@ namespace QgsWms
 
   QgsRenderer::QgsRenderer( QgsServerInterface *serverIface,
                             const QgsProject *project,
-                            const QgsServerRequest::Parameters &parameters )
-    : mParameters( parameters )
+                            const QgsWmsParameters &parameters )
+    : mWmsParameters( parameters )
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     , mAccessControl( serverIface->accessControls() )
 #endif
     , mSettings( *serverIface->serverSettings() )
     , mProject( project )
   {
-    mWmsParameters.load( parameters );
     mWmsParameters.dump();
 
     initRestrictedLayers();
@@ -526,11 +525,13 @@ namespace QgsWms
     c->layoutItems<QgsLayoutItemLabel>( labels );
     for ( const auto &label : qgis::as_const( labels ) )
     {
-      QString labelId = label->id().toUpper();
-      if ( !mParameters.contains( labelId ) )
+      bool ok = false;
+      const QString labelId = label->id();
+      const QString labelParam = mWmsParameters.layoutParameter( labelId, ok );
+
+      if ( !ok )
         continue;
 
-      QString labelParam = mParameters[ labelId ];
       if ( labelParam.isEmpty() )
       {
         //remove exported labels referenced in the request
@@ -550,15 +551,18 @@ namespace QgsWms
     {
       if ( html->frameCount() == 0 )
         continue;
+
       QgsLayoutFrame *htmlFrame = html->frame( 0 );
-      QString htmlId = htmlFrame->id().toUpper();
-      if ( !mParameters.contains( htmlId ) )
+      bool ok = false;
+      const QString htmlId = htmlFrame->id();
+      const QString url = mWmsParameters.layoutParameter( htmlId, ok );
+
+      if ( !ok )
       {
         html->update();
         continue;
       }
 
-      QString url = mParameters[ htmlId ];
       //remove exported Htmls referenced in the request
       //but with empty string
       if ( url.isEmpty() )
@@ -1408,7 +1412,7 @@ namespace QgsWms
     {
       searchRect = layerFilterGeom->boundingBox();
     }
-    else if ( mParameters.contains( QStringLiteral( "BBOX" ) ) )
+    else if ( !mWmsParameters.bbox().isEmpty() )
     {
       searchRect = layerRect;
     }
@@ -2273,21 +2277,15 @@ namespace QgsWms
 
   int QgsRenderer::getImageQuality() const
   {
-
     // First taken from QGIS project
     int imageQuality = QgsServerProjectUtils::wmsImageQuality( *mProject );
 
     // Then checks if a parameter is given, if so use it instead
-    if ( mParameters.contains( QStringLiteral( "IMAGE_QUALITY" ) ) )
+    if ( !mWmsParameters.imageQuality().isEmpty() )
     {
-      bool conversionSuccess;
-      int imageQualityParameter;
-      imageQualityParameter = mParameters[ QStringLiteral( "IMAGE_QUALITY" )].toInt( &conversionSuccess );
-      if ( conversionSuccess )
-      {
-        imageQuality = imageQualityParameter;
-      }
+      imageQuality = mWmsParameters.imageQualityAsInt();
     }
+
     return imageQuality;
   }
 
@@ -2315,10 +2313,9 @@ namespace QgsWms
     double mapUnitTolerance = 0.0;
     if ( ml->geometryType() == QgsWkbTypes::PolygonGeometry )
     {
-      QMap<QString, QString>::const_iterator tolIt = mParameters.find( QStringLiteral( "FI_POLYGON_TOLERANCE" ) );
-      if ( tolIt != mParameters.constEnd() )
+      if ( ! mWmsParameters.polygonTolerance().isEmpty() )
       {
-        mapUnitTolerance = tolIt.value().toInt() * rct.mapToPixel().mapUnitsPerPixel();
+        mapUnitTolerance = mWmsParameters.polygonToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
       else
       {
@@ -2327,10 +2324,9 @@ namespace QgsWms
     }
     else if ( ml->geometryType() == QgsWkbTypes::LineGeometry )
     {
-      QMap<QString, QString>::const_iterator tolIt = mParameters.find( QStringLiteral( "FI_LINE_TOLERANCE" ) );
-      if ( tolIt != mParameters.constEnd() )
+      if ( ! mWmsParameters.lineTolerance().isEmpty() )
       {
-        mapUnitTolerance = tolIt.value().toInt() * rct.mapToPixel().mapUnitsPerPixel();
+        mapUnitTolerance = mWmsParameters.lineToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
       else
       {
@@ -2339,10 +2335,9 @@ namespace QgsWms
     }
     else //points
     {
-      QMap<QString, QString>::const_iterator tolIt = mParameters.find( QStringLiteral( "FI_POINT_TOLERANCE" ) );
-      if ( tolIt != mParameters.constEnd() )
+      if ( ! mWmsParameters.pointTolerance().isEmpty() )
       {
-        mapUnitTolerance = tolIt.value().toInt() * rct.mapToPixel().mapUnitsPerPixel();
+        mapUnitTolerance = mWmsParameters.pointToleranceAsInt() * rct.mapToPixel().mapUnitsPerPixel();
       }
       else
       {

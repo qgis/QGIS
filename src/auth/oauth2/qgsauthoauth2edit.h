@@ -16,6 +16,7 @@
 #define QGSAUTHOAUTH2EDIT_H
 
 #include <QWidget>
+#include <QNetworkReply>
 #include "qgsauthmethodedit.h"
 #include "ui_qgsauthoauth2edit.h"
 
@@ -36,7 +37,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
-    virtual ~QgsAuthOAuth2Edit() = default;
 
     /**
      * Validate current configuration
@@ -49,6 +49,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
      * \return current configuration map
      */
     QgsStringMap configMap() const override;
+
 
   public slots:
 
@@ -69,30 +70,42 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void removeTokenCacheFile();
 
     void populateGrantFlows();
+
     void updateGrantFlow( int indx );
 
     void exportOAuthConfig();
+
     void importOAuthConfig();
 
     void descriptionChanged();
 
     void populateAccessMethods();
+
     void updateConfigAccessMethod( int indx );
 
     void addQueryPair();
+
     void removeQueryPair();
+
     void clearQueryPairs();
+
     void populateQueryPairs( const QVariantMap &querypairs, bool append = false );
+
     void queryTableSelectionChanged();
+
     void updateConfigQueryPairs();
 
     void updateDefinedConfigsCache();
+
     void loadDefinedConfigs();
+
     void setCurrentDefinedConfig( const QString &id );
+
     void currentDefinedItemChanged( QListWidgetItem *cur, QListWidgetItem *prev );
+
     void selectCurrentDefinedConfig();
 
-    void loadFromOAuthConfig( const QgsAuthOAuth2Config *config = nullptr );
+    void getSoftStatementDir();
 
     void updateTokenCacheFile( bool curpersist ) const;
 
@@ -102,8 +115,20 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void getDefinedCustomDir();
 
+    void loadFromOAuthConfig( const QgsAuthOAuth2Config *config );
+
+    void softwareStatementJwtPathChanged( const QString &path );
+
+    void configReplyFinished();
+
+    void registerReplyFinished();
+
+    void networkError( QNetworkReply::NetworkError error );
+
   private:
+
     void initGui();
+    void parseSoftwareStatement( const QString &path );
 
     QWidget *parentWidget() const;
     QLineEdit *parentNameField() const;
@@ -118,8 +143,11 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     int customTab() const { return 0; }
     int definedTab() const { return 1; }
+    int statementTab() const { return 2; }
     bool onCustomTab() const;
     bool onDefinedTab() const;
+    bool onStatementTab() const;
+    void getSoftwareStatementConfig();
 
     QString currentDefinedConfig() const { return mDefinedId; }
 
@@ -132,6 +160,11 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     int mCurTab = 0;
     bool mPrevPersistToken = false;
     QToolButton *btnTokenClear = nullptr;
+    QString mRegistrationEndpoint;
+    QMap<QString, QVariant> mSoftwareStatement;
+    void registerSoftStatement( const QString &registrationUrl );
+    bool mDownloading = false;
+    friend class TestQgsAuthOAuth2Method;
 };
 
 #endif // QGSAUTHOAUTH2EDIT_H

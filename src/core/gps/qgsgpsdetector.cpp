@@ -71,16 +71,12 @@ QgsGpsDetector::QgsGpsDetector( const QString &portName )
 
 QgsGpsDetector::~QgsGpsDetector()
 {
-  if ( mConn )
-    delete mConn;
+  delete mConn;
 }
 
 void QgsGpsDetector::advance()
 {
-  if ( mConn )
-  {
-    delete mConn;
-  }
+  delete mConn;
 
   mConn = nullptr;
 

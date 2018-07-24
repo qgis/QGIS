@@ -63,7 +63,7 @@ class _3D_EXPORT QgsOffscreen3DEngine : public QgsAbstract3DEngine
     Q_OBJECT
   public:
     QgsOffscreen3DEngine();
-    ~QgsOffscreen3DEngine();
+    ~QgsOffscreen3DEngine() override;
 
     //! Sets the size of the rendering area (in pixels)
     void setSize( const QSize &s );

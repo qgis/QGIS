@@ -959,7 +959,7 @@ tests:
         name: expected/point_on_line.gml
         type: vector
 
-  - algorithm: qgis:reverselinedirection
+  - algorithm: native:reverselinedirection
     name: Reverse line direction
     params:
       INPUT:
@@ -972,6 +972,17 @@ tests:
         compare:
           geometry:
             precision: 7
+
+  - algorithm: native:reverselinedirection
+    name: Reverse multiline direction
+    params:
+      INPUT:
+        name: multilines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/reverse_multiline.gml
+        type: vector
 
   - algorithm: qgis:offsetline
     name: Offset line positive
@@ -1835,7 +1846,7 @@ tests:
         name: expected/extract_expression.gml
         type: vector
 
-  - algorithm: qgis:extendlines
+  - algorithm: native:extendlines
     name: Extend lines
     params:
       END_DISTANCE: 0.2
@@ -1850,7 +1861,7 @@ tests:
         compare:
           geometry:
             precision: 7
-  - algorithm: qgis:extendlines
+  - algorithm: native:extendlines
     name: Extend multilines
     params:
       END_DISTANCE: 0.4
@@ -5806,5 +5817,79 @@ tests:
         compare:
           fields:
             fid: skip
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m no max
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_max.shp
+        type: vector
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m no min
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_m_no_min.shp
+        type: vector
+
+  - algorithm: native:filterverticesbym
+    name: Filter by m
+    params:
+      INPUT:
+        name: lines_m.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_m.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z no max
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MIN: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_max.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z no min
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.6
+    results:
+      OUTPUT:
+        name: expected/filter_by_z_no_min.shp
+        type: vector
+
+  - algorithm: native:filterverticesbyz
+    name: Filter by z
+    params:
+      INPUT:
+        name: lines_z.shp
+        type: vector
+      MAX: 0.7
+      MIN: 0.4
+    results:
+      OUTPUT:
+        name: expected/filter_by_z.shp
+        type: vector
 
 # See ../README.md for a description of the file format

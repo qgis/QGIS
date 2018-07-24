@@ -1093,10 +1093,8 @@ void QgsGpsInformationWidget::populateDevices()
 
 void QgsGpsInformationWidget::createRubberBand()
 {
-  if ( mpRubberBand )
-  {
-    delete mpRubberBand;
-  }
+  delete mpRubberBand;
+
   mpRubberBand = new QgsRubberBand( mpCanvas, QgsWkbTypes::LineGeometry );
   mpRubberBand->setColor( mBtnTrackColor->color() );
   mpRubberBand->setWidth( mSpinTrackWidth->value() );

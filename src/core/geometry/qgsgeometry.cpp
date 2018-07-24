@@ -1174,7 +1174,7 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
     return true;
 
   // slower check - actually test the geometries
-  return *d->geometry.get() == *geometry.d->geometry.get();
+  return *d->geometry == *geometry.d->geometry;
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const

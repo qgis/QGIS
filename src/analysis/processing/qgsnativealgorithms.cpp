@@ -30,6 +30,7 @@
 #include "qgsalgorithmdropgeometry.h"
 #include "qgsalgorithmdropmzvalues.h"
 #include "qgsalgorithmexplode.h"
+#include "qgsalgorithmextendlines.h"
 #include "qgsalgorithmextenttolayer.h"
 #include "qgsalgorithmextractbyattribute.h"
 #include "qgsalgorithmextractbyexpression.h"
@@ -38,6 +39,7 @@
 #include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfilter.h"
+#include "qgsalgorithmfiltervertices.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
@@ -64,6 +66,7 @@
 #include "qgsalgorithmremoveholes.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
+#include "qgsalgorithmreverselinedirection.h"
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
@@ -140,6 +143,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsDropGeometryAlgorithm() );
   addAlgorithm( new QgsDropMZValuesAlgorithm() );
   addAlgorithm( new QgsExplodeAlgorithm() );
+  addAlgorithm( new QgsExtendLinesAlgorithm() );
   addAlgorithm( new QgsExtentToLayerAlgorithm() );
   addAlgorithm( new QgsExtractByAttributeAlgorithm() );
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
@@ -148,6 +152,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFilterAlgorithm() );
+  addAlgorithm( new QgsFilterVerticesByM() );
+  addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );
@@ -175,6 +181,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsRemoveHolesAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
+  addAlgorithm( new QgsReverseLineDirectionAlgorithm() );
   addAlgorithm( new QgsRotateFeaturesAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );

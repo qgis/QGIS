@@ -43,8 +43,7 @@
 
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, QgsAbstract3DEngine *engine )
-  : Qt3DCore::QEntity()
-  , mMap( map )
+  : mMap( map )
   , mEngine( engine )
 {
 

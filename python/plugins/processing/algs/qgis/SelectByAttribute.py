@@ -48,7 +48,7 @@ class SelectByAttribute(QgisAlgorithm):
     OUTPUT = 'OUTPUT'
 
     OPERATORS = ['=',
-                 '!=',
+                 '≠',
                  '>',
                  '>=',
                  '<',
@@ -80,7 +80,7 @@ class SelectByAttribute(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.operators = ['=',
-                          '!=',
+                          '≠',
                           '>',
                           '>=',
                           '<',

@@ -258,6 +258,13 @@ Returns a reference to the main window "File" toolbar.
 Returns a reference to the main window "Layer" toolbar.
 %End
 
+    virtual QToolBar *dataSourceManagerToolBar() = 0;
+%Docstring
+Returns a reference to the main window "Data Source Manager" toolbar.
+
+.. versionadded:: 3.4
+%End
+
     virtual QToolBar *mapNavToolToolBar() = 0;
 %Docstring
 Returns a reference to the main window "Map Navigation" toolbar.

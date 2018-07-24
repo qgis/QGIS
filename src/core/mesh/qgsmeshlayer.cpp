@@ -48,8 +48,7 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
 
 QgsMeshLayer::~QgsMeshLayer()
 {
-  if ( mDataProvider )
-    delete mDataProvider;
+  delete mDataProvider;
 }
 
 QgsMeshDataProvider *QgsMeshLayer::dataProvider()
@@ -309,8 +308,7 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
 
 bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options )
 {
-  if ( mDataProvider )
-    delete mDataProvider;
+  delete mDataProvider;
 
   mProviderKey = provider;
   QString dataSource = mDataSource;
@@ -341,4 +339,4 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
 
   return true;
-} // QgsMeshLayer:: setDataProvider
+}

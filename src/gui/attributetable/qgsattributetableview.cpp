@@ -143,8 +143,7 @@ void QgsAttributeTableView::setModel( QgsAttributeTableFilterModel *filterModel 
 
 void QgsAttributeTableView::setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager )
 {
-  if ( mFeatureSelectionManager )
-    delete mFeatureSelectionManager;
+  delete mFeatureSelectionManager;
 
   mFeatureSelectionManager = featureSelectionManager;
 

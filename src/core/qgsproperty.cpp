@@ -708,8 +708,7 @@ bool QgsProperty::loadVariant( const QVariant &property )
   }
 
   //restore transformer if present
-  if ( d->transformer )
-    delete d->transformer;
+  delete d->transformer;
   d->transformer = nullptr;
 
 

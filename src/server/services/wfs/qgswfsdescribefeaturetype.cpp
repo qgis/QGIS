@@ -54,7 +54,7 @@ namespace QgsWfs
     QDomDocument doc;
 
     QgsServerRequest::Parameters parameters = request.parameters();
-    QgsWfsParameters wfsParameters( parameters );
+    QgsWfsParameters wfsParameters( QUrlQuery( request.url() ) );
     QgsWfsParameters::Format oFormat = wfsParameters.outputFormat();
 
     // test oFormat

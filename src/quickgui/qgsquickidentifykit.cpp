@@ -180,7 +180,7 @@ QgsFeatureList QgsQuickIdentifyKit::identifyVectorLayer( QgsVectorLayer *layer, 
   }
   catch ( QgsCsException &cse )
   {
-    QgsDebugMsg( tr( "Invalid point and proceed with no features found." ) );
+    QgsDebugMsg( QStringLiteral( "Invalid point, proceed without a found features." ) );
     Q_UNUSED( cse );
   }
 

@@ -54,7 +54,8 @@ void QgsMeshRendererActiveDatasetWidget::setSliderRange()
 {
   int datasetCount = 1;
   if ( mMeshLayer &&
-       mMeshLayer->dataProvider() )
+       mMeshLayer->dataProvider() &&
+       mDatasetGroupTreeView->activeGroup() != -1 )
     datasetCount = mMeshLayer->dataProvider()->datasetCount( mDatasetGroupTreeView->activeGroup() );
 
   mDatasetSlider->setMinimum( 0 );
@@ -84,6 +85,7 @@ void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )
 
   if ( mMeshLayer &&
        mMeshLayer->dataProvider() &&
+       datasetIndex.isValid() &&
        mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value )
   {
     const QgsMeshDatasetGroupMetadata meta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
@@ -149,6 +151,7 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 
   if ( mMeshLayer &&
        mMeshLayer->dataProvider() &&
+       groupIndex != -1 &&
        mMeshLayer->dataProvider()->datasetCount( groupIndex ) > value
      )
     return QgsMeshDatasetIndex( groupIndex, value );

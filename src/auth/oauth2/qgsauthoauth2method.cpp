@@ -29,6 +29,7 @@
 #include "qgssettings.h"
 
 #include <QDateTime>
+#include <QInputDialog>
 #include <QDesktopServices>
 #include <QDir>
 #include <QEventLoop>
@@ -44,7 +45,6 @@ QMap<QString, QgsO2 * > QgsAuthOAuth2Method::sOAuth2ConfigCache =
 
 
 QgsAuthOAuth2Method::QgsAuthOAuth2Method()
-  : QgsAuthMethod()
 {
   setVersion( 1 );
   setExpansions( QgsAuthMethod::NetworkRequest | QgsAuthMethod::NetworkReply );
@@ -173,7 +173,8 @@ bool QgsAuthOAuth2Method::updateNetworkRequest( QNetworkRequest &request, const 
     connect( o2, &QgsO2::linkingSucceeded, this, &QgsAuthOAuth2Method::onLinkingSucceeded, Qt::UniqueConnection );
     connect( o2, &QgsO2::openBrowser, this, &QgsAuthOAuth2Method::onOpenBrowser, Qt::UniqueConnection );
     connect( o2, &QgsO2::closeBrowser, this, &QgsAuthOAuth2Method::onCloseBrowser, Qt::UniqueConnection );
-
+    connect( o2, &QgsO2::getAuthCode, this, &QgsAuthOAuth2Method::onAuthCode, Qt::UniqueConnection );
+    connect( this, &QgsAuthOAuth2Method::setAuthCode, o2,  &QgsO2::onSetAuthCode, Qt::UniqueConnection );
     //qRegisterMetaType<QNetworkReply::NetworkError>( QStringLiteral( "QNetworkReply::NetworkError" )) // for Qt::QueuedConnection, if needed;
     connect( o2, &QgsO2::refreshFinished, this, &QgsAuthOAuth2Method::onRefreshFinished, Qt::UniqueConnection );
 
@@ -453,8 +454,18 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   if ( err != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "Token fefresh error: %1" ).arg( reply->errorString() ),
+    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ),
                                AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
+  }
+}
+
+void QgsAuthOAuth2Method::onAuthCode()
+{
+  bool ok = false;
+  QString code = QInputDialog::getText( QApplication::activeWindow(), QStringLiteral( "Enter the authorization code" ), QStringLiteral( "Authoriation code" ), QLineEdit::Normal, QStringLiteral( "Required" ), &ok, Qt::Dialog, Qt::InputMethodHint::ImhNone );
+  if ( ok && !code.isEmpty() )
+  {
+    emit setAuthCode( code );
   }
 }
 

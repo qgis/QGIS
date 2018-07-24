@@ -38,6 +38,7 @@
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"
+#include "qgsserverparameters.h"
 
 #include <QDomDocument>
 #include <QNetworkDiskCache>
@@ -135,7 +136,7 @@ void QgsServer::printRequestParameters( const QMap< QString, QString> &parameter
   }
 }
 
-QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QString, QString> &parameters )
+QString QgsServer::configPath( const QString &defaultConfigPath, const QString &configPath )
 {
   QString cfPath( defaultConfigPath );
   QString projectFile = sSettings.projectFile();
@@ -146,14 +147,13 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
   }
   else
   {
-    QMap<QString, QString>::const_iterator paramIt = parameters.find( QStringLiteral( "MAP" ) );
-    if ( paramIt == parameters.constEnd() )
+    if ( configPath.isEmpty() )
     {
       QgsMessageLog::logMessage( QStringLiteral( "Using default configuration file path: %1" ).arg( defaultConfigPath ), QStringLiteral( "Server" ), Qgis::Info );
     }
     else
     {
-      cfPath = paramIt.value();
+      cfPath = configPath;
       QgsDebugMsg( QString( "MAP:%1" ).arg( cfPath ) );
     }
   }
@@ -303,13 +303,13 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   {
     try
     {
-      QMap<QString, QString> parameterMap = request.parameters();
-      printRequestParameters( parameterMap, logLevel );
+      const QgsServerParameters params = request.serverParameters();
+      printRequestParameters( params.toMap(), logLevel );
 
       //Config file path
       if ( ! project )
       {
-        QString configFilePath = configPath( *sConfigFilePath, parameterMap );
+        QString configFilePath = configPath( *sConfigFilePath, params.map() );
 
         // load the project if needed and not empty
         project = mConfigCache->project( configFilePath );
@@ -325,30 +325,14 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
         sServerInterface->setConfigFilePath( project->fileName() );
       }
 
-      //Service parameter
-      QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
-
-      if ( serviceString.isEmpty() )
+      if ( ! params.fileName().isEmpty() )
       {
-        // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-        QString requestString = parameterMap.value( QStringLiteral( "REQUEST" ) );
-        if ( requestString == QLatin1String( "GetMap" ) || requestString == QLatin1String( "GetFeatureInfo" ) )
-        {
-          serviceString = QStringLiteral( "WMS" );
-        }
-      }
-
-      QString versionString = parameterMap.value( QStringLiteral( "VERSION" ) );
-
-      //possibility for client to suggest a download filename
-      QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
-      if ( !outputFileName.isEmpty() )
-      {
-        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        const QString value = QString( "attachment; filename=\"%1\"" ).arg( params.fileName() );
+        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), value );
       }
 
       // Lookup for service
-      QgsService *service = sServiceRegistry->getService( serviceString, versionString );
+      QgsService *service = sServiceRegistry->getService( params.service(), params.version() );
       if ( service )
       {
         service->executeRequest( request, responseDecorator, project );

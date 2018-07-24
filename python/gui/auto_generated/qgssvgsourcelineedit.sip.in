@@ -1,0 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssvgsourcelineedit.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsSvgSourceLineEdit : QWidget
+{
+%Docstring
+A line edit widget with toolbutton for setting an SVG image path.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgssvgsourcelineedit.h"
+%End
+  public:
+
+    QgsSvgSourceLineEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSvgSourceLineEdit, with the specified ``parent`` widget.
+%End
+
+    QString source() const;
+%Docstring
+Returns the current SVG source.
+
+.. seealso:: :py:func:`setSource`
+
+.. seealso:: :py:func:`sourceChanged`
+%End
+
+    void setLastPathSettingsKey( const QString &key );
+%Docstring
+Sets a specific settings ``key`` to use when storing the last
+used path for the SVG source.
+%End
+
+  public slots:
+
+    void setSource( const QString &source );
+%Docstring
+Sets a new ``source`` to show in the widget.
+
+.. seealso:: :py:func:`source`
+
+.. seealso:: :py:func:`sourceChanged`
+%End
+
+  signals:
+
+    void sourceChanged( const QString &source );
+%Docstring
+Emitted whenever the SVG source is changed in the widget.
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssvgsourcelineedit.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

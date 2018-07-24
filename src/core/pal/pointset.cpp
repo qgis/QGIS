@@ -200,8 +200,7 @@ PointSet::~PointSet()
 
   deleteCoords();
 
-  if ( cHull )
-    delete[] cHull;
+  delete[] cHull;
 }
 
 void PointSet::deleteCoords()

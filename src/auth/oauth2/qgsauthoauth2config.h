@@ -50,7 +50,6 @@ class QgsAuthOAuth2Config : public QObject
     Q_PROPERTY( QString username READ username WRITE setUsername NOTIFY usernameChanged )
     Q_PROPERTY( QString password READ password WRITE setPassword NOTIFY passwordChanged )
     Q_PROPERTY( QString scope READ scope WRITE setScope NOTIFY scopeChanged )
-    Q_PROPERTY( QString state READ state WRITE setState NOTIFY stateChanged )
     Q_PROPERTY( QString apiKey READ apiKey WRITE setApiKey NOTIFY apiKeyChanged )
     Q_PROPERTY( bool persistToken READ persistToken WRITE setPersistToken NOTIFY persistTokenChanged )
     Q_PROPERTY( AccessMethod accessMethod READ accessMethod WRITE setAccessMethod NOTIFY accessMethodChanged )
@@ -138,9 +137,6 @@ class QgsAuthOAuth2Config : public QObject
 
     //! Scope of authentication
     QString scope() const { return mScope; }
-
-    //! State passed with request
-    QString state() const { return mState; }
 
     //! API key
     QString apiKey() const { return mApiKey; }
@@ -282,8 +278,6 @@ class QgsAuthOAuth2Config : public QObject
     void setPassword( const QString &value );
     //! Set scope to \a value
     void setScope( const QString &value );
-    //! Set state to \a value
-    void setState( const QString &value );
     //! Set api key to \a value
     void setApiKey( const QString &value );
     // advanced
@@ -335,8 +329,6 @@ class QgsAuthOAuth2Config : public QObject
     void passwordChanged( const QString & );
     //! Emitted when configuration scope has changed
     void scopeChanged( const QString & );
-    //! Emitted when configuration state has changed
-    void stateChanged( const QString & );
     //! Emitted when configuration API key has changed
     void apiKeyChanged( const QString & );
 
@@ -369,7 +361,6 @@ class QgsAuthOAuth2Config : public QObject
     QString mUsername;
     QString mPassword;
     QString mScope;
-    QString mState;
     QString mApiKey;
     bool mPersistToken = false;
     AccessMethod mAccessMethod = AccessMethod::Header;

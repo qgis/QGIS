@@ -70,23 +70,19 @@ QgsDecorationGrid::QgsDecorationGrid( QObject *parent )
 
 QgsDecorationGrid::~QgsDecorationGrid()
 {
-  if ( mLineSymbol )
-    delete mLineSymbol;
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
+  delete mLineSymbol;
+  delete mMarkerSymbol;
 }
 
 void QgsDecorationGrid::setLineSymbol( QgsLineSymbol *symbol )
 {
-  if ( mLineSymbol )
-    delete mLineSymbol;
+  delete mLineSymbol;
   mLineSymbol = symbol;
 }
 
 void QgsDecorationGrid::setMarkerSymbol( QgsMarkerSymbol *symbol )
 {
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
+  delete mMarkerSymbol;
   mMarkerSymbol = symbol;
 }
 
