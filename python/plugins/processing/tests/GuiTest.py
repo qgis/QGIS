@@ -119,6 +119,44 @@ class WrappersTest(unittest.TestCase):
     def testSource(self):
         self.checkConstructWrapper(QgsProcessingParameterFeatureSource('test'), FeatureSourceWidgetWrapper)
 
+        # dummy layer
+        layer = QgsVectorLayer('Point', 'test', 'memory')
+        self.assertTrue(layer.isValid())
+        QgsProject.instance().addMapLayer(layer)
+
+        alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
+        dlg = AlgorithmDialog(alg)
+        param = QgsProcessingParameterFeatureSource('test')
+        wrapper = FeatureSourceWidgetWrapper(param, dlg)
+        widget = wrapper.createWidget()
+
+        # check layer value
+        widget.show()
+        wrapper.setValue(layer.id())
+        self.assertEqual(wrapper.value(), layer.id())
+
+        # check not set
+        wrapper.setValue('')
+        self.assertFalse(wrapper.value())
+
+        # check selected only - expect a QgsProcessingFeatureSourceDefinition
+        wrapper.setValue(layer.id())
+        wrapper.use_selection_checkbox.setChecked(True)
+        value = wrapper.value()
+        self.assertIsInstance(value, QgsProcessingFeatureSourceDefinition)
+        self.assertTrue(value.selectedFeaturesOnly)
+        self.assertEqual(value.source.staticValue(), layer.id())
+
+        # NOT selected only, expect a direct layer id or source value
+        wrapper.use_selection_checkbox.setChecked(False)
+        value = wrapper.value()
+        self.assertEqual(value, layer.id())
+
+        # with non-project layer
+        wrapper.setValue('/home/my_layer.shp')
+        value = wrapper.value()
+        self.assertEqual(value, '/home/my_layer.shp')
+
     def testMapLayer(self):
         self.checkConstructWrapper(QgsProcessingParameterMapLayer('test'), MapLayerWidgetWrapper)
 

@@ -1187,10 +1187,16 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             try:
                 layer = self.combo.currentLayer()
                 if layer is not None:
-                    return QgsProcessingFeatureSourceDefinition(layer.id(), use_selected_features)
+                    if use_selected_features:
+                        return QgsProcessingFeatureSourceDefinition(layer.id(), True)
+                    else:
+                        return layer.id()
                 else:
                     if self.combo.currentText():
-                        return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), use_selected_features)
+                        if use_selected_features:
+                            return QgsProcessingFeatureSourceDefinition(self.combo.currentText(), True)
+                        else:
+                            return self.combo.currentText()
                     else:
                         return None
             except:
