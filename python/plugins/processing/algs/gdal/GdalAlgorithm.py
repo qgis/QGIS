@@ -34,7 +34,9 @@ from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingAlgorithm,
                        QgsProcessingContext,
-                       QgsProcessingFeedback)
+                       QgsProcessingFeedback,
+                       QgsExpressionContext,
+                       QgsProject)
 
 from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -75,7 +77,8 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         Interprets a parameter as an OGR compatible source and layer name
         :param executing:
         """
-        input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
+        layer_id = parameters[parameter_name].source.value(QgsExpressionContext(),'')[0]
+        input_layer = QgsProject.instance().mapLayer(layer_id)
         ogr_data_path = None
         ogr_layer_name = None
         if input_layer is None or input_layer.dataProvider().name() == 'memory':
