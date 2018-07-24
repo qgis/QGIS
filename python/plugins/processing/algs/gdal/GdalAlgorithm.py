@@ -32,6 +32,7 @@ from qgis.PyQt.QtCore import QUrl, QCoreApplication
 
 from qgis.core import (QgsApplication,
                        QgsVectorFileWriter,
+                       QgsProcessingFeatureSourceDefinition,
                        QgsProcessingAlgorithm,
                        QgsProcessingContext,
                        QgsProcessingFeedback)
@@ -75,6 +76,12 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         Interprets a parameter as an OGR compatible source and layer name
         :param executing:
         """
+        if not executing and parameter_name in parameters and isinstance(parameters[parameter_name], QgsProcessingFeatureSourceDefinition):
+            # if not executing, then we throw away all 'selected features only' settings
+            # since these have no meaning for command line gdal use, and we don't want to force
+            # an export of selected features only to a temporary file just to show the command!
+            parameters = {parameter_name: parameters[parameter_name].source}
+
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
         ogr_data_path = None
         ogr_layer_name = None
