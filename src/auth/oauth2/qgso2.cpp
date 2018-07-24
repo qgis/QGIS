@@ -144,6 +144,12 @@ void QgsO2::clearProperties()
   // TODO: clear object properties
 }
 
+void QgsO2::onSetAuthCode( const QString &code )
+{
+  setCode( code );
+  onVerificationReceived( QMap<QString, QString>() );
+}
+
 void QgsO2::link()
 {
   QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
@@ -222,7 +228,7 @@ void QgsO2::link()
 
     QUrl url( tokenUrl_ );
     QNetworkRequest tokenRequest( url );
-    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded" );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1Literal( "application/x-www-form-urlencoded" ) );
     QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
 
     connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
