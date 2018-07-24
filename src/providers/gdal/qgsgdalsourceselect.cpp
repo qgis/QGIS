@@ -154,7 +154,7 @@ void QgsGdalSourceSelect::addButtonClicked()
 
     Q_FOREACH ( const QString &path, QgsFileWidget::splitFilePaths( mRasterPath ) )
     {
-      emit addRasterLayer( path, QFileInfo( path ).baseName(), QStringLiteral( "gdal" ) );
+      emit addRasterLayer( path, QFileInfo( path ).completeBaseName(), QStringLiteral( "gdal" ) );
     }
   }
   else if ( radioSrcProtocol->isChecked() )
