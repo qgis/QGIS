@@ -103,8 +103,8 @@ class VoronoiPolygons(QgisAlgorithm):
 
         outFeat = QgsFeature()
         extent = source.sourceExtent()
-        extraX = extent.height() * (buf / 100.0)
-        extraY = extent.width() * (buf / 100.0)
+        extraX = extent.width() * (buf / 100.0)
+        extraY = extent.height() * (buf / 100.0)
         height = extent.height()
         width = extent.width()
         c = voronoi.Context()
