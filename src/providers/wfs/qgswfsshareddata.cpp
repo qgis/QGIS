@@ -269,6 +269,7 @@ bool QgsWFSSharedData::createCache()
       // Copy the temporary database back to disk
       vsi_l_offset nLength = 0;
       GByte *pabyData = VSIGetMemFileBuffer( vsimemFilename.toStdString().c_str(), &nLength, TRUE );
+      Q_ASSERT( !QFile::exists( mCacheDbname ) );
       VSILFILE *fp = VSIFOpenL( mCacheDbname.toStdString().c_str(), "wb " );
       if ( fp )
       {
@@ -340,6 +341,7 @@ bool QgsWFSSharedData::createCache()
     }
 
     // Copy the in-memory template SpatiaLite DB into the target DB
+    Q_ASSERT( !QFile::exists( mCacheDbname ) );
     QFile dbFile( mCacheDbname );
     if ( !dbFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
