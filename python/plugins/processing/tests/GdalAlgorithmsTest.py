@@ -153,6 +153,16 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertTrue(res.isValid())
         self.assertEqual(res.featureCount(), 2)
 
+        # with memory layers - if not executing layer source should be ignored and replaced
+        # with a dummy path, because:
+        # - it has no meaning for the gdal command outside of QGIS, memory layers don't exist!
+        # - we don't want to force an export of the whole memory layer to a temp file just to show the command preview
+        # this might be very slow!
+        ogr_data_path, ogr_layer_name = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback,
+                                                                   executing=False)
+        self.assertEqual(ogr_data_path, 'path_to_data_file')
+        self.assertEqual(ogr_layer_name, 'layer_name')
+
         QgsProject.instance().removeMapLayer(layer)
 
     def testGetOgrCompatibleSourceFromOgrLayer(self):
@@ -171,6 +181,12 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl.id()}, context, feedback, True)
         self.assertEqual(path, source)
         path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl.id()}, context, feedback, False)
+        self.assertEqual(path, source)
+
+        # with selected features only - if not executing, the 'selected features only' setting
+        # should be ignored (because it has no meaning for the gdal command outside of QGIS!)
+        parameters = {'INPUT': QgsProcessingFeatureSourceDefinition(vl.id(), True)}
+        path, layer = alg.getOgrCompatibleSource('INPUT', parameters, context, feedback, False)
         self.assertEqual(path, source)
 
     def testGetOgrCompatibleSourceFromFeatureSource(self):
