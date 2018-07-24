@@ -203,6 +203,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
 
+    QTimer mUpdateEditSelectionTimer;
 };
 
 #endif
