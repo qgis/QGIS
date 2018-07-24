@@ -609,6 +609,14 @@ class CORE_EXPORT QgsExpression
      */
     static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value );
 
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    QString str = QStringLiteral( "<QgsExpression: %1>" ).arg( sipCpp->expression() );
+    sipRes = PyUnicode_FromString( str.toUtf8().data() );
+    % End
+#endif
+
   private:
     void initGeomCalculator();
 
