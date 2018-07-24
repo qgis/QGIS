@@ -76,24 +76,24 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       {
         if ( url.startsWith( exclude ) )
         {
-          QgsDebugMsgLevel( QString( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
+          QgsDebugMsgLevel( QStringLiteral( "using default proxy for %1 [exclude %2]" ).arg( url, exclude ), 4 );
           return QList<QNetworkProxy>() << QNetworkProxy();
         }
       }
 
       if ( nam->useSystemProxy() )
       {
-        QgsDebugMsgLevel( QString( "requesting system proxy for query %1" ).arg( url ), 4 );
+        QgsDebugMsgLevel( QStringLiteral( "requesting system proxy for query %1" ).arg( url ), 4 );
         QList<QNetworkProxy> proxies = QNetworkProxyFactory::systemProxyForQuery( query );
         if ( !proxies.isEmpty() )
         {
-          QgsDebugMsgLevel( QString( "using system proxy %1:%2 for query" )
+          QgsDebugMsgLevel( QStringLiteral( "using system proxy %1:%2 for query" )
                             .arg( proxies.first().hostName() ).arg( proxies.first().port() ), 4 );
           return proxies;
         }
       }
 
-      QgsDebugMsgLevel( QString( "using fallback proxy for %1" ).arg( url ), 4 );
+      QgsDebugMsgLevel( QStringLiteral( "using fallback proxy for %1" ).arg( url ), 4 );
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
@@ -149,18 +149,18 @@ const QNetworkProxy &QgsNetworkAccessManager::fallbackProxy() const
 
 void QgsNetworkAccessManager::setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
 {
-  QgsDebugMsg( QString( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
-               .arg( proxy.type() == QNetworkProxy::DefaultProxy ? "DefaultProxy" :
-                     proxy.type() == QNetworkProxy::Socks5Proxy ? "Socks5Proxy" :
-                     proxy.type() == QNetworkProxy::NoProxy ? "NoProxy" :
-                     proxy.type() == QNetworkProxy::HttpProxy ? "HttpProxy" :
-                     proxy.type() == QNetworkProxy::HttpCachingProxy ? "HttpCachingProxy" :
-                     proxy.type() == QNetworkProxy::FtpCachingProxy ? "FtpCachingProxy" :
-                     "Undefined",
-                     proxy.hostName() )
-               .arg( proxy.port() )
-               .arg( proxy.user(),
-                     proxy.password().isEmpty() ? "not set" : "set" ) );
+  QgsDebugMsgLevel( QStringLiteral( "proxy settings: (type:%1 host: %2:%3, user:%4, password:%5" )
+                    .arg( proxy.type() == QNetworkProxy::DefaultProxy ? QStringLiteral( "DefaultProxy" ) :
+                          proxy.type() == QNetworkProxy::Socks5Proxy ? QStringLiteral( "Socks5Proxy" ) :
+                          proxy.type() == QNetworkProxy::NoProxy ? QStringLiteral( "NoProxy" ) :
+                          proxy.type() == QNetworkProxy::HttpProxy ? QStringLiteral( "HttpProxy" ) :
+                          proxy.type() == QNetworkProxy::HttpCachingProxy ? QStringLiteral( "HttpCachingProxy" ) :
+                          proxy.type() == QNetworkProxy::FtpCachingProxy ? QStringLiteral( "FtpCachingProxy" ) :
+                          QStringLiteral( "Undefined" ),
+                          proxy.hostName() )
+                    .arg( proxy.port() )
+                    .arg( proxy.user(),
+                          proxy.password().isEmpty() ? QStringLiteral( "not set" ) : QStringLiteral( "set" ) ), 4 );
 
   mFallbackProxy = proxy;
   mExcludedURLs = excludes;
@@ -182,7 +182,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   bool ishttps = pReq->url().scheme().toLower() == QLatin1String( "https" );
   if ( ishttps && !QgsApplication::authManager()->isDisabled() )
   {
-    QgsDebugMsgLevel( "Adding trusted CA certs to request", 3 );
+    QgsDebugMsgLevel( QStringLiteral( "Adding trusted CA certs to request" ), 3 );
     QSslConfiguration sslconfig( pReq->sslConfiguration() );
     // Merge trusted CAs with any additional CAs added by the authentication methods
     sslconfig.setCaCertificates( QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCertsCache(), sslconfig.caCertificates( ) ) );
@@ -193,7 +193,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
     QgsAuthConfigSslServer servconfig = QgsApplication::authManager()->sslCertCustomConfigByHost( hostport.trimmed() );
     if ( !servconfig.isNull() )
     {
-      QgsDebugMsg( QString( "Adding SSL custom config to request for %1" ).arg( hostport ) );
+      QgsDebugMsg( QStringLiteral( "Adding SSL custom config to request for %1" ).arg( hostport ) );
       sslconfig.setProtocol( servconfig.sslProtocol() );
       sslconfig.setPeerVerifyMode( servconfig.sslPeerVerifyMode() );
       sslconfig.setPeerVerifyDepth( servconfig.sslPeerVerifyDepth() );
@@ -220,7 +220,7 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
   connect( reply, &QNetworkReply::downloadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::uploadProgress, timer, [timer] { timer->start(); } );
   connect( reply, &QNetworkReply::finished, timer, &QTimer::stop );
-  QgsDebugMsgLevel( QString( "Created [reply:%1]" ).arg( ( qint64 ) reply, 0, 16 ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Created [reply:%1]" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ), 3 );
 
   return reply;
 }
@@ -234,7 +234,7 @@ void QgsNetworkAccessManager::abortRequest()
   Q_ASSERT( reply );
 
   reply->abort();
-  QgsDebugMsgLevel( QString( "Abort [reply:%1] %2" ).arg( ( qint64 ) reply, 0, 16 ).arg( reply->url().toString() ), 3 );
+  QgsDebugMsgLevel( QStringLiteral( "Abort [reply:%1] %2" ).arg( reinterpret_cast< qint64 >( reply ), 0, 16 ).arg( reply->url().toString() ), 3 );
   QgsMessageLog::logMessage( tr( "Network request %1 timed out" ).arg( reply->url().toString() ), tr( "Network" ) );
   // Notify the application
   emit requestTimedOut( reply );
@@ -336,7 +336,7 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
       {
         proxy = proxies.first();
       }
-      QgsDebugMsg( "setting default proxy" );
+      QgsDebugMsgLevel( QStringLiteral( "setting default proxy" ), 4 );
     }
     else
     {
@@ -387,8 +387,8 @@ void QgsNetworkAccessManager::setupDefaultProxyAndCache( Qt::ConnectionType conn
   qint64 cacheSize = settings.value( QStringLiteral( "cache/size" ), 50 * 1024 * 1024 ).toULongLong();
   newcache->setCacheDirectory( cacheDirectory );
   newcache->setMaximumCacheSize( cacheSize );
-  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ) );
-  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ) );
+  QgsDebugMsgLevel( QStringLiteral( "cacheDirectory: %1" ).arg( newcache->cacheDirectory() ), 4 );
+  QgsDebugMsgLevel( QStringLiteral( "maximumCacheSize: %1" ).arg( newcache->maximumCacheSize() ), 4 );
 
   if ( cache() != newcache )
     setCache( newcache );
