@@ -33,3 +33,38 @@ tests:
           geometry:
             precision: 7
 
+  - algorithm: grass7:v.rast.stats
+    name: V.rast.stats
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column_prefix: s
+      map:
+        name: custom/zonal_stats.shp
+        type: vector
+      method:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      percentile: 90
+      raster:
+        name: dem.tif
+        type: raster
+    results:
+      output:
+        name: expected/grass7/v_rast_stats.shp
+        type: vector
