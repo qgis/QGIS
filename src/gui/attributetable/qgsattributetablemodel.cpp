@@ -429,32 +429,36 @@ void QgsAttributeTableModel::loadLayer()
     removeRows( 0, rowCount() );
   }
 
-  QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
-
-  int i = 0;
-
-  QTime t;
-  t.start();
-
-  while ( features.nextFeature( mFeat ) )
+  // Layer might have been deleted and cache set to nullptr!
+  if ( mLayerCache )
   {
-    ++i;
+    QgsFeatureIterator features = mLayerCache->getFeatures( mFeatureRequest );
 
-    if ( t.elapsed() > 1000 )
+    int i = 0;
+
+    QTime t;
+    t.start();
+
+    while ( features.nextFeature( mFeat ) )
     {
-      bool cancel = false;
-      emit progress( i, cancel );
-      if ( cancel )
-        break;
+      ++i;
 
-      t.restart();
+      if ( t.elapsed() > 1000 )
+      {
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
+      }
+      featureAdded( mFeat.id(), true );
     }
-    featureAdded( mFeat.id(), true );
+
+    emit finished();
+    connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
   }
 
-  emit finished();
-
-  connect( mLayerCache, &QgsVectorLayerCache::invalidated, this, &QgsAttributeTableModel::loadLayer, Qt::UniqueConnection );
   endResetModel();
 }
 
