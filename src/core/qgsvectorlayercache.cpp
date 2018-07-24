@@ -205,11 +205,12 @@ void QgsVectorLayerCache::requestCompleted( const QgsFeatureRequest &featureRequ
   // If a request is too large for the cache don't notify to prevent from indexing incomplete requests
   if ( fids.count() <= mCache.size() )
   {
-    Q_FOREACH ( QgsAbstractCacheIndex *idx, mCacheIndices )
+    for ( const auto &idx : qgis::as_const( mCacheIndices ) )
     {
       idx->requestCompleted( featureRequest, fids );
     }
-    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone )
+    if ( featureRequest.filterType() == QgsFeatureRequest::FilterNone &&
+         ( featureRequest.filterRect().isNull() || featureRequest.filterRect().contains( mLayer->extent() ) ) )
     {
       mFullCache = true;
     }
