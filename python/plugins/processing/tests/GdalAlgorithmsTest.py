@@ -60,6 +60,7 @@ from qgis.core import (QgsProcessingContext,
                        QgsGeometry,
                        QgsPointXY,
                        QgsProject,
+                       QgsVectorLayer,
                        QgsRectangle,
                        QgsProcessingException,
                        QgsProcessingFeatureSourceDefinition)
@@ -153,6 +154,24 @@ class TestGdalAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
         self.assertEqual(res.featureCount(), 2)
 
         QgsProject.instance().removeMapLayer(layer)
+
+    def testGetOgrCompatibleSourceFromOgrLayer(self):
+        p = QgsProject()
+        source = os.path.join(testDataPath, 'points.gml')
+        vl = QgsVectorLayer(source)
+        self.assertTrue(vl.isValid())
+        p.addMapLayer(vl)
+
+        context = QgsProcessingContext()
+        context.setProject(p)
+        feedback = QgsProcessingFeedback()
+
+        alg = ogr2ogr()
+        alg.initAlgorithm()
+        path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl.id()}, context, feedback, True)
+        self.assertEqual(path, source)
+        path, layer = alg.getOgrCompatibleSource('INPUT', {'INPUT': vl.id()}, context, feedback, False)
+        self.assertEqual(path, source)
 
     def testGetOgrCompatibleSourceFromFeatureSource(self):
         # create a memory layer and add to project and context

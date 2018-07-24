@@ -278,6 +278,10 @@ class GdalUtils:
             format = QgsVectorFileWriter.driverForExtension(ext)
             return uri, '"' + format + '"'
 
+        return GdalUtils.ogrConnectionStringAndFormatFromLayer(layer)
+
+    @staticmethod
+    def ogrConnectionStringAndFormatFromLayer(layer):
         provider = layer.dataProvider().name()
         if provider == 'spatialite':
             # dbname='/geodata/osm_ch.sqlite' table="places" (Geometry) sql=
