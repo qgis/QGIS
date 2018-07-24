@@ -213,9 +213,10 @@ bool QgsWFSSharedData::createCache()
 {
   Q_ASSERT( mCacheDbname.isEmpty() );
 
-  static int sTmpCounter = 0;
-  ++sTmpCounter;
-  mCacheDbname = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
+  static QAtomicInt sTmpCounter = 0;
+  int tmpCounter = ++sTmpCounter;
+  mCacheDbname = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( tmpCounter ) );
+  Q_ASSERT( !QFile::exists( mCacheDbname ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField &field, mFields )
