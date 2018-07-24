@@ -88,7 +88,7 @@ class OgrToPostGis(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterEnum(self.GTYPE,
                                                      self.tr('Output geometry type'), options=self.GEOMTYPE, defaultValue=0))
         self.addParameter(QgsProcessingParameterCrs(self.A_SRS,
-                                                    self.tr('Assign an output CRS'), defaultValue='', optional=False))
+                                                    self.tr('Assign an output CRS'), defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.T_SRS,
                                                     self.tr('Reproject to this CRS on output '), defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterCrs(self.S_SRS,
