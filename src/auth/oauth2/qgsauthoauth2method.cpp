@@ -454,7 +454,7 @@ void QgsAuthOAuth2Method::onRefreshFinished( QNetworkReply::NetworkError err )
   QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
   if ( err != QNetworkReply::NoError )
   {
-    QgsMessageLog::logMessage( tr( "Token fefresh error: %1" ).arg( reply->errorString() ),
+    QgsMessageLog::logMessage( tr( "Token refresh error: %1" ).arg( reply->errorString() ),
                                AUTH_METHOD_KEY, Qgis::MessageLevel::Warning );
   }
 }
