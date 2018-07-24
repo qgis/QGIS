@@ -219,7 +219,7 @@ bool QgsWFSSharedData::createCache()
   Q_ASSERT( !QFile::exists( mCacheDbname ) );
 
   QgsFields cacheFields;
-  Q_FOREACH ( const QgsField &field, mFields )
+  for ( const QgsField &field : qgis::as_const( mFields ) )
   {
     QVariant::Type type = field.type();
     // Map DateTime to int64 milliseconds from epoch
@@ -261,11 +261,11 @@ bool QgsWFSSharedData::createCache()
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
-    QgsVectorFileWriter *writer = new QgsVectorFileWriter( vsimemFilename, QLatin1String( "" ),
+    std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( vsimemFilename, QString(),
         cacheFields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem(), QStringLiteral( "SpatiaLite" ), datasourceOptions, layerOptions );
     if ( writer->hasError() == QgsVectorFileWriter::NoError )
     {
-      delete writer;
+      writer.reset();
 
       // Copy the temporary database back to disk
       vsi_l_offset nLength = 0;
@@ -293,7 +293,7 @@ bool QgsWFSSharedData::createCache()
       // not define SPATIALITE_412_OR_LATER, and thus the call to
       // spatialite_init() may cause failures, which will require using the
       // slower method
-      delete writer;
+      writer.reset();
       VSIUnlink( vsimemFilename.toStdString().c_str() );
     }
   }
@@ -446,7 +446,7 @@ bool QgsWFSSharedData::createCache()
   // regarding crashes, since this is a temporary DB
   QgsDataSourceUri dsURI;
   dsURI.setDatabase( mCacheDbname );
-  dsURI.setDataSource( QLatin1String( "" ), mCacheTablename, geometryFieldname, QLatin1String( "" ), fidName );
+  dsURI.setDataSource( QString(), mCacheTablename, geometryFieldname, QString(), fidName );
   QStringList pragmas;
   pragmas << QStringLiteral( "synchronous=OFF" );
   pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers

@@ -78,7 +78,7 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     QString modifiedUrlString = modifiedUrl.toString();
     // Qt5 does URL encoding from some reason (of the FILTER parameter for example)
     modifiedUrlString = QUrl::fromPercentEncoding( modifiedUrlString.toUtf8() );
-    QgsDebugMsg( QString( "Get %1" ).arg( modifiedUrlString ) );
+    QgsDebugMsg( QStringLiteral( "Get %1" ).arg( modifiedUrlString ) );
     modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
     QString args = modifiedUrlString.mid( modifiedUrlString.indexOf( '?' ) );
     if ( modifiedUrlString.size() > 256 )
@@ -280,7 +280,7 @@ void QgsWfsRequest::abort()
 
 void QgsWfsRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QgsDebugMsg( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QgsDebugMsg( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ) );
 
   if ( bytesReceived != 0 )
     mGotNonEmptyResponse = true;
@@ -307,11 +307,11 @@ void QgsWfsRequest::replyFinished()
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply OK" );
+      QgsDebugMsg( QStringLiteral( "reply OK" ) );
       QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
-        QgsDebugMsg( "Request redirected." );
+        QgsDebugMsg( QStringLiteral( "Request redirected." ) );
 
         const QUrl &toUrl = redirect.toUrl();
         mReply->request();
@@ -339,7 +339,7 @@ void QgsWfsRequest::replyFinished()
           mReply->deleteLater();
           mReply = nullptr;
 
-          QgsDebugMsg( QString( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
+          QgsDebugMsg( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ) );
           mReply = QgsNetworkAccessManager::instance()->get( request );
           mReply->setReadBufferSize( READ_BUFFER_SIZE_HINT );
           if ( !mUri.auth().setAuthorizationReply( mReply ) )
@@ -372,7 +372,7 @@ void QgsWfsRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsg( QString( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
+          QgsDebugMsg( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ) );
           if ( cmd.expirationDate().isNull() )
           {
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( defaultExpirationInSec() ) );
@@ -382,12 +382,12 @@ void QgsWfsRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsg( "No cache!" );
+          QgsDebugMsg( QStringLiteral( "No cache!" ) );
         }
 
 #ifdef QGISDEBUG
         bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsg( QString( "Reply was cached: %1" ).arg( fromCache ) );
+        QgsDebugMsg( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ) );
 #endif
 
         mResponse = mReply->readAll();
