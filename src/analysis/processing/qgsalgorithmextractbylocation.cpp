@@ -210,7 +210,7 @@ void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList methods = QStringList() << QObject::tr( "creating new selection" )
                         << QObject::tr( "adding to current selection" )
-                        << QObject::tr( "select within current selection" )
+                        << QObject::tr( "selecting within current selection" )
                         << QObject::tr( "removing from current selection" );
 
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
