@@ -16,6 +16,7 @@
 
 #include "o0globals.h"
 #include "o0settingsstore.h"
+#include "o2replyserver.h"
 #include "qgsapplication.h"
 #include "qgsauthoauth2config.h"
 #include "qgslogger.h"
@@ -24,6 +25,8 @@
 #include <QSettings>
 #include <QUrl>
 
+
+QString QgsO2::O2_OAUTH2_STATE = QStringLiteral( "state" );
 
 QgsO2::QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config,
               QObject *parent, QNetworkAccessManager *manager )
@@ -125,8 +128,165 @@ void QgsO2::setVerificationResponseContent()
   }
 }
 
+bool QgsO2::isLocalHost( const QUrl redirectUrl ) const
+{
+  QString hostName = redirectUrl.host();
+  if ( hostName == QStringLiteral( "localhost" ) || hostName == QStringLiteral( "127.0.0.1" ) || hostName == QStringLiteral( "[::1]" ) )
+  {
+    return true;
+  }
+  return false;
+}
+
 // slot
 void QgsO2::clearProperties()
 {
   // TODO: clear object properties
+}
+
+void QgsO2::link()
+{
+  QgsDebugMsgLevel( QStringLiteral( "QgsO2::link" ), 4 );
+
+  if ( linked() )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Linked already" ), 4 );
+    emit linkingSucceeded();
+    return;
+  }
+
+  setLinked( false );
+  setToken( QString() );
+  setTokenSecret( QString() );
+  setExtraTokens( QVariantMap() );
+  setRefreshToken( QString() );
+  setExpires( 0 );
+
+  if ( grantFlow_ == GrantFlowAuthorizationCode )
+  {
+    if ( mIsLocalHost )
+    {
+      // Start listening to authentication replies
+      replyServer_->listen( QHostAddress::Any, localPort_ );
+
+      // Save redirect URI, as we have to reuse it when requesting the access token
+      redirectUri_ = localhostPolicy_.arg( replyServer_->serverPort() );
+    }
+    // Assemble initial authentication URL
+    QList<QPair<QString, QString> > parameters;
+    parameters.append( qMakePair( QString( O2_OAUTH2_RESPONSE_TYPE ), ( grantFlow_ == GrantFlowAuthorizationCode ) ?
+                                  QString( O2_OAUTH2_GRANT_TYPE_CODE ) :
+                                  QString( O2_OAUTH2_GRANT_TYPE_TOKEN ) ) );
+    parameters.append( qMakePair( QString( O2_OAUTH2_CLIENT_ID ), clientId_ ) );
+    parameters.append( qMakePair( QString( O2_OAUTH2_REDIRECT_URI ), redirectUri_ ) );
+    parameters.append( qMakePair( QString( O2_OAUTH2_SCOPE ), scope_ ) );
+    parameters.append( qMakePair( O2_OAUTH2_STATE, state_ ) );
+    parameters.append( qMakePair( QString( O2_OAUTH2_API_KEY ), apiKey_ ) );
+
+    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    {
+      parameters.append( qMakePair( iter.key(), iter.value().toString() ) );
+    }
+
+    // Show authentication URL with a web browser
+    QUrl url( requestUrl_ );
+    QUrlQuery query( url );
+    query.setQueryItems( parameters );
+    url.setQuery( query );
+    QgsDebugMsgLevel( QStringLiteral( "QgsO2::link: Emit openBrowser %1" ).arg( url.toString() ), 4 );
+    emit openBrowser( url );
+    if ( !mIsLocalHost )
+    {
+      emit getAuthCode();
+    }
+  }
+  else if ( grantFlow_ == GrantFlowResourceOwnerPasswordCredentials )
+  {
+    QList<O0RequestParameter> parameters;
+    parameters.append( O0RequestParameter( O2_OAUTH2_CLIENT_ID, clientId_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_CLIENT_SECRET, clientSecret_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_USERNAME, username_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_PASSWORD, password_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_GRANT_TYPE, O2_OAUTH2_GRANT_TYPE_PASSWORD ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_SCOPE, scope_.toUtf8() ) );
+    parameters.append( O0RequestParameter( O2_OAUTH2_API_KEY, apiKey_.toUtf8() ) );
+
+
+    for ( QVariantMap::const_iterator iter = extraReqParams_.begin(); iter != extraReqParams_.end(); ++iter )
+    {
+      parameters.append( O0RequestParameter( iter.key().toUtf8(), iter.value().toString().toUtf8() ) );
+    }
+
+
+    QByteArray payload = O0BaseAuth::createQueryParameters( parameters );
+
+    QUrl url( tokenUrl_ );
+    QNetworkRequest tokenRequest( url );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded" );
+    QNetworkReply *tokenReply = manager_->post( tokenRequest, payload );
+
+    connect( tokenReply, SIGNAL( finished() ), this, SLOT( onTokenReplyFinished() ), Qt::QueuedConnection );
+    connect( tokenReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( onTokenReplyError( QNetworkReply::NetworkError ) ), Qt::QueuedConnection );
+  }
+}
+
+void QgsO2::onVerificationReceived( QMap<QString, QString> response )
+{
+  QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Emitting closeBrowser()" ), 4 );
+  emit closeBrowser();
+
+  if ( mIsLocalHost )
+  {
+    if ( response.contains( QStringLiteral( "error" ) ) )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: %1" ).arg( response["error"] ), 4 );
+      emit linkingFailed();
+      return;
+    }
+
+    if ( response.contains( QStringLiteral( "state" ) ) )
+    {
+      if ( response.value( QStringLiteral( "state" ), QStringLiteral( "ignore" ) ) != state_ )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response returned wrong state)" ), 3 ) ;
+        emit linkingFailed();
+        return;
+      }
+    }
+    else
+    {
+      QgsDebugMsgLevel( QStringLiteral( "QgsO2::onVerificationReceived: Verification failed: (Response does not contain state)" ), 3 );
+      emit linkingFailed();
+      return;
+    }
+    // Save access code
+    setCode( response.value( QString( O2_OAUTH2_GRANT_TYPE_CODE ) ) );
+  }
+
+  if ( grantFlow_ == GrantFlowAuthorizationCode )
+  {
+
+    // Exchange access code for access/refresh tokens
+    QString query;
+    if ( !apiKey_.isEmpty() )
+      query = QStringLiteral( "?=%1" ).arg( QString( O2_OAUTH2_API_KEY ), apiKey_ );
+    QNetworkRequest tokenRequest( QUrl( tokenUrl_.toString() + query ) );
+    tokenRequest.setHeader( QNetworkRequest::ContentTypeHeader, O2_MIME_TYPE_XFORM );
+    QMap<QString, QString> parameters;
+    parameters.insert( O2_OAUTH2_GRANT_TYPE_CODE, code() );
+    parameters.insert( O2_OAUTH2_CLIENT_ID, clientId_ );
+    parameters.insert( O2_OAUTH2_CLIENT_SECRET, clientSecret_ );
+    parameters.insert( O2_OAUTH2_REDIRECT_URI, redirectUri_ );
+    parameters.insert( O2_OAUTH2_GRANT_TYPE, O2_AUTHORIZATION_CODE );
+    QByteArray data = buildRequestBody( parameters );
+    QNetworkReply *tokenReply = manager_->post( tokenRequest, data );
+    timedReplies_.add( tokenReply );
+    connect( tokenReply, &QNetworkReply::finished, this, &QgsO2::onTokenReplyFinished, Qt::QueuedConnection );
+    connect( tokenReply, qgis::overload<QNetworkReply::NetworkError>::of( &QNetworkReply::error ), this, &QgsO2::onTokenReplyError, Qt::QueuedConnection );
+  }
+  else
+  {
+    setToken( response.value( O2_OAUTH2_ACCESS_TOKEN ) );
+    setRefreshToken( response.value( O2_OAUTH2_REFRESH_TOKEN ) );
+  }
 }
