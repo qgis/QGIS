@@ -363,13 +363,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                                                       self.GRASS_REGION_ALIGN_TO_RESOLUTION,
                                                       context)
 
-    def processAlgorithm(self, parameters, context, feedback):
+    def processAlgorithm(self, original_parameters, context, feedback):
         if isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
                 raise QgsProcessingException(
                     self.tr('GRASS GIS 7 folder is not configured. Please '
                             'configure it before running GRASS GIS 7 algorithms.'))
+
+        # make a copy of the original parameters dictionary - it gets modified by grass algorithms
+        parameters = {k: v for k, v in original_parameters.items()}
 
         # Create brand new commands lists
         self.commands = []
@@ -987,8 +990,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         return not message, message
 
     def checkParameterValues(self, parameters, context):
+        grass_parameters = {k: v for k, v in parameters.items()}
         if self.module:
             if hasattr(self.module, 'checkParameterValuesBeforeExecuting'):
                 func = getattr(self.module, 'checkParameterValuesBeforeExecuting')
-                return func(self, parameters, context)
-        return super(Grass7Algorithm, self).checkParameterValues(parameters, context)
+                return func(self, grass_parameters, context)
+        return super().checkParameterValues(grass_parameters, context)
