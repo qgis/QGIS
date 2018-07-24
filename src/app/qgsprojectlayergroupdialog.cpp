@@ -189,16 +189,11 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
     {
       return;
     }
+  }
 
-    if ( !projectDom.setContent( &projectFile ) )
-    {
-      return;
-    }
-  } else {
-    if ( !projectDom.setContent( &projectFile ) )
-    {
-      return;
-    }    
+  if ( !projectDom.setContent( &projectFile ) )
+  {
+    return;
   }
   
 

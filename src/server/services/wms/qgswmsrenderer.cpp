@@ -2416,13 +2416,14 @@ namespace QgsWms
     for ( const QgsLayerTreeNode *child : group->children() )
     {
       if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
-      {
-        QString shortName = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
-        QString name = child->name();
-        if ( !shortName.isEmpty() )
-          initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), shortName );
-        else
-          initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
+      {       
+        QString name = child->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        
+        if ( name.isEmpty() )
+          name = child->name();
+        
+        initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), name );
+        
       }
     }
   }
