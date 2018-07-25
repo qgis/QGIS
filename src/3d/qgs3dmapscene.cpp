@@ -191,6 +191,20 @@ QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController 
 
 void Qgs3DMapScene::onCameraChanged()
 {
+  updateScene();
+  bool changedCameraPlanes = updateCameraNearFarPlanes();
+
+  if ( changedCameraPlanes )
+  {
+    // repeat update of entities - because we have updated camera's near/far planes,
+    // the active nodes may have changed as well
+    updateScene();
+    updateCameraNearFarPlanes();
+  }
+}
+
+void Qgs3DMapScene::updateScene()
+{
   for ( QgsChunkedEntity *entity : qgis::as_const( mChunkEntities ) )
   {
     if ( entity->isEnabled() )
@@ -198,7 +212,10 @@ void Qgs3DMapScene::onCameraChanged()
   }
 
   updateSceneState();
+}
 
+bool Qgs3DMapScene::updateCameraNearFarPlanes()
+{
   // Update near and far plane from the terrain.
   // this needs to be done with great care as we have kind of circular dependency here:
   // active nodes are culled based on the current frustum (which involves near + far plane)
@@ -258,14 +275,19 @@ void Qgs3DMapScene::onCameraChanged()
     }
 
     // set near/far plane - with some tolerance in front/behind expected near/far planes
-    camera->setFarPlane( ffar * 2 );
-    camera->setNearPlane( fnear / 2 );
-
+    float newFar = ffar * 2;
+    float newNear = fnear / 2;
+    if ( !qgsFloatNear( newFar, camera->farPlane() ) || !qgsFloatNear( newNear, camera->nearPlane() ) )
+    {
+      camera->setFarPlane( newFar );
+      camera->setNearPlane( newNear );
+      return true;
+    }
   }
   else
     qDebug() << "no terrain - not setting near/far plane";
 
-  //qDebug() << "camera near/far" << mCameraController->camera()->nearPlane() << mCameraController->camera()->farPlane();
+  return false;
 }
 
 void Qgs3DMapScene::onFrameTriggered( float dt )
