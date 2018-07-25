@@ -102,7 +102,7 @@ namespace QgsWcs
   };
 
 
-} // namespace QgsWfs
+} // namespace QgsWcs
 
 /**
  * \ingroup server
