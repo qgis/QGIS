@@ -26,23 +26,23 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsGeometryRepr(self):
         p = QgsPointXY(123.456, 987.654)
         g = QgsGeometry.fromPointXY(p)
-        self.assertTrue(g.__repr__().startswith('<QgsGeometry: Point (123.456)'))
+        self.assertTrue(g.__repr__().startswith('<QgsGeometry: Point (123.456'))
 
     def testQgsPointRepr(self):
         p = QgsPoint(123.456, 987.654, 100)
-        self.assertTrue(p.__repr__().startswith('<QgsPoint: PointZ (123.456)'))
+        self.assertTrue(p.__repr__().startswith('<QgsPoint: PointZ (123.456'))
 
     def testQgsPointXYRepr(self):
         p = QgsPointXY(123.456, 987.654)
-        self.assertTrue(p.__repr__().startswith('﻿<QgsPointXY: POINT(123.456'))
+        self.assertTrue(p.__repr__().startswith('<QgsPointXY: POINT(123.456'))
 
     def testQgsCircleRepr(self):
         c = QgsCircle(QgsPoint(1, 1), 2.0)
-        self.assertEqual(c.__repr__(), '﻿<QgsCircle: Circle (Center: Point (1 1), Radius: 2, Azimuth: 0)>')
+        self.assertEqual(c.__repr__(), '<QgsCircle: Circle (Center: Point (1 1), Radius: 2, Azimuth: 0)>')
 
     def testQgsCircularstringRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
-        self.assertEqual(cs.__repr__(), '﻿<QgsCompoundCurve: CompoundCurve (CircularString (1 2, 2 3, 3 4))>')
+        self.assertEqual(cs.__repr__(), '<QgsCircularString: CircularString (1 2, 2 3, 3 4)>')
 
     def testQgsCompoundcurveRepr(self):
         cs = QgsCircularString(QgsPoint(1, 2), QgsPoint(2, 3), QgsPoint(3, 4))
@@ -110,7 +110,7 @@ class TestPython__repr__(unittest.TestCase):
 
     def testQgsRectangleRepr(self):
         r = QgsRectangle(1, 2, 3, 4)
-        self.assertEqual(r.constGet().__repr__(), '<QgsRectangle: 1 2, 3 4>')
+        self.assertEqual(r.__repr__(), '<QgsRectangle: 1 2, 3 4>')
 
 
 if __name__ == "__main__":
