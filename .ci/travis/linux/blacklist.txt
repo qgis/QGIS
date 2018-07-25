@@ -22,6 +22,9 @@ qgis_ziplayertest
 # Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=63061783&build=297405
 PyQgsSpatialiteProvider
 
+# Flaky, and not required for 3.2. See https://github.com/qgis/QGIS/pull/7466#issuecomment-407656549
+qgis_meshlayerrenderertest
+
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
 
