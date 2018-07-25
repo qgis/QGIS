@@ -3229,7 +3229,13 @@ QString QgsProcessingParameterFeatureSource::valueAsPythonString( const QVariant
     return QgsProcessingUtils::stringToPythonLiteral( layer->source() );
   }
 
-  return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
+  QString layerString = value.toString();
+
+  // prefer to use layer source if possible (since it's persistent)
+  if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( layerString, context ) ) )
+    layerString = layer->source();
+
+  return QgsProcessingUtils::stringToPythonLiteral( layerString );
 }
 
 QString QgsProcessingParameterFeatureSource::asScriptCode() const
