@@ -128,7 +128,7 @@ void TestQgs3DRendering::testFlatTerrain()
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-  QTest::qSleep( 100 );  // a hack to avoid blank render on Travis
+  //QTest::qSleep( 100 );  // a hack to avoid blank render on Travis
   img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "flat_terrain_1", img, 40 ) );
 
@@ -162,8 +162,9 @@ void TestQgs3DRendering::testDemTerrain()
   engine.setRootEntity( scene );
 
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2000, 60, 0 );
-  QTest::qSleep( 100 );  // a hack to avoid blank render on Travis
   QImage img3 = Qgs3DUtils::captureSceneImage( engine, scene );
+  QTest::qSleep( 100 );  // a hack to avoid blank render on Travis
+  img3 = Qgs3DUtils::captureSceneImage( engine, scene );
 
   QVERIFY( renderCheck( "dem_terrain_1", img3, 40 ) );
 }
