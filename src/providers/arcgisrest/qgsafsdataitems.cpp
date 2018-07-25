@@ -102,6 +102,13 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
   const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, errorTitle, errorMessage );
   if ( serviceData.isEmpty() )
   {
+    if ( !errorMessage.isEmpty() )
+    {
+      std::unique_ptr< QgsErrorItem > error = qgis::make_unique< QgsErrorItem >( this, tr( "Connection failed: %1" ).arg( errorTitle ), mPath + "/error" );
+      error->setToolTip( errorMessage );
+      layers.append( error.release() );
+      QgsDebugMsg( "Connection failed - " + errorMessage );
+    }
     return layers;
   }
   const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
