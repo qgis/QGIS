@@ -91,3 +91,26 @@ tests:
         name: expected/grass7/v_voronoi.shp
         type: vector
 
+  - algorithm: grass7:v.what.rast
+    name: v.what.rast
+    params:
+      -i: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column: val
+      map:
+        name: custom/grass7/sample_points.shp
+        type: vector
+      raster:
+        name: dem.tif
+        type: raster
+      type: 0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_what_rast.shp
+        type: vector
