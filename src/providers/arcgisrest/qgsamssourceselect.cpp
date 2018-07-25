@@ -68,6 +68,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
     }
     // insert the typenames, titles and abstracts into the tree view
     QStandardItem *idItem = new QStandardItem( layerData[QStringLiteral( "id" )].toString() );
+    idItem->setData( true, IsLayerRole );
     bool ok = false;
     int idInt = layerData[QStringLiteral( "id" )].toInt( &ok );
     if ( ok )
