@@ -70,7 +70,7 @@ class TestPython__repr__(unittest.TestCase):
         mc.addGeometry(cs)
         cs2 = QgsCircularString(QgsPoint(4, 20), QgsPoint(5, 22), QgsPoint(6, 24))
         mc.addGeometry(cs2)
-        self.assertEqual(mc.__repr__(), '﻿<QgsMulitCurve: MultiCurve (CircularString (1 10, 2 11, 3 12),CircularString (4 20, 5 22, 6 24))>')
+        self.assertEqual(mc.__repr__(), '<QgsMultiCurve: MultiCurve (CircularString (1 10, 2 11, 3 12),CircularString (4 20, 5 22, 6 24))>')
 
     def testQgsMultilineStringRepr(self):
         ml = QgsGeometry.fromMultiPolylineXY(
