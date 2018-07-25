@@ -64,6 +64,9 @@ class QgsArcGisRestUtils
     static QDateTime parseDateTime( const QVariant &value );
 
     static QUrl parseUrl( const QUrl &url );
+    static void visitFolderItems( const std::function<void ( const QString &folderName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl );
+    static void visitServiceItems( const std::function<void ( const QString &serviceName, const QString &url )> &visitor, const QVariantMap &serviceData, const QString &baseUrl, const QString &parentName );
+    static void addLayerItems( const std::function<void ( const QString &parentLayerId, const QString &layerId, const QString &name, const QString &description, const QString &url, bool isParentLayer, const QString &authid )> &visitor, const QVariantMap &serviceData, const QString &parentUrl );
 };
 
 class QgsArcGisAsyncQuery : public QObject
@@ -91,6 +94,7 @@ class QgsArcGisAsyncParallelQuery : public QObject
   public:
     QgsArcGisAsyncParallelQuery( QObject *parent = nullptr );
     void start( const QVector<QUrl> &urls, QVector<QByteArray> *results, bool allowCache = false );
+
   signals:
     void finished( QStringList errors );
   private slots:

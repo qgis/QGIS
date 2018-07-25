@@ -972,3 +972,56 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     mErrors.clear();
   }
 }
+
+void QgsArcGisRestUtils::visitFolderItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl )
+{
+  const QStringList folderList = serviceData.value( QStringLiteral( "folders" ) ).toStringList();
+  for ( const QString &folder : folderList )
+  {
+    visitor( folder, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + folder );
+  }
+}
+
+void QgsArcGisRestUtils::visitServiceItems( const std::function< void( const QString &, const QString & ) > &visitor, const QVariantMap &serviceData, const QString &baseUrl,
+    const QString &parentName )
+{
+  const QVariantList serviceList = serviceData.value( QStringLiteral( "services" ) ).toList();
+  for ( const QVariant &service : serviceList )
+  {
+    const QVariantMap serviceMap = service.toMap();
+    const QString serviceType = serviceMap.value( QStringLiteral( "type" ) ).toString();
+    if ( serviceType != QLatin1String( "MapServer" ) && serviceType != QLatin1String( "FeatureServer" ) )
+      continue;
+
+    const QString serviceName = serviceMap.value( QStringLiteral( "name" ) ).toString();
+    QString displayName = serviceName;
+    if ( displayName.startsWith( parentName + '/' ) )
+      displayName = displayName.mid( parentName.length() + 1 );
+
+    visitor( displayName, baseUrl + ( baseUrl.endsWith( '/' ) ? QString() : QString( '/' ) ) + serviceName + '/' + serviceType );
+  }
+}
+
+void QgsArcGisRestUtils::addLayerItems( const std::function< void( const QString &, const QString &, const QString &, const QString &, const QString &, bool, const QString & )> &visitor, const QVariantMap &serviceData, const QString &parentUrl )
+{
+  const QString authid = QgsArcGisRestUtils::parseSpatialReference( serviceData.value( QStringLiteral( "spatialReference" ) ).toMap() ).authid();
+
+  const QVariantList layerInfoList = serviceData.value( QStringLiteral( "layers" ) ).toList();
+  for ( const QVariant &layerInfo : layerInfoList )
+  {
+    const QVariantMap layerInfoMap = layerInfo.toMap();
+    const QString id = layerInfoMap.value( QStringLiteral( "id" ) ).toString();
+    const QString parentLayerId = layerInfoMap.value( QStringLiteral( "parentLayerId" ) ).toString();
+    const QString name = layerInfoMap.value( QStringLiteral( "name" ) ).toString();
+    const QString description = layerInfoMap.value( QStringLiteral( "description" ) ).toString();
+
+    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    {
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, true, QString() );
+    }
+    else
+    {
+      visitor( parentLayerId, id, name, description, parentUrl + '/' + id, false, authid );
+    }
+  }
+}

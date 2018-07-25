@@ -338,11 +338,16 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       continue;
     }
+
     int row = idx.row();
-    QString layerTitle = mModel->item( row, 0 )->text(); //layer title/id
-    QString layerName = mModel->item( row, 1 )->text(); //layer name
-    bool cacheFeatures = mServiceType == FeatureService ? mModel->item( row, 3 )->checkState() == Qt::Checked : false;
-    QString filter = mServiceType == FeatureService ? mModel->item( row, 4 )->text() : QString(); //optional filter specified by user
+    if ( !mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( IsLayerRole ).toBool() )
+      continue;
+
+    QString layerTitle = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->text();  //layer title/id
+    QString layerName = mModel->itemFromIndex( mModel->index( row, 1, idx.parent() ) )->text(); //layer name
+    const QString layerUri = mModel->itemFromIndex( mModel->index( row, 0, idx.parent() ) )->data( UrlRole ).toString();
+    bool cacheFeatures = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 3, idx.parent() ) )->checkState() == Qt::Checked : false;
+    QString filter = mServiceType == FeatureService ? mModel->itemFromIndex( mModel->index( row, 4, idx.parent() ) )->text() : QString(); //optional filter specified by user
     if ( cbxUseTitleLayerName->isChecked() && !layerTitle.isEmpty() )
     {
       layerName = layerTitle;
@@ -352,7 +357,7 @@ void QgsArcGisServiceSourceSelect::addButtonClicked()
     {
       layerExtent = extent;
     }
-    QString uri = getLayerURI( connection, layerTitle, layerName, pCrsString, filter, layerExtent );
+    QString uri = getLayerURI( connection, layerUri.isEmpty() ? layerTitle : layerUri, layerName, pCrsString, filter, layerExtent );
 
     QgsDebugMsg( "Layer " + layerName + ", uri: " + uri );
     addServiceLayer( uri, layerName );
