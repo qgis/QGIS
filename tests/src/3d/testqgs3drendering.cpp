@@ -128,6 +128,8 @@ void TestQgs3DRendering::testFlatTerrain()
   // look from the top
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 0, 0 );
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QTest::qSleep( 1000 );
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
   QVERIFY( renderCheck( "flat_terrain_1", img, 40 ) );
 
   // tilted view (pitch = 60 degrees)
