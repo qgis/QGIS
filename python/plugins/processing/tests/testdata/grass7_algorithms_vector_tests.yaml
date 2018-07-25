@@ -139,3 +139,107 @@ tests:
       output:
         name: expected/grass7/v_vect_stats.shp
         type: vector
+
+  - algorithm: grass7:v.net.allpairs
+    name: v.net.allpairs
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      cats: 1-10000
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_net_allpairs.shp
+        type: vector
+
+  - algorithm: grass7:v.net.centrality
+    name: v.net.centrality
+    params:
+      -a: true
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      betweenness: ''
+      cats: ''
+      closeness: closeness
+      degree: degree
+      eigenvector: ''
+      error: 0.1
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      iterations: 1000
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+      where: ''
+    results:
+      output:
+        name: expected/grass7/v_net_centrality.shp
+        type: vector
+
+  - algorithm: grass7:v.net.salesman
+    name: v.net.salesman
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_type:
+      - 0
+      - 1
+      center_cats: 1-100000
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      threshold: 50.0
+    results:
+      output:
+        name: expected/grass7/v_net_salesman.shp
+        type: vector
+
+  - algorithm: grass7:v.net.steiner
+    name: v.net.steiner
+    params:
+      -g: false
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      arc_type:
+      - 0
+      - 1
+      input:
+        name: custom/grass7/network.shp
+        type: vector
+      npoints: -1
+      points:
+        name: custom/grass7/network_points.shp
+        type: vector
+      terminal_cats: 1-100000
+      threshold: 50.0
+    results:
+      output:
+        name: expected/grass7/v_net_steiner.shp
+        type: vector
