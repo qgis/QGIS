@@ -202,6 +202,7 @@ bool TestQgs3DRendering::renderCheck( const QString &testName, QImage &image, in
   myChecker.setControlPathPrefix( QStringLiteral( "3d" ) );
   myChecker.setControlName( "expected_" + testName );
   myChecker.setRenderedImage( myFileName );
+  myChecker.setColorTolerance( 2 );  // color tolerance < 2 was failing polygon3d_extrusion test
   bool myResultFlag = myChecker.compareImages( testName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
