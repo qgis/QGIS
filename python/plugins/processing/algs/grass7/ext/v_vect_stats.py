@@ -36,4 +36,4 @@ def processOutputs(alg, parameters, context, feedback):
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
     grassName = alg.exportedLayers['areas']
     dataType = 'auto'
-    alg.exportVectorLayer(grassName, fileName, dataType)
+    alg.exportVectorLayer(grassName, fileName, dataType=dataType)
