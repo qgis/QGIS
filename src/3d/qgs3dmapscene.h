@@ -99,6 +99,8 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     void addCameraViewCenterEntity( Qt3DRender::QCamera *camera );
     void setSceneState( SceneState state );
     void updateSceneState();
+    void updateScene();
+    bool updateCameraNearFarPlanes();
 
   private:
     const Qgs3DMapSettings &mMap;
