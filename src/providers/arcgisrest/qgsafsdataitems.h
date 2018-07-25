@@ -56,6 +56,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 #ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+    void refreshConnection();
 #endif
 
   private:
