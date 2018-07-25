@@ -41,11 +41,11 @@ QVector<QgsDataItem *> QgsAfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "arcgisfeatureserver" ) )
+  const QStringList connectionList = QgsOwsConnection::connectionList( "arcgisfeatureserver" );
+  for ( const QString &connName : connectionList )
   {
-    QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), connName );
-    QString path = "afs:/" + connName;
-    connections.append( new QgsAfsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
+    const QString path = QStringLiteral( "afs:/" ) + connName;
+    connections.append( new QgsAfsConnectionItem( this, connName, path, connName ) );
   }
   return connections;
 }
@@ -84,9 +84,9 @@ void QgsAfsRootItem::newConnection()
 
 ///////////////////////////////////////////////////////////////////////////////
 
-QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url )
+QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName )
   : QgsDataCollectionItem( parent, name, path )
-  , mUrl( url )
+  , mConnName( connectionName )
 {
   mIconName = QStringLiteral( "mIconConnect.svg" );
   mCapabilities |= Collapse;
@@ -94,9 +94,12 @@ QgsAfsConnectionItem::QgsAfsConnectionItem( QgsDataItem *parent, const QString &
 
 QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 {
+  const QgsOwsConnection connection( QStringLiteral( "arcgisfeatureserver" ), mConnName );
+  const QString url = connection.uri().param( QStringLiteral( "url" ) );
+
   QVector<QgsDataItem *> layers;
   QString errorTitle, errorMessage;
-  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( mUrl, errorTitle, errorMessage );
+  const QVariantMap serviceData = QgsArcGisRestUtils::getServiceInfo( url, errorTitle, errorMessage );
   if ( serviceData.isEmpty() )
   {
     return layers;
@@ -114,7 +117,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
       continue;
     }
     const QString id = layerInfoMap.value( QStringLiteral( "id" ) ).toString();
-    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, mUrl + "/" + id, layerInfoMap.value( QStringLiteral( "name" ) ).toString(), authid );
+    QgsAfsLayerItem *layer = new QgsAfsLayerItem( this, mName, url + '/' + id, layerInfoMap.value( QStringLiteral( "name" ) ).toString(), authid );
     layers.append( layer );
   }
 
@@ -158,7 +161,10 @@ void QgsAfsConnectionItem::editConnection()
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    // the parent should be updated
+    refresh();
+    if ( mParent )
+      mParent->refreshConnections();
   }
 }
 
@@ -170,7 +176,18 @@ void QgsAfsConnectionItem::deleteConnection()
     return;
 
   QgsOwsConnection::deleteConnection( QStringLiteral( "arcgisfeatureserver" ), mName );
-  mParent->refresh();
+
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
+}
+
+void QgsAfsConnectionItem::refreshConnection()
+{
+  refresh();
+  // the parent should be updated
+  if ( mParent )
+    mParent->refreshConnections();
 }
 #endif
 
