@@ -45,7 +45,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &url );
+    QgsAfsConnectionItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &connectionName );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
 #ifdef HAVE_GUI
@@ -60,7 +60,7 @@ class QgsAfsConnectionItem : public QgsDataCollectionItem
 #endif
 
   private:
-    QString mUrl;
+    QString mConnName;
 };
 
 
