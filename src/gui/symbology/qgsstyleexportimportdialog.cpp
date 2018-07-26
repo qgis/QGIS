@@ -67,7 +67,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   if ( mDialogMode == Import )
   {
-    setWindowTitle( tr( "Import Symbols or Color Ramps" ) );
+    setWindowTitle( tr( "Import Item(s)" ) );
     // populate the import types
     importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
@@ -84,7 +84,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
   }
   else
   {
-    setWindowTitle( tr( "Export Symbols or Color Ramps" ) );
+    setWindowTitle( tr( "Export Item(s)" ) );
     // hide import specific controls when exporting
     btnBrowse->setHidden( true );
     fromLabel->setHidden( true );
@@ -122,7 +122,7 @@ void QgsStyleExportImportDialog::doExportImport()
   QModelIndexList selection = listItems->selectionModel()->selectedIndexes();
   if ( selection.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Export/import Symbols or Color Ramps" ),
+    QMessageBox::warning( this, tr( "Export/import Item(s)" ),
                           tr( "You should select at least one symbol/color ramp." ) );
     return;
   }
@@ -462,7 +462,7 @@ void QgsStyleExportImportDialog::selectByGroup()
   if ( ! mGroupSelectionDlg )
   {
     mGroupSelectionDlg = new QgsStyleGroupSelectionDialog( mStyle, this );
-    mGroupSelectionDlg->setWindowTitle( tr( "Select Symbols or Color Ramps by Group" ) );
+    mGroupSelectionDlg->setWindowTitle( tr( "Select Item(s) by Group" ) );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagSelected, this, &QgsStyleExportImportDialog::selectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );

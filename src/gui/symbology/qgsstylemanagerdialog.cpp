@@ -83,10 +83,10 @@ QgsStyleManagerDialog::QgsStyleManagerDialog( QgsStyle *style, QWidget *parent )
          );
 
   QMenu *shareMenu = new QMenu( tr( "Share Menu" ), this );
-  QAction *exportAction = new QAction( tr( "Export Symbols or Color Ramps…" ), this );
+  QAction *exportAction = new QAction( tr( "Export Item(s)…" ), this );
   exportAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileSave.svg" ) ) );
   shareMenu->addAction( exportAction );
-  QAction *importAction = new QAction( tr( "Import Symbols or Color Ramps…" ), this );
+  QAction *importAction = new QAction( tr( "Import Item(s)…" ), this );
   importAction->setIcon( QIcon( QgsApplication::iconPath( "mActionFileOpen.svg" ) ) );
   shareMenu->addAction( importAction );
   shareMenu->addSeparator();
