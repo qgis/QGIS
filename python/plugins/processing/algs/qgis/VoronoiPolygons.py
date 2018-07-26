@@ -38,7 +38,6 @@ from qgis.core import (QgsApplication,
                        QgsWkbTypes,
                        QgsProcessing,
                        QgsProcessingException,
-                       QgsProcessingParameterDistance,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterNumber)
