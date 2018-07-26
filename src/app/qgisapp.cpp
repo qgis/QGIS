@@ -9645,9 +9645,14 @@ void QgisApp::duplicateLayers( const QList<QgsMapLayer *> &lyrList )
       messageBar()->pushMessage( errMsg,
                                  tr( "Cannot copy style to duplicated layer." ),
                                  Qgis::Critical, messageTimeout() );
+    else if ( qobject_cast<QgsVectorLayer *>( dupLayer ) )
+      messageBar()->pushMessage( tr( "Layer duplication complete" ),
+                                 tr( "Note that it's using the same data source." ),
+                                 Qgis::Info, messageTimeout() );
 
     if ( !newSelection )
       newSelection = dupLayer;
+
   }
 
   dupLayer = nullptr;
