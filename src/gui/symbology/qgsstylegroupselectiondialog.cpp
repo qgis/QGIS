@@ -31,7 +31,7 @@ QgsStyleGroupSelectionDialog::QgsStyleGroupSelectionDialog( QgsStyle *style, QWi
   QStandardItemModel *model = new QStandardItemModel( groupTree );
   groupTree->setModel( model );
 
-  QStandardItem *allSymbols = new QStandardItem( tr( "All Symbols" ) );
+  QStandardItem *allSymbols = new QStandardItem( tr( "All" ) );
   allSymbols->setData( "all", Qt::UserRole + 2 );
   allSymbols->setEditable( false );
   setBold( allSymbols );

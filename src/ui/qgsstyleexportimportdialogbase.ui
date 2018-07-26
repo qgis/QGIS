@@ -91,7 +91,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Select symbols to export</string>
+      <string>Select items to export</string>
      </property>
     </widget>
    </item>

@@ -67,7 +67,7 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
 
   if ( mDialogMode == Import )
   {
-    setWindowTitle( tr( "Import Symbol(s)" ) );
+    setWindowTitle( tr( "Import Symbols or Color Ramps" ) );
     // populate the import types
     importTypeCombo->addItem( tr( "file specified below" ), QVariant( "file" ) );
     // importTypeCombo->addItem( "official QGIS repo online", QVariant( "official" ) );
@@ -79,12 +79,12 @@ QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget
     btnBrowse->setText( QStringLiteral( "Browse" ) );
     connect( btnBrowse, &QAbstractButton::clicked, this, &QgsStyleExportImportDialog::browse );
 
-    label->setText( tr( "Select symbols to import" ) );
+    label->setText( tr( "Select items to import" ) );
     buttonBox->button( QDialogButtonBox::Ok )->setText( tr( "Import" ) );
   }
   else
   {
-    setWindowTitle( tr( "Export Symbol(s)" ) );
+    setWindowTitle( tr( "Export Symbols or Color Ramps" ) );
     // hide import specific controls when exporting
     btnBrowse->setHidden( true );
     fromLabel->setHidden( true );
@@ -462,7 +462,7 @@ void QgsStyleExportImportDialog::selectByGroup()
   if ( ! mGroupSelectionDlg )
   {
     mGroupSelectionDlg = new QgsStyleGroupSelectionDialog( mStyle, this );
-    mGroupSelectionDlg->setWindowTitle( tr( "Select Symbols by Group" ) );
+    mGroupSelectionDlg->setWindowTitle( tr( "Select Symbols or Color Ramps by Group" ) );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagSelected, this, &QgsStyleExportImportDialog::selectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::tagDeselected, this, &QgsStyleExportImportDialog::deselectTag );
     connect( mGroupSelectionDlg, &QgsStyleGroupSelectionDialog::allSelected, this, &QgsStyleExportImportDialog::selectAll );
@@ -488,12 +488,12 @@ void QgsStyleExportImportDialog::importTypeChanged( int index )
   }
   else if ( type == QLatin1String( "official" ) )
   {
-    btnBrowse->setText( QStringLiteral( "Fetch Symbols" ) );
+    btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
     locationLineEdit->setEnabled( false );
   }
   else
   {
-    btnBrowse->setText( QStringLiteral( "Fetch Symbols" ) );
+    btnBrowse->setText( QStringLiteral( "Fetch Items" ) );
     locationLineEdit->setEnabled( true );
   }
 }
