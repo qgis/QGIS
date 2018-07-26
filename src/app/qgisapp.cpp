@@ -8924,6 +8924,7 @@ void QgisApp::toggleMapTips( bool enabled )
   if ( !mMapTipsVisible )
   {
     mpMapTipsTimer->stop();
+    mpMaptip->clear( mMapCanvas );
   }
 
   if ( mActionMapTips->isChecked() != mMapTipsVisible )
