@@ -507,6 +507,10 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 =======
 >>>>>>> [opencl] Fix small OpenCL alg issues
 
+<<<<<<< 14f8c4361dc1f4103bed735a5cf46b38dcfa4a03
+=======
+
+>>>>>>> Fix documentation for ninecell filters
 // TODO: return an anum instead of an int
 int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 {
