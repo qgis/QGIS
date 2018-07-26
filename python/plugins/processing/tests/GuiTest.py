@@ -176,35 +176,72 @@ class WrappersTest(unittest.TestCase):
         widget.setUnitParameterValue('EPSG:3111')
         self.assertEqual(widget.label.text(), 'meters')
         self.assertFalse(widget.warning_label.isVisible())
+        self.assertTrue(widget.units_combo.isVisible())
+        self.assertFalse(widget.label.isVisible())
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+
         widget.setUnitParameterValue('EPSG:4326')
         self.assertEqual(widget.label.text(), 'degrees')
         self.assertTrue(widget.warning_label.isVisible())
+        self.assertFalse(widget.units_combo.isVisible())
+        self.assertTrue(widget.label.isVisible())
+
         widget.setUnitParameterValue(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(widget.label.text(), 'meters')
         self.assertFalse(widget.warning_label.isVisible())
+        self.assertTrue(widget.units_combo.isVisible())
+        self.assertFalse(widget.label.isVisible())
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+
         widget.setUnitParameterValue(QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(widget.label.text(), 'degrees')
         self.assertTrue(widget.warning_label.isVisible())
+        self.assertFalse(widget.units_combo.isVisible())
+        self.assertTrue(widget.label.isVisible())
 
         # layer values
         vl = QgsVectorLayer("Polygon?crs=epsg:3111&field=pk:int", "vl", "memory")
         widget.setUnitParameterValue(vl)
         self.assertEqual(widget.label.text(), 'meters')
         self.assertFalse(widget.warning_label.isVisible())
+        self.assertTrue(widget.units_combo.isVisible())
+        self.assertFalse(widget.label.isVisible())
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+
         vl2 = QgsVectorLayer("Polygon?crs=epsg:4326&field=pk:int", "vl", "memory")
         widget.setUnitParameterValue(vl2)
         self.assertEqual(widget.label.text(), 'degrees')
         self.assertTrue(widget.warning_label.isVisible())
+        self.assertFalse(widget.units_combo.isVisible())
+        self.assertTrue(widget.label.isVisible())
 
         # unresolvable values
         widget.setUnitParameterValue(vl.id())
         self.assertEqual(widget.label.text(), '<unknown>')
         self.assertFalse(widget.warning_label.isVisible())
+        self.assertFalse(widget.units_combo.isVisible())
+        self.assertTrue(widget.label.isVisible())
+
         # resolvable text value
         QgsProject.instance().addMapLayer(vl)
         widget.setUnitParameterValue(vl.id())
         self.assertEqual(widget.label.text(), 'meters')
         self.assertFalse(widget.warning_label.isVisible())
+        self.assertTrue(widget.units_combo.isVisible())
+        self.assertFalse(widget.label.isVisible())
+        self.assertEqual(widget.units_combo.currentData(), QgsUnitTypes.DistanceMeters)
+
+        widget.setValue(5)
+        self.assertEqual(widget.getValue(), 5)
+        widget.units_combo.setCurrentIndex(widget.units_combo.findData(QgsUnitTypes.DistanceKilometers))
+        self.assertEqual(widget.getValue(), 5000)
+        widget.setValue(2)
+        self.assertEqual(widget.getValue(), 2000)
+
+        widget.setUnitParameterValue(vl.id())
+        self.assertEqual(widget.getValue(), 2)
+        widget.setValue(5)
+        self.assertEqual(widget.getValue(), 5)
 
         widget.deleteLater()
 

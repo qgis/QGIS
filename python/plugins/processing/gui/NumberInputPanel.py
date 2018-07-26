@@ -32,7 +32,7 @@ import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal, QSize
-from qgis.PyQt.QtWidgets import QDialog, QLabel
+from qgis.PyQt.QtWidgets import QDialog, QLabel, QComboBox
 
 from qgis.core import (QgsApplication,
                        QgsExpression,
@@ -268,10 +268,21 @@ class DistanceInputPanel(NumberInputPanel):
         super().__init__(param)
 
         self.label = QLabel('')
+
+        self.units_combo = QComboBox()
+        self.base_units = QgsUnitTypes.DistanceUnknownUnit
+        for u in (QgsUnitTypes.DistanceMeters,
+                  QgsUnitTypes.DistanceKilometers,
+                  QgsUnitTypes.DistanceFeet,
+                  QgsUnitTypes.DistanceMiles,
+                  QgsUnitTypes.DistanceYards):
+            self.units_combo.addItem(QgsUnitTypes.toString(u), u)
+
         label_margin = self.fontMetrics().width('X')
         self.layout().insertSpacing(1, label_margin / 2)
         self.layout().insertWidget(2, self.label)
-        self.layout().insertSpacing(3, label_margin / 2)
+        self.layout().insertWidget(3, self.units_combo)
+        self.layout().insertSpacing(4, label_margin / 2)
         self.warning_label = QLabel()
         icon = QgsApplication.getThemeIcon('mIconWarning.svg')
         size = max(24, self.spnValue.height() * 0.5)
@@ -279,11 +290,20 @@ class DistanceInputPanel(NumberInputPanel):
         self.warning_label.setToolTip(self.tr('Distance is in geographic degrees. Consider reprojecting to a projected local coordinate system for accurate results.'))
         self.layout().insertWidget(4, self.warning_label)
         self.layout().insertSpacing(5, label_margin)
+
         self.setUnits(QgsUnitTypes.DistanceUnknownUnit)
 
     def setUnits(self, units):
         self.label.setText(QgsUnitTypes.toString(units))
+        if QgsUnitTypes.unitType(units) != QgsUnitTypes.Standard:
+            self.units_combo.hide()
+            self.label.show()
+        else:
+            self.units_combo.setCurrentIndex(self.units_combo.findData(units))
+            self.units_combo.show()
+            self.label.hide()
         self.warning_label.setVisible(units == QgsUnitTypes.DistanceDegrees)
+        self.base_units = units
 
     def setUnitParameterValue(self, value):
         units = QgsUnitTypes.DistanceUnknownUnit
@@ -297,3 +317,17 @@ class DistanceInputPanel(NumberInputPanel):
             if crs.isValid():
                 units = crs.mapUnits()
         self.setUnits(units)
+
+    def getValue(self):
+        val = super().getValue()
+        if isinstance(val, float) and self.units_combo.isVisible():
+            display_unit = self.units_combo.currentData()
+            return val * QgsUnitTypes.fromUnitToUnitFactor(display_unit, self.base_units)
+
+        return val
+
+    def setValue(self, value):
+        try:
+            self.spnValue.setValue(float(value))
+        except:
+            return
