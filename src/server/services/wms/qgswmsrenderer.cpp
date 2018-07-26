@@ -947,7 +947,7 @@ namespace QgsWms
     // remove unwanted layers (restricted layers, ...)
     removeUnwantedLayers( layers, scaleDenominator );
     // remove non identifiable layers
-    removeNonIdentifiableLayers( layers );
+    //removeNonIdentifiableLayers( layers );
 
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
@@ -1245,13 +1245,16 @@ namespace QgsWms
     Q_FOREACH ( QString queryLayer, queryLayers )
     {
       bool validLayer = false;
-      bool queryableLayer = false;
+      bool queryableLayer = true;
       Q_FOREACH ( QgsMapLayer *layer, layers )
       {
         if ( queryLayer == layerNickname( *layer ) )
         {
           validLayer = true;
-          queryableLayer = !mProject->nonIdentifiableLayers().contains( layer->id() );
+          queryableLayer = !mProject->nonIdentifiableLayers().contains( layer->id() )  ;
+          if (!queryableLayer){
+            break;
+          }
 
           QDomElement layerElement;
           if ( infoFormat == QgsWmsParameters::Format::GML )
@@ -1314,15 +1317,15 @@ namespace QgsWms
           break;
         }
       }
-      if ( !queryableLayer )
-      {
-        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
-        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
-      }
-      else if ( !validLayer && !mNicknameLayers.contains( queryLayer ) )
+      if ( !validLayer && !mNicknameLayers.contains( queryLayer ) && !mLayerGroups.contains( queryLayer ) )
       {
         QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
+      }
+      else if ( (validLayer && !queryableLayer) || (!validLayer && mLayerGroups.contains( queryLayer )) )
+      {
+        QString msg = QObject::tr( "Layer '%1' is not queryable" ).arg( queryLayer );
+        throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
       }
     }
 
