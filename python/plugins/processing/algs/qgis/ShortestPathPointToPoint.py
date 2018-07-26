@@ -219,13 +219,21 @@ class ShortestPathPointToPoint(QgisAlgorithm):
                                   tolerance)
         feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Building graph…'))
         snappedPoints = director.makeGraph(builder, [startPoint, endPoint], feedback)
+        feedback.pushInfo('Start point {}'.format(startPoint.toString()))
+        feedback.pushInfo('Snap start: {}'.format(snappedPoints[0].toString()))
+        feedback.pushInfo('End point {}'.format(endPoint.toString()))
+        feedback.pushInfo('Snap end: {}'.format(snappedPoints[1].toString()))
 
         feedback.pushInfo(QCoreApplication.translate('ShortestPathPointToPoint', 'Calculating shortest path…'))
         graph = builder.graph()
         idxStart = graph.findVertex(snappedPoints[0])
         idxEnd = graph.findVertex(snappedPoints[1])
+        feedback.pushInfo('Start idx {}'.format(idxStart))
+        feedback.pushInfo('End idx {}'.format(idxEnd))
 
         tree, costs = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+        feedback.pushInfo('Tree size {}'.format(len(tree)))
+        feedback.pushInfo('End node {}'.format(tree[idxEnd]))
         if tree[idxEnd] == -1:
             raise QgsProcessingException(
                 self.tr('There is no route from start point to end point.'))

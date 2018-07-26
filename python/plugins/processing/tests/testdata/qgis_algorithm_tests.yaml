@@ -2977,7 +2977,7 @@ tests:
         name: expected/join_attribute_table_subset.gml
         type: vector
 
-  - algorithm: qgis:shortestpathpointtopoint
+  - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, shortest route)
     params:
       DEFAULT_DIRECTION: 2
@@ -3006,7 +3006,7 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:shortestpathpointtopoint
+  - algorithm: native:shortestpathpointtopoint
     name: Shortest path (point to point, fastest route)
     params:
       DEFAULT_DIRECTION: 2
@@ -5799,7 +5799,7 @@ tests:
       OUTPUT:
         name: expected/dbscan_multiple_clusters.gml
         type: vector
-        
+
   - algorithm: qgis:rastersampling
     name: Single band raster
     params:
