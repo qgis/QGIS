@@ -104,7 +104,12 @@ class VoronoiPolygons(QgisAlgorithm):
         outFeat = QgsFeature()
         extent = source.sourceExtent()
         extraX = extent.width() * (buf / 100.0)
+        # Adjust the extent
+        extent.setXMinimum(extent.xMinimum() - extraX)
+        extent.setXMaximum(extent.xMaximum() + extraX)
         extraY = extent.height() * (buf / 100.0)
+        extent.setYMinimum(extent.yMinimum() - extraY)
+        extent.setYMaximum(extent.yMaximum() + extraY)
         height = extent.height()
         width = extent.width()
         c = voronoi.Context()
@@ -151,8 +156,7 @@ class VoronoiPolygons(QgisAlgorithm):
 
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
             inFeat = next(source.getFeatures(request))
-            lines = self.clip_voronoi(
-                edges, c, width, height, extent, extraX, extraY)
+            lines = self.clip_voronoi(edges, c, width, height, extent)
 
             geom = QgsGeometry.fromMultiPointXY(lines)
             geom = QgsGeometry(geom.convexHull())
@@ -165,46 +169,46 @@ class VoronoiPolygons(QgisAlgorithm):
 
         return {self.OUTPUT: dest_id}
 
-    def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
+    def clip_voronoi(self, edges, c, width, height, extent):
         """Clip voronoi function based on code written for Inkscape.
         Copyright (C) 2010 Alvin Penner, penner@vaxxine.com
         """
 
-        def clip_line(x1, y1, x2, y2, w, h, x, y):
-            if x1 < 0 - x and x2 < 0 - x:
+        def clip_line(x1, y1, x2, y2, w, h):
+            if x1 < 0 and x2 < 0:
                 return [0, 0, 0, 0]
-            if x1 > w + x and x2 > w + x:
+            if x1 > w and x2 > w:
                 return [0, 0, 0, 0]
-            if x1 < 0 - x:
+            if x1 < 0:
                 y1 = (y1 * x2 - y2 * x1) / (x2 - x1)
-                x1 = 0 - x
-            if x2 < 0 - x:
+                x1 = 0
+            if x2 < 0:
                 y2 = (y1 * x2 - y2 * x1) / (x2 - x1)
-                x2 = 0 - x
-            if x1 > w + x:
-                y1 = y1 + (w + x - x1) * (y2 - y1) / (x2 - x1)
-                x1 = w + x
-            if x2 > w + x:
-                y2 = y1 + (w + x - x1) * (y2 - y1) / (x2 - x1)
-                x2 = w + x
-            if y1 < 0 - y and y2 < 0 - y:
+                x2 = 0
+            if x1 > w:
+                y1 = y1 + (w - x1) * (y2 - y1) / (x2 - x1)
+                x1 = w
+            if x2 > w:
+                y2 = y1 + (w - x1) * (y2 - y1) / (x2 - x1)
+                x2 = w
+            if y1 < 0 and y2 < 0:
                 return [0, 0, 0, 0]
-            if y1 > h + y and y2 > h + y:
+            if y1 > h and y2 > h:
                 return [0, 0, 0, 0]
             if x1 == x2 and y1 == y2:
                 return [0, 0, 0, 0]
-            if y1 < 0 - y:
+            if y1 < 0:
                 x1 = (x1 * y2 - x2 * y1) / (y2 - y1)
-                y1 = 0 - y
-            if y2 < 0 - y:
+                y1 = 0
+            if y2 < 0:
                 x2 = (x1 * y2 - x2 * y1) / (y2 - y1)
-                y2 = 0 - y
-            if y1 > h + y:
-                x1 = x1 + (h + y - y1) * (x2 - x1) / (y2 - y1)
-                y1 = h + y
-            if y2 > h + y:
-                x2 = x1 + (h + y - y1) * (x2 - x1) / (y2 - y1)
-                y2 = h + y
+                y2 = 0
+            if y1 > h:
+                x1 = x1 + (h - y1) * (x2 - x1) / (y2 - y1)
+                y1 = h
+            if y2 > h:
+                x2 = x1 + (h - y1) * (x2 - x1) / (y2 - y1)
+                y2 = h
             return [x1, y1, x2, y2]
 
         lines = []
@@ -221,22 +225,20 @@ class VoronoiPolygons(QgisAlgorithm):
                     c.vertices[edge[2]][0],
                     c.vertices[edge[2]][1],
                     width,
-                    height,
-                    exX,
-                    exY,
+                    height
                 )
             elif edge[1] >= 0:
                 # Only one vertex
                 if c.lines[edge[0]][1] == 0:
                     # Vertical line
                     xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
-                    if c.vertices[edge[1]][1] > (height + exY) / 2:
-                        ytemp = height + exY
+                    if c.vertices[edge[1]][1] > height / 2:
+                        ytemp = height
                     else:
-                        ytemp = 0 - exX
+                        ytemp = 0
                 else:
-                    xtemp = width + exX
-                    ytemp = (c.lines[edge[0]][2] - (width + exX) *
+                    xtemp = width
+                    ytemp = (c.lines[edge[0]][2] - width *
                              c.lines[edge[0]][0]) / c.lines[edge[0]][1]
                 [x1, y1, x2, y2] = clip_line(
                     c.vertices[edge[1]][0],
@@ -244,21 +246,19 @@ class VoronoiPolygons(QgisAlgorithm):
                     xtemp,
                     ytemp,
                     width,
-                    height,
-                    exX,
-                    exY,
+                    height
                 )
             elif edge[2] >= 0:
                 # Only one vertex
                 if c.lines[edge[0]][1] == 0:
                     # Vertical line
                     xtemp = c.lines[edge[0]][2] / c.lines[edge[0]][0]
-                    if c.vertices[edge[2]][1] > (height + exY) / 2:
-                        ytemp = height + exY
+                    if c.vertices[edge[2]][1] > height / 2:
+                        ytemp = height
                     else:
-                        ytemp = 0.0 - exY
+                        ytemp = 0.0
                 else:
-                    xtemp = 0.0 - exX
+                    xtemp = 0.0
                     ytemp = c.lines[edge[0]][2] / c.lines[edge[0]][1]
                 [x1, y1, x2, y2] = clip_line(
                     xtemp,
@@ -267,34 +267,32 @@ class VoronoiPolygons(QgisAlgorithm):
                     c.vertices[edge[2]][1],
                     width,
                     height,
-                    exX,
-                    exY,
                 )
             if x1 or x2 or y1 or y2:
                 lines.append(QgsPointXY(x1 + extent.xMinimum(),
                                         y1 + extent.yMinimum()))
                 lines.append(QgsPointXY(x2 + extent.xMinimum(),
                                         y2 + extent.yMinimum()))
-                if 0 - exX in (x1, x2):
+                if 0 in (x1, x2):
                     hasXMin = True
-                if 0 - exY in (y1, y2):
+                if 0 in (y1, y2):
                     hasYMin = True
-                if height + exY in (y1, y2):
+                if height in (y1, y2):
                     hasYMax = True
-                if width + exX in (x1, x2):
+                if width in (x1, x2):
                     hasXMax = True
         if hasXMin:
             if hasYMax:
-                lines.append(QgsPointXY(extent.xMinimum() - exX,
-                                        height + extent.yMinimum() + exY))
+                lines.append(QgsPointXY(extent.xMinimum(),
+                                        height + extent.yMinimum()))
             if hasYMin:
-                lines.append(QgsPointXY(extent.xMinimum() - exX,
-                                        extent.yMinimum() - exY))
+                lines.append(QgsPointXY(extent.xMinimum(),
+                                        extent.yMinimum()))
         if hasXMax:
             if hasYMax:
-                lines.append(QgsPointXY(width + extent.xMinimum() + exX,
-                                        height + extent.yMinimum() + exY))
+                lines.append(QgsPointXY(width + extent.xMinimum(),
+                                        height + extent.yMinimum()))
             if hasYMin:
-                lines.append(QgsPointXY(width + extent.xMinimum() + exX,
-                                        extent.yMinimum() - exY))
+                lines.append(QgsPointXY(width + extent.xMinimum(),
+                                        extent.yMinimum()))
         return lines
