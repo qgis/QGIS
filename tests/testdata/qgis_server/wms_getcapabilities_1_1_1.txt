@@ -112,6 +112,25 @@ Content-Type: text/xml; charset=utf-8
     <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
    </KeywordList>
    <Layer queryable="1">
+    <Name>layer_with_short_name</Name>
+    <Title>A Layer with a short name</Title>
+    <Abstract>A Layer with an abstract</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Style>
+     <Name>default</Name>
+     <Title>default</Title>
+     <LegendURL>
+      <Format>image/png</Format>
+      <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+     </LegendURL>
+    </Style>
+   </Layer>
+   <Layer queryable="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>
     <Abstract>A test vector layer with unicode òà</Abstract>
@@ -129,6 +148,63 @@ Content-Type: text/xml; charset=utf-8
       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
      </LegendURL>
     </Style>
+   </Layer>
+   <Layer>
+    <Name>group_name</Name>
+    <Title>Group title</Title>
+    <Abstract>Group abstract</Abstract>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Layer queryable="1">
+     <Name>testlayer</Name>
+     <Title>testlayer</Title>
+     <SRS>CRS:84</SRS>
+     <SRS>EPSG:4326</SRS>
+     <SRS>EPSG:3857</SRS>
+     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <Style>
+      <Name>default</Name>
+      <Title>default</Title>
+      <LegendURL>
+       <Format>image/png</Format>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </LegendURL>
+     </Style>
+    </Layer>
+   </Layer>
+   <Layer>
+    <Name>groupwithoutshortname</Name>
+    <Title>groupwithoutshortname</Title>
+    <SRS>CRS:84</SRS>
+    <SRS>EPSG:4326</SRS>
+    <SRS>EPSG:3857</SRS>
+    <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+    <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+    <Layer queryable="1">
+     <Name>testlayer</Name>
+     <Title>testlayer</Title>
+     <SRS>CRS:84</SRS>
+     <SRS>EPSG:4326</SRS>
+     <SRS>EPSG:3857</SRS>
+     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
+     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
+     <Style>
+      <Name>default</Name>
+      <Title>default</Title>
+      <LegendURL>
+       <Format>image/png</Format>
+       <OnlineResource xlink:type="simple" xlink:href="https://www.qgis.org/?*****" xmlns:xlink="http://www.w3.org/1999/xlink"/>
+      </LegendURL>
+     </Style>
+    </Layer>
    </Layer>
   </Layer>
  </Capability>
