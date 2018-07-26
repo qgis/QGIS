@@ -176,8 +176,8 @@
         <noDataList bandNo="8" useSrcNoData="0"/>
         <noDataList bandNo="9" useSrcNoData="0"/>
       </noData>
-      <map-layer-style-manager current="défaut">
-        <map-layer-style name="défaut"/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
       </map-layer-style-manager>
       <pipe>
         <rasterrenderer alphaBand="-1" redBand="1" opacity="1" greenBand="2" type="multibandcolor" blueBand="3">
@@ -267,8 +267,8 @@
       <dataDependencies/>
       <legend type="default-vector"/>
       <expressionfields/>
-      <map-layer-style-manager current="défaut">
-        <map-layer-style name="défaut"/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
       <renderer-v2 forceraster="0" type="categorizedSymbol" attr="Name" enableorderby="0" symbollevels="0">
@@ -489,8 +489,8 @@ def my_form_open(dialog, layer, feature):
       <dataDependencies/>
       <legend type="default-vector"/>
       <expressionfields/>
-      <map-layer-style-manager current="défaut">
-        <map-layer-style name="défaut"/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
       <renderer-v2 forceraster="0" type="categorizedSymbol" attr="Class" enableorderby="0" symbollevels="0">
@@ -792,8 +792,8 @@ def my_form_open(dialog, layer, feature):
       <dataDependencies/>
       <legend type="default-vector"/>
       <expressionfields/>
-      <map-layer-style-manager current="défaut">
-        <map-layer-style name="défaut"/>
+      <map-layer-style-manager current="default">
+        <map-layer-style name="default"/>
       </map-layer-style-manager>
       <auxiliaryLayer/>
       <renderer-v2 forceraster="0" type="categorizedSymbol" attr="Name" enableorderby="0" symbollevels="0">

@@ -160,8 +160,8 @@ Content-Type: text/xml; charset=utf-8
     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
     <Layer queryable="1">
-     <Name>testlayer</Name>
-     <Title>testlayer</Title>
+     <Name>testlayer2</Name>
+     <Title>testlayer2</Title>
      <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
@@ -187,9 +187,9 @@ Content-Type: text/xml; charset=utf-8
     <LatLonBoundingBox maxy="44.9015" maxx="8.20355" miny="44.9014" minx="8.20346"/>
     <BoundingBox maxy="5.60603e+06" SRS="EPSG:3857" maxx="913215" miny="5.60601e+06" minx="913205"/>
     <BoundingBox maxy="44.9015" SRS="EPSG:4326" maxx="8.20355" miny="44.9014" minx="8.20346"/>
-    <Layer queryable="1">
-     <Name>testlayer</Name>
-     <Title>testlayer</Title>
+    <Layer queryable="0">
+     <Name>testlayer3</Name>
+     <Title>testlayer3</Title>
      <SRS>CRS:84</SRS>
      <SRS>EPSG:4326</SRS>
      <SRS>EPSG:3857</SRS>
