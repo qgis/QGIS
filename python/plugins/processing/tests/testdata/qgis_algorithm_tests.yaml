@@ -5892,4 +5892,21 @@ tests:
         name: expected/filter_by_z.shp
         type: vector
 
+  - algorithm: native:arrayfeatures
+    name: Array of point features
+    params:
+      COUNT: 3
+      DELTA_M: -0.4
+      DELTA_X: 0.1
+      DELTA_Y: -0.2
+      DELTA_Z: 0.3
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/feature_array.shp
+        type: vector
+
+
 # See ../README.md for a description of the file format
