@@ -111,8 +111,7 @@ namespace QgsWfs
     for ( const QString &spatialOperator : spatialOperators )
     {
       QDomElement spatialOperatorElem = doc.createElement( QStringLiteral( "ogc:SpatialOperator" ) );
-      QDomText spatialOperatorText = doc.createTextNode( spatialOperator );
-      spatialOperatorElem.appendChild( spatialOperatorText );
+      spatialOperatorElem.setAttribute( QStringLiteral( "name" ), spatialOperator );
       spatialOperatorsElem.appendChild( spatialOperatorElem );
     }
     spatialCapabilitiesElement.appendChild( spatialOperatorsElem );

@@ -113,17 +113,17 @@ Content-Type: text/xml; charset=utf-8
     <ogc:GeometryOperand>gml:Envelope</ogc:GeometryOperand>
    </ogc:GeometryOperands>
    <ogc:SpatialOperators>
-    <ogc:SpatialOperator>Equals</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Disjoint</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Touches</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Within</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Overlaps</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Crosses</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Intersects</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Contains</ogc:SpatialOperator>
-    <ogc:SpatialOperator>DWithin</ogc:SpatialOperator>
-    <ogc:SpatialOperator>Beyond</ogc:SpatialOperator>
-    <ogc:SpatialOperator>BBOX</ogc:SpatialOperator>
+    <ogc:SpatialOperator name="Equals"/>
+    <ogc:SpatialOperator name="Disjoint"/>
+    <ogc:SpatialOperator name="Touches"/>
+    <ogc:SpatialOperator name="Within"/>
+    <ogc:SpatialOperator name="Overlaps"/>
+    <ogc:SpatialOperator name="Crosses"/>
+    <ogc:SpatialOperator name="Intersects"/>
+    <ogc:SpatialOperator name="Contains"/>
+    <ogc:SpatialOperator name="DWithin"/>
+    <ogc:SpatialOperator name="Beyond"/>
+    <ogc:SpatialOperator name="BBOX"/>
    </ogc:SpatialOperators>
   </ogc:Spatial_Capabilities>
   <ogc:Scalar_Capabilities>
