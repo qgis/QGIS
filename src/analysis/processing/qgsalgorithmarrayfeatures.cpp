@@ -46,7 +46,7 @@ QString QgsArrayFeaturesAlgorithm::groupId() const
 
 QString QgsArrayFeaturesAlgorithm::outputName() const
 {
-  return QObject::tr( "Offset" );
+  return QObject::tr( "Offsets" );
 }
 
 QString QgsArrayFeaturesAlgorithm::shortHelpString() const
