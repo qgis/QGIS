@@ -17,6 +17,7 @@
 
 #include "qgsnativealgorithms.h"
 #include "qgsalgorithmaddincrementalfield.h"
+#include "qgsalgorithmarrayfeatures.h"
 #include "qgsalgorithmassignprojection.h"
 #include "qgsalgorithmboundary.h"
 #include "qgsalgorithmboundingbox.h"
@@ -129,6 +130,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
+  addAlgorithm( new QgsArrayFeaturesAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
