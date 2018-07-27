@@ -102,6 +102,8 @@ void TestQgsProject::testPathResolver()
 {
   // Test resolver with a non existing file path
   QgsPathResolver resolverLegacy( QStringLiteral( "/home/qgis/test.qgs" ) );
+  QCOMPARE( resolverLegacy.readPath( QString() ), QString() );
+  QCOMPARE( resolverLegacy.writePath( QString() ), QString() );
   QCOMPARE( resolverLegacy.writePath( "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
   QCOMPARE( resolverLegacy.writePath( "/home/qgis/subdir/file1.txt" ), QString( "./subdir/file1.txt" ) );
   QCOMPARE( resolverLegacy.writePath( "/home/file1.txt" ), QString( "../file1.txt" ) );
@@ -117,6 +119,8 @@ void TestQgsProject::testPathResolver()
   dir.mkpath( tmpDirName + "/home/qgis/" );
 
   QgsPathResolver resolverRel( QString( tmpDirName + "/home/qgis/test.qgs" ) );
+  QCOMPARE( resolverRel.readPath( QString() ), QString() );
+  QCOMPARE( resolverRel.writePath( QString() ), QString() );
   QCOMPARE( resolverRel.writePath( tmpDirName + "/home/qgis/file1.txt" ), QString( "./file1.txt" ) );
   QCOMPARE( resolverRel.writePath( tmpDirName + "/home/qgis/subdir/file1.txt" ), QString( "./subdir/file1.txt" ) );
   QCOMPARE( resolverRel.writePath( tmpDirName + "/home/file1.txt" ), QString( "../file1.txt" ) );
