@@ -275,7 +275,8 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    setUiForm( context.pathResolver().readPath( e.text() ) );
+    if ( !e.text().isEmpty() )
+      setUiForm( context.pathResolver().readPath( e.text() ) );
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
