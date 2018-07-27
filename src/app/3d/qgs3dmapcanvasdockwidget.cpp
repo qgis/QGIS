@@ -158,7 +158,8 @@ void Qgs3DMapCanvasDockWidget::configure()
 
   QgsVector3D oldOrigin = map->origin();
   QgsCoordinateReferenceSystem oldCrs = map->crs();
-  QgsVector3D oldLookingAt = mCanvas->cameraController()->lookingAtPoint();
+  QgsCameraPose oldCameraPose = mCanvas->cameraController()->cameraPose();
+  QgsVector3D oldLookingAt = oldCameraPose.centerPoint();
 
   // update map
   w->apply();
@@ -171,7 +172,9 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( p != oldLookingAt )
   {
     // apply() call has moved origin of the world so let's move camera so we look still at the same place
-    mCanvas->cameraController()->setLookingAtPoint( p );
+    QgsCameraPose newCameraPose = oldCameraPose;
+    newCameraPose.setCenterPoint( p );
+    mCanvas->cameraController()->setCameraPose( newCameraPose );
   }
 }
 
