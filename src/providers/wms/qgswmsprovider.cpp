@@ -3826,11 +3826,11 @@ void QgsWmsTiledImageDownloadHandler::tileReplyFinished()
   int retry = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( TileRetry ) ).toInt();
 #endif
 
-  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 error:%10 url:%11" )
+  QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3(retry %4) rect:%5,%6 %7,%8) fromcache:%9 %10 url:%11" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo ).arg( retry )
                .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.right(), 0, 'f' ).arg( r.top(), 0, 'f' )
                .arg( fromCache )
-               .arg( reply->errorString(),
+               .arg( reply->error() == QNetworkReply::NoError ? QString() : QStringLiteral( "error: " ) + reply->errorString(),
                      reply->url().toString() )
              );
 
