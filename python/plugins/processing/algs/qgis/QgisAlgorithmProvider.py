@@ -86,7 +86,6 @@ from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
-from .OffsetLine import OffsetLine
 from .Orthogonalize import Orthogonalize
 from .PointDistance import PointDistance
 from .PointsAlongGeometry import PointsAlongGeometry
@@ -201,7 +200,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
-                OffsetLine(),
                 Orthogonalize(),
                 PointDistance(),
                 PointsAlongGeometry(),
