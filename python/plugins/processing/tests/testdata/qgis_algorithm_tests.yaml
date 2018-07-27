@@ -3036,7 +3036,7 @@ tests:
             start: skip
             end: skip
 
-  - algorithm: qgis:shortestpathlayertopoint
+  - algorithm: native:shortestpathlayertopoint
     name: Shortest path layer to point
     params:
       DEFAULT_DIRECTION: 2

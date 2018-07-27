@@ -125,7 +125,7 @@ from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
-from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
+#from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
 #from .ShortestPathPointToLayer import ShortestPathPointToLayer
 #from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SingleSidedBuffer import SingleSidedBuffer
@@ -239,7 +239,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetRasterStyle(),
                 SetVectorStyle(),
                 SetZValue(),
-                ShortestPathLayerToPoint(),
+                #ShortestPathLayerToPoint(),
                 #ShortestPathPointToLayer(),
                 #ShortestPathPointToPoint(),
                 SingleSidedBuffer(),
