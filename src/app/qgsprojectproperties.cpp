@@ -663,20 +663,47 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   }
 
   bool wmtsProject = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
+  bool wmtsPngProject = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ) );
+  bool wmtsJpegProject = QgsProject::instance()->readBoolEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ) );
   QStringList wmtsGroupNameList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
+  QStringList wmtsPngGroupNameList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
+  QStringList wmtsJpegGroupNameList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
   QStringList wmtsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
+  QStringList wmtsPngLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
+  QStringList wmtsJpegLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
 
   QgsTreeWidgetItem *projItem = new QgsTreeWidgetItem( QStringList() << QStringLiteral( "Project" ) << QLatin1String( "" ) );
   projItem->setFlags( projItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-  if ( wmtsProject )
-    projItem->setCheckState( 1, Qt::Checked );
-  else
-    projItem->setCheckState( 1, Qt::Unchecked );
+  projItem->setCheckState( 1, wmtsProject ? Qt::Checked : Qt::Unchecked );
+  projItem->setCheckState( 2, wmtsPngProject ? Qt::Checked : Qt::Unchecked );
+  projItem->setCheckState( 3, wmtsJpegProject ? Qt::Checked : Qt::Unchecked );
   projItem->setData( 0, Qt::UserRole, "project" );
   twWmtsLayers->addTopLevelItem( projItem );
-  popupulateWmtsTree( QgsProject::instance()->layerTreeRoot(), projItem, wmtsGroupNameList, wmtsLayerIdList );
+  populateWmtsTree( QgsProject::instance()->layerTreeRoot(), projItem );
   projItem->setExpanded( true );
   twWmtsLayers->header()->resizeSections( QHeaderView::ResizeToContents );
+  Q_FOREACH ( QTreeWidgetItem *item, twWmtsLayers->findItems( "", Qt::MatchContains | Qt::MatchRecursive, 1 ) )
+  {
+    /*if ( !item->checkState( 1 ) )
+       continue;*/
+
+    QString t = item->data( 0, Qt::UserRole ).toString();
+    if ( t == "group" )
+    {
+      QString gName = item->data( 0, Qt::UserRole + 1 ).toString();
+      item->setCheckState( 1, wmtsGroupNameList.contains( gName ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( 2, wmtsPngGroupNameList.contains( gName ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( 3, wmtsJpegGroupNameList.contains( gName ) ? Qt::Checked : Qt::Unchecked );
+    }
+    else if ( t == "layer" )
+    {
+      QString lId = item->data( 0, Qt::UserRole + 1 ).toString();
+      item->setCheckState( 1, wmtsLayerIdList.contains( lId ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( 2, wmtsPngLayerIdList.contains( lId ) ? Qt::Checked : Qt::Unchecked );
+      item->setCheckState( 3, wmtsJpegLayerIdList.contains( lId ) ? Qt::Checked : Qt::Unchecked );
+    }
+  }
+  connect( twWmtsLayers, &QTreeWidget::itemChanged, this, &QgsProjectProperties::twWmtsItemChanged );
 
   mWFSUrlLineEdit->setText( QgsProject::instance()->readEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), QLatin1String( "" ) ) );
   QStringList wfsLayerIdList = QgsProject::instance()->readListEntry( QStringLiteral( "WFSLayers" ), QStringLiteral( "/" ) );
@@ -1239,8 +1266,14 @@ void QgsProjectProperties::apply()
   }
 
   bool wmtsProject = false;
+  bool wmtsPngProject = false;
+  bool wmtsJpegProject = false;
   QStringList wmtsGroupList;
+  QStringList wmtsPngGroupList;
+  QStringList wmtsJpegGroupList;
   QStringList wmtsLayerList;
+  QStringList wmtsPngLayerList;
+  QStringList wmtsJpegLayerList;
   Q_FOREACH ( const QTreeWidgetItem *item, twWmtsLayers->findItems( "", Qt::MatchContains | Qt::MatchRecursive, 1 ) )
   {
     if ( !item->checkState( 1 ) )
@@ -1250,19 +1283,37 @@ void QgsProjectProperties::apply()
     if ( t == "project" )
     {
       wmtsProject = true;
+      wmtsPngProject = item->checkState( 2 );
+      wmtsJpegProject = item->checkState( 3 );
     }
     else if ( t == "group" )
     {
-      wmtsGroupList << item->data( 0, Qt::UserRole + 1 ).toString();
+      QString gName = item->data( 0, Qt::UserRole + 1 ).toString();
+      wmtsGroupList << gName;
+      if ( item->checkState( 2 ) )
+        wmtsPngGroupList << gName;
+      if ( item->checkState( 3 ) )
+        wmtsJpegGroupList << gName;
     }
     else if ( t == "layer" )
     {
-      wmtsLayerList << item->data( 0, Qt::UserRole + 1 ).toString();
+      QString lId = item->data( 0, Qt::UserRole + 1 ).toString();
+      wmtsLayerList << lId;
+      if ( item->checkState( 2 ) )
+        wmtsPngLayerList << lId;
+      if ( item->checkState( 3 ) )
+        wmtsJpegLayerList << lId;
     }
   }
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ), wmtsProject );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ), wmtsPngProject );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ), wmtsJpegProject );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ), wmtsGroupList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ), wmtsPngGroupList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ), wmtsJpegGroupList );
   QgsProject::instance()->writeEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ), wmtsLayerList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ), wmtsPngLayerList );
+  QgsProject::instance()->writeEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ), wmtsJpegLayerList );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "WFSUrl" ), QStringLiteral( "/" ), mWFSUrlLineEdit->text() );
   QStringList wfsLayerList;
@@ -1356,6 +1407,31 @@ void QgsProjectProperties::apply()
 void QgsProjectProperties::showProjectionsTab()
 {
   mOptionsListWidget->setCurrentRow( 2 );
+}
+
+void QgsProjectProperties::twWmtsItemChanged( QTreeWidgetItem *item, int column )
+{
+  if ( column == 1 && !item->checkState( 1 ) )
+  {
+    item->setCheckState( 2, Qt::Unchecked );
+    item->setCheckState( 3, Qt::Unchecked );
+  }
+  else if ( column == 1 && item->checkState( 1 ) &&
+            !item->checkState( 2 ) && !item->checkState( 3 ) )
+  {
+    item->setCheckState( 2, Qt::Checked );
+    item->setCheckState( 3, Qt::Checked );
+  }
+  else if ( ( column == 2 && item->checkState( 2 ) ) ||
+            ( column == 3 && item->checkState( 3 ) ) )
+  {
+    item->setCheckState( 1, Qt::Checked );
+  }
+  else if ( ( column == 2 && !item->checkState( 2 ) && !item->checkState( 3 ) ) ||
+            ( column == 3 && !item->checkState( 2 ) && !item->checkState( 3 ) ) )
+  {
+    item->setCheckState( 1, Qt::Unchecked );
+  }
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )
@@ -1955,39 +2031,39 @@ void QgsProjectProperties::resetPythonMacros()
                             "def closeProject():\n    pass\n" );
 }
 
-void QgsProjectProperties::popupulateWmtsTree( QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem, const QStringList &groupNames, const QStringList &layerIds )
+void QgsProjectProperties::populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem )
 {
-  QList< QgsLayerTreeNode * > treeGroupChildren = treeGroup->children();
-  for ( int i = 0; i < treeGroupChildren.size(); ++i )
+  Q_FOREACH ( QgsLayerTreeNode *treeNode, treeGroup->children() )
   {
-    QgsTreeWidgetItem *childItem;
-    childItem->setFlags( childItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
-    QgsLayerTreeNode *treeNode = treeGroupChildren.at( i );
+    QgsTreeWidgetItem *childItem = nullptr;
     if ( treeNode->nodeType() == QgsLayerTreeNode::NodeGroup )
     {
       QgsLayerTreeGroup *treeGroupChild = static_cast<QgsLayerTreeGroup *>( treeNode );
-      childItem = new QgsTreeWidgetItem( QStringList() << treeGroupChild->name() << QLatin1String( "" ) );
-      if ( groupNames.contains( treeGroupChild->name() ) )
-        childItem->setCheckState( 1, Qt::Checked );
-      else
-        childItem->setCheckState( 1, Qt::Unchecked );
+      QString gName = treeGroupChild->name();
+
+      childItem = new QgsTreeWidgetItem( QStringList() << gName );
+      childItem->setFlags( childItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+
       childItem->setData( 0, Qt::UserRole, "group" );
-      childItem->setData( 0, Qt::UserRole + 1, treeGroupChild->name() );
+      childItem->setData( 0, Qt::UserRole + 1, gName );
+
       treeItem->addChild( childItem );
-      popupulateWmtsTree( treeGroupChild, childItem, groupNames, layerIds );
+
+      populateWmtsTree( treeGroupChild, childItem );
+
       treeItem->setExpanded( true );
     }
     else
     {
       QgsLayerTreeLayer *treeLayer = static_cast<QgsLayerTreeLayer *>( treeNode );
       QgsMapLayer *l = treeLayer->layer();
-      childItem = new QgsTreeWidgetItem( QStringList() << l->name() << QLatin1String( "" ) );
-      if ( layerIds.contains( l->id() ) )
-        childItem->setCheckState( 1, Qt::Checked );
-      else
-        childItem->setCheckState( 1, Qt::Unchecked );
+
+      childItem = new QgsTreeWidgetItem( QStringList() << l->name() );
+      childItem->setFlags( childItem->flags() | Qt::ItemIsUserCheckable | Qt::ItemIsSelectable );
+
       childItem->setData( 0, Qt::UserRole, "layer" );
       childItem->setData( 0, Qt::UserRole + 1, l->id() );
+
       treeItem->addChild( childItem );
     }
   }

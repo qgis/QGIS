@@ -2490,6 +2490,16 @@
                       <string>Published</string>
                      </property>
                     </column>
+                    <column>
+                     <property name="text">
+                      <string>PNG</string>
+                     </property>
+                    </column>
+                    <column>
+                     <property name="text">
+                      <string>JPEG</string>
+                     </property>
+                    </column>
                    </widget>
                   </item>
                  </layout>

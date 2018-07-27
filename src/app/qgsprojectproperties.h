@@ -137,6 +137,11 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void pbtnStyleColorRamp_clicked();
 
     /**
+     * Slot to link WMTS checkboxes in tree widget
+     */
+    void twWmtsItemChanged( QTreeWidgetItem *item, int column );
+
+    /**
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
@@ -215,7 +220,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     int mEllipsoidIndex;
 
     //! populate WMTS tree
-    void popupulateWmtsTree( QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem, const QStringList &groupNames, const QStringList &layerIds );
+    void populateWmtsTree( const QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem );
     //! Check OWS configuration
     void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
