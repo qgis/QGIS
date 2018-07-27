@@ -77,6 +77,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmshortestpathpointtolayer.cpp
   processing/qgsalgorithmshortestpathpointtopoint.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
@@ -95,6 +96,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+
   processing/qgsalgorithmnetworkanalysisbase.cpp
 
   processing/qgsnativealgorithms.cpp

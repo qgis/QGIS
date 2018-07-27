@@ -74,6 +74,7 @@
 #include "qgsalgorithmrotate.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsegmentize.h"
+#include "qgsalgorithmshortestpathpointtolayer.h"
 #include "qgsalgorithmshortestpathpointtopoint.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
@@ -197,6 +198,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSegmentizeByMaximumAngleAlgorithm() );
   addAlgorithm( new QgsSegmentizeByMaximumDistanceAlgorithm() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
+  addAlgorithm( new QgsShortestPathPointToLayerAlgorithm() );
   addAlgorithm( new QgsShortestPathPointToPointAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
   addAlgorithm( new QgsSmoothAlgorithm() );

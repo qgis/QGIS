@@ -27,7 +27,6 @@
 // QgsNetworkAnalysisAlgorithmBase
 //
 
-
 QString QgsNetworkAnalysisAlgorithmBase::group() const
 {
   return QObject::tr( "Network analysis" );
@@ -130,37 +129,38 @@ void QgsNetworkAnalysisAlgorithmBase::loadCommonParams( const QVariantMap &param
   mBuilder = qgis::make_unique< QgsGraphBuilder >( mNetwork->sourceCrs(), true, tolerance );
 }
 
-//~ QVector< QgsPointXY > QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
-//~ {
-//~ feedback.pushInfo( QObject::tr( "Loading points…" ) );
+void QgsNetworkAnalysisAlgorithmBase::loadPoints( QgsFeatureSource *source, QVector< QgsPointXY > &points, QHash< int, QgsAttributes > &attributes, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  feedback->pushInfo( QObject::tr( "Loading points…" ) );
 
-//~ QVector< QgsPointXY > points;
-//~ QgsFeature feat;
-//~ int i = 0;
-//~ double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
-//~ QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setDestinationCrs( mNetwork->sourceCrs(), context.transformContext() ) );
+  QgsFeature feat;
+  int i = 0;
+  int pointId = 1;
+  double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 0;
+  QgsFeatureIterator features = source->getFeatures( QgsFeatureRequest().setDestinationCrs( mNetwork->sourceCrs(), context.transformContext() ) );
 
-//~ while ( features.nextFeature( feat ) )
-//~ {
-//~ i++;
-//~ if ( feedback->isCanceled() )
-//~ {
-//~ break;
-//~ }
+  while ( features.nextFeature( feat ) )
+  {
+    i++;
+    if ( feedback->isCanceled() )
+    {
+      break;
+    }
 
-//~ feedback->setProgress( i * step );
-//~ if ( !feat.hasGeometry() )
-//~ continue;
+    feedback->setProgress( i * step );
+    if ( !feat.hasGeometry() )
+      continue;
 
-//~ QgsGeometry geom = feat.geometry();
-//~ QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
-//~ while ( it != geom.vertices_end() )
-//~ {
-//~ points.push_back( QgsPointXY( it ) )
-//~ }
-//~ }
-
-//~ return points
-//~ }
+    QgsGeometry geom = feat.geometry();
+    QgsAbstractGeometry::vertex_iterator it = geom.vertices_begin();
+    while ( it != geom.vertices_end() )
+    {
+      points.push_back( QgsPointXY( *it ) );
+      attributes.insert( pointId, feat.attributes() );
+      it++;
+      pointId++;
+    }
+  }
+}
 
 ///@endcond
