@@ -31,6 +31,7 @@ class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 class QgsMetadataWidget;
+class QgsTreeWidgetItem;
 
 /**
  * Dialog to set project level properties
@@ -213,6 +214,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QList<EllipsoidDefs> mEllipsoidList;
     int mEllipsoidIndex;
 
+    //! populate WMTS tree
+    void popupulateWmtsTree( QgsLayerTreeGroup *treeGroup, QgsTreeWidgetItem *treeItem, const QStringList &groupNames, const QStringList &layerIds );
     //! Check OWS configuration
     void checkOWS( QgsLayerTreeGroup *treeGroup, QStringList &owsNames, QStringList &encodingMessages );
 
