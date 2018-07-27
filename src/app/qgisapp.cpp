@@ -11739,20 +11739,24 @@ void QgisApp::removeMapToolMessage()
 // Show the maptip using tooltip
 void QgisApp::showMapTip()
 {
-  QPoint myPointerPos = mMapCanvas->mouseLastXY();
-
-  //  Make sure there is an active layer before proceeding
-  QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
-  if ( mypLayer )
+  // Only show maptips if the mouse is still over the map canvas when timer is triggered
+  if ( mMapCanvas->underMouse() )
   {
-    //QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
-    // only process vector layers
-    if ( mypLayer->type() == QgsMapLayer::VectorLayer )
+    QPoint myPointerPos = mMapCanvas->mouseLastXY();
+
+    //  Make sure there is an active layer before proceeding
+    QgsMapLayer *mypLayer = mMapCanvas->currentLayer();
+    if ( mypLayer )
     {
-      // Show the maptip if the maptips button is depressed
-      if ( mMapTipsVisible )
+      // QgsDebugMsg("Current layer for maptip display is: " + mypLayer->source());
+      // only process vector layers
+      if ( mypLayer->type() == QgsMapLayer::VectorLayer )
       {
-        mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
+        // Show the maptip if the maptips button is depressed
+        if ( mMapTipsVisible )
+        {
+          mpMaptip->showMapTip( mypLayer, mLastMapPosition, myPointerPos, mMapCanvas );
+        }
       }
     }
   }
