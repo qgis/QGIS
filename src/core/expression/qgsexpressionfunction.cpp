@@ -1292,14 +1292,14 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
     return QVariant();
   }
 
-  int bandNb = QgsExpressionUtils::getIntValue( values.at( 2 ), parent );
+  int bandNb = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
   if ( bandNb < 1 || bandNb > layer->bandCount() )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster band number." ) );
     return QVariant();
   }
 
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 2 ), parent );
   if ( geom.isNull() || geom.type() != QgsWkbTypes::PointGeometry )
   {
     parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid point geometry." ) );
@@ -4659,7 +4659,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
-        << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band_number" ), true, 1 ), fcnRasterValue, QStringLiteral( "Rasters" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
         << new QgsStaticExpressionFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
