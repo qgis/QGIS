@@ -1283,6 +1283,48 @@ static QVariant fcnFeatureId( const QVariantList &, const QgsExpressionContext *
   return QVariant( static_cast< int >( f.id() ) );
 }
 
+static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsRasterLayer *layer = QgsExpressionUtils::getRasterLayer( values.at( 0 ), parent );
+  if ( !layer || !layer->dataProvider() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster layer." ) );
+    return QVariant();
+  }
+
+  int bandNb = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
+  if ( bandNb < 1 || bandNb > layer->bandCount() )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid raster band number." ) );
+    return QVariant();
+  }
+
+  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 2 ), parent );
+  if ( geom.isNull() || geom.type() != QgsWkbTypes::PointGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "Function `raster_value` requires a valid point geometry." ) );
+    return QVariant();
+  }
+
+  QgsPointXY point = geom.asPoint();
+  if ( geom.isMultipart() )
+  {
+    QgsMultiPointXY multiPoint = geom.asMultiPoint();
+    if ( multiPoint.count() == 1 )
+    {
+      point = multiPoint[0];
+    }
+    else
+    {
+      // if the geometry contains more than one part, return an undefined value
+      return QVariant();
+    }
+  }
+
+  double value = layer->dataProvider()->sample( point, bandNb );
+  return std::isnan( value ) ? QVariant() : value;
+}
+
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
 {
   if ( !context )
@@ -4559,7 +4601,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "layer_property" ), 2, fcnGetLayerProperty, QStringLiteral( "General" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "raster_statistic" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "General" ) );
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "statistic" ) ), fcnGetRasterBandStat, QStringLiteral( "Rasters" ) );
 
     // **var** function
     QgsStaticExpressionFunction *varFunction = new QgsStaticExpressionFunction( QStringLiteral( "var" ), 1, fcnGetVariable, QStringLiteral( "General" ) );
@@ -4617,6 +4659,7 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "env" ), 1, fcnEnvVar, QStringLiteral( "General" ), QString() )
         << new QgsWithVariableExpressionFunction()
         << new QgsStaticExpressionFunction( QStringLiteral( "attribute" ), 2, fcnAttribute, QStringLiteral( "Record and Attributes" ), QString(), false, QSet<QString>() << QgsFeatureRequest::ALL_ATTRIBUTES )
+        << new QgsStaticExpressionFunction( QStringLiteral( "raster_value" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "layer" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "band" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "point" ) ), fcnRasterValue, QStringLiteral( "Rasters" ) )
 
         // functions for arrays
         << new QgsStaticExpressionFunction( QStringLiteral( "array" ), -1, fcnArray, QStringLiteral( "Arrays" ), QString(), false, QSet<QString>(), false, QStringList(), true )
