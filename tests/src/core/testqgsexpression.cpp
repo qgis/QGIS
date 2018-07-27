@@ -1251,9 +1251,9 @@ class TestQgsExpression: public QObject
       QTest::newRow( "raster_value bad layer" ) << "raster_value('bad',make_point(1,1))" << true << QVariant();
       QTest::newRow( "raster_value bad band" ) << QStringLiteral( "raster_value('%1',make_point(1,1),0)" ).arg( mRasterLayer->name() ) << true << QVariant();
       QTest::newRow( "raster_value bad band 2" ) << QStringLiteral( "raster_value('%1',make_point(1,1),100)" ).arg( mRasterLayer->name() ) << true << QVariant();
-      QTest::newRow( "raster_value invalid geometry" ) << QStringLiteral( "raster_value('%1','invalid geom')" ).arg( mRasterLayer->name() ) << true << QVariant( 1.0 );
+      QTest::newRow( "raster_value invalid geometry" ) << QStringLiteral( "raster_value('%1','invalid geom')" ).arg( mRasterLayer->name() ) << true << QVariant();
       QTest::newRow( "raster_value valid" ) << QStringLiteral( "raster_value('%1',make_point(1535390,5083270))" ).arg( mRasterLayer->name() ) << false << QVariant( 1.0 );
-      QTest::newRow( "raster_value outside extent" ) << QStringLiteral( "raster_value('%1',make_point(1535370,5083250))" ).arg( mRasterLayer->name() ) << true << QVariant();
+      QTest::newRow( "raster_value outside extent" ) << QStringLiteral( "raster_value('%1',make_point(1535370,5083250))" ).arg( mRasterLayer->name() ) << false << QVariant();
 
       //test conversions to bool
       QTest::newRow( "feature to bool false" ) << QStringLiteral( "case when get_feature('none','none',499) then true else false end" ) << false << QVariant( false );

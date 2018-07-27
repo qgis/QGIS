@@ -1322,7 +1322,7 @@ static QVariant fcnRasterValue( const QVariantList &values, const QgsExpressionC
   }
 
   double value = layer->dataProvider()->sample( point, bandNb );
-  return QVariant( value );
+  return std::isnan( value ) ? QVariant() : value;
 }
 
 static QVariant fcnFeature( const QVariantList &, const QgsExpressionContext *context, QgsExpression *, const QgsExpressionNodeFunction * )
