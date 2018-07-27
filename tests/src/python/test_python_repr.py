@@ -14,9 +14,10 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
+from PyQt5.QtCore import QVariant
 from qgis.testing import unittest, start_app
 from qgis.core import QgsGeometry, QgsPoint, QgsPointXY, QgsCircle, QgsCircularString, QgsCompoundCurve,\
-    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle
+    QgsCurvePolygon, QgsEllipse, QgsLineString, QgsMultiCurve, QgsRectangle, QgsExpression, QgsField
 
 start_app()
 
@@ -111,6 +112,14 @@ class TestPython__repr__(unittest.TestCase):
     def testQgsRectangleRepr(self):
         r = QgsRectangle(1, 2, 3, 4)
         self.assertEqual(r.__repr__(), '<QgsRectangle: 1 2, 3 4>')
+
+    def testQgsExpressionRepr(self):
+        e = QgsExpression('my expression')
+        self.assertEqual(e.__repr__(), "<QgsExpression: 'my expression'>")
+
+    def testQgsFieldRepr(self):
+        f = QgsField('field_name', QVariant.Double)
+        self.assertEqual(f.__repr__(), "<QgsField: field_name (double)>")
 
 
 if __name__ == "__main__":

@@ -612,7 +612,7 @@ class CORE_EXPORT QgsExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpression: %1>" ).arg( sipCpp->expression() );
+    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().data() );
     % End
 #endif
