@@ -21,27 +21,23 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgsprocessingalgorithm.h"
+#include "qgsalgorithmnetworkanalysisbase.h"
 
 ///@cond PRIVATE
 
 /**
  * Native shortest path (point to point) algorithm.
  */
-class QgsShortestPathPointToPointAlgorithm : public QgsProcessingAlgorithm
+class QgsShortestPathPointToPointAlgorithm : public QgsNetworkAnalysisAlgorithmBase
 {
 
   public:
 
     QgsShortestPathPointToPointAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
-    QString group() const override;
-    QString groupId() const override;
     QString shortHelpString() const override;
     QgsShortestPathPointToPointAlgorithm *createInstance() const override SIP_FACTORY;
 

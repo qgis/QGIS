@@ -95,6 +95,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmwedgebuffers.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsalgorithmnetworkanalysisbase.cpp
 
   processing/qgsnativealgorithms.cpp
   processing/qgsoverlayutils.cpp
