@@ -410,7 +410,15 @@ QFont QgsFontUtils::fromMimeData( const QMimeData *data, bool *ok )
 static QMap<QString, QString> createTranslatedStyleMap()
 {
   QMap<QString, QString> translatedStyleMap;
-  QStringList words = QStringList() << QStringLiteral( "Normal" ) << QStringLiteral( "Light" ) << QStringLiteral( "Bold" ) << QStringLiteral( "Black" ) << QStringLiteral( "Demi" ) << QStringLiteral( "Italic" ) << QStringLiteral( "Oblique" );
+  QStringList words = QStringList()
+                      << QStringLiteral( "Normal" )
+                      << QStringLiteral( "Regular" )
+                      << QStringLiteral( "Light" )
+                      << QStringLiteral( "Bold" )
+                      << QStringLiteral( "Black" )
+                      << QStringLiteral( "Demi" )
+                      << QStringLiteral( "Italic" )
+                      << QStringLiteral( "Oblique" );
   Q_FOREACH ( const QString &word, words )
   {
     translatedStyleMap.insert( QCoreApplication::translate( "QFontDatabase", qPrintable( word ) ), word );
