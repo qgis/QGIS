@@ -984,7 +984,7 @@ tests:
         name: expected/reverse_multiline.gml
         type: vector
 
-  - algorithm: qgis:offsetline
+  - algorithm: native:offsetline
     name: Offset line positive
     params:
       DISTANCE: 1.0
@@ -1002,7 +1002,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:offsetline
+  - algorithm: native:offsetline
     name: Offset line negative
     params:
       DISTANCE: -1.0
@@ -1020,7 +1020,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:offsetline
+  - algorithm: native:offsetline
     name: Offset line miter
     params:
       DISTANCE: 1.0
@@ -1038,7 +1038,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:offsetline
+  - algorithm: native:offsetline
     name: Offset line bevel
     params:
       DISTANCE: 1.0
@@ -1056,7 +1056,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:offsetline
+  - algorithm: native:offsetline
     name: Offset multilines
     params:
       DISTANCE: 1.0

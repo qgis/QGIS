@@ -55,6 +55,7 @@
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmmultiringconstantbuffer.h"
+#include "qgsalgorithmoffsetlines.h"
 #include "qgsalgorithmorderbyexpression.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
 #include "qgsalgorithmpackage.h"
@@ -171,6 +172,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsMultiRingConstantBufferAlgorithm() );
+  addAlgorithm( new QgsOffsetLinesAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
   addAlgorithm( new QgsPackageAlgorithm() );
