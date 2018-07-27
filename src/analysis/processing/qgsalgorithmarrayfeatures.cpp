@@ -36,12 +36,12 @@ QStringList QgsArrayFeaturesAlgorithm::tags() const
 
 QString QgsArrayFeaturesAlgorithm::group() const
 {
-  return QObject::tr( "Vector geometry" );
+  return QObject::tr( "Vector creation" );
 }
 
 QString QgsArrayFeaturesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return QStringLiteral( "vectorcreation" );
 }
 
 QString QgsArrayFeaturesAlgorithm::outputName() const
@@ -69,7 +69,7 @@ void QgsArrayFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
   std::unique_ptr< QgsProcessingParameterNumber > count = qgis::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "COUNT" ),
       QObject::tr( "Number of features to create" ), QgsProcessingParameterNumber::Integer,
-      10, true, 1 );
+      10, false, 1 );
   count->setIsDynamic( true );
   count->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "COUNT" ), QObject::tr( "Number of features to create" ), QgsPropertyDefinition::IntegerPositiveGreaterZero ) );
   count->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );

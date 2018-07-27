@@ -5908,5 +5908,20 @@ tests:
         name: expected/feature_array.shp
         type: vector
 
+  - algorithm: native:parallellines
+    name: Create parallel lines
+    params:
+      COUNT: 3
+      INPUT:
+        name: lines.gml
+        type: vector
+      JOIN_STYLE: 1
+      MITER_LIMIT: 2.0
+      OFFSET: -0.2
+      SEGMENTS: 8
+    results:
+      OUTPUT:
+        name: expected/create_parallel_lines.gml
+        type: vector
 
 # See ../README.md for a description of the file format
