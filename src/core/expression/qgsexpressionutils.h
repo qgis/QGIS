@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
 
@@ -355,6 +356,10 @@ class QgsExpressionUtils
       return qobject_cast<QgsVectorLayer *>( getMapLayer( value, e ) );
     }
 
+    static QgsRasterLayer *getRasterLayer( const QVariant &value, QgsExpression *e )
+    {
+      return qobject_cast<QgsRasterLayer *>( getMapLayer( value, e ) );
+    }
 
     static QVariantList getListValue( const QVariant &value, QgsExpression *parent )
     {
