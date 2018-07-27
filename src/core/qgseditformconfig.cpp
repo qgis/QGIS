@@ -275,8 +275,17 @@ void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &cont
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
+    const bool tolerantRemoteUrls = e.hasAttribute( QStringLiteral( "tolerant" ) );
     if ( !e.text().isEmpty() )
-      setUiForm( context.pathResolver().readPath( e.text() ) );
+    {
+      const QString uiFormPath = context.pathResolver().readPath( e.text() );
+      // <= 3.2 had a bug where invalid ui paths would get written into projects on load
+      // to avoid restoring these invalid paths, we take a less-tolerant approach for older (untrustworthy) projects
+      // and only set ui forms paths IF they are local files OR start with "http(s)".
+      const bool localFile = QFileInfo::exists( uiFormPath );
+      if ( localFile || tolerantRemoteUrls || uiFormPath.startsWith( QStringLiteral( "http" ) ) )
+        setUiForm( uiFormPath );
+    }
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
@@ -404,6 +413,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
   QDomDocument doc( node.ownerDocument() );
 
   QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
+  efField.setAttribute( QStringLiteral( "tolerant" ), QStringLiteral( "1" ) );
   QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
