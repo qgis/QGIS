@@ -28,6 +28,9 @@ QgsPathResolver::QgsPathResolver( const QString &baseFileName )
 
 QString QgsPathResolver::readPath( const QString &filename ) const
 {
+  if ( filename.isEmpty() )
+    return QString();
+
   QString src = filename;
 
   if ( mBaseFileName.isNull() )
