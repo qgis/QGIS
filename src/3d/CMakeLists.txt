@@ -8,6 +8,7 @@ SET(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dutils.cpp
   qgscameracontroller.cpp
+  qgscamerapose.cpp
   qgsoffscreen3dengine.cpp
   qgsphongmaterialsettings.cpp
   qgsraycastingutils_p.cpp
@@ -81,6 +82,7 @@ SET(QGIS_3D_HDRS
   qgs3dmapsettings.h
   qgs3dutils.h
   qgscameracontroller.h
+  qgscamerapose.h
   qgsoffscreen3dengine.h
   qgsphongmaterialsettings.h
   qgsraycastingutils_p.h

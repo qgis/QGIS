@@ -161,7 +161,7 @@ void QgsCameraController::setCamera( Qt3DRender::QCamera *camera )
     return;
   mCamera = camera;
 
-  mCameraData.setCamera( mCamera ); // initial setup
+  mCameraPose.updateCamera( mCamera ); // initial setup
 
   // TODO: set camera's parent if not set already?
   // TODO: registerDestructionHelper (?)
@@ -175,21 +175,6 @@ void QgsCameraController::setViewport( const QRect &viewport )
 
   mViewport = viewport;
   emit viewportChanged();
-}
-
-void QgsCameraController::setCameraData( float x, float y, float elev, float dist, float pitch, float yaw )
-{
-  mCameraData.x = x;
-  mCameraData.y = y;
-  mCameraData.elev = elev;
-  mCameraData.dist = dist;
-  mCameraData.pitch = pitch;
-  mCameraData.yaw = yaw;
-
-  if ( mCamera )
-  {
-    mCameraData.setCamera( mCamera );
-  }
 }
 
 
@@ -241,18 +226,21 @@ QPointF screen_point_to_point_on_plane( const QPointF &pt, const QRect &viewport
 
 void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
 {
-  if ( mCameraData.pitch + diffPitch > 180 )
-    diffPitch = 180 - mCameraData.pitch;  // prevent going over the head
-  if ( mCameraData.pitch + diffPitch < 0 )
-    diffPitch = 0 - mCameraData.pitch;   // prevent going over the head
+  float pitch = mCameraPose.pitchAngle();
+  float yaw = mCameraPose.headingAngle();
+
+  if ( pitch + diffPitch > 180 )
+    diffPitch = 180 - pitch;  // prevent going over the head
+  if ( pitch + diffPitch < 0 )
+    diffPitch = 0 - pitch;   // prevent going over the head
 
   // Is it always going to be love/hate relationship with quaternions???
   // This quaternion combines two rotations:
   // - first it undoes the previously applied rotation so we have do not have any rotation compared to world coords
   // - then it applies new rotation
   // (We can't just apply our euler angles difference because the camera may be already rotated)
-  QQuaternion q = QQuaternion::fromEulerAngles( mCameraData.pitch + diffPitch, mCameraData.yaw + diffYaw, 0 ) *
-                  QQuaternion::fromEulerAngles( mCameraData.pitch, mCameraData.yaw, 0 ).conjugated();
+  QQuaternion q = QQuaternion::fromEulerAngles( pitch + diffPitch, yaw + diffYaw, 0 ) *
+                  QQuaternion::fromEulerAngles( pitch, yaw, 0 ).conjugated();
 
   // get camera's view vector, rotate it to get new view center
   QVector3D position = mCamera->position();
@@ -261,11 +249,9 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
   QVector3D cameraToCenter = q * viewVector;
   viewCenter = position + cameraToCenter;
 
-  mCameraData.x = viewCenter.x();
-  mCameraData.y = viewCenter.z();
-  mCameraData.elev = viewCenter.y();
-  mCameraData.pitch += diffPitch;
-  mCameraData.yaw += diffYaw;
+  mCameraPose.setCenterPoint( viewCenter );
+  mCameraPose.setPitchAngle( pitch + diffPitch );
+  mCameraPose.setHeadingAngle( yaw + diffYaw );
 }
 
 
@@ -274,46 +260,56 @@ void QgsCameraController::frameTriggered( float dt )
   if ( mCamera == nullptr )
     return;
 
-  CameraData oldCamData = mCameraData;
+  QgsCameraPose oldCamPose = mCameraPose;
+  float dist = mCameraPose.distanceFromCenterPoint();
+  float yaw = mCameraPose.headingAngle();
+  float pitch = mCameraPose.pitchAngle();
+  QgsVector3D center = mCameraPose.centerPoint();
 
   int dx = mMousePos.x() - mLastMousePos.x();
   int dy = mMousePos.y() - mLastMousePos.y();
   mLastMousePos = mMousePos;
 
   double scaling = ( mCtrlAction->isActive() ? 0.1 : 1.0 );
-  mCameraData.dist -= scaling * mCameraData.dist * mWheelAxis->value() * 10 * dt;
+  dist -= scaling * dist * mWheelAxis->value() * 10 * dt;
 
   if ( mRightMouseButtonAction->isActive() )
   {
-    mCameraData.dist -= mCameraData.dist * dy * 0.01;
+    dist -= dist * dy * 0.01;
   }
 
-  float tx = mTxAxis->value() * dt * mCameraData.dist * 1.5;
-  float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
+  float tx = mTxAxis->value() * dt * dist * 1.5;
+  float ty = -mTyAxis->value() * dt * dist * 1.5;
   float telev = mTelevAxis->value() * dt * 300;
+
+  mCameraPose.setDistanceFromCenterPoint( dist );
 
   if ( !mShiftAction->isActive() && !mCtrlAction->isActive() && ( tx || ty ) )
   {
     // moving with keyboard - take into account yaw of camera
     float t = sqrt( tx * tx + ty * ty );
-    float a = atan2( ty, tx ) - mCameraData.yaw * M_PI / 180;
+    float a = atan2( ty, tx ) - yaw * M_PI / 180;
     float dx = cos( a ) * t;
     float dy = sin( a ) * t;
-    mCameraData.x += dx;
-    mCameraData.y += dy;
+    center.set( center.x() + dx, center.y(), center.z() + dy );
+    mCameraPose.setCenterPoint( center );
   }
 
   if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
     // rotate/tilt using mouse (camera moves as it rotates around its view center)
-    mCameraData.pitch += dy;
-    mCameraData.yaw -= dx / 2;
+    pitch += dy;
+    yaw -= dx / 2;
+    mCameraPose.setPitchAngle( pitch );
+    mCameraPose.setHeadingAngle( yaw );
   }
   else if ( mShiftAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
   {
     // rotate/tilt using keyboard (camera moves as it rotates around its view center)
-    mCameraData.pitch -= mTyAxis->value();   // down key = moving camera toward terrain
-    mCameraData.yaw -= mTxAxis->value();     // right key = moving camera clockwise
+    pitch -= mTyAxis->value();   // down key = moving camera toward terrain
+    yaw -= mTxAxis->value();     // right key = moving camera clockwise
+    mCameraPose.setPitchAngle( pitch );
+    mCameraPose.setHeadingAngle( yaw );
   }
   else if ( mCtrlAction->isActive() && mLeftMouseButtonAction->isActive() )
   {
@@ -339,33 +335,36 @@ void QgsCameraController::frameTriggered( float dt )
     QPointF p1 = screen_point_to_point_on_plane( QPointF( mMousePos - QPoint( dx, dy ) ), mViewport, mCamera, z );
     QPointF p2 = screen_point_to_point_on_plane( QPointF( mMousePos ), mViewport, mCamera, z );
 
-    mCameraData.x -= p2.x() - p1.x();
-    mCameraData.y -= p2.y() - p1.y();
+    center.set( center.x() - ( p2.x() - p1.x() ), center.y(), center.z() - ( p2.y() - p1.y() ) );
+    mCameraPose.setCenterPoint( center );
   }
 
   if ( telev != 0 )
-    mCameraData.elev += telev;
+  {
+    center.set( center.x(), center.y() + telev, center.z() );
+    mCameraPose.setCenterPoint( center );
+  }
 
-  if ( std::isnan( mCameraData.x ) || std::isnan( mCameraData.y ) )
+  if ( std::isnan( mCameraPose.centerPoint().x() ) || std::isnan( mCameraPose.centerPoint().y() ) || std::isnan( mCameraPose.centerPoint().z() ) )
   {
     // something went horribly wrong but we need to at least try to fix it somehow
     qDebug() << "camera position got NaN!";
-    mCameraData.x = mCameraData.y = 0;
+    center.set( 0, 0, 0 );
+    mCameraPose.setCenterPoint( center );
   }
 
-  if ( mCameraData.pitch > 180 )
-    mCameraData.pitch = 180;  // prevent going over the head
-  if ( mCameraData.pitch < 0 )
-    mCameraData.pitch = 0;   // prevent going over the head
-  if ( mCameraData.dist < 10 )
-    mCameraData.dist = 10;
+  if ( mCameraPose.pitchAngle() > 180 )
+    mCameraPose.setPitchAngle( 180 );  // prevent going over the head
+  if ( mCameraPose.pitchAngle() < 0 )
+    mCameraPose.setPitchAngle( 0 );   // prevent going over the head
+  if ( mCameraPose.distanceFromCenterPoint() < 10 )
+    mCameraPose.setDistanceFromCenterPoint( 10 );
 
-  if ( mCameraData != oldCamData )
+  if ( mCameraPose != oldCamPose )
   {
-    mCameraData.setCamera( mCamera );
+    mCameraPose.updateCamera( mCamera );
 
-    bool viewCenterChanged = ( mCameraData.x != oldCamData.x || mCameraData.y != oldCamData.y || mCameraData.elev != oldCamData.elev );
-    if ( mTerrainEntity && viewCenterChanged )
+    if ( mTerrainEntity && mCameraPose.centerPoint() != oldCamPose.centerPoint() )
     {
       // figure out our distance from terrain and update the camera's view center
       // so that camera tilting and rotation is around a point on terrain, not an point at fixed elevation
@@ -374,11 +373,9 @@ void QgsCameraController::frameTriggered( float dt )
       if ( mTerrainEntity->rayIntersection( ray, intersectionPoint ) )
       {
         float dist = ( intersectionPoint - mCamera->position() ).length();
-        mCameraData.dist = dist;
-        mCameraData.x = intersectionPoint.x();
-        mCameraData.y = intersectionPoint.z();
-        mCameraData.elev = intersectionPoint.y();
-        mCameraData.setCamera( mCamera );
+        mCameraPose.setDistanceFromCenterPoint( dist );
+        mCameraPose.setCenterPoint( QgsVector3D( intersectionPoint ) );
+        mCameraPose.updateCamera( mCamera );
       }
     }
 
@@ -393,42 +390,52 @@ void QgsCameraController::resetView( float distance )
 
 void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
 {
-  setCameraData( worldX, worldY, 0, distance, 0, yaw );
+  QgsCameraPose camPose;
+  camPose.setCenterPoint( QgsVector3D( worldX, 0, worldY ) );
+  camPose.setDistanceFromCenterPoint( distance );
+  camPose.setHeadingAngle( yaw );
+
   // a basic setup to make frustum depth range long enough that it does not cull everything
   mCamera->setNearPlane( distance / 2 );
   mCamera->setFarPlane( distance * 2 );
 
-  emit cameraChanged();
+  setCameraPose( camPose );
 }
 
 QgsVector3D QgsCameraController::lookingAtPoint() const
 {
-  return QgsVector3D( mCameraData.x, mCameraData.elev, mCameraData.y );
-}
-
-void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float dist )
-{
-  if ( dist < 0 )
-    dist = mCameraData.dist;
-  setCameraData( point.x(), point.z(), point.y(), dist, mCameraData.pitch, mCameraData.yaw );
-  emit cameraChanged();
+  return mCameraPose.centerPoint();
 }
 
 void QgsCameraController::setLookingAtPoint( const QgsVector3D &point, float distance, float pitch, float yaw )
 {
-  setCameraData( point.x(), point.z(), point.y(), distance, pitch, yaw );
+  QgsCameraPose camPose;
+  camPose.setCenterPoint( point );
+  camPose.setDistanceFromCenterPoint( distance );
+  camPose.setPitchAngle( pitch );
+  camPose.setHeadingAngle( yaw );
+  setCameraPose( camPose );
+}
+
+void QgsCameraController::setCameraPose( const QgsCameraPose &camPose )
+{
+  mCameraPose = camPose;
+
+  if ( mCamera )
+    mCameraPose.updateCamera( mCamera );
+
   emit cameraChanged();
 }
 
 QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
 {
   QDomElement elemCamera = doc.createElement( "camera" );
-  elemCamera.setAttribute( QStringLiteral( "x" ), mCameraData.x );
-  elemCamera.setAttribute( QStringLiteral( "y" ), mCameraData.y );
-  elemCamera.setAttribute( QStringLiteral( "elev" ), mCameraData.elev );
-  elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraData.dist );
-  elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraData.pitch );
-  elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraData.yaw );
+  elemCamera.setAttribute( QStringLiteral( "x" ), mCameraPose.centerPoint().x() );
+  elemCamera.setAttribute( QStringLiteral( "y" ), mCameraPose.centerPoint().z() );
+  elemCamera.setAttribute( QStringLiteral( "elev" ), mCameraPose.centerPoint().y() );
+  elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraPose.distanceFromCenterPoint() );
+  elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraPose.pitchAngle() );
+  elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraPose.headingAngle() );
   return elemCamera;
 }
 
@@ -440,7 +447,7 @@ void QgsCameraController::readXml( const QDomElement &elem )
   float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
   float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
   float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
-  setCameraData( x, y, elev, dist, pitch, yaw );
+  setLookingAtPoint( QgsVector3D( x, elev, y ), dist, pitch, yaw );
 }
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
