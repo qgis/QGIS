@@ -36,6 +36,7 @@ from qgis.core import (NULL,
                        QgsField,
                        QgsFeatureSink,
                        QgsRaster,
+                       QgsPointXY,
                        QgsProcessing,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterString,
@@ -160,13 +161,18 @@ class RasterSampling(QgisAlgorithm):
 
             attrs = i.attributes()
 
-            if i.geometry().isMultipart():
-                raise QgsProcessingException(self.tr('''Impossible to sample data
-                of a Multipart layer. Please use the Multipart to single part
-                algorithm to transform the layer.'''))
+            if i.geometry().isMultipart() and i.geometry().constGet().partCount() > 1:
+                sink.addFeature(i, QgsFeatureSink.FastInsert)
+                feedback.setProgress(int(n * total))
+                feedback.reportError(self.tr('Impossible to sample data of multipart feature {}.').format(i.id()))
+                continue
 
             # get the feature geometry as point
-            point = i.geometry().asPoint()
+            point = QgsPointXY()
+            if i.geometry().isMultipart():
+                point = i.geometry().asMultiPoint()[0]
+            else:
+                point = i.geometry().asPoint()
 
             # reproject to raster crs
             try:
