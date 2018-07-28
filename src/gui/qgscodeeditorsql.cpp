@@ -20,6 +20,7 @@
 #include <QString>
 #include <QFont>
 #include <QLabel>
+#include <Qsci/qscilexersql.h>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
