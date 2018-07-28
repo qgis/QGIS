@@ -118,7 +118,7 @@ class TestPython__repr__(unittest.TestCase):
         self.assertEqual(e.__repr__(), "<QgsExpression: 'my expression'>")
 
     def testQgsFieldRepr(self):
-        f = QgsField('field_name', QVariant.Double)
+        f = QgsField('field_name', QVariant.Double, 'double')
         self.assertEqual(f.__repr__(), "<QgsField: field_name (double)>")
 
 
