@@ -5594,7 +5594,7 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Success:
         if ( d.addLayerToProject() )
         {
-          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).baseName() );
+          addRasterLayer( d.outputFile(), QFileInfo( d.outputFile() ).completeBaseName() );
         }
         messageBar()->pushMessage( tr( "Raster calculator" ),
                                    tr( "Calculation complete." ),
