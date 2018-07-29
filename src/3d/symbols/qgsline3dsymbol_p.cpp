@@ -22,8 +22,12 @@
 #include "qgs3dutils.h"
 
 #include "qgsvectorlayer.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgsgeos.h"
+
+#include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QBuffer>
 
 /// @cond PRIVATE
 
@@ -88,7 +92,7 @@ void QgsLine3DSymbolEntity::addEntityForNotSelectedLines( const Qgs3DMapSettings
 QgsLine3DSymbolEntityNode::QgsLine3DSymbolEntityNode( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsLine3DSymbol &symbol, const QgsFeatureRequest &req, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
 {
-  addComponent( renderer( map, symbol, layer, req ) );
+  addComponent( symbol.renderAsSimpleLines() ? rendererSimple( map, symbol, layer, req ) : renderer( map, symbol, layer, req ) );
 }
 
 Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
@@ -147,6 +151,107 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DM
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( mGeometry );
 
+  return renderer;
+}
+
+
+Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::rendererSimple( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
+{
+  QVector<QVector3D> vertices;
+  vertices << QVector3D();  // the first index is invalid, we use it for primitive restart
+  QVector<unsigned int> indexes;
+
+  QgsPoint centroid;
+  QgsPointXY origin( map.origin().x(), map.origin().y() );
+  QgsFeature f;
+  QgsFeatureIterator fi = layer->getFeatures( request );
+  while ( fi.nextFeature( f ) )
+  {
+    if ( f.geometry().isNull() )
+      continue;
+
+    if ( symbol.altitudeBinding() == AltBindCentroid )
+      centroid = QgsPoint( f.geometry().centroid().asPoint() );
+
+    QgsGeometry geom = f.geometry();
+    const QgsAbstractGeometry *g = geom.constGet();
+    if ( QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( g ) )
+    {
+      for ( int i = 0; i < ls->vertexCount(); ++i )
+      {
+        QgsPoint p = ls->vertexAt( QgsVertexId( 0, 0, i ) );
+        float z = Qgs3DUtils::clampAltitude( p, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), centroid, map );
+        vertices << QVector3D( p.x() - map.origin().x(), z, p.y() - map.origin().y() );
+        indexes << vertices.count() - 1;
+      }
+    }
+    else if ( const QgsMultiLineString *mls = qgsgeometry_cast<const QgsMultiLineString *>( g ) )
+    {
+      for ( int nGeom = 0; nGeom < mls->numGeometries(); ++nGeom )
+      {
+        const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( mls->geometryN( nGeom ) );
+        for ( int i = 0; i < ls->vertexCount(); ++i )
+        {
+          QgsPoint p = ls->vertexAt( QgsVertexId( 0, 0, i ) );
+          float z = Qgs3DUtils::clampAltitude( p, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), centroid, map );
+          vertices << QVector3D( p.x() - map.origin().x(), z, p.y() - map.origin().y() );
+          indexes << vertices.count() - 1;
+        }
+        indexes << 0;  // add primitive restart
+      }
+    }
+
+    indexes << 0;  // add primitive restart
+  }
+
+  QByteArray vertexBufferData;
+  vertexBufferData.resize( vertices.size() * 3 * sizeof( float ) );
+  float *rawVertexArray = reinterpret_cast<float *>( vertexBufferData.data() );
+  int idx = 0;
+  for ( const auto &v : vertices )
+  {
+    rawVertexArray[idx++] = v.x();
+    rawVertexArray[idx++] = v.y();
+    rawVertexArray[idx++] = v.z();
+  }
+
+  QByteArray indexBufferData;
+  indexBufferData.resize( indexes.size() * sizeof( int ) );
+  unsigned int *rawIndexArray = reinterpret_cast<unsigned int *>( indexBufferData.data() );
+  idx = 0;
+  for ( unsigned int indexVal : indexes )
+  {
+    rawIndexArray[idx++] = indexVal;
+  }
+
+  Qt3DRender::QBuffer *vertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
+  vertexBuffer->setData( vertexBufferData );
+
+  Qt3DRender::QBuffer *indexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
+  indexBuffer->setData( indexBufferData );
+
+  Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute( this );
+  positionAttribute->setAttributeType( Qt3DRender::QAttribute::VertexAttribute );
+  positionAttribute->setBuffer( vertexBuffer );
+  positionAttribute->setVertexBaseType( Qt3DRender::QAttribute::Float );
+  positionAttribute->setVertexSize( 3 );
+  positionAttribute->setName( Qt3DRender::QAttribute::defaultPositionAttributeName() );
+
+  Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute( this );
+  indexAttribute->setAttributeType( Qt3DRender::QAttribute::IndexAttribute );
+  indexAttribute->setBuffer( indexBuffer );
+  indexAttribute->setVertexBaseType( Qt3DRender::QAttribute::UnsignedInt );
+
+  Qt3DRender::QGeometry *geom = new Qt3DRender::QGeometry;
+  geom->addAttribute( positionAttribute );
+  geom->addAttribute( indexAttribute );
+
+  Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
+  renderer->setPrimitiveType( Qt3DRender::QGeometryRenderer::LineStrip );
+  renderer->setGeometry( geom );
+  renderer->setVertexCount( vertices.count() );
+  renderer->setPrimitiveRestartEnabled( true );
+  renderer->setRestartIndexValue( 0 );
   return renderer;
 }
 

@@ -149,6 +149,20 @@ Qt3DRender::QCullFace::CullingMode Qgs3DUtils::cullingModeFromString( const QStr
     return Qt3DRender::QCullFace::NoCulling;
 }
 
+float Qgs3DUtils::clampAltitude( const QgsPoint &p, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map )
+{
+  float terrainZ = 0;
+  if ( altClamp == AltClampRelative || altClamp == AltClampTerrain )
+  {
+    QgsPointXY pt = altBind == AltBindVertex ? p : centroid;
+    terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map );
+  }
+
+  float geomZ = altClamp == AltClampAbsolute || altClamp == AltClampRelative ? p.z() : 0;
+
+  float z = ( terrainZ + geomZ ) * map.terrainVerticalScale() + height;
+  return z;
+}
 
 void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {

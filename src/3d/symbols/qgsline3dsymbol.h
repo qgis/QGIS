@@ -65,6 +65,11 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     //! Sets extrusion height (in map units)
     void setExtrusionHeight( float extrusionHeight ) { mExtrusionHeight = extrusionHeight; }
 
+    //! Returns whether the renderer will render data with simple lines (otherwise it uses buffer)
+    bool renderAsSimpleLines() const { return mRenderAsSimpleLines; }
+    //! Sets whether the renderer will render data with simple lines (otherwise it uses buffer)
+    void setRenderAsSimpleLines( bool enabled ) { mRenderAsSimpleLines = enabled; }
+
     //! Returns material used for shading of the symbol
     QgsPhongMaterialSettings material() const { return mMaterial; }
     //! Sets material used for shading of the symbol
@@ -79,6 +84,7 @@ class _3D_EXPORT QgsLine3DSymbol : public QgsAbstract3DSymbol
     float mWidth = 2.0f;            //!< Line width (horizontally)
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
+    bool mRenderAsSimpleLines = false;   //!< Whether to render data with simple lines (otherwise it uses buffer)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
 };
 
