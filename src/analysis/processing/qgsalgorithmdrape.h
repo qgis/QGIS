@@ -57,8 +57,10 @@ class QgsDrapeAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 
     std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
     int mBand = 1;
+    QgsRectangle mRasterExtent;
     bool mCreatedTransform = false;
     QgsCoordinateTransform mTransform;
+
 };
 
 class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
