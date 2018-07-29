@@ -128,6 +128,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
 #ifndef SIP_RUN
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) override;
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) override;
 
     /**
      * Cast the \a geom to a QgsCompoundCurve.

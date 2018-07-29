@@ -830,6 +830,16 @@ void QgsGeometryCollection::filterVertices( const std::function<bool ( const Qgs
   clearCache();
 }
 
+void QgsGeometryCollection::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    if ( geom )
+      geom->transformVertices( transform );
+  }
+  clearCache();
+}
+
 void QgsGeometryCollection::swapXy()
 {
   for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )

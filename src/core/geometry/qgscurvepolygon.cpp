@@ -1186,6 +1186,18 @@ void QgsCurvePolygon::filterVertices( const std::function<bool ( const QgsPoint 
   clearCache();
 }
 
+void QgsCurvePolygon::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  if ( mExteriorRing )
+    mExteriorRing->transformVertices( transform );
+
+  for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
+  {
+    curve->transformVertices( transform );
+  }
+  clearCache();
+}
+
 int QgsCurvePolygon::childCount() const
 {
   return 1 + mInteriorRings.count();

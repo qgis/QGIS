@@ -1346,3 +1346,31 @@ void QgsLineString::filterVertices( const std::function<bool ( const QgsPoint & 
 
   clearCache();
 }
+
+void QgsLineString::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
+  int size = mX.size();
+
+  double *srcX = mX.data();
+  double *srcY = mY.data();
+  double *srcM = hasM ? mM.data() : nullptr;
+  double *srcZ = hasZ ? mZ.data() : nullptr;
+
+  for ( int i = 0; i < size; ++i )
+  {
+    double x = *srcX;
+    double y = *srcY;
+    double z = hasZ ? *srcZ : std::numeric_limits<double>::quiet_NaN();
+    double m = hasM ? *srcM : std::numeric_limits<double>::quiet_NaN();
+    QgsPoint res = transform( QgsPoint( x, y, z, m ) );
+    *srcX++ = res.x();
+    *srcY++ = res.y();
+    if ( hasM )
+      *srcM++ = res.m();
+    if ( hasZ )
+      *srcZ++ = res.z();
+  }
+  clearCache();
+}

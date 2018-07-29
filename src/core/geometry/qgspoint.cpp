@@ -573,6 +573,18 @@ void QgsPoint::filterVertices( const std::function<bool ( const QgsPoint & )> & 
   // no meaning for points
 }
 
+void QgsPoint::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  QgsPoint res = transform( *this );
+  mX = res.x();
+  mY = res.y();
+  if ( is3D() )
+    mZ = res.z();
+  if ( isMeasure() )
+    mM = res.m();
+  clearCache();
+}
+
 double QgsPoint::distance3D( double x, double y, double z ) const
 {
   double zDistSquared = 0.0;

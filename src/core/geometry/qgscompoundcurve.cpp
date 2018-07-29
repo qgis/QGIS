@@ -782,6 +782,15 @@ void QgsCompoundCurve::filterVertices( const std::function<bool ( const QgsPoint
   clearCache();
 }
 
+void QgsCompoundCurve::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  for ( QgsCurve *curve : qgis::as_const( mCurves ) )
+  {
+    curve->transformVertices( transform );
+  }
+  clearCache();
+}
+
 void QgsCompoundCurve::sumUpArea( double &sum ) const
 {
   for ( const QgsCurve *curve : mCurves )

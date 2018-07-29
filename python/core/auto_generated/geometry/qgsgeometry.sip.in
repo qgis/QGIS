@@ -1595,6 +1595,7 @@ was performed on the geometry.
 %End
 
 
+
     static QgsGeometry fromQPointF( QPointF point );
 %Docstring
 Construct geometry from a QPointF
