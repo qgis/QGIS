@@ -5924,4 +5924,74 @@ tests:
         name: expected/create_parallel_lines.gml
         type: vector
 
+  - algorithm: native:drapetoz
+    name: Drape points to z
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+    results:
+      OUTPUT:
+        name: expected/drape_points.shp
+        type: vector
+
+  - algorithm: native:drapetom
+    name: Drape points to m
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/sampling_points.gml
+        type: vector
+      NODATA: 0.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.2
+    results:
+      OUTPUT:
+        name: expected/drape_points_m.shp
+        type: vector
+
+  - algorithm: native:drapetoz
+    name: Drape lines to z
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_lines.shp
+        type: vector
+      NODATA: -9999.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+    results:
+      OUTPUT:
+        name: expected/drape_lines.shp
+        type: vector
+
+  - algorithm: native:drapetom
+    name: Drape lines to m
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_lines.shp
+        type: vector
+      NODATA: -9999.0
+      RASTER:
+        name: dem.tif
+        type: raster
+      SCALE: 1.0
+    results:
+      OUTPUT:
+        name: expected/drape_lines_m.shp
+        type: vector
+
+
+
 # See ../README.md for a description of the file format
