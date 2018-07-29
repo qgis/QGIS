@@ -5924,7 +5924,7 @@ tests:
         name: expected/create_parallel_lines.gml
         type: vector
 
-  - algorithm: native:drapetoz
+  - algorithm: native:setzfromraster
     name: Drape points to z
     params:
       BAND: 1
@@ -5941,7 +5941,7 @@ tests:
         name: expected/drape_points.shp
         type: vector
 
-  - algorithm: native:drapetom
+  - algorithm: native:setmfromraster
     name: Drape points to m
     params:
       BAND: 1
@@ -5958,7 +5958,7 @@ tests:
         name: expected/drape_points_m.shp
         type: vector
 
-  - algorithm: native:drapetoz
+  - algorithm: native:setzfromraster
     name: Drape lines to z
     params:
       BAND: 1
@@ -5975,7 +5975,7 @@ tests:
         name: expected/drape_lines.shp
         type: vector
 
-  - algorithm: native:drapetom
+  - algorithm: native:setmfromraster
     name: Drape lines to m
     params:
       BAND: 1
