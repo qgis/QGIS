@@ -31,6 +31,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdbscanclustering.cpp
   processing/qgsalgorithmdifference.cpp
   processing/qgsalgorithmdissolve.cpp
+  processing/qgsalgorithmdrape.cpp
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
   processing/qgsalgorithmexplode.cpp
