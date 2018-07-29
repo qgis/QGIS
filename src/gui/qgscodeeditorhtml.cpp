@@ -19,6 +19,7 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
+#include <QLabel>
 #include <Qsci/qscilexerhtml.h>
 
 
