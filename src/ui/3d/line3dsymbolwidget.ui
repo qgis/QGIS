@@ -111,6 +111,13 @@
     </layout>
    </item>
    <item>
+    <widget class="QCheckBox" name="chkSimpleLines">
+     <property name="text">
+      <string>Render as simple 3D lines</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

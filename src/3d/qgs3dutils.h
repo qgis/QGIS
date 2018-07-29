@@ -81,6 +81,8 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts a string to a value from CullingMode enum
     static Qt3DRender::QCullFace::CullingMode cullingModeFromString( const QString &str );
 
+    //! Clamps altitude of a vertex according to the settings, returns Z value
+    static float clampAltitude( const QgsPoint &p, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const QgsPoint &centroid, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a linestring according to the settings
     static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
