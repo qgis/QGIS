@@ -240,6 +240,11 @@ void QgsAbstractGeometry::filterVertices( const std::function<bool ( const QgsPo
   // Ideally this would be pure virtual, but SIP has issues with that
 }
 
+void QgsAbstractGeometry::transformVertices( const std::function<QgsPoint( const QgsPoint & )> & )
+{
+  // Ideally this would be pure virtual, but SIP has issues with that
+}
+
 QgsVertexIterator QgsAbstractGeometry::vertices() const
 {
   return QgsVertexIterator( this );

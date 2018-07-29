@@ -1549,6 +1549,22 @@ class CORE_EXPORT QgsGeometry
     void filterVertices( const std::function< bool( const QgsPoint & ) > &filter ) SIP_SKIP;
 
     /**
+     * Transforms the vertices from the geometry in place, applying the \a transform function
+     * to every vertex.
+     *
+     * Depending on the \a transform used, this may result in an invalid geometry.
+     *
+     * Transform functions are not permitted to alter the dimensionality of vertices. If
+     * a transform which adds (or removes) z/m values is desired, first call the corresponding
+     * addZValue() or addMValue() function to change the geometry's dimensionality and then
+     * transform.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    void transformVertices( const std::function< QgsPoint( const QgsPoint & ) > &transform ) SIP_SKIP;
+
+    /**
      * Construct geometry from a QPointF
      * \param point source QPointF
      * \since QGIS 2.7

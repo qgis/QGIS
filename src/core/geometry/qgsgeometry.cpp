@@ -2599,6 +2599,16 @@ void QgsGeometry::filterVertices( const std::function<bool ( const QgsPoint & )>
   d->geometry->filterVertices( filter );
 }
 
+void QgsGeometry::transformVertices( const std::function<QgsPoint( const QgsPoint & )> &transform )
+{
+  if ( !d->geometry )
+    return;
+
+  detach();
+
+  d->geometry->transformVertices( transform );
+}
+
 void QgsGeometry::convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output )
 {
   output.clear();
