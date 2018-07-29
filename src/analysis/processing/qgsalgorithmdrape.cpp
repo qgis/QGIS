@@ -79,6 +79,7 @@ bool QgsDrapeAlgorithmBase::prepareAlgorithm( const QVariantMap &parameters, Qgs
   if ( mBand < 1 || mBand > layer->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand )
                                   .arg( layer->bandCount() ) );
+  mRasterExtent = layer->extent();
 
   std::unique_ptr< QgsRasterInterface > provider( layer->dataProvider()->clone() );
   QgsRasterDataProvider *dp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
@@ -97,6 +98,17 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
   {
     mCreatedTransform = true;
     mTransform = QgsCoordinateTransform( sourceCrs(), mRasterProvider->crs(), context.transformContext() );
+
+    // transform the raster extent back to the vector's crs, so that we can test
+    // whether individual vector geometries are actually covered by the raster
+    try
+    {
+      mRasterExtent = mTransform.transform( mRasterExtent, QgsCoordinateTransform::ReverseTransform );
+    }
+    catch ( QgsCsException & )
+    {
+      mRasterExtent = QgsRectangle();
+    }
   }
 
   QgsFeature f = feature;
@@ -114,27 +126,32 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
 
     prepareGeometry( geometry, nodata );
 
-    geometry.transformVertices( [ = ]( const QgsPoint & p )->QgsPoint
+    // only do the "draping" if the geometry intersects the raster - otherwise skip
+    // a pointless iteration over all vertices
+    if ( !mRasterExtent.isNull() && geometry.boundingBoxIntersects( mRasterExtent ) )
     {
-      QgsPointXY t;
-      double val = nodata;
-      try
+      geometry.transformVertices( [ = ]( const QgsPoint & p )->QgsPoint
       {
-        t = mTransform.transform( p );
-        bool ok = false;
-        val = mRasterProvider->sample( t, mBand, &ok );
-        if ( !ok )
-          val = nodata;
-        else
-          val *= scale;
-      }
-      catch ( QgsCsException & )
-      {
-        feedback->reportError( QObject::tr( "Transform error while reprojecting feature {}" ).arg( f.id() ) );
-      }
+        QgsPointXY t;
+        double val = nodata;
+        try
+        {
+          t = mTransform.transform( p );
+          bool ok = false;
+          val = mRasterProvider->sample( t, mBand, &ok );
+          if ( !ok )
+            val = nodata;
+          else
+            val *= scale;
+        }
+        catch ( QgsCsException & )
+        {
+          feedback->reportError( QObject::tr( "Transform error while reprojecting feature {}" ).arg( f.id() ) );
+        }
 
-      return drapeVertex( p, val );
-    } );
+        return drapeVertex( p, val );
+      } );
+    }
 
     f.setGeometry( geometry );
   }
