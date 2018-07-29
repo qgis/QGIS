@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <Qsci/qscilexerpython.h>
+#include <Qsci/qsciapis.h>
 
 QgsCodeEditorPython::QgsCodeEditorPython( QWidget *parent, const QList<QString> &filenames )
   : QgsCodeEditor( parent )
