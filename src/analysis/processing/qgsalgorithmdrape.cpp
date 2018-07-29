@@ -32,7 +32,7 @@ QString QgsDrapeAlgorithmBase::groupId() const
 
 QString QgsDrapeAlgorithmBase::outputName() const
 {
-  return QObject::tr( "Draped" );
+  return QObject::tr( "Updated" );
 }
 
 void QgsDrapeAlgorithmBase::initParameters( const QVariantMap & )
@@ -165,17 +165,17 @@ QgsFeatureList QgsDrapeAlgorithmBase::processFeature( const QgsFeature &feature,
 
 QString QgsDrapeToZAlgorithm::name() const
 {
-  return QStringLiteral( "drapetoz" );
+  return QStringLiteral( "setzfromraster" );
 }
 
 QString QgsDrapeToZAlgorithm::displayName() const
 {
-  return QObject::tr( "Drape (Sample raster to z)" );
+  return QObject::tr( "Drape (set z-value from raster)" );
 }
 
 QStringList QgsDrapeToZAlgorithm::tags() const
 {
-  return QObject::tr( "3d,vertex,vertices,elevation,sample" ).split( ',' );
+  return QObject::tr( "3d,vertex,vertices,elevation,height,sample,dem,update,feature" ).split( ',' );
 }
 
 QString QgsDrapeToZAlgorithm::shortHelpString() const
@@ -217,17 +217,17 @@ QgsPoint QgsDrapeToZAlgorithm::drapeVertex( const QgsPoint &p, double rasterVal 
 
 QString QgsDrapeToMAlgorithm::name() const
 {
-  return QStringLiteral( "drapetom" );
+  return QStringLiteral( "setmfromraster" );
 }
 
 QString QgsDrapeToMAlgorithm::displayName() const
 {
-  return QObject::tr( "Sample raster to m-values" );
+  return QObject::tr( "Set m-value from raster" );
 }
 
 QStringList QgsDrapeToMAlgorithm::tags() const
 {
-  return QObject::tr( "vertex,vertices,sample,measure" ).split( ',' );
+  return QObject::tr( "drape,vertex,vertices,sample,dem,update,feature,measure" ).split( ',' );
 }
 
 QString QgsDrapeToMAlgorithm::shortHelpString() const
