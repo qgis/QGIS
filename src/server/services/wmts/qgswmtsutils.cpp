@@ -23,11 +23,30 @@
 #include "qgsexception.h"
 #include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 #include "qgssettings.h"
 
 
 namespace QgsWmts
 {
+  namespace
+  {
+    QMap< QString, double> populateInchesPerUnit();
+    QMap< QString, tileMatrixInfo> populateTileMatrixInfoMap();
+
+    QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+
+    int DOTS_PER_INCH = 72;
+    double METERS_PER_INCH = 0.02540005080010160020;
+    QMap< QString, double> INCHES_PER_UNIT = populateInchesPerUnit();
+    int tileWidth = 256;
+    int tileHeight = 256;
+
+    QMap< QString, tileMatrixInfo> tileMatrixInfoMap = populateTileMatrixInfoMap();
+  }
+
   QString implementationVersion()
   {
     return QStringLiteral( "1.0.0" );
@@ -79,27 +98,63 @@ namespace QgsWmts
     return QgsRectangle( d[0], d[1], d[2], d[3] );
   }
 
+  tileMatrixInfo getTileMatrixInfo( const QString &crsStr )
+  {
+    if ( tileMatrixInfoMap.contains( crsStr ) )
+      return tileMatrixInfoMap[crsStr];
+
+    tileMatrixInfo tmi;
+    tmi.ref = crsStr;
+
+    QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsStr );
+    Q_NOWARN_DEPRECATED_PUSH
+    QgsCoordinateTransform crsTransform( wgs84, crs );
+    Q_NOWARN_DEPRECATED_POP
+    try
+    {
+      tmi.extent = crsTransform.transformBoundingBox( crs.bounds() );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+    }
+
+    QgsUnitTypes::DistanceUnit mapUnits = crs.mapUnits();
+    if ( mapUnits == QgsUnitTypes::DistanceMeters )
+      tmi.unit = "m";
+    else if ( mapUnits == QgsUnitTypes::DistanceKilometers )
+      tmi.unit = "km";
+    else if ( mapUnits == QgsUnitTypes::DistanceFeet )
+      tmi.unit = "ft";
+    else if ( mapUnits == QgsUnitTypes::DistanceNauticalMiles )
+      tmi.unit = "nmi";
+    else if ( mapUnits == QgsUnitTypes::DistanceYards )
+      tmi.unit = "yd";
+    else if ( mapUnits == QgsUnitTypes::DistanceMiles )
+      tmi.unit = "mi";
+    else if ( mapUnits == QgsUnitTypes::DistanceDegrees )
+      tmi.unit = "dd";
+    else if ( mapUnits == QgsUnitTypes::DistanceCentimeters )
+      tmi.unit = "cm";
+    else if ( mapUnits == QgsUnitTypes::DistanceMillimeters )
+      tmi.unit = "mm";
+
+    // calculate tile matrix scale denominator
+    double scaleDenominator = 0.0;
+    int colRes = ( tmi.extent.xMaximum() - tmi.extent.xMinimum() ) / tileWidth;
+    int rowRes = ( tmi.extent.yMaximum() - tmi.extent.yMinimum() ) / tileHeight;
+    if ( colRes < rowRes )
+      scaleDenominator = colRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028;
+    else
+      scaleDenominator = rowRes * INCHES_PER_UNIT[ tmi.unit ] * METERS_PER_INCH / 0.00028;
+    tmi.scaleDenominator = scaleDenominator;
+
+    tileMatrixInfoMap[crsStr] = tmi;
+    return tmi;
+  }
+
   tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi, double minScale )
   {
-    int DOTS_PER_INCH = 72;
-    double METERS_PER_INCH = 0.02540005080010160020;
-    QMap< QString, double> INCHES_PER_UNIT;
-    INCHES_PER_UNIT["inches"] = 1.0;
-    INCHES_PER_UNIT["ft"] = 12.0;
-    INCHES_PER_UNIT["mi"] = 63360.0;
-    INCHES_PER_UNIT["m"] = 39.37;
-    INCHES_PER_UNIT["km"] = 39370.0;
-    INCHES_PER_UNIT["dd"] = 4374754.0;
-    INCHES_PER_UNIT["yd"] = 36.0;
-    INCHES_PER_UNIT["in"] = INCHES_PER_UNIT["inches"];
-    INCHES_PER_UNIT["degrees"] = INCHES_PER_UNIT["dd"];
-    INCHES_PER_UNIT["nmi"] = 1852.0 * INCHES_PER_UNIT["m"];
-    INCHES_PER_UNIT["cm"] = INCHES_PER_UNIT["m"] / 100.0;
-    INCHES_PER_UNIT["mm"] = INCHES_PER_UNIT["m"] / 1000.0;
-
-    int tileWidth = 256;
-    int tileHeight = 256;
-
     QList< tileMatrix > tileMatrixList;
     double scaleDenominator = tmi.scaleDenominator;
     QgsRectangle extent = tmi.extent;
@@ -135,16 +190,9 @@ namespace QgsWmts
     return tms;
   }
 
-  QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project )
+  double getProjectMinScale( const QgsProject *project )
   {
-    QList< tileMatrixSet > tmsList;
-
-    double minScale = -1.0;
-    double maxScale = -1.0;
-
-
-    QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
-    QgsCoordinateReferenceSystem projCrs = project->crs();
+    double scale = -1.0;
 
     // default scales
     QgsSettings settings;
@@ -161,102 +209,35 @@ namespace QgsWmts
       Q_FOREACH ( const QString &scaleText, scaleList )
       {
         double scaleValue = scaleText.toDouble();
-        if ( minScale == -1.0 && maxScale == -1.0 )
+        if ( scale == -1.0 )
         {
-          minScale = scaleValue;
-          maxScale = scaleValue;
+          scale = scaleValue;
         }
-        else
+        else if ( scaleValue < scale )
         {
-          if ( scaleValue < minScale )
-          {
-            minScale = scaleValue;
-          }
-          if ( scaleValue > maxScale )
-          {
-            maxScale = scaleValue;
-          }
+          scale = scaleValue;
         }
       }
     }
-    else
+    if ( scale < 500.0 )
     {
-      minScale = 5000.0;
-      maxScale = 1000000.0;
+      return 500.0;
     }
-    if ( minScale < 500.0 )
-    {
-      minScale = 500.0;
-    }
-    if ( minScale == maxScale || minScale > maxScale )
-    {
-      maxScale = minScale * 2.0;
-    }
+    return scale;
+  }
+
+  QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project )
+  {
+    QList< tileMatrixSet > tmsList;
+
+    double minScale = getProjectMinScale( project );
 
     QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
-    Q_FOREACH ( const QString &crsText, crsList )
+    Q_FOREACH ( const QString &crsStr, crsList )
     {
-      if ( crsText == "EPSG:3857" )
+      tileMatrixInfo tmi = getTileMatrixInfo( crsStr );
+      if ( tmi.scaleDenominator > 0.0 )
       {
-        tileMatrixInfo tmi3857;
-        tmi3857.ref = "EPSG:3857";
-        tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
-        tmi3857.scaleDenominator = 559082264.0287179;
-        tmi3857.unit = "m";
-
-        tmsList.append( getTileMatrixSet( tmi3857, minScale ) );
-      }
-      else if ( crsText == "EPSG:4326" )
-      {
-        tileMatrixInfo tmi4326;
-        tmi4326.ref = "EPSG:4326";
-        tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
-        tmi4326.scaleDenominator = 279541132.0143588675418869;
-        tmi4326.unit = "dd";
-
-        tmsList.append( getTileMatrixSet( tmi4326, minScale ) );
-      }
-      else
-      {
-        tileMatrixInfo tmi;
-        tmi.ref = crsText;
-
-        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform crsTransform( projCrs, crs );
-        Q_NOWARN_DEPRECATED_POP
-        try
-        {
-          tmi.extent = crsTransform.transformBoundingBox( projRect );
-        }
-        catch ( QgsCsException &cse )
-        {
-          Q_UNUSED( cse );
-          continue;
-        }
-
-        tmi.scaleDenominator = maxScale;
-
-        QgsUnitTypes::DistanceUnit mapUnits = crs.mapUnits();
-        if ( mapUnits == QgsUnitTypes::DistanceMeters )
-          tmi.unit = "m";
-        else if ( mapUnits == QgsUnitTypes::DistanceKilometers )
-          tmi.unit = "km";
-        else if ( mapUnits == QgsUnitTypes::DistanceFeet )
-          tmi.unit = "ft";
-        else if ( mapUnits == QgsUnitTypes::DistanceNauticalMiles )
-          tmi.unit = "nmi";
-        else if ( mapUnits == QgsUnitTypes::DistanceYards )
-          tmi.unit = "yd";
-        else if ( mapUnits == QgsUnitTypes::DistanceMiles )
-          tmi.unit = "mi";
-        else if ( mapUnits == QgsUnitTypes::DistanceDegrees )
-          tmi.unit = "dd";
-        else if ( mapUnits == QgsUnitTypes::DistanceCentimeters )
-          tmi.unit = "cm";
-        else if ( mapUnits == QgsUnitTypes::DistanceMillimeters )
-          tmi.unit = "mm";
-
         tmsList.append( getTileMatrixSet( tmi, minScale ) );
       }
     }
@@ -264,9 +245,9 @@ namespace QgsWmts
     return tmsList;
   }
 
-  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params, const QgsProject *project )
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params,
+      const QgsProject *project, QgsServerInterface *serverIface )
   {
-
     //defining Layer
     QString layer;
     //read Layer
@@ -278,6 +259,73 @@ namespace QgsWmts
     else
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Layer is mandatory" ) );
+    }
+    //check layer value
+    bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
+    QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
+    QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
+    QStringList wmtsLayerIds;
+    if ( wmtsProject )
+    {
+      // Root Layer name
+      QString rootLayerId = QgsServerProjectUtils::wmsRootName( *project );
+      if ( rootLayerId.isEmpty() )
+      {
+        rootLayerId = project->title();
+      }
+      if ( !rootLayerId.isEmpty() )
+      {
+        wmtsLayerIds << rootLayerId;
+      }
+    }
+    if ( !wmtsGroupNameList.isEmpty() )
+    {
+      QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
+      Q_FOREACH ( QString gName, wmtsGroupNameList )
+      {
+        QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
+        if ( !treeGroup )
+        {
+          continue;
+        }
+        QString groupLayerId = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+        if ( groupLayerId.isEmpty() )
+        {
+          groupLayerId = gName;
+        }
+        wmtsLayerIds << groupLayerId;
+      }
+    }
+    if ( !wmtsLayerIdList.isEmpty() )
+    {
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+      QgsAccessControl *accessControl = serverIface->accessControls();
+#endif
+      Q_FOREACH ( QString lId, wmtsLayerIdList )
+      {
+        QgsMapLayer *l = project->mapLayer( lId );
+        if ( !l )
+        {
+          continue;
+        }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( !accessControl->layerReadPermission( l ) )
+        {
+          continue;
+        }
+#endif
+        QString layerLayerId = l->shortName();
+        if ( layerLayerId.isEmpty() )
+        {
+          layerLayerId = l->name();
+        }
+        wmtsLayerIds << layerLayerId;
+      }
+    }
+    if ( !wmtsLayerIds.contains( layer ) )
+    {
+      QString msg = QObject::tr( "Layer '%1' not found" ).arg( layer );
+      throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
     }
 
     //defining Format
@@ -293,13 +341,6 @@ namespace QgsWmts
       throw QgsRequestNotWellFormedException( QStringLiteral( "Format is mandatory" ) );
     }
 
-    QList< tileMatrixSet > tmsList = getTileMatrixSetList( project );
-    if ( tmsList.isEmpty() )
-    {
-      throw QgsServiceException( QStringLiteral( "UnknownError" ),
-                                 QStringLiteral( "Service not well configured" ) );
-    }
-
     //defining TileMatrixSet ref
     QString tms_ref;
     //read TileMatrixSet
@@ -313,23 +354,19 @@ namespace QgsWmts
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is mandatory" ) );
     }
 
-    bool tms_ref_valid = false;
-    tileMatrixSet tms;
-    QList<tileMatrixSet>::iterator tmsIt = tmsList.begin();
-    for ( ; tmsIt != tmsList.end(); ++tmsIt )
-    {
-      tileMatrixSet &tmsi = *tmsIt;
-      if ( tmsi.ref == tms_ref )
-      {
-        tms_ref_valid = true;
-        tms = tmsi;
-        break;
-      }
-    }
-    if ( !tms_ref_valid )
+    // verifying TileMatricSet value
+    QStringList crsList = QgsServerProjectUtils::wmsOutputCrsList( *project );
+    if ( !crsList.contains( tms_ref ) )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
     }
+
+    tileMatrixInfo tmi = getTileMatrixInfo( tms_ref );
+    if ( tmi.scaleDenominator == 0.0 )
+    {
+      throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
+    }
+    tileMatrixSet tms = getTileMatrixSet( tmi, getProjectMinScale( project ) );
 
     bool conversionSuccess = false;
 
@@ -447,6 +484,51 @@ namespace QgsWmts
     query.addQueryItem( QStringLiteral( "dpi" ), QStringLiteral( "96" ) );
 
     return query;
+  }
+
+  namespace
+  {
+
+    QMap< QString, double> populateInchesPerUnit()
+    {
+      QMap< QString, double>  m;
+      m["inches"] = 1.0;
+      m["ft"] = 12.0;
+      m["mi"] = 63360.0;
+      m["m"] = 39.37;
+      m["km"] = 39370.0;
+      m["dd"] = 4374754.0;
+      m["yd"] = 36.0;
+      m["in"] = m["inches"];
+      m["degrees"] = m["dd"];
+      m["nmi"] = 1852.0 * m["m"];
+      m["cm"] = m["m"] / 100.0;
+      m["mm"] = m["m"] / 1000.0;
+      return m;
+    }
+
+    QMap< QString, tileMatrixInfo> populateTileMatrixInfoMap()
+    {
+      QMap< QString, tileMatrixInfo> m;
+
+      tileMatrixInfo tmi3857;
+      tmi3857.ref = "EPSG:3857";
+      tmi3857.extent = QgsRectangle( -20037508.3427892480, -20037508.3427892480, 20037508.3427892480, 20037508.3427892480 );
+      tmi3857.scaleDenominator = 559082264.0287179;
+      tmi3857.unit = "m";
+      m[tmi3857.ref] = tmi3857;
+
+
+      tileMatrixInfo tmi4326;
+      tmi4326.ref = "EPSG:4326";
+      tmi4326.extent = QgsRectangle( -180, -90, 180, 90 );
+      tmi4326.scaleDenominator = 279541132.0143588675418869;
+      tmi4326.unit = "dd";
+      m[tmi4326.ref] = tmi4326;
+
+      return m;
+    }
+
   }
 
 } // namespace QgsWmts

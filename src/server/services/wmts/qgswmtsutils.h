@@ -106,13 +106,16 @@ namespace QgsWmts
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OWS_NAMESPACE = QStringLiteral( "http://www.opengis.net/ows/1.1" );
 
-  tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi );
+  tileMatrixInfo getTileMatrixInfo( const QString &crsStr );
+  tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi, double minScale );
+  double getProjectMinScale( const QgsProject *project );
   QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project );
 
   /**
    * Translate WMTS parameters to WMS query item
    */
-  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params, const QgsProject *project );
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params,
+      const QgsProject *project, QgsServerInterface *serverIface );
 
 } // namespace QgsWmts
 

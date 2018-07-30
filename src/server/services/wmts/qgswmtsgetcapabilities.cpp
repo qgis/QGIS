@@ -332,16 +332,16 @@ namespace QgsWmts
       // WMTS Project configuration
       bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
 
-      if ( wmtsProject )
+      // Root Layer name
+      QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
+      if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+      {
+        rootLayerName = project->title();
+      }
+
+      if ( wmtsProject && !rootLayerName.isEmpty() )
       {
         layerDef pLayer;
-
-        // Root Layer name
-        QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
-        if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
-        {
-          rootLayerName = project->title();
-        }
         pLayer.id = rootLayerName;
 
         if ( !project->title().isEmpty() )
@@ -533,6 +533,7 @@ namespace QgsWmts
           layerElem.appendChild( layerAbstElem );
         }
 
+        // WGS84 bounding box
         QDomElement wgs84BBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
         QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
         QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( wmtsLayer.wgs84BoundingRect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( wmtsLayer.wgs84BoundingRect.yMinimum(), 6 ) );
@@ -543,6 +544,41 @@ namespace QgsWmts
         wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
         wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
         layerElem.appendChild( wgs84BBoxElement );
+
+        // Other bounding boxes
+        tmsIt = tmsList.begin();
+        for ( ; tmsIt != tmsList.end(); ++tmsIt )
+        {
+          tileMatrixSet &tms = *tmsIt;
+          if ( tms.ref == "EPSG:4326" )
+            continue;
+
+          QgsRectangle rect;
+          QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+          Q_NOWARN_DEPRECATED_PUSH
+          QgsCoordinateTransform exGeoTransform( wgs84, crs );
+          Q_NOWARN_DEPRECATED_POP
+          try
+          {
+            rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );
+          }
+          catch ( const QgsCsException & )
+          {
+            continue;
+          }
+
+          QDomElement bboxElement = doc.createElement( QStringLiteral( "ows:BoundingBox" ) );
+          bboxElement.setAttribute( QStringLiteral( "crs" ), tms.ref );
+          QDomElement lowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
+          QDomText lowerCornerText = doc.createTextNode( qgsDoubleToString( rect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( rect.yMinimum(), 6 ) );
+          lowerCornerElement.appendChild( lowerCornerText );
+          bboxElement.appendChild( lowerCornerElement );
+          QDomElement upperCornerElement = doc.createElement( QStringLiteral( "UpperCorner" ) );
+          QDomText upperCornerText = doc.createTextNode( qgsDoubleToString( rect.xMaximum(), 6 ) + ' ' + qgsDoubleToString( rect.yMaximum(), 6 ) );
+          upperCornerElement.appendChild( upperCornerText );
+          bboxElement.appendChild( upperCornerElement );
+          layerElem.appendChild( bboxElement );
+        }
 
         // Layer Style
         QDomElement layerStyleElem = doc.createElement( QStringLiteral( "Style" ) );
@@ -578,6 +614,22 @@ namespace QgsWmts
         for ( ; tmsIt != tmsList.end(); ++tmsIt )
         {
           tileMatrixSet &tms = *tmsIt;
+          if ( tms.ref != "EPSG:4326" )
+          {
+            QgsRectangle rect;
+            QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
+            Q_NOWARN_DEPRECATED_PUSH
+            QgsCoordinateTransform exGeoTransform( wgs84, crs );
+            Q_NOWARN_DEPRECATED_POP
+            try
+            {
+              rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );
+            }
+            catch ( const QgsCsException & )
+            {
+              continue;
+            }
+          }
 
           //wmts:TileMatrixSetLink
           QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" )/*wmts:TileMatrixSetLink*/ );
@@ -586,6 +638,47 @@ namespace QgsWmts
           QDomText identifierText = doc.createTextNode( tms.ref );
           identifierElem.appendChild( identifierText );
           tmslElement.appendChild( identifierElem );
+
+          //wmts:TileMatrixSetLimits
+          QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
+          int tmIdx = 0;
+          QList<tileMatrix>::iterator tmIt = tms.tileMatrixList.begin();
+          for ( ; tmIt != tms.tileMatrixList.end(); ++tmIt )
+          {
+            tileMatrix &tm = *tmIt;
+
+            QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
+
+            QDomElement tmIdentifierElem = doc.createElement( QStringLiteral( "TileMatrix" ) );
+            QDomText tmIdentifierText = doc.createTextNode( QString::number( tmIdx ) );
+            tmIdentifierElem.appendChild( tmIdentifierText );
+            tmLimitsElement.appendChild( tmIdentifierElem );
+
+            QDomElement minTileColElem = doc.createElement( QStringLiteral( "MinTileCol" ) );
+            QDomText minTileColText = doc.createTextNode( QString::number( 0 ) );
+            minTileColElem.appendChild( minTileColText );
+            tmLimitsElement.appendChild( minTileColElem );
+
+            QDomElement maxTileColElem = doc.createElement( QStringLiteral( "MaxTileCol" ) );
+            QDomText maxTileColText = doc.createTextNode( QString::number( tm.col ) );
+            maxTileColElem.appendChild( maxTileColText );
+            tmLimitsElement.appendChild( maxTileColElem );
+
+            QDomElement minTileRowElem = doc.createElement( QStringLiteral( "MinTileRow" ) );
+            QDomText minTileRowText = doc.createTextNode( QString::number( 0 ) );
+            minTileRowElem.appendChild( minTileRowText );
+            tmLimitsElement.appendChild( minTileRowElem );
+
+            QDomElement maxTileRowElem = doc.createElement( QStringLiteral( "MaxTileRow" ) );
+            QDomText maxTileRowText = doc.createTextNode( QString::number( tm.row ) );
+            maxTileRowElem.appendChild( maxTileRowText );
+            tmLimitsElement.appendChild( maxTileRowElem );
+
+            tmsLimitsElement.appendChild( tmLimitsElement );
+
+            ++tmIdx;
+          }
+          tmslElement.appendChild( tmsLimitsElement );
 
           layerElem.appendChild( tmslElement );
         }
