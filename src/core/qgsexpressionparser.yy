@@ -398,7 +398,7 @@ void exp_error(YYLTYPE* yyloc,expression_parser_context* parser_ctx, const char*
   error.errorMsg = msg;
   error.errorType = parser_ctx->currentErrorType;
   parser_ctx->parserErrors.append(error);
-  // Reest the current error type for the next error.
+  // Reset the current error type for the next error.
   parser_ctx->currentErrorType = QgsExpression::ParserError::Unknown;
 
   parser_ctx->errorMsg = parser_ctx->errorMsg + "\n" + msg;
