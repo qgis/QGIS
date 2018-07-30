@@ -175,13 +175,13 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::rendererSimple( const 
 
     QgsGeometry geom = f.geometry();
     const QgsAbstractGeometry *g = geom.constGet();
-    if ( QgsLineString *ls = qgsgeometry_cast<QgsLineString *>( g ) )
+    if ( const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( g ) )
     {
       for ( int i = 0; i < ls->vertexCount(); ++i )
       {
-        QgsPoint p = ls->vertexAt( QgsVertexId( 0, 0, i ) );
+        QgsPoint p = ls->pointN( i );
         float z = Qgs3DUtils::clampAltitude( p, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), centroid, map );
-        vertices << QVector3D( p.x() - map.origin().x(), z, p.y() - map.origin().y() );
+        vertices << QVector3D( p.x() - map.origin().x(), z, -( p.y() - map.origin().y() ) );
         indexes << vertices.count() - 1;
       }
     }
@@ -192,9 +192,9 @@ Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::rendererSimple( const 
         const QgsLineString *ls = qgsgeometry_cast<const QgsLineString *>( mls->geometryN( nGeom ) );
         for ( int i = 0; i < ls->vertexCount(); ++i )
         {
-          QgsPoint p = ls->vertexAt( QgsVertexId( 0, 0, i ) );
+          QgsPoint p = ls->pointN( i );
           float z = Qgs3DUtils::clampAltitude( p, symbol.altitudeClamping(), symbol.altitudeBinding(), symbol.height(), centroid, map );
-          vertices << QVector3D( p.x() - map.origin().x(), z, p.y() - map.origin().y() );
+          vertices << QVector3D( p.x() - map.origin().x(), z, -( p.y() - map.origin().y() ) );
           indexes << vertices.count() - 1;
         }
         indexes << 0;  // add primitive restart
