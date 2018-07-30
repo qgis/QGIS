@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgswmsgetmap.cpp
-                            -------------------------
+                              qgswmsgetfeatureinfo.h
+                              -------------------------
   begin                : July 23 , 2017
   copyright            : (C) 2018 by René-Luc D'Hont
   email                : rldhont at 3liz dot com
@@ -14,33 +14,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmtsutils.h"
-#include "qgswmtsgettile.h"
-
-#include <QImage>
 
 namespace QgsWmts
 {
 
-  void writeGetTile( QgsServerInterface *serverIface, const QgsProject *project,
-                     const QString &version, const QgsServerRequest &request,
-                     QgsServerResponse &response )
-  {
-    Q_UNUSED( version );
-
-    QgsServerRequest::Parameters params = request.parameters();
-
-    // WMS query
-    QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project );
-
-    QgsServerParameters wmsParams( query );
-    QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
-    QgsService *service = serverIface->serviceRegistry()->getService( wmsParams.service(), wmsParams.version() );
-    service->executeRequest( wmsRequest, response, project );
-  }
+  /**
+   * Output GetFeatureInfo response
+   */
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
+                            const QString &version,  const QgsServerRequest &request,
+                            QgsServerResponse &response );
 
 } // namespace QgsWmts
-
-
-
-

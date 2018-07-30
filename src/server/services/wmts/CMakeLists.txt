@@ -7,6 +7,7 @@ SET (wmts_SRCS
   qgswmtsutils.cpp
   qgswmtsgetcapabilities.cpp
   qgswmtsgettile.cpp
+  qgswmtsgetfeatureinfo.cpp
 )
 
 ########################################################

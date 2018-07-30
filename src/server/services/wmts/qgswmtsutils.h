@@ -81,6 +81,8 @@ namespace QgsWmts
     QgsRectangle wgs84BoundingRect;
 
     QStringList formats;
+
+    bool queryable;
   };
 
   /**
@@ -106,6 +108,11 @@ namespace QgsWmts
 
   tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi );
   QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project );
+
+  /**
+   * Translate WMTS parameters to WMS query item
+   */
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params, const QgsProject *project );
 
 } // namespace QgsWmts
 

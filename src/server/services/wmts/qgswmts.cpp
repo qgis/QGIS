@@ -19,6 +19,7 @@
 #include "qgswmtsutils.h"
 #include "qgswmtsgetcapabilities.h"
 #include "qgswmtsgettile.h"
+#include "qgswmtsgetfeatureinfo.h"
 
 #define QSTR_COMPARE( str, lit )\
   (str.compare( QStringLiteral( lit ), Qt::CaseInsensitive ) == 0)
@@ -81,6 +82,10 @@ namespace QgsWmts
         else if ( QSTR_COMPARE( req, "GetTile" ) )
         {
           writeGetTile( mServerIface, project, versionString, request, response );
+        }
+        else if ( QSTR_COMPARE( req, "GetFeatureInfo" ) )
+        {
+          writeGetFeatureInfo( mServerIface, project, versionString, request, response );
         }
         else
         {

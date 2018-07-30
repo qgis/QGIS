@@ -302,9 +302,9 @@ namespace QgsWmts
     operationsMetadataElement.appendChild( getTileElement );
 
     //ows:Operation element with name GetFeatureInfo
-    /*QDomElement getFeatureInfoElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
+    QDomElement getFeatureInfoElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
     getFeatureInfoElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "GetFeatureInfo" ) );
-    operationsMetadataElement.appendChild( getFeatureInfoElement );*/
+    operationsMetadataElement.appendChild( getFeatureInfoElement );
 
     // End
     return operationsMetadataElement;
@@ -326,6 +326,8 @@ namespace QgsWmts
       QList< layerDef > wmtsLayers;
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
       QList<tileMatrixSet>::iterator tmsIt = tmsList.begin();
+
+      QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
 
       // WMTS Project configuration
       bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
@@ -371,6 +373,10 @@ namespace QgsWmts
         if ( wmtsJpegProject )
           pLayer.formats << QStringLiteral( "image/jpeg" );
 
+        // Project is not queryable in WMS
+        //pLayer.queryable = ( nonIdentifiableLayers.count() != project->count() );
+        pLayer.queryable = false;
+
         wmtsLayers.append( pLayer );
       }
 
@@ -401,11 +407,12 @@ namespace QgsWmts
 
           pLayer.abstract = treeGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
 
+          QgsRectangle wgs84BoundingRect;
+          bool queryable = false;
           for ( QgsLayerTreeLayer *layer : treeGroup->findLayers() )
           {
             QgsMapLayer *l = layer->layer();
             //transform the layer native CRS into WGS84
-            QgsRectangle wgs84BoundingRect;
             QgsCoordinateReferenceSystem layerCrs = l->crs();
             Q_NOWARN_DEPRECATED_PUSH
             QgsCoordinateTransform exGeoTransform( layerCrs, wgs84 );
@@ -418,7 +425,13 @@ namespace QgsWmts
             {
               wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
             }
+            if ( !queryable && !nonIdentifiableLayers.contains( l->id() ) )
+            {
+              queryable = true;
+            }
           }
+          pLayer.wgs84BoundingRect = wgs84BoundingRect;
+          pLayer.queryable = queryable;
 
           // Formats
           if ( wmtsPngGroupNameList.contains( gName ) )
@@ -477,8 +490,18 @@ namespace QgsWmts
         if ( wmtsJpegLayerIdList.contains( lId ) )
           pLayer.formats << QStringLiteral( "image/jpeg" );
 
+        pLayer.queryable = ( !nonIdentifiableLayers.contains( l->id() ) );
+
         wmtsLayers.append( pLayer );
       }
+
+      // Append InfoFormat helper
+      std::function < void ( QDomElement &, const QString & ) > appendInfoFormat = [&doc]( QDomElement & elem, const QString & format )
+      {
+        QDomElement formatElem = doc.createElement( QStringLiteral( "InfoFormat" )/*wmts:InfoFormat*/ );
+        formatElem.appendChild( doc.createTextNode( format ) );
+        elem.appendChild( formatElem );
+      };
 
       Q_FOREACH ( layerDef wmtsLayer, wmtsLayers )
       {
@@ -540,6 +563,15 @@ namespace QgsWmts
           QDomText layerFormatText = doc.createTextNode( format );
           layerFormatElem.appendChild( layerFormatText );
           layerElem.appendChild( layerFormatElem );
+        }
+
+        if ( wmtsLayer.queryable )
+        {
+          appendInfoFormat( layerElem, QStringLiteral( "text/plain" ) );
+          appendInfoFormat( layerElem, QStringLiteral( "text/html" ) );
+          appendInfoFormat( layerElem, QStringLiteral( "text/xml" ) );
+          appendInfoFormat( layerElem, QStringLiteral( "application/vnd.ogc.gml" ) );
+          appendInfoFormat( layerElem, QStringLiteral( "application/vnd.ogc.gml/3.1.1" ) );
         }
 
         tmsIt = tmsList.begin();
