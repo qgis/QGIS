@@ -460,8 +460,8 @@ void QgsRelationReferenceWidget::showEvent( QShowEvent *e )
   Q_UNUSED( e )
 
   mShown = true;
-
-  init();
+  if ( !mInitialized )
+    init();
 }
 
 void QgsRelationReferenceWidget::init()
@@ -555,8 +555,12 @@ void QgsRelationReferenceWidget::init()
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRelationReferenceWidget::comboReferenceChanged );
-    updateAttributeEditorFrame( mFeature );
+    //call it for the first time
+    emit mComboBox->currentIndexChanged( mComboBox->currentIndex() );
+
     QApplication::restoreOverrideCursor();
+
+    mInitialized = true;
   }
 }
 
