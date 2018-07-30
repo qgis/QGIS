@@ -1218,7 +1218,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   endProfile();
 
   // do main window customization - after window state has been restored, before the window is shown
-  startProfile( QStringLiteral( "Update customiziation on main window" ) );
+  startProfile( QStringLiteral( "Update customization on main window" ) );
   QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
   endProfile();
 
