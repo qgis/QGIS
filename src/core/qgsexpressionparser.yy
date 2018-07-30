@@ -31,6 +31,9 @@
 // don't redeclare malloc/free
 #define YYINCLUDED_STDLIB_H 1
 
+// maximum number of errors encountered before parser aborts
+#define MAX_ERRORS 10
+
 struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
 
@@ -177,7 +180,10 @@ root: expression { parser_ctx->rootNode = $1; }
     | error expression
         {
             delete $2;
-            yyerrok;
+            if ( parser_ctx->parserErrors.count() < MAX_ERRORS )
+              yyerrok;
+            else
+              YYABORT;
         }
    ;
 
