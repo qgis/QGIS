@@ -25,7 +25,7 @@ Version:        %{_version}
 Release:        %{_relver}%{?dist}
 Summary:        A user friendly Open Source Geographic Information System
 
-License:        GPLv3+ with exceptions
+License:        GPLv2+
 URL:            http://www.qgis.org
 
 # Epoch is used when building packages from master, otherwise is set to 0
