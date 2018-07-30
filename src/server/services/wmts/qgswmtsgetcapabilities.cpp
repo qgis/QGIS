@@ -22,6 +22,9 @@
 #include "qgsexception.h"
 #include "qgsmapserviceexception.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QStringList>
 
@@ -320,95 +323,243 @@ namespace QgsWmts
     QList< tileMatrixSet > tmsList = getTileMatrixSetList( project );
     if ( !tmsList.isEmpty() )
     {
-      QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
-
-      // Root Layer name
-      QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
-      if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
-      {
-        rootLayerName = project->title();
-      }
-
-      if ( !rootLayerName.isEmpty() )
-      {
-        QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-        QDomText layerParentNameText = doc.createTextNode( rootLayerName );
-        layerParentNameElem.appendChild( layerParentNameText );
-        layerParentElem.appendChild( layerParentNameElem );
-      }
-
-      if ( !project->title().isEmpty() )
-      {
-        // Root Layer title
-        QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-        QDomText layerParentTitleText = doc.createTextNode( project->title() );
-        layerParentTitleElem.appendChild( layerParentTitleText );
-        layerParentElem.appendChild( layerParentTitleElem );
-
-        // Root Layer abstract
-        QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
-        QDomText layerParentAbstText = doc.createTextNode( project->title() );
-        layerParentAbstElem.appendChild( layerParentAbstText );
-        layerParentElem.appendChild( layerParentAbstElem );
-      }
-
-      //transform the project native CRS into WGS84
-      QgsRectangle wgs84BoundingRect;
-      QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
-      QgsCoordinateReferenceSystem projCrs = project->crs();
+      QList< layerDef > wmtsLayers;
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform exGeoTransform( projCrs, wgs84 );
-      Q_NOWARN_DEPRECATED_POP
-      try
-      {
-        wgs84BoundingRect = exGeoTransform.transformBoundingBox( projRect );
-      }
-      catch ( const QgsCsException & )
-      {
-        wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
-      }
-      QDomElement wgs84BBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
-      QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
-      QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( wgs84BoundingRect.yMinimum(), 6 ) );
-      wgs84LowerCornerElement.appendChild( wgs84LowerCornerText );
-      wgs84BBoxElement.appendChild( wgs84LowerCornerElement );
-      QDomElement wgs84UpperCornerElement = doc.createElement( QStringLiteral( "UpperCorner" ) );
-      QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( wgs84BoundingRect.xMaximum(), 6 ) + ' ' + qgsDoubleToString( wgs84BoundingRect.yMaximum(), 6 ) );
-      wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
-      wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
-      layerParentElem.appendChild( wgs84BBoxElement );
-
-      // Root Layer Style
-      QDomElement layerParentStyleElem = doc.createElement( QStringLiteral( "Style" ) );
-      layerParentStyleElem.setAttribute( QStringLiteral( "isDefault" ), QStringLiteral( "true" ) );
-      QDomElement layerParentStyleIdElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
-      QDomText layerParentStyleIdText = doc.createTextNode( QStringLiteral( "default" ) );
-      layerParentStyleIdElem.appendChild( layerParentStyleIdText );
-      layerParentStyleElem.appendChild( layerParentStyleIdElem );
-      QDomElement layerParentStyleTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
-      QDomText layerParentStyleTitleText = doc.createTextNode( QStringLiteral( "default" ) );
-      layerParentStyleTitleElem.appendChild( layerParentStyleTitleText );
-      layerParentStyleElem.appendChild( layerParentStyleTitleElem );
-      layerParentElem.appendChild( layerParentStyleElem );
-
       QList<tileMatrixSet>::iterator tmsIt = tmsList.begin();
-      for ( ; tmsIt != tmsList.end(); ++tmsIt )
+
+      // WMTS Project configuration
+      bool wmtsProject = project->readBoolEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Project" ) );
+
+      if ( wmtsProject )
       {
-        tileMatrixSet &tms = *tmsIt;
+        layerDef pLayer;
 
-        //wmts:TileMatrixSetLink
-        QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" )/*wmts:TileMatrixSetLink*/ );
+        // Root Layer name
+        QString rootLayerName = QgsServerProjectUtils::wmsRootName( *project );
+        if ( rootLayerName.isEmpty() && !project->title().isEmpty() )
+        {
+          rootLayerName = project->title();
+        }
+        pLayer.id = rootLayerName;
 
-        QDomElement identifierElem = doc.createElement( QStringLiteral( "TileMatrixSet" ) );
-        QDomText identifierText = doc.createTextNode( tms.ref );
-        identifierElem.appendChild( identifierText );
-        tmslElement.appendChild( identifierElem );
+        if ( !project->title().isEmpty() )
+        {
+          pLayer.title = project->title();
+          pLayer.abstract = project->title();
+        }
 
-        layerParentElem.appendChild( tmslElement );
+        //transform the project native CRS into WGS84
+        QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
+        QgsCoordinateReferenceSystem projCrs = project->crs();
+        Q_NOWARN_DEPRECATED_PUSH
+        QgsCoordinateTransform exGeoTransform( projCrs, wgs84 );
+        Q_NOWARN_DEPRECATED_POP
+        try
+        {
+          pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( projRect );
+        }
+        catch ( const QgsCsException & )
+        {
+          pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
+        }
+
+        // Formats
+        bool wmtsPngProject = project->readBoolEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Project" ) );
+        if ( wmtsPngProject )
+          pLayer.formats << QStringLiteral( "image/png" );
+        bool wmtsJpegProject = project->readBoolEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Project" ) );
+        if ( wmtsJpegProject )
+          pLayer.formats << QStringLiteral( "image/jpeg" );
+
+        wmtsLayers.append( pLayer );
       }
 
-      contentsElement.appendChild( layerParentElem );
+      QStringList wmtsGroupNameList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Group" ) );
+      if ( !wmtsGroupNameList.isEmpty() )
+      {
+        QgsLayerTreeGroup *treeRoot = project->layerTreeRoot();
+
+        QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
+        QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
+
+        Q_FOREACH ( QString gName, wmtsGroupNameList )
+        {
+          QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
+          if ( !treeGroup )
+          {
+            continue;
+          }
+
+          layerDef pLayer;
+          pLayer.id = treeGroup->customProperty( QStringLiteral( "wmsShortName" ) ).toString();
+          if ( pLayer.id.isEmpty() )
+            pLayer.id = gName;
+
+          pLayer.title = treeGroup->customProperty( QStringLiteral( "wmsTitle" ) ).toString();
+          if ( pLayer.title.isEmpty() )
+            pLayer.title = gName;
+
+          pLayer.abstract = treeGroup->customProperty( QStringLiteral( "wmsAbstract" ) ).toString();
+
+          for ( QgsLayerTreeLayer *layer : treeGroup->findLayers() )
+          {
+            QgsMapLayer *l = layer->layer();
+            //transform the layer native CRS into WGS84
+            QgsRectangle wgs84BoundingRect;
+            QgsCoordinateReferenceSystem layerCrs = l->crs();
+            Q_NOWARN_DEPRECATED_PUSH
+            QgsCoordinateTransform exGeoTransform( layerCrs, wgs84 );
+            Q_NOWARN_DEPRECATED_POP
+            try
+            {
+              wgs84BoundingRect.combineExtentWith( exGeoTransform.transformBoundingBox( l->extent() ) );
+            }
+            catch ( const QgsCsException & )
+            {
+              wgs84BoundingRect.combineExtentWith( QgsRectangle( -180, -90, 180, 90 ) );
+            }
+          }
+
+          // Formats
+          if ( wmtsPngGroupNameList.contains( gName ) )
+            pLayer.formats << QStringLiteral( "image/png" );
+          if ( wmtsJpegGroupNameList.contains( gName ) )
+            pLayer.formats << QStringLiteral( "image/jpeg" );
+
+          wmtsLayers.append( pLayer );
+        }
+      }
+
+      QStringList wmtsLayerIdList = project->readListEntry( QStringLiteral( "WMTSLayers" ), QStringLiteral( "Layer" ) );
+      QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
+      QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
+
+      Q_FOREACH ( QString lId, wmtsLayerIdList )
+      {
+        QgsMapLayer *l = project->mapLayer( lId );
+        if ( !l )
+        {
+          continue;
+        }
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+        if ( !accessControl->layerReadPermission( l ) )
+        {
+          continue;
+        }
+#endif
+
+        layerDef pLayer;
+        pLayer.id = l->name();
+        if ( !l->shortName().isEmpty() )
+          pLayer.id = l->shortName();
+        pLayer.id = pLayer.id.replace( ' ', '_' );
+
+        pLayer.title = l->title();
+        pLayer.abstract = l->abstract();
+
+        //transform the layer native CRS into WGS84
+        QgsCoordinateReferenceSystem layerCrs = l->crs();
+        Q_NOWARN_DEPRECATED_PUSH
+        QgsCoordinateTransform exGeoTransform( layerCrs, wgs84 );
+        Q_NOWARN_DEPRECATED_POP
+        try
+        {
+          pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( l->extent() );
+        }
+        catch ( const QgsCsException & )
+        {
+          pLayer.wgs84BoundingRect = QgsRectangle( -180, -90, 180, 90 );
+        }
+
+        // Formats
+        if ( wmtsPngLayerIdList.contains( lId ) )
+          pLayer.formats << QStringLiteral( "image/png" );
+        if ( wmtsJpegLayerIdList.contains( lId ) )
+          pLayer.formats << QStringLiteral( "image/jpeg" );
+
+        wmtsLayers.append( pLayer );
+      }
+
+      Q_FOREACH ( layerDef wmtsLayer, wmtsLayers )
+      {
+        if ( wmtsLayer.id.isEmpty() )
+          continue;
+
+        QDomElement layerElem = doc.createElement( QStringLiteral( "Layer" ) );
+
+        QDomElement layerIdElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
+        QDomText layerIdText = doc.createTextNode( wmtsLayer.id );
+        layerIdElem.appendChild( layerIdText );
+        layerElem.appendChild( layerIdElem );
+
+        if ( !wmtsLayer.title.isEmpty() )
+        {
+          // Layer title
+          QDomElement layerTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
+          QDomText layerTitleText = doc.createTextNode( wmtsLayer.title );
+          layerTitleElem.appendChild( layerTitleText );
+          layerElem.appendChild( layerTitleElem );
+        }
+
+        if ( !wmtsLayer.abstract.isEmpty() )
+        {
+          // Layer abstract
+          QDomElement layerAbstElem = doc.createElement( QStringLiteral( "ows:Abstract" ) );
+          QDomText layerAbstText = doc.createTextNode( project->title() );
+          layerAbstElem.appendChild( layerAbstText );
+          layerElem.appendChild( layerAbstElem );
+        }
+
+        QDomElement wgs84BBoxElement = doc.createElement( QStringLiteral( "ows:WGS84BoundingBox" ) );
+        QDomElement wgs84LowerCornerElement = doc.createElement( QStringLiteral( "LowerCorner" ) );
+        QDomText wgs84LowerCornerText = doc.createTextNode( qgsDoubleToString( wmtsLayer.wgs84BoundingRect.xMinimum(), 6 ) + ' ' + qgsDoubleToString( wmtsLayer.wgs84BoundingRect.yMinimum(), 6 ) );
+        wgs84LowerCornerElement.appendChild( wgs84LowerCornerText );
+        wgs84BBoxElement.appendChild( wgs84LowerCornerElement );
+        QDomElement wgs84UpperCornerElement = doc.createElement( QStringLiteral( "UpperCorner" ) );
+        QDomText wgs84UpperCornerText = doc.createTextNode( qgsDoubleToString( wmtsLayer.wgs84BoundingRect.xMaximum(), 6 ) + ' ' + qgsDoubleToString( wmtsLayer.wgs84BoundingRect.yMaximum(), 6 ) );
+        wgs84UpperCornerElement.appendChild( wgs84UpperCornerText );
+        wgs84BBoxElement.appendChild( wgs84UpperCornerElement );
+        layerElem.appendChild( wgs84BBoxElement );
+
+        // Layer Style
+        QDomElement layerStyleElem = doc.createElement( QStringLiteral( "Style" ) );
+        layerStyleElem.setAttribute( QStringLiteral( "isDefault" ), QStringLiteral( "true" ) );
+        QDomElement layerStyleIdElem = doc.createElement( QStringLiteral( "ows:Identifier" ) );
+        QDomText layerStyleIdText = doc.createTextNode( QStringLiteral( "default" ) );
+        layerStyleIdElem.appendChild( layerStyleIdText );
+        layerStyleElem.appendChild( layerStyleIdElem );
+        QDomElement layerStyleTitleElem = doc.createElement( QStringLiteral( "ows:Title" ) );
+        QDomText layerStyleTitleText = doc.createTextNode( QStringLiteral( "default" ) );
+        layerStyleTitleElem.appendChild( layerStyleTitleText );
+        layerStyleElem.appendChild( layerStyleTitleElem );
+        layerElem.appendChild( layerStyleElem );
+
+        Q_FOREACH ( QString format, wmtsLayer.formats )
+        {
+          QDomElement layerFormatElem = doc.createElement( QStringLiteral( "Format" ) );
+          QDomText layerFormatText = doc.createTextNode( format );
+          layerFormatElem.appendChild( layerFormatText );
+          layerElem.appendChild( layerFormatElem );
+        }
+
+        tmsIt = tmsList.begin();
+        for ( ; tmsIt != tmsList.end(); ++tmsIt )
+        {
+          tileMatrixSet &tms = *tmsIt;
+
+          //wmts:TileMatrixSetLink
+          QDomElement tmslElement = doc.createElement( QStringLiteral( "TileMatrixSetLink" )/*wmts:TileMatrixSetLink*/ );
+
+          QDomElement identifierElem = doc.createElement( QStringLiteral( "TileMatrixSet" ) );
+          QDomText identifierText = doc.createTextNode( tms.ref );
+          identifierElem.appendChild( identifierText );
+          tmslElement.appendChild( identifierElem );
+
+          layerElem.appendChild( tmslElement );
+        }
+
+        contentsElement.appendChild( layerElem );
+      }
 
       tmsIt = tmsList.begin();
       for ( ; tmsIt != tmsList.end(); ++tmsIt )
@@ -479,7 +630,6 @@ namespace QgsWmts
         contentsElement.appendChild( tmsElement );
       }
     }
-
 
     //End
     return contentsElement;

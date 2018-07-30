@@ -70,6 +70,19 @@ namespace QgsWmts
     QList< tileMatrix > tileMatrixList;
   };
 
+  struct layerDef
+  {
+    QString id;
+
+    QString title;
+
+    QString abstract;
+
+    QgsRectangle wgs84BoundingRect;
+
+    QStringList formats;
+  };
+
   /**
    * Returns the highest version supported by this implementation
    */
