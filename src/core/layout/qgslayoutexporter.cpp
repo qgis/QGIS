@@ -1106,11 +1106,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
 
 void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page )
 {
-  //must set orientation to portrait before setting paper size, otherwise size will be flipped
-  //for landscape sized outputs (#11352)
-  printer.setOrientation( QPrinter::Portrait );
   QgsLayoutSize pageSize = layout->pageCollection()->page( page )->sizeWithUnits();
   QgsLayoutSize pageSizeMM = layout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+  printer.setOrientation( layout->pageCollection()->page( page )->orientation() == QgsLayoutItemPage::Portrait ? QPrinter::Portrait : QPrinter::Landscape );
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 
