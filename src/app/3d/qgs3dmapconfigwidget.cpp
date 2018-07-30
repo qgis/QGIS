@@ -34,6 +34,13 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   Q_ASSERT( map );
   Q_ASSERT( mainCanvas );
 
+  spinTerrainScale->setClearValue( 1.0 );
+  spinTerrainResolution->setClearValue( 16 );
+  spinTerrainSkirtHeight->setClearValue( 10 );
+  spinMapResolution->setClearValue( 512 );
+  spinScreenError->setClearValue( 3 );
+  spinGroundError->setClearValue( 1 );
+
   cboTerrainLayer->setAllowEmptyLayer( true );
   cboTerrainLayer->setFilters( QgsMapLayerProxyModel::RasterLayer );
 
