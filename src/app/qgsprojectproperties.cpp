@@ -851,7 +851,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   cbtsLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( QStringLiteral( "en_US" ) ) ), QLocale( QStringLiteral( "en_US" ) ).nativeLanguageName(), QStringLiteral( "en_US" ) );
   cbtsLocale->setCurrentIndex( cbtsLocale->findData( settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() ) );
 
-  connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::generateTsFileButton_clicked );
+  connect( generateTsFileButton, &QPushButton::clicked, this, &QgsProjectProperties::onGenerateTsFileButton );
 
   projectionSelectorInitialized();
   populateRequiredLayers();
@@ -2214,7 +2214,7 @@ void QgsProjectProperties::setCurrentPage( const QString &pageWidgetName )
   }
 }
 
-void QgsProjectProperties::generateTsFileButton_clicked()
+void QgsProjectProperties::onGenerateTsFileButton()
 {
   QString l = cbtsLocale->currentData().toString();
   QgsProject::instance()->generateTsFile( l );

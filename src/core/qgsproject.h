@@ -1439,7 +1439,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     QgsProjectMetadata mMetadata;
 
-    QTranslator *mTranslator = nullptr;
+    std::unique_ptr< QTranslator > mTranslator;
 
     friend class QgsProjectDirtyBlocker;
 

@@ -993,7 +993,7 @@ bool QgsProject::read()
   else
   {
     //but delete the translator
-    delete mTranslator;
+    mTranslator.reset( nullptr );
   }
 
   return rc;
@@ -1010,7 +1010,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
-    mTranslator = new QTranslator();
+    mTranslator.reset( new QTranslator() );
     if ( mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() ) )
     {
       QgsDebugMsg( "Translation loaded" );
