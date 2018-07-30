@@ -997,7 +997,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a project is being read.
      */
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.

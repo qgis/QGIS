@@ -51,6 +51,7 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsProject *p
 
   QgsReadWriteContext context;
   context.setPathResolver( QgsPathResolver( path ) );
+  context.setProjectTranslator( project );
 
   return loadLayerDefinition( doc, project, rootGroup, errorMessage, context );
 }
@@ -298,6 +299,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
 
   QgsReadWriteContext context;
   context.setPathResolver( QgsPathResolver( qlrfile ) );
+  //no projecttranslator defined here
   return QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
 }
 

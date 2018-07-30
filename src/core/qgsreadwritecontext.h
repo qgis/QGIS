@@ -65,7 +65,7 @@ class CORE_EXPORT QgsReadWriteContext
     /**
      * Constructor for QgsReadWriteContext.
      */
-    QgsReadWriteContext() = default;
+    QgsReadWriteContext();
 
     ~QgsReadWriteContext();
 
@@ -106,7 +106,17 @@ class CORE_EXPORT QgsReadWriteContext
      */
     const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
+    void setProjectTranslator( QgsProjectTranslator *projectTranslator );
+
   private:
+
+    class DefaultTranslator : public QgsProjectTranslator
+    {
+        // QgsProjectTranslator interface
+      public:
+        QString translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const;
+    };
+
     //! Pop the last category
     void leaveCategory();
 
@@ -114,8 +124,8 @@ class CORE_EXPORT QgsReadWriteContext
     QList<ReadWriteMessage> mMessages;
     QStringList mCategories = QStringList();
     QgsProjectTranslator *mProjectTranslator;
-
     friend class QgsReadWriteContextCategoryPopper;
+    DefaultTranslator mDefaultTranslator;
 };
 
 

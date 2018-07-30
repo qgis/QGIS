@@ -65,7 +65,7 @@ void QgsTranslationContext::writeTsFile( const QString &locale )
   tsElement.setAttribute( QStringLiteral( "sourcelanguage" ), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() );
   doc.appendChild( tsElement );
 
-  for ( TranslatableObject translatableObject : mTranslatableObjects )
+  for ( const TranslatableObject &translatableObject : mTranslatableObjects )
   {
     QDomElement contextElement = doc.createElement( QStringLiteral( "context" ) );
     tsElement.appendChild( contextElement );

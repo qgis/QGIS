@@ -255,7 +255,8 @@ QgsLayerTreeGroup *QgsLayerTreeGroup::findGroup( const QString &name )
 QList<QgsLayerTreeGroup *> QgsLayerTreeGroup::findGroups() const
 {
   QList<QgsLayerTreeGroup *> list;
-  Q_FOREACH ( QgsLayerTreeNode *child, mChildren )
+
+  for ( QgsLayerTreeNode *child : mChildren )
   {
     if ( QgsLayerTree::isGroup( child ) )
       list << QgsLayerTree::toGroup( child );

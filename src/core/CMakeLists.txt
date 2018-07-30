@@ -657,6 +657,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgswebpage.h
   qgswebview.h
   qgssettings.h
+  qgsprojecttranslator.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h

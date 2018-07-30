@@ -22,6 +22,7 @@
 
 #include "qgis_core.h"
 #include "qgsfields.h"
+#include "qgsreadwritecontext.h"
 
 #include "qgis.h"
 
@@ -100,7 +101,7 @@ class CORE_EXPORT QgsRelation
      *
      * \returns A relation
      */
-    static QgsRelation createFromXml( const QDomNode &node );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects

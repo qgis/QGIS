@@ -861,6 +861,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     {
       QgsReadWriteContext context;
       context.setPathResolver( pathResolver() );
+      context.setProjectTranslator( this );
       if ( !addLayer( element, brokenNodes, context ) )
       {
         returnStatus = false;
@@ -960,6 +961,7 @@ bool QgsProject::read()
     }
 
     QgsReadWriteContext context;
+    context.setProjectTranslator( this );
     if ( !storage->readProject( filename, &inDevice, context ) )
     {
       QString err = tr( "Unable to open %1" ).arg( filename );
@@ -1107,6 +1109,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
 
   //crs
   QgsCoordinateReferenceSystem projectCrs;
@@ -1302,7 +1305,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
-  emit readProject( *doc );
+  emit readProject( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state
@@ -1537,6 +1540,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
 {
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
@@ -2151,6 +2155,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   QgsReadWriteContext embeddedContext;
   if ( !useAbsolutePaths )
     embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
+  embeddedContext.setProjectTranslator( this );
 
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
@@ -2207,6 +2212,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
 
   // store identify disabled layers of the embedded project
   QSet<QString> embeddedIdentifyDisabledLayers;

@@ -352,7 +352,6 @@
 %Include auto_generated/qgssnappingconfig.sip
 %Include auto_generated/qgstaskmanager.sip
 %Include auto_generated/qgstolerance.sip
-%Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgstrackedvectorlayertools.sip
 %Include auto_generated/qgstransaction.sip
 %Include auto_generated/qgstransactiongroup.sip
@@ -367,6 +366,7 @@
 %Include auto_generated/qgsvectorlayertools.sip
 %Include auto_generated/qgsvectorsimplifymethod.sip
 %Include auto_generated/qgssettings.sip
+%Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
@@ -442,4 +442,5 @@
 %Include auto_generated/layertree/qgslayertreeregistrybridge.sip
 %Include auto_generated/qgsuserprofilemanager.sip
 %Include auto_generated/symbology/qgsarrowsymbollayer.sip
+%Include auto_generated/qgstranslationcontext.sip
 %Include auto_generated/qgsuserprofile.sip

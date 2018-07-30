@@ -153,7 +153,7 @@ QList<QgsRelation> QgsRelationManager::referencedRelations( QgsVectorLayer *laye
   return relations;
 }
 
-void QgsRelationManager::readProject( const QDomDocument &doc )
+void QgsRelationManager::readProject( const QDomDocument &doc, QgsReadWriteContext &context )
 {
   mRelations.clear();
 
@@ -165,7 +165,7 @@ void QgsRelationManager::readProject( const QDomDocument &doc )
     int relCount = relationNodes.count();
     for ( int i = 0; i < relCount; ++i )
     {
-      addRelation( QgsRelation::createFromXml( relationNodes.at( i ) ) );
+      addRelation( QgsRelation::createFromXml( relationNodes.at( i ), context ) );
     }
   }
   else

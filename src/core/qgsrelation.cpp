@@ -21,7 +21,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsRelation QgsRelation::createFromXml( const QDomNode &node )
+QgsRelation QgsRelation::createFromXml( const QDomNode &node, QgsReadWriteContext &context )
 {
   QDomElement elem = node.toElement();
 
@@ -35,7 +35,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString referencingLayerId = elem.attribute( QStringLiteral( "referencingLayer" ) );
   QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
-  QString name = QgsProject::instance()->translate( QStringLiteral( "project:relations" ), elem.attribute( QStringLiteral( "name" ) ) );
+  QString name = context.projectTranslator()->translate( QStringLiteral( "project:relations" ), elem.attribute( QStringLiteral( "name" ) ) );
   QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();

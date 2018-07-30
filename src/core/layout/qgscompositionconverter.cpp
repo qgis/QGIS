@@ -1193,6 +1193,7 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
     pathResolver = project->pathResolver();
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver );
+  context.setProjectTranslator( ( QgsProject * )project );
 
   //composer map: use uuid
   QString mapId = itemElem.attribute( QStringLiteral( "map" ), QStringLiteral( "-1" ) );

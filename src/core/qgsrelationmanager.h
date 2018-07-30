@@ -142,7 +142,7 @@ class CORE_EXPORT QgsRelationManager : public QObject
     void changed();
 
   private slots:
-    void readProject( const QDomDocument &doc );
+    void readProject( const QDomDocument &doc, QgsReadWriteContext &context );
     void writeProject( QDomDocument &doc );
     void layersRemoved( const QStringList &layers );
 
