@@ -1108,8 +1108,11 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
 {
   QgsLayoutSize pageSize = layout->pageCollection()->page( page )->sizeWithUnits();
   QgsLayoutSize pageSizeMM = layout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
-  printer.setOrientation( layout->pageCollection()->page( page )->orientation() == QgsLayoutItemPage::Portrait ? QPrinter::Portrait : QPrinter::Landscape );
-  printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
+
+  QPageLayout pageLayout( QPageSize( pageSizeMM.toQSizeF(), QPageSize::Millimeter ),
+                          QPageLayout::Portrait,
+                          QMarginsF( 0, 0, 0, 0 ) );
+  printer.setPageLayout( pageLayout );
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot, bool includeMetadata ) const
