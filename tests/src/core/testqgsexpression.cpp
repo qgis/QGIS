@@ -287,6 +287,14 @@ class TestQgsExpression: public QObject
       QCOMPARE( exp.parserErrors().first().lastColumn, lastColumn );
     }
 
+    void max_errors()
+    {
+      QgsExpression e( "wkt_geom&#x9;OBJECTID&#x9;id&#x9;a&#x9;b&#x9;c&#x9;d&#x9;e&#x9;f&#x9;g&#x9;h&#x9;i&#x9;j&#x9;k&#x9;l&#x9;m&#x9;n&#x9;o&#x9;p&#x9;q&#x9;r&#x9;" );
+      QVERIFY( e.hasParserError() );
+      // want parsing to abort after a maximum of 10 errors
+      QCOMPARE( e.parserErrors().count(), 10 );
+    }
+
     void parsing_with_locale()
     {
       // check that parsing of numbers works correctly even when using some other locale
