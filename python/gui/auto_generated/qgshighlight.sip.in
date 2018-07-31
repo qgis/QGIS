@@ -53,7 +53,7 @@ and renderer.
 
     QColor color( ) const;
 %Docstring
-Return line/stroke color
+Returns the line/stroke color
 
 .. versionadded:: 3.4
 %End
@@ -66,7 +66,7 @@ This is legacy function, use setFillColor() after setColor() if different fill c
 
     QColor fillColor( ) const;
 %Docstring
-Return fill color
+Returns the fill color
 
 .. versionadded:: 3.4
 %End
@@ -81,7 +81,7 @@ Will be used for polygons and points.
 
     int width( ) const;
 %Docstring
-Return stroke width
+Returns the stroke width
 
 .. versionadded:: 3.4
 %End
@@ -97,7 +97,7 @@ Set stroke width.
 
     double buffer( ) const;
 %Docstring
-Return buffer
+Returns the buffer
 
 .. versionadded:: 3.4
 %End

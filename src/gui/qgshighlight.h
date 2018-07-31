@@ -76,7 +76,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
     ~QgsHighlight() override;
 
     /**
-     * Return line/stroke color
+     * Returns the line/stroke color
      * \since QGIS 3.4
      */
     QColor color( ) const { return  mColor; }
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
     void setColor( const QColor &color );
 
     /**
-     * Return fill color
+     * Returns the fill color
      * \since QGIS 3.4
      */
     QColor fillColor( ) const { return mFillColor; }
@@ -101,7 +101,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
     void setFillColor( const QColor &fillColor );
 
     /**
-     * Return stroke width
+     * Returns the stroke width
      * \since QGIS 3.4
      */
     int width( ) const { return mWidth; }
@@ -114,7 +114,7 @@ class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
     void setWidth( int width );
 
     /**
-     * Return buffer
+     * Returns the buffer
      * \since QGIS 3.4
      */
     double buffer( ) const { return mBuffer; }
