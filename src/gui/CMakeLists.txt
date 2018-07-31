@@ -448,6 +448,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsgradientstopeditor.h
   qgsgroupwmsdatadialog.h
   qgshistogramwidget.h
+  qgshighlight.h
   qgsidentifymenu.h
   qgskeyvaluewidget.h
   qgslistwidget.h

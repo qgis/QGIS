@@ -46,8 +46,15 @@ class QgsSymbol;
  *   highlight.show()
  * \endcode
  */
-class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
+class GUI_EXPORT QgsHighlight: public QObject, public QgsMapCanvasItem
 {
+
+    Q_OBJECT
+    Q_PROPERTY( QColor color READ color WRITE setColor )
+    Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
+    Q_PROPERTY( int width READ width WRITE setWidth )
+    Q_PROPERTY( int buffer READ buffer WRITE setBuffer )
+
   public:
 
     /**
@@ -69,9 +76,21 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     ~QgsHighlight() override;
 
     /**
+     * Return line/stroke color
+     * \since QGIS 3.4
+     */
+    QColor color( ) const { return  mColor; }
+
+    /**
      * Set line/stroke to color, polygon fill to color with alpha = 63.
      *  This is legacy function, use setFillColor() after setColor() if different fill color is required. */
     void setColor( const QColor &color );
+
+    /**
+     * Return fill color
+     * \since QGIS 3.4
+     */
+    QColor fillColor( ) const { return mFillColor; }
 
     /**
      * Fill color for the highlight.
@@ -82,11 +101,23 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void setFillColor( const QColor &fillColor );
 
     /**
+     * Return stroke width
+     * \since QGIS 3.4
+     */
+    int width( ) const { return mWidth; }
+
+    /**
      * Set stroke width.
      *
      * \note Ignored in feature mode.
      */
     void setWidth( int width );
+
+    /**
+     * Return buffer
+     * \since QGIS 3.4
+     */
+    double buffer( ) const { return mBuffer; }
 
     /**
      * Set line / stroke buffer in millimeters.
@@ -125,6 +156,9 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
     void paintLine( QPainter *p, QgsPolylineXY line );
     void paintPolygon( QPainter *p, const QgsPolygonXY &polygon );
 
+    int mWidth = 1; // line / stroke width property
+    QColor mColor; // line / stroke color property
+    QColor mFillColor; // line / stroke fillColor property
     QBrush mBrush;
     QPen mPen;
     QgsGeometry *mGeometry = nullptr;
