@@ -27,6 +27,7 @@ class NATIVE_EXPORT QgsMacNative : public QgsNative
 
     virtual const char *currentAppLocalizedName();
     void currentAppActivateIgnoringOtherApps() override;
+    void openFileExplorerAndSelectFile( const QString &path ) override;
 };
 
 #endif // QGSMACNATIVE_H
