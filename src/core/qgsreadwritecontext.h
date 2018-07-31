@@ -102,10 +102,14 @@ class CORE_EXPORT QgsReadWriteContext
 
     /**
      * Returns the project translator
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
+    /**
+     * Sets the project translator
+     * \since QGIS 3.4
+     */
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 
   private:

@@ -27,7 +27,7 @@ class QgsProject;
  * \class QgsTranslationContext
  * \brief used for the collecting of strings of .qgs to be translated and writing of ts file
  *
- * \since QGIS 3.2
+ * \since QGIS 3.4
  */
 
 class CORE_EXPORT QgsTranslationContext

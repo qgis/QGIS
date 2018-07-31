@@ -98,6 +98,7 @@ class CORE_EXPORT QgsRelation
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
      * \param node The dom node containing the relation information
+     * \param context to pass project translator
      *
      * \returns A relation
      */

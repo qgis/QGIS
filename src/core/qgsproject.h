@@ -968,7 +968,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     /**
      * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     void generateTsFile( const QString &locale );
 
@@ -980,6 +980,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \param sourceText is the identifier of this text
      * \param disambiguation it's the disambiguation
      * \param n if -1 uses the appropriate form
+     * \since QGIS 3.4
      */
     QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
 
@@ -1298,21 +1299,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setPresetHomePath( const QString &path );
 
     /**
-     * Registers the translatable containers into the tranlationContext
+     * Registers the translatable containers into the tranlation context
      * this is a rekursive function to get all the child containers
-     * \since QGIS 3.2
      *
      * \param translationContext where the objects will be registered
      * \param parent parent-container containing list of children
+     * \since QGIS 3.4
     */
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 
     /**
-     * Registers the translatable objects into the tranlationContext
+     * Registers the translatable objects into the tranlation context
      * so there can be created a ts file these values
-     * \since QGIS 3.2
      *
      * \param translationContext where the objects will be registered
+     * \since QGIS 3.4
     */
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
 
