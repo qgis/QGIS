@@ -33,6 +33,7 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMessageBox>
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
@@ -492,9 +493,84 @@ void QgsRelationEditorWidget::deleteSelectedFeatures()
 
 void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 {
-  QgsVectorLayer *layer = mNmRelation.isValid() ? mNmRelation.referencedLayer() : mRelation.referencingLayer();
-  layer->deleteFeatures( featureids );
-  updateUi();
+  bool deleteFeatures = true;
+
+  QgsVectorLayer *layer;
+  if ( mNmRelation.isValid() )
+  {
+    layer = mNmRelation.referencedLayer();
+
+    // When deleting a linked feature within an N:M relation,
+    // check if the feature is linked to more than just one feature.
+    // In case it is linked more than just once, ask the user for confirmation
+    // as it is likely he was not aware of the implications and might either
+    // leave the dataset in a corrupted state (referential integrity) or if
+    // the fk constraint is ON CASCADE DELETE, there may be several linking
+    // entries deleted along.
+
+    QgsFeatureRequest deletedFeaturesRequest;
+    deletedFeaturesRequest.setFilterFids( featureids );
+    deletedFeaturesRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    deletedFeaturesRequest.setSubsetOfAttributes( QgsAttributeList() << mNmRelation.referencedFields().first() );
+
+    QgsFeatureIterator deletedFeatures = layer->getFeatures( deletedFeaturesRequest );
+    QStringList deletedFeaturesPks;
+    QgsFeature feature;
+    while ( deletedFeatures.nextFeature( feature ) )
+    {
+      deletedFeaturesPks.append( QgsExpression::quotedValue( feature.attribute( mNmRelation.referencedFields().first() ) ) );
+    }
+
+    QgsFeatureRequest linkingFeaturesRequest;
+    linkingFeaturesRequest.setFlags( QgsFeatureRequest::NoGeometry );
+    linkingFeaturesRequest.setSubsetOfAttributes( QgsAttributeList() );
+
+    QString linkingFeaturesRequestExpression;
+    if ( !deletedFeaturesPks.empty() )
+    {
+      linkingFeaturesRequestExpression = QStringLiteral( "%1 IN (%2)" ).arg( QgsExpression::quotedColumnRef( mNmRelation.fieldPairs().first().first ), deletedFeaturesPks.join( ',' ) );
+      linkingFeaturesRequest.setFilterExpression( linkingFeaturesRequestExpression );
+
+      QgsFeatureIterator relatedLinkingFeatures = mNmRelation.referencingLayer()->getFeatures( linkingFeaturesRequest );
+
+      int relatedLinkingFeaturesCount = 0;
+      while ( relatedLinkingFeatures.nextFeature( feature ) )
+      {
+        relatedLinkingFeaturesCount++;
+      }
+
+      if ( deletedFeaturesPks.size() == 1 && relatedLinkingFeaturesCount > 1 )
+      {
+        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entry?" ), tr( "The entry on %1 is still linked to %2 features on %3. Do you want to delete it?" ).arg( mNmRelation.referencedLayer()->name(), QString::number( relatedLinkingFeaturesCount ), mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
+        messageBox.addButton( QMessageBox::Cancel );
+        QAbstractButton *deleteButton = messageBox.addButton( tr( "Delete" ),  QMessageBox::AcceptRole );
+
+        messageBox.exec();
+        if ( messageBox.clickedButton() != deleteButton )
+          deleteFeatures = false;
+      }
+      else if ( deletedFeaturesPks.size() > 1 && relatedLinkingFeaturesCount > deletedFeaturesPks.size() )
+      {
+        QMessageBox messageBox( QMessageBox::Question, tr( "Really delete entries?" ), tr( "The %1 entries on %2 are still linked to %3 features on %4. Do you want to delete them?" ).arg( QString::number( deletedFeaturesPks.size() ), mNmRelation.referencedLayer()->name(), QString::number( relatedLinkingFeaturesCount ), mRelation.referencedLayer()->name() ), QMessageBox::NoButton, this );
+        messageBox.addButton( QMessageBox::Cancel );
+        QAbstractButton *deleteButton = messageBox.addButton( tr( "Delete" ), QMessageBox::AcceptRole );
+
+        messageBox.exec();
+        if ( messageBox.clickedButton() != deleteButton )
+          deleteFeatures = false;
+      }
+    }
+  }
+  else
+  {
+    layer = mRelation.referencingLayer();
+  }
+
+  if ( deleteFeatures )
+  {
+    layer->deleteFeatures( featureids );
+    updateUi();
+  }
 }
 
 void QgsRelationEditorWidget::unlinkFeature( const QgsFeatureId featureid )
