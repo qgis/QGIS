@@ -89,8 +89,10 @@ QgsHighlight::~QgsHighlight()
   delete mGeometry;
 }
 
+
 void QgsHighlight::setColor( const QColor &color )
 {
+  mColor = color;
   mPen.setColor( color );
   QColor fillColor( color.red(), color.green(), color.blue(), 63 );
   mBrush.setColor( fillColor );
@@ -99,6 +101,7 @@ void QgsHighlight::setColor( const QColor &color )
 
 void QgsHighlight::setFillColor( const QColor &fillColor )
 {
+  mFillColor = fillColor;
   mBrush.setColor( fillColor );
   mBrush.setStyle( Qt::SolidPattern );
 }
@@ -178,6 +181,7 @@ double QgsHighlight::getSymbolWidth( const QgsRenderContext &context, double wid
 
 void QgsHighlight::setWidth( int width )
 {
+  mWidth = width;
   mPen.setWidth( width );
 }
 
