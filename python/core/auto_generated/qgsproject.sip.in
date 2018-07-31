@@ -13,7 +13,7 @@
 
 
 
-class QgsProject : QObject, QgsExpressionContextGenerator
+class QgsProject : QObject, QgsExpressionContextGenerator, QgsProjectTranslator
 {
 %Docstring
 Reads and writes project states.
@@ -133,6 +133,14 @@ Returns last modified time of the project file as returned by the file system (o
     QString absoluteFilePath() const;
 %Docstring
 Returns full absolute path to the project file if the project is stored in a file system - derived from fileName().
+Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+
+.. versionadded:: 3.2
+%End
+
+    QString absolutePath() const;
+%Docstring
+Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
 Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
 
 .. versionadded:: 3.2
@@ -985,6 +993,28 @@ in the project. The removeMapLayer(), removeMapLayers() calls do not block remov
 .. versionadded:: 3.2
 %End
 
+    void generateTsFile( const QString &locale );
+%Docstring
+Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+
+.. versionadded:: 3.4
+%End
+
+    virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const;
+
+%Docstring
+Translates the project with QTranslator and qm file
+
+:return: the result string (in case there is no QTranslator loaded the sourceText)
+
+:param context: describing layer etc.
+:param sourceText: is the identifier of this text
+:param disambiguation: it's the disambiguation
+:param n: if -1 uses the appropriate form
+
+.. versionadded:: 3.4
+%End
+
   signals:
 
     void cleared();
@@ -997,7 +1027,7 @@ just before a new project is read).
 .. versionadded:: 3.2
 %End
 
-    void readProject( const QDomDocument & );
+    void readProject( const QDomDocument &, QgsReadWriteContext &context );
 %Docstring
 Emitted when a project is being read.
 %End
@@ -1335,6 +1365,27 @@ home path will be automatically determined from the project's file path.
 .. seealso:: :py:func:`homePathChanged`
 
 .. versionadded:: 3.2
+%End
+
+    void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
+%Docstring
+Registers the translatable containers into the tranlation context
+this is a rekursive function to get all the child containers
+
+:param translationContext: where the objects will be registered
+:param parent: parent-container containing list of children
+
+.. versionadded:: 3.4
+%End
+
+    void registerTranslatableObjects( QgsTranslationContext *translationContext );
+%Docstring
+Registers the translatable objects into the tranlation context
+so there can be created a ts file these values
+
+:param translationContext: where the objects will be registered
+
+.. versionadded:: 3.4
 %End
 
 };

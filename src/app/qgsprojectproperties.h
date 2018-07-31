@@ -93,7 +93,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
     //! generate the ts file with the locale selected in the checkbox
-    void onGenerateTsFileButton();
+    void onGenerateTsFileButton() const;
 
     /**
      * Set WMS default extent to current canvas extent

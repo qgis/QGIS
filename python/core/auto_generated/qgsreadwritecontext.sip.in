@@ -98,7 +98,21 @@ Returns the stored messages and remove them
 .. versionadded:: 3.2
 %End
 
+    const QgsProjectTranslator *projectTranslator( ) const;
+%Docstring
+Returns the project translator
 
+.. versionadded:: 3.4
+%End
+
+    void setProjectTranslator( QgsProjectTranslator *projectTranslator );
+%Docstring
+Sets the project translator
+
+.. versionadded:: 3.4
+%End
+
+      public:
 };
 
 

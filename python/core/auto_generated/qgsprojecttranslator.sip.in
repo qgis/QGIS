@@ -1,0 +1,41 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojecttranslator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjectTranslator
+{
+%Docstring
+This abstract class is to call translate() for project data from wherever QgsReadWriteContext is available.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprojecttranslator.h"
+%End
+  public:
+
+
+    virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const = 0;
+%Docstring
+This method needs to be reimplemented in all classes which implement this interface
+
+.. versionadded:: 3.4
+%End
+
+    virtual ~QgsProjectTranslator();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojecttranslator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -444,7 +444,7 @@ void QgsProject::setPresetHomePath( const QString &path )
 
 void QgsProject::registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId )
 {
-  QList<QgsAttributeEditorElement *> elements = parent->children();
+  const QList<QgsAttributeEditorElement *> elements = parent->children();
 
   for ( QgsAttributeEditorElement *element : elements )
   {
@@ -463,7 +463,9 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
 void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
 {
   //register layers
-  for ( QgsLayerTreeLayer *layer : mRootGroup->findLayers() )
+  const QList<QgsLayerTreeLayer *> layers = mRootGroup->findLayers();
+
+  for ( const QgsLayerTreeLayer *layer : layers )
   {
     translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
 
@@ -489,7 +491,8 @@ void QgsProject::registerTranslatableObjects( QgsTranslationContext *translation
   }
 
   //register layergroups
-  for ( const QgsLayerTreeGroup *groupLayer : mRootGroup->findGroups() )
+  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups();
+  for ( const QgsLayerTreeGroup *groupLayer : groupLayers )
   {
     translationContext->registerTranslation( QStringLiteral( "project:layergroups" ), groupLayer->name() );
   }
@@ -1012,10 +1015,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
     mTranslator.reset( new QTranslator() );
-    if ( mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() ) )
-    {
-      QgsDebugMsg( "Translation loaded" );
-    }
+    mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
   }
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
@@ -1319,17 +1319,16 @@ bool QgsProject::readProjectFile( const QString &filename )
   {
     //project possibly translated -> rename it with locale postfix
     QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
-    QgsProject::instance()->setFileName( newFileName );
+    setFileName( newFileName );
 
-    if ( QgsProject::instance()->write() )
+    if ( write() )
     {
-      QgsProject::instance()->setTitle( localeFileName );
-
-      QgsDebugMsg( "Translated project saved with locale prefix " + newFileName );
+      setTitle( localeFileName );
+      QgsMessageLog::logMessage( tr( "Translated project saved with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Success );
     }
     else
     {
-      QgsDebugMsg( "Error saving translated project with locale prefix " + newFileName );
+      QgsMessageLog::logMessage( tr( "Error saving translated project with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Critical );
     }
   }
   return true;

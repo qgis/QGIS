@@ -746,7 +746,7 @@ class CORE_EXPORT QgsApplication : public QApplication
    /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
