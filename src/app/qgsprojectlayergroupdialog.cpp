@@ -20,6 +20,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
 #include "qgssettings.h"
+#include "qgsziputils.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
@@ -54,7 +55,7 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   QgsSettings settings;
 
   mProjectFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  mProjectFileWidget->setFilter( tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.QGS)" ) );
+  mProjectFileWidget->setFilter( tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.QGS *.qgz *.QGZ)" ) );
   mProjectFileWidget->setDialogTitle( tr( "Select Project File" ) );
   mProjectFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString() );
   if ( !projectFile.isEmpty() )
@@ -168,10 +169,36 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   }
 
   QDomDocument projectDom;
+  if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
+  {
+    QgsProjectArchive archive;
+
+    // unzip the archive
+    if ( !archive.unzip( mProjectFileWidget->filePath() ) )
+    {
+      return;
+    }
+
+    // test if zip provides a .qgs file
+    if ( archive.projectFile().isEmpty() )
+    {
+      return;
+    }
+
+    projectFile.setFileName( archive.projectFile() );
+    if ( !projectFile.exists() )
+    {
+      return;
+    }
+  }
+
   if ( !projectDom.setContent( &projectFile ) )
   {
     return;
   }
+
+
+
 
   mRootGroup->removeAllChildren();
 

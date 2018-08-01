@@ -57,6 +57,33 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
                                  'query_layers=testlayer%20%C3%A8%C3%A9&X=190&Y=320',
                                  'wms_getfeatureinfo-text-xml')
 
+        # Test getfeatureinfo on non queryable layer
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=testlayer3&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=testlayer3&X=190&Y=320',
+                                 'wms_getfeatureinfo-testlayer3-notqueryable')
+
+        # Test getfeatureinfo on group without shortname (no queryable...)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=groupwithoutshortname&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=groupwithoutshortname&X=190&Y=320',
+                                 'wms_getfeatureinfo-groupwithoutshortname-notqueryable')
+
+        # Test getfeatureinfo on group with shortname (no queryable...)
+        self.wms_request_compare('GetFeatureInfo',
+                                 '&layers=group_name&styles=&' +
+                                 'info_format=text%2Fxml&transparent=true&' +
+                                 'width=600&height=400&srs=EPSG%3A3857&bbox=913190.6389747962%2C' +
+                                 '5606005.488876367%2C913235.426296057%2C5606035.347090538&' +
+                                 'query_layers=group_name&X=190&Y=320',
+                                 'wms_getfeatureinfo-group_name-notqueryable')
+
         # Test getfeatureinfo response html
         self.wms_request_compare('GetFeatureInfo',
                                  '&layers=testlayer%20%C3%A8%C3%A9&styles=&' +
