@@ -169,7 +169,8 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   }
 
   QDomDocument projectDom;
-  if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) ){
+  if ( QgsZipUtils::isZipFile( mProjectFileWidget->filePath() ) )
+  {
     QgsProjectArchive archive;
 
     // unzip the archive
@@ -184,7 +185,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
       return;
     }
 
-    projectFile.setFileName(archive.projectFile());
+    projectFile.setFileName( archive.projectFile() );
     if ( !projectFile.exists() )
     {
       return;
@@ -195,9 +196,9 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   {
     return;
   }
-  
 
-  
+
+
 
   mRootGroup->removeAllChildren();
 
