@@ -98,6 +98,7 @@
         <file>themes/default/algorithms/mAlgorithmMergeLayers.svg</file>
         <file>themes/default/algorithms/mAlgorithmMultiToSingle.svg</file>
         <file>themes/default/algorithms/mAlgorithmNearestNeighbour.svg</file>
+        <file>themes/default/algorithms/mAlgorithmNetworkAnalysis.svg</file>
         <file>themes/default/algorithms/mAlgorithmPolygonToLine.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinPolygon.svg</file>
         <file>themes/default/algorithms/mAlgorithmRandomPointsWithinExtent.svg</file>
