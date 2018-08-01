@@ -113,7 +113,7 @@ from .Ruggedness import Ruggedness
 from .SelectByAttribute import SelectByAttribute
 from .SelectByExpression import SelectByExpression
 from .ServiceAreaFromLayer import ServiceAreaFromLayer
-from .ServiceAreaFromPoint import ServiceAreaFromPoint
+#from .ServiceAreaFromPoint import ServiceAreaFromPoint
 from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
@@ -222,7 +222,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SelectByAttribute(),
                 SelectByExpression(),
                 ServiceAreaFromLayer(),
-                ServiceAreaFromPoint(),
+                #ServiceAreaFromPoint(),
                 SetMValue(),
                 SetRasterStyle(),
                 SetVectorStyle(),
