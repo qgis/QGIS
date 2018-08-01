@@ -216,7 +216,7 @@ namespace QgsWmts
       serviceElem.appendChild( onlineResourceElem );
     }
 
-    //Contact informations
+    //Contact information
     QString contactPerson = QgsServerProjectUtils::owsServiceContactPerson( *project );
     QString contactPosition = QgsServerProjectUtils::owsServiceContactPosition( *project );
     QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );

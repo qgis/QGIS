@@ -250,7 +250,7 @@ class TestQgsServerCacheManager(unittest.TestCase):
 
         cacheManager = self._server_iface.cacheManager()
 
-        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not retrun True')
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')
 
         filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
         self.assertEqual(len(filelist), 0, 'All files in cache are not deleted ')
@@ -275,7 +275,7 @@ class TestQgsServerCacheManager(unittest.TestCase):
         self.assertTrue(cDoc.setContent(cContent), 'cachedDocument not XML doc')
         self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(), 'cachedDocument not equal to provide document')
 
-        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not retrun True')
+        self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not return True')
 
     def test_gettile(self):
         project = self._project_path
@@ -386,7 +386,7 @@ class TestQgsServerCacheManager(unittest.TestCase):
 
         cacheManager = self._server_iface.cacheManager()
 
-        self.assertTrue(cacheManager.deleteCachedImages(None), 'deleteCachedImages does not retrun True')
+        self.assertTrue(cacheManager.deleteCachedImages(None), 'deleteCachedImages does not return True')
 
         filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
         self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')

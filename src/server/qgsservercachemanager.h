@@ -70,7 +70,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * Returns cached document (or 0 if document not in cache) like capabilities
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify differents documents for the same request
+     * \param key the key provided by the access control to identify different documents for the same request
      * \returns the cached document or 0 if no corresponding document found
      */
     QByteArray getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
@@ -80,7 +80,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param doc the document to cache
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify differents documents for the same request
+     * \param key the key provided by the access control to identify different documents for the same request
      * \returns true if the document has been cached
      */
     bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
@@ -89,7 +89,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * Deletes the cached document
      * \param project the project used to generate the document to provide path
      * \param request the request used to generate the document to provider parameters or data
-     * \param key the key provided by the access control to identify differents documents for the same request
+     * \param key the key provided by the access control to identify different documents for the same request
      * \returns true if the document has been deleted
      */
     bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
@@ -105,7 +105,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * Returns cached image (or 0 if image not in cache) like tiles
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify differents images for the same request
+     * \param key the key provided by the access control to identify different images for the same request
      * \returns the cached image or 0 if no corresponding image found
      */
     QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * \param img the image to cache
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify differents images for the same request
+     * \param key the key provided by the access control to identify different images for the same request
      * \returns true if the image has been cached
      */
     bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
@@ -124,7 +124,7 @@ class SERVER_EXPORT QgsServerCacheManager
      * Deletes the cached image
      * \param project the project used to generate the image to provide path
      * \param request the request used to generate the image to provider parameters or data
-     * \param key the key provided by the access control to identify differents images for the same request
+     * \param key the key provided by the access control to identify different images for the same request
      * \returns true if the image has been deleted
      */
     bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
