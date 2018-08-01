@@ -44,9 +44,7 @@ QString QgsIntersectionAlgorithm::groupId() const
 
 QString QgsIntersectionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. Features in the Overlay layer are assigned the attributes of the overlapping features from both the Input and Overlay layers." )
-         + QStringLiteral( "\n\n" )
-         + QObject::tr( "Optionally, the rotation can occur around a preset point. If not set the rotation occurs around each feature's centroid." );
+  return QObject::tr( "This algorithm extracts the overlapping portions of features in the Input and Overlay layers. Features in the Overlay layer are assigned the attributes of the overlapping features from both the Input and Overlay layers." );
 }
 
 QgsProcessingAlgorithm *QgsIntersectionAlgorithm::createInstance() const
