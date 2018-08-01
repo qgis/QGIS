@@ -125,9 +125,6 @@ from .SetMValue import SetMValue
 from .SetRasterStyle import SetRasterStyle
 from .SetVectorStyle import SetVectorStyle
 from .SetZValue import SetZValue
-#from .ShortestPathLayerToPoint import ShortestPathLayerToPoint
-#from .ShortestPathPointToLayer import ShortestPathPointToLayer
-#from .ShortestPathPointToPoint import ShortestPathPointToPoint
 from .SingleSidedBuffer import SingleSidedBuffer
 from .Slope import Slope
 from .SnapGeometries import SnapGeometriesToLayer
@@ -239,9 +236,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 SetRasterStyle(),
                 SetVectorStyle(),
                 SetZValue(),
-                #ShortestPathLayerToPoint(),
-                #ShortestPathPointToLayer(),
-                #ShortestPathPointToPoint(),
                 SingleSidedBuffer(),
                 Slope(),
                 SnapGeometriesToLayer(),
