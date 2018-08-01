@@ -18,6 +18,11 @@
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DExtras/QPlaneGeometry>
 
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+#include <Qt3DCore/QTransform>
+#endif
+
 #include "qgs3dmapsettings.h"
 #include "qgschunknode_p.h"
 #include "qgsterrainentity_p.h"

@@ -25,6 +25,13 @@
 
 #include <Qt3DRender/QGeometryRenderer>
 
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+#include <Qt3DCore/QTransform>
+#endif
+
+
+
 ///@cond PRIVATE
 
 static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &zMax )

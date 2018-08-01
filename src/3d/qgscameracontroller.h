@@ -19,8 +19,17 @@
 #include "qgis_3d.h"
 
 #include <Qt3DCore/QEntity>
+
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
 #include <Qt3DInput>
 #include <Qt3DRender>
+#else
+#include <Qt3DInput/Qt3DInput>
+#include <Qt3DRender/Qt3DRender>
+#endif
+
+
 
 #include "qgscamerapose.h"
 

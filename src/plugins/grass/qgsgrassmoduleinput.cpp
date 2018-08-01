@@ -14,6 +14,12 @@
  *                                                                         *
  ***************************************************************************/
 
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+#include <QHeaderView>
+#endif
+
 #include <QCompleter>
 #include <QFileDialog>
 #include <QFileInfo>

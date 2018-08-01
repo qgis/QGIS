@@ -24,7 +24,12 @@
 #include <QSettings>
 #include <QImageReader>
 #ifdef WITH_QTWEBKIT
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
 #include <QWebView>
+#else
+#include <qwebview.h>
+#endif
 #endif
 
 
