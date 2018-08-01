@@ -61,3 +61,38 @@ bool QgsServerCacheFilter::deleteCachedDocuments( const QgsProject *project ) co
   Q_UNUSED( project );
   return false;
 }
+
+//! Returns cached image
+QByteArray QgsServerCacheFilter::getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+{
+  Q_UNUSED( project );
+  Q_UNUSED( request );
+  Q_UNUSED( key );
+  return QByteArray();
+}
+
+//! Updates or inserts the image in cache
+bool QgsServerCacheFilter::setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+{
+  Q_UNUSED( img );
+  Q_UNUSED( project );
+  Q_UNUSED( request );
+  Q_UNUSED( key );
+  return false;
+}
+
+//! Deletes the cached image
+bool QgsServerCacheFilter::deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const
+{
+  Q_UNUSED( project );
+  Q_UNUSED( request );
+  Q_UNUSED( key );
+  return false;
+}
+
+//! Deletes all cached images for a QGIS project
+bool QgsServerCacheFilter::deleteCachedImages( const QgsProject *project ) const
+{
+  Q_UNUSED( project );
+  return false;
+}

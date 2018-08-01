@@ -102,6 +102,41 @@ class SERVER_EXPORT QgsServerCacheManager
     bool deleteCachedDocuments( const QgsProject *project ) const;
 
     /**
+     * Returns cached image (or 0 if image not in cache) like tiles
+     * \param project the project used to generate the image to provide path
+     * \param request the request used to generate the image to provider parameters or data
+     * \param key the key provided by the access control to identify differents images for the same request
+     * \returns the cached image or 0 if no corresponding image found
+     */
+    QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+
+    /**
+     * Updates or inserts the image in cache like tiles
+     * \param img the image to cache
+     * \param project the project used to generate the image to provide path
+     * \param request the request used to generate the image to provider parameters or data
+     * \param key the key provided by the access control to identify differents images for the same request
+     * \returns true if the image has been cached
+     */
+    bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+
+    /**
+     * Deletes the cached image
+     * \param project the project used to generate the image to provide path
+     * \param request the request used to generate the image to provider parameters or data
+     * \param key the key provided by the access control to identify differents images for the same request
+     * \returns true if the image has been deleted
+     */
+    bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+
+    /**
+     * Deletes all cached images for a QGIS project
+     * \param project the project used to generate the images to provide path
+     * \returns true if the images have been deleted
+     */
+    bool deleteCachedImages( const QgsProject *project ) const;
+
+    /**
      * Register a server cache filter
      * \param serverCache the server cache to add
      * \param priority the priority used to define the order
