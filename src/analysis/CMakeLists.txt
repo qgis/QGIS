@@ -100,6 +100,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrotate.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsegmentize.cpp
+  processing/qgsalgorithmserviceareafromlayer.cpp
   processing/qgsalgorithmserviceareafrompoint.cpp
   processing/qgsalgorithmshortestpathlayertopoint.cpp
   processing/qgsalgorithmshortestpathpointtolayer.cpp
