@@ -1,0 +1,144 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservercachemanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
+class QgsServerCacheManager
+{
+%Docstring
+A helper class that centralizes caches accesses given by all the server cache filter plugins.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsservercachemanager.h"
+#include "qgsservercachefilter.h"
+%End
+  public:
+    QgsServerCacheManager();
+%Docstring
+Constructor
+%End
+
+    QgsServerCacheManager( const QgsServerCacheManager &copy );
+%Docstring
+Constructor
+%End
+
+
+    ~QgsServerCacheManager();
+
+    QByteArray getCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Returns cached document (or 0 if document not in cache) like capabilities
+
+:param project: the project used to generate the document to provide path
+:param request: the request used to generate the document to provider parameters or data
+:param key: the key provided by the access control to identify different documents for the same request
+
+:return: the cached document or 0 if no corresponding document found
+%End
+
+    bool setCachedDocument( const QDomDocument *doc, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Updates or inserts the document in cache like capabilities
+
+:param doc: the document to cache
+:param project: the project used to generate the document to provide path
+:param request: the request used to generate the document to provider parameters or data
+:param key: the key provided by the access control to identify different documents for the same request
+
+:return: true if the document has been cached
+%End
+
+    bool deleteCachedDocument( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Deletes the cached document
+
+:param project: the project used to generate the document to provide path
+:param request: the request used to generate the document to provider parameters or data
+:param key: the key provided by the access control to identify different documents for the same request
+
+:return: true if the document has been deleted
+%End
+
+    bool deleteCachedDocuments( const QgsProject *project ) const;
+%Docstring
+Deletes all cached documents for a QGIS project
+
+:param project: the project used to generate the document to provide path
+
+:return: true if the document has been deleted
+%End
+
+    QByteArray getCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Returns cached image (or 0 if image not in cache) like tiles
+
+:param project: the project used to generate the image to provide path
+:param request: the request used to generate the image to provider parameters or data
+:param key: the key provided by the access control to identify different images for the same request
+
+:return: the cached image or 0 if no corresponding image found
+%End
+
+    bool setCachedImage( const QByteArray *img, const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Updates or inserts the image in cache like tiles
+
+:param img: the image to cache
+:param project: the project used to generate the image to provide path
+:param request: the request used to generate the image to provider parameters or data
+:param key: the key provided by the access control to identify different images for the same request
+
+:return: true if the image has been cached
+%End
+
+    bool deleteCachedImage( const QgsProject *project, const QgsServerRequest &request, const QString &key ) const;
+%Docstring
+Deletes the cached image
+
+:param project: the project used to generate the image to provide path
+:param request: the request used to generate the image to provider parameters or data
+:param key: the key provided by the access control to identify different images for the same request
+
+:return: true if the image has been deleted
+%End
+
+    bool deleteCachedImages( const QgsProject *project ) const;
+%Docstring
+Deletes all cached images for a QGIS project
+
+:param project: the project used to generate the images to provide path
+
+:return: true if the images have been deleted
+%End
+
+    void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 );
+%Docstring
+Register a server cache filter
+
+:param serverCache: the server cache to add
+:param priority: the priority used to define the order
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsservercachemanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
