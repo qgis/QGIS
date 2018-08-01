@@ -27,7 +27,8 @@ from qgis.testing import unittest
 from utilities import unitTestDataPath
 from qgis.server import QgsServer, QgsServerCacheFilter, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse
 from qgis.core import QgsApplication, QgsFontUtils, QgsProject
-from qgis.PyQt.QtCore import QFile, QByteArray
+from qgis.PyQt.QtCore import QIODevice, QFile, QByteArray, QBuffer
+from qgis.PyQt.QtGui import QImage
 from qgis.PyQt.QtXml import QDomDocument
 
 
@@ -40,9 +41,14 @@ class PyServerCache(QgsServerCacheFilter):
 
     def __init__(self, server_iface):
         super(QgsServerCacheFilter, self).__init__(server_iface)
+
         self._cache_dir = os.path.join(tempfile.gettempdir(), "qgs_server_cache")
         if not os.path.exists(self._cache_dir):
             os.mkdir(self._cache_dir)
+
+        self._tile_cache_dir = os.path.join(self._cache_dir, 'tiles')
+        if not os.path.exists(self._tile_cache_dir):
+            os.mkdir(self._tile_cache_dir)
 
     def getCachedDocument(self, project, request, key):
         m = hashlib.md5()
@@ -85,6 +91,53 @@ class PyServerCache(QgsServerCacheFilter):
         for f in filelist:
             os.remove(os.path.join(self._cache_dir, f))
         filelist = [f for f in os.listdir(self._cache_dir) if f.endswith(".xml")]
+        return len(filelist) == 0
+
+    def getCachedImage(self, project, request, key):
+        m = hashlib.md5()
+        paramMap = request.parameters()
+        urlParam = "&".join(["%s=%s" % (k, paramMap[k]) for k in paramMap.keys()])
+        m.update(urlParam.encode('utf8'))
+
+        if not os.path.exists(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png")):
+            return QByteArray()
+
+        img = QImage(m.hexdigest() + ".png")
+        with open(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"), "rb") as f:
+            statusOK = img.loadFromData(f.read())
+            if not statusOK:
+                print("Could not read or find the contents document. Error at line %d, column %d:\n%s" % (errorLine, errorColumn, errorStr))
+                return QByteArray()
+
+        ba = QByteArray()
+        buff = QBuffer(ba)
+        buff.open(QIODevice.WriteOnly)
+        img.save(buff, 'PNG')
+        return ba
+
+    def setCachedImage(self, img, project, request, key):
+        m = hashlib.md5()
+        paramMap = request.parameters()
+        urlParam = "&".join(["%s=%s" % (k, paramMap[k]) for k in paramMap.keys()])
+        m.update(urlParam.encode('utf8'))
+        with open(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"), "wb") as f:
+            f.write(img)
+        return os.path.exists(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"))
+
+    def deleteCachedImage(self, project, request, key):
+        m = hashlib.md5()
+        paramMap = request.parameters()
+        urlParam = "&".join(["%s=%s" % (k, paramMap[k]) for k in paramMap.keys()])
+        m.update(urlParam.encode('utf8'))
+        if os.path.exists(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png")):
+            os.remove(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"))
+        return not os.path.exists(os.path.join(self._tile_cache_dir, m.hexdigest() + ".png"))
+
+    def deleteCachedImages(self, project):
+        filelist = [f for f in os.listdir(self._tile_cache_dir) if f.endswith(".png")]
+        for f in filelist:
+            os.remove(os.path.join(self._tile_cache_dir, f))
+        filelist = [f for f in os.listdir(self._tile_cache_dir) if f.endswith(".png")]
         return len(filelist) == 0
 
 
@@ -186,8 +239,14 @@ class TestQgsServerCacheManager(unittest.TestCase):
         # with cache
         header, body = self._execute_request(query_string)
 
+        # without cache
+        query_string = '?MAP=%s&SERVICE=WMTS&VERSION=1.0.0&REQUEST=%s' % (urllib.parse.quote(project), 'GetCapabilities')
+        header, body = self._execute_request(query_string)
+        # with cache
+        header, body = self._execute_request(query_string)
+
         filelist = [f for f in os.listdir(self._servercache._cache_dir) if f.endswith(".xml")]
-        self.assertEqual(len(filelist), 5, 'Not enough file in cache')
+        self.assertEqual(len(filelist), 6, 'Not enough file in cache')
 
         cacheManager = self._server_iface.cacheManager()
 
@@ -217,6 +276,120 @@ class TestQgsServerCacheManager(unittest.TestCase):
         self.assertEqual(doc.documentElement().tagName(), cDoc.documentElement().tagName(), 'cachedDocument not equal to provide document')
 
         self.assertTrue(cacheManager.deleteCachedDocuments(None), 'deleteCachedDocuments does not retrun True')
+
+    def test_gettile(self):
+        project = self._project_path
+        assert os.path.exists(project), "Project file not found: " + project
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Country",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        # without cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        # with cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "Country",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:4326",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        # without cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        # with cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "QGIS Server Hello World",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:3857",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        # without cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        # with cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WMTS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetTile",
+            "LAYER": "QGIS Server Hello World",
+            "STYLE": "",
+            "TILEMATRIXSET": "EPSG:4326",
+            "TILEMATRIX": "0",
+            "TILEROW": "0",
+            "TILECOL": "0",
+            "FORMAT": "image/png"
+        }.items())])
+
+        # without cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+        # with cache
+        r, h = self._result(self._execute_request(qs))
+        self.assertEqual(
+            h.get("Content-Type"), "image/png",
+            "Content type is wrong: %s\n%s" % (h.get("Content-Type"), r))
+
+        filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
+        self.assertEqual(len(filelist), 4, 'Not enough image in cache')
+
+        cacheManager = self._server_iface.cacheManager()
+
+        self.assertTrue(cacheManager.deleteCachedImages(None), 'deleteCachedImages does not retrun True')
+
+        filelist = [f for f in os.listdir(self._servercache._tile_cache_dir) if f.endswith(".png")]
+        self.assertEqual(len(filelist), 0, 'All images in cache are not deleted ')
 
 
 if __name__ == "__main__":
