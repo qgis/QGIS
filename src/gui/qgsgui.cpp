@@ -27,6 +27,8 @@
 #include "qgsmacnative.h"
 #elif defined (Q_OS_WIN)
 #include "qgswinnative.h"
+#elif defined (Q_OS_LINUX)
+#include "qgslinuxnative.h"
 #else
 #include "qgsnative.h"
 #endif
@@ -116,6 +118,8 @@ QgsGui::QgsGui()
   mNative = new QgsMacNative();
 #elif defined (Q_OS_WIN)
   mNative = new QgsWinNative();
+#elif defined(Q_OS_LINUX)
+  mNative = new QgsLinuxNative();
 #else
   mNative = new QgsNative();
 #endif
