@@ -1369,7 +1369,7 @@ home path will be automatically determined from the project's file path.
 
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 %Docstring
-Registers the translatable containers into the tranlation context
+Registers the translatable containers into the translation context
 this is a rekursive function to get all the child containers
 
 :param translationContext: where the objects will be registered
@@ -1380,7 +1380,7 @@ this is a rekursive function to get all the child containers
 
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
-Registers the translatable objects into the tranlation context
+Registers the translatable objects into the translation context
 so there can be created a ts file these values
 
 :param translationContext: where the objects will be registered

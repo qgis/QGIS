@@ -1299,7 +1299,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setPresetHomePath( const QString &path );
 
     /**
-     * Registers the translatable containers into the tranlation context
+     * Registers the translatable containers into the translation context
      * this is a rekursive function to get all the child containers
      *
      * \param translationContext where the objects will be registered
@@ -1309,7 +1309,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 
     /**
-     * Registers the translatable objects into the tranlation context
+     * Registers the translatable objects into the translation context
      * so there can be created a ts file these values
      *
      * \param translationContext where the objects will be registered
