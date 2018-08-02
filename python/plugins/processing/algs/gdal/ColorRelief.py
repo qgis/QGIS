@@ -73,7 +73,7 @@ class ColorRelief(GdalAlgorithm):
                                                      options=[i[0] for i in self.modes],
                                                      defaultValue=2))
         options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr('Additional creation parameters'),
+                                                     self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
 
