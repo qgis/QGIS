@@ -86,6 +86,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mConnectionTimeout = rh.mConnectionTimeout;
+  mFreeConnectionsRequirement = rh.mFreeConnectionsRequirement;
   return *this;
 }
 
@@ -296,6 +297,16 @@ int QgsFeatureRequest::connectionTimeout() const
 void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
   mConnectionTimeout = connectionTimeout;
+}
+
+int QgsFeatureRequest::freeConnectionsRequirement() const
+{
+  return mFreeConnectionsRequirement;
+}
+
+void QgsFeatureRequest::setFreeConnectionsRequirement( int freeConnectionsRequirement )
+{
+  mFreeConnectionsRequirement = freeConnectionsRequirement;
 }
 
 
