@@ -16,17 +16,6 @@ modules=(core gui analysis server)
 
 code=0
 for module in "${modules[@]}"; do
-  # clean auto_additions and auto_generated folders
-  rm -rf python/${module}/auto_additions/*.py
-  rm -rf python/${module}/auto_generated/*.py
-  # put back __init__.py
-  echo '"""
-This folder is completed using sipify.pl script
-It is not aimed to be manually edited
-"""' > python/${module}/auto_additions/__init__.py
-
-  module_init=${DIR}/python/${module}/__init__.py
-  cp ${module_init} ${DIR}/${module}.temp
   while read -r sipfile; do
       header=$(${GP}sed -E 's@(.*)\.sip@src/\1.h@; s@auto_generated/@@' <<< $sipfile)
       pyfile=$(${GP}sed -E 's@([^\/]+\/)*([^\/]+)\.sip@\2.py@;' <<< $sipfile)
@@ -49,11 +38,6 @@ It is not aimed to be manually edited
   done < <(
       ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip
   )
-  outdiff=$(diff ${module_init} ${DIR}/${module}.temp)
-  if [[ -n "$outdiff" ]]; then
-    echo " *** Python ${module} (${module_init}) init not up to date: run sipify with -p argument"
-    code=1
-  fi
 done
 
 
