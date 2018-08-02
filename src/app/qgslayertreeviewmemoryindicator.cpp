@@ -72,7 +72,7 @@ std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewMemoryIndicatorProv
 {
   std::unique_ptr< QgsLayerTreeViewIndicator > indicator = qgis::make_unique< QgsLayerTreeViewIndicator >( this );
   indicator->setIcon( mIcon );
-  indicator->setToolTip( tr( "Temporary scratch layer only<br><b>Contents will be discarded after closing this project</b>" ) );
+  indicator->setToolTip( tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" ) );
   mIndicators.insert( indicator.get() );
   return indicator;
 }
