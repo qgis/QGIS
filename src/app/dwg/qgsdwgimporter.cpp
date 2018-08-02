@@ -623,7 +623,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   if ( fi.suffix().toLower() == "dxf" )
   {
     //loads dxf
-    QScopedPointer<dxfRW> dxf( new dxfRW( drawing.toUtf8() ) );
+    QScopedPointer<dxfRW> dxf( new dxfRW( drawing.toLocal8Bit() ) );
     if ( !dxf->read( this, false ) )
     {
       result = DRW::BAD_UNKNOWN;
@@ -632,7 +632,7 @@ bool QgsDwgImporter::import( const QString &drawing, QString &error, bool doExpa
   else if ( fi.suffix().toLower() == "dwg" )
   {
     //loads dwg
-    QScopedPointer<dwgR> dwg( new dwgR( drawing.toUtf8() ) );
+    QScopedPointer<dwgR> dwg( new dwgR( drawing.toLocal8Bit() ) );
     if ( !dwg->read( this, false ) )
     {
       result = dwg->getError();
