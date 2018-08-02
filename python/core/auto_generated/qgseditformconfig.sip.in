@@ -264,7 +264,7 @@ Write XML information
 Serialize on project save
 %End
 
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = 0 );
 %Docstring
 Deserialize drag and drop designer elements.
 %End
