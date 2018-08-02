@@ -1304,6 +1304,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \param translationContext where the objects will be registered
      * \param parent parent-container containing list of children
+     * \param layerId to store under the correct context
      * \since QGIS 3.4
     */
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );

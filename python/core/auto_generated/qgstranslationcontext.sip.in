@@ -59,8 +59,8 @@ Sets the ``name`` of the TS file
 %Docstring
 Registers the ``string`` to be translated
 
-:param translationString: name and path of the object need to be translated
-:param layerName: the name of the layer
+:param context: layer name and sub category of object needed to be translated
+:param source: the name of the object needed to be translated
 %End
 
     void writeTsFile( const QString &locale );

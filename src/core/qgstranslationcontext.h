@@ -74,8 +74,8 @@ class CORE_EXPORT QgsTranslationContext
     /**
      * Registers the \a string to be translated
      *
-     * \param translationString name and path of the object need to be translated
-     * \param layerName the name of the layer
+     * \param context layer name and sub category of object needed to be translated
+     * \param source the name of the object needed to be translated
      */
     void registerTranslation( const QString &context, const QString &source );
 

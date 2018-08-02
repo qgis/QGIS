@@ -1374,6 +1374,7 @@ this is a rekursive function to get all the child containers
 
 :param translationContext: where the objects will be registered
 :param parent: parent-container containing list of children
+:param layerId: to store under the correct context
 
 .. versionadded:: 3.4
 %End
