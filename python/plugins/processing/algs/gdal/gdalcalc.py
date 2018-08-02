@@ -41,7 +41,6 @@ from processing.tools.system import isWindows
 
 class gdalcalc(GdalAlgorithm):
 
-    OPTIONS = 'OPTIONS'
     INPUT_A = 'INPUT_A'
     INPUT_B = 'INPUT_B'
     INPUT_C = 'INPUT_C'
@@ -57,10 +56,9 @@ class gdalcalc(GdalAlgorithm):
     FORMULA = 'FORMULA'
     OUTPUT = 'OUTPUT'
     NO_DATA = 'NO_DATA'
-    EXTRA = 'EXTRA'
+    OPTIONS = 'OPTIONS'
     RTYPE = 'RTYPE'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
-    #DEBUG = 'DEBUG'
 
     def __init__(self):
         super().__init__()
@@ -149,18 +147,9 @@ class gdalcalc(GdalAlgorithm):
                 self.tr('Output raster type'),
                 options=self.TYPE,
                 defaultValue=5))
-        #self.addParameter(ParameterBoolean(
-        #    self.DEBUG, self.tr('Print debugging information'), False))
-        self.addParameter(
-            QgsProcessingParameterString(
-                self.EXTRA,
-                self.tr('Additional creation parameters'),
-                '',
-                optional=True))
 
-        # advanced raster params
         options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr('Additional creation parameters'),
+                                                     self.tr('Additional creation options'),
                                                      defaultValue='',
                                                      optional=True)
         options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
@@ -191,10 +180,6 @@ class gdalcalc(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        extra = self.parameterAsString(parameters, self.EXTRA, context)
-        # if extra is not None:
-        #     extra = str(extra)
-        #debug = self.getParameterValue(parameters, self.DEBUG)
         formula = self.parameterAsString(parameters, self.FORMULA, context)
         if self.NO_DATA in parameters and parameters[self.NO_DATA] is not None:
             noData = self.parameterAsDouble(parameters, self.NO_DATA, context)
@@ -210,10 +195,6 @@ class gdalcalc(GdalAlgorithm):
         if noData is not None:
             arguments.append('--NoDataValue')
             arguments.append(noData)
-        if extra and len(extra) > 0:
-            arguments.append(extra)
-        #if debug:
-        #    arguments.append('--debug')
         layer = self.parameterAsRasterLayer(parameters, self.INPUT_A, context)
         if layer is None:
             raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT_A))
