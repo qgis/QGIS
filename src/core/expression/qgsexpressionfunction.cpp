@@ -43,6 +43,7 @@
 #include "qgscolorramp.h"
 #include "qgsfieldformatterregistry.h"
 #include "qgsfieldformatter.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 const QString QgsExpressionFunction::helpText() const
 {
@@ -3582,16 +3583,17 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
 static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
-  QgsVectorLayer *vl = QgsExpressionUtils::getVectorLayer( values.at( 0 ), parent );
+
+  std::unique_ptr<QgsVectorLayerFeatureSource> featureSource = QgsExpressionUtils::getFeatureSource( values.at( 0 ), parent );
 
   //no layer found
-  if ( !vl )
+  if ( !featureSource )
   {
     return QVariant();
   }
 
   QString attribute = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  int attributeId = vl->fields().lookupField( attribute );
+  int attributeId = featureSource->fields().lookupField( attribute );
   if ( attributeId == -1 )
   {
     return QVariant();
@@ -3599,7 +3601,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
 
   const QVariant &attVal = values.at( 2 );
 
-  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( vl->id(), QString::number( attributeId ), attVal.toString() );
+  const QString cacheValueKey = QStringLiteral( "getfeature:%1:%2:%3" ).arg( featureSource->id(), QString::number( attributeId ), attVal.toString() );
   if ( context && context->hasCachedValue( cacheValueKey ) )
   {
     return context->cachedValue( cacheValueKey );
@@ -3613,7 +3615,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );
   }
-  QgsFeatureIterator fIt = vl->getFeatures( req );
+  QgsFeatureIterator fIt = featureSource->getFeatures( req );
 
   QgsFeature fet;
   QVariant res;

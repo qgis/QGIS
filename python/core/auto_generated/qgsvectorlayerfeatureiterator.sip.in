@@ -54,7 +54,15 @@ Returns the coordinate reference system for features retrieved from this source.
 .. versionadded:: 3.0
 %End
 
+    QString id() const;
+%Docstring
+Returns the layer id of the source layer.
+
+.. versionadded:: 3.4
+%End
+
   protected:
+
 
 
 
