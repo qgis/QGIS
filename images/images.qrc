@@ -698,6 +698,7 @@
         <file>themes/default/mActionIdentifyByRectangle.svg</file>
         <file>themes/default/mIndicatorEmbedded.svg</file>
         <file>themes/default/mIconHistory.svg</file>
+        <file>themes/default/mIndicatorMemory.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
