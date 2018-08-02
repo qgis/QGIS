@@ -659,6 +659,40 @@ at this moment. A negative value (which is set by default) will wait forever.
 .. versionadded:: 3.0
 %End
 
+    int freeConnectionsRequirement() const;
+%Docstring
+The amount of free connections required to start this request.
+The system will block the request until the specified amount of connections
+is available for usage.
+
+By default this amount is 3. This makes sure, that we have 2 spare connections
+that might be used by "nested" requests which are executed while iterating
+over the results of this request.
+
+This number should be changed to one, when we know that no nested requests happen
+and that this request might happen in a nested way. This is for example given for
+expression functions that do internal requests.
+
+.. versionadded:: 3.4
+%End
+
+    void setFreeConnectionsRequirement( int freeConnectionsRequirement );
+%Docstring
+The amount of free connections required to start this request.
+The system will block the request until the specified amount of connections
+is available for usage.
+
+By default this amount is 3. This makes sure, that we have 2 spare connections
+that might be used by "nested" requests which are executed while iterating
+over the results of this request.
+
+This number should be changed to one, when we know that no nested requests happen
+and that this request might happen in a nested way. This is for example given for
+expression functions that do internal requests.
+
+.. versionadded:: 3.4
+%End
+
   protected:
 };
 
