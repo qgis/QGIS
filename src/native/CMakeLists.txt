@@ -54,6 +54,15 @@ IF(WIN32)
   )
 ENDIF(WIN32)
 
+IF(UNIX)
+  SET(QGIS_APP_WIN32_SRCS
+    linux/qgslinuxnative.cpp
+  )
+  SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
+    ${QGIS_APP_LINUX_SRCS}
+  )
+ENDIF(UNIX)
+
 SET(QGIS_NATIVE_HDRS
   qgsnative.h
 )
@@ -72,6 +81,12 @@ IF(WIN32)
      win/qgswinnative.h
   )
 ENDIF(WIN32)
+
+IF(UNIX)
+  SET (QGIS_NATIVE_HDRS ${QGIS_NATIVE_HDRS}
+     linux/qgslinuxnative.h
+  )
+ENDIF(UNIX)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
