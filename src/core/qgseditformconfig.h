@@ -288,7 +288,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = nullptr );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString() );
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer

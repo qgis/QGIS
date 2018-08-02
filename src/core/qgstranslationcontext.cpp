@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgstranslationcontext.cpp - %{Cpp:License:ClassName}
+  qgstranslationcontext.cpp
 
  ---------------------
  begin                : 23.5.2018
- copyright            : (C) 2018 by david
- email                : [your-email-here]
+ copyright            : (C) 2018 by David Signer
+ email                : david at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
