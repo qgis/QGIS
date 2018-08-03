@@ -16,3 +16,28 @@
  ***************************************************************************/
 
 #include "qgslinuxnative.h"
+
+#include <QUrl>
+#include <QString>
+#include <QtDBus/QtDBus>
+#include <QtDebug>
+
+void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
+{
+  if ( !QDBusConnection::sessionBus().isConnected() )
+  {
+    QgsNative::openFileExplorerAndSelectFile( path );
+    return;
+  }
+
+  QDBusInterface iface( QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QStringLiteral( "/org/freedesktop/FileManager1" ),
+                        QStringLiteral( "org.freedesktop.FileManager1" ),
+                        QDBusConnection::sessionBus() );
+
+  iface.call( QDBus::NoBlock, QStringLiteral( "ShowItems" ), QStringList( QUrl::fromLocalFile( path ).toString() ), QStringLiteral( "QGIS" ) );
+  if ( iface.lastError().type() != QDBusError::NoError )
+  {
+    QgsNative::openFileExplorerAndSelectFile( path );
+  }
+}
