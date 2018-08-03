@@ -44,7 +44,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     {
       Symbology = 1, //!< Show symbology options
       DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option
-      Fields = 1 << 3, //!< Show field customisation group
+      Fields = 1 << 3, //!< Show field customization group
       AddToCanvas = 1 << 4, //!< Show add to map option
       SelectedOnly = 1 << 5, //!< Show selected features only option
       GeometryType = 1 << 6, //!< Show geometry group
