@@ -5218,7 +5218,7 @@ void QgisApp::fileExit()
     return;
   }
 
-  if ( checkUnsavedLayerEdits() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -5253,7 +5253,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !checkUnsavedLayerEdits() || !saveDirty() )
+    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() )
     {
       return false; //cancel pressed
     }
@@ -5347,7 +5347,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !saveDirty() )
+  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() )
   {
     return false; //cancel pressed
   }
@@ -5646,7 +5646,7 @@ void QgisApp::fileOpen()
     return;
 
   // possibly save any pending work before opening a new project
-  if ( checkUnsavedLayerEdits() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
   {
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
@@ -5680,7 +5680,7 @@ void QgisApp::fileRevert()
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
     return;
 
-  if ( !checkUnsavedLayerEdits() )
+  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() )
     return;
 
   // re-open the current project
@@ -6110,7 +6110,7 @@ void QgisApp::openProject( QAction *action )
     return;
 
   QString debugme = action->data().toString();
-  if ( checkUnsavedLayerEdits() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
     addProject( debugme );
 }
 
@@ -6136,7 +6136,7 @@ void QgisApp::openProject( const QString &fileName )
     return;
 
   // possibly save any pending work before opening a different project
-  if ( checkUnsavedLayerEdits() && saveDirty() )
+  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() )
   {
     // error handling and reporting is in addProject() function
     addProject( fileName );
@@ -10863,7 +10863,9 @@ bool QgisApp::saveDirty()
     for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
     {
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
-      if ( !vl )
+      // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
+      // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers().
+      if ( !vl || vl->dataProvider()->name() == QLatin1String( "memory" ) )
       {
         continue;
       }
@@ -10917,7 +10919,27 @@ bool QgisApp::saveDirty()
 
   freezeCanvases( false );
 
-  return answer != QMessageBox::Cancel;
+  if ( answer == QMessageBox::Cancel )
+    return false;
+
+  // for memory layers, we discard all unsaved changes manually. Users have already been warned about
+  // these by an earlier call to checkMemoryLayers(), and we don't want duplicate "unsaved changes" prompts
+  // and anyway, saving the changes to a memory layer here won't actually save ANYTHING!
+  // we do this at the very end here, because if the user opted to cancel above then ALL unsaved
+  // changes in memory layers should still exist for them.
+  const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  for ( auto it = layers.begin(); it != layers.end(); ++it )
+  {
+    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+    {
+      if ( vl->dataProvider()->name() == QLatin1String( "memory" ) && vl->isEditable() && vl->isModified() )
+      {
+        vl->rollBack();
+      }
+    }
+  }
+
+  return true;
 }
 
 bool QgisApp::checkUnsavedLayerEdits()
@@ -10931,6 +10953,11 @@ bool QgisApp::checkUnsavedLayerEdits()
     {
       if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
       {
+        // note that we skip the unsaved edits check for memory layers -- it's misleading, because their contents aren't actually
+        // saved if this is part of a project close operation. Instead we let these get picked up by checkMemoryLayers()
+        if ( vl->dataProvider()->name() == QLatin1String( "memory" ) )
+          continue;
+
         const bool hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
         if ( !hasUnsavedEdits )
           continue;
@@ -10942,6 +10969,38 @@ bool QgisApp::checkUnsavedLayerEdits()
   }
 
   return true;
+}
+
+bool QgisApp::checkMemoryLayers()
+{
+  // check to see if there are any memory layers present (with features)
+  bool hasMemoryLayers = false;
+  const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  for ( auto it = layers.begin(); it != layers.end(); ++it )
+  {
+    if ( it.value() && it.value()->dataProvider()->name() == QLatin1String( "memory" ) )
+    {
+      QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( it.value() );
+      if ( vl && vl->featureCount() != 0 )
+      {
+        hasMemoryLayers = true;
+        break;
+      }
+    }
+  }
+
+  if ( hasMemoryLayers )
+  {
+    if ( QMessageBox::warning( this,
+                               tr( "Close Project" ),
+                               tr( "This project includes one or more temporary scratch layers. These layers are not saved to disk and their contents will be permanently lost. Are you sure you want to proceed?" ),
+                               QMessageBox::Yes | QMessageBox::Cancel, QMessageBox::Cancel ) == QMessageBox::Yes )
+      return true;
+    else
+      return false;
+  }
+  else
+    return true;
 }
 
 bool QgisApp::checkTasksDependOnProject()
