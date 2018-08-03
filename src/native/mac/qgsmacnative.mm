@@ -18,26 +18,26 @@
 #include "qgsmacnative.h"
 
 #include <Cocoa/Cocoa.h>
+#include <QString>
 
 QgsMacNative::~QgsMacNative()
 {
 }
 
-const char* QgsMacNative::currentAppLocalizedName()
+const char *QgsMacNative::currentAppLocalizedName()
 {
   return [[[NSRunningApplication currentApplication] localizedName] UTF8String];
 }
 
 void QgsMacNative::currentAppActivateIgnoringOtherApps()
 {
-  // valid for Mac OS X >= 10.6
   [[NSRunningApplication currentApplication] activateWithOptions:
-    (NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps)];
+                                             ( NSApplicationActivateAllWindows | NSApplicationActivateIgnoringOtherApps )];
 }
 
-void openFileExplorerAndSelectFile( const QString &path )
+void QgsMacNative::openFileExplorerAndSelectFile( const QString &path )
 {
-  NSString* pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().data()];
-  NSArray *fileURLs = [NSArray arrayWithObjects:pathStr, /* ... */ nil];
+  NSString *pathStr = [[NSString alloc] initWithUTF8String:path.toUtf8().data()];
+  NSArray *fileURLs = [NSArray arrayWithObjects:[NSURL fileURLWithPath:pathStr], nil];
   [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:fileURLs];
 }

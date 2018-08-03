@@ -20,6 +20,9 @@
 
 #include "qgsnative.h"
 
+class QString;
+
+
 class NATIVE_EXPORT QgsMacNative : public QgsNative
 {
   public:
