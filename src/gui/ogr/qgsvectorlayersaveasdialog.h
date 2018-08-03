@@ -38,11 +38,18 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     Q_OBJECT
 
   public:
-    // bitmask of options to be shown
+
+    //! Bitmask of options to be shown
     enum Options
     {
-      Symbology = 1,
-      AllOptions = ~0
+      Symbology = 1, //!< Show symbology options
+      DestinationCrs = 1 << 2, //!< Show destination CRS (reprojection) option
+      Fields = 1 << 3, //!< Show field customisation group
+      AddToCanvas = 1 << 4, //!< Show add to map option
+      SelectedOnly = 1 << 5, //!< Show selected features only option
+      GeometryType = 1 << 6, //!< Show geometry group
+      Extent = 1 << 7, //!< Show extent group
+      AllOptions = ~0 //!< Show all options
     };
 
     QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
@@ -156,6 +163,7 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
     bool mAttributeTableItemChangedSlotEnabled;
     bool mReplaceRawFieldValuesStateChangedSlotEnabled;
     QgsVectorFileWriter::ActionOnExistingFile mActionOnExistingFile;
+    Options mOptions = AllOptions;
 };
 
 #endif // QGSVECTORLAYERSAVEASDIALOG_H

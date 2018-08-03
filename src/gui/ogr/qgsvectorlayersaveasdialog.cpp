@@ -50,6 +50,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
   , mAttributeTableItemChangedSlotEnabled( true )
   , mReplaceRawFieldValuesStateChangedSlotEnabled( true )
   , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
+  , mOptions( static_cast< Options >( options ) )
 {
   if ( layer )
   {
@@ -58,13 +59,33 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
   }
   setup();
 
-  if ( !( options & Symbology ) )
+  if ( !( mOptions & Symbology ) )
   {
     mSymbologyExportLabel->hide();
     mSymbologyExportComboBox->hide();
     mScaleLabel->hide();
     mScaleWidget->hide();
   }
+
+  if ( !( mOptions & DestinationCrs ) )
+  {
+    mCrsLabel->hide();
+    mCrsSelector->hide();
+  }
+  if ( !( mOptions & Fields ) )
+    mAttributesSelection->hide();
+
+  if ( !( mOptions & SelectedOnly ) )
+    mSelectedOnly->hide();
+
+  if ( !( mOptions & AddToCanvas ) )
+    mAddToCanvas->hide();
+
+  if ( !( mOptions & GeometryType ) )
+    mGeometryGroupBox->hide();
+
+  if ( !( mOptions & Extent ) )
+    mExtentGroupBox->hide();
 
   mSelectedOnly->setEnabled( layer && layer->selectedFeatureCount() != 0 );
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
@@ -376,12 +397,13 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   }
   else
   {
-    mAttributesSelection->setVisible( true );
+    if ( mOptions & Fields )
+      mAttributesSelection->setVisible( true );
     fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
   }
 
   // Show symbology options only for some formats
-  if ( QgsVectorFileWriter::supportsFeatureStyles( sFormat ) )
+  if ( QgsVectorFileWriter::supportsFeatureStyles( sFormat ) && ( mOptions & Symbology ) )
   {
     mSymbologyExportLabel->setVisible( true );
     mSymbologyExportComboBox->setVisible( true );
@@ -878,7 +900,7 @@ QgsWkbTypes::Type QgsVectorLayerSaveAsDialog::geometryType() const
     return QgsWkbTypes::Unknown;
   }
 
-  return ( QgsWkbTypes::Type )currentIndexData;
+  return static_cast< QgsWkbTypes::Type >( currentIndexData );
 }
 
 bool QgsVectorLayerSaveAsDialog::automaticGeometryType() const
