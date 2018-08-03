@@ -637,38 +637,32 @@ class CORE_EXPORT QgsFeatureRequest
     void setConnectionTimeout( int connectionTimeout );
 
     /**
-     * The amount of free connections required to start this request.
-     * The system will block the request until the specified amount of connections
-     * is available for usage.
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
      *
-     * By default this amount is 3. This makes sure, that we have 2 spare connections
-     * that might be used by "nested" requests which are executed while iterating
-     * over the results of this request.
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
      *
-     * This number should be changed to one, when we know that no nested requests happen
-     * and that this request might happen in a nested way. This is for example given for
-     * expression functions that do internal requests.
+     * For example, this should be set on requests that are issued from an
+     * expression function.
      *
      * \since QGIS 3.4
      */
-    int freeConnectionsRequirement() const;
+    bool requestMayBeNested() const;
 
     /**
-     * The amount of free connections required to start this request.
-     * The system will block the request until the specified amount of connections
-     * is available for usage.
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
      *
-     * By default this amount is 3. This makes sure, that we have 2 spare connections
-     * that might be used by "nested" requests which are executed while iterating
-     * over the results of this request.
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
      *
-     * This number should be changed to one, when we know that no nested requests happen
-     * and that this request might happen in a nested way. This is for example given for
-     * expression functions that do internal requests.
+     * For example, this should be set on requests that are issued from an
+     * expression function.
      *
      * \since QGIS 3.4
      */
-    void setFreeConnectionsRequirement( int freeConnectionsRequirement );
+    void setRequestMayBeNested( bool requestMayBeNested );
 
   protected:
     FilterType mFilter = FilterNone;
@@ -688,7 +682,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mConnectionTimeout = -1;
-    int mFreeConnectionsRequirement = 3;
+    int mRequestMayBeNested = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )
