@@ -263,9 +263,9 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
       {
         if ( vlayer->dataProvider()->name() == QLatin1String( "memory" ) )
         {
-          QAction *actionMakePermenant = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
-          connect( actionMakePermenant, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
-          menu->addAction( actionMakePermenant );
+          QAction *actionMakePermanent = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
+          connect( actionMakePermanent, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
+          menu->addAction( actionMakePermanent );
         }
         // save as vector file
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
