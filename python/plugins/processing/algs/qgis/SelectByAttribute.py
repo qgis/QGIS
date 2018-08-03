@@ -130,6 +130,9 @@ class SelectByAttribute(QgisAlgorithm):
         fields = layer.fields()
 
         idx = layer.fields().lookupField(fieldName)
+        if idx < 0:
+            raise QgsProcessingException(self.tr("Field '{}' was not found in layer").format(fieldName))
+
         fieldType = fields[idx].type()
 
         if fieldType != QVariant.String and operator in self.STRING_OPERATORS:

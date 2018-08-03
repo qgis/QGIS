@@ -2087,6 +2087,20 @@ tests:
         type: vector
 
   - algorithm: native:extractbyattribute
+    name: Extract by attribute (bad field)
+    params:
+      FIELD: notafield
+      INPUT:
+        name: polys.gml
+        type: vector
+      OPERATOR: '9'
+    results:
+      OUTPUT:
+        name: expected/failure.gml
+        type: vector
+    expectedException: true
+
+  - algorithm: native:extractbyattribute
     name: Extract by attribute (starts with)
     params:
       FIELD: name
