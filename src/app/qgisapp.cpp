@@ -7224,7 +7224,7 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
       QgsDataProvider::ProviderOptions options;
       vl->setDataSource( QStringLiteral( "%1" ).arg( newFilename ), vl->name(), QStringLiteral( "ogr" ), options );
       this->messageBar()->pushMessage( tr( "Layer Saved" ),
-                                       tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString(), QDir::toNativeSeparators( newFilename ) ),
+                                       tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                        Qgis::Success, messageTimeout() );
     }
   };
@@ -7363,10 +7363,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
     }
 
-    this->emit layerSavedAs( vlayer, vectorFilename );
+    this->emit layerSavedAs( vlayer, vectorFileName );
     this->messageBar()->pushMessage( tr( "Layer Exported" ),
-                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
-                                       Qgis::Success, messageTimeout() );
+                                     tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
+                                     Qgis::Success, messageTimeout() );
   };
 
   auto onFailure = []( int error, const QString & errorMessage )
