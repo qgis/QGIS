@@ -156,6 +156,7 @@ class QgsLayoutQptDropHandler;
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsmasterlayoutinterface.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -1841,7 +1842,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
                                       bool addToCanvas,
                                       const QString &layerName,
                                       const QString &encoding,
-                                      const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure );
+                                      const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure,
+                                  int dialogOptions = QgsVectorLayerSaveAsDialog::AllOptions,
+                                  const QString &dialogTitle = QString() );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
