@@ -24,7 +24,7 @@
 #include <QLabel>
 #include <QTextBrowser>
 #include <QDesktopServices>
-#include <QFile>
+#include <QFileInfo>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, Qgis::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
@@ -271,8 +271,8 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
 
 void QgsMessageBarItem::urlClicked( const QUrl &url )
 {
-  const bool isFile = QFile::exists( url.toLocalFile() );
-  if ( isFile )
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
     QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
   else
     QDesktopServices::openUrl( url );
