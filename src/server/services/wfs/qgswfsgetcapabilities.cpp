@@ -49,7 +49,7 @@ namespace QgsWfs
       cache = accessControl->fillCacheKey( cacheKeyList );
 
     QDomDocument doc;
-    QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
+    QString cacheKey = cacheKeyList.join( '-' );
     const QDomDocument *capabilitiesDocument = nullptr;
 
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
@@ -86,7 +86,7 @@ namespace QgsWfs
       }
     }
 
-    response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
   }
 

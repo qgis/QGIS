@@ -45,7 +45,7 @@ namespace QgsWmts
       cache = accessControl->fillCacheKey( cacheKeyList );
 
     QDomDocument doc;
-    QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
+    QString cacheKey = cacheKeyList.join( '-' );
     const QDomDocument *capabilitiesDocument = nullptr;
 
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
@@ -82,7 +82,7 @@ namespace QgsWmts
       }
     }
 
-    response.setHeader( "Content-Type", "text/xml; charset=utf-8" );
+    response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
     response.write( capabilitiesDocument->toByteArray() );
   }
 
@@ -128,7 +128,7 @@ namespace QgsWmts
 
     //Service type
     QDomElement typeElem = doc.createElement( QStringLiteral( "ows:ServiceType" ) );
-    QDomText typeText = doc.createTextNode( "OGC WMTS" );
+    QDomText typeText = doc.createTextNode( QStringLiteral( "OGC WMTS" ) );
     typeElem.appendChild( typeText );
     serviceElem.appendChild( typeElem );
 
@@ -353,9 +353,7 @@ namespace QgsWmts
         //transform the project native CRS into WGS84
         QgsRectangle projRect = QgsServerProjectUtils::wmsExtent( *project );
         QgsCoordinateReferenceSystem projCrs = project->crs();
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( projCrs, wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( projCrs, wgs84, project );
         try
         {
           pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( projRect );
@@ -388,7 +386,7 @@ namespace QgsWmts
         QStringList wmtsPngGroupNameList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Group" ) );
         QStringList wmtsJpegGroupNameList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Group" ) );
 
-        Q_FOREACH ( QString gName, wmtsGroupNameList )
+        for ( QString gName : wmtsGroupNameList )
         {
           QgsLayerTreeGroup *treeGroup = treeRoot->findGroup( gName );
           if ( !treeGroup )
@@ -412,11 +410,13 @@ namespace QgsWmts
           for ( QgsLayerTreeLayer *layer : treeGroup->findLayers() )
           {
             QgsMapLayer *l = layer->layer();
+            if ( !l )
+            {
+              continue;
+            }
             //transform the layer native CRS into WGS84
             QgsCoordinateReferenceSystem layerCrs = l->crs();
-            Q_NOWARN_DEPRECATED_PUSH
-            QgsCoordinateTransform exGeoTransform( layerCrs, wgs84 );
-            Q_NOWARN_DEPRECATED_POP
+            QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
             try
             {
               wgs84BoundingRect.combineExtentWith( exGeoTransform.transformBoundingBox( l->extent() ) );
@@ -447,7 +447,7 @@ namespace QgsWmts
       QStringList wmtsPngLayerIdList = project->readListEntry( QStringLiteral( "WMTSPngLayers" ), QStringLiteral( "Layer" ) );
       QStringList wmtsJpegLayerIdList = project->readListEntry( QStringLiteral( "WMTSJpegLayers" ), QStringLiteral( "Layer" ) );
 
-      Q_FOREACH ( QString lId, wmtsLayerIdList )
+      for ( QString lId : wmtsLayerIdList )
       {
         QgsMapLayer *l = project->mapLayer( lId );
         if ( !l )
@@ -472,9 +472,7 @@ namespace QgsWmts
 
         //transform the layer native CRS into WGS84
         QgsCoordinateReferenceSystem layerCrs = l->crs();
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( layerCrs, wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( layerCrs, wgs84, project );
         try
         {
           pLayer.wgs84BoundingRect = exGeoTransform.transformBoundingBox( l->extent() );
@@ -503,7 +501,7 @@ namespace QgsWmts
         elem.appendChild( formatElem );
       };
 
-      Q_FOREACH ( layerDef wmtsLayer, wmtsLayers )
+      for ( layerDef wmtsLayer : wmtsLayers )
       {
         if ( wmtsLayer.id.isEmpty() )
           continue;
@@ -550,14 +548,12 @@ namespace QgsWmts
         for ( ; tmsIt != tmsList.end(); ++tmsIt )
         {
           tileMatrixSet &tms = *tmsIt;
-          if ( tms.ref == "EPSG:4326" )
+          if ( tms.ref == QLatin1String( "EPSG:4326" ) )
             continue;
 
           QgsRectangle rect;
           QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
-          Q_NOWARN_DEPRECATED_PUSH
-          QgsCoordinateTransform exGeoTransform( wgs84, crs );
-          Q_NOWARN_DEPRECATED_POP
+          QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
           try
           {
             rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );
@@ -593,7 +589,7 @@ namespace QgsWmts
         layerStyleElem.appendChild( layerStyleTitleElem );
         layerElem.appendChild( layerStyleElem );
 
-        Q_FOREACH ( QString format, wmtsLayer.formats )
+        for ( QString format : wmtsLayer.formats )
         {
           QDomElement layerFormatElem = doc.createElement( QStringLiteral( "Format" ) );
           QDomText layerFormatText = doc.createTextNode( format );
@@ -614,13 +610,11 @@ namespace QgsWmts
         for ( ; tmsIt != tmsList.end(); ++tmsIt )
         {
           tileMatrixSet &tms = *tmsIt;
-          if ( tms.ref != "EPSG:4326" )
+          if ( tms.ref != QLatin1String( "EPSG:4326" ) )
           {
             QgsRectangle rect;
             QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( tms.ref );
-            Q_NOWARN_DEPRECATED_PUSH
-            QgsCoordinateTransform exGeoTransform( wgs84, crs );
-            Q_NOWARN_DEPRECATED_POP
+            QgsCoordinateTransform exGeoTransform( wgs84, crs, project );
             try
             {
               rect = exGeoTransform.transformBoundingBox( wmtsLayer.wgs84BoundingRect );

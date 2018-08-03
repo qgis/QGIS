@@ -106,7 +106,7 @@ namespace QgsWms
 
 
     QDomDocument doc;
-    QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
+    QString cacheKey = cacheKeyList.join( '-' );
     const QDomDocument *capabilitiesDocument = nullptr;
 
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
@@ -114,7 +114,7 @@ namespace QgsWms
     {
       QByteArray content;
       if ( cacheKeyList.count() == 2 )
-        content = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+        content = cacheManager->getCachedDocument( project, request, QString() );
       else if ( cacheKeyList.count() > 2 )
         content = cacheManager->getCachedDocument( project, request, cacheKeyList.at( 3 ) );
 
@@ -144,9 +144,9 @@ namespace QgsWms
         {
           QByteArray content;
           if ( cacheKeyList.count() == 2 &&
-               cacheManager->setCachedDocument( &doc, project, request, QStringLiteral( "" ) ) )
+               cacheManager->setCachedDocument( &doc, project, request, QString() ) )
           {
-            content = cacheManager->getCachedDocument( project, request, QStringLiteral( "" ) );
+            content = cacheManager->getCachedDocument( project, request, QString() );
           }
           else if ( cacheKeyList.count() > 2 &&
                     cacheManager->setCachedDocument( &doc, project, request, cacheKeyList.at( 3 ) ) )

@@ -40,28 +40,28 @@ namespace QgsWmts
     if ( accessControl )
       cache = accessControl->fillCacheKey( cacheKeyList );
 
-    QString cacheKey = cacheKeyList.join( QStringLiteral( "-" ) );
+    QString cacheKey = cacheKeyList.join( '-' );
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cache )
     {
       QString contentType = params.value( QStringLiteral( "FORMAT" ) );
       QString saveFormat;
       std::unique_ptr<QImage> image;
-      if ( contentType == "image/jpeg" )
+      if ( contentType == QLatin1String( "image/jpeg" ) )
       {
-        saveFormat = "JPEG";
+        saveFormat = QStringLiteral( "JPEG" );
         image = qgis::make_unique<QImage>( 256, 256, QImage::Format_RGB32 );
       }
       else
       {
-        saveFormat = "PNG";
+        saveFormat = QStringLiteral( "PNG" );
         image = qgis::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
       }
 
       QByteArray content = cacheManager->getCachedImage( project, request, cacheKey );
       if ( !content.isEmpty() && image->loadFromData( content ) )
       {
-        response.setHeader( "Content-Type", contentType );
+        response.setHeader( QStringLiteral( "Content-Type" ), contentType );
         image->save( response.io(), qPrintable( saveFormat ) );
         return;
       }

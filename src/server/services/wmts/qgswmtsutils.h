@@ -39,24 +39,24 @@ namespace QgsWmts
 
     QgsRectangle extent;
 
-    double scaleDenominator;
+    double scaleDenominator = 0.0;
 
-    QString unit;
+    QgsUnitTypes::DistanceUnit unit;
   };
 
   struct tileMatrix
   {
-    double resolution;
+    double resolution = 0.0;
 
-    double scaleDenominator;
+    double scaleDenominator = 0.0;
 
-    int col;
+    int col = 0;
 
-    int row;
+    int row = 0;
 
-    double left;
+    double left = 0.0;
 
-    double top;
+    double top = 0.0;
   };
 
   struct tileMatrixSet
@@ -65,7 +65,7 @@ namespace QgsWmts
 
     QgsRectangle extent;
 
-    QString unit;
+    QgsUnitTypes::DistanceUnit unit;
 
     QList< tileMatrix > tileMatrixList;
   };
@@ -82,7 +82,7 @@ namespace QgsWmts
 
     QStringList formats;
 
-    bool queryable;
+    bool queryable = false;
   };
 
   /**
@@ -106,7 +106,7 @@ namespace QgsWmts
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OWS_NAMESPACE = QStringLiteral( "http://www.opengis.net/ows/1.1" );
 
-  tileMatrixInfo getTileMatrixInfo( const QString &crsStr );
+  tileMatrixInfo getTileMatrixInfo( const QString &crsStr, const QgsProject *project );
   tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi, double minScale );
   double getProjectMinScale( const QgsProject *project );
   QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project );

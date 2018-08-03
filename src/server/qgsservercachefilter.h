@@ -133,4 +133,4 @@ class SERVER_EXPORT QgsServerCacheFilter
 //! The registry definition
 typedef QMultiMap<int, QgsServerCacheFilter *> QgsServerCacheFilterMap;
 
-#endif // QGSSERVERSECURITY_H
+#endif // QGSSERVERCACHEPLUGIN_H

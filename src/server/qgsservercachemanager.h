@@ -49,21 +49,39 @@ class SERVER_EXPORT QgsServerCacheManager
     //! Constructor
     QgsServerCacheManager()
     {
-      mPluginsServerCaches = new QgsServerCacheFilterMap();
-      mResolved = false;
+      mPluginsServerCaches.reset( new QgsServerCacheFilterMap() );
     }
 
-    //! Constructor
+    //! Copy constructor
     QgsServerCacheManager( const QgsServerCacheManager &copy )
     {
-      mPluginsServerCaches = new QgsServerCacheFilterMap( *copy.mPluginsServerCaches );
-      mResolved = copy.mResolved;
+      if ( copy.mPluginsServerCaches )
+      {
+        mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+      }
+      else
+      {
+        mPluginsServerCaches.reset( nullptr );
+      }
+    }
+    //! Assignment operator
+    QgsServerCacheManager &operator=( const QgsServerCacheManager &copy )
+    {
+      if ( copy.mPluginsServerCaches )
+      {
+        mPluginsServerCaches.reset( new QgsServerCacheFilterMap( *copy.mPluginsServerCaches ) );
+      }
+      else
+      {
+        mPluginsServerCaches.reset( nullptr );
+      }
+      return *this;
     }
 
 
     ~QgsServerCacheManager()
     {
-      delete mPluginsServerCaches;
+      mPluginsServerCaches.reset();
     }
 
     /**
@@ -145,9 +163,7 @@ class SERVER_EXPORT QgsServerCacheManager
 
   private:
     //! The ServerCache plugins registry
-    QgsServerCacheFilterMap *mPluginsServerCaches = nullptr;
-
-    bool mResolved;
+    std::unique_ptr<QgsServerCacheFilterMap> mPluginsServerCaches = nullptr;
 };
 
 #endif

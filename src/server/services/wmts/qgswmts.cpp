@@ -59,7 +59,7 @@ namespace QgsWmts
         Q_UNUSED( project );
 
         QgsServerRequest::Parameters params = request.parameters();
-        QString versionString = params.value( "VERSION" );
+        QString versionString = params.value( QStringLiteral( "VERSION" ) );
 
         // Set the default version
         if ( versionString.isEmpty() )
@@ -113,7 +113,7 @@ class QgsWmtsModule: public QgsServiceModule
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsg( "WMTSModule::registerSelf called" );
+      QgsDebugMsg( QStringLiteral( "WMTSModule::registerSelf called" ) );
       registry.registerService( new  QgsWmts::Service( serverIface ) );
     }
 };

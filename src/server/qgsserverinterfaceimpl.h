@@ -60,14 +60,20 @@ class QgsServerInterfaceImpl : public QgsServerInterface
      */
     QgsAccessControl *accessControls() const override { return mAccessControls; }
 
-    //! Register a server cache filter
-    void registerServerCache( QgsServerCacheFilter *serverCache, int priority = 0 ) override;
+
+    /**
+     * Register a server cache filter
+     * \param serverCache the server cache to register
+     * \param priority the priority used to order them
+     * \since QGIS 3.4
+     */
+    void registerServerCache( QgsServerCacheFilter *serverCache SIP_TRANSFER, int priority = 0 ) override;
 
     /**
      * Gets the helper over all the registered server cache filters
      * \returns the server cache helper
      */
-    QgsServerCacheManager *cacheManager() const override { return mCacheManager; }
+    QgsServerCacheManager *cacheManager() const override { return mCacheManager.get(); }
 
     QString getEnv( const QString &name ) const override;
     QString configFilePath() override { return mConfigFilePath; }
@@ -84,7 +90,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
-    QgsServerCacheManager *mCacheManager = nullptr;
+    std::unique_ptr<QgsServerCacheManager> mCacheManager = nullptr;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;

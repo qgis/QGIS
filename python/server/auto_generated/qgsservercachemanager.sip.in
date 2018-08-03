@@ -33,7 +33,7 @@ Constructor
 
     QgsServerCacheManager( const QgsServerCacheManager &copy );
 %Docstring
-Constructor
+Copy constructor
 %End
 
 

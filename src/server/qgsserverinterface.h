@@ -126,10 +126,14 @@ class SERVER_EXPORT QgsServerInterface
      * Register a server cache filter
      * \param serverCache the server cache to register
      * \param priority the priority used to order them
+     * \since QGIS 3.4
      */
     virtual void registerServerCache( QgsServerCacheFilter *serverCache SIP_TRANSFER, int priority = 0 ) = 0;
 
-    //! Gets the registered server cache filters
+    /**
+     * Gets the registered server cache filters
+     * \since QGIS 3.4
+     */
     virtual QgsServerCacheManager *cacheManager() const = 0;
 
     //! Returns an enrironment variable, used to pass  environment variables to Python
