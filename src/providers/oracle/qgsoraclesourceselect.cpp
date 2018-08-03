@@ -284,7 +284,7 @@ void QgsOracleSourceSelect::on_btnSave_clicked()
 void QgsOracleSourceSelect::on_btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

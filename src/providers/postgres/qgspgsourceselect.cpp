@@ -321,7 +321,7 @@ void QgsPgSourceSelect::btnSave_clicked()
 void QgsPgSourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

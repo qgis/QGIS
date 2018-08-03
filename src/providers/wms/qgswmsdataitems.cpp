@@ -511,7 +511,7 @@ void QgsXyzTileRootItem::saveXyzTilesServers()
 void QgsXyzTileRootItem::loadXyzTilesServers()
 {
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

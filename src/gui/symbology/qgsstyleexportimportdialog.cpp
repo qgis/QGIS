@@ -505,7 +505,7 @@ void QgsStyleExportImportDialog::browse()
   if ( type == QLatin1String( "file" ) )
   {
     mFileName = QFileDialog::getOpenFileName( this, tr( "Load Styles" ), QDir::homePath(),
-                tr( "XML files (*.xml *XML)" ) );
+                tr( "XML files (*.xml *.XML)" ) );
     if ( mFileName.isEmpty() )
     {
       return;

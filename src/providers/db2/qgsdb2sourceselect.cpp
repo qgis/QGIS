@@ -263,7 +263,7 @@ void QgsDb2SourceSelect::btnSave_clicked()
 void QgsDb2SourceSelect::btnLoad_clicked()
 {
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
-                     tr( "XML files (*.xml *XML)" ) );
+                     tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
