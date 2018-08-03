@@ -177,6 +177,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
         mOfflineDataPathLineEdit->setText( fileName );
       }
+      break;
     }
     case QgsOfflineEditing::SpatiaLite:
     {
@@ -197,6 +198,7 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
         mOfflineDataPathLineEdit->setText( fileName );
       }
+      break;
     }
   }
 }
