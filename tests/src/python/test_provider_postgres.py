@@ -1153,11 +1153,16 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         """
         vl = QgsVectorLayer('{conn} srid=4326 table="qgis_test".{table} (geom) sql='.format(conn=self.dbconn, table='someData'), "testgeom", "postgres")
         self.assertTrue(vl.isValid())
-        it = vl.getFeatures()
-        it2 = vl.getFeatures()
-        it3 = vl.getFeatures()
-        it4 = vl.getFeatures()
         QgsProject.instance().addMapLayer(vl)
+
+        # Acquire the maximum amount of concurrent connections
+        iterators = list()
+        for i in range(QgsApplication.instance().maxConcurrentConnectionsPerPool()):
+            iterators.append(vl.getFeatures())
+
+        # Run an expression that will also do a request and should use a spare
+        # connection. It just should not deadlock here.
+
         feat = next(it)
         context = QgsExpressionContext()
         context.setFeature(feat)
