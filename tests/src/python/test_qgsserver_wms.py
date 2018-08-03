@@ -123,7 +123,9 @@ class TestQgsServerWMS(TestQgsServerWMSTestBase):
         self.assertXMLEqual(response, expected, msg="request %s failed.\nQuery: %s\nExpected file: %s\nResponse:\n%s" % (query_string, request, reference_path, response.decode('utf-8')))
 
     def test_wms_getcapabilities_project(self):
+        """WMS GetCapabilities without map parameter"""
         self.wms_request_compare_project('GetCapabilities')
+        # reference_file='getcapabilities_without_map_param' could be the right response
 
     def wms_inspire_request_compare(self, request):
         """WMS INSPIRE tests"""
