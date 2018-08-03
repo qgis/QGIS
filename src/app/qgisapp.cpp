@@ -5218,7 +5218,7 @@ void QgisApp::fileExit()
     return;
   }
 
-  if ( saveDirty() )
+  if ( checkUnsavedLayerEdits() && saveDirty() )
   {
     closeProject();
     userProfileManager()->setDefaultFromActive();
@@ -5253,7 +5253,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !saveDirty() )
+    if ( !checkUnsavedLayerEdits() || !saveDirty() )
     {
       return false; //cancel pressed
     }
@@ -5347,7 +5347,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !saveDirty() )
+  if ( !checkUnsavedLayerEdits() || !saveDirty() )
   {
     return false; //cancel pressed
   }
@@ -5646,7 +5646,7 @@ void QgisApp::fileOpen()
     return;
 
   // possibly save any pending work before opening a new project
-  if ( saveDirty() )
+  if ( checkUnsavedLayerEdits() && saveDirty() )
   {
     // Retrieve last used project dir from persistent settings
     QgsSettings settings;
@@ -5678,6 +5678,9 @@ void QgisApp::fileRevert()
   if ( QMessageBox::question( this, tr( "Revert Project" ),
                               tr( "Are you sure you want to discard all unsaved changes the current project?" ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    return;
+
+  if ( !checkUnsavedLayerEdits() )
     return;
 
   // re-open the current project
@@ -6107,7 +6110,7 @@ void QgisApp::openProject( QAction *action )
     return;
 
   QString debugme = action->data().toString();
-  if ( saveDirty() )
+  if ( checkUnsavedLayerEdits() && saveDirty() )
     addProject( debugme );
 }
 
@@ -6133,7 +6136,7 @@ void QgisApp::openProject( const QString &fileName )
     return;
 
   // possibly save any pending work before opening a different project
-  if ( saveDirty() )
+  if ( checkUnsavedLayerEdits() && saveDirty() )
   {
     // error handling and reporting is in addProject() function
     addProject( fileName );
@@ -10915,6 +10918,30 @@ bool QgisApp::saveDirty()
   freezeCanvases( false );
 
   return answer != QMessageBox::Cancel;
+}
+
+bool QgisApp::checkUnsavedLayerEdits()
+{
+  // check to see if there are any vector layers with unsaved provider edits
+  // to ensure user has opportunity to save any editing
+  if ( QgsProject::instance()->count() > 0 )
+  {
+    const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+    for ( auto it = layers.begin(); it != layers.end(); ++it )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      {
+        const bool hasUnsavedEdits = ( vl->isEditable() && vl->isModified() );
+        if ( !hasUnsavedEdits )
+          continue;
+
+        if ( !toggleEditing( vl, true ) )
+          return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 bool QgisApp::checkTasksDependOnProject()
