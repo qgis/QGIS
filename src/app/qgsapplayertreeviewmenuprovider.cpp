@@ -261,6 +261,12 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( vlayer )
       {
+        if ( vlayer->dataProvider()->name() == QLatin1String( "memory" ) )
+        {
+          QAction *actionMakePermenant = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileSave.svg" ) ), tr( "Make Permanent…" ), menu );
+          connect( actionMakePermenant, &QAction::triggered, QgisApp::instance(), [ = ] { QgisApp::instance()->makeMemoryLayerPermanent( vlayer ); } );
+          menu->addAction( actionMakePermenant );
+        }
         // save as vector file
         QMenu *menuExportVector = new QMenu( tr( "Export" ), menu );
         QAction *actionSaveAs = new QAction( tr( "Save Features As…" ), menuExportVector );

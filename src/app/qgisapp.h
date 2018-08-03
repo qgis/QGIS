@@ -695,6 +695,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false );
+
+    /**
+     * Makes a memory layer permanent, by prompting users to save the layer to a disk-based (OGR)
+     * format, and then replacing the layer's data source in place.
+     */
+    void makeMemoryLayerPermanent( QgsVectorLayer *layer );
+
     //! save qml style for the current layer
     void saveStyleFile( QgsMapLayer *layer = nullptr );
     //! save qrl definition for the current layer
@@ -1828,6 +1835,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true, bool onlySelected = false );
+
+    void saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected,
+                                  const std::function< void ( const QString &newFilename,
+                                      bool addToCanvas,
+                                      const QString &layerName,
+                                      const QString &encoding,
+                                      const QString &vectorFileName )> &onSuccess, const std::function< void ( int error, const QString &errorMessage ) > &onFailure );
 
     //! Sets project properties, including map untis
     void projectProperties( const QString  &currentPage = QString() );
