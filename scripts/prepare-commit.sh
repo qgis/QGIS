@@ -75,7 +75,7 @@ for f in $MODIFIED; do
   (( i++ )) || true
 
   case "$f" in
-  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py)
+  *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.sip|*.py|*.mm)
     ;;
 
   *)

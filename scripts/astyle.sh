@@ -90,7 +90,7 @@ for f in "$@"; do
 			continue
 			;;
 
-		*.cpp|*.h|*.c|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+		*.cpp|*.h|*.c|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp|*.mm)
 			if [ -x "$f" ]; then
 				chmod a-x "$f"
 			fi
