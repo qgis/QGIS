@@ -10887,6 +10887,9 @@ bool QgisApp::checkUnsavedLayerEdits()
 
 bool QgisApp::checkMemoryLayers()
 {
+  if ( !QgsSettings().value( QStringLiteral( "askToSaveMemoryLayers" ), true, QgsSettings::App ).toBool() )
+    return true;
+
   // check to see if there are any memory layers present (with features)
   bool hasMemoryLayers = false;
   const QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
