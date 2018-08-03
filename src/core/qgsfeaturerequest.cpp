@@ -299,14 +299,14 @@ void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
   mConnectionTimeout = connectionTimeout;
 }
 
-int QgsFeatureRequest::freeConnectionsRequirement() const
+bool QgsFeatureRequest::requestMayBeNested() const
 {
-  return mFreeConnectionsRequirement;
+  return mRequestMayBeNested;
 }
 
-void QgsFeatureRequest::setFreeConnectionsRequirement( int freeConnectionsRequirement )
+void QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
 {
-  mFreeConnectionsRequirement = freeConnectionsRequirement;
+  mRequestMayBeNested = requestMayBeNested;
 }
 
 
