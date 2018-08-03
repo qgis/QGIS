@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsQmlWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
@@ -45,6 +46,7 @@ the Free Software Foundation; either version 2 of the License, or     *
   public slots:
 
     virtual void setFeature( const QgsFeature &feature );
+
 
 };
 

@@ -17,9 +17,14 @@
 #define QGSQMLWIDGETWRAPPER_H
 
 #include "qgswidgetwrapper.h"
+#include "qgis.h"
+#include "qgis_gui.h"
+
 
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
 {
+    Q_OBJECT
+
   public:
     QgsQmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 
@@ -32,6 +37,9 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
   public slots:
 
     void setFeature( const QgsFeature &feature ) override;
+
+  private:
+    QTemporaryFile mQmlFile;
 };
 
 #endif // QGSQMLWIDGETWRAPPER_H
