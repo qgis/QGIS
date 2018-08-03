@@ -7463,17 +7463,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     } );
 
     // when an error occurs:
-    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
+    connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [onFailure]( int error, const QString & errorMessage )
     {
-      if ( error != QgsVectorFileWriter::Canceled )
-      {
-        QgsMessageViewer *m = new QgsMessageViewer( nullptr );
-        m->setWindowTitle( tr( "Save Error" ) );
-        m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
-        m->exec();
-      }
-    }
-           );
+      onFailure( error, errorMessage );
+    } );
 
     QgsApplication::taskManager()->addTask( writerTask );
   }
