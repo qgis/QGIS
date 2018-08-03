@@ -7166,7 +7166,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       emit layerSavedAs( rlWeakPointer, fileName );
 
     messageBar()->pushMessage( tr( "Layer Exported" ),
-                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
+                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                Qgis::Success, messageTimeout() );
   } );
 
@@ -7202,6 +7202,45 @@ void QgisApp::saveAsFile( QgsMapLayer *layer, bool onlySelected )
   {
     saveAsVectorFileGeneral( qobject_cast<QgsVectorLayer *>( layer ), true, onlySelected );
   }
+}
+
+void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  const QString layerId = layer->id();
+
+  auto onSuccess = [this, layerId]( const QString & newFilename,
+                                    bool,
+                                    const QString &,
+                                    const QString &,
+                                    const QString & )
+  {
+    // we have to re-retrieve the layer, in case it's been removed during the lifetime of the writer task
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) );
+    if ( vl )
+    {
+      QgsDataProvider::ProviderOptions options;
+      vl->setDataSource( QStringLiteral( "%1" ).arg( newFilename ), vl->name(), QStringLiteral( "ogr" ), options );
+      this->messageBar()->pushMessage( tr( "Layer Saved" ),
+                                       tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString(), QDir::toNativeSeparators( newFilename ) ),
+                                       Qgis::Success, messageTimeout() );
+    }
+  };
+
+  auto onFailure = []( int error, const QString & errorMessage )
+  {
+    if ( error != QgsVectorFileWriter::Canceled )
+    {
+      QgsMessageViewer *m = new QgsMessageViewer( nullptr );
+      m->setWindowTitle( tr( "Save Error" ) );
+      m->setMessageAsPlainText( tr( "Could not make temporary scratch layer permanent.\nError: %1" ).arg( errorMessage ) );
+      m->exec();
+    }
+  };
+
+  saveAsVectorFileGeneral( layer, true, false, onSuccess, onFailure );
 }
 
 void QgisApp::saveAsLayerDefinition()
@@ -7310,6 +7349,42 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
   if ( !vlayer )
     return;
 
+  auto onSuccess = [this, vlayer]( const QString & newFilename,
+                                   bool addToCanvas,
+                                   const QString & layerName,
+                                   const QString & encoding,
+                                   const QString & vectorFileName )
+  {
+    if ( addToCanvas )
+    {
+      QString uri( newFilename );
+      if ( !layerName.isEmpty() )
+        uri += "|layername=" + layerName;
+      this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
+    }
+
+    this->emit layerSavedAs( vlayer, vectorFilename );
+    this->messageBar()->pushMessage( tr( "Layer Exported" ),
+                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
+                                       Qgis::Success, messageTimeout() );
+  };
+
+  auto onFailure = []( int error, const QString & errorMessage )
+  {
+    if ( error != QgsVectorFileWriter::Canceled )
+    {
+      QgsMessageViewer *m = new QgsMessageViewer( nullptr );
+      m->setWindowTitle( tr( "Save Error" ) );
+      m->setMessageAsPlainText( tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
+      m->exec();
+    }
+  };
+
+  saveAsVectorFileGeneral( vlayer, symbologyOption, onlySelected, onSuccess, onFailure );
+}
+
+void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOption, bool onlySelected, const std::function<void( const QString &, bool, const QString &, const QString &, const QString & )> &onSuccess, const std::function<void ( int, const QString & )> &onFailure )
+{
   QgsCoordinateReferenceSystem destCRS;
 
   int options = QgsVectorLayerSaveAsDialog::AllOptions;
@@ -7381,21 +7456,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     QgsVectorFileWriterTask *writerTask = new QgsVectorFileWriterTask( vlayer, vectorFilename, options );
 
     // when writer is successful:
-    connect( writerTask, &QgsVectorFileWriterTask::writeComplete, this, [this, addToCanvas, layerName, encoding, vectorFilename, vlayer]( const QString & newFilename )
+    connect( writerTask, &QgsVectorFileWriterTask::writeComplete, this, [onSuccess, addToCanvas, layerName, encoding, vectorFilename]( const QString & newFilename )
     {
-      if ( addToCanvas )
-      {
-        QString uri( newFilename );
-        if ( !layerName.isEmpty() )
-          uri += "|layername=" + layerName;
-        this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
-      }
-      this->emit layerSavedAs( vlayer, vectorFilename );
-      this->messageBar()->pushMessage( tr( "Layer Exported" ),
-                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
-                                       Qgis::Success, messageTimeout() );
-    }
-           );
+      onSuccess( newFilename, addToCanvas, layerName, encoding, vectorFilename );
+    } );
 
     // when an error occurs:
     connect( writerTask, &QgsVectorFileWriterTask::errorOccurred, this, [ = ]( int error, const QString & errorMessage )
