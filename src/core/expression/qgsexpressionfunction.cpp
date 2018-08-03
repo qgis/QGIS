@@ -3570,7 +3570,7 @@ static QVariant fcnGetFeatureById( const QVariantList &values, const QgsExpressi
     QgsFeatureRequest req;
     req.setFilterFid( fid );
     req.setConnectionTimeout( 10000 );
-    req.setFreeConnectionsRequirement( 1 );
+    req.setRequestMayBeNested( true );
     QgsFeatureIterator fIt = vl->getFeatures( req );
 
     QgsFeature fet;
@@ -3612,7 +3612,7 @@ static QVariant fcnGetFeature( const QVariantList &values, const QgsExpressionCo
                            QgsExpression::quotedString( attVal.toString() ) ) );
   req.setLimit( 1 );
   req.setConnectionTimeout( 10000 );
-  req.setFreeConnectionsRequirement( 1 );
+  req.setRequestMayBeNested( true );
   if ( !parent->needsGeometry() )
   {
     req.setFlags( QgsFeatureRequest::NoGeometry );

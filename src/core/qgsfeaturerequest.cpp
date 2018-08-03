@@ -86,7 +86,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mConnectionTimeout = rh.mConnectionTimeout;
-  mFreeConnectionsRequirement = rh.mFreeConnectionsRequirement;
+  mRequestMayBeNested = rh.mRequestMayBeNested;
   return *this;
 }
 
