@@ -607,7 +607,7 @@ class ModelerDialog(BASE, WIDGET):
     def exportAsPython(self):
         filename, filter = QFileDialog.getSaveFileName(self,
                                                        self.tr('Save Model As Python Script'), '',
-                                                       self.tr('Python files (*.py *.PY)'))
+                                                       self.tr('Processing scripts (*.py *.PY)'))
         if not filename:
             return
 
@@ -634,7 +634,7 @@ class ModelerDialog(BASE, WIDGET):
             filename, filter = QFileDialog.getSaveFileName(self,
                                                            self.tr('Save Model'),
                                                            ModelerUtils.modelsFolders()[0],
-                                                           self.tr('Processing models (*.model3)'))
+                                                           self.tr('Processing models (*.model3 *.MODEL3)'))
             if filename:
                 if not filename.endswith('.model3'):
                     filename += '.model3'

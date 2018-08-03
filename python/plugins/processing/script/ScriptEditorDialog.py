@@ -176,7 +176,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         fileName, _ = QFileDialog.getOpenFileName(self,
                                                   self.tr("Open script"),
                                                   scriptDir,
-                                                  self.tr("Script files (*.py *.PY)"))
+                                                  self.tr("Processing scripts (*.py *.PY)"))
 
         if fileName == "":
             return
@@ -197,7 +197,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             newPath, _ = QFileDialog.getSaveFileName(self,
                                                      self.tr("Save script"),
                                                      scriptDir,
-                                                     self.tr("Script files (*.py *.PY)"))
+                                                     self.tr("Processing scripts (*.py *.PY)"))
 
             if newPath:
                 if not newPath.lower().endswith(".py"):

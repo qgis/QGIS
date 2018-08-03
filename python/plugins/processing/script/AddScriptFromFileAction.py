@@ -50,7 +50,7 @@ class AddScriptFromFileAction(ToolboxAction):
         files, _ = QFileDialog.getOpenFileNames(self.toolbox,
                                                 self.tr("Add script(s)"),
                                                 lastDir,
-                                                self.tr("Script files (*.py *.PY)"))
+                                                self.tr("Processing scripts (*.py *.PY)"))
         if files:
             settings.setValue("processing/lastScriptsDir", os.path.dirname(files[0]))
 
