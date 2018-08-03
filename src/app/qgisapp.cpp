@@ -7349,11 +7349,13 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
   if ( !vlayer )
     return;
 
-  auto onSuccess = [this, vlayer]( const QString & newFilename,
-                                   bool addToCanvas,
-                                   const QString & layerName,
-                                   const QString & encoding,
-                                   const QString & vectorFileName )
+  const QString layerId = vlayer->id();
+
+  auto onSuccess = [this, layerId]( const QString & newFilename,
+                                    bool addToCanvas,
+                                    const QString & layerName,
+                                    const QString & encoding,
+                                    const QString & vectorFileName )
   {
     if ( addToCanvas )
     {
@@ -7363,7 +7365,10 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       this->addVectorLayers( QStringList( uri ), encoding, QStringLiteral( "file" ) );
     }
 
-    this->emit layerSavedAs( vlayer, vectorFileName );
+    // We need to re-retrieve the map layer here, in case it's been deleted during the lifetime of the task
+    if ( QgsVectorLayer *vlayer = qobject_cast< QgsVectorLayer * >( QgsProject::instance()->mapLayer( layerId ) ) )
+      this->emit layerSavedAs( vlayer, vectorFileName );
+
     this->messageBar()->pushMessage( tr( "Layer Exported" ),
                                      tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                      Qgis::Success, messageTimeout() );
