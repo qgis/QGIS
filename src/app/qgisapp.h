@@ -1790,6 +1790,18 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool checkUnsavedLayerEdits();
 
+    /**
+     * Checks whether memory layers (with features) exist in the project, and if so
+     * shows a warning to users that their contents will be lost on
+     * project unload.
+     *
+     * Returns true if there are no memory layers present, or if the
+     * user opted to discard their contents. Returns false if there
+     * are memory layers present and the user clicked 'Cancel' on
+     * the warning dialog.
+     */
+    bool checkMemoryLayers();
+
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
