@@ -137,6 +137,10 @@ TARGET_LINK_LIBRARIES(qgis_native
     "${NATIVE_LINK_LIBS}"
     )
 
+IF (UNIX)
+  TARGET_LINK_LIBRARIES(qgis_native Qt5DBus)
+ENDIF (UNIX)
+
 IF (WIN32)
   TARGET_LINK_LIBRARIES(qgis_native shell32)
 ENDIF (WIN32)

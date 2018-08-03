@@ -23,6 +23,7 @@
 class NATIVE_EXPORT QgsLinuxNative : public QgsNative
 {
   public:
+    void openFileExplorerAndSelectFile( const QString &path ) override;
 };
 
 #endif // QGSLINUXNATIVE_H
