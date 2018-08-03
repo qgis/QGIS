@@ -1779,6 +1779,17 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns true if saved or discarded, false if canceled
      */
     bool saveDirty();
+
+    /**
+     * Checks for unsaved changes in open layers and prompts the user to save
+     * or discard these changes for each layer.
+     *
+     * Returns true if there are no unsaved layer edits remaining, or the user
+     * opted to discard them all. Returns false if the user opted to cancel
+     * on any layer.
+     */
+    bool checkUnsavedLayerEdits();
+
     //! Checks for running tasks dependent on the open project
     bool checkTasksDependOnProject();
 
