@@ -101,8 +101,10 @@ QVariantMap QgsExtractByAttributeAlgorithm::processAlgorithm( const QVariantMap 
   std::unique_ptr< QgsFeatureSink > nonMatchingSink( parameterAsSink( parameters, QStringLiteral( "FAIL_OUTPUT" ), context, nonMatchingSinkId, source->fields(),
       source->wkbType(), source->sourceCrs() ) );
 
-
   int idx = source->fields().lookupField( fieldName );
+  if ( idx < 0 )
+    throw QgsProcessingException( QObject::tr( "Field '%1' was not found in INPUT source" ).arg( fieldName ) );
+
   QVariant::Type fieldType = source->fields().at( idx ).type();
 
   if ( fieldType != QVariant::String && ( op == BeginsWith || op == Contains || op == DoesNotContain ) )

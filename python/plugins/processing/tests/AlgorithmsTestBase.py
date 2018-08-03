@@ -119,6 +119,9 @@ class AlgorithmsTest(object):
             exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
+        if 'expectedException' in defs:
+            expectFailure = True
+
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
