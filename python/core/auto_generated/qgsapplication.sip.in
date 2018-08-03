@@ -799,6 +799,13 @@ Set a single custom expression variable.
 .. versionadded:: 3.0
 %End
 
+    int maxConcurrentConnectionsPerPool() const;
+%Docstring
+The maximum number of concurrent connections per connections pool
+
+.. versionadded:: 3.4
+%End
+
 %If (ANDROID)
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );

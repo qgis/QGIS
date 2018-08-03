@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -29,7 +30,6 @@
 #include <QThread>
 
 
-#define CONN_POOL_MAX_CONCURRENT_CONNS      6
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
 
 
@@ -59,8 +59,6 @@ class QgsConnectionPoolGroup
 {
   public:
 
-    static const int MAX_CONCURRENT_CONNECTIONS;
-
     struct Item
     {
       T c;
@@ -69,7 +67,7 @@ class QgsConnectionPoolGroup
 
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
-      , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
+      , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() )
     {
     }
 
