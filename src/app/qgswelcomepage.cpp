@@ -19,6 +19,9 @@
 #include "qgsversioninfo.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
+#include "qgsnative.h"
+#include "qgsfileutils.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -151,9 +154,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
     connect( openFolderAction, &QAction::triggered, this, [path]
     {
-      QFileInfo fi( path );
-      QString folder = fi.path();
-      QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+      QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( path );
     } );
     menu->addAction( openFolderAction );
   }
