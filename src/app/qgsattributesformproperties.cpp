@@ -966,119 +966,162 @@ void DnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int column )
   QWidget *baseWidget = new QWidget();
   baseWidget->setLayout( baseLayout );
 
-  if ( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container )
+  switch ( itemData.type() )
   {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Container" ) );
-    QFormLayout *layout = new QFormLayout() ;
-    dlg.setLayout( layout );
-    layout->addRow( baseWidget );
-
-    QCheckBox *showAsGroupBox = nullptr;
-    QLineEdit *title = new QLineEdit( itemData.name() );
-    QSpinBox *columnCount = new QSpinBox();
-    QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
-    visibilityExpressionGroupBox->setCheckable( true );
-    visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
-    visibilityExpressionGroupBox->setLayout( new QGridLayout );
-    QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
-    visibilityExpressionWidget->setLayer( mLayer );
-    visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
-    visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
-    visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
-
-    columnCount->setRange( 1, 5 );
-    columnCount->setValue( itemData.columnCount() );
-
-    layout->addRow( tr( "Title" ), title );
-    layout->addRow( tr( "Column count" ), columnCount );
-    layout->addRow( visibilityExpressionGroupBox );
-
-    if ( !item->parent() )
+    case QgsAttributesFormProperties::DnDTreeItemData::Container:
     {
-      showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
-      showAsGroupBox->setChecked( itemData.showAsGroupBox() );
-      layout->addRow( showAsGroupBox );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Container" ) );
+      QFormLayout *layout = new QFormLayout() ;
+      dlg.setLayout( layout );
+      layout->addRow( baseWidget );
+
+      QCheckBox *showAsGroupBox = nullptr;
+      QLineEdit *title = new QLineEdit( itemData.name() );
+      QSpinBox *columnCount = new QSpinBox();
+      QGroupBox *visibilityExpressionGroupBox = new QGroupBox( tr( "Control visibility by expression" ) );
+      visibilityExpressionGroupBox->setCheckable( true );
+      visibilityExpressionGroupBox->setChecked( itemData.visibilityExpression().enabled() );
+      visibilityExpressionGroupBox->setLayout( new QGridLayout );
+      QgsFieldExpressionWidget *visibilityExpressionWidget = new QgsFieldExpressionWidget;
+      visibilityExpressionWidget->setLayer( mLayer );
+      visibilityExpressionWidget->setExpressionDialogTitle( tr( "Visibility Expression" ) );
+      visibilityExpressionWidget->setExpression( itemData.visibilityExpression()->expression() );
+      visibilityExpressionGroupBox->layout()->addWidget( visibilityExpressionWidget );
+
+      columnCount->setRange( 1, 5 );
+      columnCount->setValue( itemData.columnCount() );
+
+      layout->addRow( tr( "Title" ), title );
+      layout->addRow( tr( "Column count" ), columnCount );
+      layout->addRow( visibilityExpressionGroupBox );
+
+      if ( !item->parent() )
+      {
+        showAsGroupBox = new QCheckBox( tr( "Show as group box" ) );
+        showAsGroupBox->setChecked( itemData.showAsGroupBox() );
+        layout->addRow( showAsGroupBox );
+      }
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+          | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      layout->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        itemData.setColumnCount( columnCount->value() );
+        itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
+        itemData.setName( title->text() );
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        QgsOptionalExpression visibilityExpression;
+        visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
+        visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
+        itemData.setVisibilityExpression( visibilityExpression );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+        item->setText( 0, title->text() );
+      }
     }
+    break;
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-        | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    layout->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case  QgsAttributesFormProperties::DnDTreeItemData::Relation:
     {
-      itemData.setColumnCount( columnCount->value() );
-      itemData.setShowAsGroupBox( showAsGroupBox ? showAsGroupBox->isChecked() : true );
-      itemData.setName( title->text() );
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
+      QFormLayout *layout = new QFormLayout() ;
+      dlg.setLayout( layout );
+      layout->addWidget( baseWidget );
 
-      QgsOptionalExpression visibilityExpression;
-      visibilityExpression.setData( QgsExpression( visibilityExpressionWidget->expression() ) );
-      visibilityExpression.setEnabled( visibilityExpressionGroupBox->isChecked() );
-      itemData.setVisibilityExpression( visibilityExpression );
+      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
+      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
+      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
+      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      layout->addRow( showLinkButton );
+      layout->addRow( showUnlinkButton );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
-      item->setText( 0, title->text() );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      dlg.layout()->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
+        relEdCfg.showLinkButton = showLinkButton->isChecked();
+        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+        itemData.setRelationEditorConfiguration( relEdCfg );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      }
     }
-  }
-  else if ( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Relation )
-  {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Relation Editor" ) );
-    QFormLayout *layout = new QFormLayout() ;
-    dlg.setLayout( layout );
-    layout->addWidget( baseWidget );
+    break;
 
-    QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
-    showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
-    QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
-    showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
-    layout->addRow( showLinkButton );
-    layout->addRow( showUnlinkButton );
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    dlg.layout()->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case QgsAttributesFormProperties::DnDTreeItemData::QmlWidget:
     {
-      QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
-      relEdCfg.showLinkButton = showLinkButton->isChecked();
-      relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
-      itemData.setRelationEditorConfiguration( relEdCfg );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure QML Widget" ) );
+      QFormLayout *layout = new QFormLayout() ;
+      dlg.setLayout( layout );
+      layout->addWidget( baseWidget );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      QCheckBox *showLinkButton = new QCheckBox( tr( "Show link button" ) );
+      showLinkButton->setChecked( itemData.relationEditorConfiguration().showLinkButton );
+      QCheckBox *showUnlinkButton = new QCheckBox( tr( "Show unlink button" ) );
+      showUnlinkButton->setChecked( itemData.relationEditorConfiguration().showUnlinkButton );
+      layout->addRow( showLinkButton );
+      layout->addRow( showUnlinkButton );
+
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      dlg.layout()->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        QgsAttributesFormProperties::RelationEditorConfiguration relEdCfg;
+        relEdCfg.showLinkButton = showLinkButton->isChecked();
+        relEdCfg.showUnlinkButton = showUnlinkButton->isChecked();
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+        itemData.setRelationEditorConfiguration( relEdCfg );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      }
     }
-  }
-  else
-  {
-    QDialog dlg;
-    dlg.setWindowTitle( tr( "Configure Field" ) );
-    dlg.setLayout( new QGridLayout() );
-    dlg.layout()->addWidget( baseWidget );
+    break;
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
-        | QDialogButtonBox::Cancel );
-
-    connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
-    connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
-
-    dlg.layout()->addWidget( buttonBox );
-
-    if ( dlg.exec() )
+    case QgsAttributesFormProperties::DnDTreeItemData::Field:
     {
-      itemData.setShowLabel( showLabelCheckbox->isChecked() );
+      QDialog dlg;
+      dlg.setWindowTitle( tr( "Configure Field" ) );
+      dlg.setLayout( new QGridLayout() );
+      dlg.layout()->addWidget( baseWidget );
 
-      item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok
+          | QDialogButtonBox::Cancel );
+
+      connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
+      connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+
+      dlg.layout()->addWidget( buttonBox );
+
+      if ( dlg.exec() )
+      {
+        itemData.setShowLabel( showLabelCheckbox->isChecked() );
+
+        item->setData( 0, QgsAttributesFormProperties::DnDTreeRole, itemData );
+      }
     }
+    break;
   }
 }
 
