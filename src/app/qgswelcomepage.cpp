@@ -166,6 +166,16 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       mModel->recheckProject( index );
     } );
     menu->addAction( rescanAction );
+
+    // add an entry to open the closest existing path to the original project file location
+    // to help users re-find moved/renamed projects!
+    const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
+    QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [closestPath]
+    {
+      QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
+    } );
+    menu->addAction( openFolderAction );
   }
   QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
   connect( removeProjectAction, &QAction::triggered, this, [this, index]
