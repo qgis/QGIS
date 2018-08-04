@@ -44,9 +44,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsProject,
     QgsWkbTypes,
-    QgsGeometry,
-    QgsExpression,
-    QgsExpressionContext
+    QgsGeometry
 )
 from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
