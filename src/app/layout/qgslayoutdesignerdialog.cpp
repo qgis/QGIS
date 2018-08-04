@@ -1875,7 +1875,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
                                 Qgis::Success, 0 );
       break;
 
