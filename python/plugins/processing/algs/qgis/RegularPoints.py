@@ -38,12 +38,11 @@ from qgis.core import (QgsApplication,
                        QgsFeature,
                        QgsWkbTypes,
                        QgsGeometry,
-                       QgsPointXY,
+                       QgsPoint,
                        QgsProcessing,
                        QgsProcessingException,
                        QgsProcessingParameterDistance,
                        QgsProcessingParameterExtent,
-                       QgsProcessingParameterNumber,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterCrs,
                        QgsProcessingParameterFeatureSink)
@@ -130,6 +129,7 @@ class RegularPoints(QgisAlgorithm):
         f.setFields(fields)
 
         count = 0
+        id = 0
         total = 100.0 / (area / pSpacing)
         y = extent.yMaximum() - inset
 
@@ -144,19 +144,22 @@ class RegularPoints(QgisAlgorithm):
                     break
 
                 if randomize:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(
+                    geom = QgsGeometry(QgsPoint(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPointXY(QgsPointXY(x, y))
+                    geom = QgsGeometry(QgsPoint(x, y))
 
                 if extent_engine.intersects(geom.constGet()):
-                    f.setAttribute('id', count)
+                    f.setAttributes([id])
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
-                    count += 1
-                    feedback.setProgress(int(count * total))
+                    id += 1
+
+                count += 1
+                feedback.setProgress(int(count * total))
+
             y = y - pSpacing
 
         return {self.OUTPUT: dest_id}
