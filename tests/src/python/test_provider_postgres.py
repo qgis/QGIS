@@ -1143,32 +1143,6 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(g.childCount(), 1)
         self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
-    def testConcurrency(self):
-        """
-        The connection pool has a maximum of 4 connections defined (+2 spare connections)
-        Make sure that if we exhaust those 4 connections and force another connection
-        it is actually using the spare connections and does not freeze.
-        This situation normally happens when (at least) 4 rendering threads are active
-        in parallel and one requires an expression to be evaluated.
-        """
-        vl = QgsVectorLayer('{conn} srid=4326 table="qgis_test".{table} (geom) sql='.format(conn=self.dbconn, table='someData'), "testgeom", "postgres")
-        self.assertTrue(vl.isValid())
-        QgsProject.instance().addMapLayer(vl)
-
-        # Acquire the maximum amount of concurrent connections
-        iterators = list()
-        for i in range(QgsApplication.instance().maxConcurrentConnectionsPerPool()):
-            iterators.append(vl.getFeatures())
-
-        # Run an expression that will also do a request and should use a spare
-        # connection. It just should not deadlock here.
-
-        feat = next(it)
-        context = QgsExpressionContext()
-        context.setFeature(feat)
-        exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=vl.id()))
-        exp.evaluate(context)
-
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
 
