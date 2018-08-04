@@ -155,8 +155,10 @@ class RegularPoints(QgisAlgorithm):
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)
                     x += pSpacing
-                    count += 1
-                    feedback.setProgress(int(count * total))
+
+                count += 1
+                feedback.setProgress(int(count * total))
+                
             y = y - pSpacing
 
         return {self.OUTPUT: dest_id}
