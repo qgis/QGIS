@@ -23,6 +23,7 @@
 #include "qgsexpression.h"
 #include "qgscolorramp.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 #include "qgsrasterlayer.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
@@ -349,6 +350,34 @@ class QgsExpressionUtils
         ml = project->mapLayersByName( value.toString() ).value( 0 );
 
       return ml;
+    }
+
+    static std::unique_ptr<QgsVectorLayerFeatureSource> getFeatureSource( const QVariant &value, QgsExpression *e )
+    {
+      std::unique_ptr<QgsVectorLayerFeatureSource> featureSource;
+
+      auto getFeatureSource = [ &value, e, &featureSource ]
+      {
+        QgsVectorLayer *layer = getVectorLayer( value, e );
+
+        if ( layer )
+        {
+          featureSource.reset( new QgsVectorLayerFeatureSource( layer ) );
+        }
+      };
+
+#if QT_VERSION >= QT_VERSION_CHECK( 5, 10, 0 )
+      // Make sure we only deal with the vector layer on the main thread where it lives.
+      // Anything else risks a crash.
+      if ( QThread::currentThread() == qApp->thread() )
+        getFeatureSource();
+      else
+        QMetaObject::invokeMethod( qApp, getFeatureSource, Qt::BlockingQueuedConnection );
+#else
+      getFeatureSource();
+#endif
+
+      return featureSource;
     }
 
     static QgsVectorLayer *getVectorLayer( const QVariant &value, QgsExpression *e )

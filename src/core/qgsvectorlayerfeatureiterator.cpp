@@ -32,6 +32,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
   QMutexLocker locker( &layer->mFeatureSourceConstructorMutex );
   mProviderFeatureSource = layer->dataProvider()->featureSource();
   mFields = layer->fields();
+  mId = layer->id();
 
   // update layer's join caches if necessary
   if ( layer->mJoinBuffer->containsJoins() )
@@ -105,6 +106,11 @@ QgsFields QgsVectorLayerFeatureSource::fields() const
 QgsCoordinateReferenceSystem QgsVectorLayerFeatureSource::crs() const
 {
   return mCrs;
+}
+
+QString QgsVectorLayerFeatureSource::id() const
+{
+  return mId;
 }
 
 

@@ -78,6 +78,13 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     QgsCoordinateReferenceSystem crs() const;
 
+    /**
+     * Returns the layer id of the source layer.
+     *
+     * \since QGIS 3.4
+     */
+    QString id() const;
+
   protected:
 
     QgsAbstractFeatureSource *mProviderFeatureSource = nullptr;
@@ -87,6 +94,8 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsExpressionFieldBuffer *mExpressionFieldBuffer = nullptr;
 
     QgsFields mFields;
+
+    QString mId;
 
     QgsExpressionContextScope mLayerScope;
 
