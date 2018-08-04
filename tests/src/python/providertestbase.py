@@ -24,6 +24,7 @@ from qgis.core import (
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
     QgsExpressionContext,
+    QgsExpression,
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsFeatureSink,
