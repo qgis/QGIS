@@ -317,6 +317,22 @@ class GdalUtils:
 
             ogrstr = "PG:%s" % dsUri.connectionInfo()
             format = 'PostgreSQL'
+        elif provider == 'mssql':
+            #'dbname=\'db_name\' host=myHost estimatedmetadata=true
+            # srid=27700 type=MultiPolygon table="dbo"."my_table"
+            # #(Shape) sql='
+            dsUri = layer.dataProvider().uri()
+            ogrstr = 'MSSQL:'
+            ogrstr += 'database={0};'.format(dsUri.database())
+            ogrstr += 'server={0};'.format(dsUri.host())
+            if dsUri.username() != "":
+                ogrstr += 'uid={0};'.format(dsUri.username())
+            else:
+                ogrstr += 'trusted_connection=yes;'
+            if dsUri.password() != '':
+                ogrstr += 'pwd={0};'.format(dsUri.password())
+            ogrstr += 'tables={0}'.format(dsUri.table())
+            format = 'MSSQL'
         elif provider == "oracle":
             # OCI:user/password@host:port/service:table
             dsUri = QgsDataSourceUri(layer.dataProvider().dataSourceUri())
