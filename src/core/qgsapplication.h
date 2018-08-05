@@ -732,6 +732,16 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setCustomVariable( const QString &name, const QVariant &value );
 
+    /**
+     * The maximum number of concurrent connections per connections pool.
+     *
+     * \note QGIS may in some situations allocate more than this amount
+     *       of connections to avoid deadlocks.
+     *
+     * \since QGIS 3.4
+     */
+    int maxConcurrentConnectionsPerPool() const;
+
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
     //dummy method to workaround sip generation issue

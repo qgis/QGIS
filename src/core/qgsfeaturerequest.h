@@ -636,6 +636,34 @@ class CORE_EXPORT QgsFeatureRequest
      */
     void setConnectionTimeout( int connectionTimeout );
 
+    /**
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
+     *
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
+     *
+     * For example, this should be set on requests that are issued from an
+     * expression function.
+     *
+     * \since QGIS 3.4
+     */
+    bool requestMayBeNested() const;
+
+    /**
+     * In case this request may be run nested within another already running
+     * iteration on the same connection, set this to true.
+     *
+     * If this flag is true, this request will be able to make use of "spare"
+     * connections to avoid deadlocks.
+     *
+     * For example, this should be set on requests that are issued from an
+     * expression function.
+     *
+     * \since QGIS 3.4
+     */
+    void setRequestMayBeNested( bool requestMayBeNested );
+
   protected:
     FilterType mFilter = FilterNone;
     QgsRectangle mFilterRect;
@@ -654,6 +682,7 @@ class CORE_EXPORT QgsFeatureRequest
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     int mConnectionTimeout = -1;
+    int mRequestMayBeNested = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFeatureRequest::Flags )

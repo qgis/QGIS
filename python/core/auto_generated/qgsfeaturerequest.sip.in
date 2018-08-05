@@ -659,6 +659,34 @@ at this moment. A negative value (which is set by default) will wait forever.
 .. versionadded:: 3.0
 %End
 
+    bool requestMayBeNested() const;
+%Docstring
+In case this request may be run nested within another already running
+iteration on the same connection, set this to true.
+
+If this flag is true, this request will be able to make use of "spare"
+connections to avoid deadlocks.
+
+For example, this should be set on requests that are issued from an
+expression function.
+
+.. versionadded:: 3.4
+%End
+
+    void setRequestMayBeNested( bool requestMayBeNested );
+%Docstring
+In case this request may be run nested within another already running
+iteration on the same connection, set this to true.
+
+If this flag is true, this request will be able to make use of "spare"
+connections to avoid deadlocks.
+
+For example, this should be set on requests that are issued from an
+expression function.
+
+.. versionadded:: 3.4
+%End
+
   protected:
 };
 
