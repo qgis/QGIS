@@ -2077,6 +2077,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
         }
+        break;
       }
 
       case Label:
