@@ -905,7 +905,7 @@ class ProviderTestCase(FeatureSourceTestCase):
         # Run an expression that will also do a request and should use a spare
         # connection. It just should not deadlock here.
 
-        feat = next(it)
+        feat = next(iterators[0])
         context = QgsExpressionContext()
         context.setFeature(feat)
         exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
