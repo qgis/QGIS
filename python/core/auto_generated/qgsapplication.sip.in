@@ -801,7 +801,12 @@ Set a single custom expression variable.
 
     int maxConcurrentConnectionsPerPool() const;
 %Docstring
-The maximum number of concurrent connections per connections pool
+The maximum number of concurrent connections per connections pool.
+
+.. note::
+
+   QGIS may in some situations allocate more than this amount
+   of connections to avoid deadlocks.
 
 .. versionadded:: 3.4
 %End
