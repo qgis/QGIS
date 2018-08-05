@@ -85,7 +85,7 @@
 #include <cpl_conv.h> // for setting gdal options
 #include <sqlite3.h>
 
-#define CONN_POOL_MAX_CONCURRENT_CONNS      6
+#define CONN_POOL_MAX_CONCURRENT_CONNS      4
 
 QObject *ABISYM( QgsApplication::mFileOpenEventReceiver );
 QStringList ABISYM( QgsApplication::mFileOpenEventList );
