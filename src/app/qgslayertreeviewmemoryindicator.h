@@ -41,6 +41,8 @@ class QgsLayerTreeViewMemoryIndicatorProvider : public QObject
     //! Adds/removes indicator of a layer
     void onDataSourceChanged();
 
+    void onIndicatorClicked( const QModelIndex &index );
+
   private:
     std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator();
     void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
