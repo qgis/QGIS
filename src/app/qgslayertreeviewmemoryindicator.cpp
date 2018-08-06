@@ -18,6 +18,7 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 QgsLayerTreeViewMemoryIndicatorProvider::QgsLayerTreeViewMemoryIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )
@@ -122,11 +123,25 @@ void QgsLayerTreeViewMemoryIndicatorProvider::onDataSourceChanged()
   }
 }
 
+void QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
+{
+  QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
+  if ( !QgsLayerTree::isLayer( node ) )
+    return;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
+  if ( !vlayer )
+    return;
+
+  QgisApp::instance()->makeMemoryLayerPermanent( vlayer );
+}
+
 std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewMemoryIndicatorProvider::newIndicator()
 {
   std::unique_ptr< QgsLayerTreeViewIndicator > indicator = qgis::make_unique< QgsLayerTreeViewIndicator >( this );
   indicator->setIcon( mIcon );
   indicator->setToolTip( tr( "<b>Temporary scratch layer only!</b><br>Contents will be discarded after closing this project" ) );
+  connect( indicator.get(), &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewMemoryIndicatorProvider::onIndicatorClicked );
   mIndicators.insert( indicator.get() );
   return indicator;
 }
