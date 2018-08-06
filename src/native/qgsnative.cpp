@@ -21,6 +21,11 @@
 #include <QUrl>
 #include <QFileInfo>
 
+QgsNative::Capabilities QgsNative::capabilities() const
+{
+  return nullptr;
+}
+
 void QgsNative::initializeMainWindow( QWindow * )
 {
 
@@ -50,4 +55,11 @@ void QgsNative::setApplicationProgress( double progress )
 void QgsNative::hideApplicationProgress()
 {
 
+}
+
+QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString &, const QString &, const NotificationSettings & )
+{
+  NotificationResult result;
+  result.successful = false;
+  return result;
 }

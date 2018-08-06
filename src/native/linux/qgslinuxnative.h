@@ -20,10 +20,22 @@
 
 #include "qgsnative.h"
 
+/**
+ * Native implementation for linux platforms.
+ *
+ * Implements the native platform interface for Linux based platforms. This is
+ * intended to expose desktop-agnostic implementations of the QgsNative methods,
+ * so that they work without issue across the wide range of Linux desktop environments
+ * (e.g. Gnome/KDE).
+ *
+ * Typically, this means implementing methods using DBUS calls to freedesktop standards.
+ */
 class NATIVE_EXPORT QgsLinuxNative : public QgsNative
 {
   public:
+    QgsNative::Capabilities capabilities() const override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
 };
 
 #endif // QGSLINUXNATIVE_H

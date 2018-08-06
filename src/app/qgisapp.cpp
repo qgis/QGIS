@@ -94,6 +94,9 @@
 #include "processing/qgs3dalgorithms.h"
 #endif
 
+#include "qgsgui.h"
+#include "qgsnative.h"
+
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -707,9 +710,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
-  mTray = new QSystemTrayIcon();
-  mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
-  mTray->hide();
+  if ( !( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeDesktopNotifications ) )
+  {
+    mTray = new QSystemTrayIcon();
+    mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
+    mTray->hide();
+  }
 
   // Create the themes folder for the user
   startProfile( QStringLiteral( "Creating theme folder" ) );
@@ -1387,7 +1393,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mCentralContainer->setCurrentIndex( 0 );
   } );
-
 } // QgisApp ctor
 
 QgisApp::QgisApp()
@@ -13844,13 +13849,34 @@ QMenu *QgisApp::createPopupMenu()
 }
 
 
-void QgisApp::showSystemNotification( const QString &title, const QString &message )
+void QgisApp::showSystemNotification( const QString &title, const QString &message, bool replaceExisting )
 {
-  // Menubar icon is hidden by default. Show to enable notification bubbles
-  mTray->show();
-  mTray->showMessage( title, message );
-  // Re-hide menubar icon
-  mTray->hide();
+  static QVariant sLastMessageId;
+
+  QgsNative::NotificationSettings settings;
+  settings.transient = true;
+  if ( replaceExisting )
+    settings.messageId = sLastMessageId;
+  settings.svgAppIconPath = QgsApplication::iconsPath() + QStringLiteral( "qgis_icon.svg" );
+
+  QgsNative::NotificationResult result = QgsGui::instance()->nativePlatformInterface()->showDesktopNotification( title, message, settings );
+
+  if ( !result.successful )
+  {
+    // fallback - use system tray notification
+    if ( mTray )
+    {
+      // Menubar icon is hidden by default. Show to enable notification bubbles
+      mTray->show();
+      mTray->showMessage( title, message );
+      // Re-hide menubar icon
+      mTray->hide();
+    }
+  }
+  else
+  {
+    sLastMessageId = result.messageId;
+  }
 }
 
 void QgisApp::showStatisticsDockWidget( bool show )
