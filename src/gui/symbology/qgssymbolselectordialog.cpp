@@ -253,7 +253,8 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   //get first feature from layer for previews
   if ( mVectorLayer )
   {
-    QgsFeatureIterator it = mVectorLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ) );
+    // short timeout for request - it doesn't really matter if we don't get the feature, and this call is blocking UI
+    QgsFeatureIterator it = mVectorLayer->getFeatures( QgsFeatureRequest().setLimit( 1 ).setConnectionTimeout( 100 ) );
     it.nextFeature( mPreviewFeature );
     mPreviewExpressionContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mVectorLayer ) );
     mPreviewExpressionContext.setFeature( mPreviewFeature );
