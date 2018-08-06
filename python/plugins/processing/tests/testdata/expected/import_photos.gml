@@ -19,7 +19,7 @@
       <ogr:directory>/home/nyall/dev/QGIS/python/plugins/processing/tests/testdata/custom/photos</ogr:directory>
       <ogr:altitude>422.191</ogr:altitude>
       <ogr:direction>59.9153</ogr:direction>
-      <ogr:longitude>149.2751666666667</ogr:longitude>
+      <ogr:longitude>149.27516666666668</ogr:longitude>
       <ogr:latitude>-37.2305</ogr:latitude>
       <ogr:timestamp>2012/03/06 14:28:40</ogr:timestamp>
     </ogr:import_photos>

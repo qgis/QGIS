@@ -94,6 +94,27 @@ class TestQgsVectorFileWriter(unittest.TestCase):
 
         writeShape(self.mMemoryLayer, 'writetest.shp')
 
+    def testWriteWithLongLongField(self):
+        ml = QgsVectorLayer('NoGeometry?crs=epsg:4326&field=fldlonglong:long',
+                            'test2', 'memory')
+        provider = ml.dataProvider()
+        feat = QgsFeature()
+        feat.setAttributes([2262000000])
+        provider.addFeatures([feat])
+
+        filename = os.path.join(str(QDir.tempPath()), 'with_longlong_field')
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        rc, errmsg = QgsVectorFileWriter.writeAsVectorFormat(ml, filename, 'utf-8', crs, 'GPKG')
+
+        # open the resulting geopackage
+        vl = QgsVectorLayer(filename + '.gpkg', '', 'ogr')
+        self.assertTrue(vl.isValid())
+
+        # test values
+        idx = vl.fields().indexFromName('fldlonglong')
+        self.assertEqual(vl.getFeature(1).attributes()[idx], 2262000000)
+
     def testWriteWithBoolField(self):
 
         # init connection string
