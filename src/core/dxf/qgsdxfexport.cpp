@@ -3782,7 +3782,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         tempGeom = geom->segmentize();
         if ( !tempGeom )
           break;
-        FALLTHROUGH;
+        FALLTHROUGH
       case QgsWkbTypes::LineString:
         if ( !qgsDoubleNear( offset, 0.0 ) )
         {
@@ -3802,7 +3802,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         tempGeom = geom->segmentize();
         if ( !tempGeom )
           break;
-        FALLTHROUGH;
+        FALLTHROUGH
       case QgsWkbTypes::MultiLineString:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
@@ -3828,7 +3828,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         tempGeom = geom->segmentize();
         if ( !tempGeom )
           break;
-        FALLTHROUGH;
+        FALLTHROUGH
       case QgsWkbTypes::Polygon:
       {
         if ( !qgsDoubleNear( offset, 0.0 ) )
@@ -3888,7 +3888,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
         tempGeom = tempGeom->segmentize();
         if ( !tempGeom )
           break;
-        FALLTHROUGH;
+        FALLTHROUGH
       case QgsWkbTypes::Polygon:
         writePolygon( tempGeom->coordinateSequence().at( 0 ), layer, QStringLiteral( "SOLID" ), brushColor );
         break;

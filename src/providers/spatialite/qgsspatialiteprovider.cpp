@@ -254,42 +254,42 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
       {
         case QgsWkbTypes::Point25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::Point:
           geometryType = QStringLiteral( "POINT" );
           break;
 
         case QgsWkbTypes::LineString25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::LineString:
           geometryType = QStringLiteral( "LINESTRING" );
           break;
 
         case QgsWkbTypes::Polygon25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::Polygon:
           geometryType = QStringLiteral( "POLYGON" );
           break;
 
         case QgsWkbTypes::MultiPoint25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::MultiPoint:
           geometryType = QStringLiteral( "MULTIPOINT" );
           break;
 
         case QgsWkbTypes::MultiLineString25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::MultiLineString:
           geometryType = QStringLiteral( "MULTILINESTRING" );
           break;
 
         case QgsWkbTypes::MultiPolygon25D:
           dim = 3;
-          FALLTHROUGH;
+          FALLTHROUGH
         case QgsWkbTypes::MultiPolygon:
           geometryType = QStringLiteral( "MULTIPOLYGON" );
           break;

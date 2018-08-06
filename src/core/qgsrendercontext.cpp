@@ -273,7 +273,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
       // Fall through to RenderMapUnits with size in meters converted to size in MapUnits
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     case QgsUnitTypes::RenderMapUnits:
     {
@@ -323,7 +323,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     case QgsUnitTypes::RenderMapUnits:
     {

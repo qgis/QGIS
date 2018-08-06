@@ -1841,7 +1841,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::Point25D:
       case QgsWkbTypes::PointZ:
         dim = 3;
-        FALLTHROUGH;
+        FALLTHROUGH
 
       case QgsWkbTypes::Point:
         g.srid  = mSrid;
@@ -1856,7 +1856,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::LineStringZ:
       case QgsWkbTypes::MultiLineStringZ:
         dim = 3;
-        FALLTHROUGH;
+        FALLTHROUGH
 
       case QgsWkbTypes::LineString:
       case QgsWkbTypes::MultiLineString:
@@ -1895,7 +1895,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::PolygonZ:
       case QgsWkbTypes::MultiPolygonZ:
         dim = 3;
-        FALLTHROUGH;
+        FALLTHROUGH
 
       case QgsWkbTypes::Polygon:
       case QgsWkbTypes::MultiPolygon:
@@ -1937,7 +1937,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
       case QgsWkbTypes::MultiPoint25D:
       case QgsWkbTypes::MultiPointZ:
         dim = 3;
-        FALLTHROUGH;
+        FALLTHROUGH
 
       case QgsWkbTypes::MultiPoint:
       {

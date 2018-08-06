@@ -498,7 +498,7 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
 
-      FALLTHROUGH;
+      FALLTHROUGH
 
     case 8: //OK
       for ( int i = 0; i < 8; i++ ) //RLZ 4[0],4[4] or 4[4],4[0]
