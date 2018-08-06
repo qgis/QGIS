@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.tools.system import (isWindows, getTempFilename)
 from processing.algs.grass7.Grass7Utils import Grass7Utils
+from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsProcessingParameterString
 from qgis.core import QgsMessageLog
 
@@ -191,9 +192,9 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
 def createDestDir(alg, toFile):
     """ Generates an mkdir command for GRASS7 script """
     # Creates the destination directory
-    command = "{} {}".format(
+    command = "{} \"{}\"".format(
         "MD" if isWindows() else "mkdir -p",
-        os.path.dirname(toFile)
+        QDir.toNativeSeparators(os.path.dirname(toFile))
     )
     alg.commands.append(command)
 
@@ -201,10 +202,10 @@ def createDestDir(alg, toFile):
 def moveFile(alg, fromFile, toFile):
     """ Generates a move command for GRASS7 script """
     createDestDir(alg, toFile)
-    command = "{} {} {}".format(
+    command = "{} \"{}\" \"{}\"".format(
         "MOVE /Y" if isWindows() else "mv -f",
-        fromFile,
-        toFile
+        QDir.toNativeSeparators(fromFile),
+        QDir.toNativeSeparators(toFile)
     )
     alg.commands.append(command)
 
@@ -212,8 +213,8 @@ def moveFile(alg, fromFile, toFile):
 def copyFile(alg, fromFile, toFile):
     """ Generates a copy command for GRASS7 script """
     createDestDir(alg, toFile)
-    command = "{} {} {}".format(
+    command = "{} \"{}\" \"{}\"".format(
         "COPY /Y" if isWindows() else "cp -f",
-        fromFile,
-        toFile)
+        QDir.toNativeSeparators(fromFile),
+        QDir.toNativeSeparators(toFile))
     alg.commands.append(command)
