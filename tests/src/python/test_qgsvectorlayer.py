@@ -22,6 +22,7 @@ from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsWkbTypes,
                        QgsAction,
+                       QgsDataProvider,
                        QgsDefaultValue,
                        QgsEditorWidgetSetup,
                        QgsVectorLayer,
@@ -60,6 +61,7 @@ from qgis.core import (QgsWkbTypes,
 from qgis.gui import (QgsAttributeTableModel,
                       QgsGui
                       )
+from qgis.PyQt.QtTest import QSignalSpy
 from qgis.testing import start_app, unittest
 from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
@@ -291,6 +293,48 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(layer.undoStack().count(), 2)
         self.assertEqual(layer.undoStack().index(), 2)
         self.assertEqual(layer.featureCount(), 4)
+
+    def testSetDataSource(self):
+        """
+        Test changing a layer's data source
+        """
+        layer = createLayerWithOnePoint()
+        layer.setCrs(QgsCoordinateReferenceSystem("epsg:3111"))
+        r = QgsSingleSymbolRenderer(QgsSymbol.defaultSymbol(QgsWkbTypes.PointGeometry))
+        layer.setRenderer(r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Marker)
+
+        spy = QSignalSpy(layer.dataSourceChanged)
+
+        options = QgsDataProvider.ProviderOptions()
+        # change with layer of same type
+        points_path = os.path.join(unitTestDataPath(), 'points.shp')
+        layer.setDataSource(points_path, 'new name', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.Point)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(points_path, layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 1)
+
+        # should have kept the same renderer!
+        self.assertEqual(layer.renderer(), r)
+
+        # layer with different type
+        lines_path = os.path.join(unitTestDataPath(), 'lines.shp')
+        layer.setDataSource(lines_path, 'new name2', 'ogr', options)
+
+        self.assertTrue(layer.isValid())
+        self.assertEqual(layer.name(), 'new name2')
+        self.assertEqual(layer.wkbType(), QgsWkbTypes.MultiLineString)
+        self.assertEqual(layer.crs().authid(), 'EPSG:4326')
+        self.assertIn(lines_path, layer.dataProvider().dataSourceUri())
+        self.assertEqual(len(spy), 2)
+
+        # should have reset renderer!
+        self.assertNotEqual(layer.renderer(), r)
+        self.assertEqual(layer.renderer().symbol().type(), QgsSymbol.Line)
 
     # ADD FEATURE
 

@@ -1482,7 +1482,10 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
   setDataProvider( provider, options );
 
   if ( !mValid )
+  {
+    emit dataSourceChanged();
     return;
+  }
 
   // Always set crs
   setCoordinateSystem();
@@ -1520,6 +1523,7 @@ void QgsVectorLayer::setDataSource( const QString &dataSource, const QString &ba
     setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
   }
 
+  emit dataSourceChanged();
   emit repaintRequested();
 }
 
