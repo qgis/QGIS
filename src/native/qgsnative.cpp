@@ -21,6 +21,11 @@
 #include <QUrl>
 #include <QFileInfo>
 
+void QgsNative::initializeMainWindow( QWindow * )
+{
+
+}
+
 void QgsNative::currentAppActivateIgnoringOtherApps()
 {
 }
@@ -30,4 +35,19 @@ void QgsNative::openFileExplorerAndSelectFile( const QString &path )
   QFileInfo fi( path );
   QString folder = fi.path();
   QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+}
+
+void QgsNative::showUndefinedApplicationProgress()
+{
+
+}
+
+void QgsNative::setApplicationProgress( double progress )
+{
+
+}
+
+void QgsNative::hideApplicationProgress()
+{
+
 }

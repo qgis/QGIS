@@ -18,6 +18,20 @@
 #include "qgswinnative.h"
 #include <QString>
 #include <QDir>
+#include <QWindow>
+#include <QtWinExtras/QWinTaskbarButton>
+#include <QtWinExtras/QWinTaskbarProgress>
+
+void QgsWinNative::initializeMainWindow( QWindow *window )
+{
+  if ( mTaskButton )
+    return; // already initialized!
+
+  mTaskButton = new QWinTaskbarButton( window );
+  mTaskButton->setWindow( window );
+  mTaskProgress = mTaskButton->progress();
+  mTaskProgress->setVisible( false );
+}
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
 {
@@ -28,4 +42,22 @@ void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
     SHOpenFolderAndSelectItems( pidl, 0, 0, 0 );
     ILFree( pidl );
   }
+}
+
+void QgsWinNative::showUndefinedApplicationProgress()
+{
+  mTaskProgress->setMaximum( 0 );
+  mTaskProgress->show();
+}
+
+void QgsWinNative::setApplicationProgress( double progress )
+{
+  mTaskProgress->setMaximum( 100 );
+  mTaskProgress->show();
+  mTaskProgress->setValue( progress );
+}
+
+void QgsWinNative::hideApplicationProgress()
+{
+  mTaskProgress->hide();
 }
