@@ -986,6 +986,8 @@ if the geometry type of the new data source matches the current geometry type of
 :param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
                              data source
 
+.. seealso:: :py:func:`dataSourceChanged`
+
 .. versionadded:: 3.2
 %End
 
@@ -2294,6 +2296,15 @@ by the backend data provider).
 %End
 
   signals:
+
+    void dataSourceChanged();
+%Docstring
+Emitted whenever the layer's data source has been changed.
+
+.. seealso:: :py:func:`setDataSource`
+
+.. versionadded:: 3.4
+%End
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
 %Docstring

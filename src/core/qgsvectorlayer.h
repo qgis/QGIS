@@ -964,6 +964,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param options provider options
      * \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
      * data source
+     * \see dataSourceChanged()
      * \since QGIS 3.2
      */
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, bool loadDefaultStyleFlag = false );
@@ -2061,6 +2062,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool startEditing();
 
   signals:
+
+    /**
+     * Emitted whenever the layer's data source has been changed.
+     *
+     * \see setDataSource()
+     *
+     * \since QGIS 3.4
+     */
+    void dataSourceChanged();
 
     /**
      * This signal is emitted when selection was changed
