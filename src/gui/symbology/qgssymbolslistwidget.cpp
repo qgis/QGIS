@@ -175,6 +175,7 @@ void QgsSymbolsListWidget::createAuxiliaryField()
       if ( markerSymbol )
         markerSymbol->setDataDefinedAngle( button->toProperty() );
       break;
+
     case QgsSymbolLayer::PropertySize:
       if ( markerSymbol )
       {
@@ -182,9 +183,12 @@ void QgsSymbolsListWidget::createAuxiliaryField()
         markerSymbol->setScaleMethod( QgsSymbol::ScaleDiameter );
       }
       break;
+
     case QgsSymbolLayer::PropertyStrokeWidth:
       if ( lineSymbol )
         lineSymbol->setDataDefinedWidth( button->toProperty() );
+      break;
+
     default:
       break;
   }

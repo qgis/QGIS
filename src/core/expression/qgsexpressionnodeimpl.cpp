@@ -193,7 +193,7 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
         return QVariant( sL + sR );
       }
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case boMinus:
     case boMul:
     case boDiv:

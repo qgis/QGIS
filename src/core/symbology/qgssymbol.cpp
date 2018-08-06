@@ -996,7 +996,7 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
         break;
       }
 
-      FALLTHROUGH;
+      FALLTHROUGH
     }
     default:
       QgsDebugMsg( QString( "feature %1: unsupported wkb type %2/%3 for rendering" )

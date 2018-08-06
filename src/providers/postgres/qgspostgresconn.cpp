@@ -1351,7 +1351,7 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
     default:
       QgsDebugMsg( QString( "unexpected size %1" ).arg( s ) );
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case 4:
       oid = *( quint32 * )p;
       if ( mSwapEndian )

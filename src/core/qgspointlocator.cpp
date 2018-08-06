@@ -357,7 +357,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::LineString25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::LineString:
     {
       int nPoints;
@@ -391,7 +391,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::MultiLineString25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::MultiLineString:
     {
       int nLines;
@@ -432,7 +432,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::Polygon25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::Polygon:
     {
       int nRings;
@@ -473,7 +473,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
     case QgsWkbTypes::MultiPolygon25D:
       hasZValue = true;
       //intentional fall-through
-      FALLTHROUGH;
+      FALLTHROUGH
     case QgsWkbTypes::MultiPolygon:
     {
       int nPolygons;

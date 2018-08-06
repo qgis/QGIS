@@ -1619,6 +1619,8 @@ bool QgsOgrProvider::addAttributeOGRLevel( const QgsField &field, bool &ignoreEr
   {
     case QVariant::Bool:
       OGR_Fld_SetSubType( fielddefn.get(), OFSTBoolean );
+      break;
+
     default:
       break;
   }

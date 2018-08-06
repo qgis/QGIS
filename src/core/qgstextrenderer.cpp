@@ -1813,7 +1813,7 @@ void QgsTextRenderer::drawPart( const QRectF &rect, double rotation, HAlignment 
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH;
+    FALLTHROUGH
     case Text:
     case Shadow:
     {
@@ -1857,7 +1857,7 @@ void QgsTextRenderer::drawPart( QPointF origin, double rotation, QgsTextRenderer
       if ( !format.buffer().enabled() )
         break;
     }
-    FALLTHROUGH;
+    FALLTHROUGH
     case Text:
     case Shadow:
     {
@@ -2077,6 +2077,7 @@ void QgsTextRenderer::drawBackground( QgsRenderContext &context, QgsTextRenderer
                                         component.origin.y() - height / 2.0 + originAdjust );
             break;
         }
+        break;
       }
 
       case Label:

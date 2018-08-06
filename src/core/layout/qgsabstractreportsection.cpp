@@ -221,7 +221,7 @@ bool QgsAbstractReportSection::next()
 
       // but if not, then the current section is a body
       mNextSection = Body;
-      FALLTHROUGH;
+      FALLTHROUGH
     }
 
     case Body:
@@ -238,7 +238,7 @@ bool QgsAbstractReportSection::next()
         return true;
       }
 
-      FALLTHROUGH;
+      FALLTHROUGH
     }
 
     case Children:
@@ -284,7 +284,7 @@ bool QgsAbstractReportSection::next()
 
       // all children and bodies have spent their content, so move to the footer
       mNextSection = Footer;
-      FALLTHROUGH;
+      FALLTHROUGH
     }
 
     case Footer:
@@ -303,7 +303,7 @@ bool QgsAbstractReportSection::next()
       }
 
       // if not, then we're all done
-      FALLTHROUGH;
+      FALLTHROUGH
     }
 
     case End:
