@@ -2088,6 +2088,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     int ogrField = it.value();
 
     QVariant attrValue = feature.attribute( fldIdx );
+    QgsField field = mFields.at( fldIdx );
 
     if ( !attrValue.isValid() || attrValue.isNull() )
     {
@@ -2106,10 +2107,11 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
 
     if ( mFieldValueConverter )
     {
+      field = mFieldValueConverter->fieldDefinition( field );
       attrValue = mFieldValueConverter->convert( fldIdx, attrValue );
     }
 
-    switch ( attrValue.type() )
+    switch ( field.type() )
     {
       case QVariant::Int:
       case QVariant::UInt:
