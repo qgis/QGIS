@@ -19,6 +19,8 @@
 #define QGSNATIVE_H
 
 #include "qgis_native.h"
+#include <QImage>
+#include <QVariant>
 
 class QString;
 class QWindow;
@@ -34,7 +36,19 @@ class NATIVE_EXPORT QgsNative
 {
   public:
 
+    //! Native interface capabilities
+    enum Capability
+    {
+      NativeDesktopNotifications = 1 << 1, //!< Native desktop notifications are supported. See showDesktopNotification().
+    };
+    Q_DECLARE_FLAGS( Capabilities, Capability )
+
     virtual ~QgsNative() = default;
+
+    /**
+     * Returns the native interface's capabilities.
+     */
+    virtual Capabilities capabilities() const;
 
     /**
      * Initializes the native interface, using the specified \a window.
@@ -97,6 +111,59 @@ class NATIVE_EXPORT QgsNative
      */
     virtual void hideApplicationProgress();
 
+
+    /**
+     * Notification settings, for use with showDesktopNotification().
+     */
+    struct NotificationSettings
+    {
+      NotificationSettings() {}
+
+      //! Optional image to show in notification
+      QImage image;
+
+      //! Whether the notification should be transient (the meaning varies depending on platform)
+      bool transient = true;
+
+      //! Path to application icon in SVG format
+      QString svgAppIconPath;
+
+      //! Message ID, used to replace existing messages
+      QVariant messageId;
+    };
+
+    /**
+     * Result of sending a desktop notification, returned by showDesktopNotification().
+     */
+    struct NotificationResult
+    {
+      NotificationResult() {}
+
+      //! True if notification was successfully sent.
+      bool successful = false;
+
+      //! Unique notification message ID, used by some platforms to identify the notification
+      QVariant messageId;
+    };
+
+    /**
+     * Shows a native desktop notification.
+     *
+     * The \a summary argument specifies a short title for the notification, and the \a body argument
+     * specifies the complete notification message text.
+     *
+     * The \a settings argument allows fine-tuning of the notification, using a range of settings which
+     * may or may not be respected on all platforms. It is recommended to set as many of these properties
+     * as is applicable, and let the native implementation choose which to use based on the platform's
+     * capabilities.
+     *
+     * This method is only supported when the interface returns the NativeDesktopNotifications flag for capabilities().
+     *
+     * Returns true if notification was successfully sent.
+     */
+    virtual NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() );
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNative::Capabilities )
 
 #endif // QGSNATIVE_H

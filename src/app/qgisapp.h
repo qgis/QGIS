@@ -416,8 +416,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \param title
      * \param message
+     * \param replaceExisting set to true to replace any existing notifications, or false to add a new notification
      */
-    void showSystemNotification( const QString &title, const QString &message );
+    void showSystemNotification( const QString &title, const QString &message, bool replaceExisting = true );
 
 
     //! Actions to be inserted in menus and toolbars
