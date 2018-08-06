@@ -142,7 +142,11 @@ IF (UNIX)
 ENDIF (UNIX)
 
 IF (WIN32)
+  FIND_PACKAGE(Qt5WinExtras)
+
   TARGET_LINK_LIBRARIES(qgis_native shell32)
+  TARGET_LINK_LIBRARIES(qgis_native ${Qt5Widget_LIBRARIES} ${QT_QTMAIN_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_native Qt5::WinExtras)
 ENDIF (WIN32)
 # install
 

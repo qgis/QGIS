@@ -21,6 +21,7 @@
 #include "qgis_native.h"
 
 class QString;
+class QWindow;
 
 /**
  * \class QgsNative
@@ -34,6 +35,15 @@ class NATIVE_EXPORT QgsNative
   public:
 
     virtual ~QgsNative() = default;
+
+    /**
+     * Initializes the native interface, using the specified \a window.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void initializeMainWindow( QWindow *window );
 
     /**
      * Brings the QGIS app to front. The default implementation does nothing.
@@ -50,6 +60,43 @@ class NATIVE_EXPORT QgsNative
      * \since QGIS 3.4
      */
     virtual void openFileExplorerAndSelectFile( const QString &path );
+
+    /**
+     * Shows the application progress report, using an "undefined" total
+     * type progress (i.e. the platform's way of showing that a task
+     * is occurring with an unknown progress).
+     *
+     * The default implementation does nothing.
+     *
+     * \see setApplicationProgress()
+     * \see hideApplicationProgress()
+     * \since QGIS 3.4
+     */
+    virtual void showUndefinedApplicationProgress();
+
+    /**
+     * Shows the application progress report, with the
+     * specified \a progress (in percent).
+     *
+     * The default implementation does nothing.
+     *
+     * \see showUndefinedApplicationProgress()
+     * \see hideApplicationProgress()
+     * \since QGIS 3.4
+     */
+    virtual void setApplicationProgress( double progress );
+
+    /**
+     * Hides the application progress report.
+     *
+     * The default implementation does nothing.
+     *
+     * \see showUndefinedApplicationProgress()
+     * \see setApplicationProgress()
+     * \since QGIS 3.4
+     */
+    virtual void hideApplicationProgress();
+
 };
 
 #endif // QGSNATIVE_H

@@ -99,11 +99,6 @@
 #include <QAuthenticator>
 
 #ifdef Q_OS_WIN
-#include <QWinTaskbarButton>
-#include <QWinTaskbarProgress>
-#endif
-
-#ifdef Q_OS_WIN
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListItem>
 #include <QtWinExtras/QWinJumpListCategory>
@@ -1307,18 +1302,21 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
-#ifdef Q_OS_WIN
-  QWinTaskbarButton *taskButton = new QWinTaskbarButton( this );
-  taskButton->setWindow( windowHandle() );
+  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle() );
 
-  QWinTaskbarProgress *taskProgress = taskButton->progress();
-  taskProgress->setVisible( false );
-  connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, taskProgress, [taskProgress] { taskProgress->setMaximum( 0 ); taskProgress->show(); }
-         );
-  connect( QgsApplication::taskManager(), &QgsTaskManager::finalTaskProgressChanged, taskProgress, [taskProgress]( double val ) { taskProgress->setMaximum( 100 ); taskProgress->show(); taskProgress->setValue( val ); }
-         );
-  connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, taskProgress, &QWinTaskbarProgress::hide );
-#endif
+  // setup application progress reports from task manager
+  connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []
+  {
+    QgsGui::instance()->nativePlatformInterface()->showUndefinedApplicationProgress();
+  } );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::finalTaskProgressChanged, this, []( double val )
+  {
+    QgsGui::instance()->nativePlatformInterface()->setApplicationProgress( val );
+  } );
+  connect( QgsApplication::taskManager(), &QgsTaskManager::allTasksFinished, this, []
+  {
+    QgsGui::instance()->nativePlatformInterface()->hideApplicationProgress();
+  } );
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );

@@ -23,10 +23,23 @@
 #include <shlobj.h>
 #pragma comment(lib,"Shell32.lib")
 
+class QWinTaskbarButton;
+class QWinTaskbarProgress;
+class QWindow;
+
 class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
   public:
+    void initializeMainWindow( QWindow *window ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showUndefinedApplicationProgress() override;
+    void setApplicationProgress( double progress ) override;
+    void hideApplicationProgress() override;
+
+  private:
+
+    QWinTaskbarButton *mTaskButton = nullptr;
+    QWinTaskbarProgress *mTaskProgress = nullptr;
 };
 
 #endif // QGSMACNATIVE_H
