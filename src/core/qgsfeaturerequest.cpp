@@ -294,9 +294,10 @@ int QgsFeatureRequest::connectionTimeout() const
   return mConnectionTimeout;
 }
 
-void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
+QgsFeatureRequest &QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
   mConnectionTimeout = connectionTimeout;
+  return *this;
 }
 
 bool QgsFeatureRequest::requestMayBeNested() const
@@ -304,9 +305,10 @@ bool QgsFeatureRequest::requestMayBeNested() const
   return mRequestMayBeNested;
 }
 
-void QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
+QgsFeatureRequest &QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
 {
   mRequestMayBeNested = requestMayBeNested;
+  return *this;
 }
 
 
