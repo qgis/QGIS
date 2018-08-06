@@ -21,7 +21,12 @@
 #include "qgis_core.h"
 
 #ifdef WITH_QTWEBKIT
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
 #include <QWebFrame>
+#else
+#include <qwebframe.h>
+#endif
 #else
 
 #include <QObject>

@@ -25,6 +25,13 @@
 #include "qgsmaptool.h"
 #include "qgsexception.h"
 
+
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 11, 0)
+#include <QDoubleValidator>
+#include <QIntValidator>
+#endif
+
 #include <QButtonGroup>
 #include <QColorDialog>
 #include <QMessageBox>

@@ -30,7 +30,12 @@
 #include <QLabel>
 #include <QDesktopServices>
 #if WITH_QTWEBKIT
+#include <QtGlobal>
+#if QT_VERSION < QT_VERSION_CHECK(5, 11, 0)
 #include <QWebElement>
+#else
+#include <qwebelement.h>
+#endif
 #endif
 #include <QHBoxLayout>
 
