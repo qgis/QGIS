@@ -47,7 +47,7 @@ void QgsNative::showUndefinedApplicationProgress()
 
 }
 
-void QgsNative::setApplicationProgress( double progress )
+void QgsNative::setApplicationProgress( double )
 {
 
 }
