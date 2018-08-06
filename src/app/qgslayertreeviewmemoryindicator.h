@@ -23,6 +23,7 @@
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
+class QgsVectorLayer;
 
 //! Adds indicators showing whether layers are memory layers.
 class QgsLayerTreeViewMemoryIndicatorProvider : public QObject
@@ -34,11 +35,15 @@ class QgsLayerTreeViewMemoryIndicatorProvider : public QObject
   private slots:
     //! Connects to signals of layers newly added to the tree
     void onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
+    //! Disconnects from layers about to be removed from the tree
+    void onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     void onLayerLoaded();
+    //! Adds/removes indicator of a layer
+    void onDataSourceChanged();
 
   private:
     std::unique_ptr< QgsLayerTreeViewIndicator > newIndicator();
-    void addIndicatorForMemoryLayer( QgsLayerTreeNode *node );
+    void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorLayer *vlayer );
 
   private:
     QgsLayerTreeView *mLayerTreeView = nullptr;
