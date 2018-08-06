@@ -2114,11 +2114,9 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
     switch ( field.type() )
     {
       case QVariant::Int:
-      case QVariant::UInt:
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
       case QVariant::LongLong:
-      case QVariant::ULongLong:
         OGR_F_SetFieldInteger64( poFeature.get(), ogrField, attrValue.toLongLong() );
         break;
       case QVariant::Bool:
