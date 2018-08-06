@@ -260,6 +260,35 @@ QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometri
 
 QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double azimuth, const double angularWidth, const double outerRadius, const double innerRadius )
 {
+  if ( angularWidth >= 360.0 )
+  {
+    std::unique_ptr< QgsCompoundCurve > outer = qgis::make_unique< QgsCompoundCurve >();
+
+    const QgsPoint outerP1 = center.project( outerRadius, azimuth );
+    const QgsPoint outerP2 = center.project( outerRadius, azimuth + 180.0 );
+
+    outer->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center ) ) );
+    outer->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP2, outerP1, center ) ) );
+
+    std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
+    cp->setExteriorRing( outer.release() );
+
+    if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
+    {
+      std::unique_ptr< QgsCompoundCurve > inner = qgis::make_unique< QgsCompoundCurve >();
+
+      const QgsPoint innerP1 = center.project( innerRadius, azimuth );
+      const QgsPoint innerP2 = center.project( innerRadius, azimuth + 180.0 );
+
+      inner->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP1, innerP2, center ) ) );
+      inner->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP2, innerP1, center ) ) );
+
+      cp->setInteriorRings( { inner.release() } );
+    }
+
+    return QgsGeometry( std::move( cp ) );
+  }
+
   std::unique_ptr< QgsCompoundCurve > wedge = qgis::make_unique< QgsCompoundCurve >();
 
   const double startAngle = azimuth - angularWidth * 0.5;
