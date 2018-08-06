@@ -159,7 +159,7 @@ class VoronoiPolygons(QgisAlgorithm):
         uniqueSet = set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]
         sl = voronoi.SiteList([voronoi.Site(i[0], i[1], sitenum=j)
-                              for (j, i) in enumerate(uniqueSet)])
+                               for (j, i) in enumerate(uniqueSet)])
         voronoi.voronoi(sl, c)
         if len(c.polygons) == 0:
             raise QgsProcessingException(
@@ -364,7 +364,7 @@ class VoronoiPolygons(QgisAlgorithm):
                         XMaxNumber = XMaxNumber + 1
                         XMaxLine = edge[0]
 
-        # Add auxillary points for corner cases, if necessary (duplicate
+        # Add auxiliary points for corner cases, if necessary (duplicate
         # points is not a problem - will be ignored later).
         # a) Extreme input points (lowest, leftmost, rightmost, highest)
         #    A point can be extreme on both axis
