@@ -35,6 +35,7 @@ class NATIVE_EXPORT QgsWinNative : public QgsNative
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
+    void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects ) override;
 
   private:
 

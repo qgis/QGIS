@@ -101,12 +101,6 @@
 #include <QNetworkProxy>
 #include <QAuthenticator>
 
-#ifdef Q_OS_WIN
-#include <QtWinExtras/QWinJumpList>
-#include <QtWinExtras/QWinJumpListItem>
-#include <QtWinExtras/QWinJumpListCategory>
-#endif
-
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 //
@@ -4047,21 +4041,18 @@ void QgisApp::updateRecentProjectPaths()
     }
   }
 
-#if defined(Q_OS_WIN)
-  QWinJumpList jumplist;
-  jumplist.recent()->clear();
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  std::vector< QgsNative::RecentProjectProperties > recentProjects;
+  for ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject : qgis::as_const( mRecentProjects ) )
   {
-    QString name = recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName();
-    QWinJumpListItem *newProject = new QWinJumpListItem( QWinJumpListItem::Link );
-    newProject->setTitle( name );
-    newProject->setFilePath( QDir::toNativeSeparators( QCoreApplication::applicationFilePath() ) );
-    newProject->setArguments( QStringList( recentProject.path ) );
-    jumplist.recent()->addItem( newProject );
+    QgsNative::RecentProjectProperties project;
+    project.title = recentProject.title;
+    project.fileName = QFileInfo( recentProject.path ).baseName();
+    project.path = recentProject.path;
+    project.name = project.title != project.path ? project.title : project.fileName;
+    recentProjects.emplace_back( project );
   }
-#endif
-
-} // QgisApp::updateRecentProjectPaths
+  QgsGui::instance()->nativePlatformInterface()->onRecentProjectsChanged( recentProjects );
+}
 
 // add this file to the recently opened/saved projects list
 void QgisApp::saveRecentProjectPath( bool savePreviewImage )

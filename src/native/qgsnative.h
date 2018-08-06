@@ -21,6 +21,7 @@
 #include "qgis_native.h"
 #include <QImage>
 #include <QVariant>
+#include <vector>
 
 class QString;
 class QWindow;
@@ -162,6 +163,36 @@ class NATIVE_EXPORT QgsNative
      * Returns true if notification was successfully sent.
      */
     virtual NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() );
+
+    /**
+     * Contains properties of a recently used project.
+     */
+    struct RecentProjectProperties
+    {
+      //! Project name (will be project title if set, otherwise project filename)
+      QString name;
+
+      //! Project title, if set
+      QString title;
+
+      //! Project filename
+      QString fileName;
+
+      //! Full project path
+      QString path;
+    };
+
+    /**
+     * Called whenever the list of recently used projects is modified.
+     *
+     * The \a recentProjects list contains a list of recently used projects, with the
+     * most recently used listed first.
+     *
+     * The default implementation does nothing.
+     *
+     * \since QGIS 3.4
+     */
+    virtual void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects );
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNative::Capabilities )

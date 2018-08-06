@@ -63,3 +63,8 @@ QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString 
   result.successful = false;
   return result;
 }
+
+void QgsNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> & )
+{
+
+}
