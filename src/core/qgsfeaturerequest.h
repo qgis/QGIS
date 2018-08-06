@@ -617,7 +617,7 @@ class CORE_EXPORT QgsFeatureRequest
     bool acceptFeature( const QgsFeature &feature );
 
     /**
-     * The timeout for how long we should wait for a connection if none is available from the pool
+     * Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
@@ -627,14 +627,14 @@ class CORE_EXPORT QgsFeatureRequest
     int connectionTimeout() const;
 
     /**
-     * The timeout for how long we should wait for a connection if none is available from the pool
+     * Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
      * at this moment. A negative value (which is set by default) will wait forever.
      *
      * \note Only works if the provider supports this option.
      *
      * \since QGIS 3.0
      */
-    void setConnectionTimeout( int connectionTimeout );
+    QgsFeatureRequest &setConnectionTimeout( int connectionTimeout );
 
     /**
      * In case this request may be run nested within another already running
@@ -662,7 +662,7 @@ class CORE_EXPORT QgsFeatureRequest
      *
      * \since QGIS 3.4
      */
-    void setRequestMayBeNested( bool requestMayBeNested );
+    QgsFeatureRequest &setRequestMayBeNested( bool requestMayBeNested );
 
   protected:
     FilterType mFilter = FilterNone;
