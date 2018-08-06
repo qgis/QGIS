@@ -210,30 +210,11 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
         switch ( index.column() )
         {
           case Description:
-            return task->description();
+            return createTooltip( task, ToolTipDescription );
           case Progress:
+            return createTooltip( task, ToolTipProgress );
           case Status:
-          {
-            switch ( task->status() )
-            {
-              case QgsTask::Queued:
-                return tr( "Queued" );
-              case QgsTask::OnHold:
-                return tr( "On hold" );
-              case QgsTask::Running:
-              {
-                if ( index.column() == Status && !task->canCancel() )
-                  return tr( "Running (cannot cancel)" );
-                else
-                  return tr( "Running" );
-              }
-              case QgsTask::Complete:
-                return tr( "Complete" );
-              case QgsTask::Terminated:
-                return tr( "Terminated" );
-            }
-            return QVariant();
-          }
+            return createTooltip( task, ToolTipStatus );
           default:
             return QVariant();
         }
@@ -374,6 +355,110 @@ QModelIndex QgsTaskManagerModel::idToIndex( long id, int column ) const
     return QModelIndex();
 
   return index( row, column );
+}
+
+QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
+{
+  if ( task->status() != QgsTask::Running )
+  {
+    switch ( type )
+    {
+      case ToolTipDescription:
+        return task->description();
+
+      case ToolTipStatus:
+      case ToolTipProgress:
+      {
+        switch ( task->status() )
+        {
+          case QgsTask::Queued:
+            return tr( "Queued" );
+          case QgsTask::OnHold:
+            return tr( "On hold" );
+          case QgsTask::Running:
+          {
+            if ( type == ToolTipStatus && !task->canCancel() )
+              return tr( "Running (cannot cancel)" );
+            else
+              return tr( "Running" );
+          }
+          case QgsTask::Complete:
+            return tr( "Complete" );
+          case QgsTask::Terminated:
+            return tr( "Terminated" );
+        }
+      }
+    }
+  }
+
+  QString formattedTime;
+
+  qint64 elapsed = task->elapsedTime();
+
+  if ( task->progress() > 0 )
+  {
+    // estimate time remaining
+    qint64 msRemain = static_cast< qint64 >( elapsed * 100.0 / task->progress() - elapsed );
+    if ( msRemain > 120 * 1000 )
+    {
+      long long minutes = msRemain / 1000 / 60;
+      int seconds = ( msRemain / 1000 ) % 60;
+      formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
+    }
+    else
+      formattedTime = tr( "%1 seconds" ).arg( msRemain / 1000 );
+
+    formattedTime = tr( "Estimated time remaining: %1" ).arg( formattedTime );
+
+    QTime estimatedEnd = QTime::currentTime().addMSecs( msRemain );
+    formattedTime += tr( " (%1)" ).arg( QLocale::system().toString( estimatedEnd, QLocale::ShortFormat ) );
+  }
+  else
+  {
+    if ( elapsed > 120 * 1000 )
+    {
+      long long minutes = elapsed / 1000 / 60;
+      int seconds = ( elapsed / 1000 ) % 60;
+      formattedTime = tr( "%1:%2 minutes" ).arg( minutes ).arg( seconds, 2, 10, QChar( '0' ) );
+    }
+    else
+      formattedTime = tr( "%1 seconds" ).arg( elapsed / 1000 );
+
+    formattedTime = tr( "Time elapsed: %1" ).arg( formattedTime );
+  }
+
+  switch ( type )
+  {
+    case ToolTipDescription:
+      return tr( "%1<br>%2" ).arg( task->description(), formattedTime );
+
+    case ToolTipStatus:
+    case ToolTipProgress:
+    {
+      switch ( task->status() )
+      {
+        case QgsTask::Queued:
+          return tr( "Queued" );
+        case QgsTask::OnHold:
+          return tr( "On hold" );
+        case QgsTask::Running:
+        {
+          QString statusDesc;
+          if ( type == ToolTipStatus && !task->canCancel() )
+            statusDesc = tr( "Running (cannot cancel)" );
+          else
+            statusDesc = tr( "Running" );
+          return tr( "%1<br>%2" ).arg( statusDesc, formattedTime );
+        }
+        case QgsTask::Complete:
+          return tr( "Complete" );
+        case QgsTask::Terminated:
+          return tr( "Terminated" );
+      }
+    }
+  }
+  // no warnings
+  return QString();
 }
 
 
@@ -547,7 +632,7 @@ void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
     mProgressBar->setMaximum( 0 );
   else if ( mProgressBar->maximum() == 0 )
     mProgressBar->setMaximum( 100 );
-  setToolTip( mManager->activeTasks().at( 0 )->description() );
+  setToolTip( QgsTaskManagerModel::createTooltip( mManager->activeTasks().at( 0 ), QgsTaskManagerModel::ToolTipDescription ) );
 }
 
 void QgsTaskManagerStatusBarWidget::countActiveTasksChanged( int count )

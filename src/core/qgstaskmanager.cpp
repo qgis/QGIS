@@ -41,6 +41,11 @@ QgsTask::~QgsTask()
   }
 }
 
+qint64 QgsTask::elapsedTime() const
+{
+  return mElapsedTime.elapsed();
+}
+
 void QgsTask::start()
 {
   mNotFinishedMutex.lock();
@@ -52,6 +57,8 @@ void QgsTask::start()
 
   mStatus = Running;
   mOverallStatus = Running;
+  mElapsedTime.start();
+
   emit statusChanged( Running );
   emit begun();
 
