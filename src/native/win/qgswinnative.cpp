@@ -16,11 +16,15 @@
  ***************************************************************************/
 
 #include "qgswinnative.h"
+#include <QCoreApplication>
 #include <QString>
 #include <QDir>
 #include <QWindow>
 #include <QtWinExtras/QWinTaskbarButton>
 #include <QtWinExtras/QWinTaskbarProgress>
+#include <QtWinExtras/QWinJumpList>
+#include <QtWinExtras/QWinJumpListItem>
+#include <QtWinExtras/QWinJumpListCategory>
 
 void QgsWinNative::initializeMainWindow( QWindow *window )
 {
@@ -60,4 +64,19 @@ void QgsWinNative::setApplicationProgress( double progress )
 void QgsWinNative::hideApplicationProgress()
 {
   mTaskProgress->hide();
+}
+
+void QgsWinNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> &recentProjects )
+{
+  QWinJumpList jumplist;
+  jumplist.recent()->clear();
+  for ( const RecentProjectProperties &recentProject : recentProjects )
+  {
+    QString name = recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName();
+    QWinJumpListItem *newProject = new QWinJumpListItem( QWinJumpListItem::Link );
+    newProject->setTitle( name );
+    newProject->setFilePath( QDir::toNativeSeparators( QCoreApplication::applicationFilePath() ) );
+    newProject->setArguments( QStringList( recentProject.path ) );
+    jumplist.recent()->addItem( newProject );
+  }
 }
