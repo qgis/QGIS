@@ -115,6 +115,15 @@ class CORE_EXPORT QgsTask : public QObject
     double progress() const { return mTotalProgress; }
 
     /**
+     * Returns the elapsed time since the task commenced, in milliseconds.
+     *
+     * The value is undefined for tasks which have not begun.
+     *
+     * \since QGIS 3.4
+     */
+    qint64 elapsedTime() const;
+
+    /**
      * Notifies the task that it should terminate. Calling this is not guaranteed
      * to immediately end the task, rather it sets the isCanceled() flag which
      * task subclasses can check and terminate their operations at an appropriate
@@ -319,6 +328,8 @@ class CORE_EXPORT QgsTask : public QObject
     QList< SubTask > mSubTasks;
 
     QgsWeakMapLayerPointerList mDependentLayers;
+
+    QElapsedTimer mElapsedTime;
 
 
     /**

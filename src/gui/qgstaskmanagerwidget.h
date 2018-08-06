@@ -185,6 +185,13 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
   private:
 
+    enum ToolTipType
+    {
+      ToolTipDescription,
+      ToolTipStatus,
+      ToolTipProgress,
+    };
+
     QgsTaskManager *mManager = nullptr;
 
     QList< long > mRowToTaskIdList;
@@ -192,6 +199,9 @@ class GUI_EXPORT QgsTaskManagerModel: public QAbstractItemModel
 
     int idToRow( long id ) const;
     QModelIndex idToIndex( long id, int column ) const;
+    static QString createTooltip( QgsTask *task, ToolTipType type );
+
+    friend class QgsTaskManagerStatusBarWidget;
 };
 
 /**

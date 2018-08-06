@@ -93,6 +93,15 @@ Returns the task's description.
 Returns the task's progress (between 0.0 and 100.0)
 %End
 
+    qint64 elapsedTime() const;
+%Docstring
+Returns the elapsed time since the task commenced, in milliseconds.
+
+The value is undefined for tasks which have not begun.
+
+.. versionadded:: 3.4
+%End
+
     virtual void cancel();
 %Docstring
 Notifies the task that it should terminate. Calling this is not guaranteed
