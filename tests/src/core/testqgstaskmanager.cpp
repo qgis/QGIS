@@ -711,13 +711,13 @@ void TestQgsTaskManager::taskId()
 
   //create manager with some tasks
   QgsTaskManager manager;
-  TestTask *task = new TestTask();
-  TestTask *task2 = new TestTask();
+  TestTask *task = new TestTask( QStringLiteral( "task_id_1" ) );
+  TestTask *task2 = new TestTask( QStringLiteral( "task_id_2" ) );
   manager.addTask( task );
   manager.addTask( task2 );
 
   //also a task not in the manager
-  TestTask *task3 = new TestTask();
+  TestTask *task3 = new TestTask( QStringLiteral( "task_id_3" ) );
 
   QCOMPARE( manager.taskId( nullptr ), -1L );
   QCOMPARE( manager.taskId( task ), 1L );
@@ -725,6 +725,7 @@ void TestQgsTaskManager::taskId()
   QCOMPARE( manager.taskId( task3 ), -1L );
 
   delete task3;
+  flushEvents();
 }
 
 void TestQgsTaskManager::waitForFinished()
