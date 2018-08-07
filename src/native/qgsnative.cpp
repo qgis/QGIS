@@ -26,7 +26,7 @@ QgsNative::Capabilities QgsNative::capabilities() const
   return nullptr;
 }
 
-void QgsNative::initializeMainWindow( QWindow * )
+void QgsNative::initializeMainWindow( QWindow *, QString )
 {
 
 }
