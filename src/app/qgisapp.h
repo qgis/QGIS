@@ -133,7 +133,7 @@ class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
 class QgsLayoutQptDropHandler;
-
+class QgsProxyProgressTask;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -2282,6 +2282,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMap< QString, QString > mOptionsPagesMap;
     QMap< QString, QString > mProjectPropertiesPagesMap;
     QMap< QString, QString > mSettingPagesMap;
+
+    QgsProxyProgressTask *mProjectLoadingProxyTask = nullptr;
 
     friend class TestQgisAppPython;
 };

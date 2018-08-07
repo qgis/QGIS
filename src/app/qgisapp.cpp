@@ -257,6 +257,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsprojectstorageregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgspythonrunner.h"
+#include "qgsproxyprogresstask.h"
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterfilewriter.h"
@@ -3378,7 +3379,22 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::oldProjectVersionWarning,
            this, &QgisApp::oldProjectVersionWarning );
   connect( QgsProject::instance(), &QgsProject::layerLoaded,
-           this, &QgisApp::showProgress );
+           this, [this]( int i, int n )
+  {
+    if ( !mProjectLoadingProxyTask )
+    {
+      const QString name = QgsProject::instance()->title().isEmpty() ? QgsProject::instance()->fileName() : QgsProject::instance()->title();
+      mProjectLoadingProxyTask = new QgsProxyProgressTask( tr( "Loading “%1”" ).arg( name ) );
+      QgsApplication::taskManager()->addTask( mProjectLoadingProxyTask );
+    }
+
+    mProjectLoadingProxyTask->setProxyProgress( 100.0 * static_cast< double >( i ) / n );
+    if ( i == n )
+    {
+      mProjectLoadingProxyTask->finalize( true );
+      mProjectLoadingProxyTask = nullptr;
+    }
+  } );
   connect( QgsProject::instance(), &QgsProject::loadingLayer,
            this, &QgisApp::showStatusMessage );
   connect( QgsProject::instance(), &QgsProject::loadingLayerMessageReceived,
