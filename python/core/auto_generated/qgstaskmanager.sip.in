@@ -169,7 +169,7 @@ be canceled if any of these layers are about to be removed.
 .. seealso:: :py:func:`setDependentLayers`
 %End
 
-    bool waitForFinished( unsigned long timeout = 30000 );
+    bool waitForFinished( int timeout = 30000 );
 %Docstring
 Blocks the current thread until the task finishes or a maximum of ``timeout`` milliseconds.
 If ``timeout`` is ``0`` the thread will be blocked forever.

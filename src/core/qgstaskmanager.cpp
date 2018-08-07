@@ -137,7 +137,7 @@ QList<QgsMapLayer *> QgsTask::dependentLayers() const
   return _qgis_listQPointerToRaw( mDependentLayers );
 }
 
-bool QgsTask::waitForFinished( unsigned long timeout )
+bool QgsTask::waitForFinished( int timeout )
 {
   bool rv = true;
   if ( mOverallStatus == Complete || mOverallStatus == Terminated )
@@ -147,8 +147,16 @@ bool QgsTask::waitForFinished( unsigned long timeout )
   else
   {
     if ( timeout == 0 )
-      timeout = ULONG_MAX;
-    rv = mTaskFinished.wait( &mNotFinishedMutex, timeout );
+      timeout = std::numeric_limits< int >::max();
+    if ( mNotFinishedMutex.tryLock( timeout ) )
+    {
+      mNotFinishedMutex.unlock();
+      rv = true;
+    }
+    else
+    {
+      rv = false;
+    }
   }
   return rv;
 }
@@ -246,9 +254,7 @@ void QgsTask::processSubTasksForCompletion()
     setProgress( 100.0 );
     emit statusChanged( Complete );
     emit taskCompleted();
-    mTaskFinished.wakeAll();
     mNotFinishedMutex.unlock();
-    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Complete )
   {
@@ -275,9 +281,7 @@ void QgsTask::processSubTasksForTermination()
 
     emit statusChanged( Terminated );
     emit taskTerminated();
-    mTaskFinished.wakeAll();
     mNotFinishedMutex.unlock();
-    mTaskFinished.wakeAll();
   }
   else if ( mStatus == Terminated && !subTasksTerminated )
   {
