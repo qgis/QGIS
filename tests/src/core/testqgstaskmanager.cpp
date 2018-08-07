@@ -668,9 +668,6 @@ void TestQgsTaskManager::taskId()
 
 void TestQgsTaskManager::waitForFinished()
 {
-  if ( QgsTest::isTravis() )
-    QSKIP( "This test is disabled on Travis CI environment" );
-
   QgsTaskManager manager;
   QEventLoop loop;
 
@@ -680,11 +677,24 @@ void TestQgsTaskManager::waitForFinished()
   if ( finishedTask->status() != QgsTask::Running )
     loop.exec();
 
-  QTimer timer;
-  connect( &timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish );
-  timer.start( 100 );
+  // we have to run the timer in a different thread, because waitForFinished will block this thread, meaning the
+  // event loop never runs and the timer timeout signal never gets through...
+  QThread *timerThread = new QThread();
+  connect( timerThread, &QThread::finished, timerThread, &QThread::deleteLater );
+  QTimer *timer = new QTimer( nullptr );
+  connect( timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish, Qt::DirectConnection );
+  timer->moveToThread( timerThread );
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
+    timer->start( 2000 );
+  } );
+  connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
+  timerThread->start();
+
   QCOMPARE( finishedTask->waitForFinished(), true );
   QCOMPARE( finishedTask->status(), QgsTask::Complete );
+
+  timerThread->quit();
 
   ProgressReportingTask *failedTask = new ProgressReportingTask();
   connect( failedTask, &ProgressReportingTask::begun, &loop, &QEventLoop::quit );
@@ -692,10 +702,22 @@ void TestQgsTaskManager::waitForFinished()
   if ( failedTask->status() != QgsTask::Running )
     loop.exec();
 
-  connect( &timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate );
-  timer.start( 100 );
+  timerThread = new QThread();
+  connect( timerThread, &QThread::finished, timerThread, &QThread::deleteLater );
+  timer = new QTimer( nullptr );
+  connect( timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate, Qt::DirectConnection );
+  timer->moveToThread( timerThread );
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
+    timer->start( 500 );
+  } );
+  connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
+  timerThread->start();
+
   QCOMPARE( failedTask->waitForFinished(), true );
   QCOMPARE( failedTask->status(), QgsTask::Terminated );
+
+  timerThread->quit();
 
   ProgressReportingTask *timeoutTooShortTask = new ProgressReportingTask();
   connect( timeoutTooShortTask, &ProgressReportingTask::begun, &loop, &QEventLoop::quit );
@@ -703,10 +725,24 @@ void TestQgsTaskManager::waitForFinished()
   if ( timeoutTooShortTask->status() != QgsTask::Running )
     loop.exec();
 
-  connect( &timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish );
-  timer.start( 1000 );
+  timerThread = new QThread();
+  connect( timerThread, &QThread::finished, timerThread, &QThread::deleteLater );
+  timer = new QTimer( nullptr );
+  connect( timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish, Qt::DirectConnection );
+  timer->moveToThread( timerThread );
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
+    timer->start( 1000 );
+  } );
+  connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
+  timerThread->start();
+
   QCOMPARE( timeoutTooShortTask->waitForFinished( 20 ), false );
   QCOMPARE( timeoutTooShortTask->status(), QgsTask::Running );
+
+  timerThread->quit();
+
+  flushEvents();
 }
 
 void TestQgsTaskManager::progressChanged()
