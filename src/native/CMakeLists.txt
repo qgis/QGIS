@@ -54,7 +54,7 @@ IF(WIN32)
   )
 ENDIF(WIN32)
 
-IF(UNIX)
+IF(UNIX AND NOT APPLE)
   SET(QGIS_APP_LINUX_SRCS
     linux/qgslinuxnative.cpp
   )
@@ -137,7 +137,7 @@ TARGET_LINK_LIBRARIES(qgis_native
     "${NATIVE_LINK_LIBS}"
     )
 
-IF (UNIX)
+IF (UNIX AND NOT APPLE)
   TARGET_LINK_LIBRARIES(qgis_native Qt5DBus)
 ENDIF (UNIX)
 
