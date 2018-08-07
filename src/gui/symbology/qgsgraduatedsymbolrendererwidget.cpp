@@ -576,7 +576,7 @@ void QgsGraduatedSymbolRendererWidget::connectUpdateHandlers()
   connect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   connect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  connect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  connect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 // Connect/disconnect event handlers which trigger updating renderer
@@ -597,7 +597,7 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
   disconnect( cbxClassifySymmetric, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cbxAstride, &QAbstractButton::toggled, this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
   disconnect( cboSymmetryPointForPretty, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
-  disconnect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )()>( &QgsDoubleSpinBox::editingFinished ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
+  disconnect( spinSymmetryPointForOtherMethods, static_cast<void( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsGraduatedSymbolRendererWidget::classifyGraduated );
 }
 
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
@@ -871,14 +871,16 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   spinSymmetryPointForOtherMethods->setMinimum( minimum );
   spinSymmetryPointForOtherMethods->setMaximum( maximum );
   spinSymmetryPointForOtherMethods->setDecimals( spinPrecision->value() );
+
   double symmetryPoint = spinSymmetryPointForOtherMethods->value();
 
   if ( cboGraduatedMode->currentIndex() == 0 ) // EqualInterval
   {
     mode = QgsGraduatedSymbolRenderer::EqualInterval;
-    // because spinSymmetryPointForOtherMethods->value() is put at minimum when out of min-max
-    if ( spinSymmetryPointForOtherMethods->value() <= minimum + ( maximum - minimum ) / 100. ) // to avoid direct comparison of doubles
-      symmetryPoint = minimum + ( maximum - minimum ) / 2;
+    // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
+    // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
+    if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
+      spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
     if ( cbxClassifySymmetric->isChecked() )
     {
@@ -894,8 +896,10 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   else if ( cboGraduatedMode->currentIndex() == 3 ) // StdDev
   {
     mode = QgsGraduatedSymbolRenderer::StdDev;
-    if ( spinSymmetryPointForOtherMethods->value() <= minimum + ( maximum - minimum ) / 100. ) // to avoid direct comparison of doubles
-      symmetryPoint = minimum + ( maximum - minimum ) / 2;
+    // knowing that spinSymmetryPointForOtherMethods->value() is automatically put at minimum when out of min-max
+    // using "(maximum-minimum)/100)" to avoid direct comparison of doubles
+    if ( spinSymmetryPointForOtherMethods->value() < ( minimum + ( maximum - minimum ) / 100. ) || spinSymmetryPointForOtherMethods->value() > ( maximum - ( maximum - minimum ) / 100. ) )
+      spinSymmetryPointForOtherMethods->setValue( minimum + ( maximum - minimum ) / 2. );
 
     if ( cbxClassifySymmetric->isChecked() )
     {

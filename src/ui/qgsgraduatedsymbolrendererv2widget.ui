@@ -437,6 +437,15 @@ Negative rounds to powers of 10</string>
            <property name="specialValueText">
             <string/>
            </property>
+           <property name="minimum">
+            <double>-99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>99999999999999995164818811802792197885196090803013355167206819763650035712.000000000000000</double>
+           </property>
+           <property name="value">
+            <double>100.000000000000000</double>
+           </property>
            <property name="showClearButton" stdset="0">
             <bool>false</bool>
            </property>
