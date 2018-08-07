@@ -63,6 +63,7 @@
 #include "qgsreportorganizerwidget.h"
 #include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
+#include "qgsproxyprogresstask.h"
 #include "ui_defaults.h"
 
 #include <QShortcut>
@@ -1760,12 +1761,19 @@ void QgsLayoutDesignerDialog::print()
   QgsLayoutExporter::PrintExportSettings printSettings;
   printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
 
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
 
   QgsLayoutExporter exporter( mLayout );
   QString printerName = printer()->printerName();
-  switch ( exporter.print( *printer(), printSettings ) )
+  QgsLayoutExporter::ExportResult result = exporter.print( *printer(), printSettings );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
     {
@@ -1864,6 +1872,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+  QgsApplication::taskManager()->addTask( proxyTask );
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -1871,7 +1881,11 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgsLayoutExporter exporter( mLayout );
 
   QFileInfo fi( fileNExt.first );
-  switch ( exporter.exportToImage( fileNExt.first, settings ) )
+  QgsLayoutExporter::ExportResult result = exporter.exportToImage( fileNExt.first, settings );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
@@ -1963,6 +1977,8 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+  QgsApplication::taskManager()->addTask( proxyTask );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
@@ -1972,7 +1988,11 @@ void QgsLayoutDesignerDialog::exportToPdf()
   mLayout->refresh();
 
   QgsLayoutExporter exporter( mLayout );
-  switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
+  QgsLayoutExporter::ExportResult result = exporter.exportToPdf( outputFileName, pdfSettings );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
     {
@@ -2074,11 +2094,18 @@ void QgsLayoutDesignerDialog::exportToSvg()
   mView->setPaintingEnabled( false );
   QgsTemporaryCursorOverride cursorOverride( Qt::BusyCursor );
 
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
 
   QgsLayoutExporter exporter( mLayout );
-  switch ( exporter.exportToSvg( outputFileName, svgSettings ) )
+  QgsLayoutExporter::ExportResult result = exporter.exportToSvg( outputFileName, svgSettings );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
     {
@@ -2324,10 +2351,15 @@ void QgsLayoutDesignerDialog::printAtlas()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
     progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+    proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
     // For some reason on Windows hasPendingEvents() always return true,
@@ -2347,8 +2379,14 @@ void QgsLayoutDesignerDialog::printAtlas()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QString printerName = printer()->printerName();
-  switch ( QgsLayoutExporter::print( printAtlas, *printer(), printSettings, error, feedback.get() ) )
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( printAtlas, *printer(), printSettings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
     {
@@ -2494,10 +2532,15 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
     progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+    proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
     // For some reason on Windows hasPendingEvents() always return true,
@@ -2517,8 +2560,13 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QString fileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, fileName, fileExt, settings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
   cursorOverride.release();
 
   switch ( result )
@@ -2644,10 +2692,15 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
     progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+    proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
     // For some reason on Windows hasPendingEvents() always return true,
@@ -2667,8 +2720,12 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QString filename = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, filename, svgSettings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
 
   cursorOverride.release();
   switch ( result )
@@ -2848,11 +2905,16 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 100, this );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
   {
     progressDialog->setValue( static_cast< int >( progress ) );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+    proxyTask->setProxyProgress( progress );
 
 #ifdef Q_OS_LINUX
     // For some reason on Windows hasPendingEvents() always return true,
@@ -2872,6 +2934,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::Success;
   if ( singleFile )
   {
@@ -2881,6 +2945,8 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   {
     result = QgsLayoutExporter::exportToPdfs( printAtlas, outputFileName, pdfSettings, error, feedback.get() );
   }
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
 
   cursorOverride.release();
   switch ( result )
@@ -2974,6 +3040,9 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
     //progressDialog->setValue( progress );
@@ -2997,10 +3066,14 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QFileInfo fi( fileNExt.first );
   QString dir = fi.path();
   QString fileName = dir + '/' + fi.baseName();
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( static_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
   cursorOverride.release();
 
   switch ( result )
@@ -3087,6 +3160,9 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
     //progressDialog->setValue( progress );
@@ -3110,11 +3186,14 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QFileInfo fi( outputFileName );
   QString outFile = fi.path() + '/' + fi.baseName();
   QString dir = fi.path();
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( static_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
 
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
   cursorOverride.release();
   switch ( result )
   {
@@ -3218,6 +3297,9 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Exporting “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
     //progressDialog->setValue( progress );
@@ -3241,7 +3323,11 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( static_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
   cursorOverride.release();
 
   switch ( result )
@@ -3314,6 +3400,9 @@ void QgsLayoutDesignerDialog::printReport()
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps…" ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Printing Report" ) );
+
+  QgsProxyProgressTask *proxyTask = new QgsProxyProgressTask( tr( "Printing “%1”" ).arg( mMasterLayout->name() ) );
+
   connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
     //progressDialog->setValue( progress );
@@ -3337,15 +3426,21 @@ void QgsLayoutDesignerDialog::printReport()
     feedback->cancel();
   } );
 
+  QgsApplication::taskManager()->addTask( proxyTask );
+
   QString printerName = printer()->printerName();
-  switch ( QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() ) )
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::print( static_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() );
+
+  proxyTask->finalize( result == QgsLayoutExporter::Success );
+
+  switch ( result )
   {
     case QgsLayoutExporter::Success:
     {
       QString message;
       if ( !printerName.isEmpty() )
       {
-        message =   tr( "Successfully printed report to %1." ).arg( printerName );
+        message = tr( "Successfully printed report to %1." ).arg( printerName );
       }
       else
       {
