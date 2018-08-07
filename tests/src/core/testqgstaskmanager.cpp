@@ -441,6 +441,7 @@ void TestQgsTaskManager::addTask()
   {
     QCoreApplication::processEvents();
   }
+  flushEvents();
 }
 
 void TestQgsTaskManager::taskTerminationBeforeDelete()
@@ -663,15 +664,15 @@ void TestQgsTaskManager::subTask()
   QVERIFY( subsubFinished.count() > 0 );
 
   // another test
-  parent = new ProgressReportingTask();
-  subTask = new ProgressReportingTask();
-  subsubTask = new ProgressReportingTask();
+  parent = new ProgressReportingTask( QStringLiteral( "sub_task_parent_task_7" ) );
+  subTask = new ProgressReportingTask( QStringLiteral( "sub_task_sub_task_7" ) );
+  subsubTask = new ProgressReportingTask( QStringLiteral( "sub_task_sub_sub_task_7" ) );
   subTask->addSubTask( subsubTask );
   parent->addSubTask( subTask );
   manager.addTask( parent );
   while ( subsubTask->status() != QgsTask::Running
-          && subTask->status() != QgsTask::Running
-          && parent->status() != QgsTask::Running )
+          || subTask->status() != QgsTask::Running
+          || parent->status() != QgsTask::Running )
   {
     QCoreApplication::processEvents();
   }
