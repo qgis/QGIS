@@ -397,7 +397,7 @@ class Site(object):
             return False
         elif self.x < other.x:
             return True
-       else:
+        else:
             return False
 
     def distance(self, other):
