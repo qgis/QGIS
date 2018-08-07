@@ -2083,7 +2083,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( outputFileName, QDir::toNativeSeparators( outputFileName ) ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::Success, 0 );
       break;
     }
@@ -2890,7 +2890,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       if ( singleFile )
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
-                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( outputFileName, QDir::toNativeSeparators( outputFileName ) ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                   Qgis::Success, 0 );
       }
       else
@@ -3249,7 +3249,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export report" ),
-                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( outputFileName, QDir::toNativeSeparators( outputFileName ) ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 Qgis::Success, 0 );
       break;
     }
