@@ -572,7 +572,7 @@ void QgsTaskManagerStatusBarWidget::showButton()
 {
   if ( !isVisible() )
   {
-    mProgressBar->setMaximum( 100 );
+    mProgressBar->setMaximum( 0 );
     mProgressBar->setValue( 0 );
     show();
   }
