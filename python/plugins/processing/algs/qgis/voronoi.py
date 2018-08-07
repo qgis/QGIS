@@ -397,7 +397,7 @@ class Site(object):
             return False
         elif self.x < other.x:
             return True
-        elif self.x > other.x:
+        else:
             return False
 
     def distance(self, other):
@@ -512,7 +512,7 @@ class Halfedge(object):
             return False
         elif self.vertex.x < other.vertex.x:
             return True
-        elif self.vertex.x > other.vertex.x:
+        else:
             return False
 
     def leftreg(self, default):
@@ -905,4 +905,4 @@ def cmp(a, b):
 
     In python 2 cmp() was a built in function but in python 3 is gone.
     """
-    return (a > b) - (a < b)
+    return (b < a) - (a < b)
