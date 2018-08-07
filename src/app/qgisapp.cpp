@@ -12914,10 +12914,12 @@ void QgisApp::newProfile()
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
 {
-  if ( status == QgsTask::Complete && !this->isActiveWindow() )
+  long long minTime = QgsSettings().value( QStringLiteral( "minTaskLengthForSystemNotification" ), 10, QgsSettings::App ).toLongLong() * 1000;
+
+  if ( status == QgsTask::Complete )
   {
     QgsTask *task = QgsApplication::taskManager()->task( taskId );
-    if ( task )
+    if ( task && task->elapsedTime() >= minTime )
     {
       showSystemNotification( tr( "Task complete" ), task->description() );
     }
