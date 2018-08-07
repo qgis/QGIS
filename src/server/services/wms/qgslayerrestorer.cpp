@@ -23,7 +23,7 @@
 
 QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  for ( QgsMapLayer *layer : layers )
   {
     QgsLayerSettings settings;
     settings.name = layer->name();

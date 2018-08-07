@@ -435,7 +435,7 @@ namespace QgsWms
 
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer )
     {
-      Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
+      for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {
         QDomElement styleListElem = doc.createElement( QStringLiteral( "StyleList" ) );
         //only one default style in project file mode

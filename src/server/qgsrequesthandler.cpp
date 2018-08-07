@@ -228,7 +228,7 @@ void QgsRequestHandler::parseInput()
       typedef QPair<QString, QString> pair_t;
       QUrlQuery query( inputString );
       QList<pair_t> items = query.queryItems();
-      Q_FOREACH ( pair_t pair, items )
+      for ( pair_t pair : items )
       {
         // QUrl::fromPercentEncoding doesn't replace '+' with space
         const QString key = QUrl::fromPercentEncoding( pair.first.replace( '+', ' ' ).toUtf8() );

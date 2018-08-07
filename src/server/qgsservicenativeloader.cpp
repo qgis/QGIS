@@ -70,7 +70,7 @@ void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceR
   qDebug() << QString( "Checking %1 for native services modules" ).arg( moduleDir.path() );
   //QgsDebugMsg( QString( "Checking %1 for native services modules" ).arg( moduleDir.path() ) );
 
-  Q_FOREACH ( const QFileInfo &fi, moduleDir.entryInfoList() )
+  for ( const QFileInfo &fi : moduleDir.entryInfoList() )
   {
     QgsServiceModule *module = loadNativeModule( fi.filePath() );
     if ( module )

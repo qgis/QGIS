@@ -113,7 +113,7 @@ namespace QgsWms
     // WCS layers
     QStringList wcsLayerIds = QgsServerProjectUtils::wcsLayerIds( *project );
 
-    Q_FOREACH ( QgsMapLayer *layer, project->mapLayers() )
+    for ( QgsMapLayer *layer : project->mapLayers() )
     {
       QString name = layer->name();
       if ( useLayerIds )

@@ -1169,7 +1169,7 @@ namespace QgsWms
       //href needs to be a prefix
       QString hrefString = href.toString( QUrl::FullyDecoded );
       hrefString.append( href.hasQuery() ? "&" : "?" );
-      Q_FOREACH ( QString styleName, currentLayer->styleManager()->styles() )
+      for ( const QString &styleName : currentLayer->styleManager()->styles() )
       {
         QDomElement styleElem = doc.createElement( QStringLiteral( "Style" ) );
         QDomElement styleNameElem = doc.createElement( QStringLiteral( "Name" ) );
@@ -1268,7 +1268,7 @@ namespace QgsWms
       }
       else //no crs constraint
       {
-        Q_FOREACH ( const QString &crs, crsList )
+        for ( const QString &crs : crsList )
         {
           appendCrsElementToLayer( doc, layerElement, CRSPrecedingElement, crs );
         }
@@ -1379,7 +1379,7 @@ namespace QgsWms
       }
       else //no crs constraint
       {
-        Q_FOREACH ( const QString &crs, crsList )
+        for ( const QString &crs : crsList )
         {
           appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, crs, project );
         }

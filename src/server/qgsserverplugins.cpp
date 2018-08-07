@@ -90,7 +90,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   //Init plugins: loads a list of installed plugins and filter them
   //for "server" metadata
   bool atLeastOneEnabled = false;
-  Q_FOREACH ( const QString &pluginName, sPythonUtils->pluginList() )
+  for ( const QString &pluginName : sPythonUtils->pluginList() )
   {
     QString pluginService = sPythonUtils->getPluginMetadata( pluginName, QStringLiteral( "server" ) );
     if ( pluginService == QLatin1String( "True" ) )
