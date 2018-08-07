@@ -559,9 +559,7 @@ namespace QgsWfs
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( layer->crs(), wgs84, project );
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );

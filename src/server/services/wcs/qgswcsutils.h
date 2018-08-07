@@ -45,7 +45,7 @@ namespace QgsWcs
   /**
    * CoverageOffering or CoverageOfferingBrief element
    */
-  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, bool brief = false );
+  QDomElement getCoverageOffering( QDomDocument &doc, const QgsRasterLayer *layer, const QgsProject *project, bool brief = false );
 
   /**
    * Service URL string

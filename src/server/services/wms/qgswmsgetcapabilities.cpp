@@ -61,11 +61,12 @@ namespace QgsWms
         const QgsProject *project );
 
     void appendLayerBoundingBox( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &layerExtent,
-                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText );
+                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText,
+                                 const QgsProject *project );
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList );
+                                   const QStringList &constrainedCrsList, const QgsProject *project );
 
     void appendCrsElementToLayer( QDomDocument &doc, QDomElement &layerElement, const QDomElement &precedingElement,
                                   const QString &crsText );
@@ -1037,7 +1038,7 @@ namespace QgsWms
             appendCrsElementsToLayer( doc, layerElem, crsList, outputCrsList );
 
             //Ex_GeographicBoundingBox
-            appendLayerBoundingBoxes( doc, layerElem, l->extent(), l->crs(), crsList, outputCrsList );
+            appendLayerBoundingBoxes( doc, layerElem, l->extent(), l->crs(), crsList, outputCrsList, project );
           }
 
           // add details about supported styles of the layer
@@ -1291,7 +1292,7 @@ namespace QgsWms
 
     void appendLayerBoundingBoxes( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &lExtent,
                                    const QgsCoordinateReferenceSystem &layerCRS, const QStringList &crsList,
-                                   const QStringList &constrainedCrsList )
+                                   const QStringList &constrainedCrsList, const QgsProject *project )
     {
       if ( layerElem.isNull() )
       {
@@ -1315,9 +1316,7 @@ namespace QgsWms
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform exGeoTransform( layerCRS, wgs84, project );
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -1375,21 +1374,22 @@ namespace QgsWms
       {
         for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
         {
-          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, constrainedCrsList.at( i ) );
+          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, constrainedCrsList.at( i ), project );
         }
       }
       else //no crs constraint
       {
         Q_FOREACH ( const QString &crs, crsList )
         {
-          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, crs );
+          appendLayerBoundingBox( doc, layerElem, layerExtent, layerCRS, crs, project );
         }
       }
     }
 
 
     void appendLayerBoundingBox( QDomDocument &doc, QDomElement &layerElem, const QgsRectangle &layerExtent,
-                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText )
+                                 const QgsCoordinateReferenceSystem &layerCRS, const QString &crsText,
+                                 const QgsProject *project )
     {
       if ( layerElem.isNull() )
       {
@@ -1409,9 +1409,7 @@ namespace QgsWms
       QgsRectangle crsExtent;
       if ( !layerExtent.isNull() )
       {
-        Q_NOWARN_DEPRECATED_PUSH
-        QgsCoordinateTransform crsTransform( layerCRS, crs );
-        Q_NOWARN_DEPRECATED_POP
+        QgsCoordinateTransform crsTransform( layerCRS, crs, project );
         try
         {
           crsExtent = crsTransform.transformBoundingBox( layerExtent );
@@ -1524,9 +1522,7 @@ namespace QgsWms
       }
 
       //get project crs
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform t( layerCrs, project->crs() );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform t( layerCrs, project->crs(), project );
 
       //transform
       try
@@ -1629,7 +1625,7 @@ namespace QgsWms
           combinedBBox = mapRect;
         }
       }
-      appendLayerBoundingBoxes( doc, groupElem, combinedBBox, groupCRS, combinedCRSSet.toList(), outputCrsList );
+      appendLayerBoundingBoxes( doc, groupElem, combinedBBox, groupCRS, combinedCRSSet.toList(), outputCrsList, project );
 
     }
 

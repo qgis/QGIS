@@ -165,9 +165,7 @@ namespace QgsWcs
     // transform rect
     if ( requestCRS != rLayer->crs() )
     {
-      Q_NOWARN_DEPRECATED_PUSH
-      QgsCoordinateTransform t( requestCRS, rLayer->crs() );
-      Q_NOWARN_DEPRECATED_POP
+      QgsCoordinateTransform t( requestCRS, rLayer->crs(), project );
       rect = t.transformBoundingBox( rect );
     }
 

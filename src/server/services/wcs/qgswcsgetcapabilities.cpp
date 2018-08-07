@@ -323,7 +323,7 @@ namespace QgsWcs
 #endif
 
       QgsRasterLayer *rLayer = qobject_cast<QgsRasterLayer *>( layer );
-      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), true );
+      QDomElement layerElem = getCoverageOffering( doc, const_cast<QgsRasterLayer *>( rLayer ), project, true );
 
       contentMetadataElement.appendChild( layerElem );
     }

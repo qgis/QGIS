@@ -405,9 +405,7 @@ namespace QgsWms
           // update combineBBox
           try
           {
-            Q_NOWARN_DEPRECATED_PUSH
-            QgsCoordinateTransform t( l->crs(), project->crs() );
-            Q_NOWARN_DEPRECATED_POP
+            QgsCoordinateTransform t( l->crs(), project->crs(), project );
             QgsRectangle BBox = t.transformBoundingBox( l->extent() );
             if ( combinedBBox.isEmpty() )
             {
