@@ -204,7 +204,7 @@ class CORE_EXPORT QgsTask : public QObject
      *
      * The result will be false if the wait timed out and true in any other case.
      */
-    bool waitForFinished( unsigned long timeout = 30000 );
+    bool waitForFinished( int timeout = 30000 );
 
   signals:
 
@@ -311,8 +311,6 @@ class CORE_EXPORT QgsTask : public QObject
     double mTotalProgress = 0.0;
     bool mShouldTerminate = false;
     int mStartCount = 0;
-
-    QWaitCondition mTaskFinished;
 
     struct SubTask
     {
