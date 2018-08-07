@@ -26,11 +26,20 @@ class QString;
 class NATIVE_EXPORT QgsMacNative : public QgsNative
 {
   public:
-    virtual ~QgsMacNative();
+    explicit QgsMacNative();
+    ~QgsMacNative() override;
 
     virtual const char *currentAppLocalizedName();
     void currentAppActivateIgnoringOtherApps() override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    QgsNative::Capabilities capabilities() const override;
+    QgsNative::NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings ) override;
+
+  private:
+    class QgsUserNotificationCenter;
+    QgsUserNotificationCenter *mQgsUserNotificationCenter = nullptr;
+
 };
+
 
 #endif // QGSMACNATIVE_H
