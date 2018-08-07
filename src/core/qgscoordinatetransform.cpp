@@ -615,7 +615,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
 #ifdef QGISDEBUG
   if ( !mHasContext )
-    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+    QgsDebugMsgLevel( "No QgsCoordinateTransformContext context set for transform", 4 );
 #endif
 
   // use proj4 to do the transform
