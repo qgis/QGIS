@@ -65,6 +65,7 @@ class OgrToPostGis(GdalAlgorithm):
     SEGMENTIZE = 'SEGMENTIZE'
     SPAT = 'SPAT'
     CLIP = 'CLIP'
+    FIELDS = 'FIELDS'
     WHERE = 'WHERE'
     GT = 'GT'
     OVERWRITE = 'OVERWRITE'
@@ -127,6 +128,10 @@ class OgrToPostGis(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.CLIP,
                                                         self.tr('Clip the input layer using the above (rectangle) extent'),
                                                         defaultValue=False))
+        self.addParameter(QgsProcessingParameterField(self.FIELDS,
+                                                      self.tr('Fields to include (leave empty to use all fields)'),
+                                                      parentLayerParameterName=self.INPUT,
+                                                      allowMultiple=True, optional=True))
         self.addParameter(QgsProcessingParameterString(self.WHERE,
                                                        self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
                                                        defaultValue='', optional=True))
@@ -210,6 +215,8 @@ class OgrToPostGis(GdalAlgorithm):
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
         clip = self.parameterAsBool(parameters, self.CLIP, context)
+        include_fields = self.parameterAsFields(parameters, self.FIELDS, context)
+        fields_string = '-select "' + ','.join(include_fields) + '"'
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'
         gt = self.parameterAsString(parameters, self.GT, context)
@@ -244,6 +251,8 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append(launderstring)
         if append:
             arguments.append('-append')
+        if include_fields:
+            arguments.append(fields_string)
         if addfields:
             arguments.append('-addfields')
         if overwrite:
