@@ -3583,6 +3583,18 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
 
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with vertical and horizontal Voronoi edges
+    params:
+      BUFFER: 0.0
+      INPUT:
+        name: pointsvoronoi1.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/pointsvoronoi1diagram.gml
+        type: vector
+
   - algorithm: native:explodelines
     name: Explode lines
     params:
