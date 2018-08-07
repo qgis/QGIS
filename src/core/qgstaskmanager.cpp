@@ -33,7 +33,7 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 
 QgsTask::~QgsTask()
 {
-  Q_ASSERT_X( mStatus != Running, "delete", QString( "status was %1" ).arg( mStatus ).toLatin1() );
+  Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
 
   Q_FOREACH ( const SubTask &subTask, mSubTasks )
   {
@@ -213,10 +213,12 @@ void QgsTask::setProgress( double progress )
   }
 
   // avoid flooding with too many events
-  if ( static_cast< int >( mTotalProgress  * 10 ) != static_cast< int >( progress * 10 ) )
-    emit progressChanged( progress );
-
+  double prevProgress = mTotalProgress;
   mTotalProgress = progress;
+
+  // avoid spamming with too many progressChanged reports
+  if ( static_cast< int >( prevProgress * 10 ) != static_cast< int >( mTotalProgress * 10 ) )
+    emit progressChanged( progress );
 }
 
 void QgsTask::completed()
