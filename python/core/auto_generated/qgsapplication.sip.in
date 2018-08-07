@@ -791,12 +791,23 @@ Do not include generated variables (like system name, user name etc.)
 .. versionadded:: 3.0
 %End
 
-
     static void setCustomVariable( const QString &name, const QVariant &value );
 %Docstring
 Set a single custom expression variable.
 
 .. versionadded:: 3.0
+%End
+
+    int maxConcurrentConnectionsPerPool() const;
+%Docstring
+The maximum number of concurrent connections per connections pool.
+
+.. note::
+
+   QGIS may in some situations allocate more than this amount
+   of connections to avoid deadlocks.
+
+.. versionadded:: 3.4
 %End
 
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
