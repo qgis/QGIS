@@ -276,6 +276,7 @@ SET(QGIS_CORE_SRCS
   qgspropertytransformer.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgsproxyprogresstask.cpp
   qgspythonrunner.cpp
   qgsreadwritecontext.cpp
   qgsrelation.cpp
@@ -627,6 +628,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgspointxy.h
   qgspointlocator.h
   qgsproject.h
+  qgsproxyprogresstask.h
   qgsrelationmanager.h
   qgsrelation.h
   qgsrunprocess.h
