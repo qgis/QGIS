@@ -57,7 +57,7 @@ class QUICK_EXPORT QgsQuickCoordinateTransformer : public QObject
 
   public:
     //! Creates new coordinate transformer
-    explicit QgsQuickCoordinateTransformer( QObject *parent = 0 );
+    explicit QgsQuickCoordinateTransformer( QObject *parent = nullptr );
 
     //!\copydoc QgsQuickCoordinateTransformer::projectedPosition
     QgsPoint projectedPosition() const;

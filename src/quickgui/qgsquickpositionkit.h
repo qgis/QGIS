@@ -116,7 +116,7 @@ class QUICK_EXPORT QgsQuickPositionKit : public QObject
 
   public:
     //! Creates new position kit
-    explicit QgsQuickPositionKit( QObject *parent = 0 );
+    explicit QgsQuickPositionKit( QObject *parent = nullptr );
 
     //! \copydoc QgsQuickPositionKit::position
     bool hasPosition() const;
