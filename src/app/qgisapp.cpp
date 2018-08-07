@@ -1302,7 +1302,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
-  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(), qApp->desktopFileName() );
+  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle() );
 
   // setup application progress reports from task manager
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []

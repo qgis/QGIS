@@ -30,7 +30,7 @@ class QWindow;
 class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
   public:
-    void initializeMainWindow( QWindow *window, QString desktopFile = QString() ) override;
+    void initializeMainWindow( QWindow *window ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;

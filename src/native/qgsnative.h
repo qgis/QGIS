@@ -58,7 +58,7 @@ class NATIVE_EXPORT QgsNative
      *
      * \since QGIS 3.4
      */
-    virtual void initializeMainWindow( QWindow *window, QString desktopFile = QString() );
+    virtual void initializeMainWindow( QWindow *window );
 
     /**
      * Brings the QGIS app to front. The default implementation does nothing.

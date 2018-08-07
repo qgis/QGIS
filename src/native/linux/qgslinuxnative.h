@@ -34,7 +34,7 @@ class NATIVE_EXPORT QgsLinuxNative : public QgsNative
 {
   public:
     QgsNative::Capabilities capabilities() const override;
-    void initializeMainWindow( QWindow *window, QString desktopFile = QString() ) override;
+    void initializeMainWindow( QWindow *window ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
