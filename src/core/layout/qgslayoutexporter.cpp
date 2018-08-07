@@ -1112,6 +1112,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   QPageLayout pageLayout( QPageSize( pageSizeMM.toQSizeF(), QPageSize::Millimeter ),
                           QPageLayout::Portrait,
                           QMarginsF( 0, 0, 0, 0 ) );
+  pageLayout.setMode( QPageLayout::FullPageMode );
   printer.setPageLayout( pageLayout );
 }
 
