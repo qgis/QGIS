@@ -330,17 +330,15 @@ namespace QgsWms
     bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
+      checkLayerReadPermissions( layer );
+
       Q_FOREACH ( QgsWmsParametersLayer param, params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
-          checkLayerReadPermissions( layer );
-
           setLayerOpacity( layer, param.mOpacity );
 
           setLayerFilter( layer, param.mFilter );
-
-          setLayerAccessControlFilter( layer );
 
           setLayerSelection( layer, param.mSelection );
 
@@ -350,6 +348,8 @@ namespace QgsWms
           break;
         }
       }
+
+      setLayerAccessControlFilter( layer );
     }
 
     // add highlight layers above others
@@ -679,17 +679,15 @@ namespace QgsWms
     bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
+      checkLayerReadPermissions( layer );
+
       Q_FOREACH ( QgsWmsParametersLayer param, params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
-          checkLayerReadPermissions( layer );
-
           setLayerOpacity( layer, param.mOpacity );
 
           setLayerFilter( layer, param.mFilter );
-
-          setLayerAccessControlFilter( layer );
 
           setLayerSelection( layer, param.mSelection );
 
@@ -699,6 +697,8 @@ namespace QgsWms
           break;
         }
       }
+
+      setLayerAccessControlFilter( layer );
     }
 
     // add highlight layers above others
@@ -781,21 +781,23 @@ namespace QgsWms
         continue;
       if ( !wfsLayerIds.contains( layer->id() ) )
         continue;
+
+      checkLayerReadPermissions( layer );
+
       Q_FOREACH ( QgsWmsParametersLayer param, params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
-          checkLayerReadPermissions( layer );
-
           setLayerOpacity( layer, param.mOpacity );
 
           setLayerFilter( layer, param.mFilter );
 
-          setLayerAccessControlFilter( layer );
-
           break;
         }
       }
+
+      setLayerAccessControlFilter( layer );
+
       // cast for dxf layers
       QgsVectorLayer *vlayer = static_cast<QgsVectorLayer *>( layer );
 
@@ -951,19 +953,19 @@ namespace QgsWms
 
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
+      checkLayerReadPermissions( layer );
+
       Q_FOREACH ( QgsWmsParametersLayer param, params )
       {
         if ( param.mNickname == layerNickname( *layer ) )
         {
-          checkLayerReadPermissions( layer );
-
           setLayerFilter( layer, param.mFilter );
-
-          setLayerAccessControlFilter( layer );
 
           break;
         }
       }
+
+      setLayerAccessControlFilter( layer );
     }
 
     // add layers to map settings (revert order for the rendering)
