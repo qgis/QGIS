@@ -17,6 +17,7 @@
 
 #include "qgswinnative.h"
 #include <QCoreApplication>
+#include <QDebug>
 #include <QString>
 #include <QDir>
 #include <QWindow>
@@ -25,8 +26,17 @@
 #include <QtWinExtras/QWinJumpList>
 #include <QtWinExtras/QWinJumpListItem>
 #include <QtWinExtras/QWinJumpListCategory>
+#include "wintoastlib.h"
 
-void QgsWinNative::initializeMainWindow( QWindow *window )
+QgsNative::Capabilities QgsWinNative::capabilities() const
+{
+  return mCapabilities;
+}
+
+void QgsWinNative::initializeMainWindow( QWindow *window,
+    const QString &applicationName,
+    const QString &organizationName,
+    const QString &version )
 {
   if ( mTaskButton )
     return; // already initialized!
@@ -35,6 +45,17 @@ void QgsWinNative::initializeMainWindow( QWindow *window )
   mTaskButton->setWindow( window );
   mTaskProgress = mTaskButton->progress();
   mTaskProgress->setVisible( false );
+
+  WinToastLib::WinToast::instance()->setAppName( applicationName.toStdWString() );
+  WinToastLib::WinToast::instance()->setAppUserModelId(
+    WinToastLib::WinToast::configureAUMI( organizationName.toStdWString(),
+                                          applicationName.toStdWString(),
+                                          applicationName.toStdWString(),
+                                          version.toStdWString() ) );
+  if ( WinToastLib::WinToast::instance()->initialize() )
+  {
+    mCapabilities = mCapabilities | NativeDesktopNotifications;
+  }
 }
 
 void QgsWinNative::openFileExplorerAndSelectFile( const QString &path )
@@ -79,4 +100,38 @@ void QgsWinNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentP
     newProject->setArguments( QStringList( recentProject.path ) );
     jumplist.recent()->addItem( newProject );
   }
+}
+
+class NotificationHandler : public WinToastLib::IWinToastHandler
+{
+  public:
+
+    void toastActivated() const override {}
+
+    void toastActivated( int ) const override {}
+
+    void toastFailed() const
+    {
+      qWarning() << "Error showing notification";
+    }
+
+    void toastDismissed( WinToastDismissalReason ) const override {}
+};
+
+
+QgsNative::NotificationResult QgsWinNative::showDesktopNotification( const QString &summary, const QString &body, const QgsNative::NotificationSettings &settings )
+{
+  WinToastLib::WinToastTemplate templ = WinToastLib::WinToastTemplate( WinToastLib::WinToastTemplate::ImageAndText02 );
+  templ.setImagePath( settings.pngAppIconPath.toStdWString() );
+  templ.setTextField( summary.toStdWString(), WinToastLib::WinToastTemplate::FirstLine );
+  templ.setTextField( body.toStdWString(), WinToastLib::WinToastTemplate::SecondLine );
+  templ.setDuration( WinToastLib::WinToastTemplate::Short );
+
+  NotificationResult result;
+  if ( WinToastLib::WinToast::instance()->showToast( templ, new NotificationHandler ) < 0 )
+    result.successful = false;
+  else
+    result.successful = true;
+
+  return result;
 }

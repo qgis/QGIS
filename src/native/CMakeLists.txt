@@ -47,6 +47,7 @@ ENDIF(APPLE)
 
 IF(WIN32)
   SET(QGIS_APP_WIN32_SRCS
+    ../../external/wintoast/src/wintoastlib.cpp
     win/qgswinnative.cpp
   )
   SET(QGIS_NATIVE_SRCS ${QGIS_NATIVE_SRCS}
@@ -92,6 +93,12 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
+
+IF(WIN32)
+  INCLUDE_DIRECTORIES(SYSTEM
+      ../../external/wintoast/src
+  )
+ENDIF(WIN32)
 
 #############################################################
 # qgis_native library
