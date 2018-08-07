@@ -397,18 +397,9 @@ class Site(object):
             return False
         elif self.x < other.x:
             return True
-        else:
+       else:
             return False
 
-    def __gt__(self, other):
-        if self.y > other.y:
-            return True
-        elif self.y < other.y:
-            return False
-        elif self.x > other.x:
-            return True
-        else:
-            return False
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
@@ -520,16 +511,6 @@ class Halfedge(object):
         elif self.ystar > other.ystar:
             return False
         elif self.vertex.x < other.vertex.x:
-            return True
-        else:
-            return False
-
-    def __gt__(self, other):
-        if self.ystar > other.ystar:
-            return True
-        elif self.ystar < other.ystar:
-            return False
-        elif self.vertex.x > other.vertex.x:
             return True
         else:
             return False
@@ -924,4 +905,4 @@ def cmp(a, b):
 
     In python 2 cmp() was a built in function but in python 3 is gone.
     """
-    return (a > b) - (a < b)
+    return (b < a) - (a < b)
