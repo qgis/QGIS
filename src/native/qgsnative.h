@@ -54,11 +54,17 @@ class NATIVE_EXPORT QgsNative
     /**
      * Initializes the native interface, using the specified \a window.
      *
+     * The \a applicationName, \a organizationName and \a version information
+     * are used to initialize application-wide settings, depending on the platform.
+     *
      * The default implementation does nothing.
      *
      * \since QGIS 3.4
      */
-    virtual void initializeMainWindow( QWindow *window );
+    virtual void initializeMainWindow( QWindow *window,
+                                       const QString &applicationName,
+                                       const QString &organizationName,
+                                       const QString &version );
 
     /**
      * Brings the QGIS app to front. The default implementation does nothing.
@@ -128,6 +134,9 @@ class NATIVE_EXPORT QgsNative
 
       //! Path to application icon in SVG format
       QString svgAppIconPath;
+
+      //! Path to application icon in png format
+      QString pngAppIconPath;
 
       //! Message ID, used to replace existing messages
       QVariant messageId;

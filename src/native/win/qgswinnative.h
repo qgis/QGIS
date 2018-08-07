@@ -30,15 +30,21 @@ class QWindow;
 class NATIVE_EXPORT QgsWinNative : public QgsNative
 {
   public:
-    void initializeMainWindow( QWindow *window ) override;
+    Capabilities capabilities() const override;
+    void initializeMainWindow( QWindow *window,
+                               const QString &applicationName,
+                               const QString &organizationName,
+                               const QString &version ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
     void showUndefinedApplicationProgress() override;
     void setApplicationProgress( double progress ) override;
     void hideApplicationProgress() override;
     void onRecentProjectsChanged( const std::vector< RecentProjectProperties > &recentProjects ) override;
+    NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
 
   private:
 
+    Capabilities mCapabilities = nullptr;
     QWinTaskbarButton *mTaskButton = nullptr;
     QWinTaskbarProgress *mTaskProgress = nullptr;
 };

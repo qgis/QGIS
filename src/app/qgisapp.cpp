@@ -1302,7 +1302,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::statusChanged, this, &QgisApp::onTaskCompleteShowNotify );
 
-  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle() );
+  QgsGui::instance()->nativePlatformInterface()->initializeMainWindow( windowHandle(),
+      QgsApplication::applicationName(),
+      QgsApplication::organizationName(),
+      Qgis::QGIS_VERSION
+                                                                     );
 
   // setup application progress reports from task manager
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskAdded, this, []
@@ -13849,6 +13853,7 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   if ( replaceExisting )
     settings.messageId = sLastMessageId;
   settings.svgAppIconPath = QgsApplication::iconsPath() + QStringLiteral( "qgis_icon.svg" );
+  settings.pngAppIconPath = QgsApplication::appIconPath();
 
   QgsNative::NotificationResult result = QgsGui::instance()->nativePlatformInterface()->showDesktopNotification( title, message, settings );
 
