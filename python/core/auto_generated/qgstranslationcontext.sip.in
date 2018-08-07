@@ -12,7 +12,7 @@
 class QgsTranslationContext
 {
 %Docstring
-used for the collecting of strings of .qgs to be translated and writing of ts file
+Used for the collecting of strings from projects for translation and creation of ts files.
 
 .. versionadded:: 3.4
 %End
@@ -22,7 +22,7 @@ used for the collecting of strings of .qgs to be translated and writing of ts fi
 %End
   public:
 
-    QgsTranslationContext( );
+    QgsTranslationContext();
 %Docstring
 Constructor
 %End
@@ -36,7 +36,7 @@ Returns the project
 
     void setProject( QgsProject *project );
 %Docstring
-Sets the ``project`` where the translation need to be done for
+Sets the ``project`` being translated.
 
 .. seealso:: :py:func:`project`
 %End
@@ -50,17 +50,15 @@ Returns the TS fileName
 
     void setFileName( const QString &fileName );
 %Docstring
-Sets the ``name`` of the TS file
+Sets the ``fileName`` of the TS file
 
 .. seealso:: :py:func:`fileName`
 %End
 
     void registerTranslation( const QString &context, const QString &source );
 %Docstring
-Registers the ``string`` to be translated
-
-:param context: layer name and sub category of object needed to be translated
-:param source: the name of the object needed to be translated
+Registers the ``source`` to be translated. It's the text of the object needed to be translated.
+The ``context`` defines in what context the object is used. Means layer name and sub category of object needed to be translated.
 %End
 
     void writeTsFile( const QString &locale );

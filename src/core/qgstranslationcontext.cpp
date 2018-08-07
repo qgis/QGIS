@@ -22,9 +22,6 @@
 
 #include "qgssettings.h"
 
-QgsTranslationContext::QgsTranslationContext()
-{}
-
 QgsProject *QgsTranslationContext::project() const
 {
   return mProject;

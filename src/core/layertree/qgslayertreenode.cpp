@@ -65,7 +65,7 @@ QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsProj
   if ( project )
     resolver = project->pathResolver();
   context.setPathResolver( resolver );
-  context.setProjectTranslator( ( QgsProject * )project );
+  context.setProjectTranslator( const_cast<QgsProject *>( project ) );
 
   QgsLayerTreeNode *node = readXml( element, context );
   if ( node )

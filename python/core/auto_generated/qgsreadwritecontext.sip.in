@@ -107,7 +107,8 @@ Returns the project translator
 
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 %Docstring
-Sets the project translator
+Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+It's usually the QgsProject where the function with the context is made and won't be changed anymore.
 
 .. versionadded:: 3.4
 %End

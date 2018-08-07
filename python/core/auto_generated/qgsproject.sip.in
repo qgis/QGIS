@@ -1027,9 +1027,14 @@ just before a new project is read).
 .. versionadded:: 3.2
 %End
 
-    void readProject( const QDomDocument &, QgsReadWriteContext &context );
+    void readProject( const QDomDocument & );
 %Docstring
 Emitted when a project is being read.
+%End
+
+    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
+%Docstring
+Emitted when a project is being read. And passing the /a context
 %End
 
     void writeProject( QDomDocument & );
@@ -1369,8 +1374,8 @@ home path will be automatically determined from the project's file path.
 
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 %Docstring
-Registers the translatable containers into the translation context
-this is a rekursive function to get all the child containers
+Registers the containers that require translation into the translationContext.
+This is a recursive function to get all the child containers.
 
 :param translationContext: where the objects will be registered
 :param parent: parent-container containing list of children
@@ -1381,10 +1386,8 @@ this is a rekursive function to get all the child containers
 
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
-Registers the translatable objects into the translation context
-so there can be created a ts file these values
-
-:param translationContext: where the objects will be registered
+Registers the objects that require translation into the ``translationContext``.
+So there can be created a ts file with these values.
 
 .. versionadded:: 3.4
 %End

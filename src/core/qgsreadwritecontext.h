@@ -107,7 +107,9 @@ class CORE_EXPORT QgsReadWriteContext
     const QgsProjectTranslator *projectTranslator( ) const { return mProjectTranslator; }
 
     /**
-     * Sets the project translator
+     * Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+     * It's usually the QgsProject where the function with the context is made and won't be changed anymore.
+     *
      * \since QGIS 3.4
      */
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
@@ -127,7 +129,7 @@ class CORE_EXPORT QgsReadWriteContext
     QgsPathResolver mPathResolver;
     QList<ReadWriteMessage> mMessages;
     QStringList mCategories = QStringList();
-    QgsProjectTranslator *mProjectTranslator;
+    QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
     DefaultTranslator mDefaultTranslator;
 };

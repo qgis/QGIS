@@ -454,7 +454,7 @@ void QgsProject::registerTranslatableContainers( QgsTranslationContext *translat
 
       translationContext->registerTranslation( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), container->name() );
 
-      if ( container->children().size() > 0 )
+      if ( !container->children().empty() )
         registerTranslatableContainers( translationContext, container, layerId );
     }
   }
@@ -1010,7 +1010,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   QgsSettings settings;
 
-  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), "" ).toString() );
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
 
   if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
   {
@@ -1306,7 +1306,8 @@ bool QgsProject::readProjectFile( const QString &filename )
   emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
-  emit readProject( *doc, context );
+  emit readProject( *doc );
+  emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state

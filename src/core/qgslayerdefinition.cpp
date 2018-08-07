@@ -299,7 +299,7 @@ QList<QgsMapLayer *> QgsLayerDefinition::loadLayerDefinitionLayers( const QStrin
 
   QgsReadWriteContext context;
   context.setPathResolver( QgsPathResolver( qlrfile ) );
-  //no projecttranslator defined here
+  //no project translator defined here
   return QgsLayerDefinition::loadLayerDefinitionLayers( doc, context );
 }
 

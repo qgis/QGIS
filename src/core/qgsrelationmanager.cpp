@@ -27,7 +27,7 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
 {
   if ( mProject )
   {
-    connect( project, &QgsProject::readProject, this, &QgsRelationManager::readProject );
+    connect( project, &QgsProject::readProjectWithContext, this, &QgsRelationManager::readProject );
     connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
     connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
   }

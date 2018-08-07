@@ -734,16 +734,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void setCustomVariable( const QString &name, const QVariant &value );
 
     /**
-     * The maximum number of concurrent connections per connections pool.
-     *
-     * \note QGIS may in some situations allocate more than this amount
-     *       of connections to avoid deadlocks.
-     *
-     * \since QGIS 3.4
-     */
-    int maxConcurrentConnectionsPerPool() const;
-
-   /**
      * Emits the signal to collect all the strings of .qgs to be included in ts file
      *
      * \since QGIS 3.4
@@ -774,9 +764,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     void nullRepresentationChanged();
 
     /**
-     * dave : to write
+     * Emitted when project strings which require translation are being collected for inclusion in a .ts file.
+     * In order to register translatable strings, connect to this signal and register the strings within the specified \a translationContext.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.4
      */
     void requestForTranslatableObjects( QgsTranslationContext *translationContext );
 

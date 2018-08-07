@@ -252,7 +252,7 @@ Sets type of feature form pop-up suppression after feature creation (overrides a
 %End
 
 
-    void readXml( const QDomNode &node,  QgsReadWriteContext &context );
+    void readXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring
 Read XML information
 Deserialize on project load
@@ -264,7 +264,7 @@ Write XML information
 Serialize on project save
 %End
 
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString() );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 %Docstring
 Deserialize drag and drop designer elements.
 %End

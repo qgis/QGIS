@@ -277,7 +277,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode &node,  QgsReadWriteContext &context );
+    void readXml( const QDomNode &node, QgsReadWriteContext &context );
 
     /**
      * Write XML information
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Deserialize drag and drop designer elements.
      */
-    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString() );
+    QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent, const QString &layerId = QString(), const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Create a new edit form config. Normally invoked by QgsVectorLayer

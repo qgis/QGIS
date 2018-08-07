@@ -799,18 +799,6 @@ Set a single custom expression variable.
 .. versionadded:: 3.0
 %End
 
-    int maxConcurrentConnectionsPerPool() const;
-%Docstring
-The maximum number of concurrent connections per connections pool.
-
-.. note::
-
-   QGIS may in some situations allocate more than this amount
-   of connections to avoid deadlocks.
-
-.. versionadded:: 3.4
-%End
-
     void collectTranslatableObjects( QgsTranslationContext *translationContext );
 %Docstring
 Emits the signal to collect all the strings of .qgs to be included in ts file
@@ -836,6 +824,14 @@ Emitted whenever a custom global variable changes.
     void nullRepresentationChanged();
 %Docstring
 \copydoc nullRepresentation()
+%End
+
+    void requestForTranslatableObjects( QgsTranslationContext *translationContext );
+%Docstring
+Emitted when project strings which require translation are being collected for inclusion in a .ts file.
+In order to register translatable strings, connect to this signal and register the strings within the specified ``translationContext``.
+
+.. versionadded:: 3.4
 %End
 
 };

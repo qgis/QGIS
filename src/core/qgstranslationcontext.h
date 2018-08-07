@@ -25,17 +25,21 @@ class QgsProject;
 /**
  * \ingroup core
  * \class QgsTranslationContext
- * \brief used for the collecting of strings of .qgs to be translated and writing of ts file
+ * \brief Used for the collecting of strings from projects for translation and creation of ts files.
  *
  * \since QGIS 3.4
  */
 
 class CORE_EXPORT QgsTranslationContext
 {
+
+    /**
+     * Object that could be translated by the QTranslator with the qm file.
+     */
     struct TranslatableObject
     {
-      QString context;
-      QString source;
+      QString context; //!< In what context the object is used
+      QString source; //!< The original text of the object
     };
 
   public:
@@ -43,7 +47,7 @@ class CORE_EXPORT QgsTranslationContext
     /**
      * Constructor
      */
-    QgsTranslationContext( );
+    QgsTranslationContext() = default;
 
     /**
      * Returns the project
@@ -52,7 +56,7 @@ class CORE_EXPORT QgsTranslationContext
     QgsProject *project() const;
 
     /**
-     * Sets the \a project where the translation need to be done for
+     * Sets the \a project being translated.
      *
      * \see project()
      */
@@ -65,17 +69,15 @@ class CORE_EXPORT QgsTranslationContext
     QString fileName() const;
 
     /**
-     * Sets the \a name of the TS file
+     * Sets the \a fileName of the TS file
      *
      * \see fileName()
      */
     void setFileName( const QString &fileName );
 
     /**
-     * Registers the \a string to be translated
-     *
-     * \param context layer name and sub category of object needed to be translated
-     * \param source the name of the object needed to be translated
+     * Registers the \a source to be translated. It's the text of the object needed to be translated.
+     * The \a context defines in what context the object is used. Means layer name and sub category of object needed to be translated.
      */
     void registerTranslation( const QString &context, const QString &source );
 

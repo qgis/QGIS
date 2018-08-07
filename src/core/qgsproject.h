@@ -998,7 +998,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Emitted when a project is being read.
      */
-    void readProject( const QDomDocument &, QgsReadWriteContext &context );
+    void readProject( const QDomDocument & );
+
+    /**
+     * Emitted when a project is being read. And passing the /a context
+     */
+    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.
@@ -1299,8 +1304,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void setPresetHomePath( const QString &path );
 
     /**
-     * Registers the translatable containers into the translation context
-     * this is a rekursive function to get all the child containers
+     * Registers the containers that require translation into the translationContext.
+     * This is a recursive function to get all the child containers.
      *
      * \param translationContext where the objects will be registered
      * \param parent parent-container containing list of children
@@ -1310,10 +1315,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
 
     /**
-     * Registers the translatable objects into the translation context
-     * so there can be created a ts file these values
+     * Registers the objects that require translation into the \a translationContext.
+     * So there can be created a ts file with these values.
      *
-     * \param translationContext where the objects will be registered
      * \since QGIS 3.4
     */
     void registerTranslatableObjects( QgsTranslationContext *translationContext );
