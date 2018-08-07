@@ -397,9 +397,18 @@ class Site(object):
             return False
         elif self.x < other.x:
             return True
-        elif self.x > other.x:
+        else:
             return False
 
+    def __gt__(self, other):
+        if self.y > other.y:
+            return True
+        elif self.y < other.y:
+            return False
+        elif self.x > other.x:
+            return True
+        else:
+            return False
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
@@ -512,7 +521,17 @@ class Halfedge(object):
             return False
         elif self.vertex.x < other.vertex.x:
             return True
+        else:
+            return False
+
+    def __gt__(self, other):
+        if self.ystar > other.ystar:
+            return True
+        elif self.ystar < other.ystar:
+            return False
         elif self.vertex.x > other.vertex.x:
+            return True
+        else:
             return False
 
     def leftreg(self, default):
