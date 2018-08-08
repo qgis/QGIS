@@ -39,6 +39,7 @@
 #include "qgsmaplayerconfigwidgetfactory.h"
 #include "qgsmaplayerstyleguiutils.h"
 #include "qgsmetadatawidget.h"
+#include "qgsnative.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
 #include "qgsproject.h"
@@ -65,6 +66,7 @@
 #include "layertree/qgslayertreelayer.h"
 #include "qgslayertree.h"
 
+#include <QDesktopServices>
 #include <QMessageBox>
 #include <QDir>
 #include <QFile>
@@ -75,6 +77,7 @@
 #include <QCheckBox>
 #include <QHeaderView>
 #include <QColorDialog>
+#include <QUrl>
 
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
@@ -348,6 +351,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   teMetadataViewer->clear();
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
   teMetadataViewer->setHtml( htmlMetadata() );
+  teMetadataViewer->setOpenLinks( false );
+  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsVectorLayerProperties::urlClicked );
   mMetadataFilled = true;
 
   QgsSettings settings;
@@ -796,6 +801,15 @@ void QgsVectorLayerProperties::onCancel()
     mLayer->importNamedStyle( doc, myMessage );
     syncToLayer();
   }
+}
+
+void QgsVectorLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
 
 void QgsVectorLayerProperties::pbnQueryBuilder_clicked()

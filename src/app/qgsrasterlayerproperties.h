@@ -137,6 +137,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! Make GUI reflect the layer's state
     void syncToLayer();
 
+    void urlClicked( const QUrl &url );
+
   signals:
     //! Emitted when changes to layer were saved to update legend
     void refreshLegend( const QString &layerID, bool expandItem );

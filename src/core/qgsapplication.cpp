@@ -1190,7 +1190,6 @@ QString QgsApplication::reportStyleSheet()
             "}"
             "a{  color: #729FCF;"
             "  font-family: arial,sans-serif;"
-            "  font-size: small;"
             "}"
             "label{  background-color: #FFFFCC;"
             "  border: 1px solid black;"

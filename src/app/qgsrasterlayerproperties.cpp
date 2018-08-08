@@ -19,6 +19,7 @@
 #include <typeinfo>
 
 #include "qgisapp.h"
+#include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsbilinearrasterresampler.h"
 #include "qgsbrightnesscontrastfilter.h"
@@ -34,6 +35,7 @@
 #include "qgsmetadatawidget.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmultibandcolorrendererwidget.h"
+#include "qgsnative.h"
 #include "qgspalettedrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
@@ -54,9 +56,11 @@
 #include "qgshillshaderendererwidget.h"
 #include "qgssettings.h"
 
+#include <QDesktopServices>
 #include <QTableWidgetItem>
 #include <QHeaderView>
 #include <QTextStream>
+#include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPainter>
@@ -67,6 +71,7 @@
 #include <QList>
 #include <QMouseEvent>
 #include <QVector>
+#include <QUrl>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( QStringLiteral( "RasterLayerProperties" ), parent, fl )
@@ -760,6 +765,8 @@ void QgsRasterLayerProperties::sync()
   myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
   teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
+  teMetadataViewer->setOpenLinks( false );
+  connect( teMetadataViewer, &QTextBrowser::anchorClicked, this, &QgsRasterLayerProperties::urlClicked );
   mMetadataFilled = true;
 
   // WMS Name as layer short name
@@ -1171,6 +1178,15 @@ void QgsRasterLayerProperties::buttonBuildPyramids_clicked()
   QString myStyle = QgsApplication::reportStyleSheet();
   teMetadataViewer->setHtml( mRasterLayer->htmlMetadata() );
   teMetadataViewer->document()->setDefaultStyleSheet( myStyle );
+}
+
+void QgsRasterLayerProperties::urlClicked( const QUrl &url )
+{
+  QFileInfo file( url.toLocalFile() );
+  if ( file.exists() && !file.isDir() )
+    QgsGui::instance()->nativePlatformInterface()->openFileExplorerAndSelectFile( url.toLocalFile() );
+  else
+    QDesktopServices::openUrl( url );
 }
 
 void QgsRasterLayerProperties::mRenderTypeComboBox_currentIndexChanged( int index )
