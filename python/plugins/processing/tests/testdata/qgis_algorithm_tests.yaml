@@ -5725,6 +5725,19 @@ tests:
         name: expected/vectorize.gml
         type: vector
 
+  - algorithm: native:pixelstopoints
+    name: Pixels to points
+    params:
+      FIELD_NAME: VALUE
+      INPUT_RASTER:
+        name: raster.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/pixels_to_points.gml
+        type: vector
+
   - algorithm: native:kmeansclustering
     name: K means, points, 3 clusters
     params:
