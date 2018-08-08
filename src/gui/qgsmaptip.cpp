@@ -155,12 +155,16 @@ void QgsMapTip::showMapTip( QgsMapLayer *pLayer,
 
 void QgsMapTip::resizeContent()
 {
+#if WITH_QTWEBKIT
   // Get the content size
   QWebElement container = mWebView->page()->mainFrame()->findFirstElement(
                             QStringLiteral( "#QgsWebViewContainer" ) );
   int width = container.geometry().width() + MARGIN_VALUE * 2;
   int height = container.geometry().height() + MARGIN_VALUE * 2;
   mWidget->resize( width, height );
+#else
+  mWebView->adjustSize();
+#endif
 }
 
 void QgsMapTip::clear( QgsMapCanvas * )
