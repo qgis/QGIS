@@ -12925,14 +12925,16 @@ void QgisApp::newProfile()
 
 void QgisApp::onTaskCompleteShowNotify( long taskId, int status )
 {
-  long long minTime = QgsSettings().value( QStringLiteral( "minTaskLengthForSystemNotification" ), 5, QgsSettings::App ).toLongLong() * 1000;
-
-  if ( status == QgsTask::Complete )
+  if ( status == QgsTask::Complete || status == QgsTask::Terminated )
   {
+    long long minTime = QgsSettings().value( QStringLiteral( "minTaskLengthForSystemNotification" ), 5, QgsSettings::App ).toLongLong() * 1000;
     QgsTask *task = QgsApplication::taskManager()->task( taskId );
     if ( task && task->elapsedTime() >= minTime )
     {
-      showSystemNotification( tr( "Task complete" ), task->description() );
+      if ( status == QgsTask::Complete )
+        showSystemNotification( tr( "Task complete" ), task->description() );
+      else if ( status == QgsTask::Terminated )
+        showSystemNotification( tr( "Task failed" ), task->description() );
     }
   }
 }
