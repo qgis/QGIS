@@ -65,16 +65,16 @@ class ANALYSIS_EXPORT QgsNineCellFilter
      *
      * First index of the input cell is the row, second index is the column
      *
-     * @param x11 surrounding cell top left
-     * @param x21 surrounding cell central left
-     * @param x31 surrounding cell bottom left
-     * @param x12 surrounding cell top central
-     * @param x22 the central cell for which the value will be calculated
-     * @param x32 surrounding cell bottom central
-     * @param x13 surrounding cell top right
-     * @param x23 surrounding cell central right
-     * @param x33 surrounding cell bottom right
-     * @return the calculated cell value for the central cell x22
+     * \param x11 surrounding cell top left
+     * \param x21 surrounding cell central left
+     * \param x31 surrounding cell bottom left
+     * \param x12 surrounding cell top central
+     * \param x22 the central cell for which the value will be calculated
+     * \param x32 surrounding cell bottom central
+     * \param x13 surrounding cell top right
+     * \param x23 surrounding cell central right
+     * \param x33 surrounding cell bottom right
+     * \return the calculated cell value for the central cell x22
      */
     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
                                          float *x12, float *x22, float *x32,
