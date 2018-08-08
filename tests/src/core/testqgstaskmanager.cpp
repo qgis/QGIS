@@ -730,6 +730,9 @@ void TestQgsTaskManager::taskId()
 
 void TestQgsTaskManager::waitForFinished()
 {
+  if ( QgsTest::isTravis() )
+    QSKIP( "This test is disabled on Travis CI environment" );
+
   QgsTaskManager manager;
   QEventLoop loop;
 
