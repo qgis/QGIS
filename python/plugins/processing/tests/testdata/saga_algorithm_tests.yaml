@@ -411,3 +411,21 @@ tests:
         name: expected/saga/snap_points_to_points_result.shp
         type: vector
 
+  - algorithm: saga:interpolatecubicspline
+    name: Cubic spline
+    params:
+      FIELD: fid
+      K: 140
+      NPMAX: 20
+      NPMIN: 3
+      NPPC: 2.0
+      SHAPES:
+        name: pointsz.gml
+        type: vector
+      TARGET_USER_FITS: 0
+      TARGET_USER_SIZE: 0.5
+    results:
+      TARGET_OUT_GRID:
+        hash: f4ac677152697773262aa1e5f69146a475139014ace77149966ec045
+        type: rasterhash
+
