@@ -704,13 +704,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
   endProfile();
 
-  if ( !( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeDesktopNotifications ) )
-  {
-    mTray = new QSystemTrayIcon();
-    mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
-    mTray->hide();
-  }
-
   // Create the themes folder for the user
   startProfile( QStringLiteral( "Creating theme folder" ) );
   QgsApplication::createThemeFolder();
@@ -1321,6 +1314,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     QgsGui::instance()->nativePlatformInterface()->hideApplicationProgress();
   } );
+
+  if ( !( QgsGui::nativePlatformInterface()->capabilities() & QgsNative::NativeDesktopNotifications ) )
+  {
+    mTray = new QSystemTrayIcon();
+    mTray->setIcon( QIcon( QgsApplication::appIconPath() ) );
+    mTray->hide();
+  }
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );
