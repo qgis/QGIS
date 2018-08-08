@@ -25,6 +25,7 @@ Build-Depends:
 #!xenial# qtbase5-private-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5serialport5-dev, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
+ opencl-headers,
  python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
  pyqt5-dev-tools, pyqt5-dev, pyqt5.qsci-dev,
  python3-pyqt5, python3-pyqt5.qsci, python3-pyqt5.qtsql, python3-pyqt5.qtsvg,
