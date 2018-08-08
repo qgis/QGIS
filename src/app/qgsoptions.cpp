@@ -51,6 +51,10 @@
 #include "qgslocatorwidget.h"
 #include "qgslocatoroptionswidget.h"
 
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
 #include <QInputDialog>
 #include <QFileDialog>
 #include <QColorDialog>
@@ -1076,6 +1080,44 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     mOptionsStackedWidget->addWidget( page );
   }
 
+#ifdef HAVE_OPENCL
+
+  // Setup OpenCL (GPU) widget
+  mGPUEnableCheckBox->setChecked( QgsOpenClUtils::enabled( ) );
+  if ( QgsOpenClUtils::available( ) )
+  {
+    mGPUEnableCheckBox->setEnabled( true );
+
+    for ( const auto &dev : QgsOpenClUtils::devices( ) )
+    {
+      mOpenClDevicesCombo->addItem( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name, dev ), QgsOpenClUtils::deviceId( dev ) );
+    }
+    // Info updater
+    std::function<void( int )> infoUpdater = [ = ]( int )
+    {
+      mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
+    };
+    connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
+    mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
+    infoUpdater( -1 );
+  }
+  else
+  {
+    mGPUEnableCheckBox->setEnabled( false );
+    mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
+                                      "You may need to install additional libraries in order to enable OpenCL.<br>"
+                                      "Please check your logs for further details." ) );
+  }
+
+
+#else
+
+  mOptionsListWidget->removeItemWidget( mOptionsListWidget->findItems( tr( "Acceleration" ), Qt::MatchExactly ).first() );
+  mOptionsStackedWidget->removeWidget( mOptionsPageAcceleration );
+
+
+#endif
+
   connect( pbnEditCreateOptions, &QAbstractButton::pressed, this, &QgsOptions::editCreateOptions );
   connect( pbnEditPyramidsOptions, &QAbstractButton::pressed, this, &QgsOptions::editPyramidsOptions );
 
@@ -1616,6 +1658,13 @@ void QgsOptions::saveOptions()
 
   // Number settings
   mSettings->setValue( QStringLiteral( "locale/showGroupSeparator" ), cbShowGroupSeparator->isChecked( ) );
+
+#ifdef HAVE_OPENCL
+  // OpenCL settings
+  QgsOpenClUtils::setEnabled( mGPUEnableCheckBox->isChecked() );
+  QString preferredDevice( mOpenClDevicesCombo->currentData().toString() );
+  QgsOpenClUtils::storePreferredDevice( preferredDevice );
+#endif
 
   // Gdal skip driver list
   if ( mLoadedGdalDriverList )

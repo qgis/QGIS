@@ -28,6 +28,18 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 
 
 #############################################################
+# Configure OpenCL if available
+
+OPTION(USE_OPENCL "Use OpenCL" ON)
+IF (USE_OPENCL)
+    FIND_PACKAGE(OpenCL)
+    IF(${OpenCL_FOUND})
+        SET(HAVE_OPENCL TRUE)
+    ELSE(${OpenCL_FOUND})
+        MESSAGE(STATUS "Couldn't find OpenCL: support DISABLED")
+    ENDIF(${OpenCL_FOUND})
+ENDIF(USE_OPENCL)
+
 # Configure CCache if available
 IF(NOT MSVC)
   option(USE_CCACHE "Use ccache" ON)

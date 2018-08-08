@@ -104,6 +104,10 @@ typedef SInt32 SRefCon;
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
 
+#ifdef HAVE_OPENCL
+#include "qgsopenclutils.h"
+#endif
+
 /**
  * Print usage text
  */
@@ -141,6 +145,9 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
+#ifdef HAVE_OPENCL
+      << QStringLiteral( "\t[--openclprogramfolder]\t\tpath to the folder containing the sources for OpenCL programs.\n" )
+#endif
       << QStringLiteral( "\t[--help]\t\tthis text\n" )
       << QStringLiteral( "\t[--]\t\ttreat all following arguments as FILEs\n\n" )
       << QStringLiteral( "  FILE:\n" )
@@ -543,6 +550,10 @@ int main( int argc, char *argv[] )
   QString customizationfile;
   QString globalsettingsfile;
 
+#ifdef HAVE_OPENCL
+  QString openClProgramFolder;
+#endif
+
 // TODO Fix android
 #if defined(ANDROID)
   QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
@@ -726,6 +737,12 @@ int main( int argc, char *argv[] )
       {
         dxfMapTheme = args[++i];
       }
+#ifdef HAVE_OPENCL
+      else if ( arg == QLatin1String( "--openclprogramfolder" ) )
+      {
+        openClProgramFolder = args[++i];
+      }
+#endif
       else if ( arg == QLatin1String( "--" ) )
       {
         for ( i++; i < args.size(); ++i )
@@ -1443,6 +1460,24 @@ int main( int argc, char *argv[] )
 
   // make sure we don't have a dirty blank project after launch
   QgsProject::instance()->setDirty( false );
+
+#ifdef HAVE_OPENCL
+
+  // Overrides the OpenCL path to the folder containing the programs
+  // - use the path specified with --openclprogramfolder,
+  // - use the environment QGIS_OPENCL_PROGRAM_FOLDER if not found
+  // - use a default location as a fallback (this is set in QgsApplication initialization)
+  if ( openClProgramFolder.isEmpty() )
+  {
+    openClProgramFolder = getenv( "QGIS_OPENCL_PROGRAM_FOLDER" );
+  }
+
+  if ( ! openClProgramFolder.isEmpty() )
+  {
+    QgsOpenClUtils::setSourcePath( openClProgramFolder );
+  }
+
+#endif
 
   /////////////////////////////////////////////////////////////////////
   // Continue on to interactive gui...

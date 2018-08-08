@@ -302,6 +302,12 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
 )
 
+IF(HAVE_OPENCL)
+    INCLUDE_DIRECTORIES(${OpenCL_INCLUDE_DIRS})
+ENDIF(HAVE_OPENCL)
+
+
+
 #############################################################
 # qgis_analysis library
 
@@ -352,6 +358,11 @@ IF (NOT ANDROID)
 ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_analysis qgis_core)
+
+IF(HAVE_OPENCL)
+    TARGET_LINK_LIBRARIES(qgis_analysis ${OpenCL_LIBRARIES})
+ENDIF(HAVE_OPENCL)
+
 
 # clang-tidy
 IF(CLANG_TIDY_EXE)
