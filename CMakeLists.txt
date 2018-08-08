@@ -37,10 +37,6 @@ IF (USE_OPENCL)
         SET(HAVE_OPENCL TRUE)
     ELSE(${OpenCL_FOUND})
         MESSAGE(STATUS "Couldn't find OpenCL: support DISABLED")
-        SET (USE_OPENCL TRUE CACHE BOOL "Use OpenCL")
-        IF(USE_OPENCL)
-          SET(HAVE_OPENCL TRUE)
-        ENDIF(USE_OPENCL)
     ENDIF(${OpenCL_FOUND})
 ENDIF(USE_OPENCL)
 
@@ -477,7 +473,7 @@ IF (PEDANTIC)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
     IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual -Wimplicit-fallthrough")
+      SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
     ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
