@@ -17,6 +17,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (
+    QgsApplication,
     QgsRectangle,
     QgsFeatureRequest,
     QgsFeature,
