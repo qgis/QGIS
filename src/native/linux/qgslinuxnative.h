@@ -34,8 +34,14 @@ class NATIVE_EXPORT QgsLinuxNative : public QgsNative
 {
   public:
     QgsNative::Capabilities capabilities() const override;
+    void initializeMainWindow( QWindow *window ) override;
     void openFileExplorerAndSelectFile( const QString &path ) override;
+    void showUndefinedApplicationProgress() override;
+    void setApplicationProgress( double progress ) override;
+    void hideApplicationProgress() override;
     NotificationResult showDesktopNotification( const QString &summary, const QString &body, const NotificationSettings &settings = NotificationSettings() ) override;
+  private:
+    QString mDesktopFile;
 };
 
 #endif // QGSLINUXNATIVE_H

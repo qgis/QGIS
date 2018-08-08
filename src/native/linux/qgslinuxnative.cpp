@@ -17,6 +17,7 @@
 
 #include "qgslinuxnative.h"
 
+#include <QCoreApplication>
 #include <QUrl>
 #include <QString>
 #include <QtDBus/QtDBus>
@@ -26,6 +27,12 @@
 QgsNative::Capabilities QgsLinuxNative::capabilities() const
 {
   return NativeDesktopNotifications;
+}
+
+void QgsLinuxNative::initializeMainWindow( QWindow * )
+{
+  // Hardcoded desktop file value matching our official .deb packages
+  mDesktopFile = QStringLiteral( "qgis.desktop" );
 }
 
 void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
@@ -46,6 +53,50 @@ void QgsLinuxNative::openFileExplorerAndSelectFile( const QString &path )
   {
     QgsNative::openFileExplorerAndSelectFile( path );
   }
+}
+
+void QgsLinuxNative::showUndefinedApplicationProgress()
+{
+  const QVariantMap properties
+  {
+    { QStringLiteral( "progress-visible" ), true },
+    { QStringLiteral( "progress" ), 0.0 }
+  };
+
+  QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
+                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                         QStringLiteral( "Update" ) );
+  message.setArguments( {mDesktopFile, properties} );
+  QDBusConnection::sessionBus().send( message );
+}
+
+void QgsLinuxNative::setApplicationProgress( double progress )
+{
+  const QVariantMap properties
+  {
+    { QStringLiteral( "progress-visible" ), true },
+    { QStringLiteral( "progress" ), progress / 100.0 }
+  };
+
+  QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
+                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                         QStringLiteral( "Update" ) );
+  message.setArguments( {mDesktopFile, properties} );
+  QDBusConnection::sessionBus().send( message );
+}
+
+void QgsLinuxNative::hideApplicationProgress()
+{
+  const QVariantMap properties
+  {
+    { QStringLiteral( "progress-visible" ), false },
+  };
+
+  QDBusMessage message = QDBusMessage::createSignal( QStringLiteral( "/org/qgis/UnityLauncher" ),
+                         QStringLiteral( "com.canonical.Unity.LauncherEntry" ),
+                         QStringLiteral( "Update" ) );
+  message.setArguments( {mDesktopFile, properties} );
+  QDBusConnection::sessionBus().send( message );
 }
 
 /**
