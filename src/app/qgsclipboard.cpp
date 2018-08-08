@@ -219,8 +219,13 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
       continue;
 
     QgsFeature feature;
-    if ( !fields.isEmpty() )
-      feature.setFields( fields, true );
+    feature.setFields( retrieveFields() );
+    feature.initAttributes( fieldValues.size() - 1 );
+    for ( int i = 1; i < fieldValues.size(); ++i )
+    {
+      feature.setAttribute( i - 1, fieldValues.at( i ) );
+    }
+
 
     feature.setGeometry( geometry );
     features.append( feature );
@@ -239,7 +244,27 @@ QgsFields QgsClipboard::retrieveFields() const
   QString string = cb->text( QClipboard::Clipboard );
 #endif
 
-  return QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+  QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+  if ( f.size() < 1 )
+  {
+    //wkt?
+    QStringList lines = string.split( "\n" );
+    if ( lines.size() > 0 )
+    {
+      QStringList fieldNames = lines.at( 0 ).split( "\t" );
+      for ( int i = 0; i < fieldNames.size(); ++i )
+      {
+        QString fieldName = fieldNames.at( i );
+        if ( fieldName == "wkt_geom" )
+        {
+          continue;
+        }
+
+        f.append( QgsField( fieldName, QVariant::String ) );
+      }
+    }
+  }
+  return f;
 }
 
 QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const
