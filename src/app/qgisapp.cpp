@@ -5939,23 +5939,34 @@ bool QgisApp::fileSave()
 
 void QgisApp::fileSaveAs()
 {
-  // Retrieve last used project dir from persistent settings
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+  QString defaultPath;
+  // First priority is to default to same path as existing file
+  const QString currentPath = QgsProject::instance()->absoluteFilePath();
+  if ( !currentPath.isEmpty() )
+  {
+    defaultPath = currentPath;
+  }
+  else
+  {
+    // Retrieve last used project dir from persistent settings
+    QgsSettings settings;
+    defaultPath = settings.value( QStringLiteral( "UI/lastProjectDir" ), QDir::homePath() ).toString();
+    defaultPath += + '/' + QgsProject::instance()->title();
+  }
 
   const QString qgsExt = tr( "QGIS files" ) + " (*.qgs *.QGS)";
   const QString zipExt = tr( "QGZ files" ) + " (*.qgz)";
   QString filter;
   QString path = QFileDialog::getSaveFileName( this,
                  tr( "Save Project As" ),
-                 lastUsedDir + '/' + QgsProject::instance()->title(),
+                 defaultPath,
                  zipExt + ";;" + qgsExt, &filter );
   if ( path.isEmpty() )
     return;
 
   QFileInfo fullPath( path );
 
-  settings.setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
+  QgsSettings().setValue( QStringLiteral( "UI/lastProjectDir" ), fullPath.path() );
 
   if ( filter == zipExt )
   {
