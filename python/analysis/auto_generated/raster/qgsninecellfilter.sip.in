@@ -36,18 +36,6 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 :param feedback: feedback object that receives update and that is checked for cancelation.
 
 :return: 0 in case of success
-<<<<<<< 14f8c4361dc1f4103bed735a5cf46b38dcfa4a03
-<<<<<<< 528302cc8952497513b44423dfca6fcf4857760c
-<<<<<<< d6e747ca57807318c0b3f6be8266f0b43c0f7747
-         TODO: return an enum
-=======
-TODO: return an enum
->>>>>>> More updates for opencl
-=======
-         TODO: return an enum
->>>>>>> Bindings for 9cell filter
-=======
->>>>>>> Fix documentation for ninecell filters
 %End
 
     double cellSizeX() const;
@@ -73,16 +61,16 @@ Must be implemented by subclasses.
 
 First index of the input cell is the row, second index is the column
 
-@param x11 surrounding cell top left
-@param x21 surrounding cell central left
-@param x31 surrounding cell bottom left
-@param x12 surrounding cell top central
-@param x22 the central cell for which the value will be calculated
-@param x32 surrounding cell bottom central
-@param x13 surrounding cell top right
-@param x23 surrounding cell central right
-@param x33 surrounding cell bottom right
-@return the calculated cell value for the central cell x22
+:param x11: surrounding cell top left
+:param x21: surrounding cell central left
+:param x31: surrounding cell bottom left
+:param x12: surrounding cell top central
+:param x22: the central cell for which the value will be calculated
+:param x32: surrounding cell bottom central
+:param x13: surrounding cell top right
+:param x23: surrounding cell central right
+:param x33: surrounding cell bottom right
+            @return the calculated cell value for the central cell x22
 %End
 
   protected:

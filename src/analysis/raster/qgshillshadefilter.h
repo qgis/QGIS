@@ -44,48 +44,21 @@ class ANALYSIS_EXPORT QgsHillshadeFilter: public QgsDerivativeFilter
     void setLightAngle( float angle );
 
   private:
-<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
-<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 
 #ifdef HAVE_OPENCL
 
-=======
->>>>>>> [opencl] Use fast formula for hillshade
-=======
-
-#ifdef HAVE_OPENCL
-
->>>>>>> [opencl] Fix small OpenCL alg issues
     const QString openClProgramBaseName() const override
     {
       return QStringLiteral( "hillshade" );
     }
-<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
-<<<<<<< a73bbbad21629d81b9b1d4217a096a930473eb5c
 #endif
 
-=======
->>>>>>> [opencl] Use fast formula for hillshade
-=======
-#endif
-
->>>>>>> [opencl] Fix small OpenCL alg issues
     float mLightAzimuth;
     float mLightAngle;
     // Precalculate for speed:
     float mCosZenithRad;
     float mSinZenithRad;
     float mAzimuthRad;
-<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
-
-
-#ifdef HAVE_OPENCL
-  private:
-
-    void addExtraRasterParams( std::vector<float> &params ) override;
-#endif
-=======
->>>>>>> [opencl] Fix small OpenCL alg issues
 
 
 #ifdef HAVE_OPENCL

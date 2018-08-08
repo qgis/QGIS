@@ -30,14 +30,6 @@ nodata value if not present or outside of the border. Must be implemented by sub
 %End
 
 
-<<<<<<< 573283f0dcf022e84bd615e84fd2656043a9722b
-<<<<<<< d6e747ca57807318c0b3f6be8266f0b43c0f7747
-=======
-
-
->>>>>>> More updates for opencl
-=======
->>>>>>> [opencl] Fix small OpenCL alg issues
 };
 
 /************************************************************************

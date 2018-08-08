@@ -1087,7 +1087,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   if ( QgsOpenClUtils::available( ) )
   {
     mGPUEnableCheckBox->setEnabled( true );
-<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
 
     for ( const auto &dev : QgsOpenClUtils::devices( ) )
     {
@@ -1096,68 +1095,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
     // Info updater
     std::function<void( int )> infoUpdater = [ = ]( int )
     {
-<<<<<<< 1324eff749a7b6102088ab77d27a5df6c6dce919
-<<<<<<< 41e7e71db720385195af51c40df201a1aa077b0d
       mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
-=======
-      mGPUInfoLabel->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
->>>>>>> [opencl] Fix device selection on start
-=======
-      mGPUInfoTextBrowser->setText( QgsOpenClUtils::deviceDescription( mOpenClDevicesCombo->currentData().toString() ) );
->>>>>>> [opencl] Make opencl info copyable
     };
     connect( mOpenClDevicesCombo, qgis::overload< int >::of( &QComboBox::currentIndexChanged ), infoUpdater );
     mOpenClDevicesCombo->setCurrentIndex( mOpenClDevicesCombo->findData( QgsOpenClUtils::deviceId( QgsOpenClUtils::activeDevice() ) ) );
     infoUpdater( -1 );
-<<<<<<< 41e7e71db720385195af51c40df201a1aa077b0d
-=======
-    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU found on your system:<br>"
-                                            "Name: <b>%1</b><br>"
-                                            "Vendor: <b>%2</b><br>"
-                                            "Profile: <b>%3</b><br>"
-                                            "Version: <b>%4</b><br>"
-                                            "Image support: <b>%5</b><br>"
-                                            "Max image2d width: <b>%6</b><br>"
-                                            "Max image2d height: <b>%7</b><br>"
-                                            "Max mem alloc size: <b>%8</b><br>"
-                                          ).arg( QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Name ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Vendor ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Profile ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Version ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::ImageSupport ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxWidth ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::Image2dMaxHeight ),
-                                              QgsOpenClUtils::deviceInfo( QgsOpenClUtils::Info::MaxMemAllocSize )
-                                               )
-                          );
->>>>>>> [opencl] Test with image2d
-=======
->>>>>>> [opencl] Fix device selection on start
   }
   else
   {
     mGPUEnableCheckBox->setEnabled( false );
-<<<<<<< 9ed9cbded8ecdd774739758493856a8bc1abb302
-<<<<<<< 1324eff749a7b6102088ab77d27a5df6c6dce919
-<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
     mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
                                       "You may need to install additional libraries in order to enable OpenCL.<br>"
                                       "Please check your logs for further details." ) );
-=======
-    mGPUInfoLabel->setText( QStringLiteral( "OpenCL compatible GPU was not found on your system.<br>"
-                                            "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                            "Please check your logs for further details." ) );
->>>>>>> [opencl] Test with image2d
-=======
-    mGPUInfoTextBrowser->setText( QStringLiteral( "An OpenCL compatible device was not found on your system.<br>"
-                                  "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                  "Please check your logs for further details." ) );
->>>>>>> [opencl] Make opencl info copyable
-=======
-    mGPUInfoTextBrowser->setText( tr( "An OpenCL compatible device was not found on your system.<br>"
-                                      "You may need to install additional libraries in order to enable OpenCL.<br>"
-                                      "Please check your logs for further details." ) );
->>>>>>> [opencl] Translate message when no opencl is available
   }
 
 
@@ -1713,12 +1662,8 @@ void QgsOptions::saveOptions()
 #ifdef HAVE_OPENCL
   // OpenCL settings
   QgsOpenClUtils::setEnabled( mGPUEnableCheckBox->isChecked() );
-<<<<<<< 12fa896554321892e88ca05407cf125a7ccf92c1
   QString preferredDevice( mOpenClDevicesCombo->currentData().toString() );
   QgsOpenClUtils::storePreferredDevice( preferredDevice );
-=======
-
->>>>>>> [opencl] Test with image2d
 #endif
 
   // Gdal skip driver list

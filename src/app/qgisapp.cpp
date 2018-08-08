@@ -94,11 +94,9 @@
 #include "processing/qgs3dalgorithms.h"
 #endif
 
-<<<<<<< 16a49cddaa18cb6d0b12335fe24c68cda183e1c0
 #include "qgsgui.h"
 #include "qgsnative.h"
-=======
->>>>>>> Use OpenCL command queue
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif
