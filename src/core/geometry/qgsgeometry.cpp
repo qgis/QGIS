@@ -274,7 +274,7 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
     {
       std::unique_ptr< QgsCompoundCurve > innerCc = qgis::make_unique< QgsCompoundCurve >();
 
-      QgsCircle innerCircle = QgsCircle( center, innerRadius);
+      QgsCircle innerCircle = QgsCircle( center, innerRadius );
       innerCc->addCurve( innerCircle.toCircularString() );
 
       cp->setInteriorRings( { innerCc.release() } );
