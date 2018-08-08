@@ -198,7 +198,7 @@ class VoronoiPolygons(QgisAlgorithm):
         (xmin, ymin, xmax, ymax) = xyminmax
 
         def isclose(a, b, rel_tol=1e-9, abs_tol=0.0):
-            return abs(a - b) <= max( rel_tol * max(abs(a), abs(b)), abs_tol )
+            return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol )
 
         def clip_line(x1, y1, x2, y2, w, h):
             if x1 < 0 and x2 < 0:
