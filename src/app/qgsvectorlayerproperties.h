@@ -169,6 +169,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void onAuxiliaryLayerExport();
 
+    void urlClicked( const QUrl &url );
+
   private:
 
     enum PropertyType

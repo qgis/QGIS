@@ -23,6 +23,7 @@
 
 #include <limits>
 
+#include <QFile>
 #include <QImage>
 #include <QPainter>
 #include <QPainterPath>
@@ -32,6 +33,7 @@
 #include <QDomNode>
 #include <QVector>
 #include <QStringBuilder>
+#include <QUrl>
 #if QT_VERSION >= 0x050900
 #include <QUndoCommand>
 #endif
@@ -4162,7 +4164,11 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
   // data source
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>" ) + publicSource() + QStringLiteral( "</td></tr>\n" );
+  QVariantMap uriComponents = QgsProviderRegistry::instance()->decodeUri( mProviderKey, publicSource() );
+  QString path;
+  if ( uriComponents.contains( QStringLiteral( "path" ) ) )
+    path = uriComponents[QStringLiteral( "path" )].toString();
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Source" ) + QStringLiteral( "</td><td>%1" ).arg( QFile::exists( path ) ? QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( path ).toString(), publicSource() ) : publicSource() ) + QStringLiteral( "</td></tr>\n" );
 
   // storage type
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Storage" ) + QStringLiteral( "</td><td>" ) + storageType() + QStringLiteral( "</td></tr>\n" );
