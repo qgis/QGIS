@@ -3595,6 +3595,18 @@ tests:
         name: expected/pointsvoronoi1diagram.gml
         type: vector
 
+  - algorithm: qgis:voronoipolygons
+    name: Vornoi with configuration that may cause numerical issues
+    params:
+      BUFFER: 0.0
+      INPUT:
+        name: airports.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/airportsvoronoidiagram.gml
+        type: vector
+
   - algorithm: native:explodelines
     name: Explode lines
     params:
