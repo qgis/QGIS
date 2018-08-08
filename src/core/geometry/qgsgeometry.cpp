@@ -262,28 +262,40 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
 {
   if ( angularWidth >= 360.0 )
   {
-    std::unique_ptr< QgsCompoundCurve > outer = qgis::make_unique< QgsCompoundCurve >();
+    std::unique_ptr< QgsCompoundCurve > outerCc = qgis::make_unique< QgsCompoundCurve >();
 
-    const QgsPoint outerP1 = center.project( outerRadius, azimuth );
-    const QgsPoint outerP2 = center.project( outerRadius, azimuth + 180.0 );
+    QgsPointSequence outerPs = QgsPointSequence()
+                               << QgsPoint( center.x(), center.y() + outerRadius )
+                               << QgsPoint( center.x() + outerRadius, center.y() )
+                               << QgsPoint( center.x(), center.y() - outerRadius )
+                               << QgsPoint( center.x() - outerRadius, center.y() )
+                               << QgsPoint( center.x(), center.y() + outerRadius );
 
-    outer->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP1, outerP2, center ) ) );
-    outer->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( outerP2, outerP1, center ) ) );
+    QgsCircularString *outerCs =  new QgsCircularString;
+    outerCs->setPoints( outerPs );
+
+    outerCc->addCurve( outerCs );
 
     std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
-    cp->setExteriorRing( outer.release() );
+    cp->setExteriorRing( outerCc.release() );
 
     if ( !qgsDoubleNear( innerRadius, 0.0 ) && innerRadius > 0 )
     {
-      std::unique_ptr< QgsCompoundCurve > inner = qgis::make_unique< QgsCompoundCurve >();
+      std::unique_ptr< QgsCompoundCurve > innerCc = qgis::make_unique< QgsCompoundCurve >();
 
-      const QgsPoint innerP1 = center.project( innerRadius, azimuth );
-      const QgsPoint innerP2 = center.project( innerRadius, azimuth + 180.0 );
+      QgsPointSequence innerPs = QgsPointSequence()
+                                 << QgsPoint( center.x(), center.y() + innerRadius )
+                                 << QgsPoint( center.x() + innerRadius, center.y() )
+                                 << QgsPoint( center.x(), center.y() - innerRadius )
+                                 << QgsPoint( center.x() - innerRadius, center.y() )
+                                 << QgsPoint( center.x(), center.y() + innerRadius );
 
-      inner->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP1, innerP2, center ) ) );
-      inner->addCurve( new QgsCircularString( QgsCircularString::fromTwoPointsAndCenter( innerP2, innerP1, center ) ) );
+      QgsCircularString *innerCs =  new QgsCircularString;
+      innerCs->setPoints( innerPs );
 
-      cp->setInteriorRings( { inner.release() } );
+      innerCc->addCurve( innerCs );
+
+      cp->setInteriorRings( { innerCc.release() } );
     }
 
     return QgsGeometry( std::move( cp ) );
@@ -3256,3 +3268,4 @@ QDataStream &operator>>( QDataStream &in, QgsGeometry &geometry )
   geometry.fromWkb( byteArray );
   return in;
 }
+
