@@ -290,7 +290,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
         if ( title.isEmpty() )
           title = layer->name();
         title = "<b>" + title + "</b>";
-        if ( layer->crs().isValid() )
+        if ( layer->isSpatial() && layer->crs().isValid() )
         {
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
