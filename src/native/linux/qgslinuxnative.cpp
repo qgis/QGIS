@@ -29,7 +29,10 @@ QgsNative::Capabilities QgsLinuxNative::capabilities() const
   return NativeDesktopNotifications;
 }
 
-void QgsLinuxNative::initializeMainWindow( QWindow * )
+void QgsLinuxNative::initializeMainWindow( QWindow *,
+    const QString &,
+    const QString &,
+    const QString & )
 {
   // Hardcoded desktop file value matching our official .deb packages
   mDesktopFile = QStringLiteral( "qgis.desktop" );
