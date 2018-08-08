@@ -264,17 +264,8 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
   {
     std::unique_ptr< QgsCompoundCurve > outerCc = qgis::make_unique< QgsCompoundCurve >();
 
-    QgsPointSequence outerPs = QgsPointSequence()
-                               << QgsPoint( center.x(), center.y() + outerRadius )
-                               << QgsPoint( center.x() + outerRadius, center.y() )
-                               << QgsPoint( center.x(), center.y() - outerRadius )
-                               << QgsPoint( center.x() - outerRadius, center.y() )
-                               << QgsPoint( center.x(), center.y() + outerRadius );
-
-    QgsCircularString *outerCs =  new QgsCircularString;
-    outerCs->setPoints( outerPs );
-
-    outerCc->addCurve( outerCs );
+    QgsCircle outerCircle = QgsCircle( center, outerRadius );
+    outerCc->addCurve( outerCircle.toCircularString() );
 
     std::unique_ptr< QgsCurvePolygon > cp = qgis::make_unique< QgsCurvePolygon >();
     cp->setExteriorRing( outerCc.release() );
@@ -283,17 +274,8 @@ QgsGeometry QgsGeometry::createWedgeBuffer( const QgsPoint &center, const double
     {
       std::unique_ptr< QgsCompoundCurve > innerCc = qgis::make_unique< QgsCompoundCurve >();
 
-      QgsPointSequence innerPs = QgsPointSequence()
-                                 << QgsPoint( center.x(), center.y() + innerRadius )
-                                 << QgsPoint( center.x() + innerRadius, center.y() )
-                                 << QgsPoint( center.x(), center.y() - innerRadius )
-                                 << QgsPoint( center.x() - innerRadius, center.y() )
-                                 << QgsPoint( center.x(), center.y() + innerRadius );
-
-      QgsCircularString *innerCs =  new QgsCircularString;
-      innerCs->setPoints( innerPs );
-
-      innerCc->addCurve( innerCs );
+      QgsCircle innerCircle = QgsCircle( center, innerRadius);
+      innerCc->addCurve( innerCircle.toCircularString() );
 
       cp->setInteriorRings( { innerCc.release() } );
     }
