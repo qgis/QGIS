@@ -241,10 +241,10 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
-  // only fields => no geom so no feature list is returned
+  //clipboard now supports features without geometry
   mQgisApp->clipboard()->setText( QStringLiteral( "MNL		11	282	km			\nMNL		11	347.80000000000001	km				" ) );
   features = mQgisApp->clipboard()->copyOf();
-  QCOMPARE( features.length(), 0 );
+  QCOMPARE( features.length(), 2 );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()

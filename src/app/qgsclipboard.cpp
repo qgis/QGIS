@@ -255,11 +255,22 @@ QgsFields QgsClipboard::retrieveFields() const
   QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
   if ( f.size() < 1 )
   {
+    if ( string.isEmpty() )
+    {
+      return f;
+    }
+
     //wkt?
     QStringList lines = string.split( "\n" );
     if ( lines.size() > 0 )
     {
       QStringList fieldNames = lines.at( 0 ).split( "\t" );
+      //wkt / text always has wkt_geom as first attribute (however values can be NULL)
+      if ( fieldNames.at( 0 ) != "wkt_geom" )
+      {
+        return f;
+      }
+
       for ( int i = 0; i < fieldNames.size(); ++i )
       {
         QString fieldName = fieldNames.at( i );
