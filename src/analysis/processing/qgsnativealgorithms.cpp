@@ -187,6 +187,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsProjectPointCartesianAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
+  addAlgorithm( new QgsRasterPixelsToPointsAlgorithm() );
+  addAlgorithm( new QgsRasterPixelsToPolygonsAlgorithm() );
   addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsReclassifyByLayerAlgorithm() );
   addAlgorithm( new QgsReclassifyByTableAlgorithm() );
@@ -216,7 +218,6 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );
-  addAlgorithm( new QgsVectorizeAlgorithm() );
   addAlgorithm( new QgsWedgeBuffersAlgorithm() );
   addAlgorithm( new QgsZonalHistogramAlgorithm() );
 }

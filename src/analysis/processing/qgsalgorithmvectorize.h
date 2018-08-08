@@ -27,28 +27,22 @@
 ///@cond PRIVATE
 
 /**
- * Native vectorize algorithm
+ * Base class for vectorize algorithms.
  */
-class QgsVectorizeAlgorithm : public QgsProcessingAlgorithm
+class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
 
-    QgsVectorizeAlgorithm() = default;
-    QString name() const override;
-    QString displayName() const override;
-    QStringList tags() const override;
-    QString shortHelpString() const override;
-    QgsVectorizeAlgorithm *createInstance() const override SIP_FACTORY;
     QString group() const final;
     QString groupId() const final;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
 
-    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
     QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
     std::unique_ptr< QgsRasterInterface > mInterface;
 
@@ -63,6 +57,61 @@ class QgsVectorizeAlgorithm : public QgsProcessingAlgorithm
     int mNbCellsYProvider = 0;
     QgsReclassifyUtils::RasterClass::BoundsType mBoundsType = QgsReclassifyUtils::RasterClass::IncludeMax;
     bool mUseNoDataForMissingValues = false;
+
+  private:
+
+    virtual QString outputName() const = 0;
+    virtual QgsProcessing::SourceType outputType() const = 0;
+    virtual QgsWkbTypes::Type sinkType() const = 0;
+    virtual QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const = 0;
+};
+
+/**
+ * Native raster pixels to polygons algorithm.
+ */
+class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
+{
+  public:
+
+    QgsRasterPixelsToPolygonsAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsRasterPixelsToPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
+
+  private:
+
+    QString outputName() const override;
+    QgsProcessing::SourceType outputType() const override;
+    QgsWkbTypes::Type sinkType() const override;
+    QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+
+};
+
+/**
+ * Native raster pixels to points algorithm.
+ */
+class QgsRasterPixelsToPointsAlgorithm : public QgsVectorizeAlgorithmBase
+{
+  public:
+
+    QgsRasterPixelsToPointsAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString shortHelpString() const override;
+    QString shortDescription() const override;
+    QgsRasterPixelsToPointsAlgorithm *createInstance() const override SIP_FACTORY;
+
+  private:
+
+    QString outputName() const override;
+    QgsProcessing::SourceType outputType() const override;
+    QgsWkbTypes::Type sinkType() const override;
+    QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+
 };
 
 ///@endcond PRIVATE
