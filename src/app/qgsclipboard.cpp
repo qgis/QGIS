@@ -202,6 +202,8 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
   if ( values.isEmpty() || string.isEmpty() )
     return features;
 
+  QgsFields sourceFields = retrieveFields();
+
   Q_FOREACH ( const QString &row, values )
   {
     // Assume that it's just WKT for now. because GeoJSON is managed by
@@ -214,23 +216,29 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     if ( fieldValues.isEmpty() )
       continue;
 
-    QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
-    if ( geometry.isNull() )
-      continue;
-
     QgsFeature feature;
-    feature.setFields( retrieveFields() );
+    feature.setFields( sourceFields );
     feature.initAttributes( fieldValues.size() - 1 );
+
+    //skip header line
+    if ( fieldValues.at( 0 ) == "wkt_geom" )
+    {
+      continue;
+    }
+
     for ( int i = 1; i < fieldValues.size(); ++i )
     {
       feature.setAttribute( i - 1, fieldValues.at( i ) );
     }
 
+    QgsGeometry geometry = QgsGeometry::fromWkt( fieldValues[0] );
+    if ( !geometry.isNull() )
+    {
+      feature.setGeometry( geometry );
+    }
 
-    feature.setGeometry( geometry );
     features.append( feature );
   }
-
   return features;
 }
 
