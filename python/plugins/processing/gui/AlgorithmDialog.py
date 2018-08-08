@@ -43,7 +43,9 @@ from qgis.core import (Qgis,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterFeatureSink,
                        QgsProcessingParameterRasterDestination,
-                       QgsProcessingAlgorithm)
+                       QgsProcessingAlgorithm,
+                       QgsProxyProgressTask,
+                       QgsTaskManager)
 from qgis.gui import (QgsGui,
                       QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
@@ -219,9 +221,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     task.executed.connect(on_complete)
                     self.setCurrentTask(task)
                 else:
+                    self.proxy_progress = QgsProxyProgressTask(self.tr("Executing “{}”").format(self.algorithm().displayName()))
+                    QgsApplication.taskManager().addTask(self.proxy_progress)
+                    feedback.progressChanged.connect(self.proxy_progress.setProxyProgress)
                     self.feedback_dialog = self.createProgressDialog()
                     self.feedback_dialog.show()
                     ok, results = execute(self.algorithm(), parameters, context, feedback)
+                    feedback.progressChanged.disconnect()
+                    self.proxy_progress.finalize(ok)
                     on_complete(ok, results)
 
         except AlgorithmDialogBase.InvalidParameterValue as e:
