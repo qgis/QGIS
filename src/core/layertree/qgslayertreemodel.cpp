@@ -287,7 +287,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 
         title = "<b>" + title.toHtmlEscaped() + "</b>";
 
-        if ( layer->crs().isValid() )
+        if ( layer->isSpatial() && layer->crs().isValid() )
         {
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title += tr( " (%1 - %2)" ).arg( QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() ).toHtmlEscaped();
