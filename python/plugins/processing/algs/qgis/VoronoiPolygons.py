@@ -197,6 +197,9 @@ class VoronoiPolygons(QgisAlgorithm):
         pt_y = point.y() - extent.yMinimum()
         (xmin, ymin, xmax, ymax) = xyminmax
 
+        def isclose(a, b, rel_tol=1e-9, abs_tol=0.0):
+            return abs(a-b) <= max( rel_tol * max(abs(a), abs(b)), abs_tol )
+
         def clip_line(x1, y1, x2, y2, w, h):
             if x1 < 0 and x2 < 0:
                 # Completely to the left
@@ -210,6 +213,7 @@ class VoronoiPolygons(QgisAlgorithm):
             if y1 > h and y2 > h:
                 # Completely above
                 return [0, 0, 0, 0]
+            # Clip on the left envelope boundary
             if x1 < 0:
                 # First point to the left
                 y1 = (y1 * x2 - y2 * x1) / (x2 - x1)
@@ -218,6 +222,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Last point to the left
                 y2 = (y1 * x2 - y2 * x1) / (x2 - x1)
                 x2 = 0
+            # Clip on the right envelope boundary
             if x1 > w:
                 # First point to the right
                 y1 = y1 + (w - x1) * (y2 - y1) / (x2 - x1)
@@ -226,8 +231,9 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Last point to the right
                 y2 = y1 + (w - x1) * (y2 - y1) / (x2 - x1)
                 x2 = w
-            if x1 == x2 and y1 == y2:
+            if isclose(x1, x2) and isclose(y1, y2):
                 return [0, 0, 0, 0]
+            # Clip on the bottom envelope boundary
             if y1 < 0:
                 # First point below
                 x1 = (x1 * y2 - x2 * y1) / (y2 - y1)
@@ -236,6 +242,7 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Second point below
                 x2 = (x1 * y2 - x2 * y1) / (y2 - y1)
                 y2 = 0
+            # Clip on the top envelope boundary
             if y1 > h:
                 # First point above
                 x1 = x1 + (h - y1) * (x2 - x1) / (y2 - y1)
@@ -244,6 +251,8 @@ class VoronoiPolygons(QgisAlgorithm):
                 # Second point above
                 x2 = x1 + (h - y1) * (x2 - x1) / (y2 - y1)
                 y2 = h
+            if isclose(x1, x2) and isclose(y1, y2):
+                return [0, 0, 0, 0]
             return [x1, y1, x2, y2]
 
         bndpoints = []
