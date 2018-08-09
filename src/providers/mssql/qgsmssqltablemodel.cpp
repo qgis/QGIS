@@ -321,11 +321,11 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::GeometryType geomType = ( QgsWkbTypes::GeometryType ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
 
-    bool ok = geomType != QgsWkbTypes::UnknownGeometry;
+    bool ok = wkbType != QgsWkbTypes::Unknown;
 
-    if ( ok && geomType != QgsWkbTypes::NullGeometry )
+    if ( ok && wkbType != QgsWkbTypes::NoGeometry )
       idx.sibling( idx.row(), DbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), DbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
