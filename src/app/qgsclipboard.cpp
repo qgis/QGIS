@@ -261,12 +261,12 @@ QgsFields QgsClipboard::retrieveFields() const
     }
 
     //wkt?
-    QStringList lines = string.split( "\n" );
-    if ( lines.size() > 0 )
+    QStringList lines = string.split( '\n' );
+    if ( !lines.empty() )
     {
-      QStringList fieldNames = lines.at( 0 ).split( "\t" );
+      QStringList fieldNames = lines.at( 0 ).split( '\t' );
       //wkt / text always has wkt_geom as first attribute (however values can be NULL)
-      if ( fieldNames.at( 0 ) != "wkt_geom" )
+      if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
       {
         return f;
       }
@@ -274,7 +274,7 @@ QgsFields QgsClipboard::retrieveFields() const
       for ( int i = 0; i < fieldNames.size(); ++i )
       {
         QString fieldName = fieldNames.at( i );
-        if ( fieldName == "wkt_geom" )
+        if ( fieldName == QLatin1String( "wkt_geom" ) )
         {
           continue;
         }
