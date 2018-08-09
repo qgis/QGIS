@@ -633,15 +633,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     uniqueBasename = outName + self.uniqueSuffix
                     command += ' {}={}'.format(outName, uniqueBasename)
                 else:
-                    # We add an output name to make sure it is unique if the session
-                    # uses this algorithm several times.
-                    #value = self.parameterAsOutputLayer(parameters, outName, context)
-                    uniqueOutputName = outName + self.uniqueSuffix
-                    command += ' {}={}'.format(outName, uniqueOutputName)
+                    if outName in parameters and parameters[outName] is not None:
+                        # We add an output name to make sure it is unique if the session
+                        # uses this algorithm several times.
+                        #value = self.parameterAsOutputLayer(parameters, outName, context)
+                        uniqueOutputName = outName + self.uniqueSuffix
+                        command += ' {}={}'.format(outName, uniqueOutputName)
 
-                    # Add output file to exported layers, to indicate that
-                    # they are present in GRASS
-                    self.exportedLayers[outName] = uniqueOutputName
+                        # Add output file to exported layers, to indicate that
+                        # they are present in GRASS
+                        self.exportedLayers[outName] = uniqueOutputName
 
         command += ' --overwrite'
         self.commands.append(command)
