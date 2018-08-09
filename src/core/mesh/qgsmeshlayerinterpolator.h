@@ -59,6 +59,12 @@ class QgsMeshLayerInterpolator : public QgsRasterInterface
     int bandCount() const override;
     QgsRasterBlock *block( int, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
+
+    static double interpolateFromVerticesData( const QgsPointXY &p1,
+        const QgsPointXY &p2,
+        const QgsPointXY &p3,
+        double val1, double val2, double val3, const QgsPointXY &pt );
+
   private:
     const QgsTriangularMesh &mTriangularMesh;
     const QVector<double> &mDatasetValues;

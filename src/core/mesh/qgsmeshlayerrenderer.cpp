@@ -229,17 +229,7 @@ void QgsMeshLayerRenderer::renderMesh( const std::unique_ptr<QgsSymbol> &symbol,
     const QgsMeshFace &face = faces[i];
     QgsFeature feat;
     feat.setFields( fields );
-    QVector<QgsPointXY> ring;
-    for ( int j = 0; j < face.size(); ++j )
-    {
-      int vertex_id = face[j];
-      Q_ASSERT( vertex_id < mTriangularMesh.vertices().size() ); //Triangular mesh vertices contains also native mesh vertices
-      const QgsPoint &vertex = mTriangularMesh.vertices()[vertex_id];
-      ring.append( vertex );
-    }
-    QgsPolygonXY polygon;
-    polygon.append( ring );
-    QgsGeometry geom = QgsGeometry::fromPolygonXY( polygon );
+    QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices() ); //Triangular mesh vertices contains also native mesh vertices
     feat.setGeometry( geom );
     renderer.renderFeature( feat, mContext );
   }

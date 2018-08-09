@@ -15,6 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QList>
+#include "qgsfeature.h"
+
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
@@ -63,12 +66,12 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
-
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
   Q_ASSERT( context );
 
+  mSpatialIndex = QgsSpatialIndex();
   mTriangularMesh.vertices.clear();
   mTriangularMesh.faces.clear();
   mTrianglesToNativeFaces.clear();
@@ -143,6 +146,15 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
     ENP_centroid( poly, cx, cy );
     mNativeMeshFaceCentroids[i] = QgsMeshVertex( cx, cy );
   }
+
+  // CALCULATE SPATIAL INDEX
+  for ( int i = 0; i < mTriangularMesh.faces.size(); ++i )
+  {
+    const QgsMeshFace &face = mTriangularMesh.faces.at( i ) ;
+    QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
+    bool success = mSpatialIndex.insertFeature( i, geom.boundingBox() );
+    Q_UNUSED( success );
+  }
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -165,3 +177,31 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
   return mTrianglesToNativeFaces;
 }
 
+int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
+{
+  const QList<QgsFeatureId> face_indexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( QgsFeatureId fid : face_indexes )
+  {
+    int face_index = static_cast<int>( fid );
+    const QgsMeshFace &face = mTriangularMesh.faces.at( face_index );
+    const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
+    if ( geom.contains( &point ) )
+      return face_index;
+  }
+  return -1;
+}
+
+QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+{
+  QVector<QgsPointXY> ring;
+  for ( int j = 0; j < face.size(); ++j )
+  {
+    int vertex_id = face[j];
+    Q_ASSERT( vertex_id < vertices.size() );
+    const QgsPoint &vertex = vertices[vertex_id];
+    ring.append( vertex );
+  }
+  QgsPolygonXY polygon;
+  polygon.append( ring );
+  return QgsGeometry::fromPolygonXY( polygon );
+}

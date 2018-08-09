@@ -88,9 +88,8 @@ static bool E3T_physicalToBarycentric( const QgsPointXY &pA, const QgsPointXY &p
   return true;
 }
 
-
-double interpolateFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
-                                    double val1, double val2, double val3, const QgsPointXY &pt )
+double QgsMeshLayerInterpolator::interpolateFromVerticesData( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3,
+    double val1, double val2, double val3, const QgsPointXY &pt )
 {
   double lam1, lam2, lam3;
   if ( !E3T_physicalToBarycentric( p1, p2, p3, pt, lam1, lam2, lam3 ) )

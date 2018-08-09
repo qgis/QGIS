@@ -172,6 +172,11 @@ bool QgsMeshDatasetGroupMetadata::isOnVertices() const
   return mIsOnVertices;
 }
 
+bool QgsMeshDatasetGroupMetadata::isOnFaces() const
+{
+  return !mIsOnVertices;
+}
+
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const
 {
   return datasetCount( index.group() );

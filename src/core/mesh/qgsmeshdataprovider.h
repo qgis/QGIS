@@ -168,6 +168,11 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
      */
     bool isOnVertices() const;
 
+    /**
+     * \brief Returns whether dataset group data is defined on faces
+     */
+    bool isOnFaces() const;
+
   private:
     QString mName;
     bool mIsScalar = false;

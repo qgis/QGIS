@@ -191,6 +191,30 @@ If dataset is not vector based, do nothing. Triggers repaint
 Returns active vector dataset
 %End
 
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+%Docstring
+Interpolates the value on the given point from given dataset.
+
+Returns NaN for NaN values, for values outside range or when
+triangular mesh is not yet initialized on given point
+%End
+
+  signals:
+
+    void activeScalarDatasetChanged( QgsMeshDatasetIndex index );
+%Docstring
+Emitted when active scalar dataset is changed
+
+.. versionadded:: 3.4
+%End
+
+    void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
+%Docstring
+Emitted when active vector dataset is changed
+
+.. versionadded:: 3.4
+%End
+
   private: // Private methods
     QgsMeshLayer( const QgsMeshLayer &rhs );
 };

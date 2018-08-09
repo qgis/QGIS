@@ -22,9 +22,10 @@
 #define SIP_NO_FILE
 
 #include <QVector>
-
 #include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsgeometry.h"
+#include "qgsspatialindex.h"
 
 class QgsRenderContext;
 
@@ -40,7 +41,9 @@ struct CORE_EXPORT QgsMesh
 /**
  * \ingroup core
  *
- * Triangular/Derived Mesh
+ * Triangular/Derived Mesh is mesh with vertices in map coordinates. It creates
+ * spatial index for identification of a triangle that contains a particular point
+ * on the map.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -55,7 +58,7 @@ class CORE_EXPORT QgsTriangularMesh
     ~QgsTriangularMesh() = default;
 
     /**
-     * Constructs triangular mesh from layer's native mesh and context
+     * Constructs triangular mesh from layer's native mesh and context. Populates spatial index.
      * \param nativeMesh QgsMesh to access native vertices and faces
      * \param context Rendering context to estimate number of triagles to create for an face
     */
@@ -77,6 +80,12 @@ class CORE_EXPORT QgsTriangularMesh
     //! Returns mapping between triangles and original faces
     const QVector<int> &trianglesToNativeFaces() const ;
 
+    /**
+     * Returns triangle index that contains the given point, -1 if no such triangle exists
+     * It uses spatial indexing
+     */
+    int faceIndexForPoint( const QgsPointXY &point ) const ;
+
   private:
     // vertices: map CRS; 0-N ... native vertices, N+1 - len ... extra vertices
     // faces are derived triangles
@@ -85,7 +94,14 @@ class CORE_EXPORT QgsTriangularMesh
 
     // centroids of the native faces in map CRS
     QVector<QgsMeshVertex> mNativeMeshFaceCentroids;
+
+    QgsSpatialIndex mSpatialIndex;
 };
 
+namespace QgsMeshUtils
+{
+  //! Returns face as polygon geometry
+  QgsGeometry toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices );
+};
 
 #endif // QGSTRIANGULARMESH_H

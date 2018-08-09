@@ -183,6 +183,11 @@ Returns whether dataset group has scalar data
 Returns whether dataset group data is defined on vertices
 %End
 
+    bool isOnFaces() const;
+%Docstring
+Returns whether dataset group data is defined on faces
+%End
+
 };
 
 class QgsMeshDatasetMetadata

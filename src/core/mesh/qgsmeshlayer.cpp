@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include <cstddef>
+#include <limits>
 
 #include <QUuid>
 
@@ -27,6 +28,7 @@
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
 #include "qgstriangularmesh.h"
+#include "qgsmeshlayerinterpolator.h"
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -154,6 +156,8 @@ void QgsMeshLayer::setActiveScalarDataset( QgsMeshDatasetIndex index )
     mActiveScalarDataset = QgsMeshDatasetIndex();
 
   triggerRepaint();
+
+  emit activeScalarDatasetChanged( mActiveScalarDataset );
 }
 
 void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
@@ -175,6 +179,44 @@ void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
   }
 
   triggerRepaint();
+
+  emit activeVectorDatasetChanged( mActiveVectorDataset );
+}
+
+QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const
+{
+  QgsMeshDatasetValue value;
+
+  if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
+  {
+    int face_index = mTriangularMesh->faceIndexForPoint( point ) ;
+    if ( face_index >= 0 )
+    {
+      bool isOnFaces = dataProvider()->datasetGroupMetadata( index ).isOnFaces();
+      if ( isOnFaces )
+      {
+        int native_face_index = mTriangularMesh->trianglesToNativeFaces().at( face_index );
+        return dataProvider()->datasetValue( index, native_face_index );
+      }
+      else
+      {
+        const QgsMeshFace &face = mTriangularMesh->triangles()[face_index];
+        const int v1 = face[0], v2 = face[1], v3 = face[2];
+        const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
+        const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );
+        const QgsMeshDatasetValue val2 = dataProvider()->datasetValue( index, v2 );
+        const QgsMeshDatasetValue val3 = dataProvider()->datasetValue( index, v3 );
+        const double x = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.x(), val2.x(), val3.x(), point );
+        double y = std::numeric_limits<double>::quiet_NaN();
+        bool isVector = dataProvider()->datasetGroupMetadata( index ).isVector();
+        if ( isVector )
+          y = QgsMeshLayerInterpolator::interpolateFromVerticesData( p1, p2, p3, val1.y(), val2.y(), val3.y(), point );
+
+        return QgsMeshDatasetValue( x, y );
+      }
+    }
+  }
+  return value;
 }
 
 void QgsMeshLayer::fillNativeMesh()
