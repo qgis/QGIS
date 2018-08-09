@@ -16,7 +16,7 @@ QgsProcessingParameterRasterLayer|coeff_dh|Name of real-sky diffuse radiation co
 QgsProcessingParameterRasterLayer|horizon_basemap|The horizon information input map basename|None|True
 QgsProcessingParameterNumber|horizon_step|Angle step size for multidirectional horizon [degrees]|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
 QgsProcessingParameterNumber|day|No. of day of the year (1-365)|QgsProcessingParameterNumber.Integer|1|False|1|365
-*QgsProcessingParameterNumber|step|Time step when computing all-day radiation sums [decimal hours]|QgsProcessingParameterNumber.Double|0.5|True|None|0
+*QgsProcessingParameterNumber|step|Time step when computing all-day radiation sums [decimal hours]|QgsProcessingParameterNumber.Double|0.5|True|0
 *QgsProcessingParameterNumber|declination|Declination value (overriding the internally computed value) [radians]|QgsProcessingParameterNumber.Double|None|True|None|None
 *QgsProcessingParameterNumber|distance_step|Sampling distance step coefficient (0.5-1.5)|QgsProcessingParameterNumber.Double|1.0|True|0.5|1.5
 *QgsProcessingParameterNumber|npartitions|Read the input files in this number of chunks|QgsProcessingParameterNumber.Integer|1|True|1|None
