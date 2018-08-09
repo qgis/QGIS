@@ -226,14 +226,17 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   // info from table to application
   connect( this, &QgsAttributeTableDialog::saveEdits, this, [ = ] { QgisApp::instance()->saveEdits(); } );
 
-  bool myDockFlag = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
-  if ( myDockFlag )
+  const bool dockTable = settings.value( QStringLiteral( "qgis/dockAttributeTable" ), false ).toBool();
+  if ( dockTable )
   {
-    mDock = new QgsAttributeTableDock( tr( "%1 (%n Feature(s))", "feature count", mMainView->featureCount() ).arg( mLayer->name() ), QgisApp::instance() );
+    mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
     mDock->setWidget( this );
     connect( this, &QObject::destroyed, mDock, &QWidget::close );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
+  mActionDockUndock->setChecked( dockTable );
+  connect( mActionDockUndock, &QAction::toggled, this, &QgsAttributeTableDialog::toggleDockMode );
+  installEventFilter( this );
 
   columnBoxInit();
   updateTitle();
@@ -363,7 +366,9 @@ void QgsAttributeTableDialog::updateTitle()
   {
     return;
   }
-  QWidget *w = mDock ? qobject_cast<QWidget *>( mDock ) : qobject_cast<QWidget *>( this );
+  QWidget *w = mDock ? qobject_cast<QWidget *>( mDock )
+               : mDialog ? qobject_cast<QWidget *>( mDialog )
+               : qobject_cast<QWidget *>( this );
   w->setWindowTitle( tr( " %1 :: Features Total: %2, Filtered: %3, Selected: %4" )
                      .arg( mLayer->name() )
                      .arg( std::max( static_cast< long >( mMainView->featureCount() ), mLayer->featureCount() ) ) // layer count may be estimated, so use larger of the two
@@ -390,17 +395,6 @@ void QgsAttributeTableDialog::updateButtonStatus( const QString &fieldName, bool
   mRunFieldCalc->setEnabled( isValid );
 }
 
-void QgsAttributeTableDialog::closeEvent( QCloseEvent *event )
-{
-  QDialog::closeEvent( event );
-
-  if ( !mDock )
-  {
-    QgsSettings settings;
-    settings.setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), saveGeometry() );
-  }
-}
-
 void QgsAttributeTableDialog::keyPressEvent( QKeyEvent *event )
 {
   QDialog::keyPressEvent( event );
@@ -409,6 +403,20 @@ void QgsAttributeTableDialog::keyPressEvent( QKeyEvent *event )
   {
     QgisApp::instance()->deleteSelected( mLayer, this );
   }
+}
+
+bool QgsAttributeTableDialog::eventFilter( QObject *object, QEvent *ev )
+{
+  if ( ev->type() == QEvent::Close && !mDock && ( !mDialog || mDialog == object ) )
+  {
+    if ( QWidget *w = qobject_cast< QWidget * >( object ) )
+    {
+      QgsSettings settings;
+      settings.setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), w->saveGeometry() );
+    }
+  }
+
+  return QDialog::eventFilter( object, ev );
 }
 
 void QgsAttributeTableDialog::columnBoxInit()
@@ -1091,6 +1099,56 @@ void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFea
   {
     QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete feature" ) );
     connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
+  }
+}
+
+void QgsAttributeTableDialog::toggleDockMode( bool docked )
+{
+  if ( docked )
+  {
+    // going from window -> dock, so save current window geometry
+    QgsSettings().setValue( QStringLiteral( "Windows/BetterAttributeTable/geometry" ), mDialog ? mDialog->saveGeometry() : saveGeometry() );
+    if ( mDialog )
+    {
+      mDialog->removeEventFilter( this );
+      mDialog->setLayout( nullptr );
+      mDialog->deleteLater();
+      mDialog = nullptr;
+    }
+
+    mDock = new QgsAttributeTableDock( QString(), QgisApp::instance() );
+    mDock->setWidget( this );
+    connect( this, &QObject::destroyed, mDock, &QWidget::close );
+    QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+    updateTitle();
+  }
+  else
+  {
+    // going from dock -> window
+
+    mDialog = new QDialog( QgisApp::instance(), Qt::Window );
+    mDialog->setAttribute( Qt::WA_DeleteOnClose );
+
+    QVBoxLayout *vl = new QVBoxLayout();
+    vl->setContentsMargins( 0, 0, 0, 0 );
+    vl->setMargin( 0 );
+    vl->addWidget( this );
+    mDialog->setLayout( vl );
+
+    if ( mDock )
+    {
+      mDock->setWidget( nullptr );
+      disconnect( this, &QObject::destroyed, mDock, &QWidget::close );
+      mDock->deleteLater();
+      mDock = nullptr;
+    }
+
+    // subscribe to close events, so that we can save window geometry
+    mDialog->installEventFilter( this );
+
+    updateTitle();
+    mDialog->restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/BetterAttributeTable/geometry" ) ).toByteArray() );
+    mDialog->show();
   }
 }
 

@@ -260,6 +260,7 @@
      <addaction name="separator"/>
      <addaction name="mActionSetStyles"/>
      <addaction name="separator"/>
+     <addaction name="mActionDockUndock"/>
     </widget>
    </item>
   </layout>
@@ -633,6 +634,21 @@
     <string>Conditional formatting</string>
    </property>
   </action>
+  <action name="mActionDockUndock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../python/plugins/db_manager/resources.qrc">
+     <normaloff>:/db_manager/icons/tables.xpm</normaloff>:/db_manager/icons/tables.xpm</iconset>
+   </property>
+   <property name="text">
+    <string>Dock Attribute Table</string>
+   </property>
+   <property name="toolTip">
+    <string>Dock Attribute Table</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -670,6 +686,8 @@
   <tabstop>mTableViewButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../python/plugins/db_manager/resources.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
