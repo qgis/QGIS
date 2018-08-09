@@ -119,7 +119,10 @@ class Relief(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT,
                                                                   self.tr('Relief')))
         self.addParameter(QgsProcessingParameterFileDestination(self.FREQUENCY_DISTRIBUTION,
-                                                                self.tr('Frequency distribution'), 'CSV files (*.csv)', optional=True))
+                                                                self.tr('Frequency distribution'),
+                                                                'CSV files (*.csv)',
+                                                                optional=True,
+                                                                createByDefault=False))
 
     def name(self):
         return 'relief'
