@@ -4144,9 +4144,11 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
   // Insert this file to the list
   mRecentProjects.insert( projectData.pin ? 0 : nonPinnedPos, projectData );
 
-  // Keep the list to 10 items by trimming excess off the bottom
+  const uint maxProjects = QgsSettings().value( QStringLiteral( "maxRecentProjects" ), 20, QgsSettings::App ).toUInt();
+
+  // Keep the list to maxProjects items by trimming excess off the bottom
   // And remove the associated image
-  while ( mRecentProjects.count() > 10 + pinnedCount )
+  while ( mRecentProjects.count() > maxProjects + pinnedCount )
   {
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
