@@ -4148,7 +4148,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage )
 
   // Keep the list to maxProjects items by trimming excess off the bottom
   // And remove the associated image
-  while ( mRecentProjects.count() > maxProjects + pinnedCount )
+  while ( static_cast< uint >( mRecentProjects.count() ) > maxProjects + pinnedCount )
   {
     QFile( mRecentProjects.takeLast().previewImagePath ).remove();
   }
