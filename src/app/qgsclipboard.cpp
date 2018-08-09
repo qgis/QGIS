@@ -185,6 +185,8 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
   if ( values.isEmpty() || string.isEmpty() )
     return features;
 
+  QgsFields sourceFields = retrieveFields();
+
   Q_FOREACH ( const QString& row, values )
   {
     // Assume that it's just WKT for now. because GeoJSON is managed by
@@ -197,15 +199,25 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString& string, const Q
     if ( fieldValues.isEmpty() )
       continue;
 
-    QgsGeometry *geometry = QgsGeometry::fromWkt( fieldValues[0] );
-    if ( !geometry )
-      continue;
-
     QgsFeature feature;
-    if ( !fields.isEmpty() )
-      feature.setFields( fields, true );
+    feature.setFields( sourceFields );
+    feature.initAttributes( fieldValues.size() - 1 );
 
-    feature.setGeometry( geometry );
+    //skip header line
+    if ( fieldValues.at( 0 ) == QLatin1String( "wkt_geom" ) )
+    {
+      continue;
+    }
+
+    for ( int i = 1; i < fieldValues.size(); ++i )
+    {
+      feature.setAttribute( i - 1, fieldValues.at( i ) );
+    }
+    QgsGeometry* geometry = QgsGeometry::fromWkt( fieldValues[0] );
+    if ( geometry )
+    {
+      feature.setGeometry( geometry );
+    }
     features.append( feature );
   }
 
@@ -222,7 +234,35 @@ QgsFields QgsClipboard::retrieveFields() const
   QString string = cb->text( QClipboard::Clipboard );
 #endif
 
-  return QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+  QgsFields f = QgsOgrUtils::stringToFields( string, QTextCodec::codecForName( "System" ) );
+  if ( f.size() < 1 )
+  {
+    if ( string.isEmpty() )
+    {
+      return f;
+    }
+    //wkt?
+    QStringList lines = string.split( '\n' );
+    if ( !lines.empty() )
+    {
+      QStringList fieldNames = lines.at( 0 ).split( '\t' );
+      //wkt / text always has wkt_geom as first attribute (however values can be NULL)
+      if ( fieldNames.at( 0 ) != QLatin1String( "wkt_geom" ) )
+      {
+        return f;
+      }
+      for ( int i = 0; i < fieldNames.size(); ++i )
+      {
+        QString fieldName = fieldNames.at( i );
+        if ( fieldName == QLatin1String( "wkt_geom" ) )
+        {
+          continue;
+        }
+        f.append( QgsField( fieldName, QVariant::String ) );
+      }
+    }
+  }
+  return f;
 }
 
 QgsFeatureList QgsClipboard::copyOf( const QgsFields &fields ) const

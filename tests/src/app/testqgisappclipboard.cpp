@@ -236,10 +236,10 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
-  // only fields => no geom so no feature list is returned
+  // clipboard now supports features without geometry
   mQgisApp->clipboard()->setText( "MNL\t11\t282\tkm\t\nMNL\t11\t347.80000000000001\tkm\t" );
   features = mQgisApp->clipboard()->copyOf();
-  QCOMPARE( features.length(), 0 );
+  QCOMPARE( features.length(), 2 );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()
