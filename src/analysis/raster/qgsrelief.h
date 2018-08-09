@@ -84,20 +84,20 @@ class ANALYSIS_EXPORT QgsRelief
     QString mOutputFile;
     QString mOutputFormat;
 
-    double mCellSizeX;
-    double mCellSizeY;
+    double mCellSizeX = 0.0;
+    double mCellSizeY = 0.0;
     //! The nodata value of the input layer
-    float mInputNodataValue;
+    float mInputNodataValue = -1;
     //! The nodata value of the output layer
-    float mOutputNodataValue;
+    float mOutputNodataValue = -1;
 
-    double mZFactor;
+    double mZFactor = 1;
 
-    QgsSlopeFilter *mSlopeFilter = nullptr;
-    QgsAspectFilter *mAspectFilter = nullptr;
-    QgsHillshadeFilter *mHillshadeFilter285 = nullptr;
-    QgsHillshadeFilter *mHillshadeFilter300 = nullptr;
-    QgsHillshadeFilter *mHillshadeFilter315 = nullptr;
+    std::unique_ptr< QgsSlopeFilter > mSlopeFilter;
+    std::unique_ptr< QgsAspectFilter > mAspectFilter;
+    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter285;
+    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter300;
+    std::unique_ptr< QgsHillshadeFilter > mHillshadeFilter315;
 
     //relief colors and corresponding elevations
     QList< ReliefColor > mReliefColors;
