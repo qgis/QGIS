@@ -37,13 +37,13 @@ QgsMssqlTableModel::QgsMssqlTableModel()
 
 void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProperty )
 {
-  QgsDebugMsg( QString( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
+  QgsDebugMsg( QStringLiteral( "%1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
                .arg( layerProperty.schemaName,
                      layerProperty.tableName,
                      layerProperty.geometryColName,
                      layerProperty.type,
                      layerProperty.srid,
-                     layerProperty.pkCols.join( "," ),
+                     layerProperty.pkCols.join( ',' ),
                      layerProperty.sql ) );
 
   // is there already a root item with the given scheme Name?
@@ -275,7 +275,7 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
         if ( layerProperty.pkCols.size() < 2 )
           flags |= Qt::ItemIsSelectable;
 
-        Q_FOREACH ( QStandardItem *item, row )
+        for ( QStandardItem *item : qgis::as_const( row ) )
         {
           item->setFlags( item->flags() | flags );
         }
@@ -294,24 +294,19 @@ void QgsMssqlTableModel::setGeometryTypesForTable( QgsMssqlLayerProperty layerPr
 QIcon QgsMssqlTableModel::iconForWkbType( QgsWkbTypes::Type type )
 {
   switch ( QgsWkbTypes::geometryType( type ) )
-
   {
     case QgsWkbTypes::PointGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPointLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
     case QgsWkbTypes::LineGeometry:
-      return QgsApplication::getThemeIcon( "/mIconLineLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
     case QgsWkbTypes::PolygonGeometry:
-      return QgsApplication::getThemeIcon( "/mIconPolygonLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
     case QgsWkbTypes::NullGeometry:
-      return QgsApplication::getThemeIcon( "/mIconTableLayer.svg" );
-      break;
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
     case QgsWkbTypes::UnknownGeometry:
       break;
   }
-  return QgsApplication::getThemeIcon( "/mIconLayer.png" );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
 }
 
 bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
@@ -321,7 +316,7 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 
   if ( idx.column() == DbtmType || idx.column() == DbtmSrid || idx.column() == DbtmPkCol )
   {
-    QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt();
+    QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( idx.sibling( idx.row(), DbtmType ).data( Qt::UserRole + 2 ).toInt() );
 
     bool ok = wkbType != QgsWkbTypes::Unknown;
 
@@ -350,7 +345,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !index.isValid() )
     return QString();
 
-  QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  QgsWkbTypes::Type wkbType = static_cast< QgsWkbTypes::Type >( itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt() );
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
     return QString();

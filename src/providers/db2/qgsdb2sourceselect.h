@@ -75,8 +75,8 @@ class QgsDb2GeomColumnTypeThread : public QThread
     QgsDb2GeomColumnTypeThread() = delete;
 
     QString mConnectionName;
-    bool mUseEstimatedMetadata;
-    bool mStopped;
+    bool mUseEstimatedMetadata = false;
+    bool mStopped = false;
     QList<QgsDb2LayerProperty> layerProperties;
 };
 
