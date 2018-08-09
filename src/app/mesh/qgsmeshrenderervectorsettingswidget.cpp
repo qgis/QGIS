@@ -49,11 +49,7 @@ QgsMeshRendererVectorSettingsWidget::QgsMeshRendererVectorSettingsWidget( QWidge
 
 void QgsMeshRendererVectorSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-    syncToLayer();
-  }
+  mMeshLayer = layer;
 }
 
 QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() const

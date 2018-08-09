@@ -61,7 +61,12 @@ void QgsMeshRendererScalarSettings::setColorRampShader( const QgsColorRampShader
 
 bool QgsMeshRendererScalarSettings::isEnabled() const
 {
-  return !mColorRampShader.isEmpty();
+  return mEnabled;
+}
+
+void QgsMeshRendererScalarSettings::setEnabled( bool enabled )
+{
+  mEnabled = enabled;
 }
 
 

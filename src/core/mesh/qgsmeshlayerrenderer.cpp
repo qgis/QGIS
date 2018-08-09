@@ -264,6 +264,9 @@ void QgsMeshLayerRenderer::renderScalarDataset()
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
+  if ( !mRendererVectorSettings.isEnabled() )
+    return;
+
   if ( mVectorDatasetValuesX.isEmpty() )
     return;
 

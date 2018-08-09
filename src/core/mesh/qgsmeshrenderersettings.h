@@ -78,7 +78,10 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
     //! Returns whether color ramp has any items assigned
     bool isEnabled() const;
+
+    void setEnabled( bool enabled );
   private:
+    bool mEnabled = false;
     QgsColorRampShader mColorRampShader;
 };
 
@@ -94,6 +97,12 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 class CORE_EXPORT QgsMeshRendererVectorSettings
 {
   public:
+
+    //! Returns whether rendering of vectors is enabled
+    bool isEnabled() const { return mEnabled; }
+    //! Sets whether rendering of vectors is enabled
+    void setEnabled( bool enabled ) { mEnabled = enabled; }
+
     //! Algorithm how to transform vector magnitude to length of arrow on the device in pixels
     enum ArrowScalingMethod
     {
@@ -224,6 +233,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
   private:
+    bool mEnabled = false;
     double mLineWidth = DEFAULT_LINE_WIDTH; //in milimeters
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled

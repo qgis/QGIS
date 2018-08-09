@@ -41,12 +41,7 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
 void QgsMeshRendererMeshSettingsWidget::setLayer( QgsMeshLayer *layer, bool isTriangularMesh )
 {
   mIsTriangularMesh = isTriangularMesh;
-
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-    syncToLayer();
-  }
+  mMeshLayer = layer;
 }
 
 QgsMeshRendererMeshSettings QgsMeshRendererMeshSettingsWidget::settings() const

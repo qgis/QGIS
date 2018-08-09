@@ -30,14 +30,8 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
 
 void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-  }
-
+  mMeshLayer = layer;
   mDatasetGroupTreeView->setLayer( layer );
-  setEnabled( mMeshLayer );
-  syncToLayer();
 }
 
 QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::activeScalarDataset() const
@@ -161,6 +155,8 @@ QgsMeshDatasetIndex QgsMeshRendererActiveDatasetWidget::datasetIndex() const
 
 void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 {
+  setEnabled( mMeshLayer );
+
   whileBlocking( mDatasetGroupTreeView )->syncToLayer();
 
   if ( mMeshLayer )

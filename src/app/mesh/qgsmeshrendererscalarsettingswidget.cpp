@@ -37,11 +37,7 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
 
 void QgsMeshRendererScalarSettingsWidget::setLayer( QgsMeshLayer *layer )
 {
-  if ( layer != mMeshLayer )
-  {
-    mMeshLayer = layer;
-    syncToLayer();
-  }
+  mMeshLayer = layer;
 }
 
 QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() const
