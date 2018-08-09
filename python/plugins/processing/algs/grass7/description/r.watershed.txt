@@ -15,12 +15,12 @@ QgsProcessingParameterBoolean|-m|Enable disk swap memory option (-m): Operation 
 QgsProcessingParameterBoolean|-4|Allow only horizontal and vertical flow of water|False
 QgsProcessingParameterBoolean|-a|Use positive flow accumulation even for likely underestimates|False
 QgsProcessingParameterBoolean|-b|Beautify flat areas|False
-QgsProcessingParameterRasterDestination|accumulation|Number of cells that drain through each cell
-QgsProcessingParameterRasterDestination|drainage|Drainage direction
-QgsProcessingParameterRasterDestination|basin|Unique label for each watershed basin
-QgsProcessingParameterRasterDestination|stream|Stream segments
-QgsProcessingParameterRasterDestination|half_basin|Half-basins
-QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE
-QgsProcessingParameterRasterDestination|slope_steepness|Slope steepness (S) factor for USLE
-QgsProcessingParameterRasterDestination|tci|Topographic index ln(a / tan(b))
-QgsProcessingParameterRasterDestination|spi|Stream power index a * tan(b)
+QgsProcessingParameterRasterDestination|accumulation|Number of cells that drain through each cell|None|True
+QgsProcessingParameterRasterDestination|drainage|Drainage direction|None|True
+QgsProcessingParameterRasterDestination|basin|Unique label for each watershed basin|None|True
+QgsProcessingParameterRasterDestination|stream|Stream segments|None|True
+QgsProcessingParameterRasterDestination|half_basin|Half-basins|None|True
+QgsProcessingParameterRasterDestination|length_slope|Slope length and steepness (LS) factor for USLE|None|True
+QgsProcessingParameterRasterDestination|slope_steepness|Slope steepness (S) factor for USLE|None|True
+QgsProcessingParameterRasterDestination|tci|Topographic index ln(a / tan(b))|None|True
+QgsProcessingParameterRasterDestination|spi|Stream power index a * tan(b)|None|True
