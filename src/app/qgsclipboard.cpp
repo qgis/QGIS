@@ -221,7 +221,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     feature.initAttributes( fieldValues.size() - 1 );
 
     //skip header line
-    if ( fieldValues.at( 0 ) == "wkt_geom" )
+    if ( fieldValues.at( 0 ) == QLatin1String( "wkt_geom" ) )
     {
       continue;
     }
