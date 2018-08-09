@@ -522,7 +522,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );
-      if ( elevationClass >= 0 )
+      if ( elevationClass >= 0 && elevationClass < 252 )
       {
         frequency[elevationClass] += 1.0;
       }
