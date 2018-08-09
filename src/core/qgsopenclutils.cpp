@@ -152,6 +152,7 @@ QString QgsOpenClUtils::deviceInfo( const Info infoType, cl::Device device )
                       4 );
     return QString();
   }
+  return QString();
 }
 
 
