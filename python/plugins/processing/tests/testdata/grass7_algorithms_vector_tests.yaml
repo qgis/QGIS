@@ -243,3 +243,31 @@ tests:
       output:
         name: expected/grass7/v_net_steiner.shp
         type: vector
+
+  - algorithm: grass7:v.surf.bspline
+    name: v.surf.bspline - raster output
+    params:
+      GRASS_MIN_AREA_PARAMETER: 0.0001
+      GRASS_OUTPUT_TYPE_PARAMETER: 0
+      GRASS_RASTER_FORMAT_META: ''
+      GRASS_RASTER_FORMAT_OPT: ''
+      GRASS_REGION_CELLSIZE_PARAMETER: 1.0
+      GRASS_SNAP_TOLERANCE_PARAMETER: -1.0
+      GRASS_VECTOR_DSCO: ''
+      GRASS_VECTOR_LCO: ''
+      column: elev
+      error: 1.0e-06
+      ew_step: 0.5
+      input:
+        name: pointsz.gml
+        type: vector
+      lambda_i: 0.01
+      maxit: 10000
+      memory: 300
+      method: 0
+      ns_step: 0.5
+      solver: 0
+    results:
+      raster_output:
+        hash: 7aa8e68b697e1558e6621fa23b5f1f01a5826649ffc31fd255e709a1
+        type: rasterhash

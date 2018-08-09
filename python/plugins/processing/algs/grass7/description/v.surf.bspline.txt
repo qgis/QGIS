@@ -12,5 +12,5 @@ QgsProcessingParameterEnum|solver|Type of solver which should solve the symmetri
 QgsProcessingParameterNumber|maxit|Maximum number of iteration used to solve the linear equation system|QgsProcessingParameterNumber.Integer|10000|True|1|None
 QgsProcessingParameterNumber|error|Error break criteria for iterative solver|QgsProcessingParameterNumber.Double|0.000001|True|0.0|None
 QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
-QgsProcessingParameterVectorDestination|output|Output vector|QgsProcessing.TypeVectorAnyGeometry|None|True
+QgsProcessingParameterVectorDestination|output|Output vector|QgsProcessing.TypeVectorAnyGeometry|None|True|False
 QgsProcessingParameterRasterDestination|raster_output|Interpolated spline|None|True
