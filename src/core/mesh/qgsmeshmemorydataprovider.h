@@ -121,6 +121,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
      * \endcode
      */
     bool addDataset( const QString &uri ) override;
+    QStringList extraDatasets() const override;
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
 
@@ -150,6 +151,7 @@ class QgsMeshMemoryDataProvider: public QgsMeshDataProvider
     QVector<QgsMeshMemoryDatasetGroup> mDatasetGroups;
 
     bool mIsValid = false;
+    QStringList mExtraDatasetUris;
 };
 
 ///@endcond

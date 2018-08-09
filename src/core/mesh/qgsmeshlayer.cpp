@@ -317,6 +317,21 @@ bool QgsMeshLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &con
     return false;
   }
 
+  QDomElement elemExtraDatasets = layer_node.firstChildElement( QStringLiteral( "extra-datasets" ) );
+  if ( !elemExtraDatasets.isNull() )
+  {
+    QDomElement elemUri = elemExtraDatasets.firstChildElement( QStringLiteral( "uri" ) );
+    while ( !elemUri.isNull() )
+    {
+      QString uri = context.pathResolver().readPath( elemUri.text() );
+
+      bool res = mDataProvider->addDataset( uri );
+      QgsDebugMsg( QStringLiteral( "extra dataset (res %1): %2" ).arg( res ).arg( uri ) );
+
+      elemUri = elemUri.nextSiblingElement( QStringLiteral( "uri" ) );
+    }
+  }
+
   return mValid; // should be true if read successfully
 }
 
@@ -340,6 +355,17 @@ bool QgsMeshLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const
     QDomText providerText = document.createTextNode( providerType() );
     provider.appendChild( providerText );
     layer_node.appendChild( provider );
+
+    const QStringList extraDatasetUris = mDataProvider->extraDatasets();
+    QDomElement elemExtraDatasets = document.createElement( QStringLiteral( "extra-datasets" ) );
+    for ( const QString &uri : extraDatasetUris )
+    {
+      QString path = context.pathResolver().writePath( uri );
+      QDomElement elemUri = document.createElement( QStringLiteral( "uri" ) );
+      elemUri.appendChild( document.createTextNode( path ) );
+      elemExtraDatasets.appendChild( elemUri );
+    }
+    layer_node.appendChild( elemExtraDatasets );
   }
 
   // renderer specific settings

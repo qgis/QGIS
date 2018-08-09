@@ -297,6 +297,11 @@ class CORE_EXPORT QgsMeshDatasetSourceInterface SIP_ABSTRACT
     virtual bool addDataset( const QString &uri ) = 0;
 
     /**
+     * Get list of additional dataset file URIs added using addDataset() calls.
+     */
+    virtual QStringList extraDatasets() const = 0;
+
+    /**
      * \brief Returns number of datasets groups loaded
      */
     virtual int datasetGroupCount( ) const = 0;
