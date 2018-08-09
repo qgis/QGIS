@@ -35,30 +35,17 @@ QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
-  , mCellSizeX( 0.0 )
-  , mCellSizeY( 0.0 )
-  , mInputNodataValue( -1 )
-  , mOutputNodataValue( -1 )
-  , mZFactor( 1.0 )
+  , mSlopeFilter( qgis::make_unique< QgsSlopeFilter >( inputFile, outputFile, outputFormat ) )
+  , mAspectFilter( qgis::make_unique< QgsAspectFilter > ( inputFile, outputFile, outputFormat ) )
+  , mHillshadeFilter285( qgis::make_unique< QgsHillshadeFilter >( inputFile, outputFile, outputFormat, 285, 30 ) )
+  , mHillshadeFilter300( qgis::make_unique< QgsHillshadeFilter >( inputFile, outputFile, outputFormat, 300, 30 ) )
+  , mHillshadeFilter315( qgis::make_unique< QgsHillshadeFilter >( inputFile, outputFile, outputFormat, 315, 30 ) )
 {
-  mSlopeFilter = new QgsSlopeFilter( inputFile, outputFile, outputFormat );
-  mAspectFilter = new QgsAspectFilter( inputFile, outputFile, outputFormat );
-  mHillshadeFilter285 = new QgsHillshadeFilter( inputFile, outputFile, outputFormat, 285, 30 );
-  mHillshadeFilter300 = new QgsHillshadeFilter( inputFile, outputFile, outputFormat, 300, 30 );
-  mHillshadeFilter315 = new QgsHillshadeFilter( inputFile, outputFile, outputFormat, 315, 30 );
-
   /*mReliefColors = calculateOptimizedReliefClasses();
     setDefaultReliefColors();*/
 }
 
-QgsRelief::~QgsRelief()
-{
-  delete mSlopeFilter;
-  delete mAspectFilter;
-  delete mHillshadeFilter285;
-  delete mHillshadeFilter300;
-  delete mHillshadeFilter315;
-}
+QgsRelief::~QgsRelief() = default;
 
 void QgsRelief::clearReliefColors()
 {
@@ -517,13 +504,8 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
   //2. go through raster cells and get frequency of classes
 
   //store elevation frequency in 256 elevation classes
-  double frequency[252];
+  double frequency[252] = {0};
   double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
-  //initialize to zero
-  for ( int i = 0; i < 252; ++i )
-  {
-    frequency[i] = 0;
-  }
 
   float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
@@ -603,13 +585,8 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //2. go through raster cells and get frequency of classes
 
   //store elevation frequency in 256 elevation classes
-  double frequency[252];
+  double frequency[252] = {0};
   double frequencyClassRange = ( minMax[1] - minMax[0] ) / 252.0;
-  //initialize to zero
-  for ( int i = 0; i < 252; ++i )
-  {
-    frequency[i] = 0;
-  }
 
   float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
@@ -625,14 +602,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );
-      if ( elevationClass < 0 )
-      {
-        elevationClass = 0;
-      }
-      else if ( elevationClass >= 252 )
-      {
-        elevationClass = 251;
-      }
+      elevationClass = std::max( std::min( elevationClass, 251 ), 0 );
       frequency[elevationClass] += 1.0;
     }
   }
