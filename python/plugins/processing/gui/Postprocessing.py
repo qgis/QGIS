@@ -60,7 +60,8 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
         progress.setPercentage(100 * i / float(len(alg.outputs)))
         if out.hidden or not out.open:
             continue
-        if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
+        if isinstance(out, (OutputRaster, OutputVector, OutputTable)) or \
+           (isinstance(out, OutputFile) and out.ext == 'csv'):
             try:
                 if hasattr(out, "layer") and out.layer is not None:
                     out.layer.setLayerName(out.description)
@@ -76,15 +77,6 @@ def handleAlgorithmResults(alg, progress=None, showResults=True):
                     dataobjects.load(out.value, name, alg.crs,
                                      RenderingStyles.getStyle(alg.commandLineName(), out.name),
                                      isRaster)
-            except Exception:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       "Error loading result layer:\n" + traceback.format_exc())
-                wrongLayers.append(out.description)
-        elif isinstance(out, OutputFile) and out.ext == 'csv':
-            try:
-                dataobjects.load(out.value, name, alg.crs,
-                                 RenderingStyles.getStyle(alg.commandLineName(),
-                                                          out.name))
             except Exception:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                        "Error loading result layer:\n" + traceback.format_exc())
