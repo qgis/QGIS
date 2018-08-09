@@ -461,42 +461,42 @@ tests:
         hash: 95e064f05759606bc60f1dfa88931f545c066629c1f07919156ac03b
         type: rasterhash
 
-#  - algorithm: grass7:r.sun
-#    name: GRASS7 r.sun
-#    params:
-#      -m: false
-#      -p: false
-#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-#      aspect:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#      day: 1
-#      declination: 0.0
-#      distance_step: 1.0
-#      elevation:
-#        name: custom/grass7/raster_6class.tif
-#        type: raster
-#      slope:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#      step: 0.5
-#    results:
-#      beam_rad:
-#        hash: c43a64c35cd5999888b1dc7099249a54f37df8658cbe9c30b92627e5
-#        type: rasterhash
-#      diff_rad:
-#        hash: ecaa83578ab6eaf24a48f2fc265e8f1deff743c145af9c85cd39bceb
-#        type: rasterhash
-#      glob_rad:
-#        hash: 3917bc5633ce2225c864055d4b3c952b87461cbe48093b8fd9738215
-#        type: rasterhash
-#      insol_time:
-#        hash: 64851f59edafe67d007da78f33b7491b949d5be3eca83ef513e2b11f
-#        type: rasterhash
-#      refl_rad:
-#        hash: cd2002486c5117db9c493e365ff6983faf1ea92b1bbea87569d3ebdd
-#        type: rasterhash
+  - algorithm: grass7:r.sun
+    name: GRASS7 r.sun
+    params:
+      -m: false
+      -p: false
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      aspect:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      day: 1
+      declination: 0.0
+      distance_step: 1.0
+      elevation:
+        name: custom/grass7/raster_6class.tif
+        type: raster
+      slope:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      step: 0.5
+    results:
+      beam_rad:
+        hash: c43a64c35cd5999888b1dc7099249a54f37df8658cbe9c30b92627e5
+        type: rasterhash
+      diff_rad:
+        hash: ecaa83578ab6eaf24a48f2fc265e8f1deff743c145af9c85cd39bceb
+        type: rasterhash
+      glob_rad:
+        hash: 3917bc5633ce2225c864055d4b3c952b87461cbe48093b8fd9738215
+        type: rasterhash
+      insol_time:
+        hash: 64851f59edafe67d007da78f33b7491b949d5be3eca83ef513e2b11f
+        type: rasterhash
+      refl_rad:
+        hash: cd2002486c5117db9c493e365ff6983faf1ea92b1bbea87569d3ebdd
+        type: rasterhash
 
 #  - algorithm: grass7:r.stats.quantile.out
 #    name: GRASS7 r.stats.quantile.out
