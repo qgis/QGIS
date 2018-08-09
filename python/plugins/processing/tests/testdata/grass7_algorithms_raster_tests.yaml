@@ -1752,24 +1752,23 @@ tests:
 #        name: expected/grass7/r.transect.txt
 #        type: file
 
-# Differences between osgeo4travis and Debian Stretch
-#  - algorithm: grass7:r.stream.extract
-#    name: GRASS7 r.stream.extract
-#    params:
-#      GRASS_OUTPUT_TYPE_PARAMETER: '0'
-#      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
-#      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
-#      d8cut: 0
-#      elevation:
-#        name: custom/grass7/float_raster.tif
-#        type: raster
-#      mexp: 0
-#      stream_length: 0
-#      threshold: 1
-#    results:
-#      direction:
-#        hash: 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
-#        type: rasterhash
-#      stream_raster:
-#        hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
-#        type: rasterhash
+  - algorithm: grass7:r.stream.extract
+    name: GRASS7 r.stream.extract
+    params:
+      GRASS_OUTPUT_TYPE_PARAMETER: '0'
+      GRASS_REGION_CELLSIZE_PARAMETER: 0.0
+      GRASS_REGION_PARAMETER: 344500.0,358400.0,6682800.0,6693700.0
+      d8cut: 0
+      elevation:
+        name: custom/grass7/float_raster.tif
+        type: raster
+      mexp: 0
+      stream_length: 0
+      threshold: 1
+    results:
+      direction:
+        hash: 8499f6e5f81d0b79a0483481b467263246e2c97f1ef652df90e773e2
+        type: rasterhash
+      stream_raster:
+        hash: 916672ce0c35295100bcdc56bc60e26841b9cbb384924ae4f54648a8
+        type: rasterhash
