@@ -29,6 +29,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"
 #include "qgsapplication.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsproviderregistry.h"
 #include "qgsproject.h"
 #include "qgsmaprenderersequentialjob.h"
@@ -69,6 +70,8 @@ class TestQgsMeshRenderer : public QObject
     void test_vertex_vector_dataset_rendering();
     void test_face_scalar_dataset_rendering();
     void test_face_vector_dataset_rendering();
+
+    void test_signals();
 };
 
 void TestQgsMeshRenderer::init()
@@ -192,6 +195,21 @@ void TestQgsMeshRenderer::test_face_vector_dataset_rendering()
   const QgsMeshDatasetGroupMetadata metadata = mMemoryLayer->dataProvider()->datasetGroupMetadata( ds );
   QVERIFY( metadata.name() == "FaceVectorDataset" );
   QVERIFY( imageCheck( "quad_and_triangle_face_vector_dataset" ) );
+}
+
+void TestQgsMeshRenderer::test_signals()
+{
+  mMemoryLayer->setActiveScalarDataset( QgsMeshDatasetIndex( 0, 0 ) );
+
+  QSignalSpy spy1( mMemoryLayer, &QgsMapLayer::rendererChanged );
+  QSignalSpy spy2( mMemoryLayer->legend(), &QgsMapLayerLegend::itemsChanged );
+  QSignalSpy spy3( mMemoryLayer, &QgsMapLayer::legendChanged );
+
+  mMemoryLayer->setActiveScalarDataset( QgsMeshDatasetIndex( 1, 0 ) );
+
+  QCOMPARE( spy1.count(), 1 );
+  QCOMPARE( spy2.count(), 1 );
+  QCOMPARE( spy3.count(), 1 );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

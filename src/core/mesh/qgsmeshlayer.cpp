@@ -22,6 +22,7 @@
 
 
 #include "qgslogger.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
@@ -40,6 +41,8 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   // load data
   QgsDataProvider::ProviderOptions providerOptions;
   setDataProvider( providerKey, providerOptions );
+
+  setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
   // show at least the mesh by default so we render something
   mRendererNativeMeshSettings.setEnabled( true );
@@ -107,6 +110,7 @@ QgsMeshRendererMeshSettings QgsMeshLayer::rendererNativeMeshSettings() const
 void QgsMeshLayer::setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings )
 {
   mRendererNativeMeshSettings = settings;
+  emit rendererChanged();
   triggerRepaint();
 }
 
@@ -118,6 +122,7 @@ QgsMeshRendererMeshSettings QgsMeshLayer::rendererTriangularMeshSettings() const
 void QgsMeshLayer::setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings )
 {
   mRendererTriangularMeshSettings = settings;
+  emit rendererChanged();
   triggerRepaint();
 }
 
@@ -129,6 +134,7 @@ QgsMeshRendererScalarSettings QgsMeshLayer::rendererScalarSettings() const
 void QgsMeshLayer::setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings )
 {
   mRendererScalarSettings = settings;
+  emit rendererChanged();
   triggerRepaint();
 }
 
@@ -141,6 +147,7 @@ QgsMeshRendererVectorSettings QgsMeshLayer::rendererVectorSettings() const
 void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings )
 {
   mRendererVectorSettings = settings;
+  emit rendererChanged();
   triggerRepaint();
 }
 
@@ -155,6 +162,7 @@ void QgsMeshLayer::setActiveScalarDataset( QgsMeshDatasetIndex index )
   else
     mActiveScalarDataset = QgsMeshDatasetIndex();
 
+  emit rendererChanged();
   triggerRepaint();
 
   emit activeScalarDatasetChanged( mActiveScalarDataset );
@@ -178,6 +186,7 @@ void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
       mActiveVectorDataset = QgsMeshDatasetIndex();
   }
 
+  emit rendererChanged();
   triggerRepaint();
 
   emit activeVectorDatasetChanged( mActiveVectorDataset );

@@ -63,6 +63,11 @@ Create new legend implementation for vector layer
 Create new legend implementation for raster layer
 %End
 
+    static QgsMapLayerLegend *defaultMeshLegend( QgsMeshLayer *ml ) /Factory/;
+%Docstring
+Create new legend implementation for mesh layer
+%End
+
   signals:
     void itemsChanged();
 %Docstring
@@ -185,6 +190,26 @@ Default legend implementation for raster layers
 %End
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
+
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
+
+};
+
+
+class QgsDefaultMeshLayerLegend : QgsMapLayerLegend
+{
+%Docstring
+Default legend implementation for mesh layers
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
+  public:
+    explicit QgsDefaultMeshLayerLegend( QgsMeshLayer *ml );
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 

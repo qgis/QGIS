@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsmeshlayer.h"
 #include "qgspluginlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
@@ -51,6 +52,11 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultVectorLegend( QgsVectorLayer *vl )
 QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl )
 {
   return new QgsDefaultRasterLayerLegend( rl );
+}
+
+QgsMapLayerLegend *QgsMapLayerLegend::defaultMeshLegend( QgsMeshLayer *ml )
+{
+  return new QgsDefaultMeshLayerLegend( ml );
 }
 
 // -------------------------------------------------------------------------
@@ -325,6 +331,54 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
       QString label = tr( "following %1 items\nnot displayed" ).arg( rasterItemList.size() - max_count );
       nodes << new QgsSimpleLegendNode( nodeLayer, label );
       break;
+    }
+  }
+
+  return nodes;
+}
+
+// -------------------------------------------------------------------------
+
+QgsDefaultMeshLayerLegend::QgsDefaultMeshLayerLegend( QgsMeshLayer *ml )
+  : mLayer( ml )
+{
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
+}
+
+QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
+{
+  QList<QgsLayerTreeModelLegendNode *> nodes;
+
+  QgsMeshDataProvider *provider = mLayer->dataProvider();
+  if ( !provider )
+    return nodes;
+
+  QgsMeshDatasetIndex indexScalar = mLayer->activeScalarDataset();
+  QgsMeshDatasetIndex indexVector = mLayer->activeVectorDataset();
+
+  QString name;
+  if ( indexScalar.isValid() && indexVector.isValid() && indexScalar.group() != indexVector.group() )
+    name = QString( "%1 / %2" ).arg( provider->datasetGroupMetadata( indexScalar.group() ).name(), provider->datasetGroupMetadata( indexVector.group() ).name() );
+  else if ( indexScalar.isValid() )
+    name = provider->datasetGroupMetadata( indexScalar.group() ).name();
+  else if ( indexVector.isValid() )
+    name = provider->datasetGroupMetadata( indexVector.group() ).name();
+  else
+  {
+    // neither contours nor vectors get rendered - no legend needed
+    return nodes;
+  }
+
+  nodes << new QgsSimpleLegendNode( nodeLayer, name );
+
+  QgsMeshRendererScalarSettings settings = mLayer->rendererScalarSettings();
+  if ( settings.isEnabled() )
+  {
+    QgsLegendColorList items;
+    settings.colorRampShader().legendSymbologyItems( items );
+    for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )
+    {
+      nodes << new QgsRasterSymbolLegendNode( nodeLayer, item.second, item.first );
     }
   }
 
