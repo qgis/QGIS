@@ -228,8 +228,9 @@ on the line, or exactly in line with the segment) and the result is undefined.
 
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
 %Docstring
-Returns a point a specified distance toward a second point.
+Returns a point a specified ``distance`` toward a second point.
 %End
+
 
     static double ccwAngle( double dy, double dx );
 %Docstring

@@ -247,9 +247,22 @@ class CORE_EXPORT QgsGeometryUtils
     static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**
-     * Returns a point a specified distance toward a second point.
+     * Returns a point a specified \a distance toward a second point.
      */
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );
+
+    /**
+     * Calculates the point a specified \a distance from (\a x1, \a y1) toward a second point (\a x2, \a y2).
+     *
+     * Optionally, interpolated z and m values can be obtained by specifying the \a z1, \a z2 and \a z arguments
+     * and/or the \a m1, \a m2, \a m arguments.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.4
+     */
+    static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
+                                         double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
+                                         double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
 
     //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
     static double ccwAngle( double dy, double dx );
