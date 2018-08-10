@@ -65,7 +65,7 @@ class CORE_EXPORT QgsTriangularMesh
     void update( QgsMesh *nativeMesh, QgsRenderContext *context );
 
     /**
-     * Returns vertices in map CRS
+     * Returns vertices in map coordinate system
      *
      * The list of consist of vertices from native mesh (0-N) and
      * extra vertices needed to create triangles (N+1 - len)
@@ -81,8 +81,11 @@ class CORE_EXPORT QgsTriangularMesh
     const QVector<int> &trianglesToNativeFaces() const ;
 
     /**
-     * Returns triangle index that contains the given point, -1 if no such triangle exists
+     * Finds index of triangle at given point
      * It uses spatial indexing
+     *
+     * \param point point in map coordinate system
+     * \returns triangle index that contains the given point, -1 if no such triangle exists
      *
      * \since QGIS 3.4
      */

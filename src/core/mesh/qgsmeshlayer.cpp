@@ -189,18 +189,17 @@ QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index
 
   if ( mTriangularMesh && dataProvider() && dataProvider()->isValid() && index.isValid() )
   {
-    int face_index = mTriangularMesh->faceIndexForPoint( point ) ;
-    if ( face_index >= 0 )
+    int faceIndex = mTriangularMesh->faceIndexForPoint( point ) ;
+    if ( faceIndex >= 0 )
     {
-      bool isOnFaces = dataProvider()->datasetGroupMetadata( index ).isOnFaces();
-      if ( isOnFaces )
+      if ( dataProvider()->datasetGroupMetadata( index ).dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
       {
-        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( face_index );
+        int nativeFaceIndex = mTriangularMesh->trianglesToNativeFaces().at( faceIndex );
         return dataProvider()->datasetValue( index, nativeFaceIndex );
       }
       else
       {
-        const QgsMeshFace &face = mTriangularMesh->triangles()[face_index];
+        const QgsMeshFace &face = mTriangularMesh->triangles()[faceIndex];
         const int v1 = face[0], v2 = face[1], v3 = face[2];
         const QgsPoint p1 = mTriangularMesh->vertices()[v1], p2 = mTriangularMesh->vertices()[v2], p3 = mTriangularMesh->vertices()[v3];
         const QgsMeshDatasetValue val1 = dataProvider()->datasetValue( index, v1 );

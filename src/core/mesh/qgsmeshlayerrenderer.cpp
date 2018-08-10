@@ -140,7 +140,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
   if ( datasetIndex.isValid() )
   {
     const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
-    mScalarDataOnVertices = metadata.isOnVertices();
+    mScalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
     int count;
     if ( mScalarDataOnVertices )
       count = mNativeMesh.vertices.count();
@@ -172,7 +172,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
     }
     else
     {
-      mVectorDataOnVertices = metadata.isOnVertices();
+      mVectorDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
       int count;
       if ( mVectorDataOnVertices )
         count = mNativeMesh.vertices.count();

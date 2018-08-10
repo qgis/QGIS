@@ -186,8 +186,15 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     /**
       * Interpolates the value on the given point from given dataset.
       *
-      * Returns NaN for NaN values, for values outside range or when
-      * triangular mesh is not yet initialized on given point
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns interpolated value at the point. Returns NaN values for values
+      * outside the mesh layer, nodata values and in case triangular mesh was not
+      * previously used for rendering
       *
       * \since QGIS 3.4
       */
@@ -200,14 +207,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
      *
      * \since QGIS 3.4
      */
-    void activeScalarDatasetChanged( QgsMeshDatasetIndex index );
+    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
 
     /**
      * Emitted when active vector dataset is changed
      *
      * \since QGIS 3.4
      */
-    void activeVectorDatasetChanged( QgsMeshDatasetIndex index );
+    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
 
   private: // Private methods
 

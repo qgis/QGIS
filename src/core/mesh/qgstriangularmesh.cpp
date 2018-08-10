@@ -180,8 +180,8 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
 
 int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
 {
-  const QList<QgsFeatureId> face_indexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
-  for ( QgsFeatureId fid : face_indexes )
+  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( const QgsFeatureId fid : faceIndexes )
   {
     int faceIndex = static_cast<int>( fid );
     const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
