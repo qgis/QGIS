@@ -83,6 +83,8 @@ class CORE_EXPORT QgsTriangularMesh
     /**
      * Returns triangle index that contains the given point, -1 if no such triangle exists
      * It uses spatial indexing
+     *
+     * \since QGIS 3.4
      */
     int faceIndexForPoint( const QgsPointXY &point ) const ;
 

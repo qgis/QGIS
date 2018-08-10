@@ -197,6 +197,8 @@ Interpolates the value on the given point from given dataset.
 
 Returns NaN for NaN values, for values outside range or when
 triangular mesh is not yet initialized on given point
+
+.. versionadded:: 3.4
 %End
 
   signals:

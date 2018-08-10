@@ -15,9 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
 #include <QList>
 #include "qgsfeature.h"
-
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
@@ -152,8 +154,7 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
   {
     const QgsMeshFace &face = mTriangularMesh.faces.at( i ) ;
     QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
-    bool success = mSpatialIndex.insertFeature( i, geom.boundingBox() );
-    Q_UNUSED( success );
+    ( void )mSpatialIndex.insertFeature( i, geom.boundingBox() );
   }
 }
 
@@ -182,26 +183,26 @@ int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
   const QList<QgsFeatureId> face_indexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
   for ( QgsFeatureId fid : face_indexes )
   {
-    int face_index = static_cast<int>( fid );
-    const QgsMeshFace &face = mTriangularMesh.faces.at( face_index );
+    int faceIndex = static_cast<int>( fid );
+    const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
     const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
     if ( geom.contains( &point ) )
-      return face_index;
+      return faceIndex;
   }
   return -1;
 }
 
 QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
 {
-  QVector<QgsPointXY> ring;
+  QVector<QgsPoint> ring;
   for ( int j = 0; j < face.size(); ++j )
   {
-    int vertex_id = face[j];
-    Q_ASSERT( vertex_id < vertices.size() );
-    const QgsPoint &vertex = vertices[vertex_id];
+    int vertexId = face[j];
+    Q_ASSERT( vertexId < vertices.size() );
+    const QgsPoint &vertex = vertices[vertexId];
     ring.append( vertex );
   }
-  QgsPolygonXY polygon;
-  polygon.append( ring );
-  return QgsGeometry::fromPolygonXY( polygon );
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  polygon->setExteriorRing( new QgsLineString( ring ) );
+  return QgsGeometry( std::move( polygon ) );
 }

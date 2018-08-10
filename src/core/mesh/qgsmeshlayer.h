@@ -188,6 +188,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
       *
       * Returns NaN for NaN values, for values outside range or when
       * triangular mesh is not yet initialized on given point
+      *
+      * \since QGIS 3.4
       */
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
 
