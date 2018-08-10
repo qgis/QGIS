@@ -359,9 +359,6 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
     mLUTInitialized = true;
   }
 
-  if ( mLUT.empty() )
-    return false;
-
   // overflow indicates that value > maximum value + DOUBLE_DIFF_THRESHOLD
   // that way idx can point to the last valid item
   bool overflow = false;
@@ -379,6 +376,10 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
     {
       overflow = true;
     }
+  }
+  else if ( lutIndex < 0 )
+  {
+    return false;
   }
   else
   {
