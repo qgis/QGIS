@@ -127,6 +127,14 @@ class CORE_EXPORT QgsMeshDatasetValue
 class CORE_EXPORT QgsMeshDatasetGroupMetadata
 {
   public:
+
+    //! Location of where data is specified for datasets in the dataset group
+    enum DataType
+    {
+      DataOnFaces, //!< Data is defined on faces
+      DataOnVertices //!< Data is defined on vertices
+    };
+
     //! Constructs an empty metadata object
     QgsMeshDatasetGroupMetadata() = default;
 
@@ -164,9 +172,9 @@ class CORE_EXPORT QgsMeshDatasetGroupMetadata
     bool isScalar() const;
 
     /**
-     * \brief Returns whether dataset group data is defined on vertices
+     * \brief Returns whether dataset group data is defined on vertices or faces
      */
-    bool isOnVertices() const;
+    DataType dataType() const;
 
   private:
     QString mName;

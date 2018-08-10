@@ -162,7 +162,7 @@ void TestQgsMeshLayer::test_read_vertex_scalar_dataset()
       }
       QCOMPARE( meta.name(), QString( "VertexScalarDataset" ) );
       QVERIFY( meta.isScalar() );
-      QVERIFY( meta.isOnVertices() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
 
       const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
       QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
@@ -200,7 +200,7 @@ void TestQgsMeshLayer::test_read_vertex_vector_dataset()
         QCOMPARE( meta.extraOptions()["description"], QString( "Vertex Vector Dataset" ) );
       QCOMPARE( meta.name(), QString( "VertexVectorDataset" ) );
       QVERIFY( !meta.isScalar() );
-      QVERIFY( meta.isOnVertices() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
 
       const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
       QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
@@ -238,7 +238,7 @@ void TestQgsMeshLayer::test_read_face_scalar_dataset()
         QCOMPARE( meta.extraOptions()["description"], QString( "Face Scalar Dataset" ) );
       QCOMPARE( meta.name(), QString( "FaceScalarDataset" ) );
       QVERIFY( meta.isScalar() );
-      QVERIFY( !meta.isOnVertices() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
 
       const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
       QVERIFY( qgsDoubleNear( dmeta.time(), i ) );
@@ -274,7 +274,7 @@ void TestQgsMeshLayer::test_read_face_vector_dataset()
         QCOMPARE( meta.extraOptions()["description"], QString( "Face Vector Dataset" ) );
       QCOMPARE( meta.name(), QString( "FaceVectorDataset" ) );
       QVERIFY( !meta.isScalar() );
-      QVERIFY( !meta.isOnVertices() );
+      QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces );
 
       const QgsMeshDatasetMetadata dmeta = dp->datasetMetadata( ds );
       QVERIFY( qgsDoubleNear( dmeta.time(), i ) );

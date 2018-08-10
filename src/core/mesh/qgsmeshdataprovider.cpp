@@ -161,15 +161,16 @@ bool QgsMeshDatasetGroupMetadata::isScalar() const
   return mIsScalar;
 }
 
+
+
 QString QgsMeshDatasetGroupMetadata::name() const
 {
   return mName;
 }
 
-
-bool QgsMeshDatasetGroupMetadata::isOnVertices() const
+QgsMeshDatasetGroupMetadata::DataType QgsMeshDatasetGroupMetadata::dataType() const
 {
-  return mIsOnVertices;
+  return ( mIsOnVertices ) ? DataType::DataOnVertices : DataType::DataOnFaces;
 }
 
 int QgsMeshDatasetSourceInterface::datasetCount( QgsMeshDatasetIndex index ) const

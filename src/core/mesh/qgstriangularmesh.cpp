@@ -15,6 +15,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <memory>
+#include <QList>
+#include "qgsfeature.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
 #include "qgstriangularmesh.h"
 #include "qgsrendercontext.h"
 #include "qgscoordinatetransform.h"
@@ -63,12 +68,12 @@ static void ENP_centroid( const QPolygonF &pX, double &cx, double &cy )
   cy /= ( 6.0 * signedArea );
 }
 
-
 void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
 {
   Q_ASSERT( nativeMesh );
   Q_ASSERT( context );
 
+  mSpatialIndex = QgsSpatialIndex();
   mTriangularMesh.vertices.clear();
   mTriangularMesh.faces.clear();
   mTrianglesToNativeFaces.clear();
@@ -143,6 +148,14 @@ void QgsTriangularMesh::update( QgsMesh *nativeMesh, QgsRenderContext *context )
     ENP_centroid( poly, cx, cy );
     mNativeMeshFaceCentroids[i] = QgsMeshVertex( cx, cy );
   }
+
+  // CALCULATE SPATIAL INDEX
+  for ( int i = 0; i < mTriangularMesh.faces.size(); ++i )
+  {
+    const QgsMeshFace &face = mTriangularMesh.faces.at( i ) ;
+    QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
+    ( void )mSpatialIndex.insertFeature( i, geom.boundingBox() );
+  }
 }
 
 const QVector<QgsMeshVertex> &QgsTriangularMesh::vertices() const
@@ -165,3 +178,31 @@ const QVector<int> &QgsTriangularMesh::trianglesToNativeFaces() const
   return mTrianglesToNativeFaces;
 }
 
+int QgsTriangularMesh::faceIndexForPoint( const QgsPointXY &point ) const
+{
+  const QList<QgsFeatureId> faceIndexes = mSpatialIndex.intersects( QgsRectangle( point, point ) );
+  for ( const QgsFeatureId fid : faceIndexes )
+  {
+    int faceIndex = static_cast<int>( fid );
+    const QgsMeshFace &face = mTriangularMesh.faces.at( faceIndex );
+    const QgsGeometry geom = QgsMeshUtils::toGeometry( face, mTriangularMesh.vertices );
+    if ( geom.contains( &point ) )
+      return faceIndex;
+  }
+  return -1;
+}
+
+QgsGeometry QgsMeshUtils::toGeometry( const QgsMeshFace &face, const QVector<QgsMeshVertex> &vertices )
+{
+  QVector<QgsPoint> ring;
+  for ( int j = 0; j < face.size(); ++j )
+  {
+    int vertexId = face[j];
+    Q_ASSERT( vertexId < vertices.size() );
+    const QgsPoint &vertex = vertices[vertexId];
+    ring.append( vertex );
+  }
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  polygon->setExteriorRing( new QgsLineString( ring ) );
+  return QgsGeometry( std::move( polygon ) );
+}

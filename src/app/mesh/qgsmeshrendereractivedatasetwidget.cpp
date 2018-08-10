@@ -126,8 +126,8 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata( QgsMeshDatasetIndex dat
 
     const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Is on vertices" ) )
-           .arg( gmeta.isOnVertices() ? tr( "Yes" ) : tr( "No" ) );
+           .arg( tr( "Data Type" ) )
+           .arg( gmeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ? tr( "Defined on vertices" ) : tr( "Defined on faces" ) );
 
     msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
            .arg( tr( "Is vector" ) )

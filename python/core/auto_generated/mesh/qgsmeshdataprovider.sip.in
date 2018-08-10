@@ -140,6 +140,13 @@ such as whether the data is vector or scalar, name
 #include "qgsmeshdataprovider.h"
 %End
   public:
+
+    enum DataType
+    {
+      DataOnFaces,
+      DataOnVertices
+    };
+
     QgsMeshDatasetGroupMetadata();
 %Docstring
 Constructs an empty metadata object
@@ -178,9 +185,9 @@ Returns whether dataset group has vector data
 Returns whether dataset group has scalar data
 %End
 
-    bool isOnVertices() const;
+    DataType dataType() const;
 %Docstring
-Returns whether dataset group data is defined on vertices
+Returns whether dataset group data is defined on vertices or faces
 %End
 
 };

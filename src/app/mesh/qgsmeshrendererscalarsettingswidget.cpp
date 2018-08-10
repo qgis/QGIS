@@ -112,7 +112,7 @@ void QgsMeshRendererScalarSettingsWidget::calcMinMax( QgsMeshDatasetIndex datase
     return;
 
   const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
-  bool scalarDataOnVertices = metadata.isOnVertices();
+  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
   int count;
   if ( scalarDataOnVertices )
     count = mMeshLayer->dataProvider()->vertexCount();

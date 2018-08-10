@@ -183,6 +183,39 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
     //! Returns active vector dataset
     QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
 
+    /**
+      * Interpolates the value on the given point from given dataset.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns NaN value
+      *
+      * \param index dataset index specifying group and dataset to extract value from
+      * \param point point to query in map coordinates
+      * \returns interpolated value at the point. Returns NaN values for values
+      * outside the mesh layer, nodata values and in case triangular mesh was not
+      * previously used for rendering
+      *
+      * \since QGIS 3.4
+      */
+    QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;
+
+  signals:
+
+    /**
+     * Emitted when active scalar dataset is changed
+     *
+     * \since QGIS 3.4
+     */
+    void activeScalarDatasetChanged( const QgsMeshDatasetIndex &index );
+
+    /**
+     * Emitted when active vector dataset is changed
+     *
+     * \since QGIS 3.4
+     */
+    void activeVectorDatasetChanged( const QgsMeshDatasetIndex &index );
+
   private: // Private methods
 
     /**
