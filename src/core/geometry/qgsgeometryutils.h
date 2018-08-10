@@ -264,6 +264,16 @@ class CORE_EXPORT QgsGeometryUtils
                                          double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
 
+    /**
+     * Interpolates a point on an arc defined by three points, \a pt1, \a pt2 and \a pt3. The arc will be
+     * interpolated by the specified \a distance from \a pt1.
+     *
+     * Any z or m values present in the points will also be linearly interpolated in the output.
+     *
+     * \since QGIS 3.4
+     */
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
+
     //! Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
     static double ccwAngle( double dy, double dx );
 
@@ -271,7 +281,12 @@ class CORE_EXPORT QgsGeometryUtils
     static void circleCenterRadius( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double &radius SIP_OUT,
                                     double &centerX SIP_OUT, double &centerY SIP_OUT );
 
-    //! Returns true if circle is ordered clockwise
+    /**
+     * Returns true if the circle defined by three angles is ordered clockwise.
+     *
+     * The angles are defined counter-clockwise from the origin, i.e. using
+     * Euclidean angles as opposed to geographic "North up" angles.
+     */
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 
     //! Returns true if, in a circle, angle is between angle1 and angle2
