@@ -6043,6 +6043,18 @@ tests:
         name: expected/drape_lines_m.shp
         type: vector
 
+  - algorithm: native:linesubstring
+    name: Line substrings
+    params:
+      END_DISTANCE: 0.8
+      INPUT:
+        name: lines.gml
+        type: vector
+      START_DISTANCE: 0.2
+    results:
+      OUTPUT:
+        name: expected/line_substring.gml
+        type: vector
 
 
 # See ../README.md for a description of the file format

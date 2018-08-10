@@ -49,6 +49,7 @@
 #include "qgsalgorithmintersection.h"
 #include "qgsalgorithmkmeansclustering.h"
 #include "qgsalgorithmlineintersection.h"
+#include "qgsalgorithmlinesubstring.h"
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
@@ -171,6 +172,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsKMeansClusteringAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
+  addAlgorithm( new QgsLineSubstringAlgorithm() );
   addAlgorithm( new QgsLoadLayerAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
