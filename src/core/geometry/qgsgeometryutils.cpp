@@ -542,17 +542,36 @@ int QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, doub
 
 QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance )
 {
-  double dx = directionPoint.x() - startPoint.x();
-  double dy = directionPoint.y() - startPoint.y();
-  double length = std::sqrt( dx * dx + dy * dy );
+  double x, y;
+  pointOnLineWithDistance( startPoint.x(), startPoint.y(), directionPoint.x(), directionPoint.y(), distance, x, y );
+  return QgsPoint( x, y );
+}
+
+void QgsGeometryUtils::pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y, double *z1, double *z2, double *z, double *m1, double *m2, double *m )
+{
+  const double dx = x2 - x1;
+  const double dy = y2 - y1;
+  const double length = std::sqrt( dx * dx + dy * dy );
 
   if ( qgsDoubleNear( length, 0.0 ) )
   {
-    return startPoint;
+    x = x1;
+    y = y1;
+    if ( z && z1 )
+      *z = *z1;
+    if ( m && m1 )
+      *m = *m1;
   }
-
-  double scaleFactor = distance / length;
-  return QgsPoint( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
+  else
+  {
+    const double scaleFactor = distance / length;
+    x = x1 + dx * scaleFactor;
+    y = y1 + dy * scaleFactor;
+    if ( z && z1 && z2 )
+      *z = *z1 + ( *z2 - *z1 ) * scaleFactor;
+    if ( m && m1 && m2 )
+      *m = *m1 + ( *m2 - *m1 ) * scaleFactor;
+  }
 }
 
 double QgsGeometryUtils::ccwAngle( double dy, double dx )

@@ -68,6 +68,7 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLineQgsPoint();
     void testInterpolatePointOnLine();
     void testInterpolatePointOnLineByValue();
+    void testPointOnLineWithDistance();
 };
 
 
@@ -1093,6 +1094,89 @@ void TestQgsGeometryUtils::testInterpolatePointOnLineByValue()
   p = QgsGeometryUtils::interpolatePointOnLineByValue( 0, 0, 1, -10, -6, 1, 1 );
   QCOMPARE( p.x(), 0.0 );
   QCOMPARE( p.y(), 0.0 );
+}
+
+void TestQgsGeometryUtils::testPointOnLineWithDistance()
+{
+  QgsPoint p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ), 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  double x;
+  double y;
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0, 10, 0, 0, x, y );
+  QCOMPARE( x, 0.0 );
+  QCOMPARE( y, 0.0 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 3 ),  QgsPoint( 12, 3 ), 10 );
+  QCOMPARE( p.x(), 12.0 );
+  QCOMPARE( p.y(), 3.0 );
+  QgsGeometryUtils::pointOnLineWithDistance( 2, 3,  12, 3, 10, x, y );
+  QCOMPARE( x, 12.0 );
+  QCOMPARE( y, 3.0 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( 0, 10 ), 0 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 0.0 );
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0,  0, 10, 0, x, y );
+  QCOMPARE( x, 0.0 );
+  QCOMPARE( y, 0.0 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( 0, 10 ), 10 );
+  QCOMPARE( p.x(), 0.0 );
+  QCOMPARE( p.y(), 10.0 );
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0,  0, 10, 10, x, y );
+  QCOMPARE( x, 0.0 );
+  QCOMPARE( y, 10.0 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 1 ),  QgsPoint( -8, -5 ), 5 );
+  QGSCOMPARENEAR( p.x(), -2.28746, 0.0001 );
+  QGSCOMPARENEAR( p.y(), -1.57248, 0.0001 );
+  QgsGeometryUtils::pointOnLineWithDistance( 2, 1, -8, -5, 5, x, y );
+  QGSCOMPARENEAR( x, -2.28746, 0.0001 );
+  QGSCOMPARENEAR( y, -1.57248, 0.0001 );
+  double z, z1, z2;
+  double m, m1, m2;
+  z1 = 12;
+  z2 = 2;
+  m1 = 11;
+  m2 = 15;
+  QgsGeometryUtils::pointOnLineWithDistance( 2, 1, -8, -5, 5, x, y, &z1, &z2, &z );
+  QGSCOMPARENEAR( x, -2.28746, 0.0001 );
+  QGSCOMPARENEAR( y, -1.57248, 0.0001 );
+  QGSCOMPARENEAR( z, 7.712535, 0.0001 );
+  QgsGeometryUtils::pointOnLineWithDistance( 2, 1, -8, -5, 5, x, y, nullptr, nullptr, nullptr, &m1, &m2, &m );
+  QGSCOMPARENEAR( x, -2.28746, 0.0001 );
+  QGSCOMPARENEAR( y, -1.57248, 0.0001 );
+  QGSCOMPARENEAR( m, 12.714986, 0.0001 );
+  z = 0;
+  m = 0;
+  QgsGeometryUtils::pointOnLineWithDistance( 2, 1, -8, -5, 5, x, y, &z1, &z2, &z, &m1, &m2, &m );
+  QGSCOMPARENEAR( x, -2.28746, 0.0001 );
+  QGSCOMPARENEAR( y, -1.57248, 0.0001 );
+  QGSCOMPARENEAR( z, 7.712535, 0.0001 );
+  QGSCOMPARENEAR( m, 12.714986, 0.0001 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), 2 );
+  QGSCOMPARENEAR( p.x(), -1.71499, 0.0001 );
+  QGSCOMPARENEAR( p.y(), -1.02899, 0.0001 );
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0, -10, -6, 2, x, y );
+  QGSCOMPARENEAR( x, -1.71499, 0.0001 );
+  QGSCOMPARENEAR( y, -1.02899, 0.0001 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), 20 );
+  QGSCOMPARENEAR( p.x(), -17.1499, 0.0001 );
+  QGSCOMPARENEAR( p.y(), -10.2899, 0.0001 );
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0, -10, -6, 20, x, y );
+  QGSCOMPARENEAR( x, -17.1499, 0.0001 );
+  QGSCOMPARENEAR( y, -10.2899, 0.0001 );
+
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), -10 );
+  QGSCOMPARENEAR( p.x(), 8.57493, 0.0001 );
+  QGSCOMPARENEAR( p.y(), 5.14496, 0.0001 );
+  QgsGeometryUtils::pointOnLineWithDistance( 0, 0, -10, -6, -10, x, y );
+  QGSCOMPARENEAR( x, 8.57493, 0.0001 );
+  QGSCOMPARENEAR( y, 5.14496, 0.0001 );
+
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )
