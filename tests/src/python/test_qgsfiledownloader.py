@@ -134,7 +134,7 @@ class TestQgsFileDownloader(unittest.TestCase):
 
     def test_sslExpired(self):
         self.ssl_compare("expired", "https://expired.badssl.com/", "SSL Errors: ;The certificate has expired")
-        self.ssl_compare("self-signed", "https://self-signed.badssl.com/", "SSL Errors: ;The certificate is self-signed, and untrusted")
+        self.ssl_compare("self-signed", "https://self-signed.badssl.com/", "SSL Errors: ;The certificate has expired;The certificate is self-signed, and untrusted")
         self.ssl_compare("untrusted-root", "https://untrusted-root.badssl.com/", "No certificates could be verified;SSL Errors: ;The issuer certificate of a locally looked up certificate could not be found;The root CA certificate is not trusted for this purpose")
 
     def _set_slot(self, *args, **kwargs):
