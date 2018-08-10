@@ -182,6 +182,20 @@ Returns the y-coordinate of the specified node in the line string.
 Returns a QPolygonF representing the points.
 %End
 
+    virtual QgsCurve *curveSubstring( double startDistance, double endDistance ) const = 0 /Factory/;
+%Docstring
+Returns a new curve representing a substring of this curve.
+
+The ``startDistance`` and ``endDistance`` arguments specify the length along the curve
+which the substring should start and end at. If the ``endDistance`` is greater than the
+total length of the curve then any "extra" length will be ignored.
+
+If z or m values are present, the output z and m will be interpolated using
+the existing vertices' z or m values.
+
+.. versionadded:: 3.4
+%End
+
     double straightDistance2d() const;
 %Docstring
 Returns the straight distance of the curve, i.e. the direct/euclidean distance
