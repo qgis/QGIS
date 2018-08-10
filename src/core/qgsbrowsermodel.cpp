@@ -30,6 +30,9 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#define PROJECT_HOME_PREFIX "project:"
+#define HOME_PREFIX "home:"
+
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
   : QFutureWatcher( nullptr )
   , mItem( item )
@@ -56,7 +59,7 @@ QgsBrowserModel::~QgsBrowserModel()
 void QgsBrowserModel::updateProjectHome()
 {
   QString home = QgsProject::instance()->homePath();
-  if ( mProjectHome && mProjectHome->path() == home )
+  if ( mProjectHome && mProjectHome->path().mid( QStringLiteral( PROJECT_HOME_PREFIX ).length() ) == home )
     return;
 
   int idx = mRootItems.indexOf( mProjectHome );
@@ -69,7 +72,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, QStringLiteral( PROJECT_HOME_PREFIX ) + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
@@ -85,7 +88,7 @@ void QgsBrowserModel::addRootItems()
   updateProjectHome();
 
   // give the home directory a prominent third place
-  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), QStringLiteral( HOME_PREFIX ) + QDir::homePath() );
   item->setSortKey( QStringLiteral( " 2" ) );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
