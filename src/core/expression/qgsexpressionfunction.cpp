@@ -3047,6 +3047,39 @@ static QVariant fcnLineInterpolatePoint( const QVariantList &values, const QgsEx
   return result;
 }
 
+static QVariant fcnLineSubset( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  if ( lineGeom.type() != QgsWkbTypes::LineGeometry )
+  {
+    parent->setEvalErrorString( QObject::tr( "line_substring requires a curve geometry input" ) );
+    return QVariant();
+  }
+
+  const QgsCurve *curve = nullptr;
+  if ( !lineGeom.isMultipart() )
+    curve = qgsgeometry_cast< const QgsCurve * >( lineGeom.constGet() );
+  else
+  {
+    if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( lineGeom.constGet() ) )
+    {
+      if ( collection->numGeometries() > 0 )
+      {
+        curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
+      }
+    }
+  }
+  if ( !curve )
+    return QVariant();
+
+  double startDistance = QgsExpressionUtils::getDoubleValue( values.at( 1 ), parent );
+  double endDistance = QgsExpressionUtils::getDoubleValue( values.at( 2 ), parent );
+
+  std::unique_ptr< QgsCurve > substring( curve->curveSubstring( startDistance, endDistance ) );
+  QgsGeometry result( std::move( substring ) );
+  return !result.isNull() ? QVariant::fromValue( result ) : QVariant();
+}
+
 static QVariant fcnLineInterpolateAngle( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   QgsGeometry lineGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -4527,7 +4560,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "angle_at_vertex" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
                                             << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ) ), fcnAngleAtVertex, QStringLiteral( "GeometryGroup" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "distance_to_vertex" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
-                                            << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ) ), fcnDistanceToVertex, QStringLiteral( "GeometryGroup" ) );
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "vertex" ) ), fcnDistanceToVertex, QStringLiteral( "GeometryGroup" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "line_substring" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "geometry" ) )
+                                            << QgsExpressionFunction::Parameter( QStringLiteral( "start_distance" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "end_distance" ) ), fcnLineSubset, QStringLiteral( "GeometryGroup" ) );
 
 
     // **Record** functions
