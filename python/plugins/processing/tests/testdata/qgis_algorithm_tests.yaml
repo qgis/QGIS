@@ -3606,6 +3606,9 @@ tests:
       OUTPUT:
         name: expected/airportsvoronoidiagram.gml
         type: vector
+        compare:
+          geometry:
+            precision: 2
 
   - algorithm: native:explodelines
     name: Explode lines
@@ -6054,6 +6057,30 @@ tests:
     results:
       OUTPUT:
         name: expected/line_substring.gml
+        type: vector
+
+  - algorithm: native:interpolatepoint
+    name: Interpolate points (line)
+    params:
+      DISTANCE: 1.0
+      INPUT:
+        name: lines.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/interpolate_point_lines.gml
+        type: vector
+
+  - algorithm: native:interpolatepoint
+    name: Interpolate points (polygons)
+    params:
+      DISTANCE: 2.0
+      INPUT:
+        name: polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/interpolate_point_polys.gml
         type: vector
 
 
