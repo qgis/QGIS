@@ -103,7 +103,7 @@ void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
   if ( !mMeshLayer )
     return;
 
-  QgsMeshRendererVectorSettings settings = mMeshLayer->rendererVectorSettings();
+  QgsMeshRendererVectorSettings settings = mMeshLayer->rendererSettings().vectorSettings();
 
   // basic
   mColorWidget->setColor( settings.color() );

@@ -45,7 +45,9 @@ QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
   setLegend( QgsMapLayerLegend::defaultMeshLegend( this ) );
 
   // show at least the mesh by default so we render something
-  mRendererNativeMeshSettings.setEnabled( true );
+  QgsMeshRendererMeshSettings meshSettings;
+  meshSettings.setEnabled( true );
+  mRendererSettings.setNativeMeshSettings( meshSettings );
 
 } // QgsMeshLayer ctor
 
@@ -101,95 +103,16 @@ QgsTriangularMesh *QgsMeshLayer::triangularMesh() SIP_SKIP
   return mTriangularMesh.get();
 }
 
-
-QgsMeshRendererMeshSettings QgsMeshLayer::rendererNativeMeshSettings() const
+QgsMeshRendererSettings QgsMeshLayer::rendererSettings() const
 {
-  return mRendererNativeMeshSettings;
+  return mRendererSettings;
 }
 
-void QgsMeshLayer::setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings )
+void QgsMeshLayer::setRendererSettings( const QgsMeshRendererSettings &settings )
 {
-  mRendererNativeMeshSettings = settings;
+  mRendererSettings = settings;
   emit rendererChanged();
   triggerRepaint();
-}
-
-QgsMeshRendererMeshSettings QgsMeshLayer::rendererTriangularMeshSettings() const
-{
-  return mRendererTriangularMeshSettings;
-}
-
-void QgsMeshLayer::setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings )
-{
-  mRendererTriangularMeshSettings = settings;
-  emit rendererChanged();
-  triggerRepaint();
-}
-
-QgsMeshRendererScalarSettings QgsMeshLayer::rendererScalarSettings() const
-{
-  return mRendererScalarSettings;
-}
-
-void QgsMeshLayer::setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings )
-{
-  mRendererScalarSettings = settings;
-  emit rendererChanged();
-  triggerRepaint();
-}
-
-
-QgsMeshRendererVectorSettings QgsMeshLayer::rendererVectorSettings() const
-{
-  return mRendererVectorSettings;
-}
-
-void QgsMeshLayer::setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings )
-{
-  mRendererVectorSettings = settings;
-  emit rendererChanged();
-  triggerRepaint();
-}
-
-
-void QgsMeshLayer::setActiveScalarDataset( QgsMeshDatasetIndex index )
-{
-  if ( index == mActiveScalarDataset )
-    return;
-
-  if ( index.isValid() )
-    mActiveScalarDataset = index;
-  else
-    mActiveScalarDataset = QgsMeshDatasetIndex();
-
-  emit rendererChanged();
-  triggerRepaint();
-
-  emit activeScalarDatasetChanged( mActiveScalarDataset );
-}
-
-void QgsMeshLayer::setActiveVectorDataset( QgsMeshDatasetIndex index )
-{
-  if ( index == mActiveVectorDataset )
-    return;
-
-  if ( !index.isValid() )
-  {
-    mActiveVectorDataset = QgsMeshDatasetIndex();
-  }
-  else
-  {
-    const QgsMeshDatasetGroupMetadata metadata = dataProvider()->datasetGroupMetadata( index );
-    if ( metadata.isVector() )
-      mActiveVectorDataset = index;
-    else
-      mActiveVectorDataset = QgsMeshDatasetIndex();
-  }
-
-  emit rendererChanged();
-  triggerRepaint();
-
-  emit activeVectorDatasetChanged( mActiveVectorDataset );
 }
 
 QgsMeshDatasetValue QgsMeshLayer::datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const

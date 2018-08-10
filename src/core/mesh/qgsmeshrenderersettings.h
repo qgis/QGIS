@@ -247,4 +247,63 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     double mArrowHeadLengthRatio = 0.40;
 };
 
+
+#include "qgsmeshdataprovider.h"
+
+/**
+ * \ingroup core
+ *
+ * Represents all mesh renderer settings
+ *
+ * \note The API is considered EXPERIMENTAL and can be changed without a notice
+ *
+ * \since QGIS 3.4
+ */
+class CORE_EXPORT QgsMeshRendererSettings
+{
+  public:
+
+    //! Returns renderer settings
+    QgsMeshRendererMeshSettings nativeMeshSettings() const { return mRendererNativeMeshSettings; }
+    //! Sets new renderer settings, triggers repaint
+    void setNativeMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererNativeMeshSettings = settings; }
+
+    //! Returns renderer settings
+    QgsMeshRendererMeshSettings triangularMeshSettings() const { return mRendererTriangularMeshSettings; }
+    //! Sets new renderer settings
+    void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererTriangularMeshSettings = settings; }
+
+    //! Returns renderer settings
+    QgsMeshRendererScalarSettings scalarSettings() const { return mRendererScalarSettings; }
+    //! Sets new renderer settings
+    void setScalarSettings( const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings = settings; }
+
+    //! Returns renderer settings
+    QgsMeshRendererVectorSettings vectorSettings() const { return mRendererVectorSettings; }
+    //! Sets new renderer settings
+    void setVectorSettings( const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings = settings; }
+
+    //! Returns active scalar dataset
+    QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
+    //! Sets active scalar dataset for rendering
+    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() ) { mActiveScalarDataset = index; }
+
+    //! Returns active vector dataset
+    QgsMeshDatasetIndex activeVectorDataset() const { return mActiveVectorDataset; }
+    //! Sets active vector dataset for rendering.
+    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() ) { mActiveVectorDataset = index; }
+
+  private:
+    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
+    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
+    QgsMeshRendererScalarSettings mRendererScalarSettings;
+    QgsMeshRendererVectorSettings mRendererVectorSettings;
+
+    //! index of active scalar dataset
+    QgsMeshDatasetIndex mActiveScalarDataset;
+
+    //! index of active vector dataset
+    QgsMeshDatasetIndex mActiveVectorDataset;
+};
+
 #endif //QGSMESHRENDERERSETTINGS_H

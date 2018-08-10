@@ -161,8 +161,9 @@ void QgsMeshRendererActiveDatasetWidget::syncToLayer()
 
   if ( mMeshLayer )
   {
-    mActiveScalarDataset = mMeshLayer->activeScalarDataset();
-    mActiveVectorDataset = mMeshLayer->activeVectorDataset();
+    const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+    mActiveScalarDataset = rendererSettings.activeScalarDataset();
+    mActiveVectorDataset = rendererSettings.activeVectorDataset();
   }
   else
   {

@@ -57,11 +57,13 @@ void QgsMeshRendererMeshSettingsWidget::syncToLayer( )
   if ( !mMeshLayer )
     return;
 
+  const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+
   QgsMeshRendererMeshSettings settings;
   if ( mIsTriangularMesh )
-    settings = mMeshLayer->rendererTriangularMeshSettings();
+    settings = rendererSettings.triangularMeshSettings();
   else
-    settings = mMeshLayer->rendererNativeMeshSettings();
+    settings = rendererSettings.nativeMeshSettings();
 
   mColorWidget->setColor( settings.color() );
   mLineWidthSpinBox->setValue( settings.lineWidth() );

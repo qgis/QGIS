@@ -353,8 +353,10 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
   if ( !provider )
     return nodes;
 
-  QgsMeshDatasetIndex indexScalar = mLayer->activeScalarDataset();
-  QgsMeshDatasetIndex indexVector = mLayer->activeVectorDataset();
+  QgsMeshRendererSettings rendererSettings = mLayer->rendererSettings();
+
+  QgsMeshDatasetIndex indexScalar = rendererSettings.activeScalarDataset();
+  QgsMeshDatasetIndex indexVector = rendererSettings.activeVectorDataset();
 
   QString name;
   if ( indexScalar.isValid() && indexVector.isValid() && indexScalar.group() != indexVector.group() )
@@ -371,7 +373,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   nodes << new QgsSimpleLegendNode( nodeLayer, name );
 
-  QgsMeshRendererScalarSettings settings = mLayer->rendererScalarSettings();
+  QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings();
   if ( settings.isEnabled() )
   {
     QgsLegendColorList items;

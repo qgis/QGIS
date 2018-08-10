@@ -65,10 +65,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   : QgsMapLayerRenderer( layer->id() )
   , mFeedback( new QgsMeshLayerRendererFeedback )
   , mContext( context )
-  , mRendererNativeMeshSettings( layer->rendererNativeMeshSettings() )
-  , mRendererTriangularMeshSettings( layer->rendererTriangularMeshSettings() )
-  , mRendererScalarSettings( layer-> rendererScalarSettings() )
-  , mRendererVectorSettings( layer-> rendererVectorSettings() )
+  , mRendererSettings( layer->rendererSettings() )
 {
   // make copies for mesh data
   Q_ASSERT( layer->nativeMesh() );
@@ -76,8 +73,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   mNativeMesh = *( layer->nativeMesh() );
   mTriangularMesh = *( layer->triangularMesh() );
 
-  createMeshSymbol( mNativeMeshSymbol, mRendererNativeMeshSettings );
-  createMeshSymbol( mTriangularMeshSymbol, mRendererTriangularMeshSettings );
+  createMeshSymbol( mNativeMeshSymbol, mRendererSettings.nativeMeshSettings() );
+  createMeshSymbol( mTriangularMeshSymbol, mRendererSettings.triangularMeshSettings() );
 
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
@@ -89,7 +86,9 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
 
 void QgsMeshLayerRenderer::assignDefaultScalarShader( )
 {
-  if ( mScalarDatasetValues.isEmpty() || mRendererScalarSettings.isEnabled() )
+  // TODO: the assignment of default shader should be outside of the this renderer
+#if 0
+  if ( mScalarDatasetValues.isEmpty() || mRendererSettings.scalarSettings().isEnabled() )
     return; // no need for default shader, either rendering is off or we already have some shader
 
   QgsSettings settings;
@@ -99,6 +98,7 @@ void QgsMeshLayerRenderer::assignDefaultScalarShader( )
   fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
 
   mRendererScalarSettings.setColorRampShader( fcn );
+#endif
 }
 
 QgsFeedback *QgsMeshLayerRenderer::feedback() const
@@ -136,7 +136,7 @@ void QgsMeshLayerRenderer::createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol,
 
 void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = layer->activeScalarDataset();
+  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeScalarDataset();
   if ( datasetIndex.isValid() )
   {
     const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
@@ -160,7 +160,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
 
 void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
 {
-  const QgsMeshDatasetIndex datasetIndex = layer->activeVectorDataset();
+  const QgsMeshDatasetIndex datasetIndex = mRendererSettings.activeVectorDataset();
   if ( datasetIndex.isValid() )
   {
     const QgsMeshDatasetGroupMetadata metadata = layer->dataProvider()->datasetGroupMetadata( datasetIndex );
@@ -245,10 +245,10 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  if ( !mRendererScalarSettings.isEnabled() )
+  if ( !mRendererSettings.scalarSettings().isEnabled() )
     return; // no shader
 
-  QgsColorRampShader *fcn = new QgsColorRampShader( mRendererScalarSettings.colorRampShader() );
+  QgsColorRampShader *fcn = new QgsColorRampShader( mRendererSettings.scalarSettings().colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
   QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
@@ -264,7 +264,7 @@ void QgsMeshLayerRenderer::renderScalarDataset()
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  if ( !mRendererVectorSettings.isEnabled() )
+  if ( !mRendererSettings.vectorSettings().isEnabled() )
     return;
 
   if ( mVectorDatasetValuesX.isEmpty() )
@@ -279,7 +279,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   QgsMeshVectorRenderer renderer( mTriangularMesh,
                                   mVectorDatasetValuesX, mVectorDatasetValuesY, mVectorDatasetValuesMag,
                                   mVectorDatasetMagMinimum, mVectorDatasetMagMaximum,
-                                  mVectorDataOnVertices, mRendererVectorSettings, mContext, mOutputSize );
+                                  mVectorDataOnVertices, mRendererSettings.vectorSettings(), mContext, mOutputSize );
 
   renderer.draw();
 }

@@ -108,10 +108,7 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     QgsRenderContext &mContext;
 
     // copy of rendering settings
-    QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
-    QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
+    QgsMeshRendererSettings mRendererSettings;
 
     // output screen size
     QSize mOutputSize;

@@ -272,9 +272,10 @@ int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
   QgsMeshDatasetIndex activeDataset;
   if ( mMeshLayer )
   {
-    activeDataset = mMeshLayer->activeScalarDataset();
+    const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+    activeDataset = rendererSettings.activeScalarDataset();
     if ( !activeDataset.isValid() )
-      activeDataset = mMeshLayer->activeVectorDataset();
+      activeDataset = rendererSettings.activeVectorDataset();
   }
 
   // find group that contains active dataset

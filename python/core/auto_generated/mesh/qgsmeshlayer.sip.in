@@ -129,66 +129,13 @@ Returns the provider type for this layer
 
 
 
-    QgsMeshRendererMeshSettings rendererNativeMeshSettings() const;
+    QgsMeshRendererSettings rendererSettings() const;
 %Docstring
 Returns renderer settings
 %End
-
-    void setRendererNativeMeshSettings( const QgsMeshRendererMeshSettings &settings );
+    void setRendererSettings( const QgsMeshRendererSettings &settings );
 %Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    QgsMeshRendererMeshSettings rendererTriangularMeshSettings() const;
-%Docstring
-Returns renderer settings
-%End
-
-    void setRendererTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings );
-%Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    QgsMeshRendererScalarSettings rendererScalarSettings() const;
-%Docstring
-Returns renderer settings
-%End
-
-    void setRendererScalarSettings( const QgsMeshRendererScalarSettings &settings );
-%Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    QgsMeshRendererVectorSettings rendererVectorSettings() const;
-%Docstring
-Returns renderer settings
-%End
-
-    void setRendererVectorSettings( const QgsMeshRendererVectorSettings &settings );
-%Docstring
-Sets new renderer settings, triggers repaint
-%End
-
-    void setActiveScalarDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active scalar dataset for rendering
-
-Triggers repaint
-%End
-    QgsMeshDatasetIndex activeScalarDataset() const;
-%Docstring
-Returns active scalar dataset
-%End
-
-    void setActiveVectorDataset( QgsMeshDatasetIndex index = QgsMeshDatasetIndex() );
-%Docstring
-Sets active vector dataset for rendering.
-
-If dataset is not vector based, do nothing. Triggers repaint
-%End
-    QgsMeshDatasetIndex activeVectorDataset() const;
-%Docstring
-Returns active vector dataset
+Sets new renderer settings
 %End
 
     QgsMeshDatasetValue datasetValue( const QgsMeshDatasetIndex &index, const QgsPointXY &point ) const;

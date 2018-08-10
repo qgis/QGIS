@@ -52,9 +52,10 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   if ( !mMeshLayer )
     return;
 
-  if ( mMeshLayer->rendererScalarSettings().isEnabled() )
+  const QgsMeshRendererScalarSettings settings = mMeshLayer->rendererSettings().scalarSettings();
+  if ( settings.isEnabled() )
   {
-    const QgsColorRampShader shader = mMeshLayer->rendererScalarSettings().colorRampShader();
+    const QgsColorRampShader shader = settings.colorRampShader();
     whileBlocking( mScalarMinLineEdit )->setText( QString::number( shader.minimumValue() ) );
     whileBlocking( mScalarMaxLineEdit )->setText( QString::number( shader.maximumValue() ) );
     whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
