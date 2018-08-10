@@ -3072,7 +3072,9 @@ static QVariant fcnFormatNumber( const QVariantList &values, const QgsExpression
     parent->setEvalErrorString( QObject::tr( "Number of places must be positive" ) );
     return QVariant();
   }
-  return QStringLiteral( "%L1" ).arg( value, 0, 'f', places );
+  QLocale locale = QLocale();
+  locale.setNumberOptions( locale.numberOptions() &= ~QLocale::NumberOption::OmitGroupSeparator );
+  return locale.toString( value, 'f', places );
 }
 
 static QVariant fcnFormatDate( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
