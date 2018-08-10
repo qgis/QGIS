@@ -69,6 +69,7 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLine();
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
+    void interpolatePointOnArc();
 };
 
 
@@ -143,6 +144,8 @@ void TestQgsGeometryUtils::testCircleClockwise_data()
   QTest::newRow( "circleClockwise1" ) << 10.0 << 300.0 << 270.0 << true;
   QTest::newRow( "circleClockwise2" ) << 270.0 << 300.0 << 10.0 << false;
   QTest::newRow( "circleClockwise3" ) << 260.0 << 245.0 << 243.0 << true;
+  QTest::newRow( "circleClockwise4" ) << -90.0 << 0.0 << 90.0 << false;
+  QTest::newRow( "circleClockwise5" ) << 0.0 << 90.0 << 180.0 << false;
 }
 
 void TestQgsGeometryUtils::testCircleClockwise()
@@ -1177,6 +1180,55 @@ void TestQgsGeometryUtils::testPointOnLineWithDistance()
   QGSCOMPARENEAR( x, 8.57493, 0.0001 );
   QGSCOMPARENEAR( y, 5.14496, 0.0001 );
 
+}
+
+void TestQgsGeometryUtils::interpolatePointOnArc()
+{
+  QgsPoint p;
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 0 );
+  QGSCOMPARENEAR( p.x(), 10.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.0, 0.00001 );
+  QGSCOMPARENEAR( p.z(), 1.0, 0.00001 );
+  QGSCOMPARENEAR( p.m(), 2.0, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 1 );
+  QGSCOMPARENEAR( p.x(), 10.459698, 0.00001 );
+  QGSCOMPARENEAR( p.y(),  0.841471, 0.00001 );
+  QGSCOMPARENEAR( p.z(), 2.273240, 0.00001 );
+  QGSCOMPARENEAR( p.m(), 3.273240, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 2 );
+  QGSCOMPARENEAR( p.x(), 11.416147, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.909297, 0.00001 );
+  QGSCOMPARENEAR( p.z(), 5.732395, 0.00001 );
+  QGSCOMPARENEAR( p.m(), 6.732395, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 11, 1 ), QgsPoint( 12, 0 ), 3.141592 );
+  QGSCOMPARENEAR( p.x(), 12.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.0, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 11, 1 ), QgsPoint( 12, 0 ), 3.2 );
+  QGSCOMPARENEAR( p.x(), 11.998295, 0.00001 );
+  QGSCOMPARENEAR( p.y(), -0.058374, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 11, 1 ), QgsPoint( 12, 0 ), 5 );
+  QGSCOMPARENEAR( p.x(), 10.716338, 0.00001 );
+  QGSCOMPARENEAR( p.y(), -0.958924, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 3.141592 * 2 );
+  QGSCOMPARENEAR( p.x(), 10, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0, 0.00001 );
+  QGSCOMPARENEAR( p.z(), 32.99999, 0.00001 );
+  QGSCOMPARENEAR( p.m(), 33.999992, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 0 );
+  QGSCOMPARENEAR( p.x(), 10.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.0, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 1 );
+  QGSCOMPARENEAR( p.x(), 9.755165, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.958851, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 );
+  QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 2.0, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 2 );
+  QGSCOMPARENEAR( p.x(), 6.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.0, 0.00001 );
+  p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0 ), QgsPoint( 8, 2 ), QgsPoint( 6, 0 ), 3.141592 * 3 );
+  QGSCOMPARENEAR( p.x(), 8.0, 0.00001 );
+  QGSCOMPARENEAR( p.y(), -2.0, 0.00001 );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

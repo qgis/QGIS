@@ -232,6 +232,16 @@ Returns a point a specified ``distance`` toward a second point.
 %End
 
 
+    static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance );
+%Docstring
+Interpolates a point on an arc defined by three points, ``pt1``, ``pt2`` and ``pt3``. The arc will be
+interpolated by the specified ``distance`` from ``pt1``.
+
+Any z or m values present in the points will also be linearly interpolated in the output.
+
+.. versionadded:: 3.4
+%End
+
     static double ccwAngle( double dy, double dx );
 %Docstring
 Returns the counter clockwise angle between a line with components dx, dy and the line with dx > 0 and dy = 0
@@ -245,7 +255,10 @@ Returns radius and center of the circle through pt1, pt2, pt3
 
     static bool circleClockwise( double angle1, double angle2, double angle3 );
 %Docstring
-Returns true if circle is ordered clockwise
+Returns true if the circle defined by three angles is ordered clockwise.
+
+The angles are defined counter-clockwise from the origin, i.e. using
+Euclidean angles as opposed to geographic "North up" angles.
 %End
 
     static bool circleAngleBetween( double angle, double angle1, double angle2, bool clockwise );

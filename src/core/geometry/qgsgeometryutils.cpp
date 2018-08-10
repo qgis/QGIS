@@ -574,6 +574,31 @@ void QgsGeometryUtils::pointOnLineWithDistance( double x1, double y1, double x2,
   }
 }
 
+QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance )
+{
+  double centerX, centerY, radius;
+  circleCenterRadius( pt1, pt2, pt3, radius, centerX, centerY );
+
+  const double theta = distance / radius; // angle subtended
+  const double anglePt1 = std::atan2( pt1.y() - centerY, pt1.x() - centerX );
+  const double anglePt2 = std::atan2( pt2.y() - centerY, pt2.x() - centerX );
+  const double anglePt3 = std::atan2( pt3.y() - centerY, pt3.x() - centerX );
+  const bool isClockwise = circleClockwise( anglePt1, anglePt2, anglePt3 );
+  const double angleDest = anglePt1 + ( isClockwise ? -theta : theta );
+
+  const double x = centerX + radius * ( std::cos( angleDest ) );
+  const double y = centerY + radius * ( std::sin( angleDest ) );
+
+  const double z = pt1.is3D() ?
+                   interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.z(), pt2.z(), pt3.z() )
+                   : 0;
+  const double m = pt1.isMeasure() ?
+                   interpolateArcValue( angleDest, anglePt1, anglePt2, anglePt3, pt1.m(), pt2.m(), pt3.m() )
+                   : 0;
+
+  return QgsPoint( pt1.wkbType(), x, y, z, m );
+}
+
 double QgsGeometryUtils::ccwAngle( double dy, double dx )
 {
   double angle = std::atan2( dy, dx ) * 180 / M_PI;
