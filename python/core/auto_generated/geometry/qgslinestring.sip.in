@@ -283,6 +283,8 @@ of the curve.
 
     virtual QgsLineString *reversed() const /Factory/;
 
+    virtual QgsLineString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
+
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 

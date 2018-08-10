@@ -864,6 +864,37 @@ QgsCompoundCurve *QgsCompoundCurve::reversed() const
   return clone;
 }
 
+QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double endDistance ) const
+{
+  if ( startDistance < 0 && endDistance < 0 )
+    return createEmptyWithSameType();
+
+  endDistance = std::max( startDistance, endDistance );
+  std::unique_ptr< QgsCompoundCurve > substring = qgis::make_unique< QgsCompoundCurve >();
+
+  double distanceTraversed = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const double thisCurveLength = curve->length();
+    if ( distanceTraversed + thisCurveLength < startDistance )
+    {
+      // keep going - haven't found start yet, so no need to include this curve at all
+    }
+    else
+    {
+      std::unique_ptr< QgsCurve > part( curve->curveSubstring( startDistance - distanceTraversed, endDistance - distanceTraversed ) );
+      if ( part )
+        substring->addCurve( part.release() );
+    }
+
+    distanceTraversed += thisCurveLength;
+    if ( distanceTraversed > endDistance )
+      break;
+  }
+
+  return substring.release();
+}
+
 bool QgsCompoundCurve::addZValue( double zValue )
 {
   if ( QgsWkbTypes::hasZ( mWkbType ) )
