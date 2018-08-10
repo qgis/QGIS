@@ -46,6 +46,7 @@
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
 #include "qgsalgorithmimportphotos.h"
+#include "qgsalgorithminterpolatepoint.h"
 #include "qgsalgorithmintersection.h"
 #include "qgsalgorithmkmeansclustering.h"
 #include "qgsalgorithmlineintersection.h"
@@ -167,6 +168,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFilterVerticesByZ() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsImportPhotosAlgorithm() );
+  addAlgorithm( new QgsInterpolatePointAlgorithm() );
   addAlgorithm( new QgsIntersectionAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );

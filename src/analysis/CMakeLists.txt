@@ -47,6 +47,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfiltervertices.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmimportphotos.cpp
+  processing/qgsalgorithminterpolatepoint.cpp
   processing/qgsalgorithmintersection.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
