@@ -86,6 +86,12 @@ QgsQuickFeatureLayerPairs QgsQuickIdentifyKit::identify( const QPointF &point, Q
           results.append( QgsQuickFeatureLayerPair( feature, vl ) );
         }
       }
+      if ( mIdentifyMode == IdentifyMode::TopDownStopAtFirst && !results.isEmpty() )
+      {
+        QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results with TopDownStopAtFirst mode." ).arg( results.count() ) );
+        return results;
+      }
+
     }
 
     QgsDebugMsg( QStringLiteral( "IdentifyKit identified %1 results" ).arg( results.count() ) );
