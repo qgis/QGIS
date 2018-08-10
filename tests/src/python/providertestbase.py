@@ -17,6 +17,7 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 from qgis.core import (
+    QgsApplication,
     QgsRectangle,
     QgsFeatureRequest,
     QgsFeature,
@@ -24,6 +25,7 @@ from qgis.core import (
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
     QgsExpressionContext,
+    QgsExpression,
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsFeatureSink,
@@ -845,3 +847,25 @@ class ProviderTestCase(FeatureSourceTestCase):
                 self.assertEqual(count, 5)
                 self.assertFalse(iterator.compileFailed())
                 self.disableCompiler()
+
+    def testConcurrency(self):
+        """
+        The connection pool has a maximum of 4 connections defined (+2 spare connections)
+        Make sure that if we exhaust those 4 connections and force another connection
+        it is actually using the spare connections and does not freeze.
+        This situation normally happens when (at least) 4 rendering threads are active
+        in parallel and one requires an expression to be evaluated.
+        """
+        # Acquire the maximum amount of concurrent connections
+        iterators = list()
+        for i in range(QgsApplication.instance().maxConcurrentConnectionsPerPool()):
+            iterators.append(self.vl.getFeatures())
+
+        # Run an expression that will also do a request and should use a spare
+        # connection. It just should not deadlock here.
+
+        feat = next(iterators[0])
+        context = QgsExpressionContext()
+        context.setFeature(feat)
+        exp = QgsExpression('get_feature(\'{layer}\', \'pk\', 5)'.format(layer=self.vl.id()))
+        exp.evaluate(context)

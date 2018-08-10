@@ -86,6 +86,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
   mConnectionTimeout = rh.mConnectionTimeout;
+  mRequestMayBeNested = rh.mRequestMayBeNested;
   return *this;
 }
 
@@ -296,6 +297,16 @@ int QgsFeatureRequest::connectionTimeout() const
 void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
 {
   mConnectionTimeout = connectionTimeout;
+}
+
+bool QgsFeatureRequest::requestMayBeNested() const
+{
+  return mRequestMayBeNested;
+}
+
+void QgsFeatureRequest::setRequestMayBeNested( bool requestMayBeNested )
+{
+  mRequestMayBeNested = requestMayBeNested;
 }
 
 

@@ -19,6 +19,7 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
+#include "qgsapplication.h"
 #include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
@@ -29,8 +30,8 @@
 #include <QThread>
 
 
-#define CONN_POOL_MAX_CONCURRENT_CONNS      4
 #define CONN_POOL_EXPIRATION_TIME           60    // in seconds
+#define CONN_POOL_SPARE_CONNECTIONS          2    // number of spare connections in case all the base connections are used but we have a nested request with the risk of a deadlock
 
 
 /**
@@ -59,8 +60,6 @@ class QgsConnectionPoolGroup
 {
   public:
 
-    static const int MAX_CONCURRENT_CONNECTIONS;
-
     struct Item
     {
       T c;
@@ -69,7 +68,7 @@ class QgsConnectionPoolGroup
 
     QgsConnectionPoolGroup( const QString &ci )
       : connInfo( ci )
-      , sem( CONN_POOL_MAX_CONCURRENT_CONNS )
+      , sem( QgsApplication::instance()->maxConcurrentConnectionsPerPool() + CONN_POOL_SPARE_CONNECTIONS )
     {
     }
 
@@ -93,12 +92,13 @@ class QgsConnectionPoolGroup
      *
      * \returns initialized connection or nullptr if unsuccessful
      */
-    T acquire( int timeout )
+    T acquire( int timeout, bool requestMayBeNested )
     {
+      const int requiredFreeConnectionCount = requestMayBeNested ? 1 : 3;
       // we are going to acquire a resource - if no resource is available, we will block here
       if ( timeout >= 0 )
       {
-        if ( !sem.tryAcquire( 1, timeout ) )
+        if ( !sem.tryAcquire( requiredFreeConnectionCount, timeout ) )
           return nullptr;
       }
       else
@@ -107,8 +107,9 @@ class QgsConnectionPoolGroup
         // tryAcquire is broken on Qt > 5.8 with negative timeouts - see
         // https://bugreports.qt.io/browse/QTBUG-64413
         // https://lists.osgeo.org/pipermail/qgis-developer/2017-November/050456.html
-        sem.acquire( 1 );
+        sem.acquire( requiredFreeConnectionCount );
       }
+      sem.release( requiredFreeConnectionCount - 1 );
 
       // quick (preferred) way - use cached connection
       {
@@ -122,6 +123,7 @@ class QgsConnectionPoolGroup
             qgsConnectionPool_ConnectionDestroy( i.c );
             qgsConnectionPool_ConnectionCreate( connInfo, i.c );
           }
+
 
           // no need to run if nothing can expire
           if ( conns.isEmpty() )
@@ -283,9 +285,11 @@ class QgsConnectionPool
      * If \a timeout is a negative value the calling thread will be blocked
      * until a connection becomes available. This is the default behavior.
      *
+     *
+     *
      * \returns initialized connection or nullptr if unsuccessful
      */
-    T acquireConnection( const QString &connInfo, int timeout = -1 )
+    T acquireConnection( const QString &connInfo, int timeout = -1, bool requestMayBeNested = false )
     {
       mMutex.lock();
       typename T_Groups::iterator it = mGroups.find( connInfo );
@@ -296,7 +300,7 @@ class QgsConnectionPool
       T_Group *group = *it;
       mMutex.unlock();
 
-      return group->acquire( timeout );
+      return group->acquire( timeout, requestMayBeNested );
     }
 
     //! Release an existing connection so it will get back into the pool and can be reused

@@ -38,7 +38,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
 
   if ( !source->mTransactionConnection )
   {
-    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo, request.connectionTimeout(), request.requestMayBeNested() );
     mIsTransactionConnection = false;
   }
   else

@@ -799,6 +799,18 @@ Set a single custom expression variable.
 .. versionadded:: 3.0
 %End
 
+    int maxConcurrentConnectionsPerPool() const;
+%Docstring
+The maximum number of concurrent connections per connections pool.
+
+.. note::
+
+   QGIS may in some situations allocate more than this amount
+   of connections to avoid deadlocks.
+
+.. versionadded:: 3.4
+%End
+
 %If (ANDROID)
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );
