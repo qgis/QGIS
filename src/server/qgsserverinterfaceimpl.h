@@ -72,6 +72,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /**
      * Gets the helper over all the registered server cache filters
      * \returns the server cache helper
+     * \since QGIS 3.4
      */
     QgsServerCacheManager *cacheManager() const override { return mCacheManager.get(); }
 

@@ -31,7 +31,7 @@ namespace QgsWmts
    * \ingroup server
    * \class QgsWmts::Service
    * \brief OGC web service specialized for WMTS
-   * \since QGIS 3.0
+   * \since QGIS 3.4
    */
   class Service: public QgsService
   {
@@ -68,7 +68,7 @@ namespace QgsWmts
         }
 
         // Get the request
-        QString req = params.value( QStringLiteral( "REQUEST" ) );
+        QString req = params.value( QgsServerParameter::name( QgsServerParameter::REQUEST ) );
         if ( req.isEmpty() )
         {
           throw QgsServiceException( QStringLiteral( "OperationNotSupported" ),

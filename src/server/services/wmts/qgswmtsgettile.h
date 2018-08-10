@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgswmsgettile.h
+                              qgswmtsgettile.h
                             -------------------------
   begin                : July 23 , 2017
   copyright            : (C) 2018 by René-Luc D'Hont

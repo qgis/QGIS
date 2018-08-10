@@ -1,7 +1,7 @@
 /***************************************************************************
                               qgswmtsserviceexception.h
                               ------------------------
-  begin                : July 23, 2017
+  begin                : July 23, 2018
   copyright            : (C) 2018 by René-Luc D'Hont
   email                : rldhont at 3liz dot com
 ***************************************************************************/
@@ -28,8 +28,8 @@ namespace QgsWmts
   /**
    * \ingroup server
    * \class  QgsWmts::QgsServiceException
-   * \brief Exception class for WFS services
-   * \since QGIS 3.0
+   * \brief Exception class for WMTS services
+   * \since QGIS 3.4
    */
   class QgsServiceException : public QgsOgcServiceException
   {
