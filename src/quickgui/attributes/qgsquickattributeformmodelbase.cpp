@@ -33,6 +33,7 @@ QHash<int, QByteArray> QgsQuickAttributeFormModelBase::roleNames() const
 
   roles[QgsQuickAttributeFormModel::ElementType]  = QByteArray( "Type" );
   roles[QgsQuickAttributeFormModel::Name]  = QByteArray( "Name" );
+  roles[QgsQuickAttributeFormModel::Alias]  = QByteArray( "Alias" );
   roles[QgsQuickAttributeFormModel::AttributeValue] = QByteArray( "AttributeValue" );
   roles[QgsQuickAttributeFormModel::AttributeEditable] = QByteArray( "AttributeEditable" );
   roles[QgsQuickAttributeFormModel::EditorWidget] = QByteArray( "EditorWidget" );
