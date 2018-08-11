@@ -641,7 +641,7 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     spinSymmetryPointForOtherMethods->setValue( mRenderer->symmetryPoint() );
   }
 
-  if ( true == mRenderer->useSymmetricMode() )
+  if ( mRenderer->useSymmetricMode() )
   {
     cbxClassifySymmetric->setChecked( true );
     spinSymmetryPointForOtherMethods->setEnabled( true );
@@ -656,11 +656,10 @@ void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
     cboSymmetryPointForPretty->setEnabled( false );
   }
 
-  if ( true == mRenderer->astride() )
+  if ( mRenderer->astride() )
     cbxAstride->setChecked( true );
   else
     cbxAstride->setChecked( false );
-
 
   // Only update class count if different - otherwise typing value gets very messy
   int nclasses = mRenderer->ranges().count();
@@ -886,7 +885,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     {
       useSymmetricMode = true;
       symmetryPoint = spinSymmetryPointForOtherMethods->value();
-      cbxAstride->isChecked() ? astride = true : astride = false;
+      astride = cbxAstride->isChecked();
     }
   }
   else if ( cboGraduatedMode->currentIndex() == 2 ) // Jenks
@@ -905,7 +904,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     {
       useSymmetricMode = true;
       symmetryPoint = spinSymmetryPointForOtherMethods->value();
-      cbxAstride->isChecked() ? astride = true : astride = false;
+      astride = cbxAstride->isChecked();
     }
   }
   else if ( cboGraduatedMode->currentIndex() == 4 ) // Pretty
@@ -914,7 +913,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
     if ( cbxClassifySymmetric->isChecked() )
     {
       useSymmetricMode = true;
-      cbxAstride->isChecked() ? astride = true : astride = false;
+      astride = cbxAstride->isChecked();
       symmetryPoint = cboSymmetryPointForPretty->currentText().toDouble(); //selected number
     }
   }
