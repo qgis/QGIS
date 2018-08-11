@@ -1178,6 +1178,75 @@ QgsCircularString *QgsCircularString::reversed() const
   return copy;
 }
 
+QgsPoint *QgsCircularString::interpolatePoint( const double distance ) const
+{
+  if ( distance < 0 )
+    return nullptr;
+
+  double distanceTraversed = 0;
+  const int totalPoints = numPoints();
+  if ( totalPoints == 0 )
+    return nullptr;
+
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  if ( is3D() )
+    pointType = QgsWkbTypes::PointZ;
+  if ( isMeasure() )
+    pointType = QgsWkbTypes::addM( pointType );
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = is3D() ? mZ.constData() : nullptr;
+  const double *m = isMeasure() ? mM.constData() : nullptr;
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = z ? *z++ : 0.0;
+  double prevM = m ? *m++ : 0.0;
+
+  if ( qgsDoubleNear( distance, 0.0 ) )
+  {
+    return new QgsPoint( pointType, prevX, prevY, prevZ, prevM );
+  }
+
+  for ( int i = 0; i < ( totalPoints - 2 ) ; i += 2 )
+  {
+    double x1 = prevX;
+    double y1 = prevY;
+    double z1 = prevZ;
+    double m1 = prevM;
+
+    double x2 = *x++;
+    double y2 = *y++;
+    double z2 = z ? *z++ : 0.0;
+    double m2 = m ? *m++ : 0.0;
+
+    double x3 = *x++;
+    double y3 = *y++;
+    double z3 = z ? *z++ : 0.0;
+    double m3 = m ? *m++ : 0.0;
+
+    const double segmentLength = QgsGeometryUtils::circleLength( x1, y1, x2, y2, x3, y3 );
+    if ( distance < distanceTraversed + segmentLength || qgsDoubleNear( distance, distanceTraversed + segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distance - distanceTraversed, segmentLength );
+      return new QgsPoint( QgsGeometryUtils::interpolatePointOnArc( QgsPoint( pointType, x1, y1, z1, m1 ),
+                           QgsPoint( pointType, x2, y2, z2, m2 ),
+                           QgsPoint( pointType, x3, y3, z3, m3 ), distanceToPoint ) );
+    }
+
+    distanceTraversed += segmentLength;
+
+    prevX = x3;
+    prevY = y3;
+    prevZ = z3;
+    prevM = m3;
+  }
+
+  return nullptr;
+}
+
 QgsCircularString *QgsCircularString::curveSubstring( double startDistance, double endDistance ) const
 {
   if ( startDistance < 0 && endDistance < 0 )

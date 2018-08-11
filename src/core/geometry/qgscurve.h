@@ -167,6 +167,19 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
     virtual QPolygonF asQPolygonF() const;
 
     /**
+     * Returns an interpolated point on the curve at the specified \a distance.
+     *
+     * If z or m values are present, the output z and m will be interpolated using
+     * the existing vertices' z or m values.
+     *
+     * If distance is negative, or is greater than the length of the curve, a nullptr
+     * will be returned.
+     *
+     * \since QGIS 3.4
+     */
+    virtual QgsPoint *interpolatePoint( double distance ) const = 0 SIP_FACTORY;
+
+    /**
      * Returns a new curve representing a substring of this curve.
      *
      * The \a startDistance and \a endDistance arguments specify the length along the curve

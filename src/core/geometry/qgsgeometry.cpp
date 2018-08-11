@@ -45,6 +45,7 @@ email                : morb at ozemail dot com dot au
 #include "qgspolygon.h"
 #include "qgslinestring.h"
 #include "qgscircle.h"
+#include "qgscurve.h"
 
 struct QgsGeometryPrivate
 {
@@ -2005,7 +2006,7 @@ QgsGeometry QgsGeometry::subdivide( int maxNodes ) const
   return QgsGeometry( std::move( result ) );
 }
 
-QgsGeometry QgsGeometry::interpolate( double distance ) const
+QgsGeometry QgsGeometry::interpolate( const double distance ) const
 {
   if ( !d->geometry )
   {
@@ -2013,17 +2014,34 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   }
 
   QgsGeometry line = *this;
-  if ( type() == QgsWkbTypes::PolygonGeometry )
+  if ( type() == QgsWkbTypes::PointGeometry )
+    return QgsGeometry();
+  else if ( type() == QgsWkbTypes::PolygonGeometry )
+  {
     line = QgsGeometry( d->geometry->boundary() );
+  }
 
-  QgsGeos geos( line.constGet() );
-  mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > result( geos.interpolate( distance, &mLastError ) );
+  const QgsCurve *curve = nullptr;
+  if ( line.isMultipart() )
+  {
+    // if multi part, just use first part
+    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( line.constGet() );
+    if ( collection && collection->numGeometries() > 0 )
+    {
+      curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
+    }
+  }
+  else
+  {
+    curve = qgsgeometry_cast< const QgsCurve * >( line.constGet() );
+  }
+  if ( !curve )
+    return QgsGeometry();
+
+  std::unique_ptr< QgsPoint > result( curve->interpolatePoint( distance ) );
   if ( !result )
   {
-    QgsGeometry geom;
-    geom.mLastError = mLastError;
-    return geom;
+    return QgsGeometry();
   }
   return QgsGeometry( std::move( result ) );
 }

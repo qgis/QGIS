@@ -711,6 +711,68 @@ QgsLineString *QgsLineString::reversed() const
   return copy;
 }
 
+QgsPoint *QgsLineString::interpolatePoint( const double distance ) const
+{
+  if ( distance < 0 )
+    return nullptr;
+
+  double distanceTraversed = 0;
+  const int totalPoints = numPoints();
+  if ( totalPoints == 0 )
+    return nullptr;
+
+  const double *x = mX.constData();
+  const double *y = mY.constData();
+  const double *z = is3D() ? mZ.constData() : nullptr;
+  const double *m = isMeasure() ? mM.constData() : nullptr;
+
+  QgsWkbTypes::Type pointType = QgsWkbTypes::Point;
+  if ( is3D() )
+    pointType = QgsWkbTypes::PointZ;
+  if ( isMeasure() )
+    pointType = QgsWkbTypes::addM( pointType );
+
+  double prevX = *x++;
+  double prevY = *y++;
+  double prevZ = z ? *z++ : 0.0;
+  double prevM = m ? *m++ : 0.0;
+
+  if ( qgsDoubleNear( distance, 0.0 ) )
+  {
+    return new QgsPoint( pointType, prevX, prevY, prevZ, prevM );
+  }
+
+  for ( int i = 1; i < totalPoints; ++i )
+  {
+    double thisX = *x++;
+    double thisY = *y++;
+    double thisZ = z ? *z++ : 0.0;
+    double thisM = m ? *m++ : 0.0;
+
+    const double segmentLength = std::sqrt( ( thisX - prevX ) * ( thisX - prevX ) + ( thisY - prevY ) * ( thisY - prevY ) );
+    if ( distance < distanceTraversed + segmentLength || qgsDoubleNear( distance, distanceTraversed + segmentLength ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distance - distanceTraversed, segmentLength );
+      double pX, pY;
+      double pZ = 0;
+      double pM = 0;
+      QgsGeometryUtils::pointOnLineWithDistance( prevX, prevY, thisX, thisY, distanceToPoint, pX, pY,
+          z ? &prevZ : nullptr, z ? &thisZ : nullptr, z ? &pZ : nullptr,
+          m ? &prevM : nullptr, m ? &thisM : nullptr, m ? &pM : nullptr );
+      return new QgsPoint( pointType, pX, pY, pZ, pM );
+    }
+
+    distanceTraversed += segmentLength;
+    prevX = thisX;
+    prevY = thisY;
+    prevZ = thisZ;
+    prevM = thisM;
+  }
+
+  return nullptr;
+}
+
 QgsLineString *QgsLineString::curveSubstring( double startDistance, double endDistance ) const
 {
   if ( startDistance < 0 && endDistance < 0 )

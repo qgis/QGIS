@@ -115,6 +115,7 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     QgsCompoundCurve *reversed() const override SIP_FACTORY;
+    QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCompoundCurve *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
 
     bool addZValue( double zValue = 0 ) override;
