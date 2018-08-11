@@ -41,6 +41,8 @@ ms-windows/osgeo4w/binary-*
 ms-windows/osgeo4w/nsis/
 ms-windows/osgeo4w/packages-x86/
 ms-windows/osgeo4w/packages-x86_64/
+ms-windows/osgeo4w/build-qgis-test-x86/
+ms-windows/osgeo4w/build-qgis-test-x86_64/
 ms-windows/osgeo4w/unpacked/
 ms-windows/osgeo4w/untgz/
 ms-windows/packages/
