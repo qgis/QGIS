@@ -118,6 +118,7 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
     QgsCircularString *reversed() const override  SIP_FACTORY;
+    QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;

@@ -2727,6 +2727,52 @@ void TestQgsGeometry::circularString()
                        <<  QgsPoint( 14, -1 ) <<  QgsPoint( 16, 1 ) );
   substringResult.reset( substring.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CircularString (10.46 0.84, 11.48 0.88, 12 0, 14 -1, 16 1)" ) );
+
+  // interpolate
+  QgsCircularString interpolate;
+  std::unique_ptr< QgsPoint > interpolateResult( interpolate.interpolatePoint( 1 ) ); // no crash
+  QVERIFY( !interpolateResult.get() );
+  // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14)
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) <<  QgsPoint( 11, 1, 3, 4 ) <<  QgsPoint( 12, 0, 13, 14 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 0 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (10 0 1 2)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( -1 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 100000 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (10.46 0.84 2.27 3.27)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1.5 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (10.93 1 2.91 3.91)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( interpolate.length() ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (12 0 13 14)" ) );
+  // CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14, 14 -1 13 14, 16 1 23 24 )
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1, 2 ) <<  QgsPoint( 11, 1, 3, 4 ) <<  QgsPoint( 12, 0, 13, 14 )
+                         <<  QgsPoint( 14, -1, 13, 14 ) <<  QgsPoint( 16, 1, 23, 24 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (10.46 0.84 2.27 3.27)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1.5 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (10.93 1 2.91 3.91)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 10 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 6 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (14.5 -0.9 14.65 15.65)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 5 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (13.51 -0.98 13 14)" ) );
+
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 10, 0, 1 ) <<  QgsPoint( 11, 1, 3 ) <<  QgsPoint( 12, 0, 13 )
+                         <<  QgsPoint( 14, -1, 13 ) <<  QgsPoint( 16, 1, 23 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZ (10.46 0.84 2.27)" ) );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointM, 10, 0, 0, 1 ) <<  QgsPoint( QgsWkbTypes::PointM, 11, 1, 0, 3 ) <<  QgsPoint( QgsWkbTypes::PointM, 12, 0, 0, 13 )
+                         <<  QgsPoint( QgsWkbTypes::PointM, 14, -1, 0, 13 ) <<  QgsPoint( QgsWkbTypes::PointM, 16, 1, 0, 23 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointM (10.46 0.84 2.27)" ) );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 10, 0 ) <<  QgsPoint( 11, 1 ) <<  QgsPoint( 12, 0 )
+                         <<  QgsPoint( 14, -1 ) <<  QgsPoint( 16, 1 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (10.46 0.84)" ) );
+
 }
 
 
@@ -4695,6 +4741,32 @@ void TestQgsGeometry::lineString()
   substringResult.reset( substring.curveSubstring( 1, 20 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "LineString (11 3, 11 12, 21 12)" ) );
 
+  //interpolate point
+  QgsLineString interpolate;
+  std::unique_ptr< QgsPoint > interpolateResult( interpolate.interpolatePoint( 1 ) ); // no crash
+  QVERIFY( !interpolateResult.get() );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, QgsWkbTypes::PointZM ) << QgsPoint( 11, 12, 13, 14, QgsWkbTypes::PointZM ) << QgsPoint( 111, 12, 23, 24, QgsWkbTypes::PointZM ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 0 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (11 2 3 4)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( -1 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 100000 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (11 3 4 5)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 20 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (21 12 14 15)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 110 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (111 12 23 24)" ) );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 0, QgsWkbTypes::PointZ ) << QgsPoint( 11, 12, 13, 0, QgsWkbTypes::PointZ ) << QgsPoint( 111, 12, 23, 0, QgsWkbTypes::PointZ ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZ (11 3 4)" ) );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 0, 3, QgsWkbTypes::PointM ) << QgsPoint( 11, 12, 0, 13, QgsWkbTypes::PointM ) << QgsPoint( 111, 12, 0, 23, QgsWkbTypes::PointM ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointM (11 3 4)" ) );
+  interpolate.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (11 3)" ) );
 }
 
 void TestQgsGeometry::polygon()
@@ -11346,6 +11418,37 @@ void TestQgsGeometry::compoundCurve()
   substring.fromWkt( QStringLiteral( "CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))" ) );
   substringResult.reset( substring.curveSubstring( 1, 7 ) );
   QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ((6 0, 10 0),CircularString (10 0, 10.46 0.84, 11.42 0.91))" ) );
+
+  // substring
+  QgsCompoundCurve interpolate;
+  std::unique_ptr< QgsPoint > interpolateResult( interpolate.interpolatePoint( 1 ) ); // no crash
+  QVERIFY( !interpolateResult.get() );
+  interpolate.fromWkt( QStringLiteral( "CompoundCurveZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularStringZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 0 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (5 0 -1 -2)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( -1 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 100000 ) );
+  QVERIFY( !interpolateResult.get() );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (6 0 -0.6 -1.2)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 7 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (11.42 0.91 5.73 6.73)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1.5 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (6.5 0 -0.4 -0.8)" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( interpolate.length() ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZM (12 0 13 14)" ) );
+
+  interpolate.fromWkt( QStringLiteral( "CompoundCurveZ( ( 5 0 -1, 10 0 1 ), CircularStringZ (10 0 1, 11 1 3, 12 0 13))" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointZ (6 0 -0.6)" ) );
+  interpolate.fromWkt( QStringLiteral( "CompoundCurveM( ( 5 0 -1, 10 0 1 ), CircularStringM (10 0 1, 11 1 3, 12 0 13))" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "PointM (6 0 -0.6)" ) );
+  interpolate.fromWkt( QStringLiteral( "CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))" ) );
+  interpolateResult.reset( interpolate.interpolatePoint( 1 ) );
+  QCOMPARE( interpolateResult->asWkt( 2 ), QStringLiteral( "Point (6 0)" ) );
+
 }
 
 void TestQgsGeometry::multiPoint()

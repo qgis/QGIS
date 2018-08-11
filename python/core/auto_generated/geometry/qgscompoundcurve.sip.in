@@ -144,6 +144,8 @@ Appends first point if not already closed.
 
     virtual QgsCompoundCurve *reversed() const /Factory/;
 
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
     virtual QgsCompoundCurve *curveSubstring( double startDistance, double endDistance ) const /Factory/;
 
 

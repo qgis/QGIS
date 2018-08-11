@@ -308,6 +308,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool deleteVertex( QgsVertexId position ) override;
 
     QgsLineString *reversed() const override SIP_FACTORY;
+    QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsLineString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
 
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;

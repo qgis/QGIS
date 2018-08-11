@@ -182,6 +182,19 @@ Returns the y-coordinate of the specified node in the line string.
 Returns a QPolygonF representing the points.
 %End
 
+    virtual QgsPoint *interpolatePoint( double distance ) const = 0 /Factory/;
+%Docstring
+Returns an interpolated point on the curve at the specified ``distance``.
+
+If z or m values are present, the output z and m will be interpolated using
+the existing vertices' z or m values.
+
+If distance is negative, or is greater than the length of the curve, a None
+will be returned.
+
+.. versionadded:: 3.4
+%End
+
     virtual QgsCurve *curveSubstring( double startDistance, double endDistance ) const = 0 /Factory/;
 %Docstring
 Returns a new curve representing a substring of this curve.

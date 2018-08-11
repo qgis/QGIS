@@ -1134,12 +1134,16 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry subdivide( int maxNodes = 256 ) const;
 
     /**
-     * Returns interpolated point on line at distance.
+     * Returns an interpolated point on the geometry at the specified \a distance.
+     *
+     * If the original geometry is a polygon type, the boundary of the polygon
+     * will be used during interpolation. If the original geometry is a point
+     * type, a null geometry will be returned.
+     *
+     * If z or m values are present, the output z and m will be interpolated using
+     * the existing vertices' z or m values.
      *
      * If the input is a NULL geometry, the output will also be a NULL geometry.
-     *
-     * If an error was encountered while creating the result, more information can be retrieved
-     * by calling `error()` on the returned geometry.
      *
      * \see lineLocatePoint()
      * \since QGIS 2.0

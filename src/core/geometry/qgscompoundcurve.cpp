@@ -864,6 +864,30 @@ QgsCompoundCurve *QgsCompoundCurve::reversed() const
   return clone;
 }
 
+QgsPoint *QgsCompoundCurve::interpolatePoint( const double distance ) const
+{
+  if ( distance < 0 )
+    return nullptr;
+
+  double distanceTraversed = 0;
+  for ( const QgsCurve *curve : mCurves )
+  {
+    const double thisCurveLength = curve->length();
+    if ( distanceTraversed + thisCurveLength > distance || qgsDoubleNear( distanceTraversed + thisCurveLength, distance ) )
+    {
+      // point falls on this segment - truncate to segment length if qgsDoubleNear test was actually > segment length
+      const double distanceToPoint = std::min( distance - distanceTraversed, thisCurveLength );
+
+      // point falls on this curve
+      return curve->interpolatePoint( distanceToPoint );
+    }
+
+    distanceTraversed += thisCurveLength;
+  }
+
+  return nullptr;
+}
+
 QgsCompoundCurve *QgsCompoundCurve::curveSubstring( double startDistance, double endDistance ) const
 {
   if ( startDistance < 0 && endDistance < 0 )

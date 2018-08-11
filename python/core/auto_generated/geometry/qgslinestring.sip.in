@@ -283,6 +283,8 @@ of the curve.
 
     virtual QgsLineString *reversed() const /Factory/;
 
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
     virtual QgsLineString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
 
 

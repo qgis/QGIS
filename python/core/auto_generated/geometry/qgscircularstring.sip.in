@@ -143,6 +143,8 @@ Sets the circular string's points
 
     virtual QgsCircularString *reversed() const  /Factory/;
 
+    virtual QgsPoint *interpolatePoint( double distance ) const /Factory/;
+
     virtual QgsCircularString *curveSubstring( double startDistance, double endDistance ) const /Factory/;
 
     virtual bool addZValue( double zValue = 0 );
