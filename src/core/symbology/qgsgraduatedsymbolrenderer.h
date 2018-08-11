@@ -309,26 +309,26 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * \param attrName attribute to classify
      * \param classes number of classes
      * \param mode classification mode
+     * \param symbol base symbol
+     * \param ramp color ramp for classes
+     * \param legendFormat
      * \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
      * \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
      * \param listForCboPrettyBreaks The list of potential pivot values for symmetric mode with prettybreaks mode
      * \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
-     * \param symbol base symbol
-     * \param ramp color ramp for classes
-     * \param legendFormat
      * \returns new QgsGraduatedSymbolRenderer object
      */
     static QgsGraduatedSymbolRenderer *createRenderer( QgsVectorLayer *vlayer,
         const QString &attrName,
         int classes,
         Mode mode,
-        bool useSymmetricMode,
-        double symmetryPoint,
-        QStringList listForCboPrettyBreaks,
-        bool astride,
         QgsSymbol *symbol SIP_TRANSFER,
         QgsColorRamp *ramp SIP_TRANSFER,
-        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
+        const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat(),
+        bool useSymmetricMode = false,
+        double symmetryPoint = 0.0,
+        QStringList listForCboPrettyBreaks = {},
+        bool astride = false );
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -455,10 +455,6 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     QString mAttrName;
     QgsRangeList mRanges;
     Mode mMode = Custom;
-    bool mUseSymmetricMode;
-    double mSymmetryPoint;
-    QStringList mListForCboPrettyBreaks;
-    bool mAstride;
     std::unique_ptr<QgsSymbol> mSourceSymbol;
     std::unique_ptr<QgsColorRamp> mSourceColorRamp;
     QgsRendererRangeLabelFormat mLabelFormat;
@@ -484,6 +480,11 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     //! \note not available in Python bindings
     static const char *graduatedMethodStr( GraduatedMethod method ) SIP_SKIP;
+
+    bool mUseSymmetricMode = false;
+    double mSymmetryPoint = 0.0;
+    QStringList mListForCboPrettyBreaks = {};
+    bool mAstride = false;
 
   private:
 
