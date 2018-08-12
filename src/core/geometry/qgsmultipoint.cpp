@@ -189,10 +189,21 @@ void QgsMultiPoint::filterVertices( const std::function<bool ( const QgsPoint & 
   {
     if ( const QgsPoint *point = qgsgeometry_cast< const QgsPoint * >( part ) )
     {
-      return !filter( *point );
+      if ( !filter( *point ) )
+      {
+        delete point;
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
     else
+    {
+      delete part;
       return true;
+    }
   } ), mGeometries.end() ); // clazy:exclude=detaching-member
 }
 
