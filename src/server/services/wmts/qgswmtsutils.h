@@ -20,6 +20,7 @@
 #define QGSWMTSUTILS_H
 
 #include "qgsmodule.h"
+#include "qgswmtsparameters.h"
 #include "qgswmtsserviceexception.h"
 
 #include <QDomDocument>
@@ -45,7 +46,7 @@ namespace QgsWmts
     QgsUnitTypes::DistanceUnit unit;
   };
 
-  struct tileMatrix
+  struct tileMatrixDef
   {
     double resolution = 0.0;
 
@@ -60,7 +61,7 @@ namespace QgsWmts
     double top = 0.0;
   };
 
-  struct tileMatrixSet
+  struct tileMatrixSetDef
   {
     QString ref;
 
@@ -68,7 +69,7 @@ namespace QgsWmts
 
     QgsUnitTypes::DistanceUnit unit;
 
-    QList< tileMatrix > tileMatrixList;
+    QList< tileMatrixDef > tileMatrixList;
   };
 
   struct layerDef
@@ -96,26 +97,20 @@ namespace QgsWmts
    */
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
-  /**
-   * Parse bounding box
-   */
-  //XXX At some point, should be moved to common library
-  QgsRectangle parseBbox( const QString &bboxStr );
-
   // Define namespaces used in WMTS documents
   const QString WMTS_NAMESPACE = QStringLiteral( "http://www.opengis.net/wmts/1.0" );
   const QString GML_NAMESPACE = QStringLiteral( "http://www.opengis.net/gml" );
   const QString OWS_NAMESPACE = QStringLiteral( "http://www.opengis.net/ows/1.1" );
 
   tileMatrixInfo getTileMatrixInfo( const QString &crsStr, const QgsProject *project );
-  tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi, double minScale );
+  tileMatrixSetDef getTileMatrixSet( tileMatrixInfo tmi, double minScale );
   double getProjectMinScale( const QgsProject *project );
-  QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project );
+  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project );
 
   /**
    * Translate WMTS parameters to WMS query item
    */
-  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params,
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params,
       const QgsProject *project, QgsServerInterface *serverIface );
 
 } // namespace QgsWmts

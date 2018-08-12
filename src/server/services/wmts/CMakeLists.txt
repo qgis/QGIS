@@ -8,12 +8,19 @@ SET (wmts_SRCS
   qgswmtsgetcapabilities.cpp
   qgswmtsgettile.cpp
   qgswmtsgetfeatureinfo.cpp
+  qgswmtsparameters.cpp
+)
+
+SET (wmts_MOC_HDRS
+  qgswmtsparameters.h
 )
 
 ########################################################
 # Build
 
-ADD_LIBRARY (wmts MODULE ${wmts_SRCS})
+QT5_WRAP_CPP(wmts_MOC_SRCS ${wmts_MOC_HDRS})
+
+ADD_LIBRARY (wmts MODULE ${wmts_SRCS} ${wmts_MOC_SRCS} ${wmts_MOC_HDRS})
 
 
 INCLUDE_DIRECTORIES(SYSTEM

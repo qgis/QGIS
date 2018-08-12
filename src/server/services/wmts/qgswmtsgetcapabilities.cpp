@@ -320,12 +320,12 @@ namespace QgsWmts
      */
     QDomElement contentsElement = doc.createElement( QStringLiteral( "Contents" )/*wmts:Contents*/ );
 
-    QList< tileMatrixSet > tmsList = getTileMatrixSetList( project );
+    QList< tileMatrixSetDef > tmsList = getTileMatrixSetList( project );
     if ( !tmsList.isEmpty() )
     {
       QList< layerDef > wmtsLayers;
       QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-      QList<tileMatrixSet>::iterator tmsIt = tmsList.begin();
+      QList<tileMatrixSetDef>::iterator tmsIt = tmsList.begin();
 
       QStringList nonIdentifiableLayers = project->nonIdentifiableLayers();
 
@@ -547,7 +547,7 @@ namespace QgsWmts
         tmsIt = tmsList.begin();
         for ( ; tmsIt != tmsList.end(); ++tmsIt )
         {
-          tileMatrixSet &tms = *tmsIt;
+          tileMatrixSetDef &tms = *tmsIt;
           if ( tms.ref == QLatin1String( "EPSG:4326" ) )
             continue;
 
@@ -609,7 +609,7 @@ namespace QgsWmts
         tmsIt = tmsList.begin();
         for ( ; tmsIt != tmsList.end(); ++tmsIt )
         {
-          tileMatrixSet &tms = *tmsIt;
+          tileMatrixSetDef &tms = *tmsIt;
           if ( tms.ref != QLatin1String( "EPSG:4326" ) )
           {
             QgsRectangle rect;
@@ -636,10 +636,10 @@ namespace QgsWmts
           //wmts:TileMatrixSetLimits
           QDomElement tmsLimitsElement = doc.createElement( QStringLiteral( "TileMatrixSetLimits" )/*wmts:TileMatrixSetLimits*/ );
           int tmIdx = 0;
-          QList<tileMatrix>::iterator tmIt = tms.tileMatrixList.begin();
+          QList<tileMatrixDef>::iterator tmIt = tms.tileMatrixList.begin();
           for ( ; tmIt != tms.tileMatrixList.end(); ++tmIt )
           {
-            tileMatrix &tm = *tmIt;
+            tileMatrixDef &tm = *tmIt;
 
             QDomElement tmLimitsElement = doc.createElement( QStringLiteral( "TileMatrixLimits" )/*wmts:TileMatrixLimits*/ );
 
@@ -683,7 +683,7 @@ namespace QgsWmts
       tmsIt = tmsList.begin();
       for ( ; tmsIt != tmsList.end(); ++tmsIt )
       {
-        tileMatrixSet &tms = *tmsIt;
+        tileMatrixSetDef &tms = *tmsIt;
 
         //wmts:TileMatrixSet
         QDomElement tmsElement = doc.createElement( QStringLiteral( "TileMatrixSet" )/*wmts:TileMatrixSet*/ );
@@ -700,10 +700,10 @@ namespace QgsWmts
 
         //wmts:TileMatrix
         int tmIdx = 0;
-        QList<tileMatrix>::iterator tmIt = tms.tileMatrixList.begin();
+        QList<tileMatrixDef>::iterator tmIt = tms.tileMatrixList.begin();
         for ( ; tmIt != tms.tileMatrixList.end(); ++tmIt )
         {
-          tileMatrix &tm = *tmIt;
+          tileMatrixDef &tm = *tmIt;
 
           QDomElement tmElement = doc.createElement( QStringLiteral( "TileMatrix" )/*wmts:TileMatrix*/ );
 

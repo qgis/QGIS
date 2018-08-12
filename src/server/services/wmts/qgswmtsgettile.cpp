@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmtsutils.h"
+#include "qgswmtsparameters.h"
 #include "qgswmtsgettile.h"
 
 #include <QImage>
@@ -27,7 +28,8 @@ namespace QgsWmts
                      QgsServerResponse &response )
   {
     Q_UNUSED( version );
-    QgsServerRequest::Parameters params = request.parameters();
+    //QgsServerRequest::Parameters params = request.parameters();
+    const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project, serverIface );
@@ -44,16 +46,19 @@ namespace QgsWmts
     QgsServerCacheManager *cacheManager = serverIface->cacheManager();
     if ( cacheManager && cache )
     {
-      QString contentType = params.value( QStringLiteral( "FORMAT" ) );
+      QgsWmtsParameters::Format f = params.format();
+      QString contentType;
       QString saveFormat;
       std::unique_ptr<QImage> image;
-      if ( contentType == QLatin1String( "image/jpeg" ) )
+      if ( f == QgsWmtsParameters::Format::JPG )
       {
+        contentType = QStringLiteral( "image/jpeg" );
         saveFormat = QStringLiteral( "JPEG" );
         image = qgis::make_unique<QImage>( 256, 256, QImage::Format_RGB32 );
       }
       else
       {
+        contentType = QStringLiteral( "image/png" );
         saveFormat = QStringLiteral( "PNG" );
         image = qgis::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
       }

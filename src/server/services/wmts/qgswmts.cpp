@@ -58,13 +58,13 @@ namespace QgsWmts
       {
         Q_UNUSED( project );
 
-        QgsServerRequest::Parameters params = request.parameters();
-        QString versionString = params.value( QStringLiteral( "VERSION" ) );
+        const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
         // Set the default version
+        QString versionString = params.version();
         if ( versionString.isEmpty() )
         {
-          versionString = version();
+          versionString = version(); // defined in qgswfsutils.h
         }
 
         // Get the request

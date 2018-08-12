@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswmtsutils.h"
+#include "qgswmtsparameters.h"
 #include "qgsconfigcache.h"
 #include "qgsserverprojectutils.h"
 
@@ -65,37 +66,18 @@ namespace QgsWmts
     if ( href.isEmpty() )
     {
       QUrl url = request.url();
-      QUrlQuery q( url );
 
-      q.removeAllQueryItems( QStringLiteral( "REQUEST" ) );
-      q.removeAllQueryItems( QStringLiteral( "VERSION" ) );
-      q.removeAllQueryItems( QStringLiteral( "SERVICE" ) );
-      q.removeAllQueryItems( QStringLiteral( "_DC" ) );
+      QgsWmtsParameters params;
+      params.load( QUrlQuery( url ) );
+      params.remove( QgsServerParameter::REQUEST );
+      params.remove( QgsServerParameter::VERSION_SERVICE );
+      params.remove( QgsServerParameter::SERVICE );
 
-      url.setQuery( q );
+      url.setQuery( params.urlQuery() );
       href = url.toString( QUrl::FullyDecoded );
-
     }
 
     return  href;
-  }
-
-  QgsRectangle parseBbox( const QString &bboxStr )
-  {
-    QStringList lst = bboxStr.split( ',' );
-    if ( lst.count() != 4 )
-      return QgsRectangle();
-
-    double d[4];
-    bool ok;
-    for ( int i = 0; i < 4; i++ )
-    {
-      lst[i].replace( ' ', '+' );
-      d[i] = lst[i].toDouble( &ok );
-      if ( !ok )
-        return QgsRectangle();
-    }
-    return QgsRectangle( d[0], d[1], d[2], d[3] );
   }
 
   tileMatrixInfo getTileMatrixInfo( const QString &crsStr, const QgsProject *project )
@@ -133,9 +115,9 @@ namespace QgsWmts
     return tmi;
   }
 
-  tileMatrixSet getTileMatrixSet( tileMatrixInfo tmi, double minScale )
+  tileMatrixSetDef getTileMatrixSet( tileMatrixInfo tmi, double minScale )
   {
-    QList< tileMatrix > tileMatrixList;
+    QList< tileMatrixDef > tileMatrixList;
     double scaleDenominator = tmi.scaleDenominator;
     QgsRectangle extent = tmi.extent;
     QgsUnitTypes::DistanceUnit unit = tmi.unit;
@@ -149,7 +131,7 @@ namespace QgsWmts
       double left = ( extent.xMinimum() + ( extent.xMaximum() - extent.xMinimum() ) / 2.0 ) - ( col / 2.0 ) * ( tileWidth * res );
       double top = ( extent.yMinimum() + ( extent.yMaximum() - extent.yMinimum() ) / 2.0 ) + ( row / 2.0 ) * ( tileHeight * res );
 
-      tileMatrix tm;
+      tileMatrixDef tm;
       tm.resolution = res;
       tm.scaleDenominator = scale;
       tm.col = col;
@@ -161,7 +143,7 @@ namespace QgsWmts
       scaleDenominator = scale / 2;
     }
 
-    tileMatrixSet tms;
+    tileMatrixSetDef tms;
     tms.ref = tmi.ref;
     tms.extent = extent;
     tms.unit = unit;
@@ -206,9 +188,9 @@ namespace QgsWmts
     return scale;
   }
 
-  QList< tileMatrixSet > getTileMatrixSetList( const QgsProject *project )
+  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project )
   {
-    QList< tileMatrixSet > tmsList;
+    QList< tileMatrixSetDef > tmsList;
 
     double minScale = getProjectMinScale( project );
 
@@ -225,18 +207,13 @@ namespace QgsWmts
     return tmsList;
   }
 
-  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsServerRequest::Parameters &params,
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params,
       const QgsProject *project, QgsServerInterface *serverIface )
   {
     //defining Layer
-    QString layer;
+    QString layer = params.layer();
     //read Layer
-    QMap<QString, QString>::const_iterator layer_it = params.constFind( QStringLiteral( "LAYER" ) );
-    if ( layer_it != params.constEnd() )
-    {
-      layer = layer_it.value();
-    }
-    else
+    if ( layer.isEmpty() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Layer is mandatory" ) );
     }
@@ -309,27 +286,17 @@ namespace QgsWmts
     }
 
     //defining Format
-    QString format;
+    QString format = params.formatAsString();
     //read Format
-    QMap<QString, QString>::const_iterator format_it = params.constFind( QStringLiteral( "FORMAT" ) );
-    if ( format_it != params.constEnd() )
-    {
-      format = format_it.value();
-    }
-    else
+    if ( format.isEmpty() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "Format is mandatory" ) );
     }
 
     //defining TileMatrixSet ref
-    QString tms_ref;
+    QString tms_ref = params.tileMatrixSet();
     //read TileMatrixSet
-    QMap<QString, QString>::const_iterator tms_ref_it = params.constFind( QStringLiteral( "TILEMATRIXSET" ) );
-    if ( tms_ref_it != params.constEnd() )
-    {
-      tms_ref = tms_ref_it.value();
-    }
-    else
+    if ( tms_ref.isEmpty() )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is mandatory" ) );
     }
@@ -346,24 +313,12 @@ namespace QgsWmts
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrixSet is unknown" ) );
     }
-    tileMatrixSet tms = getTileMatrixSet( tmi, getProjectMinScale( project ) );
-
-    bool conversionSuccess = false;
+    tileMatrixSetDef tms = getTileMatrixSet( tmi, getProjectMinScale( project ) );
 
     //difining TileMatrix idx
-    int tm_idx;
+    int tm_idx = params.tileMatrixAsInt();
     //read TileMatrix
-    QMap<QString, QString>::const_iterator tm_ref_it = params.constFind( QStringLiteral( "TILEMATRIX" ) );
-    if ( tm_ref_it != params.constEnd() )
-    {
-      QString tm_ref = tm_ref_it.value();
-      tm_idx = tm_ref.toInt( &conversionSuccess );
-      if ( !conversionSuccess )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is unknown" ) );
-      }
-    }
-    else
+    if ( tm_idx == -1 )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is mandatory" ) );
     }
@@ -371,23 +326,12 @@ namespace QgsWmts
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileMatrix is unknown" ) );
     }
-    tileMatrix tm = tms.tileMatrixList.at( tm_idx );
+    tileMatrixDef tm = tms.tileMatrixList.at( tm_idx );
 
     //defining TileRow
-    int tr;
+    int tr = params.tileRowAsInt();
     //read TileRow
-    QMap<QString, QString>::const_iterator tr_it = params.constFind( QStringLiteral( "TILEROW" ) );
-    if ( tr_it != params.constEnd() )
-    {
-      QString tr_str = tr_it.value();
-      conversionSuccess = false;
-      tr = tr_str.toInt( &conversionSuccess );
-      if ( !conversionSuccess )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TileRow is unknown" ) );
-      }
-    }
-    else
+    if ( tr == -1 )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileRow is mandatory" ) );
     }
@@ -397,20 +341,9 @@ namespace QgsWmts
     }
 
     //defining TileCol
-    int tc;
+    int tc = params.tileColAsInt();
     //read TileCol
-    QMap<QString, QString>::const_iterator tc_it = params.constFind( QStringLiteral( "TILECOL" ) );
-    if ( tc_it != params.constEnd() )
-    {
-      QString tc_str = tc_it.value();
-      conversionSuccess = false;
-      tc = tc_str.toInt( &conversionSuccess );
-      if ( !conversionSuccess )
-      {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is unknown" ) );
-      }
-    }
-    else
+    if ( tc == -1 )
     {
       throw QgsRequestNotWellFormedException( QStringLiteral( "TileCol is mandatory" ) );
     }
@@ -457,7 +390,7 @@ namespace QgsWmts
     query.addQueryItem( QStringLiteral( "width" ), QStringLiteral( "256" ) );
     query.addQueryItem( QStringLiteral( "height" ), QStringLiteral( "256" ) );
     query.addQueryItem( QStringLiteral( "format" ), format );
-    if ( format.startsWith( QStringLiteral( "image/png" ) ) )
+    if ( params.format() == QgsWmtsParameters::Format::PNG )
     {
       query.addQueryItem( QStringLiteral( "transparent" ), QStringLiteral( "true" ) );
     }

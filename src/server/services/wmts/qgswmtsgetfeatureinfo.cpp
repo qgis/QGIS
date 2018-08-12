@@ -1,5 +1,5 @@
 /***************************************************************************
-                            qgswmsgetfeatureinfo.cpp
+                            qgswmtsgetfeatureinfo.cpp
                             -------------------------
   begin                : July 23 , 2017
   copyright            : (C) 2018 by René-Luc D'Hont
@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmtsutils.h"
+#include "qgswmtsparameters.h"
 #include "qgswmtsgetfeatureinfo.h"
 
 #include <QImage>
@@ -27,17 +28,16 @@ namespace QgsWmts
                             QgsServerResponse &response )
   {
     Q_UNUSED( version );
-
-    QgsServerRequest::Parameters params = request.parameters();
+    const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query
     QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetFeatureInfo" ), params, project, serverIface );
 
     // GetFeatureInfo query items
-    query.addQueryItem( QStringLiteral( "query_layers" ), query.queryItemValue( QStringLiteral( "layers" ) ) );
-    query.addQueryItem( QStringLiteral( "i" ), params.value( QStringLiteral( "I" ) ) );
-    query.addQueryItem( QStringLiteral( "j" ), params.value( QStringLiteral( "J" ) ) );
-    query.addQueryItem( QStringLiteral( "info_format" ), params.value( QStringLiteral( "INFOFORMAT" ) ) );
+    query.addQueryItem( QStringLiteral( "query_layers" ), params.layer() );
+    query.addQueryItem( QgsWmtsParameter::name( QgsWmtsParameter::I ), params.i() );
+    query.addQueryItem( QgsWmtsParameter::name( QgsWmtsParameter::J ), params.j() );
+    query.addQueryItem( QStringLiteral( "info_format" ), params.infoFormatAsString() );
 
     QgsServerParameters wmsParams( query );
     QgsServerRequest wmsRequest( "?" + query.query( QUrl::FullyDecoded ) );
