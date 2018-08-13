@@ -256,7 +256,7 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionSaveAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
         self.mActionSaveInProject.setIcon(
-            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+            QgsApplication.getThemeIcon('/mAddToProject.svg'))
         self.mActionZoomActual.setIcon(
             QgsApplication.getThemeIcon('/mActionZoomActual.svg'))
         self.mActionZoomIn.setIcon(
