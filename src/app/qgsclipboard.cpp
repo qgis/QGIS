@@ -210,7 +210,7 @@ QgsFeatureList QgsClipboard::stringToFeatureList( const QString &string, const Q
     // previous QgsOgrUtils::stringToFeatureList call
     // Get the first value of a \t separated list. WKT clipboard pasted
     // feature has first element the WKT geom.
-    // This split is to fix te following issue: https://issues.qgis.org/issues/16870
+    // This split is to fix the following issue: https://issues.qgis.org/issues/16870
     // Value separators are set in generateClipboardText
     QStringList fieldValues = row.split( '\t' );
     if ( fieldValues.isEmpty() )
