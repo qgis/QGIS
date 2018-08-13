@@ -97,14 +97,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \a region (in layout coordinates).
      * \see visiblePageNumbers()
      */
-    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+    QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
 
     /**
      * Returns a list of the page numbers which are visible within the specified
      * \a region (in layout coordinates).
      * \see visiblePages()
      */
-    QList< int > visiblePageNumbers( QRectF region ) const;
+    QList< int > visiblePageNumbers( const QRectF &region ) const;
 
     /**
      * Returns whether a given \a page index is empty, ie, it contains no items except for the background

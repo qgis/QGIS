@@ -181,6 +181,7 @@ QgsLayoutItemMapItem &QgsLayoutItemMapItemStack::operator[]( int idx )
 QList<QgsLayoutItemMapItem *> QgsLayoutItemMapItemStack::asList() const
 {
   QList< QgsLayoutItemMapItem * > list;
+  list.reserve( mItems.size() );
   for ( QgsLayoutItemMapItem *item : mItems )
   {
     list.append( item );

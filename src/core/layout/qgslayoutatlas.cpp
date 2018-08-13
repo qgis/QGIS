@@ -304,7 +304,7 @@ int QgsLayoutAtlas::updateFeatures()
   if ( !mFeatureKeys.isEmpty() )
   {
     AtlasFeatureSorter sorter( mFeatureKeys, mSortAscending );
-    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
+    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter ); // clazy:exclude=detaching-member
   }
 
   emit numberFeaturesChanged( mFeatureIds.size() );

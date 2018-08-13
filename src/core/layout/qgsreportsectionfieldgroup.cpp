@@ -182,8 +182,8 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
   element.setAttribute( QStringLiteral( "headerVisibility" ), static_cast< int >( mHeaderVisibility ) );
   element.setAttribute( QStringLiteral( "footerVisibility" ), static_cast< int >( mFooterVisibility ) );
   element.setAttribute( QStringLiteral( "field" ), mField );
-  element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? "1" : "0" );
-  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? "1" : "0" );
+  element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( mCoverageLayer )
   {
     element.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer.layerId );

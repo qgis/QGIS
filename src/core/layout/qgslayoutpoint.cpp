@@ -69,7 +69,7 @@ QgsLayoutPoint QgsLayoutPoint::decodePoint( const QString &string )
 
 bool QgsLayoutPoint::operator==( const QgsLayoutPoint &other ) const
 {
-  return other.units() == mUnits && other.x() == mX && other.y() == mY;
+  return other.units() == mUnits && qgsDoubleNear( other.x(), mX ) && qgsDoubleNear( other.y(), mY );
 }
 
 bool QgsLayoutPoint::operator!=( const QgsLayoutPoint &other ) const

@@ -268,7 +268,7 @@ Returns the native units for the layout.
 .. seealso:: :py:func:`convertToLayoutUnits`
 %End
 
-    double convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const;
+    double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
 %Docstring
 Converts a measurement into the layout's native units.
 
@@ -312,7 +312,7 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutSize convertFromLayoutUnits( const QSizeF &size, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
 %Docstring
 Converts a ``size`` from the layout's native units to a specified target ``unit``.
 
@@ -323,7 +323,7 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 .. seealso:: :py:func:`units`
 %End
 
-    QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
 %Docstring
 Converts a ``point`` from the layout's native units to a specified target ``unit``.
 

@@ -476,7 +476,7 @@ void QgsLayoutItemLabel::setFrameEnabled( const bool drawFrame )
   prepareGeometryChange();
 }
 
-void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement &strokeWidth )
+void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement strokeWidth )
 {
   QgsLayoutItem::setFrameStrokeWidth( strokeWidth );
   prepareGeometryChange();

@@ -90,7 +90,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     // for now, map items behave a bit differently and don't implement draw. TODO - see if we can avoid this
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
     int numberExportLayers() const override;
-    void setFrameStrokeWidth( const QgsLayoutMeasurement &width ) override;
+    void setFrameStrokeWidth( QgsLayoutMeasurement width ) override;
 
     /**
      * Returns the map scale.

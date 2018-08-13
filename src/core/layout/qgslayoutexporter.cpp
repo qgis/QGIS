@@ -264,8 +264,8 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
   if ( !image.isNull() )
   {
-    image.setDotsPerMeterX( resolution / 25.4 * 1000 );
-    image.setDotsPerMeterY( resolution / 25.4 * 1000 );
+    image.setDotsPerMeterX( static_cast< int >( std::round( resolution / 25.4 * 1000 ) ) );
+    image.setDotsPerMeterY( static_cast< int>( std::round( resolution / 25.4 * 1000 ) ) );
     image.fill( Qt::transparent );
     QPainter imagePainter( &image );
     renderRegion( &imagePainter, region );
@@ -807,9 +807,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
     }
 
     //width in pixel
-    int width = ( int )( bounds.width() * settings.dpi / inchesToLayoutUnits );
+    int width = static_cast< int >( bounds.width() * settings.dpi / inchesToLayoutUnits );
     //height in pixel
-    int height = ( int )( bounds.height() * settings.dpi / inchesToLayoutUnits );
+    int height = static_cast< int >( bounds.height() * settings.dpi / inchesToLayoutUnits );
     if ( width == 0 || height == 0 )
     {
       //invalid size, skip this page
@@ -899,7 +899,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
         generator.setOutputDevice( &svgBuffer );
         generator.setSize( QSize( width, height ) );
         generator.setViewBox( QRect( 0, 0, width, height ) );
-        generator.setResolution( settings.dpi );
+        generator.setResolution( static_cast< int >( std::round( settings.dpi ) ) );
 
         QPainter p;
         bool createOk = p.begin( &generator );
@@ -1024,7 +1024,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPrinter &printer, bool
   printer.setColorMode( QPrinter::Color );
 
   //set user-defined resolution
-  printer.setResolution( layout->renderContext().dpi() );
+  printer.setResolution( static_cast< int>( std::round( layout->renderContext().dpi() ) ) );
 
   if ( setFirstPageSize )
   {
@@ -1130,9 +1130,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
     }
 
     generator.setOutputDevice( &svgBuffer );
-    generator.setSize( QSize( width, height ) );
-    generator.setViewBox( QRect( 0, 0, width, height ) );
-    generator.setResolution( settings.dpi ); //because the rendering is done in mm, convert the dpi
+    generator.setSize( QSize( static_cast< int >( std::round( width ) ),
+                              static_cast< int >( std::round( height ) ) ) );
+    generator.setViewBox( QRect( 0, 0,
+                                 static_cast< int >( std::round( width ) ),
+                                 static_cast< int >( std::round( height ) ) ) );
+    generator.setResolution( static_cast< int >( std::round( settings.dpi ) ) ); //because the rendering is done in mm, convert the dpi
 
     QPainter svgPainter( &generator );
     if ( settings.cropToContents )
@@ -1141,9 +1144,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
       renderPage( &svgPainter, page );
   }
 
-  // post-process svg output to create groups in a single svg file
-  // we create inkscape layers since it's nice and clean and free
-  // and fully svg compatible
+// post-process svg output to create groups in a single svg file
+// we create inkscape layers since it's nice and clean and free
+// and fully svg compatible
   {
     svgBuffer.close();
     svgBuffer.open( QIODevice::ReadOnly );

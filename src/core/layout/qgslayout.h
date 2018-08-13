@@ -333,7 +333,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertFromLayoutUnits()
      * \see units()
     */
-    double convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const;
+    double convertToLayoutUnits( QgsLayoutMeasurement measurement ) const;
 
     /**
      * Converts a size into the layout's native units.
@@ -365,7 +365,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutSize convertFromLayoutUnits( const QSizeF &size, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutSize convertFromLayoutUnits( QSizeF size, QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
      * Converts a \a point from the layout's native units to a specified target \a unit.
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see convertToLayoutUnits()
      * \see units()
     */
-    QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, QgsUnitTypes::LayoutUnit unit ) const;
+    QgsLayoutPoint convertFromLayoutUnits( QPointF point, QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
      * Returns a reference to the layout's render context, which stores information relating to the

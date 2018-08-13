@@ -382,7 +382,7 @@ content. Derived classes must not override this method, but instead implement
 the pure virtual method QgsLayoutItem.draw.
 %End
 
-    void setReferencePoint( const ReferencePoint &point );
+    void setReferencePoint( ReferencePoint point );
 %Docstring
 Sets the reference ``point`` for positioning of the layout item. This point is also
 fixed during resizing of the item, and any size changes will be performed
@@ -661,7 +661,7 @@ Returns the frame's stroke color. This is only used if frameEnabled() returns tr
 .. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 %Docstring
 Sets the frame stroke ``width``.
 
@@ -948,7 +948,7 @@ If ``adjustPosition`` is false, rotation occurs around the item origin.
 .. seealso:: :py:func:`rotateItem`
 %End
 
-    virtual void rotateItem( double angle, const QPointF &transformOrigin );
+    virtual void rotateItem( double angle, QPointF transformOrigin );
 %Docstring
 Rotates the item by a specified ``angle`` in degrees clockwise around a specified reference point.
 
@@ -1031,7 +1031,7 @@ resized.
 .. seealso:: :py:func:`setFixedSize`
 %End
 
-    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+    virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 %Docstring
 Applies any item-specific size constraint handling to a given ``targetSize`` in layout units.
 Subclasses can override this method if they need to apply advanced logic regarding item
@@ -1102,13 +1102,13 @@ after the frame color is set and a later call to update() must be made.
 Refresh item's blend mode, considering data defined blend mode.
 %End
 
-    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
+    QPointF adjustPointForReferencePosition( QPointF point, QSizeF size, ReferencePoint reference ) const;
 %Docstring
 Adjusts the specified ``point`` at which a ``reference`` position of the item
 sits and returns the top left corner of the item, if reference point were placed at the specified position.
 %End
 
-    QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+    QPointF positionAtReferencePoint( ReferencePoint reference ) const;
 %Docstring
 Returns the current position (in layout units) of a ``reference`` point for the item.
 %End

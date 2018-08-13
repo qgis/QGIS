@@ -78,8 +78,8 @@ class CORE_EXPORT QgsLayoutMeasurement
     */
     static QgsLayoutMeasurement decodeMeasurement( const QString &string );
 
-    bool operator==( const QgsLayoutMeasurement &other ) const;
-    bool operator!=( const QgsLayoutMeasurement &other ) const;
+    bool operator==( QgsLayoutMeasurement other ) const;
+    bool operator!=( QgsLayoutMeasurement other ) const;
 
     /**
      * Adds a scalar value to the measurement.

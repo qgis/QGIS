@@ -78,5 +78,5 @@ void QgsLayoutReportContext::setPredefinedScales( const QVector<qreal> &scales )
 {
   mPredefinedScales = scales;
   // make sure the list is sorted
-  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() );
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() ); // clazy:exclude=detaching-member
 }

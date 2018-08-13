@@ -67,7 +67,7 @@ QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
 
 bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const
 {
-  return other.units() == mUnits && other.width() == mWidth && other.height() == mHeight;
+  return other.units() == mUnits && qgsDoubleNear( other.width(), mWidth ) && qgsDoubleNear( other.height(), mHeight );
 }
 
 bool QgsLayoutSize::operator!=( const QgsLayoutSize &other ) const

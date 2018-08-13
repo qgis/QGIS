@@ -66,7 +66,7 @@ Returns the page number for the specified ``page``, or -1 if the page
 is not contained in the collection.
 %End
 
-    QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
+    QList< QgsLayoutItemPage * > visiblePages( const QRectF &region ) const;
 %Docstring
 Returns a list of the pages which are visible within the specified
 ``region`` (in layout coordinates).
@@ -74,7 +74,7 @@ Returns a list of the pages which are visible within the specified
 .. seealso:: :py:func:`visiblePageNumbers`
 %End
 
-    QList< int > visiblePageNumbers( QRectF region ) const;
+    QList< int > visiblePageNumbers( const QRectF &region ) const;
 %Docstring
 Returns a list of the page numbers which are visible within the specified
 ``region`` (in layout coordinates).

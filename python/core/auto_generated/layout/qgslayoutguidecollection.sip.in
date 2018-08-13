@@ -21,7 +21,7 @@ Contains the configuration for a single snap guide used by a layout.
 %End
   public:
 
-    QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
+    QgsLayoutGuide( Qt::Orientation orientation, QgsLayoutMeasurement position, QgsLayoutItemPage *page );
 %Docstring
 Constructor for a new guide with the specified ``orientation`` and
 initial ``position``.
@@ -67,7 +67,7 @@ of the guide, depending on the guide's orientation().
 .. seealso:: :py:func:`setPosition`
 %End
 
-    void setPosition( const QgsLayoutMeasurement &position );
+    void setPosition( QgsLayoutMeasurement position );
 %Docstring
 Sets the guide's ``position`` within the page.
 
