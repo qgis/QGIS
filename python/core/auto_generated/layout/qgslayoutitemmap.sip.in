@@ -61,7 +61,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int numberExportLayers() const;
 
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
 
     double scale() const;

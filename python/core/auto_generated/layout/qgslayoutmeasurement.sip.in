@@ -77,8 +77,8 @@ Decodes a measurement from a ``string``.
 .. seealso:: :py:func:`encodeMeasurement`
 %End
 
-    bool operator==( const QgsLayoutMeasurement &other ) const;
-    bool operator!=( const QgsLayoutMeasurement &other ) const;
+    bool operator==( QgsLayoutMeasurement other ) const;
+    bool operator!=( QgsLayoutMeasurement other ) const;
 
     QgsLayoutMeasurement operator+( double v ) const;
 
