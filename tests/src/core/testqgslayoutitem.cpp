@@ -65,7 +65,7 @@ class TestItem : public QgsLayoutItem
       painter->restore();
     }
 
-    QSizeF applyItemSizeConstraint( const QSizeF &targetSize ) override
+    QSizeF applyItemSizeConstraint( QSizeF targetSize ) override
     {
       if ( !forceResize )
         return targetSize;

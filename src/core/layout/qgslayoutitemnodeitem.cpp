@@ -104,7 +104,7 @@ bool QgsLayoutNodesItem::addNode( QPointF pt,
   {
     // get nodes of polyline
     const QPointF pt1 = mPolygon.at( i );
-    QPointF pt2 = mPolygon.first();
+    QPointF pt2 = mPolygon.at( 0 );
     if ( ( i + 1 ) != mPolygon.size() )
       pt2 = mPolygon.at( i + 1 );
 

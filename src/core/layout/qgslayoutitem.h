@@ -411,7 +411,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * so that the position of the reference point within the layout remains unchanged.
      * \see referencePoint()
      */
-    void setReferencePoint( const ReferencePoint &point );
+    void setReferencePoint( ReferencePoint point );
 
     /**
      * Returns the reference point for positioning of the layout item. This point is also
@@ -641,7 +641,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFrameJoinStyle()
      * \see setFrameStrokeColor()
      */
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement width );
 
     /**
      * Returns the frame's stroke width. This is only used if frameEnabled() returns true.
@@ -879,7 +879,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setItemRotation()
      * \see itemRotation()
     */
-    virtual void rotateItem( double angle, const QPointF &transformOrigin );
+    virtual void rotateItem( double angle, QPointF transformOrigin );
 
   signals:
 
@@ -956,7 +956,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
      * \see setMinimumSize()
      */
-    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+    virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 
     /**
      * Refreshes an item's size by rechecking it against any possible item fixed
@@ -1016,12 +1016,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Adjusts the specified \a point at which a \a reference position of the item
      * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
-    QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
+    QPointF adjustPointForReferencePosition( QPointF point, QSizeF size, ReferencePoint reference ) const;
 
     /**
      * Returns the current position (in layout units) of a \a reference point for the item.
     */
-    QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
+    QPointF positionAtReferencePoint( ReferencePoint reference ) const;
 
     /**
      * Returns the position for the reference point of the item, if the top-left of the item
@@ -1130,14 +1130,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldDrawAntialiased() const;
     bool shouldDrawDebugRect() const;
 
-    QSizeF applyMinimumSize( const QSizeF &targetSize );
-    QSizeF applyFixedSize( const QSizeF &targetSize );
+    QSizeF applyMinimumSize( QSizeF targetSize );
+    QSizeF applyFixedSize( QSizeF targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
 
     double applyDataDefinedRotation( double rotation );
     void updateStoredItemPosition();
-    QPointF itemPositionAtReferencePoint( ReferencePoint reference, const QSizeF &size ) const;
-    void setScenePos( const QPointF &destinationPos );
+    QPointF itemPositionAtReferencePoint( ReferencePoint reference, QSizeF size ) const;
+    void setScenePos( QPointF destinationPos );
     bool shouldBlockUndoCommands() const;
 
     void applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context );

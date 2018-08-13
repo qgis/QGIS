@@ -27,7 +27,7 @@
 // QgsLayoutGuide
 //
 
-QgsLayoutGuide::QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page )
+QgsLayoutGuide::QgsLayoutGuide( Qt::Orientation orientation, QgsLayoutMeasurement position, QgsLayoutItemPage *page )
   : QObject( nullptr )
   , mOrientation( orientation )
   , mPosition( position )
@@ -48,7 +48,7 @@ QgsLayoutMeasurement QgsLayoutGuide::position() const
   return mPosition;
 }
 
-void QgsLayoutGuide::setPosition( const QgsLayoutMeasurement &position )
+void QgsLayoutGuide::setPosition( QgsLayoutMeasurement position )
 {
   mPosition = position;
   update();
@@ -299,7 +299,7 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
         return false;
 
       QgsLayoutMeasurement m = guide->position();
-      if ( m.length() == newPos )
+      if ( qgsDoubleNear( m.length(), newPos ) )
         return true;
 
       m.setLength( newPos );

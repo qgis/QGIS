@@ -1684,7 +1684,7 @@ int QgsLayoutItemMapGrid::xGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentX += step;
@@ -1760,7 +1760,7 @@ int QgsLayoutItemMapGrid::yGridLinesCrsTransform( const QgsRectangle &bbox, cons
       catch ( QgsCsException &cse )
       {
         Q_UNUSED( cse );
-        QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+        QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
       }
 
       currentY += step;
@@ -2334,7 +2334,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
+    QgsDebugMsg( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ) );
     return 1;
   }
   return 0;

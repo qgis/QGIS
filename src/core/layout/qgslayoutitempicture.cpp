@@ -203,7 +203,7 @@ void QgsLayoutItemPicture::draw( QgsLayoutItemRenderContext &context )
   painter->restore();
 }
 
-QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
+QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF targetSize )
 {
   QSizeF currentPictureSize = pictureSize();
   QSizeF newSize = targetSize;
@@ -347,7 +347,7 @@ void QgsLayoutItemPicture::refreshPicture( const QgsExpressionContext *context )
     if ( ok )
     {
       source = source.trimmed();
-      QgsDebugMsg( QString( "exprVal PictureSource:%1" ).arg( source ) );
+      QgsDebugMsg( QStringLiteral( "exprVal PictureSource:%1" ).arg( source ) );
     }
     else
     {
@@ -473,7 +473,7 @@ void QgsLayoutItemPicture::updateMapRotation()
       catch ( QgsException &e )
       {
         Q_UNUSED( e );
-        QgsDebugMsg( QString( "Caught exception %1" ).arg( e.what() ) );
+        QgsDebugMsg( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
       }
       break;
     }

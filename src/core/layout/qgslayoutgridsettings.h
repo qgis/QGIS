@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see resolution()
      * \see setOffset()
      */
-    void setResolution( const QgsLayoutMeasurement &resolution );
+    void setResolution( QgsLayoutMeasurement resolution );
 
     /**
      * Returns the page/snap grid resolution.
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      * \see offset()
      * \see setResolution()
      */
-    void setOffset( QgsLayoutPoint offset );
+    void setOffset( const QgsLayoutPoint &offset );
 
     /**
      * Returns the offset of the page/snap grid.

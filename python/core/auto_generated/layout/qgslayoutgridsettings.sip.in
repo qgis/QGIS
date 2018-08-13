@@ -37,7 +37,7 @@ Constructor for QgsLayoutGridSettings.
     virtual QgsLayout *layout();
 
 
-    void setResolution( const QgsLayoutMeasurement &resolution );
+    void setResolution( QgsLayoutMeasurement resolution );
 %Docstring
 Sets the page/snap grid ``resolution``.
 
@@ -55,7 +55,7 @@ Returns the page/snap grid resolution.
 .. seealso:: :py:func:`offset`
 %End
 
-    void setOffset( QgsLayoutPoint offset );
+    void setOffset( const QgsLayoutPoint &offset );
 %Docstring
 Sets the ``offset`` of the page/snap grid.
 

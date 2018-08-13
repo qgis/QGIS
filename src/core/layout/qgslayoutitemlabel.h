@@ -211,7 +211,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
     void setFrameEnabled( bool drawFrame ) override;
 
     // Reimplemented to call prepareGeometryChange after changing stroke width
-    void setFrameStrokeWidth( const QgsLayoutMeasurement &strokeWidth ) override;
+    void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth ) override;
 
   public slots:
 

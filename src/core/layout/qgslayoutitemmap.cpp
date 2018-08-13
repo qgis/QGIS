@@ -748,7 +748,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
   }
 
   QRectF thisPaintRect = rect();
-  if ( thisPaintRect.width() == 0 || thisPaintRect.height() == 0 )
+  if ( qgsDoubleNear( thisPaintRect.width(), 0.0 ) || qgsDoubleNear( thisPaintRect.height(), 0 ) )
     return;
 
   //TODO - try to reduce the amount of duplicate code here!
@@ -936,7 +936,7 @@ int QgsLayoutItemMap::numberExportLayers() const
          + ( frameEnabled() ? 1 : 0 );
 }
 
-void QgsLayoutItemMap::setFrameStrokeWidth( const QgsLayoutMeasurement &width )
+void QgsLayoutItemMap::setFrameStrokeWidth( const QgsLayoutMeasurement width )
 {
   QgsLayoutItem::setFrameStrokeWidth( width );
   updateBoundingRect();
