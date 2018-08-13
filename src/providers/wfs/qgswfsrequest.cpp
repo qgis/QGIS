@@ -351,8 +351,8 @@ void QgsWfsRequest::replyFinished()
             emit downloadFinished();
             return;
           }
-          connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
-          connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
+          connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished, Qt::DirectConnection );
+          connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress, Qt::DirectConnection );
           return;
         }
       }
