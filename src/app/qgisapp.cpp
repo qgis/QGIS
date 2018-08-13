@@ -8647,11 +8647,17 @@ std::unique_ptr<QgsVectorLayer> QgisApp::pasteToNewMemoryVector()
   for ( QgsFeature feature : features )
   {
     if ( !feature.hasGeometry() )
+    {
+      convertedFeatures.append( feature );
       continue;
+    }
 
     const QgsWkbTypes::Type type = feature.geometry().wkbType();
     if ( type == QgsWkbTypes::Unknown || type == QgsWkbTypes::NoGeometry )
+    {
+      convertedFeatures.append( feature );
       continue;
+    }
 
     if ( QgsWkbTypes::singleType( wkbType ) != QgsWkbTypes::singleType( type ) )
     {
