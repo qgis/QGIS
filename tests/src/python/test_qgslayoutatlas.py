@@ -368,6 +368,19 @@ class TestQgsLayoutAtlas(unittest.TestCase):
             self.assertEqual(self.atlas.currentFilename(), expected)
         self.atlas.endRender()
 
+        # using feature attribute (refs https://issues.qgis.org/issues/19552)
+
+        self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
+        expected = ['output_Basse-Normandie',
+                    'output_Bretagne',
+                    'output_Pays de la Loire',
+                    'output_Centre']
+        self.atlas.beginRender()
+        for i in range(0, self.atlas.count()):
+            self.atlas.seekTo(i)
+            self.assertEqual(self.atlas.currentFilename(), expected[i])
+        self.atlas.endRender()
+
     def autoscale_render_test(self):
         self.atlas_map.setExtent(
             QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
