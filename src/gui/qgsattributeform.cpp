@@ -1204,7 +1204,7 @@ void QgsAttributeForm::init()
         tabWidget = nullptr;
         WidgetInfo widgetInfo = createWidgetFromDef( widgDef, container, mLayer, mContext );
         QLabel *label = new QLabel( widgetInfo.labelText );
-        label->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( widgetInfo.labelText, widgetInfo.hint ) );
+        label->setToolTip( widgetInfo.toolTip );
         if ( columnCount > 1 && !widgetInfo.labelOnTop )
         {
           label->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
@@ -1283,6 +1283,8 @@ void QgsAttributeForm::init()
 
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
+      QString labelText = fieldName;
+      labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
 
       const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, field.name() );
 
@@ -1292,7 +1294,7 @@ void QgsAttributeForm::init()
       bool labelOnTop = mLayer->editFormConfig().labelOnTop( idx );
 
       // This will also create the widget
-      QLabel *l = new QLabel( fieldName );
+      QLabel *l = new QLabel( labelText );
       l->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( fieldName, field.comment() ) );
       QSvgWidget *i = new QSvgWidget();
       i->setFixedSize( 18, 18 );
@@ -1625,6 +1627,8 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
 
       newWidgetInfo.labelOnTop = mLayer->editFormConfig().labelOnTop( fieldDef->idx() );
       newWidgetInfo.labelText = mLayer->attributeDisplayName( fieldDef->idx() );
+      newWidgetInfo.labelText.replace( '&', QStringLiteral( "&&" ) ); // need to escape '&' or they'll be replace by _ in the label text
+      newWidgetInfo.toolTip = QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( mLayer->attributeDisplayName( fieldDef->idx() ), newWidgetInfo.hint );
       newWidgetInfo.showLabel = widgetDef->showLabel();
 
       break;
@@ -1719,7 +1723,7 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         else
         {
           QLabel *mypLabel = new QLabel( widgetInfo.labelText );
-          mypLabel->setToolTip( QStringLiteral( "<b>%1</b><p>%2</p>" ).arg( widgetInfo.labelText, widgetInfo.hint ) );
+          mypLabel->setToolTip( widgetInfo.toolTip );
           if ( columnCount > 1 && !widgetInfo.labelOnTop )
           {
             mypLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
