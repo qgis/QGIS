@@ -138,6 +138,9 @@ class ProjectProvider(QgsProcessingProvider):
     def name(self):
         return self.tr('Project models', 'ProjectProvider')
 
+    def longName(self):
+        return self.tr('Models embedded in the current project', 'ProjectProvider')
+
     def id(self):
         return PROJECT_PROVIDER_ID
 
