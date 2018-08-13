@@ -305,6 +305,7 @@ SET(QGIS_CORE_SRCS
   qgstextrenderer.cpp
   qgstolerance.cpp
   qgstracer.cpp
+  qgstranslationcontext.cpp
   qgstrackedvectorlayertools.cpp
   qgstransaction.cpp
   qgstransactiongroup.cpp
@@ -655,6 +656,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgswebpage.h
   qgswebview.h
   qgssettings.h
+  qgsprojecttranslator.h
 
   annotations/qgsannotation.h
   annotations/qgsannotationmanager.h

@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojecttranslator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsProjectTranslator
+{
+%Docstring
+Wherever an object of this class is available, the derived translate function can be called from.
+
+.. versionadded:: 3.4
+%End
+
+%TypeHeaderCode
+#include "qgsprojecttranslator.h"
+%End
+  public:
+
+
+    virtual QString translate( const QString &context, const QString &sourceText, const char *disambiguation = 0, int n = -1 ) const = 0;
+%Docstring
+The derived translate() translates with QTranslator and qm file the sourceText.
+It
+:return: the result string and in case there is no QTranslator loaded, the sourceText.
+           This function can be called from wherever the QgsReadWriteContext is available.
+
+:param context: describing layer etc.
+:param sourceText: is the identifier of this text
+:param disambiguation: it's the disambiguation
+:param n: if -1 uses the appropriate form
+
+.. versionadded:: 3.4
+%End
+
+    virtual ~QgsProjectTranslator();
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsprojecttranslator.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

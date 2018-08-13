@@ -1902,7 +1902,26 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
           field = fields().at( index ).name();
       }
 
-      mAttributeAliasMap.insert( field, aliasElem.attribute( QStringLiteral( "name" ) ) );
+      QString alias;
+
+      if ( !aliasElem.attribute( QStringLiteral( "name" ) ).isEmpty() )
+      {
+        //if it has alias
+        alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), aliasElem.attribute( QStringLiteral( "name" ) ) );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + aliasElem.attribute( QStringLiteral( "name" ) ), 1 );
+      }
+      else
+      {
+        //if it has no alias, it should be the fields translation
+        alias = context.projectTranslator()->translate( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ), field );
+        QgsDebugMsgLevel( "context" + QStringLiteral( "project:layers:%1:fieldaliases" ).arg( layerNode.namedItem( QStringLiteral( "id" ) ).toElement().text() ) + " source " + field, 1 );
+        //if it gets the exact field value, there has been no translation (or not even translation loaded) - so no alias should be generated;
+        if ( alias == aliasElem.attribute( QStringLiteral( "field" ) ) )
+          alias.clear();
+      }
+
+      QgsDebugMsgLevel( "field " + field + " origalias " + aliasElem.attribute( QStringLiteral( "name" ) ) + " trans " + alias, 1 );
+      mAttributeAliasMap.insert( field, alias );
     }
   }
 

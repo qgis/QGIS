@@ -31,6 +31,7 @@
 #include <QPair>
 #include <QFileInfo>
 #include <QStringList>
+#include <QTranslator>
 
 #include "qgsunittypes.h"
 #include "qgssnappingconfig.h"
@@ -44,6 +45,9 @@
 #include "qgsarchive.h"
 #include "qgsreadwritecontext.h"
 #include "qgsprojectmetadata.h"
+#include "qgstranslationcontext.h"
+#include "qgsvectorlayer.h"
+#include "qgsprojecttranslator.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -82,7 +86,7 @@ class QgsAuxiliaryStorage;
 
 */
 
-class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
+class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator, public QgsProjectTranslator
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
@@ -182,6 +186,13 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 3.2
      */
     QString absoluteFilePath() const;
+
+    /**
+     * Returns full absolute path to the project folder if the project is stored in a file system - derived from fileName().
+     * Returns empty string when the project is stored in a project storage (there is no concept of paths for custom project storages).
+     * \since QGIS 3.2
+     */
+    QString absolutePath() const;
 
     /**
      * Returns the base name of the project file without the path and without extension - derived from fileName().
@@ -955,6 +966,24 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setRequiredLayers( const QSet<QgsMapLayer *> &layers );
 
+    /**
+     * Triggers the collection strings of .qgs to be included in ts file and calls writeTsFile()
+     * \since QGIS 3.4
+     */
+    void generateTsFile( const QString &locale );
+
+    /**
+     * Translates the project with QTranslator and qm file
+     * \returns the result string (in case there is no QTranslator loaded the sourceText)
+     *
+     * \param context describing layer etc.
+     * \param sourceText is the identifier of this text
+     * \param disambiguation it's the disambiguation
+     * \param n if -1 uses the appropriate form
+     * \since QGIS 3.4
+     */
+    QString translate( const QString &context, const QString &sourceText, const char *disambiguation = nullptr, int n = -1 ) const override;
+
   signals:
 
     /**
@@ -970,6 +999,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * Emitted when a project is being read.
      */
     void readProject( const QDomDocument & );
+
+    /**
+     * Emitted when a project is being read. And passing the /a context
+     */
+    void readProjectWithContext( const QDomDocument &, QgsReadWriteContext &context );
 
     /**
      * Emitted when the project is being written.
@@ -1269,6 +1303,25 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     */
     void setPresetHomePath( const QString &path );
 
+    /**
+     * Registers the containers that require translation into the translationContext.
+     * This is a recursive function to get all the child containers.
+     *
+     * \param translationContext where the objects will be registered
+     * \param parent parent-container containing list of children
+     * \param layerId to store under the correct context
+     * \since QGIS 3.4
+    */
+    void registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId );
+
+    /**
+     * Registers the objects that require translation into the \a translationContext.
+     * So there can be created a ts file with these values.
+     *
+     * \since QGIS 3.4
+    */
+    void registerTranslatableObjects( QgsTranslationContext *translationContext );
+
   private slots:
     void onMapLayersAdded( const QList<QgsMapLayer *> &layers );
     void onMapLayersRemoved( const QList<QgsMapLayer *> &layers );
@@ -1391,6 +1444,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateTransformContext mTransformContext;
 
     QgsProjectMetadata mMetadata;
+
+    std::unique_ptr< QTranslator > mTranslator;
 
     friend class QgsProjectDirtyBlocker;
 

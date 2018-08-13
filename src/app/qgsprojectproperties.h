@@ -92,6 +92,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
+    //! generate the ts file with the locale selected in the checkbox
+    void onGenerateTsFileButton() const;
+
     /**
      * Set WMS default extent to current canvas extent
      */

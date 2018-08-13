@@ -98,7 +98,22 @@ Returns the stored messages and remove them
 .. versionadded:: 3.2
 %End
 
+    const QgsProjectTranslator *projectTranslator( ) const;
+%Docstring
+Returns the project translator
 
+.. versionadded:: 3.4
+%End
+
+    void setProjectTranslator( QgsProjectTranslator *projectTranslator );
+%Docstring
+Sets the project translator. Means it shouldn't conform mDefaultTranslator anymore.
+It's usually the QgsProject where the function with the context is made and won't be changed anymore.
+
+.. versionadded:: 3.4
+%End
+
+      public:
 };
 
 

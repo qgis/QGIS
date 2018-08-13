@@ -35,11 +35,12 @@ class QgsRelation
 Default constructor. Creates an invalid relation.
 %End
 
-    static QgsRelation createFromXml( const QDomNode &node );
+    static QgsRelation createFromXml( const QDomNode &node, QgsReadWriteContext &context );
 %Docstring
 Creates a relation from an XML structure. Used for reading .qgs projects.
 
 :param node: The dom node containing the relation information
+:param context: to pass project translator
 
 :return: A relation
 %End

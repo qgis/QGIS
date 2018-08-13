@@ -314,7 +314,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteCo
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
   mne = mnl.toElement();
-  setName( mne.text() );
+
+  //name can be translated
+  setName( context.projectTranslator()->translate( QStringLiteral( "project:layers:%1" ).arg( layerElement.namedItem( QStringLiteral( "id" ) ).toElement().text() ), mne.text() ) );
 
   //short name
   QDomElement shortNameElem = layerElement.firstChildElement( QStringLiteral( "shortname" ) );

@@ -49,6 +49,7 @@ class TestQgsLayerTree : public QObject
     void testEmbeddedGroup();
     void testFindLayer();
     void testLayerDeleted();
+    void testFindGroups();
 
   private:
 
@@ -634,6 +635,30 @@ void TestQgsLayerTree::testLayerDeleted()
   project.removeMapLayer( vl );
 
   QCOMPARE( model.layerLegendNodes( tl ).count(), 0 );
+}
+
+void TestQgsLayerTree::testFindGroups()
+{
+  QgsProject project;
+  QgsLayerTreeGroup *group1 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_One" ) );
+  QVERIFY( group1 );
+  QgsLayerTreeGroup *group2 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_Two" ) );
+  QVERIFY( group2 );
+  QgsLayerTreeGroup *group3 = project.layerTreeRoot()->addGroup( QStringLiteral( "Group_Three" ) );
+  QVERIFY( group3 );
+
+  QgsLayerTreeGroup *group = project.layerTreeRoot()->findGroup( QStringLiteral( "Group_One" ) );
+  QVERIFY( group );
+  group = project.layerTreeRoot()->findGroup( QStringLiteral( "Group_Two" ) );
+  QVERIFY( group );
+  group = project.layerTreeRoot()->findGroup( QStringLiteral( "Group_Three" ) );
+  QVERIFY( group );
+
+  QList<QgsLayerTreeGroup *> groups = project.layerTreeRoot()->findGroups();
+
+  QVERIFY( groups.contains( group1 ) );
+  QVERIFY( groups.contains( group2 ) );
+  QVERIFY( groups.contains( group3 ) );
 }
 
 

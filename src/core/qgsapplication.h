@@ -22,6 +22,7 @@
 
 #include "qgis.h"
 #include "qgsconfig.h"
+#include "qgstranslationcontext.h"
 
 class Qgs3DRendererRegistry;
 class QgsActionScopeRegistry;
@@ -724,7 +725,6 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setCustomVariables( const QVariantMap &customVariables );
 
-
     /**
      * Set a single custom expression variable.
      *
@@ -741,6 +741,13 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \since QGIS 3.4
      */
     int maxConcurrentConnectionsPerPool() const;
+
+    /**
+     * Emits the signal to collect all the strings of .qgs to be included in ts file
+     *
+     * \since QGIS 3.4
+     */
+    void collectTranslatableObjects( QgsTranslationContext *translationContext );
 
 #ifdef SIP_RUN
     SIP_IF_FEATURE( ANDROID )
@@ -764,6 +771,14 @@ class CORE_EXPORT QgsApplication : public QApplication
      * \copydoc nullRepresentation()
      */
     void nullRepresentationChanged();
+
+    /**
+     * Emitted when project strings which require translation are being collected for inclusion in a .ts file.
+     * In order to register translatable strings, connect to this signal and register the strings within the specified \a translationContext.
+     *
+     * \since QGIS 3.4
+     */
+    void requestForTranslatableObjects( QgsTranslationContext *translationContext );
 
   private:
 

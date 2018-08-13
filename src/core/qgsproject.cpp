@@ -37,7 +37,6 @@
 #include "qgsrectangle.h"
 #include "qgsrelationmanager.h"
 #include "qgsannotationmanager.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsmapthemecollection.h"
 #include "qgslayerdefinition.h"
@@ -62,6 +61,7 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QUrl>
+
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -366,6 +366,7 @@ QgsProject::QgsProject( QObject *parent )
   connect( mLayerStore.get(), &QgsMapLayerStore::allLayersRemoved, this, &QgsProject::removeAll );
   connect( mLayerStore.get(), &QgsMapLayerStore::layersAdded, this, &QgsProject::layersAdded );
   connect( mLayerStore.get(), &QgsMapLayerStore::layerWasAdded, this, &QgsProject::layerWasAdded );
+  connect( QgsApplication::instance(), &QgsApplication::requestForTranslatableObjects, this, &QgsProject::registerTranslatableObjects );
 }
 
 
@@ -441,6 +442,69 @@ void QgsProject::setPresetHomePath( const QString &path )
   setDirty( true );
 }
 
+void QgsProject::registerTranslatableContainers( QgsTranslationContext *translationContext, QgsAttributeEditorContainer *parent, const QString &layerId )
+{
+  const QList<QgsAttributeEditorElement *> elements = parent->children();
+
+  for ( QgsAttributeEditorElement *element : elements )
+  {
+    if ( element->type() == QgsAttributeEditorElement::AeTypeContainer )
+    {
+      QgsAttributeEditorContainer *container = dynamic_cast<QgsAttributeEditorContainer *>( element );
+
+      translationContext->registerTranslation( QStringLiteral( "project:layers:%1:formcontainers" ).arg( layerId ), container->name() );
+
+      if ( !container->children().empty() )
+        registerTranslatableContainers( translationContext, container, layerId );
+    }
+  }
+}
+
+void QgsProject::registerTranslatableObjects( QgsTranslationContext *translationContext )
+{
+  //register layers
+  const QList<QgsLayerTreeLayer *> layers = mRootGroup->findLayers();
+
+  for ( const QgsLayerTreeLayer *layer : layers )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:layers:%1" ).arg( layer->layerId() ), layer->name() );
+
+    QgsMapLayer *mapLayer = layer->layer();
+    if ( mapLayer && mapLayer->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
+
+      //register aliases and fields
+      const QgsFields fields = vlayer->fields();
+      for ( const QgsField &field : fields )
+      {
+        if ( field.alias().isEmpty() )
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.name() );
+        else
+          translationContext->registerTranslation( QStringLiteral( "project:layers:%1:fieldaliases" ).arg( vlayer->id() ), field.alias() );
+      }
+
+      //register formcontainers
+      registerTranslatableContainers( translationContext, vlayer->editFormConfig().invisibleRootContainer(), vlayer->id() );
+
+    }
+  }
+
+  //register layergroups
+  const QList<QgsLayerTreeGroup *> groupLayers = mRootGroup->findGroups();
+  for ( const QgsLayerTreeGroup *groupLayer : groupLayers )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:layergroups" ), groupLayer->name() );
+  }
+
+  //register relations
+  const QList<QgsRelation> &relations = mRelationManager->relations().values();
+  for ( const QgsRelation &relation : relations )
+  {
+    translationContext->registerTranslation( QStringLiteral( "project:relations" ), relation.name() );
+  }
+}
+
 void QgsProject::setFileName( const QString &name )
 {
   if ( name == mFile.fileName() )
@@ -485,6 +549,17 @@ QDateTime QgsProject::lastModified() const
   {
     return QFileInfo( mFile.fileName() ).lastModified();
   }
+}
+
+QString QgsProject::absolutePath() const
+{
+  if ( projectStorage() )
+    return QString();
+
+  if ( mFile.fileName().isEmpty() )
+    return QString();  // this is to protect ourselves from getting current directory from QFileInfo::absoluteFilePath()
+
+  return QFileInfo( mFile.fileName() ).absolutePath();
 }
 
 QString QgsProject::absoluteFilePath() const
@@ -777,7 +852,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   {
     QDomElement element = node.toElement();
 
-    QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
+    QString name = translate( QStringLiteral( "project:layers:%1" ).arg( node.namedItem( QStringLiteral( "id" ) ).toElement().text() ), node.namedItem( QStringLiteral( "layername" ) ).toElement().text() );
     if ( !name.isNull() )
       emit loadingLayer( tr( "Loading layer %1" ).arg( name ) );
 
@@ -790,6 +865,7 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
     {
       QgsReadWriteContext context;
       context.setPathResolver( pathResolver() );
+      context.setProjectTranslator( this );
       if ( !addLayer( element, brokenNodes, context ) )
       {
         returnStatus = false;
@@ -889,6 +965,7 @@ bool QgsProject::read()
     }
 
     QgsReadWriteContext context;
+    context.setProjectTranslator( this );
     if ( !storage->readProject( filename, &inDevice, context ) )
     {
       QString err = tr( "Unable to open %1" ).arg( filename );
@@ -912,7 +989,17 @@ bool QgsProject::read()
     rc = readProjectFile( mFile.fileName() );
   }
 
-  mFile.setFileName( filename );
+  //on translation we should not change the filename back
+  if ( !mTranslator )
+  {
+    mFile.setFileName( filename );
+  }
+  else
+  {
+    //but delete the translator
+    mTranslator.reset( nullptr );
+  }
+
   return rc;
 }
 
@@ -920,6 +1007,16 @@ bool QgsProject::readProjectFile( const QString &filename )
 {
   QFile projectFile( filename );
   clearError();
+
+  QgsSettings settings;
+
+  QString localeFileName = QStringLiteral( "%1_%2" ).arg( QFileInfo( projectFile.fileName() ).baseName(), settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString() );
+
+  if ( QFile( QStringLiteral( "%1/%2.qm" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) ).exists() )
+  {
+    mTranslator.reset( new QTranslator() );
+    mTranslator->load( localeFileName, QFileInfo( projectFile.fileName() ).absolutePath() );
+  }
 
   std::unique_ptr<QDomDocument> doc( new QDomDocument( QStringLiteral( "qgis" ) ) );
 
@@ -957,7 +1054,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   projectFile.close();
-
 
   QgsDebugMsg( "Opened document " + projectFile.fileName() );
 
@@ -1014,6 +1110,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
 
   //crs
   QgsCoordinateReferenceSystem projectCrs;
@@ -1188,7 +1285,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   mSnappingConfig.readProject( *doc );
-
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
   QStringList variableValues = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableValues" ) );
@@ -1211,6 +1307,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
+  emit readProjectWithContext( *doc, context );
   emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state
@@ -1219,6 +1316,22 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
 
+  if ( mTranslator )
+  {
+    //project possibly translated -> rename it with locale postfix
+    QString newFileName( QStringLiteral( "%1/%2.qgs" ).arg( QFileInfo( projectFile.fileName() ).absolutePath(), localeFileName ) );
+    setFileName( newFileName );
+
+    if ( write() )
+    {
+      setTitle( localeFileName );
+      QgsMessageLog::logMessage( tr( "Translated project saved with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Success );
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Error saving translated project with locale prefix %1" ).arg( newFileName ), QObject::tr( "Project translation" ), Qgis::Critical );
+    }
+  }
   return true;
 }
 
@@ -1428,6 +1541,7 @@ bool QgsProject::readLayer( const QDomNode &layerNode )
 {
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
   QList<QDomNode> brokenNodes;
   if ( addLayer( layerNode.toElement(), brokenNodes, context ) )
   {
@@ -2042,6 +2156,7 @@ bool QgsProject::createEmbeddedLayer( const QString &layerId, const QString &pro
   QgsReadWriteContext embeddedContext;
   if ( !useAbsolutePaths )
     embeddedContext.setPathResolver( QgsPathResolver( projectFilePath ) );
+  embeddedContext.setProjectTranslator( this );
 
   QDomElement projectLayersElem = sProjectDocument.documentElement().firstChildElement( QStringLiteral( "projectlayers" ) );
   if ( projectLayersElem.isNull() )
@@ -2098,6 +2213,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver() );
+  context.setProjectTranslator( this );
 
   // store identify disabled layers of the embedded project
   QSet<QString> embeddedIdentifyDisabledLayers;
@@ -2697,4 +2813,25 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
     layerIds << layer->id();
   }
   writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
+}
+
+void QgsProject::generateTsFile( const QString &locale )
+{
+  QgsTranslationContext translationContext;
+  translationContext.setProject( this );
+  translationContext.setFileName( QStringLiteral( "%1/%2_%3.ts" ).arg( absolutePath(), baseName(), locale ) );
+
+  emit QgsApplication::instance()->collectTranslatableObjects( &translationContext );
+
+  translationContext.writeTsFile( locale );
+}
+
+QString QgsProject::translate( const QString &context, const QString &sourceText, const char *disambiguation, int n ) const
+{
+  if ( !mTranslator )
+  {
+    return sourceText;
+  }
+
+  return mTranslator->translate( context.toUtf8(), sourceText.toUtf8(), disambiguation, n );
 }
