@@ -236,10 +236,71 @@ void TestQgisAppClipboard::pasteWkt()
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
-  // clipboard now supports features without geometry
-  mQgisApp->clipboard()->setText( "MNL\t11\t282\tkm\t\nMNL\t11\t347.80000000000001\tkm\t" );
+  //clipboard should support features without geometry
+  mQgisApp->clipboard()->setText( "\tMNL\t11\t282\tkm\t\t\t\n\tMNL\t11\t347.80000000000001\tkm\t\t\t" );
   features = mQgisApp->clipboard()->copyOf();
   QCOMPARE( features.length(), 2 );
+  QCOMPARE( features.at( 0 ).attributes().count(), 7 );
+  QCOMPARE( features.at( 0 ).attributes().at( 0 ).toString(), QString( "MNL" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 1 ).toString(), QString( "11" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 2 ).toString(), QString( "282" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 3 ).toString(), QString( "km" ) );
+  QVERIFY( features.at( 0 ).attributes().at( 4 ).toString().isEmpty() );
+  QVERIFY( features.at( 0 ).attributes().at( 5 ).toString().isEmpty() );
+  QVERIFY( features.at( 0 ).attributes().at( 6 ).toString().isEmpty() );
+  QCOMPARE( features.at( 1 ).attributes().count(), 7 );
+  QCOMPARE( features.at( 1 ).attributes().at( 0 ).toString(), QString( "MNL" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 1 ).toString(), QString( "11" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 2 ).toString(), QString( "347.80000000000001" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 3 ).toString(), QString( "km" ) );
+  QVERIFY( features.at( 1 ).attributes().at( 4 ).toString().isEmpty() );
+  QVERIFY( features.at( 1 ).attributes().at( 5 ).toString().isEmpty() );
+  QVERIFY( features.at( 1 ).attributes().at( 6 ).toString().isEmpty() );
+
+  mQgisApp->clipboard()->setText( QString( "wkt_geom\ta\tb\tc\n\tMNL\t11\t282\tkm\t\t\t\n\tMNL\t11\t347.80000000000001\tkm\t\t\t" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 2 );
+  QCOMPARE( features.at( 0 ).fields()->count(), 3 );
+  QCOMPARE( features.at( 0 ).fields()->at( 0 ).name(), QString( "a" ) );
+  QCOMPARE( features.at( 0 ).fields()->at( 1 ).name(), QString( "b" ) );
+  QCOMPARE( features.at( 0 ).fields()->at( 2 ).name(), QString( "c" ) );
+  QCOMPARE( features.at( 0 ).attributes().count(), 7 );
+  QCOMPARE( features.at( 0 ).attributes().at( 0 ).toString(), QString( "MNL" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 1 ).toString(), QString( "11" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 2 ).toString(), QString( "282" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 3 ).toString(), QString( "km" ) );
+  QVERIFY( features.at( 0 ).attributes().at( 4 ).toString().isEmpty() );
+  QVERIFY( features.at( 0 ).attributes().at( 5 ).toString().isEmpty() );
+  QVERIFY( features.at( 0 ).attributes().at( 6 ).toString().isEmpty() );
+  QCOMPARE( features.at( 1 ).attributes().count(), 7 );
+  QCOMPARE( features.at( 1 ).attributes().at( 0 ).toString(), QString( "MNL" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 1 ).toString(), QString( "11" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 2 ).toString(), QString( "347.80000000000001" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 3 ).toString(), QString( "km" ) );
+  QVERIFY( features.at( 1 ).attributes().at( 4 ).toString().isEmpty() );
+  QVERIFY( features.at( 1 ).attributes().at( 5 ).toString().isEmpty() );
+  QVERIFY( features.at( 1 ).attributes().at( 6 ).toString().isEmpty() );
+
+  mQgisApp->clipboard()->setText( QString( "wkt_geom\ta\tb\tc\nNULL\t1\tb\t2\nNULL\t3\tc3\t4\nPoint (5 4)\t2\tb2\t3" ) );
+  features = mQgisApp->clipboard()->copyOf();
+  QCOMPARE( features.length(), 3 );
+  QCOMPARE( features.at( 0 ).fields()->count(), 3 );
+  QCOMPARE( features.at( 0 ).fields()->at( 0 ).name(), QString( "a" ) );
+  QCOMPARE( features.at( 0 ).fields()->at( 1 ).name(), QString( "b" ) );
+  QCOMPARE( features.at( 0 ).fields()->at( 2 ).name(), QString( "c" ) );
+  QCOMPARE( features.at( 0 ).attributes().count(), 3 );
+  QCOMPARE( features.at( 0 ).attributes().at( 0 ).toString(), QString( "1" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 1 ).toString(), QString( "b" ) );
+  QCOMPARE( features.at( 0 ).attributes().at( 2 ).toString(), QString( "2" ) );
+  QCOMPARE( features.at( 1 ).attributes().count(), 3 );
+  QCOMPARE( features.at( 1 ).attributes().at( 0 ).toString(), QString( "3" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 1 ).toString(), QString( "c3" ) );
+  QCOMPARE( features.at( 1 ).attributes().at( 2 ).toString(), QString( "4" ) );
+  QCOMPARE( features.at( 2 ).constGeometry()->exportToWkt(), QStringLiteral( "Point (5 4)" ) );
+  QCOMPARE( features.at( 2 ).attributes().count(), 3 );
+  QCOMPARE( features.at( 2 ).attributes().at( 0 ).toString(), QString( "2" ) );
+  QCOMPARE( features.at( 2 ).attributes().at( 1 ).toString(), QString( "b2" ) );
+  QCOMPARE( features.at( 2 ).attributes().at( 2 ).toString(), QString( "3" ) );
 }
 
 void TestQgisAppClipboard::pasteGeoJson()
