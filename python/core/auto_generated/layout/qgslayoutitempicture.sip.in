@@ -299,7 +299,7 @@ Is emitted on picture rotation change
 
     virtual void draw( QgsLayoutItemRenderContext &context );
 
-    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+    virtual QSizeF applyItemSizeConstraint( QSizeF targetSize );
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 

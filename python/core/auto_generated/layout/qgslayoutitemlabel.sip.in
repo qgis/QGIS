@@ -224,7 +224,7 @@ Returns the label font color.
     virtual void setFrameEnabled( bool drawFrame );
 
 
-    virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &strokeWidth );
+    virtual void setFrameStrokeWidth( QgsLayoutMeasurement strokeWidth );
 
 
   public slots:
