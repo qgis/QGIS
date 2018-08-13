@@ -105,6 +105,13 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
     item->setData( 0, FieldConfigRole, cfg );
     item->setData( 0, FieldNameRole, field.name() );
+
+    QString tooltip;
+    if ( !field.alias().isEmpty() )
+      tooltip = tr( "%1 (%2)" ).arg( field.name(), field.alias() );
+    else
+      tooltip = field.name();
+    item->setToolTip( 0, tooltip );
   }
   catitem->setExpanded( true );
 
