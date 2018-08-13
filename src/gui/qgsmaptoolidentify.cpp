@@ -224,7 +224,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
   {
-    QgsDebugMsg( "Out of scale limits" );
+    QgsDebugMsg( QStringLiteral( "Out of scale limits" ) );
     return false;
   }
 
@@ -620,8 +620,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     // are similar to source width and height used to reproject layer for drawing.
     // TODO: may be very dangerous, because it may result in different resolutions
     // in source CRS, and WMS server (QGIS server) calcs wrong coor using average resolution.
-    int width = std::round( viewExtent.width() / mapUnitsPerPixel );
-    int height = std::round( viewExtent.height() / mapUnitsPerPixel );
+    int width = static_cast< int >( std::round( viewExtent.width() / mapUnitsPerPixel ) );
+    int height = static_cast< int >( std::round( viewExtent.height() / mapUnitsPerPixel ) );
 
     QgsDebugMsg( QStringLiteral( "viewExtent.width = %1 viewExtent.height = %2" ).arg( viewExtent.width() ).arg( viewExtent.height() ) );
     QgsDebugMsg( QStringLiteral( "width = %1 height = %2" ).arg( width ).arg( height ) );
@@ -695,7 +695,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
         for ( const QgsFeatureStore &featureStore : featureStoreList )
         {
           const QgsFeatureList storeFeatures = featureStore.features();
-          for ( QgsFeature feature : storeFeatures )
+          for ( const QgsFeature &feature : storeFeatures )
           {
             attributes.clear();
             // WMS sublayer and feature type, a sublayer may contain multiple feature types.
