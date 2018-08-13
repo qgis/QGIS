@@ -3695,7 +3695,7 @@ void QgisApp::setupDockWidget( QDockWidget *dockWidget, bool isFloating, const Q
   if ( dockGeometry.isEmpty() )
   {
     // try to guess a nice initial placement for view - about 3/4 along, half way down
-    dockWidget->setGeometry( QRect( rect().width() * 0.75, rect().height() * 0.5, 400, 400 ) );
+    dockWidget->setGeometry( QRect( static_cast< int >( rect().width() * 0.75 ), static_cast< int >( rect().height() * 0.5 ), 400, 400 ) );
     addDockWidget( area, dockWidget );
   }
   else
@@ -10902,8 +10902,8 @@ void QgisApp::new3DMapCanvas()
     dock->setMapSettings( map );
 
     QgsRectangle extent = mMapCanvas->extent();
-    float dist = std::max( extent.width(), extent.height() );
-    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, mMapCanvas->rotation() );
+    float dist = static_cast< float >( std::max( extent.width(), extent.height() ) );
+    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, static_cast< float >( mMapCanvas->rotation() ) );
   }
 #endif
 }
@@ -11815,7 +11815,8 @@ void QgisApp::markDirty()
 void QgisApp::extentChanged()
 {
   // allow symbols in the legend update their preview if they use map units
-  mLayerTreeView->layerTreeModel()->setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(), mMapCanvas->mapSettings().outputDpi(), mMapCanvas->scale() );
+  mLayerTreeView->layerTreeModel()->setLegendMapViewData( mMapCanvas->mapUnitsPerPixel(),
+      static_cast< int >( std::round( mMapCanvas->mapSettings().outputDpi() ) ), mMapCanvas->scale() );
 }
 
 void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
@@ -11880,7 +11881,7 @@ void QgisApp::showStatusMessage( const QString &message )
 
 void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QgsReadWriteContext::ReadWriteMessage> &messages )
 {
-  for ( const auto message : messages )
+  for ( const auto &message : messages )
   {
     messageBar()->pushMessage( layerName, message.message(), message.categories().join( '\n' ), message.level() );
   }
