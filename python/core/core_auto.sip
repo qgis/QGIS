@@ -94,6 +94,7 @@
 %Include auto_generated/qgsprojectproperty.sip
 %Include auto_generated/qgsprojectstorage.sip
 %Include auto_generated/qgsprojectstorageregistry.sip
+%Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/qgsprojectversion.sip
 %Include auto_generated/qgsproperty.sip
 %Include auto_generated/qgspropertycollection.sip
@@ -366,7 +367,6 @@
 %Include auto_generated/qgsvectorlayertools.sip
 %Include auto_generated/qgsvectorsimplifymethod.sip
 %Include auto_generated/qgssettings.sip
-%Include auto_generated/qgsprojecttranslator.sip
 %Include auto_generated/annotations/qgsannotation.sip
 %Include auto_generated/annotations/qgsannotationmanager.sip
 %Include auto_generated/annotations/qgshtmlannotation.sip
