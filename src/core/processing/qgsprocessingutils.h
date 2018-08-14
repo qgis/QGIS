@@ -87,6 +87,17 @@ class CORE_EXPORT QgsProcessingUtils
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
 
     /**
+     * Layer type hints.
+     * \since QGIS 3.4
+     */
+    enum LayerHint
+    {
+      UnknownType, //!< Unknown layer type
+      Vector, //!< Vector layer type
+      Raster, //!< Raster layer type
+    };
+
+    /**
      * Interprets a string as a map layer within the supplied \a context.
      *
      * The method will attempt to
@@ -95,8 +106,10 @@ class CORE_EXPORT QgsProcessingUtils
      * If the string is a file path and \a allowLoadingNewLayers is true, then the layer at this
      * file path will be loaded and added to the context's temporary layer store.
      * Ownership of the layer remains with the \a context or the context's current project.
+     *
+     * The \a typeHint can be used to dictate the type of map layer expected.
      */
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
 
     /**
      * Converts a variant \a value to a new feature source.
@@ -265,7 +278,7 @@ class CORE_EXPORT QgsProcessingUtils
      * returned.
      * \see mapLayerFromString()
      */
-    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store );
+    static QgsMapLayer *mapLayerFromStore( const QString &string, QgsMapLayerStore *store, LayerHint typeHint = UnknownType );
 
     /**
      * Interprets a string as a map layer. The method will attempt to
@@ -273,7 +286,7 @@ class CORE_EXPORT QgsProcessingUtils
      * then the layer at this file path will be loaded.
      * The caller takes responsibility for deleting the returned map layer.
      */
-    static QgsMapLayer *loadMapLayerFromString( const QString &string );
+    static QgsMapLayer *loadMapLayerFromString( const QString &string, LayerHint typeHint = UnknownType );
 
     static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter );
 

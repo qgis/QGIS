@@ -94,7 +94,7 @@ QList<QgsMapLayer *> QgsProcessingUtils::compatibleLayers( QgsProject *project, 
   return layers;
 }
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store )
+QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMapLayerStore *store, QgsProcessingUtils::LayerHint typeHint )
 {
   if ( !store || string.isEmpty() )
     return nullptr;
@@ -117,19 +117,35 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromStore( const QString &string, QgsMa
     return true;
   } ), layers.end() );
 
-  Q_FOREACH ( QgsMapLayer *l, layers )
+  auto isCompatibleType = [typeHint]( QgsMapLayer * l ) -> bool
   {
-    if ( l->id() == string )
+    switch ( typeHint )
+    {
+      case UnknownType:
+        return true;
+
+      case Vector:
+        return l->type() == QgsMapLayer::VectorLayer;
+
+      case Raster:
+        return l->type() == QgsMapLayer::RasterLayer;
+    }
+    return true;
+  };
+
+  for ( QgsMapLayer *l : qgis::as_const( layers ) )
+  {
+    if ( isCompatibleType( l ) && l->id() == string )
       return l;
   }
-  Q_FOREACH ( QgsMapLayer *l, layers )
+  for ( QgsMapLayer *l : qgis::as_const( layers ) )
   {
-    if ( l->name() == string )
+    if ( isCompatibleType( l ) && l->name() == string )
       return l;
   }
-  Q_FOREACH ( QgsMapLayer *l, layers )
+  for ( QgsMapLayer *l : qgis::as_const( layers ) )
   {
-    if ( normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
+    if ( isCompatibleType( l ) && normalizeLayerSource( l->source() ) == normalizeLayerSource( string ) )
       return l;
   }
   return nullptr;
@@ -157,7 +173,7 @@ class ProjectionSettingRestorer
 };
 ///@endcond PRIVATE
 
-QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
+QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string, LayerHint typeHint )
 {
   QStringList components = string.split( '|' );
   if ( components.isEmpty() )
@@ -178,24 +194,30 @@ QgsMapLayer *QgsProcessingUtils::loadMapLayerFromString( const QString &string )
   QString name = fi.baseName();
 
   // brute force attempt to load a matching layer
-  QgsVectorLayer::LayerOptions options;
-  options.loadDefaultStyle = false;
-  std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), options ) );
-  if ( layer->isValid() )
+  if ( typeHint == UnknownType || typeHint == Vector )
   {
-    return layer.release();
+    QgsVectorLayer::LayerOptions options;
+    options.loadDefaultStyle = false;
+    std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( string, name, QStringLiteral( "ogr" ), options ) );
+    if ( layer->isValid() )
+    {
+      return layer.release();
+    }
   }
-  QgsRasterLayer::LayerOptions rasterOptions;
-  rasterOptions.loadDefaultStyle = false;
-  std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
-  if ( rasterLayer->isValid() )
+  if ( typeHint == UnknownType || typeHint == Raster )
   {
-    return rasterLayer.release();
+    QgsRasterLayer::LayerOptions rasterOptions;
+    rasterOptions.loadDefaultStyle = false;
+    std::unique_ptr< QgsRasterLayer > rasterLayer( new QgsRasterLayer( string, name, QStringLiteral( "gdal" ), rasterOptions ) );
+    if ( rasterLayer->isValid() )
+    {
+      return rasterLayer.release();
+    }
   }
   return nullptr;
 }
 
-QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers )
+QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers, LayerHint typeHint )
 {
   if ( string.isEmpty() )
     return nullptr;
@@ -204,19 +226,19 @@ QgsMapLayer *QgsProcessingUtils::mapLayerFromString( const QString &string, QgsP
   QgsMapLayer *layer = nullptr;
   if ( context.project() )
   {
-    QgsMapLayer *layer = mapLayerFromStore( string, context.project()->layerStore() );
+    QgsMapLayer *layer = mapLayerFromStore( string, context.project()->layerStore(), typeHint );
     if ( layer )
       return layer;
   }
 
-  layer = mapLayerFromStore( string, context.temporaryLayerStore() );
+  layer = mapLayerFromStore( string, context.temporaryLayerStore(), typeHint );
   if ( layer )
     return layer;
 
   if ( !allowLoadingNewLayers )
     return nullptr;
 
-  layer = loadMapLayerFromString( string );
+  layer = loadMapLayerFromString( string, typeHint );
   if ( layer )
   {
     context.temporaryLayerStore()->addMapLayer( layer );
@@ -274,7 +296,7 @@ QgsProcessingFeatureSource *QgsProcessingUtils::variantToSource( const QVariant 
   if ( layerRef.isEmpty() )
     return nullptr;
 
-  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context ) );
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( layerRef, context, true, Vector ) );
   if ( !vl )
     return nullptr;
 

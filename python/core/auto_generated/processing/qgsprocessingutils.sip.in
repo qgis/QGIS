@@ -71,7 +71,14 @@ value.
 .. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
-    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
+    enum LayerHint
+    {
+      UnknownType,
+      Vector,
+      Raster,
+    };
+
+    static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true, LayerHint typeHint = UnknownType );
 %Docstring
 Interprets a string as a map layer within the supplied ``context``.
 
@@ -81,6 +88,8 @@ within the context's project or temporary layer store then this layer will be re
 If the string is a file path and ``allowLoadingNewLayers`` is true, then the layer at this
 file path will be loaded and added to the context's temporary layer store.
 Ownership of the layer remains with the ``context`` or the context's current project.
+
+The ``typeHint`` can be used to dictate the type of map layer expected.
 %End
 
     static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
