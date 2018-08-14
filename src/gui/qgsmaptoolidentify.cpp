@@ -374,6 +374,25 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   }
 }
 
+void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, QMap<QString, QString> &derivedAttributes )
+{
+  QgsPoint closestPoint = QgsGeometryUtils::closestPoint( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
+
+  derivedAttributes.insert( tr( "Closest X" ), formatXCoordinate( closestPoint ) );
+  derivedAttributes.insert( tr( "Closest Y" ), formatYCoordinate( closestPoint ) );
+
+  if ( closestPoint.is3D() )
+  {
+    const QString str = QLocale().toString( closestPoint.z(), 'g', 10 );
+    derivedAttributes.insert( tr( "Interpolated Z" ), str );
+  }
+  if ( closestPoint.isMeasure() )
+  {
+    const QString str = QLocale().toString( closestPoint.m(), 'g', 10 );
+    derivedAttributes.insert( tr( "Interpolated M" ), str );
+  }
+}
+
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
   return QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), canvasPoint, mCanvas->mapSettings().destinationCrs(),
@@ -451,6 +470,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
       derivedAttributes.insert( tr( "Vertices" ), str );
       //add details of closest vertex to identify point
       closestVertexAttributes( *geom, vId, layer, derivedAttributes );
+      closestPointAttributes( *geom, layerPoint, derivedAttributes );
 
       if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
       {
@@ -498,6 +518,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( const Qgs
 
     //add details of closest vertex to identify point
     closestVertexAttributes( *feature.geometry().constGet(), vId, layer, derivedAttributes );
+    closestPointAttributes( *feature.geometry().constGet(), layerPoint, derivedAttributes );
   }
   else if ( geometryType == QgsWkbTypes::PointGeometry )
   {

@@ -55,6 +55,7 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyInvalidPolygons(); // test selecting invalid polygons
     void clickxy(); // test if clicked_x and clicked_y variables are propagated
+    void closestPoint();
 
   private:
     void doAction();
@@ -207,6 +208,64 @@ void TestQgsMapToolIdentifyAction::clickxy()
   // simulate a click on the corresponding action
   QTimer::singleShot( 2000, this, &TestQgsMapToolIdentifyAction::doAction );
   mIdentifyAction->canvasReleaseEvent( &mapReleases );
+}
+
+void TestQgsMapToolIdentifyAction::closestPoint()
+{
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), true );
+
+  //create a temporary layer
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "LineStringZM?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
+  QgsPolylineXY line3111;
+  line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
+  QgsGeometry line3111G = QgsGeometry::fromWkt( QStringLiteral( "LineStringZM( 2484588 2425722 11 31, 2484588 2398853 15 37)" ) ) ;
+  f1.setGeometry( line3111G );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // set project CRS and ellipsoid
+  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  canvas->setDestinationCrs( srs );
+  canvas->setExtent( f1.geometry().boundingBox() );
+  QgsProject::instance()->setCrs( srs );
+  QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
+  QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
+
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484587, 2399800 );
+
+  std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
+
+  //check that closest point attributes are present
+  QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
+  QCOMPARE( result.length(), 1 );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "36.7" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "14.8" ) );
+
+  // polygons
+  //create a temporary layer
+  std::unique_ptr< QgsVectorLayer> tempLayer2( new QgsVectorLayer( QStringLiteral( "PolygonZM?crs=epsg:3111&field=pk:int&field=col1:double" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer2->isValid() );
+  f1 = QgsFeature( tempLayer2->dataProvider()->fields(), 1 );
+  f1.setAttribute( QStringLiteral( "pk" ), 1 );
+  f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
+
+  f1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PolygonZM((2484588 2425722 1 11, 2484588 2398853 2 12, 2520109 2397715 3 13, 2520792 2425494 4 14, 2484588 2425722 1 11))" ) ) );
+  QVERIFY( f1.hasGeometry() );
+  tempLayer2->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  mapPoint = canvas->getCoordinateTransform()->transform( 2484589, 2399800 );
+  result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer2.get() );
+  QCOMPARE( result.length(), 1 );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest X" )], QStringLiteral( "2484588" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Closest Y" )], QStringLiteral( "2399800" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated M" )].left( 4 ), QStringLiteral( "11.9" ) );
+  QCOMPARE( result.at( 0 ).mDerivedAttributes[tr( "Interpolated Z" )].left( 4 ), QStringLiteral( "1.96" ) );
 }
 
 void TestQgsMapToolIdentifyAction::lengthCalculation()
