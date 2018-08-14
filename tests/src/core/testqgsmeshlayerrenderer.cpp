@@ -101,6 +101,15 @@ void TestQgsMeshRenderer::initTestCase()
     QList<QgsMapLayer *>() << mMemoryLayer );
   mMapSettings->setLayers(
     QList<QgsMapLayer *>() << mMemoryLayer );
+
+  // here we check that datasets automatically get some default style applied
+  QgsMeshDatasetIndex ds( 0, 0 );
+  QgsMeshRendererScalarSettings scalarSettings = mMemoryLayer->rendererSettings().scalarSettings( ds.group() );
+  QgsColorRampShader shader = scalarSettings.colorRampShader();
+  QList<QgsColorRampShader::ColorRampItem> lst = shader.colorRampItemList();
+  QCOMPARE( lst.count(), 5 );
+  QCOMPARE( lst.at( 0 ).value, 1. );  // min group value
+  QCOMPARE( lst.at( 4 ).value, 4. );  // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()
@@ -174,9 +183,9 @@ void TestQgsMeshRenderer::test_vertex_vector_dataset_rendering()
   QVERIFY( metadata.name() == "VertexVectorDataset" );
 
   QgsMeshRendererSettings rendererSettings = mMemoryLayer->rendererSettings();
-  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings();
+  QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
   settings.setMinShaftLength( 15 );
-  rendererSettings.setVectorSettings( settings );
+  rendererSettings.setVectorSettings( ds.group(), settings );
   rendererSettings.setActiveVectorDataset( ds );
   mMemoryLayer->setRendererSettings( rendererSettings );
 

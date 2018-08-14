@@ -363,6 +363,10 @@ class CORE_EXPORT QgsMeshDataProvider: public QgsDataProvider, public QgsMeshDat
      * \returns QgsRectangle containing the extent of the layer
      */
     QgsRectangle extent() const override;
+
+  signals:
+    //! Emitted when some new dataset groups have been added
+    void datasetGroupsAdded( int count );
 };
 
 #endif // QGSMESHDATAPROVIDER_H

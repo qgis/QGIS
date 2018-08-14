@@ -331,6 +331,7 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   if ( valid )
   {
     mExtraDatasetUris << uri;
+    emit datasetGroupsAdded( 1 );
     emit dataChanged();
   }
 

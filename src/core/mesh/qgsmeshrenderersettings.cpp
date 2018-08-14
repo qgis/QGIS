@@ -59,17 +59,6 @@ void QgsMeshRendererScalarSettings::setColorRampShader( const QgsColorRampShader
   mColorRampShader = shader;
 }
 
-bool QgsMeshRendererScalarSettings::isEnabled() const
-{
-  return mEnabled;
-}
-
-void QgsMeshRendererScalarSettings::setEnabled( bool enabled )
-{
-  mEnabled = enabled;
-}
-
-
 double QgsMeshRendererVectorSettings::lineWidth() const
 {
   return mLineWidth;

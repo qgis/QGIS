@@ -393,6 +393,12 @@ Returns the extent of the layer
 
 :return: QgsRectangle containing the extent of the layer
 %End
+
+  signals:
+    void datasetGroupsAdded( int count );
+%Docstring
+Emitted when some new dataset groups have been added
+%End
 };
 
 /************************************************************************

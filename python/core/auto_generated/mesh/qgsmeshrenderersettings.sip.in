@@ -83,12 +83,6 @@ Returns color ramp shader function
 Sets color ramp shader function
 %End
 
-    bool isEnabled() const;
-%Docstring
-Returns whether color ramp has any items assigned
-%End
-
-    void setEnabled( bool enabled );
 };
 
 class QgsMeshRendererVectorSettings
@@ -108,15 +102,6 @@ Represents a mesh renderer settings for vector datasets
 #include "qgsmeshrenderersettings.h"
 %End
   public:
-
-    bool isEnabled() const;
-%Docstring
-Returns whether rendering of vectors is enabled
-%End
-    void setEnabled( bool enabled );
-%Docstring
-Sets whether rendering of vectors is enabled
-%End
 
     enum ArrowScalingMethod
     {
@@ -299,20 +284,20 @@ Returns renderer settings
 Sets new renderer settings
 %End
 
-    QgsMeshRendererScalarSettings scalarSettings() const;
+    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const;
 %Docstring
 Returns renderer settings
 %End
-    void setScalarSettings( const QgsMeshRendererScalarSettings &settings );
+    void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings );
 %Docstring
 Sets new renderer settings
 %End
 
-    QgsMeshRendererVectorSettings vectorSettings() const;
+    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const;
 %Docstring
 Returns renderer settings
 %End
-    void setVectorSettings( const QgsMeshRendererVectorSettings &settings );
+    void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings );
 %Docstring
 Sets new renderer settings
 %End

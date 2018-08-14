@@ -462,6 +462,7 @@ SET(QGIS_CORE_SRCS
   mesh/qgsmeshdataprovider.cpp
   mesh/qgsmeshlayer.cpp
   mesh/qgsmeshlayerrenderer.cpp
+  mesh/qgsmeshlayerutils.cpp
   mesh/qgsmeshmemorydataprovider.cpp
   mesh/qgstriangularmesh.cpp
   mesh/qgsmeshlayerinterpolator.cpp
@@ -1075,6 +1076,7 @@ SET(QGIS_CORE_HDRS
   mesh/qgstriangularmesh.h
   mesh/qgsmeshlayerrenderer.h
   mesh/qgsmeshlayerinterpolator.h
+  mesh/qgsmeshlayerutils.h
   mesh/qgsmeshvectorrenderer.h
   mesh/qgsmeshrenderersettings.h
 

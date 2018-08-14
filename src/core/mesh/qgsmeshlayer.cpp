@@ -20,16 +20,18 @@
 
 #include <QUuid>
 
-
+#include "qgscolorramp.h"
 #include "qgslogger.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsproviderregistry.h"
 #include "qgsreadwritecontext.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayerinterpolator.h"
+
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,
@@ -170,6 +172,36 @@ void QgsMeshLayer::fillNativeMesh()
   {
     mNativeMesh->faces[i] = dataProvider()->face( i );
   }
+}
+
+void QgsMeshLayer::onDatasetGroupsAdded( int count )
+{
+  // assign default style to new dataset groups
+  int newDatasetGroupCount = mDataProvider->datasetGroupCount();
+  for ( int i = newDatasetGroupCount - count; i < newDatasetGroupCount; ++i )
+    assignDefaultStyleToDatasetGroup( i );
+}
+
+static QgsGradientColorRamp *_createDefaultColorRamp()
+{
+  QgsGradientStopsList stops;
+  stops << QgsGradientStop( 0.25, QColor( 0, 255, 255 ) );
+  stops << QgsGradientStop( 0.5, QColor( 0, 255, 0 ) );
+  stops << QgsGradientStop( 0.75, QColor( 255, 255, 0 ) );
+  return new QgsGradientColorRamp( QColor( 0, 0, 255 ), QColor( 255, 0, 0 ), false, stops );
+}
+
+void QgsMeshLayer::assignDefaultStyleToDatasetGroup( int groupIndex )
+{
+  double groupMin, groupMax;
+  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( groupMin, groupMax, mDataProvider, groupIndex );
+
+  QgsColorRampShader fcn( groupMin, groupMax, _createDefaultColorRamp() );
+  fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
+
+  QgsMeshRendererScalarSettings scalarSettings;
+  scalarSettings.setColorRampShader( fcn );
+  mRendererSettings.setScalarSettings( groupIndex, scalarSettings );
 }
 
 QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &rendererContext )
@@ -335,7 +367,11 @@ bool QgsMeshLayer::setDataProvider( QString const &provider, const QgsDataProvid
     mDataSource = mDataSource + QStringLiteral( "&uid=%1" ).arg( QUuid::createUuid().toString() );
   }
 
+  for ( int i = 0; i < mDataProvider->datasetGroupCount(); ++i )
+    assignDefaultStyleToDatasetGroup( i );
+
   connect( mDataProvider, &QgsMeshDataProvider::dataChanged, this, &QgsMeshLayer::dataChanged );
+  connect( mDataProvider, &QgsMeshDataProvider::datasetGroupsAdded, this, &QgsMeshLayer::onDatasetGroupsAdded );
 
   return true;
 }

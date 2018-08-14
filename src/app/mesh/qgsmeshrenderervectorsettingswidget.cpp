@@ -93,17 +93,16 @@ QgsMeshRendererVectorSettings QgsMeshRendererVectorSettingsWidget::settings() co
   return settings;
 }
 
-void QgsMeshRendererVectorSettingsWidget::setActiveDataset( QgsMeshDatasetIndex activeDataset )
-{
-  mActiveDataset = activeDataset;
-}
-
 void QgsMeshRendererVectorSettingsWidget::syncToLayer( )
 {
   if ( !mMeshLayer )
     return;
 
-  QgsMeshRendererVectorSettings settings = mMeshLayer->rendererSettings().vectorSettings();
+  if ( mActiveDatasetGroup < 0 )
+    return;
+
+  const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+  const QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( mActiveDatasetGroup );
 
   // basic
   mColorWidget->setColor( settings.color() );

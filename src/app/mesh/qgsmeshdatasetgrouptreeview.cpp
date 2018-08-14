@@ -283,11 +283,6 @@ int QgsMeshDatasetGroupTreeView::setActiveGroupFromActiveDataset()
   {
     group = activeDataset.group();
   }
-  else if ( !mGroups.empty() )
-  {
-    // not found, select first item
-    group = 0;
-  }
 
   if ( mActiveGroup != group )
   {

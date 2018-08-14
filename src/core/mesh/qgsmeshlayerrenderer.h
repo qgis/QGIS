@@ -69,7 +69,6 @@ class QgsMeshLayerRenderer : public QgsMapLayerRenderer
     void renderVectorDataset();
     void copyScalarDatasetValues( QgsMeshLayer *layer );
     void copyVectorDatasetValues( QgsMeshLayer *layer );
-    void assignDefaultScalarShader( );
 
     void createMeshSymbol( std::unique_ptr<QgsSymbol> &symbol, const QgsMeshRendererMeshSettings &settings );
     void calculateOutputSize();

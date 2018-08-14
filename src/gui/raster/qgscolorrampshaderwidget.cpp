@@ -635,6 +635,7 @@ void QgsColorRampShaderWidget::setFromShader( const QgsColorRampShader &colorRam
 
   mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findData( colorRampShader.colorRampType() ) );
 
+  mColormapTreeWidget->clear();
   const QList<QgsColorRampShader::ColorRampItem> colorRampItemList = colorRampShader.colorRampItemList();
   QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItemList.constBegin();
   for ( ; it != colorRampItemList.end(); ++it )

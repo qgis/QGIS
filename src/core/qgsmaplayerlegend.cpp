@@ -373,9 +373,9 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultMeshLayerLegend::createLayerTreeM
 
   nodes << new QgsSimpleLegendNode( nodeLayer, name );
 
-  QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings();
-  if ( settings.isEnabled() )
+  if ( indexScalar.isValid() )
   {
+    QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( indexScalar.group() );
     QgsLegendColorList items;
     settings.colorRampShader().legendSymbologyItems( items );
     for ( const QPair< QString, QColor > &item : qgis::as_const( items ) )

@@ -76,12 +76,7 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
     //! Sets color ramp shader function
     void setColorRampShader( const QgsColorRampShader &shader );
 
-    //! Returns whether color ramp has any items assigned
-    bool isEnabled() const;
-
-    void setEnabled( bool enabled );
   private:
-    bool mEnabled = false;
     QgsColorRampShader mColorRampShader;
 };
 
@@ -97,11 +92,6 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 class CORE_EXPORT QgsMeshRendererVectorSettings
 {
   public:
-
-    //! Returns whether rendering of vectors is enabled
-    bool isEnabled() const { return mEnabled; }
-    //! Sets whether rendering of vectors is enabled
-    void setEnabled( bool enabled ) { mEnabled = enabled; }
 
     //! Algorithm how to transform vector magnitude to length of arrow on the device in pixels
     enum ArrowScalingMethod
@@ -233,7 +223,6 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
     void setArrowHeadLengthRatio( double arrowHeadLengthRatio );
 
   private:
-    bool mEnabled = false;
     double mLineWidth = DEFAULT_LINE_WIDTH; //in milimeters
     QColor mColor = Qt::black;
     double mFilterMin = -1; //disabled
@@ -274,14 +263,14 @@ class CORE_EXPORT QgsMeshRendererSettings
     void setTriangularMeshSettings( const QgsMeshRendererMeshSettings &settings ) { mRendererTriangularMeshSettings = settings; }
 
     //! Returns renderer settings
-    QgsMeshRendererScalarSettings scalarSettings() const { return mRendererScalarSettings; }
+    QgsMeshRendererScalarSettings scalarSettings( int groupIndex ) const { return mRendererScalarSettings.value( groupIndex ); }
     //! Sets new renderer settings
-    void setScalarSettings( const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings = settings; }
+    void setScalarSettings( int groupIndex, const QgsMeshRendererScalarSettings &settings ) { mRendererScalarSettings[groupIndex] = settings; }
 
     //! Returns renderer settings
-    QgsMeshRendererVectorSettings vectorSettings() const { return mRendererVectorSettings; }
+    QgsMeshRendererVectorSettings vectorSettings( int groupIndex ) const { return mRendererVectorSettings.value( groupIndex ); }
     //! Sets new renderer settings
-    void setVectorSettings( const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings = settings; }
+    void setVectorSettings( int groupIndex, const QgsMeshRendererVectorSettings &settings ) { mRendererVectorSettings[groupIndex] = settings; }
 
     //! Returns active scalar dataset
     QgsMeshDatasetIndex activeScalarDataset() const { return mActiveScalarDataset; }
@@ -296,8 +285,9 @@ class CORE_EXPORT QgsMeshRendererSettings
   private:
     QgsMeshRendererMeshSettings mRendererNativeMeshSettings;
     QgsMeshRendererMeshSettings mRendererTriangularMeshSettings;
-    QgsMeshRendererScalarSettings mRendererScalarSettings;
-    QgsMeshRendererVectorSettings mRendererVectorSettings;
+
+    QHash<int, QgsMeshRendererScalarSettings> mRendererScalarSettings;  //!< Per-group scalar settings
+    QHash<int, QgsMeshRendererVectorSettings> mRendererVectorSettings;  //!< Per-group vector settings
 
     //! index of active scalar dataset
     QgsMeshDatasetIndex mActiveScalarDataset;

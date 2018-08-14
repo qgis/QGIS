@@ -67,6 +67,8 @@ void QgsMeshRendererActiveDatasetWidget::onActiveGroupChanged()
 
   mDatasetSlider->setValue( val );
   onActiveDatasetChanged( val );
+  mActiveDatasetGroup = mDatasetGroupTreeView->activeGroup();
+  emit activeDatasetGroupChanged( mActiveDatasetGroup );
 }
 
 void QgsMeshRendererActiveDatasetWidget::onActiveDatasetChanged( int value )

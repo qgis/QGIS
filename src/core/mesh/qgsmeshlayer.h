@@ -199,6 +199,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer
 
   private:
     void fillNativeMesh();
+    void assignDefaultStyleToDatasetGroup( int groupIndex );
+
+  private slots:
+    void onDatasetGroupsAdded( int count );
 
   private:
     //! Pointer to data provider derived from the abastract base class QgsMeshDataProvider

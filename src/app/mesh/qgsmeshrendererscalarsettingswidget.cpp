@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsmessagelog.h"
 
 
@@ -52,14 +53,15 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
   if ( !mMeshLayer )
     return;
 
-  const QgsMeshRendererScalarSettings settings = mMeshLayer->rendererSettings().scalarSettings();
-  if ( settings.isEnabled() )
-  {
-    const QgsColorRampShader shader = settings.colorRampShader();
-    whileBlocking( mScalarMinLineEdit )->setText( QString::number( shader.minimumValue() ) );
-    whileBlocking( mScalarMaxLineEdit )->setText( QString::number( shader.maximumValue() ) );
-    whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
-  }
+  if ( mActiveDatasetGroup < 0 )
+    return;
+
+  const QgsMeshRendererSettings rendererSettings = mMeshLayer->rendererSettings();
+  const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( mActiveDatasetGroup );
+  const QgsColorRampShader shader = settings.colorRampShader();
+  whileBlocking( mScalarMinLineEdit )->setText( QString::number( shader.minimumValue() ) );
+  whileBlocking( mScalarMaxLineEdit )->setText( QString::number( shader.maximumValue() ) );
+  whileBlocking( mScalarColorRampShaderWidget )->setFromShader( shader );
 }
 
 double QgsMeshRendererScalarSettingsWidget::lineEditValue( const QLineEdit *lineEdit ) const
@@ -89,54 +91,8 @@ void QgsMeshRendererScalarSettingsWidget::minMaxEdited()
 void QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked()
 {
   double min, max;
-  calcMinMax( mActiveDataset, min, max );
+  QgsMeshLayerUtils::calculateMinMaxForDatasetGroup( min, max, mMeshLayer->dataProvider(), mActiveDatasetGroup );
   whileBlocking( mScalarMinLineEdit )->setText( QString::number( min ) );
   whileBlocking( mScalarMaxLineEdit )->setText( QString::number( max ) );
   mScalarColorRampShaderWidget->setMinimumMaximumAndClassify( min, max );
-}
-
-void QgsMeshRendererScalarSettingsWidget::setActiveDataset( QgsMeshDatasetIndex activeDataset )
-{
-  mActiveDataset = activeDataset;
-}
-
-void QgsMeshRendererScalarSettingsWidget::calcMinMax( QgsMeshDatasetIndex datasetIndex, double &min, double &max ) const
-{
-  if ( !mMeshLayer )
-    return;
-
-  if ( !mMeshLayer->dataProvider() )
-    return;
-
-  const QgsMeshDatasetGroupMetadata metadata = mMeshLayer->dataProvider()->datasetGroupMetadata( datasetIndex );
-  bool scalarDataOnVertices = metadata.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices;
-  int count;
-  if ( scalarDataOnVertices )
-    count = mMeshLayer->dataProvider()->vertexCount();
-  else
-    count = mMeshLayer->dataProvider()->faceCount();
-
-  bool myFirstIterationFlag = true;
-  for ( int i = 0; i < count; ++i )
-  {
-    double myValue = mMeshLayer->dataProvider()->datasetValue( datasetIndex, i ).scalar();
-    if ( std::isnan( myValue ) ) continue; // NULL
-    if ( myFirstIterationFlag )
-    {
-      myFirstIterationFlag = false;
-      min = myValue;
-      max = myValue;
-    }
-    else
-    {
-      if ( myValue < min )
-      {
-        min = myValue;
-      }
-      if ( myValue > max )
-      {
-        max = myValue;
-      }
-    }
-  }
 }

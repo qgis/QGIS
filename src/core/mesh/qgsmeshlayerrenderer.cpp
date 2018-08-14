@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include <memory>
-#include <limits>
 
 #include "qgsmeshlayerrenderer.h"
 
@@ -30,36 +29,12 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrastershader.h"
 #include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsmeshvectorrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgssettings.h"
 #include "qgsstyle.h"
 
-static void calculateMinimumMaximum( double &min, double &max, const QVector<double> &arr )
-{
-  bool found = false;
-
-  min = std::numeric_limits<double>::max();
-  max = std::numeric_limits<double>::min();
-
-  for ( const double val : arr )
-  {
-    if ( !std::isnan( val ) )
-    {
-      found = true;
-      if ( val < min )
-        min = val;
-      if ( val > max )
-        max = val;
-    }
-  }
-
-  if ( !found )
-  {
-    min = std::numeric_limits<double>::quiet_NaN();
-    max = std::numeric_limits<double>::quiet_NaN();
-  }
-}
 
 QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id() )
@@ -79,26 +54,7 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer( QgsMeshLayer *layer, QgsRenderContex
   copyScalarDatasetValues( layer );
   copyVectorDatasetValues( layer );
 
-  assignDefaultScalarShader();
-
   calculateOutputSize();
-}
-
-void QgsMeshLayerRenderer::assignDefaultScalarShader( )
-{
-  // TODO: the assignment of default shader should be outside of the this renderer
-#if 0
-  if ( mScalarDatasetValues.isEmpty() || mRendererSettings.scalarSettings().isEnabled() )
-    return; // no need for default shader, either rendering is off or we already have some shader
-
-  QgsSettings settings;
-  QString defaultPalette = settings.value( QStringLiteral( "/Raster/defaultPalette" ), "Spectral" ).toString();
-  std::unique_ptr<QgsColorRamp> colorRamp( QgsStyle::defaultStyle()->colorRamp( defaultPalette ) );
-  QgsColorRampShader fcn( mScalarDatasetMinimum, mScalarDatasetMaximum, colorRamp.release() );
-  fcn.classifyColorRamp( 5, -1, QgsRectangle(), nullptr );
-
-  mRendererScalarSettings.setColorRampShader( fcn );
-#endif
 }
 
 QgsFeedback *QgsMeshLayerRenderer::feedback() const
@@ -154,7 +110,7 @@ void QgsMeshLayerRenderer::copyScalarDatasetValues( QgsMeshLayer *layer )
       mScalarDatasetValues[i] = v;
     }
 
-    calculateMinimumMaximum( mScalarDatasetMinimum, mScalarDatasetMaximum, mScalarDatasetValues );
+    QgsMeshLayerUtils::calculateMinimumMaximum( mScalarDatasetMinimum, mScalarDatasetMaximum, mScalarDatasetValues );
   }
 }
 
@@ -195,7 +151,7 @@ void QgsMeshLayerRenderer::copyVectorDatasetValues( QgsMeshLayer *layer )
       }
     }
 
-    calculateMinimumMaximum( mVectorDatasetMagMinimum, mVectorDatasetMagMaximum, mVectorDatasetValuesMag );
+    QgsMeshLayerUtils::calculateMinimumMaximum( mVectorDatasetMagMinimum, mVectorDatasetMagMaximum, mVectorDatasetValuesMag );
   }
 }
 
@@ -245,10 +201,11 @@ void QgsMeshLayerRenderer::renderScalarDataset()
   if ( std::isnan( mScalarDatasetMinimum ) || std::isnan( mScalarDatasetMaximum ) )
     return; // only NODATA values
 
-  if ( !mRendererSettings.scalarSettings().isEnabled() )
+  QgsMeshDatasetIndex index = mRendererSettings.activeScalarDataset();
+  if ( !index.isValid() )
     return; // no shader
 
-  QgsColorRampShader *fcn = new QgsColorRampShader( mRendererSettings.scalarSettings().colorRampShader() );
+  QgsColorRampShader *fcn = new QgsColorRampShader( mRendererSettings.scalarSettings( index.group() ).colorRampShader() );
   QgsRasterShader *sh = new QgsRasterShader();
   sh->setRasterShaderFunction( fcn );  // takes ownership of fcn
   QgsMeshLayerInterpolator interpolator( mTriangularMesh, mScalarDatasetValues, mScalarDataOnVertices, mContext, mOutputSize );
@@ -264,7 +221,8 @@ void QgsMeshLayerRenderer::renderScalarDataset()
 
 void QgsMeshLayerRenderer::renderVectorDataset()
 {
-  if ( !mRendererSettings.vectorSettings().isEnabled() )
+  QgsMeshDatasetIndex index = mRendererSettings.activeVectorDataset();
+  if ( !index.isValid() )
     return;
 
   if ( mVectorDatasetValuesX.isEmpty() )
@@ -279,7 +237,7 @@ void QgsMeshLayerRenderer::renderVectorDataset()
   QgsMeshVectorRenderer renderer( mTriangularMesh,
                                   mVectorDatasetValuesX, mVectorDatasetValuesY, mVectorDatasetValuesMag,
                                   mVectorDatasetMagMinimum, mVectorDatasetMagMaximum,
-                                  mVectorDataOnVertices, mRendererSettings.vectorSettings(), mContext, mOutputSize );
+                                  mVectorDataOnVertices, mRendererSettings.vectorSettings( index.group() ), mContext, mOutputSize );
 
   renderer.draw();
 }
